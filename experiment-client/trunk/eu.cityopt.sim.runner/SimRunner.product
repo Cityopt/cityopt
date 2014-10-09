@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Simulation runner" uid="SimRunner.product" id="eu.cityopt.sim.runner.product" application="eu.cityopt.sim.runner.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
+   </launcherArgs>
+
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
+      <plugin id="com.fasterxml.jackson.core.jackson-core"/>
+      <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
+      <plugin id="eu.cityopt.sim.runner"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.simantics.experiment.client"/>
+      <plugin id="org.simantics.experiment.core"/>
+      <plugin id="org.simantics.experiment.file"/>
+      <plugin id="org.simantics.experiment.zookeeper"/>
+   </plugins>
+
+   <features>
+      <feature id="eu.cityopt.sim.runner" version="1.0.0.qualifier"/>
+      <feature id="org.simantics.experiment.client.feature"/>
+      <feature id="org.eclipse.equinox.executable" version="3.6.0.v20140117-1004"/>
+      <feature id="org.simantics.experiment.platformdeps" version="1.0.0.qualifier"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.simantics.experiment.file" autoStart="true" startLevel="3" />
+      <plugin id="org.simantics.experiment.zookeeper" autoStart="true" startLevel="3" />
+   </configurations>
+
+</product>
