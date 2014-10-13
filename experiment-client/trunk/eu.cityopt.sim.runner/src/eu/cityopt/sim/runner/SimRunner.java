@@ -28,7 +28,7 @@ import org.simantics.experiment.core.file.LocalFile;
  */
 public class SimRunner implements IApplication {
     private String
-        appname = "simrunner",
+        appname = "simrun",
         server = "zk:localhost:2181",
         dirname = ".",
         profile = "Apros-N3D-5.13.06-64bit",
@@ -49,7 +49,7 @@ public class SimRunner implements IApplication {
             mdir.put(f, new LocalFile(fdir.resolve(f).toFile()));
         SimulationServer srv = new SimulationServer(server);
         Experiment experiment = srv.createExperiment(
-                new HashMap<String,Object>());
+                new HashMap<String, Object>());
 
         waitJobs(startJobs(experiment, files[0], mdir));
 
@@ -65,7 +65,7 @@ public class SimRunner implements IApplication {
         List<ExperimentJob> jobs = new ArrayList<ExperimentJob>();
 
         for (int i = 0; i != runs; ++i) {
-            Map<String,Object> jobDescription = new HashMap<String,Object>();
+            Map<String, Object> jobDescription = new HashMap<String, Object>();
             jobDescription.put("launcher", "profile");
             jobDescription.put("profile", profile);
             String[] cmdParameters = {
@@ -135,7 +135,9 @@ public class SimRunner implements IApplication {
 
     private void usage(Options opts) {
         HelpFormatter hf = new HelpFormatter();
-        hf.printHelp(appname + " [options] sequence.scl files ...", opts);
+        hf.printHelp(
+                appname + " [options] sequence.scl [data files ...]",
+                opts);
     }
 
     @Override
