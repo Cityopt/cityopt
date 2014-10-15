@@ -1,0 +1,6 @@
+#Fri Oct 10 10:43:11 EEST 2014
+__DEFAULT__=false
+org.eclipse.sdk.Eclipse.master=true
+org.eclipse.sdk.Google.master=true
+org.eclipse.help.ui.localSearch.master=true
+expression=libraries
