@@ -28,7 +28,7 @@
 	<property name="jpaPropertyMap">
 		<map>
 			<entry key="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-			<entry key="hibernate.hbm2ddl.auto" value="create-drop"/>
+			<!-- <entry key="hibernate.hbm2ddl.auto" value=""/>-->
 			<entry key="hibernate.format_sql" value="true"/>			
 		</map>
 	</property>

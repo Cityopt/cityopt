@@ -110,6 +110,6 @@
 	</dependency>
   </dependencies>
   <build>
-    <finalName>FitnessTracker</finalName>
+    <finalName>CityOPT</finalName>
   </build>
 </project>
