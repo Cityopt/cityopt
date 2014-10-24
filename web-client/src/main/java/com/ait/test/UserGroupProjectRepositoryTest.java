@@ -58,22 +58,17 @@ public class UserGroupProjectRepositoryTest {
 	public void setUp() throws Exception {
 
 		userGroupProjectRepository.deleteAll();
-		userGroupProjectRepository.flush();
-		
+				
 		userGroupRepository.deleteAll();
-		userGroupRepository.flush();
 		
 		userRepository.deleteAll();
-		userRepository.flush();
 		
 		projectRepository.deleteAll();
-		projectRepository.flush();
 		
-
 		Project project = new Project();
 		project.setPrjname("My test project");
 		
-		projectRepository.saveAndFlush(project);
+		projectRepository.save(project);
 		
 		Usergroup usergroup = new Usergroup();
 		usergroup.setUsergroupname("Administrator");

@@ -58,14 +58,12 @@ public class SimulationModelRepositoryTest {
 	@Before
 	public void setUp() throws Exception {
 		
-		userGroupProjectRepository.deleteAll();
-		userGroupProjectRepository.flush();
+		userGroupProjectRepository.deleteAll();		
 		
-		projectRepository.deleteAll();
-		projectRepository.flush();
-		
+		projectRepository.deleteAll();		
+
 		simulationModelRepository.deleteAll();
-		simulationModelRepository.flush();
+
 		
 		File tmpModel = File.createTempFile("simModel", ".txt");
 		FileUtils.writeStringToFile(tmpModel, "Hello File");

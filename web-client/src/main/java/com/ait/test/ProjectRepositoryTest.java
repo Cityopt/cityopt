@@ -44,13 +44,8 @@ public class ProjectRepositoryTest {
 	@Before
 	public void setUp() throws Exception {	
 		
-		userGroupProjectRepository.deleteAll();
-		userGroupProjectRepository.flush();	
-		
-		
+		userGroupProjectRepository.deleteAll();		
 		projectRepository.deleteAll();
-		projectRepository.flush();
-		
 		
 		Project project = new Project();
 		project.setPrjname("Project 1");
