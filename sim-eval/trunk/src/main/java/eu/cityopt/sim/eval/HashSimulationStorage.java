@@ -9,24 +9,24 @@ import java.util.Map;
  * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
  */
 public class HashSimulationStorage implements SimulationStorage {
-	private Map<SimulationInput, SimulationOutput> inputOutputCache;
+    private Map<SimulationInput, SimulationOutput> inputOutputCache;
 
-	public HashSimulationStorage() {
-		this.inputOutputCache = new HashMap<SimulationInput, SimulationOutput>();
-	}
+    public HashSimulationStorage() {
+        this.inputOutputCache = new HashMap<SimulationInput, SimulationOutput>();
+    }
 
-	@Override
-	public SimulationOutput get(SimulationInput input) {
-		return inputOutputCache.get(input);
-	}
+    @Override
+    public SimulationOutput get(SimulationInput input) {
+        return inputOutputCache.get(input);
+    }
 
-	@Override
-	public void put(SimulationOutput output) {
-		inputOutputCache.put(output.getInput(), output);
-	}
+    @Override
+    public void put(SimulationOutput output) {
+        inputOutputCache.put(output.getInput(), output);
+    }
 
-	@Override
-	public void updateMetricValues(MetricValues metricValues) {
-		// Not supported
-	}
+    @Override
+    public void updateMetricValues(MetricValues metricValues) {
+        // Not supported
+    }
 }
