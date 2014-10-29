@@ -21,18 +21,18 @@ public class SimulationResults extends SimulationOutput implements EvaluationCon
 	}
 
 	/** Gets the value object of an output variable. */
-	public Object get(String resultName) {
-		return bindingLayer.get(resultName);
+	public Object get(String outputName) {
+		return bindingLayer.get(outputName);
 	}
 
 	/** Gets an output variable time series. */
-	public TimeSeries getTS(String resultName) {
-		return (TimeSeries) bindingLayer.get(resultName);
+	public TimeSeries getTS(String outputName) {
+		return (TimeSeries) bindingLayer.get(outputName);
 	}
 
 	/** Sets the value object of an output variable. */
-	public Object put(String resultName, Object value) {
-		return bindingLayer.put(resultName, value);
+	public Object put(String outputName, Object value) {
+		return bindingLayer.put(outputName, value);
 	}
 
 	/** Returns whether all output variables have values. */

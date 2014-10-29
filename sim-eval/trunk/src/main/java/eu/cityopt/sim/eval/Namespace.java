@@ -44,10 +44,10 @@ public class Namespace {
 	}
 
 	public Namespace(Map<String, Type> extParameters, Map<String, Type> inputs,
-			Map<String, Type> results, Map<String, Type> metrics) {
+			Map<String, Type> outputs, Map<String, Type> metrics) {
 		this.externals = extParameters;
 		this.inputs = inputs;
-		this.outputs = results;
+		this.outputs = outputs;
 		this.metrics = metrics;
 	}
 }

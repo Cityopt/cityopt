@@ -21,12 +21,12 @@ public class ExternalParameters implements EvaluationContext {
 		return namespace;
 	}
 
-	public Object get(String inputName) {
-		return bindingLayer.get(inputName);
+	public Object get(String externalName) {
+		return bindingLayer.get(externalName);
 	}
 
-	public Object put(String inputName, Object value) {
-		return bindingLayer.put(inputName, value);
+	public Object put(String externalName, Object value) {
+		return bindingLayer.put(externalName, value);
 	}
 
 	@Override
