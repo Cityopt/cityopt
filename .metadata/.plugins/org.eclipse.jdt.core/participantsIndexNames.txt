@@ -1,3 +1,0 @@
-INDEX VERSION 1.127
-C:\data\CityOpt\Code\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1447925033.index
-\VirtualCity\src
