@@ -2,6 +2,11 @@ package eu.cityopt.sim.eval;
 
 import javax.script.ScriptException;
 
+/**
+ * Represents a constraint in an optimization problem.
+ *
+ * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ */
 public class ConstraintExpression extends DoubleExpression {
     private int constraintId;
     private double lowerBound;

@@ -4,6 +4,14 @@ import java.util.Collection;
 
 import javax.script.ScriptException;
 
+/**
+ * Container for constraint evaluation results from a single simulation run.
+ * Constraints can be evaluated either before simulation or after simulation.
+ * If a constraint refers to simulation results, evaluating it before simulation
+ * will fail, but it is possible to ignore such errors.
+ *
+ * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ */
 public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
     /**
      * Whether all constraints are feasible. This is null if SimulationInput was

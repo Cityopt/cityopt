@@ -2,6 +2,12 @@ package eu.cityopt.sim.eval;
 
 import javax.script.ScriptException;
 
+/**
+ * Represents an objective in an optimization problem.
+ * Can be used for both single-objective and multi-objective problems.
+ *
+ * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ */
 public class ObjectiveExpression extends DoubleExpression {
     private int objectiveId;
     private boolean maximize;

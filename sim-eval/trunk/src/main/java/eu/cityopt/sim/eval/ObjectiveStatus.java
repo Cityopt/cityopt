@@ -4,6 +4,12 @@ import java.util.Collection;
 
 import javax.script.ScriptException;
 
+/**
+ * Container for objective value(s) computed from a single simulation run. Can
+ * be used in both single-objective and multi-objective problems.
+ *
+ * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ */
 public class ObjectiveStatus implements PartiallyComparable<ObjectiveStatus> {
     private final Namespace namespace;
 
@@ -58,6 +64,7 @@ public class ObjectiveStatus implements PartiallyComparable<ObjectiveStatus> {
      *            another evaluation, should be based on the same objectives
      * @return negative if this dominates the other, positive if the other
      *         dominates this, zero if equal, and null if neither dominates.
+     *         Null is not possible in single-objective problems.
      */
     public Integer compareTo(ObjectiveStatus other) {
         if (namespace != other.namespace) {

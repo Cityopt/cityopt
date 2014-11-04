@@ -2,6 +2,15 @@ package eu.cityopt.sim.eval;
 
 import javax.script.ScriptException;
 
+/**
+ * Represents a named metric. Technically, a metric is a named variable that is
+ * computed after simulation results are available, and which can be used in
+ * objective function expressions. The purpose of the feature is to avoid
+ * repeating the expressions for e.g. CO2 emissions or operational costs in
+ * multiple places.
+ *
+ * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ */
 public class MetricExpression extends DoubleExpression {
     private final int metricId;
     private final String metricName;

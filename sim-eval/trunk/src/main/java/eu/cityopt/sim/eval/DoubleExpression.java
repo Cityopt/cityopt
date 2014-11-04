@@ -3,6 +3,11 @@ package eu.cityopt.sim.eval;
 import javax.script.CompiledScript;
 import javax.script.ScriptException;
 
+/**
+ * An expression evaluating to a double precision floating point value.
+ *
+ * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ */
 public class DoubleExpression {
     private String source;
     private CompiledScript script;
