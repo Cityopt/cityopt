@@ -1,42 +1,55 @@
 package eu.cityopt.sim.eval;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.Future;
 
+import javax.script.ScriptException;
+
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestEval {
+    static Evaluator evaluator;
+    static Namespace ns;
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        evaluator = new Evaluator();
+        Object[] componentNames = new Object[] { "C1", "C2" };
+        ns = new Namespace(evaluator, Arrays.asList(componentNames));
+        ns.externals.put("a", Type.TIMESERIES);
+        ns.externals.put("b", Type.TIMESERIES);
+        ns.components.get("C1").inputs.put("x5", Type.DOUBLE);
+        ns.components.get("C1").inputs.put("x6", Type.DOUBLE);
+        ns.components.get("C1").inputs.put("x7", Type.DOUBLE);
+        ns.components.get("C1").inputs.put("x8", Type.DOUBLE);
+        ns.components.get("C2").inputs.put("x9", Type.DOUBLE);
+        ns.components.get("C1").outputs.put("x1", Type.TIMESERIES);
+        ns.components.get("C1").outputs.put("x2", Type.TIMESERIES);
+        ns.components.get("C2").outputs.put("x3", Type.TIMESERIES);
+        ns.components.get("C2").outputs.put("x4", Type.TIMESERIES);
+        ns.metrics.put("m1", Type.DOUBLE);
+        ns.metrics.put("m2", Type.DOUBLE);
+    }
+
     @Test
     public void evaluate() throws Exception {
-        Namespace project = new Namespace();
-        project.externals.put("a", Type.TIMESERIES);
-        project.externals.put("b", Type.TIMESERIES);
-        project.inputs.put("x5", Type.DOUBLE);
-        project.inputs.put("x6", Type.DOUBLE);
-        project.inputs.put("x7", Type.DOUBLE);
-        project.inputs.put("x8", Type.DOUBLE);
-        project.inputs.put("x9", Type.DOUBLE);
-        project.outputs.put("x1", Type.TIMESERIES);
-        project.outputs.put("x2", Type.TIMESERIES);
-        project.outputs.put("x3", Type.TIMESERIES);
-        project.outputs.put("x4", Type.TIMESERIES);
-        project.metrics.put("m1", Type.DOUBLE);
-        project.metrics.put("m2", Type.DOUBLE);
-
-        Evaluator evaluator = new Evaluator();
         ConstraintExpression[] constraints = new ConstraintExpression[] {
                 new ConstraintExpression(1,
-                        "x9 * (x5 - x6) + 0.02 * x6 - 0.025 * x5",
+                        "C2.x9 * (C1.x5 - C1.x6) + 0.02 * C1.x6 - 0.025 * C1.x5",
                         Double.NEGATIVE_INFINITY, 0.0, evaluator),
                 new ConstraintExpression(2,
-                        "x9 * (x8 - x7) + 0.02 * x7 - 0.015 * x8",
+                        "C2.x9 * (C1.x8 - C1.x7) + 0.02 * C1.x7 - 0.015 * C1.x8",
                         Double.NEGATIVE_INFINITY, 0.0, evaluator) };
         MetricExpression[] metrics = new MetricExpression[] {
-                new MetricExpression(1, "m1", "-9 * x5 - 15 * x8", evaluator),
-                new MetricExpression(2, "m2", "10 * (x6 + x7)", evaluator)
+                new MetricExpression(1, "m1", "-9 * C1.x5 - 15 * C1.x8", evaluator),
+                new MetricExpression(2, "m2", "10 * (C1.x6 + C1.x7)", evaluator)
                 // TODO implement script access to TimeSeries
                 // new MetricExpression(
-                //      3, "m3", "6 * x1[0] + 16 * mean(x2)", evaluator)
+                //      3, "m3", "6 * C1.x1[0] + 16 * mean(C1.x2)", evaluator)
         };
         ObjectiveExpression[] objectives = new ObjectiveExpression[] { new ObjectiveExpression(
                 1, "m1 + m2", false, evaluator) };
@@ -44,13 +57,13 @@ public class TestEval {
         SimulationRunnerWithStorage runner = new SimulationRunnerWithStorage(
                 new SimRunner(), new HashSimulationStorage());
 
-        ExternalParameters externalParameters = new ExternalParameters(project);
+        ExternalParameters externalParameters = new ExternalParameters(ns);
         SimulationInput input = new SimulationInput(externalParameters);
-        input.put("x5", 1.0);
-        input.put("x6", 2.0);
-        input.put("x7", 3.0);
-        input.put("x8", 4.0);
-        input.put("x9", 5.0);
+        input.put("C1", "x5", 1.0);
+        input.put("C1", "x6", 2.0);
+        input.put("C1", "x7", 3.0);
+        input.put("C1", "x8", 4.0);
+        input.put("C2", "x9", 5.0);
         Future<SimulationOutput> job = runner.start(input);
 
         SimulationOutput output = job.get();
@@ -67,11 +80,14 @@ public class TestEval {
             ObjectiveStatus os = new ObjectiveStatus(mv,
                     Arrays.asList(objectives));
 
-            for (String outputName : project.outputs.keySet()) {
-                System.out.println(outputName + " = "
-                        + results.getTS(outputName).values[0]);
+            for (Map.Entry<Object, Namespace.Component> entry : ns.components.entrySet()) {
+                String componentName = entry.getKey().toString();
+                Namespace.Component component = entry.getValue();
+                for (String outputName : component.outputs.keySet()) {
+                    System.out.println(componentName + "." + outputName + " = "
+                            + results.getTS(entry.getKey(), outputName).values[0]);
+                }
             }
-
             for (int i = 0; i < constraints.length; ++i) {
                 System.out.println("Constraint "
                         + constraints[i].getConstraintId() + ": "
@@ -89,8 +105,32 @@ public class TestEval {
                         + objectives[i].getObjectiveId() + ": "
                         + os.objectiveValues[i]);
             }
+
+            final double delta = 1.0e-12;
+            assertArrayEquals(cs.infeasibilities, new double[] { 0.0, 5.0 }, delta);
+            assertArrayEquals(mv.metricValues, new double[] { -69.0, 50.0 }, delta);
+            assertArrayEquals(os.objectiveValues, new double[] { -19.0 }, delta);
         } else {
             System.out.println("Simulation failed.");
+            assertTrue(false);
         }
+    }
+
+    @Test(expected=ScriptException.class)
+    public void accessNonexistentComponentMember() throws Exception {
+        ExternalParameters externalParameters = new ExternalParameters(ns);
+        SimulationInput input = new SimulationInput(externalParameters);
+        input.put("C1", "x5", 1.0);
+        input.put("C1", "x6", 2.0);
+        input.put("C1", "x7", 3.0);
+        input.put("C1", "x8", 4.0);
+        input.put("C2", "x9", 5.0);
+
+        ConstraintExpression invalidConstraint = new ConstraintExpression(1,
+                "C2.x9 * (C1.x5 - C1.x9) + 0.02 * C1.x6 - 0.025 * C1.x5",
+                Double.NEGATIVE_INFINITY, 0.0, evaluator);
+
+        double value = invalidConstraint.evaluate(input);
+        System.out.println("infeasibility = " + value);
     }
 }

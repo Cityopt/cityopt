@@ -1,11 +1,18 @@
 package eu.cityopt.sim.eval;
 
 import java.util.Collection;
+import java.util.Map;
 
 import javax.script.Bindings;
 import javax.script.ScriptException;
-import javax.script.SimpleBindings;
 
+/**
+ * Container for values of named metrics from a specific simulation run. Metric
+ * values are intended to be recomputed from SimulationResults when needed.
+ * An instance of this class is needed to compute objective values.
+ *
+ * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ */
 public class MetricValues implements EvaluationContext {
     private SimulationResults results;
     private BindingLayer bindingLayer;
@@ -18,33 +25,49 @@ public class MetricValues implements EvaluationContext {
             InvalidValueException {
         this.results = results;
         this.metricValues = new double[metrics.size()];
-        this.bindingLayer = new BindingLayer(new SimpleBindings(),
-                results.getBindingLayer(), results.getNamespace().metrics,
-                "metric");
+        final Namespace namespace = results.getNamespace();
+        this.bindingLayer = new BindingLayer(namespace,
+                results.getBindingLayer(),
+                new BindingLayer.ComponentNamespaces() {
+                    public Map<String, Type> get(Object key) {
+                        return (key == null) ? namespace.metrics : null;
+                    }
+                }, "metric");
         int i = 0;
         for (MetricExpression metric : metrics) {
             double value = metric.evaluate(results);
-            bindingLayer.put(metric.getMetricName(), value);
+            bindingLayer.put(null, metric.getMetricName(), value);
             metricValues[i] = value;
             ++i;
         }
     }
 
-    SimulationResults getResults() {
+    public SimulationResults getResults() {
         return results;
     }
 
-    double get(String metricName) {
-        return (Double) bindingLayer.get(metricName);
+    /** Gets the value of a named metric. */
+    public double get(String metricName) {
+        return (Double) bindingLayer.get(null, metricName);
+    }
+
+    /** Gets the value of a named metric as a formatted string. */
+    public String getString(String metricName) {
+        return bindingLayer.getString(null, metricName);
     }
 
     @Override
-    public Bindings toBindings() {
+    public Bindings toBindings() throws ScriptException {
         return bindingLayer.toBindings();
     }
 
     @Override
     public BindingLayer getBindingLayer() {
         return bindingLayer;
+    }
+
+    @Override
+    public String toString() {
+        return bindingLayer.toString();
     }
 }

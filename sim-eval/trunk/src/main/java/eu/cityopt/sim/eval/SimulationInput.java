@@ -1,52 +1,69 @@
 package eu.cityopt.sim.eval;
 
+import java.util.Map;
+
 import javax.script.Bindings;
-import javax.script.SimpleBindings;
+import javax.script.ScriptException;
 
 /**
- * Container for simulation input data.
- * 
- * The hashCode and equals methods consider the equality of all input
- * parameter values, so that the class can be used as a map key.
- * 
- * Implements the EvalutionContext interface, providing access to
- * both external parameters and the defined simulation inputs.
- * 
+ * Container for simulation input data. Instances have to be constructed not
+ * only when starting new simulations, but also when evaluating constraint
+ * feasibility or metric values for previously run simulations.
+ *
+ * The hashCode and equals methods consider the equality of all input parameter
+ * values, so that the class can be used as a map key.
+ *
+ * Implements the EvalutionContext interface, providing access to both external
+ * parameters and the defined simulation inputs.  This makes it possible for
+ * pre-simulation constraints to refer to external parameter values.
+ *
  * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
  */
 public class SimulationInput implements EvaluationContext {
-    private Namespace namespace;
     private BindingLayer bindingLayer;
 
-    public SimulationInput(ExternalParameters externalParameters,
-            Bindings values) {
-        this.namespace = externalParameters.getNamespace();
-        this.bindingLayer = new BindingLayer(values,
-                externalParameters.getBindingLayer(), namespace.inputs,
-                "input parameter");
-    }
-
     public SimulationInput(ExternalParameters externalParameters) {
-        this(externalParameters, new SimpleBindings());
+        final Namespace namespace = externalParameters.getNamespace(); 
+        this.bindingLayer = new BindingLayer(
+                namespace, externalParameters.getBindingLayer(),
+                new BindingLayer.ComponentNamespaces() {
+                    public Map<String, Type> get(Object key) {
+                        Namespace.Component c = namespace.components.get(key);
+                        return (c != null) ? c.inputs : null;
+                    }
+                }, "input parameter");
     }
 
+    /**
+     * Copy constructor. Use this if you need to create a modified input after
+     * the previous SimulationInput has been passed to SimulationRunner.start
+     */
+    public SimulationInput(SimulationInput other) {
+        this.bindingLayer = new BindingLayer(other.bindingLayer);
+    }
+    
     public Namespace getNamespace() {
-        return namespace;
+        return bindingLayer.getNamespace();
     }
 
-    /** Gets the value of an input parameter. */
-    public Object get(String inputName) {
-        return bindingLayer.get(inputName);
+    /** Gets the value of a named input parameter. */
+    public Object get(Object componentKey, String inputName) {
+        return bindingLayer.get(componentKey, inputName);
     }
 
-    /** Sets an input parameter value. */
-    public Object put(String inputName, Object value) {
-        return bindingLayer.put(inputName, value);
+    /** Sets the value of a named input parameter. */
+    public Object put(Object componentKey, String inputName, Object value) {
+        return bindingLayer.put(componentKey, inputName, value);
+    }
+
+    /** Gets the value of an input parameter formatted as a string. */
+    public String getString(Object componentKey, String inputName) {
+        return bindingLayer.getString(componentKey, inputName);
     }
 
     /** Parses an input parameter value and stores it. */
-    public Object putString(String inputName, String value) {
-        return bindingLayer.putString(inputName, value);
+    public Object putString(Object componentKey, String inputName, String value) {
+        return bindingLayer.putString(componentKey, inputName, value);
     }
 
     /** Returns whether all input parameters have a value. */
@@ -60,7 +77,7 @@ public class SimulationInput implements EvaluationContext {
     }
 
     @Override
-    public Bindings toBindings() {
+    public Bindings toBindings() throws ScriptException {
         return bindingLayer.toBindings();
     }
 
@@ -71,13 +88,18 @@ public class SimulationInput implements EvaluationContext {
         } else if (other == this) {
             return true;
         } else {
-            return bindingLayer.getLocals().equals(
-                    ((SimulationInput) other).bindingLayer.getLocals());
+            return bindingLayer.getLocalBindings().equals(
+                    ((SimulationInput) other).bindingLayer.getLocalBindings());
         }
     }
 
     @Override
     public int hashCode() {
-        return bindingLayer.getLocals().hashCode();
+        return bindingLayer.getLocalBindings().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return bindingLayer.toString();
     }
 }

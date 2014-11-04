@@ -43,17 +43,17 @@ public class SimJob implements Future<SimulationOutput> {
 
     private SimulationOutput computeJob() {
         SimulationResults out = new SimulationResults(input, "");
-        double x5 = (Double) input.get("x5");
-        double x6 = (Double) input.get("x6");
-        double x7 = (Double) input.get("x7");
-        double x8 = (Double) input.get("x8");
-        double x9 = (Double) input.get("x9");
+        double x5 = (Double) input.get("C1", "x5");
+        double x6 = (Double) input.get("C1", "x6");
+        double x7 = (Double) input.get("C1", "x7");
+        double x8 = (Double) input.get("C1", "x8");
+        double x9 = (Double) input.get("C2", "x9");
         double x3 = x5 - x6;
         double x4 = x8 - x7;
-        out.put("x1", ts((50 * x9 - 0.5) * (x3 + x4)));
-        out.put("x2", ts((-50 * x9 + 1.5) * (x3 + x4)));
-        out.put("x3", ts(x3));
-        out.put("x4", ts(x4));
+        out.put("C1", "x1", ts((50 * x9 - 0.5) * (x3 + x4)));
+        out.put("C1", "x2", ts((-50 * x9 + 1.5) * (x3 + x4)));
+        out.put("C2", "x3", ts(x3));
+        out.put("C2", "x4", ts(x4));
         return out;
     }
 

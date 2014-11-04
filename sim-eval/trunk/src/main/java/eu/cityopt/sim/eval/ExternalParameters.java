@@ -1,36 +1,60 @@
 package eu.cityopt.sim.eval;
 
-import javax.script.Bindings;
-import javax.script.SimpleBindings;
+import java.util.Map;
 
+import javax.script.Bindings;
+import javax.script.ScriptException;
+
+/**
+ * Container for external parameter values.
+ *
+ * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ */
 public class ExternalParameters implements EvaluationContext {
-    private Namespace namespace;
     private BindingLayer bindingLayer;
 
-    public ExternalParameters(Namespace namespace, Bindings values) {
-        this.namespace = namespace;
-        this.bindingLayer = new BindingLayer(values, null, namespace.externals,
-                "external parameter");
-    }
-
-    public ExternalParameters(Namespace namespace) {
-        this(namespace, new SimpleBindings());
+    public ExternalParameters(final Namespace namespace) {
+        this.bindingLayer = new BindingLayer(
+                namespace, null,
+                new BindingLayer.ComponentNamespaces() {
+                    public Map<String, Type> get(Object key) {
+                        return (key == null) ? namespace.externals : null;
+                    }
+                }, "external parameter");
     }
 
     public Namespace getNamespace() {
-        return namespace;
+        return bindingLayer.getNamespace();
     }
 
+    /** Gets the value of a named external parameter. */
     public Object get(String externalName) {
-        return bindingLayer.get(externalName);
+        return bindingLayer.get(null, externalName);
     }
 
+    /** Sets the value of a named external parameter. */
     public Object put(String externalName, Object value) {
-        return bindingLayer.put(externalName, value);
+        return bindingLayer.put(null, externalName, value);
+    }
+
+    /**
+     * Gets the value of a named external parameter as a formatted string.
+     * Not useful for time series.
+     */
+    public String getString(String externalName) {
+        return bindingLayer.getString(null, externalName);
+    }
+
+    /**
+     * Parses the value of a named external parameter and stores it.
+     * Not useful for time series.
+     */
+    public Object putString(String externalName, String value) {
+        return bindingLayer.putString(null, externalName, value);
     }
 
     @Override
-    public Bindings toBindings() {
+    public Bindings toBindings() throws ScriptException {
         return bindingLayer.toBindings();
     }
 
@@ -39,4 +63,8 @@ public class ExternalParameters implements EvaluationContext {
         return bindingLayer;
     }
 
+    @Override
+    public String toString() {
+        return bindingLayer.toString();
+    }
 }
