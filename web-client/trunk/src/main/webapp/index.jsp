@@ -1,70 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-  
-  <head>
-    <meta charset="utf-8">
-    <title>
-    </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Le styles -->
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-    <style>
-      body { padding-top: 60px; /* 60px to make the container go all the way
-      to the bottom of the topbar */ }
-    </style>
-    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js">
-      </script>
-    <![endif]-->
-    <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="assets/ico/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
-    <style>
-    </style>
-  </head>
-  <body>
-    <div class="navbar navbar-fixed-top navbar-inverse">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="brand" href="addGoal.html">
-            Get started
-          </a>
-          <ul class="nav">
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="container">
-      <div class="hero-unit">
-        <div>
-          <h1>
-            Welcome to CityOPT!
-          </h1>
-          <p>
-           Let's get started
-          </p>
-        </div>
-        <a class="btn btn-primary" href="addGoal.html">
-          Add Goal »
-        </a>
-        
-        <a class="btn btn-primary" href="addMinutes.html">
-          Add Exercise Minutes »
-        </a>
-      </div>
-      <div>
-      </div>
-    </div>
-    
-    <script src="jquery-1.8.3.js">
-    </script>
-    
-    <script src="assets/js/bootstrap.js">
-    </script>
-  </body>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+ 
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Virtual City Login</title>
+</head>
+<body>
+ 
+<h1 align="center">Your Virtual City Account</h1>
+<div id="login-error"> 
+ 
+${error}</div><form action="../../j_spring_security_check" method="post" >
+</div> 
+ 
+<div align="center"> 
+<table>
+<tr>
+<td><label for="j_username">User name:</label></td>
+<td><input id="j_username" name="j_username" type="text" /></td>
+</tr>
+
+<tr>
+<td><label for="j_password">Password:</label></td>
+<td><input id="j_password" name="j_password" type="password" /></td>
+</tr>
+
+<tr height="10"></tr>
+
+<tr>
+<td>
+</td>
+<td align="right">
+<a href="start.jsp">Sign in</a>
+<!--<input type="submit" value="Login"/>-->       
+</td>
+</tr>
+</table>
+</div> 
+</form></body>
 </html>
+
