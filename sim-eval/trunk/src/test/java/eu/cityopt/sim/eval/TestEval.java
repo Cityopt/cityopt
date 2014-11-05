@@ -54,8 +54,14 @@ public class TestEval {
         ObjectiveExpression[] objectives = new ObjectiveExpression[] { new ObjectiveExpression(
                 1, "m1 + m2", false, evaluator) };
 
+        SimulationRunner actualRunner = new SimulationRunner() {
+            @Override
+            public Future<SimulationOutput> start(SimulationInput input) {
+                return new SimJob(input);
+            }
+        };
         SimulationRunnerWithStorage runner = new SimulationRunnerWithStorage(
-                new SimRunner(), new HashSimulationStorage());
+                actualRunner, new HashSimulationStorage());
 
         ExternalParameters externalParameters = new ExternalParameters(ns);
         SimulationInput input = new SimulationInput(externalParameters);
