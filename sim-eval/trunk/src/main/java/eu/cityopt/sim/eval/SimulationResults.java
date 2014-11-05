@@ -22,42 +22,42 @@ public class SimulationResults extends SimulationOutput implements
         this.bindingLayer = new BindingLayer(namespace,
                 input.getBindingLayer(),
                 new BindingLayer.ComponentNamespaces() {
-                    public Map<String, Type> get(Object key) {
-                        Namespace.Component c = namespace.components.get(key);
+                    public Map<String, Type> get(String name) {
+                        Namespace.Component c = namespace.components.get(name);
                         return (c != null) ? c.outputs : null;
                     }
                 }, "output variable");
     }
 
     /** Gets the value object of a named output variable. */
-    public Object get(Object componentKey, String outputName) {
-        return bindingLayer.get(componentKey, outputName);
+    public Object get(String componentName, String outputName) {
+        return bindingLayer.get(componentName, outputName);
     }
 
     /** Gets an output variable time series. */
-    public TimeSeries getTS(Object componentKey, String outputName) {
-        return (TimeSeries) bindingLayer.get(componentKey, outputName);
+    public TimeSeries getTS(String componentName, String outputName) {
+        return (TimeSeries) bindingLayer.get(componentName, outputName);
     }
 
     /**
      * Gets the value of an output variable formatted as a string. Not useful
      * for time series.
      */
-    public String getString(Object componentKey, String outputName) {
-        return bindingLayer.getString(componentKey, outputName);
+    public String getString(String componentName, String outputName) {
+        return bindingLayer.getString(componentName, outputName);
     }
 
     /** Sets the value object of a named output variable. */
-    public Object put(Object componentKey, String outputName, Object value) {
-        return bindingLayer.put(componentKey, outputName, value);
+    public Object put(String componentName, String outputName, Object value) {
+        return bindingLayer.put(componentName, outputName, value);
     }
 
     /**
      * Parses an input parameter value and stores it. Not useful for time
      * series.
      */
-    public Object putString(Object componentKey, String outputName, String value) {
-        return bindingLayer.putString(componentKey, outputName, value);
+    public Object putString(String componentName, String outputName, String value) {
+        return bindingLayer.putString(componentName, outputName, value);
     }
 
     /** Returns whether all output variables have values. */

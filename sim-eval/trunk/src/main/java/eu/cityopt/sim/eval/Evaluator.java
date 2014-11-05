@@ -78,7 +78,7 @@ public class Evaluator {
         void setAttributes(Bindings attributeBindings);
     }
 
-    Component makeComponent(Object componentKey) throws ScriptException {
+    Component makeComponent(String componentName) throws ScriptException {
         final ComponentImpl component = new ComponentImpl();
         final Map<String, PyObject> attributes = component.attributes;
 
@@ -88,10 +88,8 @@ public class Evaluator {
             }
 
             public void setAttributes(Bindings attributeBindings) {
-                for (Map.Entry<String, Object> entry : attributeBindings
-                        .entrySet()) {
-                    attributes
-                            .put(entry.getKey(), Py.java2py(entry.getValue()));
+                for (Map.Entry<String, Object> entry : attributeBindings.entrySet()) {
+                    attributes.put(entry.getKey(), Py.java2py(entry.getValue()));
                 }
             }
         };

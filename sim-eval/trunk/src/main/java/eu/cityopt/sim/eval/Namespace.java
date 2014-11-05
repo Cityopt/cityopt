@@ -51,12 +51,9 @@ public class Namespace {
     }
 
     /**
-     * Model components. Indexed by the component name as a String, for now. In
-     * the future the index object may be a more general "component key". For
-     * that reason the sim-eval module only uses the hashcode, equals and
-     * toString methods on the keys.
+     * Model components. Indexed by the component name as a String.
      */
-    public Map<Object, Component> components;
+    public Map<String, Component> components;
 
     /**
      * Constant parameters external to the simulation (ExtParam). Map from
@@ -70,18 +67,21 @@ public class Namespace {
      */
     public Map<String, Type> metrics;
 
-    /** Constructs an empty namespace, given a list of component keys. */
-    public Namespace(Evaluator evaluator, Collection<Object> componentKeys) {
+    /**
+     * Constructs an empty namespace, given a list of component names.
+     * The component names should be unique.
+     */
+    public Namespace(Evaluator evaluator, Collection<String> componentNames) {
         this.evaluator = evaluator;
-        this.components = new HashMap<Object, Component>();
-        for (Object componentKey : componentKeys) {
-            components.put(componentKey, new Component());
+        this.components = new HashMap<String, Component>();
+        for (String componentName : componentNames) {
+            components.put(componentName, new Component());
         }
         this.externals = new HashMap<String, Type>();
         this.metrics = new HashMap<String, Type>();
     }
 
-    public Namespace(Evaluator evaluator, Map<Object, Component> components,
+    public Namespace(Evaluator evaluator, Map<String, Component> components,
             Map<String, Type> externals, Map<String, Type> metrics) {
         this.evaluator = evaluator;
         this.components = components;

@@ -17,8 +17,8 @@ public class ExternalParameters implements EvaluationContext {
         this.bindingLayer = new BindingLayer(
                 namespace, null,
                 new BindingLayer.ComponentNamespaces() {
-                    public Map<String, Type> get(Object key) {
-                        return (key == null) ? namespace.externals : null;
+                    public Map<String, Type> get(String name) {
+                        return (name == null) ? namespace.externals : null;
                     }
                 }, "external parameter");
     }

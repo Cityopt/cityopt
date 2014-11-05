@@ -29,8 +29,8 @@ public class MetricValues implements EvaluationContext {
         this.bindingLayer = new BindingLayer(namespace,
                 results.getBindingLayer(),
                 new BindingLayer.ComponentNamespaces() {
-                    public Map<String, Type> get(Object key) {
-                        return (key == null) ? namespace.metrics : null;
+                    public Map<String, Type> get(String name) {
+                        return (name == null) ? namespace.metrics : null;
                     }
                 }, "metric");
         int i = 0;

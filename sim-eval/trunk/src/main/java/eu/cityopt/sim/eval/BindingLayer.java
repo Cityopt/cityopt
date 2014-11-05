@@ -21,15 +21,15 @@ class BindingLayer {
     private final String kindOfObject;
 
     /** Local bindings per component, with top-level bindings at null key. */
-    private final Map<Object, Bindings> localBindings;
+    private final Map<String, Bindings> localBindings;
 
     /** Flattened bindings per component, with top-level bindings at null key. */
-    private Map<Object, Bindings> mergedBindings;
+    private Map<String, Bindings> mergedBindings;
 
     private Bindings evaluationBindings;
 
     interface ComponentNamespaces {
-        Map<String, Type> get(Object componentKey);
+        Map<String, Type> get(String componentName);
     }
 
     BindingLayer(Namespace namespace, BindingLayer parent,
@@ -42,13 +42,13 @@ class BindingLayer {
         this.parent = parent;
         this.componentNamespaces = componentNamespaces;
         this.kindOfObject = kindOfObject;
-        this.localBindings = new HashMap<Object, Bindings>();
+        this.localBindings = new HashMap<String, Bindings>();
         this.localBindings.put(
                 null, getEvaluator().makeTopLevelBindings());
-        for (Object componentKey : namespace.components.keySet()) {
-            if (componentNamespaces.get(componentKey) != null) {
+        for (String componentName : namespace.components.keySet()) {
+            if (componentNamespaces.get(componentName) != null) {
                 this.localBindings.put(
-                        componentKey, getEvaluator().makeAttributeBindings());
+                        componentName, getEvaluator().makeAttributeBindings());
             }
         }
     }
@@ -63,8 +63,8 @@ class BindingLayer {
         this.parent = other.parent;
         this.componentNamespaces = other.componentNamespaces;
         this.kindOfObject = other.kindOfObject;
-        this.localBindings = new HashMap<Object, Bindings>();
-        for (Map.Entry<Object, Bindings> entry : other.localBindings.entrySet()) {
+        this.localBindings = new HashMap<String, Bindings>();
+        for (Map.Entry<String, Bindings> entry : other.localBindings.entrySet()) {
             Bindings b = (entry.getKey() == null)
                     ? getEvaluator().makeTopLevelBindings()
                     : getEvaluator().makeAttributeBindings();
@@ -82,7 +82,7 @@ class BindingLayer {
     }
 
     /** Returns the bindings of this layer only. */
-    Map<Object, Bindings> getLocalBindings() {
+    Map<String, Bindings> getLocalBindings() {
         return localBindings;
     }
 
@@ -99,13 +99,13 @@ class BindingLayer {
 
             // Merge the per-component bindings from binding layers, and bind
             // component objects in our new top level environment.
-            Map<Object, Bindings> merge = new HashMap<Object, Bindings>();
-            for (Object componentKey : namespace.components.keySet()) {
-                Evaluator.Component proxy = getEvaluator().makeComponent(componentKey);
-                newEvaluationBindings.put(componentKey.toString(), proxy.getScriptObject());
-                Bindings b = mergeBindings(componentKey, null);
+            Map<String, Bindings> merge = new HashMap<String, Bindings>();
+            for (String componentName : namespace.components.keySet()) {
+                Evaluator.Component proxy = getEvaluator().makeComponent(componentName);
+                newEvaluationBindings.put(componentName.toString(), proxy.getScriptObject());
+                Bindings b = mergeBindings(componentName, null);
                 if (b != null) {
-                    merge.put(componentKey, b);
+                    merge.put(componentName, b);
                 }
                 proxy.setAttributes(b);
             }
@@ -124,9 +124,9 @@ class BindingLayer {
         return evaluationBindings;
     }
 
-    private Bindings mergeBindings(Object componentKey, Bindings target) {
+    private Bindings mergeBindings(String componentName, Bindings target) {
         if (mergedBindings != null) {
-            Bindings b = mergedBindings.get(componentKey);
+            Bindings b = mergedBindings.get(componentName);
             if (target != null) {
                 if (b != null) {
                     target.putAll(b);
@@ -136,7 +136,7 @@ class BindingLayer {
                 return b;
             }
         } else if (parent == null) {
-            Bindings locals = localBindings.get(componentKey);
+            Bindings locals = localBindings.get(componentName);
             if (target != null) {
                 if (locals != null) {
                     target.putAll(locals);
@@ -146,16 +146,16 @@ class BindingLayer {
                 return locals;
             }
         } else {
-            Bindings locals = localBindings.get(componentKey);
+            Bindings locals = localBindings.get(componentName);
             if (locals == null || locals.isEmpty()) {
-                return parent.mergeBindings(componentKey, target);
+                return parent.mergeBindings(componentName, target);
             } else {
                 if (target == null) {
-                    target = (componentKey == null)
+                    target = (componentName == null)
                             ? getEvaluator().makeTopLevelBindings()
                             : getEvaluator().makeAttributeBindings();
                 }
-                parent.mergeBindings(componentKey, target);
+                parent.mergeBindings(componentName, target);
                 target.putAll(locals);
                 return target;
             }
@@ -163,99 +163,98 @@ class BindingLayer {
     }
 
     /** Gets the value associated with a name on this layer. */
-    Object get(Object componentKey, String name) {
-        validate(componentKey, name);
-        return localBindings.get(componentKey).get(name);
+    Object get(String componentName, String name) {
+        validate(componentName, name);
+        return localBindings.get(componentName).get(name);
     }
 
     /** Gets a value from this layer, formatted as a String. */
-    String getString(Object componentKey, String name) {
-        Type type = validate(componentKey, name);
-        return type.format(localBindings.get(componentKey).get(name));
+    String getString(String componentName, String name) {
+        Type type = validate(componentName, name);
+        return type.format(localBindings.get(componentName).get(name));
     }
 
     /**
      * Stores a value. Invalidates bindings returned earlier by toBindings.
      * 
-     * @param componentKey
-     *            component key object, or null for top-level
+     * @param componentName
+     *            component name, or null for top-level
      * @param name
      *            a valid name on this layer
      * @param value
      *            new value for the name
      * @return old value associated with the name, or null
      */
-    Object put(Object componentKey, String name, Object value) {
-        Type type = validate(componentKey, name);
+    Object put(String componentName, String name, Object value) {
+        Type type = validate(componentName, name);
         if (!type.isInstance(value)) {
             throw new IllegalArgumentException("Invalid value for "
-                    + formatReference(componentKey, name) + ": " + value);
+                    + formatReference(componentName, name) + ": " + value);
         }
         mergedBindings = null;
-        return localBindings.get(componentKey).put(name, value);
+        return localBindings.get(componentName).put(name, value);
     }
 
     /**
      * Parses a value from a string and stores it. Invalidates bindings returned
      * earlier by toBindings.
      * 
-     * @param componentKey
-     *            component key object, or null for top-level
+     * @param componentName
+     *            component name, or null for top-level
      * @param name
      *            a valid name on this layer
      * @param value
      *            String containing a new value for the name
      * @return old value associated with the name, or null
      */
-    Object putString(Object componentKey, String name, String value) {
-        Type type = validate(componentKey, name);
+    Object putString(String componentName, String name, String value) {
+        Type type = validate(componentName, name);
         Object object = type.parse(value);
         mergedBindings = null;
-        return localBindings.get(componentKey).put(name, object);
+        return localBindings.get(componentName).put(name, object);
     }
 
-    private Type validate(Object componentKey, String name) {
-        Map<String, Type> nameToType = componentNamespaces.get(componentKey);
+    private Type validate(String componentName, String name) {
+        Map<String, Type> nameToType = componentNamespaces.get(componentName);
         if (nameToType == null) {
-            if (namespace.components.containsKey(componentKey)) {
+            if (namespace.components.containsKey(componentName)) {
                 throw new IllegalArgumentException("Cannot access "
-                        + formatReference(componentKey));
+                        + formatReference(componentName));
             } else {
                 throw new IllegalArgumentException("Unknown component: "
-                        + componentKey);
+                        + componentName);
             }
         }
         Type type = nameToType.get(name);
         if (type == null) {
             throw new IllegalArgumentException("Unknown "
-                    + formatReference(componentKey) + ": " + name);
+                    + formatReference(componentName) + ": " + name);
         }
         return type;
     }
 
-    private String formatReference(Object componentKey) {
-        if (componentKey == null) {
+    private String formatReference(String componentName) {
+        if (componentName == null) {
             return kindOfObject + " at top level";
         } else {
-            return kindOfObject + " in component " + componentKey;
+            return kindOfObject + " in component " + componentName;
         }
     }
 
-    private String formatReference(Object componentKey, String name) {
-        if (componentKey == null) {
+    private String formatReference(String componentName, String name) {
+        if (componentName == null) {
             return kindOfObject + " " + name + " at top level";
         } else {
-            return kindOfObject + " " + name + " in component " + componentKey;
+            return kindOfObject + " " + name + " in component " + componentName;
         }
     }
 
     /** Whether all names on this layer have been given a value. */
     boolean isComplete() {
-        for (Object componentKey : namespace.components.keySet()) {
-            Map<String, Type> nameToType = componentNamespaces
-                    .get(componentKey);
+        for (String componentName : namespace.components.keySet()) {
+            Map<String, Type> nameToType = componentNamespaces.get(componentName);
             if (nameToType != null) {
-                Bindings locals = localBindings.get(componentKey);
+                Bindings locals = localBindings.get(componentName);
                 for (String name : nameToType.keySet()) {
                     if (!locals.containsKey(name)) {
                         return false;
@@ -270,7 +269,7 @@ class BindingLayer {
         StringBuilder sb = new StringBuilder();
         sb.append('{');
         String delim = " ";
-        for (Map.Entry<Object, Bindings> entry : localBindings.entrySet()) {
+        for (Map.Entry<String, Bindings> entry : localBindings.entrySet()) {
             String componentName = (entry.getKey() != null) ? entry.getKey().toString() : null;
             for (Map.Entry<String, Object> binding : entry.getValue().entrySet()) {
                 sb.append(delim);

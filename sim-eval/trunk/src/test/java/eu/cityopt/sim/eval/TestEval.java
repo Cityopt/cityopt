@@ -18,8 +18,7 @@ public class TestEval {
     @BeforeClass
     public static void setup() throws Exception {
         evaluator = new Evaluator();
-        Object[] componentNames = new Object[] { "C1", "C2" };
-        ns = new Namespace(evaluator, Arrays.asList(componentNames));
+        ns = new Namespace(evaluator, Arrays.asList(new String[] { "C1", "C2" }));
         ns.externals.put("a", Type.TIMESERIES);
         ns.externals.put("b", Type.TIMESERIES);
         ns.components.get("C1").inputs.put("x5", Type.DOUBLE);
@@ -86,7 +85,7 @@ public class TestEval {
             ObjectiveStatus os = new ObjectiveStatus(mv,
                     Arrays.asList(objectives));
 
-            for (Map.Entry<Object, Namespace.Component> entry : ns.components.entrySet()) {
+            for (Map.Entry<String, Namespace.Component> entry : ns.components.entrySet()) {
                 String componentName = entry.getKey().toString();
                 Namespace.Component component = entry.getValue();
                 for (String outputName : component.outputs.keySet()) {

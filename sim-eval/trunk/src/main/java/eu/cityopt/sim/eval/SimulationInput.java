@@ -27,8 +27,8 @@ public class SimulationInput implements EvaluationContext {
         this.bindingLayer = new BindingLayer(
                 namespace, externalParameters.getBindingLayer(),
                 new BindingLayer.ComponentNamespaces() {
-                    public Map<String, Type> get(Object key) {
-                        Namespace.Component c = namespace.components.get(key);
+                    public Map<String, Type> get(String name) {
+                        Namespace.Component c = namespace.components.get(name);
                         return (c != null) ? c.inputs : null;
                     }
                 }, "input parameter");
@@ -47,23 +47,23 @@ public class SimulationInput implements EvaluationContext {
     }
 
     /** Gets the value of a named input parameter. */
-    public Object get(Object componentKey, String inputName) {
-        return bindingLayer.get(componentKey, inputName);
+    public Object get(String componentName, String inputName) {
+        return bindingLayer.get(componentName, inputName);
     }
 
     /** Sets the value of a named input parameter. */
-    public Object put(Object componentKey, String inputName, Object value) {
-        return bindingLayer.put(componentKey, inputName, value);
+    public Object put(String componentName, String inputName, Object value) {
+        return bindingLayer.put(componentName, inputName, value);
     }
 
     /** Gets the value of an input parameter formatted as a string. */
-    public String getString(Object componentKey, String inputName) {
-        return bindingLayer.getString(componentKey, inputName);
+    public String getString(String componentName, String inputName) {
+        return bindingLayer.getString(componentName, inputName);
     }
 
     /** Parses an input parameter value and stores it. */
-    public Object putString(Object componentKey, String inputName, String value) {
-        return bindingLayer.putString(componentKey, inputName, value);
+    public Object putString(String componentName, String inputName, String value) {
+        return bindingLayer.putString(componentName, inputName, value);
     }
 
     /** Returns whether all input parameters have a value. */
