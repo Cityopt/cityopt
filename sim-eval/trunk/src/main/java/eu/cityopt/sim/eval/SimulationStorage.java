@@ -28,8 +28,7 @@ public interface SimulationStorage {
      * 
      * @param output
      *            the simulation output data, containing a reference to the
-     *            corresponding input data. Although SimulationInput refers to
-     *            ExternalParameters, that reference is ignored here.
+     *            corresponding input data and external parameter values.
      */
     public void put(SimulationOutput output);
 

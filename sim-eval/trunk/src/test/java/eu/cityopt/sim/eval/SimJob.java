@@ -5,11 +5,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import eu.cityopt.sim.eval.SimulationInput;
-import eu.cityopt.sim.eval.SimulationOutput;
-import eu.cityopt.sim.eval.SimulationResults;
-import eu.cityopt.sim.eval.TimeSeries;
-
 public class SimJob implements Future<SimulationOutput> {
     private SimulationInput input;
     private SimulationOutput output;
@@ -58,7 +53,8 @@ public class SimJob implements Future<SimulationOutput> {
     }
 
     private TimeSeries ts(double value) {
-        return new TimeSeries(new long[] { 0 }, new double[] { value });
+        return input.getNamespace().evaluator.makeTimeSeries( 
+                new long[] { 0 }, new double[] { value });
     }
 
     @Override

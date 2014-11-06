@@ -2,6 +2,8 @@ package eu.cityopt.sim.eval;
 
 import static org.junit.Assert.*;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -32,6 +34,7 @@ public class TestEval {
         ns.components.get("C2").outputs.put("x4", Type.TIMESERIES);
         ns.metrics.put("m1", Type.DOUBLE);
         ns.metrics.put("m2", Type.DOUBLE);
+        ns.metrics.put("m3", Type.DOUBLE);
     }
 
     @Test
@@ -45,10 +48,8 @@ public class TestEval {
                         Double.NEGATIVE_INFINITY, 0.0, evaluator) };
         MetricExpression[] metrics = new MetricExpression[] {
                 new MetricExpression(1, "m1", "-9 * C1.x5 - 15 * C1.x8", evaluator),
-                new MetricExpression(2, "m2", "10 * (C1.x6 + C1.x7)", evaluator)
-                // TODO implement script access to TimeSeries
-                // new MetricExpression(
-                //      3, "m3", "6 * C1.x1[0] + 16 * mean(C1.x2)", evaluator)
+                new MetricExpression(2, "m2", "10 * (C1.x6 + C1.x7)", evaluator),
+                new MetricExpression(3, "m3", "6 * C1.x1.values[0] + 16 * C1.x2.mean", evaluator)
         };
         ObjectiveExpression[] objectives = new ObjectiveExpression[] { new ObjectiveExpression(
                 1, "m1 + m2", false, evaluator) };
@@ -90,7 +91,7 @@ public class TestEval {
                 Namespace.Component component = entry.getValue();
                 for (String outputName : component.outputs.keySet()) {
                     System.out.println(componentName + "." + outputName + " = "
-                            + results.getTS(entry.getKey(), outputName).values[0]);
+                            + results.getTS(entry.getKey(), outputName).getValues()[0]);
                 }
             }
             for (int i = 0; i < constraints.length; ++i) {
@@ -113,7 +114,7 @@ public class TestEval {
 
             final double delta = 1.0e-12;
             assertArrayEquals(cs.infeasibilities, new double[] { 0.0, 5.0 }, delta);
-            assertArrayEquals(mv.metricValues, new double[] { -69.0, 50.0 }, delta);
+            assertArrayEquals(mv.metricValues, new double[] { -69.0, 50.0, 0.0 }, delta);
             assertArrayEquals(os.objectiveValues, new double[] { -19.0 }, delta);
         } else {
             System.out.println("Simulation failed.");
@@ -137,5 +138,52 @@ public class TestEval {
 
         double value = invalidConstraint.evaluate(input);
         System.out.println("infeasibility = " + value);
+    }
+
+    @Test
+    public void timeSeriesAccess() throws ScriptException, InvalidValueException {
+        ZonedDateTime zdt = ZonedDateTime.of(2014, 1, 1,  12, 0, 0,  0, ZoneId.systemDefault());
+        long t0 = zdt.toInstant().toEpochMilli();
+        long sec = 1000;
+        long day = 24 * 60 * 60 * sec;
+        ExternalParameters ep = new ExternalParameters(ns);
+
+        long[] ta = new long[] { t0, t0 + day, t0 + day + sec };
+        double[] va = new double[] { 1.0, 2.0, 5.0 };
+        ep.put("a", evaluator.makeTimeSeries(ta, va));
+
+        long[] tb = new long[] { t0, t0 + sec, t0 + day };
+        double[] vb = new double[] { -4.0, 3.0, -2.0 };
+        ep.put("b", evaluator.makeTimeSeries(tb, vb));
+
+        double delta = 1.0e-12;
+        assertEquals(eval("a.datetimes[0].year", ep), 2014, delta);
+        assertEquals(eval("a.datetimes[1].day", ep), 2, delta);
+        assertEquals(eval("a.datetimes[2].second", ep), 1, delta);
+        double f = (ta[2]-ta[1])/(double)(ta[2]-ta[0]);
+        assertEquals(eval("a.mean", ep), (1-f) * 1.5 + f * 3.5, delta);
+        assertEquals(eval("a.stdev", ep), 0.2887686695576, delta);
+
+        for (int i = 0; i < vb.length; ++i) {
+            assertEquals(eval("b.values["+i+"]", ep), vb[i], delta);
+            assertEquals(eval("(b+3).values["+i+"]", ep), vb[i]+3, delta);
+            assertEquals(eval("(3+b).values["+i+"]", ep), 3+vb[i], delta);
+            assertEquals(eval("(b-3).values["+i+"]", ep), vb[i]-3, delta);
+            assertEquals(eval("(3-b).values["+i+"]", ep), 3-vb[i], delta);
+            assertEquals(eval("(b*3).values["+i+"]", ep), vb[i]*3, delta);
+            assertEquals(eval("(3*b).values["+i+"]", ep), 3*vb[i], delta);
+            assertEquals(eval("abs(b).values["+i+"]", ep), Math.abs(vb[i]), delta);
+            assertEquals(eval("(-b).values["+i+"]", ep), -vb[i], delta);
+            assertEquals(eval("(+b).values["+i+"]", ep), +vb[i], delta);
+        }
+        assertEquals(eval("(a+b).values[0]", ep), va[0]+vb[0], delta);
+        // N.B. the following fails for now, because addition is not properly implemented yet
+        f = (tb[1]-tb[0])/(double)(ta[1]-ta[0]);
+        assertEquals(eval("(a+b).values[1]", ep), vb[1] + (1-f)*va[0] + f*va[1], delta);
+    }
+
+    private double eval(String expression, EvaluationContext context)
+            throws ScriptException, InvalidValueException {
+        return new DoubleExpression(expression, evaluator).evaluate(context);
     }
 }

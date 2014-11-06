@@ -16,9 +16,11 @@ import org.python.core.PyObject;
 
 /**
  * Evaluation engine of the expression language. The expression language is
- * Python, the Java implementation of which is provied by the Jython project.
- * All Python/Jython specific code is kept inside this class; elsewhere we use
- * only the Java Scripting API.
+ * Python, the Java implementation of which is provided by the Jython project.
+ *
+ * Generally all Python/Jython specific code paths go through Evaluator, and
+ * elsewhere we use only the Java Scripting API. The TimeSeriesImpl class is a
+ * part of the Python interface and is tightly coupled with Evaluator.
  *
  * @see http://www.jython.org/
  * 
@@ -28,6 +30,11 @@ public class Evaluator {
     private ScriptEngine engine;
 
     private static final String ENGINE_NAME = "python";
+
+    private static final String initializationCode =
+            "from datetime import datetime, timedelta\n" +
+            "def convertTimeMillisToDatetimes(timeMillis):\n" +
+            "  return [datetime.fromtimestamp(0.001 * t) for t in timeMillis]\n";
 
     public Evaluator() throws EvaluationException, ScriptException {
         ScriptEngineManager manager = new ScriptEngineManager();
@@ -50,7 +57,32 @@ public class Evaluator {
             throw new EvaluationException("Scripting engine \"" + ENGINE_NAME
                     + "\" is not multi-threaded");
         }
+        engine.eval(initializationCode);
         // TODO: engine.setContext
+    }
+
+    /**
+     * Constructs a time series representation for use in expressions.
+     * Instances of TimeSeries can be put in ExternalParameters and SimulationResults.
+     *
+     * @param timeMillis the defined time points, milliseconds since 1 January 1970
+     * @param values the values at the defined time points
+     * @return a TimeSeries implementation that must be used with this Evaluator
+     */
+    public TimeSeries makeTimeSeries(long[] timeMillis, double[] values) {
+        return new TimeSeriesImpl(this, timeMillis, values);
+    }
+
+    /**
+     * Constructs an empty time series representation for use in expressions.
+     * The time points and associated values must be filled in by the caller.
+     * Instances of TimeSeries can be put in ExternalParameters and SimulationResults.
+     *
+     * @param n number of points to allocate.
+     * @return a TimeSeries implementation that must be used with this Evaluator
+     */
+    public TimeSeries makeTimeSeries(int n) {
+        return makeTimeSeries(new long[n], new double[n]);
     }
 
     Compilable getCompiler() {
@@ -88,8 +120,10 @@ public class Evaluator {
             }
 
             public void setAttributes(Bindings attributeBindings) {
-                for (Map.Entry<String, Object> entry : attributeBindings.entrySet()) {
-                    attributes.put(entry.getKey(), Py.java2py(entry.getValue()));
+                if (attributeBindings != null) {
+                    for (Map.Entry<String, Object> entry : attributeBindings.entrySet()) {
+                        attributes.put(entry.getKey(), Py.java2py(entry.getValue()));
+                    }
                 }
             }
         };
@@ -116,6 +150,23 @@ public class Evaluator {
         @Override
         public void __delattr__(String name) {
             super.readonlyAttributeError(name);
+        }
+    }
+
+    /**
+     * Invokes a Python function that is known to exist.  Intended to be
+     * called from inside Python evaluation: any ScriptException from the
+     * invocation is unwrapped to re-throw the original Python Exception.
+     * Also converts NoSuchMethodException into IllegalStateException.
+     */
+    Object invokeInternal(String name, Object... args) throws Throwable {
+        try {
+            return getInvoker().invokeFunction(name, args);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException(
+                    "The Python function \"" + name + "\" disappeared", e);
+        } catch (ScriptException e) {
+            throw (e.getCause() != null) ? e.getCause() : e;
         }
     }
 }
