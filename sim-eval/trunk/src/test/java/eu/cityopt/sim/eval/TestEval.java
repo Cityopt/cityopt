@@ -169,29 +169,31 @@ public class TestEval {
         ep.put("b", evaluator.makeTimeSeries(tb, vb));
 
         double delta = 1.0e-12;
-        assertEquals(eval("a.datetimes[0].year", ep), 2014, delta);
-        assertEquals(eval("a.datetimes[1].day", ep), 2, delta);
-        assertEquals(eval("a.datetimes[2].second", ep), 1, delta);
+        assertEquals(2014, eval("a.datetimes[0].year", ep), delta);
+        assertEquals(2, eval("a.datetimes[1].day", ep), delta);
+        assertEquals(1, eval("a.datetimes[2].second", ep), delta);
         double f = (ta[2]-ta[1])/(double)(ta[2]-ta[0]);
-        assertEquals(eval("a.mean", ep), (1-f) * 1.5 + f * 3.5, delta);
-        assertEquals(eval("a.stdev", ep), 0.2887686695576, delta);
+        assertEquals((1-f) * 1.5 + f * 3.5, eval("a.mean", ep), delta);
+        assertEquals(0.2887686695576, eval("a.stdev", ep), delta);
 
         for (int i = 0; i < vb.length; ++i) {
-            assertEquals(eval("b.values["+i+"]", ep), vb[i], delta);
-            assertEquals(eval("(b+3).values["+i+"]", ep), vb[i]+3, delta);
-            assertEquals(eval("(3+b).values["+i+"]", ep), 3+vb[i], delta);
-            assertEquals(eval("(b-3).values["+i+"]", ep), vb[i]-3, delta);
-            assertEquals(eval("(3-b).values["+i+"]", ep), 3-vb[i], delta);
-            assertEquals(eval("(b*3).values["+i+"]", ep), vb[i]*3, delta);
-            assertEquals(eval("(3*b).values["+i+"]", ep), 3*vb[i], delta);
-            assertEquals(eval("abs(b).values["+i+"]", ep), Math.abs(vb[i]), delta);
-            assertEquals(eval("(-b).values["+i+"]", ep), -vb[i], delta);
-            assertEquals(eval("(+b).values["+i+"]", ep), +vb[i], delta);
+            assertEquals(vb[i], eval("b.values["+i+"]", ep), delta);
+            assertEquals(vb[i]+3, eval("(b+3).values["+i+"]", ep), delta);
+            assertEquals(3+vb[i], eval("(3+b).values["+i+"]", ep), delta);
+            assertEquals(vb[i]-3, eval("(b-3).values["+i+"]", ep), delta);
+            assertEquals(3-vb[i], eval("(3-b).values["+i+"]", ep), delta);
+            assertEquals(vb[i]*3, eval("(b*3).values["+i+"]", ep), delta);
+            assertEquals(3*vb[i], eval("(3*b).values["+i+"]", ep), delta);
+            assertEquals(Math.abs(vb[i]),
+                         eval("abs(b).values["+i+"]", ep), delta);
+            assertEquals(-vb[i], eval("(-b).values["+i+"]", ep), delta);
+            assertEquals(+vb[i], eval("(+b).values["+i+"]", ep), delta);
         }
-        assertEquals(eval("(a+b).values[0]", ep), va[0]+vb[0], delta);
+        assertEquals(va[0]+vb[0], eval("(a+b).values[0]", ep), delta);
         // N.B. the following fails for now, because addition is not properly implemented yet
         f = (tb[1]-tb[0])/(double)(ta[1]-ta[0]);
-        assertEquals(eval("(a+b).values[1]", ep), vb[1] + (1-f)*va[0] + f*va[1], delta);
+        assertEquals(vb[1] + (1-f)*va[0] + f*va[1],
+                     eval("(a+b).values[1]", ep), delta);
     }
 
     private double eval(String expression, EvaluationContext context)
