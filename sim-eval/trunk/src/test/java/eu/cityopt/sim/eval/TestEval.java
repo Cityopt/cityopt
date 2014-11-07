@@ -2,14 +2,19 @@ package eu.cityopt.sim.eval;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import javax.script.CompiledScript;
 import javax.script.ScriptException;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -36,22 +41,47 @@ public class TestEval {
         ns.metrics.put("m2", Type.DOUBLE);
         ns.metrics.put("m3", Type.DOUBLE);
     }
+    
+    ExternalParameters externalParameters;
+    SimulationInput input;
+    
+    @Before
+    public void setupInput() {
+        externalParameters = new ExternalParameters(ns);
+        input = new SimulationInput(externalParameters);
+        input.put("C1", "x5", 1.0);
+        input.put("C1", "x6", 2.0);
+        input.put("C1", "x7", 3.0);
+        input.put("C1", "x8", 4.0);
+        input.put("C2", "x9", 5.0);
+    }
+    
+    @Test
+    public void testDir() throws Exception {
+        CompiledScript script = evaluator.getCompiler().compile("dir(C1)");
+        @SuppressWarnings("unchecked")
+        ArrayList<String> names = new ArrayList<String>(
+                (List<String>)script.eval(input.toBindings()));
+        Collections.sort(names);
+        String[] good = {"x5", "x6", "x7", "x8"};
+        assertArrayEquals(good, names.toArray());
+    }
 
     @Test
     public void evaluate() throws Exception {
-        ConstraintExpression[] constraints = new ConstraintExpression[] {
+        ConstraintExpression[] constraints = {
                 new ConstraintExpression(1,
                         "C2.x9 * (C1.x5 - C1.x6) + 0.02 * C1.x6 - 0.025 * C1.x5",
                         Double.NEGATIVE_INFINITY, 0.0, evaluator),
                 new ConstraintExpression(2,
                         "C2.x9 * (C1.x8 - C1.x7) + 0.02 * C1.x7 - 0.015 * C1.x8",
                         Double.NEGATIVE_INFINITY, 0.0, evaluator) };
-        MetricExpression[] metrics = new MetricExpression[] {
+        MetricExpression[] metrics = {
                 new MetricExpression(1, "m1", "-9 * C1.x5 - 15 * C1.x8", evaluator),
                 new MetricExpression(2, "m2", "10 * (C1.x6 + C1.x7)", evaluator),
                 new MetricExpression(3, "m3", "6 * C1.x1.values[0] + 16 * C1.x2.mean", evaluator)
         };
-        ObjectiveExpression[] objectives = new ObjectiveExpression[] { new ObjectiveExpression(
+        ObjectiveExpression[] objectives = { new ObjectiveExpression(
                 1, "m1 + m2", false, evaluator) };
 
         SimulationRunner actualRunner = new SimulationRunner() {
@@ -63,13 +93,6 @@ public class TestEval {
         SimulationRunnerWithStorage runner = new SimulationRunnerWithStorage(
                 actualRunner, new HashSimulationStorage());
 
-        ExternalParameters externalParameters = new ExternalParameters(ns);
-        SimulationInput input = new SimulationInput(externalParameters);
-        input.put("C1", "x5", 1.0);
-        input.put("C1", "x6", 2.0);
-        input.put("C1", "x7", 3.0);
-        input.put("C1", "x8", 4.0);
-        input.put("C2", "x9", 5.0);
         Future<SimulationOutput> job = runner.start(input);
 
         SimulationOutput output = job.get();
@@ -78,60 +101,49 @@ public class TestEval {
             System.out.print(messages);
         }
 
-        if (output instanceof SimulationResults) {
-            SimulationResults results = (SimulationResults) output;
-            MetricValues mv = new MetricValues(results, Arrays.asList(metrics));
-            ConstraintStatus cs = new ConstraintStatus(mv,
-                    Arrays.asList(constraints));
-            ObjectiveStatus os = new ObjectiveStatus(mv,
-                    Arrays.asList(objectives));
+        assertTrue(output instanceof SimulationResults);
+        SimulationResults results = (SimulationResults)output;
+        MetricValues mv = new MetricValues(results, Arrays.asList(metrics));
+        ConstraintStatus cs = new ConstraintStatus(mv,
+                Arrays.asList(constraints));
+        ObjectiveStatus os = new ObjectiveStatus(mv,
+                Arrays.asList(objectives));
 
-            for (Map.Entry<String, Namespace.Component> entry : ns.components.entrySet()) {
-                String componentName = entry.getKey().toString();
-                Namespace.Component component = entry.getValue();
-                for (String outputName : component.outputs.keySet()) {
-                    System.out.println(componentName + "." + outputName + " = "
-                            + results.getTS(entry.getKey(), outputName).getValues()[0]);
-                }
+        for (Map.Entry<String, Namespace.Component> entry : ns.components.entrySet()) {
+            String componentName = entry.getKey().toString();
+            Namespace.Component component = entry.getValue();
+            for (String outputName : component.outputs.keySet()) {
+                System.out.println(
+                        componentName + "." + outputName + " = "
+                        + results.getTS(entry.getKey(), outputName).getValues()[0]);
             }
-            for (int i = 0; i < constraints.length; ++i) {
-                System.out.println("Constraint "
-                        + constraints[i].getConstraintId() + ": "
-                        + cs.infeasibilities[i]);
-            }
-            System.out.println("Feasible: " + cs.feasible);
-
-            for (int i = 0; i < metrics.length; ++i) {
-                System.out.println("Metric " + metrics[i].getMetricName()
-                        + ": " + mv.metricValues[i]);
-            }
-
-            for (int i = 0; i < objectives.length; ++i) {
-                System.out.println("Objective "
-                        + objectives[i].getObjectiveId() + ": "
-                        + os.objectiveValues[i]);
-            }
-
-            final double delta = 1.0e-12;
-            assertArrayEquals(cs.infeasibilities, new double[] { 0.0, 5.0 }, delta);
-            assertArrayEquals(mv.metricValues, new double[] { -69.0, 50.0, 0.0 }, delta);
-            assertArrayEquals(os.objectiveValues, new double[] { -19.0 }, delta);
-        } else {
-            System.out.println("Simulation failed.");
-            assertTrue(false);
         }
+        for (int i = 0; i < constraints.length; ++i) {
+            System.out.println("Constraint "
+                    + constraints[i].getConstraintId() + ": "
+                    + cs.infeasibilities[i]);
+        }
+        System.out.println("Feasible: " + cs.feasible);
+
+        for (int i = 0; i < metrics.length; ++i) {
+            System.out.println("Metric " + metrics[i].getMetricName()
+                    + ": " + mv.metricValues[i]);
+        }
+
+        for (int i = 0; i < objectives.length; ++i) {
+            System.out.println("Objective "
+                    + objectives[i].getObjectiveId() + ": "
+                    + os.objectiveValues[i]);
+        }
+
+        final double delta = 1.0e-12;
+        assertArrayEquals(new double[] { 0.0, 5.0 }, cs.infeasibilities, delta);
+        assertArrayEquals(new double[] { -69.0, 50.0, 0.0 }, mv.metricValues, delta);
+        assertArrayEquals(new double[] { -19.0 }, os.objectiveValues, delta);
     }
 
     @Test(expected=ScriptException.class)
     public void accessNonexistentComponentMember() throws Exception {
-        ExternalParameters externalParameters = new ExternalParameters(ns);
-        SimulationInput input = new SimulationInput(externalParameters);
-        input.put("C1", "x5", 1.0);
-        input.put("C1", "x6", 2.0);
-        input.put("C1", "x7", 3.0);
-        input.put("C1", "x8", 4.0);
-        input.put("C2", "x9", 5.0);
-
         ConstraintExpression invalidConstraint = new ConstraintExpression(1,
                 "C2.x9 * (C1.x5 - C1.x9) + 0.02 * C1.x6 - 0.025 * C1.x5",
                 Double.NEGATIVE_INFINITY, 0.0, evaluator);

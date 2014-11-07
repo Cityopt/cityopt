@@ -12,6 +12,7 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import org.python.core.Py;
+import org.python.core.PyList;
 import org.python.core.PyObject;
 
 /**
@@ -150,6 +151,11 @@ public class Evaluator {
         @Override
         public void __delattr__(String name) {
             super.readonlyAttributeError(name);
+        }
+        
+        @Override
+        public PyObject __dir__() {
+            return new PyList(attributes.keySet());
         }
     }
 
