@@ -72,7 +72,7 @@
 	</td></tr>
 <tr>
 	<td>
-		<a href="">Run multi-optimization set</a>
+		<a href="runmultioptimizationset.jsp">Run multi-optimization set</a>
 	</td></tr>
 <tr>
 	<td><b>Visualization</b></td>

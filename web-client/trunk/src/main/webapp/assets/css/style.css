@@ -1,5 +1,5 @@
 body {
-	background-color: #ffffff;
+    /*background-image: url("../img/Nice_background.jpg");*/
 	margin: 0px;
 	padding: 0px;
 	font-family: tahoma, verdana, arial, helvetica, sans-serif;
@@ -180,36 +180,38 @@ blockquote {
 }
 
 .menustyle {
-	background: #F1F3F2 url('images/mb.gif') left bottom no-repeat;
+	background: rgb(210, 210, 250) left bottom no-repeat;
 	display: block;
 	margin: 0px 0px 14px 0px;
 }
 
 .menustyle tr:hover {
-    background-color: #ffff99;
+    background-color: rgb(230, 230, 250);
 }
 
 .tablestyle {
     border: 1px solid black;
     border-collapse: collapse;
+    padding-left: 20px;
 }
 
 .tablestyle th {
-	background:#91c5d4;
+	background: rgb(130, 230, 160);
 }
 
 .tablestyle td { 
-	padding:7px; border:#4e95f4 1px solid;
+	padding:7px; 
+	border:#4e95a4 1px solid;
 }
 
 /* Define the default color for all the table rows */
 .tablestyle tr {
-	background: #b8d1f3;
+	background: rgb(190, 250, 190);
 }
 
 /* Define the hover highlight color for the table row */
 .tablestyle tr:hover {
-    background-color: #ffff99;
+    background-color: rgb(220, 250, 220);
 }
 
 .sidebarboxtop {

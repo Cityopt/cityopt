@@ -48,6 +48,7 @@
 				<tr>						
 					<td>
 						<table class="tablestyle" border="1">
+							<col style="width:150px">
 							<tr>
 								<th>Components</th>
 							</tr>
@@ -58,6 +59,9 @@
 					</td>
 					<td>
 						<table class="tablestyle" border="1">
+							<col style="width:150px">
+							<col style="width:150px">
+							<col style="width:150px">
 							<tr>
 								<th>Parameters</th>
 								<th>Value</th>
@@ -71,7 +75,7 @@
 						</table>
 					</td>
 					<td>
-						<p>Parameters selection</p>
+						<b>Parameters selection</b><br>
 						<input type="radio" >All parameters<br>	
 						<input type="radio">Completed parameters<br>	
 						<input type="radio">Empty parameters	

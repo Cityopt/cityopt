@@ -8,8 +8,8 @@
 <body>
 <%@ include file="mainmenu.inc"%>
 <form>
-<table>
-	<h2>Project definition</h2>
+<table style="width:900px">
+	<tr><td><h2>Project definition</h2></td></tr>
 	<tr>
 		<td>
 			<table>
@@ -43,11 +43,40 @@
 				</tr>
 			</table>
 		</td>
-		<td>
-			<p><img src="/assets/img/test_map.jpg" height="301" width="464"/></p>
+		<td align="right">
+			<img src="assets/img/test_map.jpg"/>
 		</td>
 	</tr>
-
+	<tr>
+		<td colspan="2" align="Right">
+			<input type="button" value="Upload diagram">
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<table>
+				<col style="width:150px">
+				<col style="width:150px">
+				<col style="width:600px">
+				<tr>
+					<td>Input parameters</td>
+					<td><input type="button" value="Set" style="width:150px"></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Output variables</td>
+					<td><input type="button" value="Set" style="width:150px"></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>GIS Coordinates</td>
+					<td><input type="button" value="Set" style="width:150px"></td>
+					<td align="right"><input type="button" value="Create a project" style="width:150px"></td>
+				</tr>
+			</table>
+		</td>
+		
+	</tr>
 </table>
 </form>
 </body>
