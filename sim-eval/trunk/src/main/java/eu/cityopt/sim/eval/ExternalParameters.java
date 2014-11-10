@@ -1,7 +1,5 @@
 package eu.cityopt.sim.eval;
 
-import java.util.Map;
-
 import javax.script.Bindings;
 import javax.script.ScriptException;
 
@@ -16,11 +14,8 @@ public class ExternalParameters implements EvaluationContext {
     public ExternalParameters(final Namespace namespace) {
         this.bindingLayer = new BindingLayer(
                 namespace, null,
-                new BindingLayer.ComponentNamespaces() {
-                    public Map<String, Type> get(String name) {
-                        return (name == null) ? namespace.externals : null;
-                    }
-                }, "external parameter");
+                name -> (name == null) ? namespace.externals : null,
+                "external parameter");
     }
 
     public Namespace getNamespace() {

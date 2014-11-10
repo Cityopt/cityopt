@@ -1,7 +1,5 @@
 package eu.cityopt.sim.eval;
 
-import java.util.Map;
-
 import javax.script.Bindings;
 import javax.script.ScriptException;
 
@@ -21,11 +19,9 @@ public class SimulationResults extends SimulationOutput implements
         final Namespace namespace = input.getNamespace();
         this.bindingLayer = new BindingLayer(namespace,
                 input.getBindingLayer(),
-                new BindingLayer.ComponentNamespaces() {
-                    public Map<String, Type> get(String name) {
-                        Namespace.Component c = namespace.components.get(name);
-                        return (c != null) ? c.outputs : null;
-                    }
+                (String name) -> {
+                    Namespace.Component c = namespace.components.get(name);
+                    return (c != null) ? c.outputs : null;
                 }, "output variable");
     }
 

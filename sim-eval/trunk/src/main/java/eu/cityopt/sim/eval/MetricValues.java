@@ -1,7 +1,6 @@
 package eu.cityopt.sim.eval;
 
 import java.util.Collection;
-import java.util.Map;
 
 import javax.script.Bindings;
 import javax.script.ScriptException;
@@ -28,11 +27,8 @@ public class MetricValues implements EvaluationContext {
         final Namespace namespace = results.getNamespace();
         this.bindingLayer = new BindingLayer(namespace,
                 results.getBindingLayer(),
-                new BindingLayer.ComponentNamespaces() {
-                    public Map<String, Type> get(String name) {
-                        return (name == null) ? namespace.metrics : null;
-                    }
-                }, "metric");
+                name -> (name == null) ? namespace.metrics : null,
+                "metric");
         int i = 0;
         for (MetricExpression metric : metrics) {
             double value = metric.evaluate(results);
