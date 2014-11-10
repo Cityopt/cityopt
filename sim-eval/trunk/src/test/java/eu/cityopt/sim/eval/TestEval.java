@@ -184,16 +184,58 @@ public class TestEval {
             assertEquals(3-vb[i], eval("(3-b).values["+i+"]", ep), delta);
             assertEquals(vb[i]*3, eval("(b*3).values["+i+"]", ep), delta);
             assertEquals(3*vb[i], eval("(3*b).values["+i+"]", ep), delta);
-            assertEquals(Math.abs(vb[i]),
-                         eval("abs(b).values["+i+"]", ep), delta);
             assertEquals(-vb[i], eval("(-b).values["+i+"]", ep), delta);
             assertEquals(+vb[i], eval("(+b).values["+i+"]", ep), delta);
         }
-        assertEquals(va[0]+vb[0], eval("(a+b).values[0]", ep), delta);
-        // N.B. the following fails for now, because addition is not properly implemented yet
-        f = (tb[1]-tb[0])/(double)(ta[1]-ta[0]);
-        assertEquals(vb[1] + (1-f)*va[0] + f*va[1],
-                     eval("(a+b).values[1]", ep), delta);
+
+        assertEquals(Math.abs(vb[0]), eval("abs(b).values[0]", ep), delta);
+        assertEquals(0.0, eval("abs(b).values[1]", ep), delta);
+        assertEquals(Math.abs(vb[1]), eval("abs(b).values[2]", ep), delta);
+        assertEquals(0.0, eval("abs(b).values[3]", ep), delta);
+        assertEquals(Math.abs(vb[2]), eval("abs(b).values[4]", ep), delta);
+
+        assertEquals(tb[0], eval("abs(b).timeMillis[0]", ep), delta);
+        assertEquals(t0 + 571, eval("abs(b).timeMillis[1]", ep), delta);
+        assertEquals(tb[1], eval("abs(b).timeMillis[2]", ep), delta);
+        assertEquals(t0 + 51840400, eval("abs(b).timeMillis[3]", ep), delta);
+        assertEquals(tb[2], eval("abs(b).timeMillis[4]", ep), delta);
+
+        assertEquals(va[0] + vb[0], eval("(a+b).values[0]", ep), delta);
+        f = (tb[1]-ta[0])/(double)(ta[1]-ta[0]);
+        assertEquals((1-f)*va[0] + f*va[1] - vb[1],
+                     eval("(a-b).values[1]", ep), delta);
+        assertEquals(((1-f)*va[0] + f*va[1]) * vb[1],
+                eval("(a*b).values[1]", ep), delta);
+        f = (ta[1]-tb[1])/(double)(tb[2]-tb[1]);
+        assertEquals(va[1] + (1-f)*vb[1] + f*vb[2],
+                eval("(a+b).values[2]", ep), delta);
+        assertEquals(va[2], eval("(a+b).values[3]", ep), delta);
+        assertEquals(-va[2], eval("(b-a).values[3]", ep), delta);
+        assertEquals(0.0, eval("(a*b).values[3]", ep), delta);
+        assertEquals(4, eval("len((a*b).values)", ep), delta);
+
+        assertEquals(ta[0], eval("(a+b).timeMillis[0]", ep), delta);
+        assertEquals(tb[1], eval("(a-b).timeMillis[1]", ep), delta);
+        assertEquals(ta[1], eval("(a*b).timeMillis[2]", ep), delta);
+        assertEquals(ta[2], eval("(a+b).timeMillis[3]", ep), delta);
+
+        tb = new long[] { t0 + day + sec/2 };
+        vb = new double[] { -5.0 };
+        ep.put("b", evaluator.makeTimeSeries(tb, vb));
+        f = (tb[0]-ta[1])/(double)(ta[2]-ta[1]);
+        assertEquals(((1-f)*va[1] + f*va[2]) * vb[0],
+                     eval("(a*b).values[2]", ep), delta);
+        assertEquals(((1-f)*va[1] + f*va[2]) * vb[0],
+                eval("sum((a*b).values)", ep), delta);
+
+        tb = new long[] { t0 + 2*day };
+        vb = new double[] { 11.0 };
+        ep.put("b", evaluator.makeTimeSeries(tb, vb));
+        assertEquals(0.0, eval("sum((a*b).values)", ep), delta);
+        assertEquals(vb[0], eval("(a+b).values[3]", ep), delta);
+        assertEquals(vb[0], eval("(b-a).values[3]", ep), delta);
+        assertEquals(va[1], eval("(a+b).values[1]", ep), delta);
+        assertEquals(-va[1], eval("(b-a).values[1]", ep), delta);
     }
 
     private double eval(String expression, EvaluationContext context)

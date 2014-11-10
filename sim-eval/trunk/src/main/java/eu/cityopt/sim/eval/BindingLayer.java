@@ -192,6 +192,7 @@ class BindingLayer {
                     + formatReference(componentName, name) + ": " + value);
         }
         mergedBindings = null;
+        evaluationBindings = null;
         return localBindings.get(componentName).put(name, value);
     }
 
@@ -211,6 +212,7 @@ class BindingLayer {
         Type type = validate(componentName, name);
         Object object = type.parse(value);
         mergedBindings = null;
+        evaluationBindings = null;
         return localBindings.get(componentName).put(name, object);
     }
 

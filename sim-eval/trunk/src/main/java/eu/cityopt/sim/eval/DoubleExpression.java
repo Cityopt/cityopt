@@ -21,12 +21,8 @@ public class DoubleExpression {
             InvalidValueException {
         Object o = script.eval(context.toBindings());
         double value;
-        if (o instanceof Integer) {
-            value = (Integer) o;
-        } else if (o instanceof Double) {
-            value = (Double) o;
-        } else if (o instanceof Boolean) {
-            value = (Double) o;
+        if (o instanceof Number) {
+            value = ((Number) o).doubleValue();
         } else {
             throw new InvalidValueException(o, source);
         }

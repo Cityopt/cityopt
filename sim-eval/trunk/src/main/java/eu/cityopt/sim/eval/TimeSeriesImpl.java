@@ -1,5 +1,6 @@
 package eu.cityopt.sim.eval;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -55,8 +56,8 @@ import java.util.Locale;
  *    interpolation to fill missing values.
  *</p>
  * <p><code> abs(ts) </code><br/>
- *  - Absolute values of the time series values.
- *    TODO: linear interpolation vs. zero-crossings
+ *  - Absolute values of the time series.  Zeroes are retained at the
+ *    appropriate time points by using linear interpolation.
  *</p>
  * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
  */
@@ -198,13 +199,13 @@ public class TimeSeriesImpl implements TimeSeries {
     }
 
     public TimeSeriesImpl __add__(TimeSeriesImpl other) {
-        int n = values.length;
-        double[] v = new double[n];
-        for (int i = 0; i < n; ++i) {
-            //TODO merge by timeMillis
-            v[i] = values[i] + other.values[i];
+        long[] tto = merge(timeMillis, other.timeMillis);
+        double[] vvo = valuesAt(tto);
+        double[] vvb = other.valuesAt(tto);
+        for (int i = 0; i < tto.length; ++i) {
+            vvo[i] += vvb[i];
         }
-        return new TimeSeriesImpl(this, v);
+        return new TimeSeriesImpl(evaluator, tto, vvo);
     }
 
     public TimeSeriesImpl __sub__(double a) {
@@ -220,6 +221,16 @@ public class TimeSeriesImpl implements TimeSeries {
         return new TimeSeriesImpl(this, v);
     }
 
+    public TimeSeriesImpl __sub__(TimeSeriesImpl other) {
+        long[] tto = merge(timeMillis, other.timeMillis);
+        double[] vvo = valuesAt(tto);
+        double[] vvb = other.valuesAt(tto);
+        for (int i = 0; i < tto.length; ++i) {
+            vvo[i] -= vvb[i];
+        }
+        return new TimeSeriesImpl(evaluator, tto, vvo);
+    }
+
     public TimeSeriesImpl __mul__(double a) {
         int n = values.length;
         double[] v = new double[n];
@@ -231,6 +242,16 @@ public class TimeSeriesImpl implements TimeSeries {
 
     public TimeSeriesImpl __rmul__(double a) {
         return __mul__(a);
+    }
+
+    public TimeSeriesImpl __mul__(TimeSeriesImpl other) {
+        long[] tto = merge(timeMillis, other.timeMillis);
+        double[] vvo = valuesAt(tto);
+        double[] vvb = other.valuesAt(tto);
+        for (int i = 0; i < tto.length; ++i) {
+            vvo[i] *= vvb[i];
+        }
+        return new TimeSeriesImpl(evaluator, tto, vvo);
     }
 
     public TimeSeriesImpl __pow__(double a) {
@@ -256,12 +277,153 @@ public class TimeSeriesImpl implements TimeSeries {
     }
 
     public TimeSeriesImpl __abs__() {
-        //TODO handle zero-crossings in time series using linear interpolation
-        int n = values.length;
-        double[] v = new double[n];
-        for (int i = 0; i < n; ++i) {
-            v[i] = Math.abs(values[i]);
+        int ni = values.length;
+        if (ni == 0) {
+            return this;
         }
-        return new TimeSeriesImpl(this, v);
+
+        // Count the number of zero-crossings for which we need extra points.
+        int no = ni;
+        double vp = values[0];
+        for (int ii = 1; ii < ni; ++ii) {
+            double v = values[ii];
+            if ((v < 0 && vp > 0) || (v > 0 && vp < 0)) {
+                ++no;
+            }
+            vp = v;
+        }
+
+        // Generate the time and value vectors with zero-crossings inserted.
+        long[] to = new long[no]; 
+        double[] vo = new double[no];
+        long tp = timeMillis[0];
+        vp = values[0];
+        to[0] = tp;
+        vo[0] = Math.abs(vp);
+        for (int ii = 1, io = 1; ii < ni; ++ii, ++io) {
+            long t = timeMillis[ii];
+            double v = values[ii];
+            if ((v < 0 && vp > 0) || (v > 0 && vp < 0)) {
+                to[io] = tp + Math.round((t - tp) * ((-vp) / (v - vp)));
+                vo[io] = 0.0;
+                ++io;
+            }
+            to[io] = t;
+            vo[io] = Math.abs(v);
+            tp = t;
+            vp = v;
+        }
+        return new TimeSeriesImpl(evaluator, to, vo);
+    }
+
+    /** Merges two sorted arrays, eliminating duplicates. */
+    private static long[] merge(long[] tta, long[] ttb) {
+        int na = tta.length;
+        int nb = ttb.length;
+
+        // Count the time points in the result.
+        int no = 0;
+        int ia = 0;
+        int ib = 0;
+        while (ia < na && ib < nb) {
+            ++no;
+            long ta = tta[ia];
+            long tb = ttb[ib];
+            if (ta <= tb) ++ia;
+            if (tb <= ta) ++ib;
+        }
+        no += na - ia;
+        no += nb - ib;
+
+        // Create the result by merging.
+        long[] tto = new long[no];
+        int io = 0;
+        ia = 0;
+        ib = 0;
+        while (ia < na && ib < nb) {
+            long ta = tta[ia];
+            long tb = ttb[ib];
+            if (ta < tb) {
+                tto[io] = ta;
+                ++io;
+                ++ia;
+            } else if (tb < ta) {
+                tto[io] = tb;
+                ++io;
+                ++ib;
+            } else { // ta == tb
+                tto[io] = ta;
+                ++io;
+                ++ia;
+                ++ib;
+            } 
+        }
+        while (ia < na) {
+            tto[io] = tta[ia];
+            ++io;
+            ++ia;
+        }
+        while (ib < nb) {
+            tto[io] = ttb[ib];
+            ++io;
+            ++ib;
+        }
+        if (io != tto.length) {
+            throw new IllegalStateException();
+        }
+        return tto;
+    }
+
+    public double[] valuesAt(long[] tt) {
+        int no = tt.length;
+        double[] vvo = new double[no];
+        int na = values.length;
+        if (no == 0 || na == 0) {
+            return vvo;
+        }
+        int ia = Arrays.binarySearch(timeMillis, tt[0]);
+        if (ia < 0) ia = ~ia;
+        if (ia == na) {
+            return vvo;
+        }
+        long ta = timeMillis[ia];
+        for (int io = 0; io < no; ++io) {
+            long to = tt[io];
+            if (to > ta) {
+                ++ia;
+                if (ia == na) {
+                    return vvo;
+                }
+                ta = timeMillis[ia];
+                if (to > ta) {
+                    ia = Arrays.binarySearch(timeMillis, ia+1, na, to);
+                    if (ia < 0) ia = ~ia;
+                    if (ia == na) {
+                        return vvo;
+                    }
+                    ta = timeMillis[ia];
+                }
+            }
+//            if (!(ta == timeMillis[ia] && to <= ta && (ia == 0 || to > timeMillis[ia-1]))) {
+//                throw new IllegalStateException();
+//            }
+            if (to == ta) {
+                vvo[io] = values[ia];
+                ++ia;
+                if (ia == na) {
+                    return vvo;
+                }
+                ta = timeMillis[ia];
+            } else { // to < ta
+                if (ia > 0) {
+                    long ta0 = timeMillis[ia-1];
+                    double va0 = values[ia-1];
+                    double va = values[ia];
+                    double f = (to - ta0) / (double)(ta - ta0);
+                    vvo[io] = va0 + f * (va - va0);
+                }
+            }
+        }
+        return vvo;
     }
 }
