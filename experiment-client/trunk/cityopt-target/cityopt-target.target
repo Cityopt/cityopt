@@ -26,8 +26,8 @@
 <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
 <plugin id="com.fasterxml.jackson.core.jackson-core"/>
 <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
-<plugin id="com.jcraft.jsch" version="0.1.50.v201403120620"/>
-<plugin id="com.jcraft.jsch.source" version="0.1.50.v201403120620"/>
+<plugin id="com.jcraft.jsch"/>
+<plugin id="com.jcraft.jsch.source"/>
 <plugin id="gnu.trove3" version="3.0.3"/>
 <plugin id="javax.xml"/>
 <plugin id="org.apache.commons.cli"/>
@@ -79,9 +79,10 @@
 <plugin id="org.eclipse.osgi.util"/>
 <plugin id="org.eclipse.osgi.util.source"/>
 <plugin id="org.hamcrest.core" version="1.3.0.v201303031735"/>
-<plugin id="org.hamcrest.core.source" version="1.3.0.v201303031735"/>
+<plugin id="org.hamcrest.core" version="1.3.0.v201303031735"/>
+<plugin id="org.hamcrest.core.source"/>
 <plugin id="org.junit" version="4.11.0.v201303080030"/>
-<plugin id="org.junit.source" version="4.11.0.v201303080030"/>
+<plugin id="org.junit.source"/>
 <plugin id="org.junit4"/>
 <plugin id="org.simantics.experiment.client"/>
 <plugin id="org.simantics.experiment.client.test"/>
@@ -89,6 +90,8 @@
 <plugin id="org.simantics.experiment.file"/>
 <plugin id="org.simantics.experiment.logback.configuration"/>
 <plugin id="org.simantics.experiment.zookeeper"/>
+<plugin id="org.simantics.simulation.scheduling"/>
+<plugin id="org.simantics.simulation.scheduling.source"/>
 <plugin id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
 <plugin id="org.slf4j.api.source"/>
 </includeBundles>
