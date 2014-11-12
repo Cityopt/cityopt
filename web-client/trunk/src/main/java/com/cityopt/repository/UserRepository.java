@@ -12,7 +12,7 @@ import com.cityopt.model.Simulationmodel;
 
 @Repository("userRepository")
 public interface UserRepository extends JpaRepository<Appuser,Integer> {
-	@Query("select u from Appuser u where Lower(u.username) like CONCAT('%',Lower(:userName),'%')")
+	@Query("select u from Appuser u where Lower(u.name) like CONCAT('%',Lower(:userName),'%')")
 	List<Appuser> findByUserName(@Param("userName") String userName);
 	
 }

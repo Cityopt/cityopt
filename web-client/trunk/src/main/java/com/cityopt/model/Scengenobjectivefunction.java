@@ -1,6 +1,6 @@
 package com.cityopt.model;
 
-// Generated 14.10.2014 08:53:28 by Hibernate Tools 4.0.0
+// Generated 12.11.2014 10:44:23 by Hibernate Tools 4.0.0
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,8 +10,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 /**
@@ -23,23 +25,21 @@ import javax.persistence.UniqueConstraint;
 public class Scengenobjectivefunction implements java.io.Serializable {
 
 	private long sgobfunctionid;
-	private Scenariogenerator scenariogenerator;
 	private Objectivefunction objectivefunction;
+	private Scenariogenerator scenariogenerator;
 
 	public Scengenobjectivefunction() {
 	}
 
 	public Scengenobjectivefunction(long sgobfunctionid,
-			Scenariogenerator scenariogenerator,
-			Objectivefunction objectivefunction) {
+			Objectivefunction objectivefunction,
+			Scenariogenerator scenariogenerator) {
 		this.sgobfunctionid = sgobfunctionid;
-		this.scenariogenerator = scenariogenerator;
 		this.objectivefunction = objectivefunction;
+		this.scenariogenerator = scenariogenerator;
 	}
 
-@SequenceGenerator(name="sgobjectivefunction_sgobfunctionid_seq",sequenceName="sgobjectivefunction_sgobfunctionid_seq")
-	  @GeneratedValue(strategy = GenerationType.SEQUENCE,
-    generator="sgobjectivefunction_sgobfunctionid_seq")
+	@SequenceGenerator(name="scengenobjectivefunction_sgobfunctionid_seq",sequenceName="scengenobjectivefunction_sgobfunctionid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="scengenobjectivefunction_sgobfunctionid_seq")
 	@Id
 	@Column(name = "sgobfunctionid", unique = true, nullable = false)
 	public long getSgobfunctionid() {
@@ -51,16 +51,6 @@ public class Scengenobjectivefunction implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "scengenid", nullable = false)
-	public Scenariogenerator getScenariogenerator() {
-		return this.scenariogenerator;
-	}
-
-	public void setScenariogenerator(Scenariogenerator scenariogenerator) {
-		this.scenariogenerator = scenariogenerator;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "optfunctionid", nullable = false)
 	public Objectivefunction getObjectivefunction() {
 		return this.objectivefunction;
@@ -68,6 +58,16 @@ public class Scengenobjectivefunction implements java.io.Serializable {
 
 	public void setObjectivefunction(Objectivefunction objectivefunction) {
 		this.objectivefunction = objectivefunction;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "scengenid", nullable = false)
+	public Scenariogenerator getScenariogenerator() {
+		return this.scenariogenerator;
+	}
+
+	public void setScenariogenerator(Scenariogenerator scenariogenerator) {
+		this.scenariogenerator = scenariogenerator;
 	}
 
 }

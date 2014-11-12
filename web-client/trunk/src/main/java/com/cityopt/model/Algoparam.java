@@ -1,6 +1,9 @@
 package com.cityopt.model;
 
-// Generated 14.10.2014 08:53:28 by Hibernate Tools 4.0.0
+// Generated 12.11.2014 10:44:23 by Hibernate Tools 4.0.0
+
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -19,14 +23,13 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "algoparam", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"aparamsname", "algorithmid" }))
+		"name", "algorithmid" }))
 public class Algoparam implements java.io.Serializable {
 
 	private int aparamsid;
 	private Algorithm algorithm;
-	private String aparamsvalue;
-	private Integer typeid;
-	private String aparamsname;
+	private String name;
+	private Set<Algoparamval> algoparamvals = new HashSet<Algoparamval>(0);
 
 	public Algoparam() {
 	}
@@ -35,18 +38,15 @@ public class Algoparam implements java.io.Serializable {
 		this.aparamsid = aparamsid;
 	}
 
-	public Algoparam(int aparamsid, Algorithm algorithm, String aparamsvalue,
-			Integer typeid, String aparamsname) {
+	public Algoparam(int aparamsid, Algorithm algorithm, String name,
+			Set<Algoparamval> algoparamvals) {
 		this.aparamsid = aparamsid;
 		this.algorithm = algorithm;
-		this.aparamsvalue = aparamsvalue;
-		this.typeid = typeid;
-		this.aparamsname = aparamsname;
+		this.name = name;
+		this.algoparamvals = algoparamvals;
 	}
-	
-	@SequenceGenerator(name="algoparam_aparamsid_seq",sequenceName="algoparam_aparamsid_seq")
-	  @GeneratedValue(strategy = GenerationType.SEQUENCE,
-    generator="algoparam_aparamsid_seq")
+
+	@SequenceGenerator(name="algoparam_aparamsid_seq",sequenceName="algoparam_aparamsid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="algoparam_aparamsid_seq")
 	@Id
 	@Column(name = "aparamsid", unique = true, nullable = false)
 	public int getAparamsid() {
@@ -67,31 +67,22 @@ public class Algoparam implements java.io.Serializable {
 		this.algorithm = algorithm;
 	}
 
-	@Column(name = "aparamsvalue", length = 50)
-	public String getAparamsvalue() {
-		return this.aparamsvalue;
+	@Column(name = "name", length = 50)
+	public String getName() {
+		return this.name;
 	}
 
-	public void setAparamsvalue(String aparamsvalue) {
-		this.aparamsvalue = aparamsvalue;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	@Column(name = "typeid")
-	public Integer getTypeid() {
-		return this.typeid;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "algoparam")
+	public Set<Algoparamval> getAlgoparamvals() {
+		return this.algoparamvals;
 	}
 
-	public void setTypeid(Integer typeid) {
-		this.typeid = typeid;
-	}
-
-	@Column(name = "aparamsname", length = 50)
-	public String getAparamsname() {
-		return this.aparamsname;
-	}
-
-	public void setAparamsname(String aparamsname) {
-		this.aparamsname = aparamsname;
+	public void setAlgoparamvals(Set<Algoparamval> algoparamvals) {
+		this.algoparamvals = algoparamvals;
 	}
 
 }

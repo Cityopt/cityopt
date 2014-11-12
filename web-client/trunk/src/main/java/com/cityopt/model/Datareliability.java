@@ -1,6 +1,6 @@
 package com.cityopt.model;
 
-// Generated 14.10.2014 08:53:28 by Hibernate Tools 4.0.0
+// Generated 12.11.2014 10:44:23 by Hibernate Tools 4.0.0
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,9 +32,8 @@ public class Datareliability implements java.io.Serializable {
 		this.datareldesc = datareldesc;
 	}
 
-	@SequenceGenerator(name="datareliability_datarelid_seq",sequenceName="datareliability_datarelid_seq")
-	  @GeneratedValue(strategy = GenerationType.SEQUENCE,
-  generator="datareliability_datarelid_seq")
+	@SequenceGenerator(name="datareliability_datarelid_seq",sequenceName="datareliability_datarelid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="datareliability_datarelid_seq")
 	@Id
 	@Column(name = "datarelid", unique = true, nullable = false)
 	public int getDatarelid() {

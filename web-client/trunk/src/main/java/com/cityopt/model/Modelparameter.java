@@ -1,6 +1,6 @@
 package com.cityopt.model;
 
-// Generated 14.10.2014 08:53:28 by Hibernate Tools 4.0.0
+// Generated 12.11.2014 10:44:23 by Hibernate Tools 4.0.0
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +10,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -23,32 +31,29 @@ import javax.persistence.UniqueConstraint;
 public class Modelparameter implements java.io.Serializable {
 
 	private int modelparamid;
-	private Scenariogenerator scenariogenerator;
 	private Inputparameter inputparameter;
-	private String paramvalue;
+	private Scenariogenerator scenariogenerator;
+	private String value;
 
 	public Modelparameter() {
 	}
 
-	public Modelparameter(int modelparamid,
-			Scenariogenerator scenariogenerator, Inputparameter inputparameter) {
+	public Modelparameter(int modelparamid, Inputparameter inputparameter,
+			Scenariogenerator scenariogenerator) {
 		this.modelparamid = modelparamid;
-		this.scenariogenerator = scenariogenerator;
 		this.inputparameter = inputparameter;
+		this.scenariogenerator = scenariogenerator;
 	}
 
-	public Modelparameter(int modelparamid,
-			Scenariogenerator scenariogenerator, Inputparameter inputparameter,
-			String paramvalue) {
+	public Modelparameter(int modelparamid, Inputparameter inputparameter,
+			Scenariogenerator scenariogenerator, String value) {
 		this.modelparamid = modelparamid;
-		this.scenariogenerator = scenariogenerator;
 		this.inputparameter = inputparameter;
-		this.paramvalue = paramvalue;
+		this.scenariogenerator = scenariogenerator;
+		this.value = value;
 	}
 
-@SequenceGenerator(name="modelparameter_modelparamid_seq",sequenceName="modelparameter_modelparamid_seq")
-	  @GeneratedValue(strategy = GenerationType.SEQUENCE,
-    generator="modelparameter_modelparamid_seq")
+	@SequenceGenerator(name="modelparameter_modelparamid_seq",sequenceName="modelparameter_modelparamid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="modelparameter_modelparamid_seq")
 	@Id
 	@Column(name = "modelparamid", unique = true, nullable = false)
 	public int getModelparamid() {
@@ -57,16 +62,6 @@ public class Modelparameter implements java.io.Serializable {
 
 	public void setModelparamid(int modelparamid) {
 		this.modelparamid = modelparamid;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "scengenid", nullable = false)
-	public Scenariogenerator getScenariogenerator() {
-		return this.scenariogenerator;
-	}
-
-	public void setScenariogenerator(Scenariogenerator scenariogenerator) {
-		this.scenariogenerator = scenariogenerator;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -79,13 +74,23 @@ public class Modelparameter implements java.io.Serializable {
 		this.inputparameter = inputparameter;
 	}
 
-	@Column(name = "paramvalue", length = 50)
-	public String getParamvalue() {
-		return this.paramvalue;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "scengenid", nullable = false)
+	public Scenariogenerator getScenariogenerator() {
+		return this.scenariogenerator;
 	}
 
-	public void setParamvalue(String paramvalue) {
-		this.paramvalue = paramvalue;
+	public void setScenariogenerator(Scenariogenerator scenariogenerator) {
+		this.scenariogenerator = scenariogenerator;
+	}
+
+	@Column(name = "value")
+	public String getValue() {
+		return this.value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 }

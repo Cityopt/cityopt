@@ -57,8 +57,8 @@ public class ProjectServiceTest {
 	public void CreateProject() throws IOException {
 		
 		Project project_2 = new Project();
-		project_2.setPrjname("Project 2");
-		project_2.setPrjlocation("Graz");		
+		project_2.setName("Project 2");
+		project_2.setLocation("Graz");		
 		
 		File tmpModel = File.createTempFile("simModel",".txt");
 		FileUtils.writeStringToFile(tmpModel, "Hello File");		 
@@ -67,8 +67,8 @@ public class ProjectServiceTest {
 		
 		Simulationmodel model = new Simulationmodel();
 		model.setModelblob(tmpModelarr);
-		model.setModelsimulator("APROS");
-		model.setModeldesc("My seconds model");				
+		model.setSimulator("APROS");
+		model.setDescription("My seconds model");				
 		
 		project_2.setSimulationmodel(model);
 		
@@ -76,7 +76,7 @@ public class ProjectServiceTest {
 		
 		Project fproject = projectService.findByID(project_2.getPrjid());
 		Simulationmodel modact = fproject.getSimulationmodel();
-		String mydesc = modact.getModeldesc();
+		String mydesc = modact.getDescription();
 	}
 	
 	

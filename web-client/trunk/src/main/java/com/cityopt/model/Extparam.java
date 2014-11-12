@@ -1,6 +1,6 @@
 package com.cityopt.model;
 
-// Generated 14.10.2014 08:53:28 by Hibernate Tools 4.0.0
+// Generated 12.11.2014 10:44:23 by Hibernate Tools 4.0.0
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,40 +23,38 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "extparam", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"extparamname", "prjid" }))
+		"name", "prjid" }))
 public class Extparam implements java.io.Serializable {
 
 	private int extparamid;
+	private Unit unit;
 	private Timeseries timeseries;
 	private Project project;
-	private Unit unit;
-	private String defval;
-	private String extparamname;
+	private String defaultvalue;
+	private String name;
 	private Set<Extparamval> extparamvals = new HashSet<Extparamval>(0);
 
 	public Extparam() {
 	}
 
-	public Extparam(int extparamid, String defval) {
+	public Extparam(int extparamid, String defaultvalue) {
 		this.extparamid = extparamid;
-		this.defval = defval;
+		this.defaultvalue = defaultvalue;
 	}
 
-	public Extparam(int extparamid, Timeseries timeseries, Project project,
-			Unit unit, String defval, String extparamname,
+	public Extparam(int extparamid, Unit unit, Timeseries timeseries,
+			Project project, String defaultvalue, String name,
 			Set<Extparamval> extparamvals) {
 		this.extparamid = extparamid;
+		this.unit = unit;
 		this.timeseries = timeseries;
 		this.project = project;
-		this.unit = unit;
-		this.defval = defval;
-		this.extparamname = extparamname;
+		this.defaultvalue = defaultvalue;
+		this.name = name;
 		this.extparamvals = extparamvals;
 	}
 
-	@SequenceGenerator(name="extparam_extparamid_seq",sequenceName="extparam_extparamid_seq")
-	  @GeneratedValue(strategy = GenerationType.SEQUENCE,
-  generator="extparam_extparamid_seq")
+	@SequenceGenerator(name="extparam_extparamid_seq",sequenceName="extparam_extparamid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="extparam_extparamid_seq")
 	@Id
 	@Column(name = "extparamid", unique = true, nullable = false)
 	public int getExtparamid() {
@@ -68,7 +66,17 @@ public class Extparam implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "deftseriesid")
+	@JoinColumn(name = "unitid")
+	public Unit getUnit() {
+		return this.unit;
+	}
+
+	public void setUnit(Unit unit) {
+		this.unit = unit;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "defaulttimeseries")
 	public Timeseries getTimeseries() {
 		return this.timeseries;
 	}
@@ -87,32 +95,22 @@ public class Extparam implements java.io.Serializable {
 		this.project = project;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "unitid")
-	public Unit getUnit() {
-		return this.unit;
+	@Column(name = "defaultvalue", nullable = false, length = 50)
+	public String getDefaultvalue() {
+		return this.defaultvalue;
 	}
 
-	public void setUnit(Unit unit) {
-		this.unit = unit;
+	public void setDefaultvalue(String defaultvalue) {
+		this.defaultvalue = defaultvalue;
 	}
 
-	@Column(name = "defval", nullable = false, length = 50)
-	public String getDefval() {
-		return this.defval;
+	@Column(name = "name", length = 50)
+	public String getName() {
+		return this.name;
 	}
 
-	public void setDefval(String defval) {
-		this.defval = defval;
-	}
-
-	@Column(name = "extparamname", length = 50)
-	public String getExtparamname() {
-		return this.extparamname;
-	}
-
-	public void setExtparamname(String extparamname) {
-		this.extparamname = extparamname;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "extparam")

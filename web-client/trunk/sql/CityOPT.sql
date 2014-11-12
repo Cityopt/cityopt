@@ -2,6 +2,10 @@ DROP TABLE IF EXISTS AlgoParam CASCADE
 ;
 DROP SEQUENCE IF EXISTS AlgoParam_aParamsID_seq
 ;
+DROP TABLE IF EXISTS AlgoParamVal CASCADE
+;
+DROP SEQUENCE IF EXISTS AlgoParamVal_aParamValID_seq
+;
 DROP TABLE IF EXISTS Algorithm CASCADE
 ;
 DROP SEQUENCE IF EXISTS Algorithm_algorithmID_seq
@@ -20,7 +24,7 @@ DROP SEQUENCE IF EXISTS DataReliability_dataRelID_seq
 ;
 DROP TABLE IF EXISTS DecisionVariable CASCADE
 ;
-DROP SEQUENCE IF EXISTS DecisionVariable_decisionVariableID_seq
+DROP SEQUENCE IF EXISTS DecisionVariable_decisionVarID_seq
 ;
 DROP TABLE IF EXISTS ExtParam CASCADE
 ;
@@ -33,6 +37,10 @@ DROP SEQUENCE IF EXISTS ExtParamVal_extParamValID_seq
 DROP TABLE IF EXISTS InputParameter CASCADE
 ;
 DROP SEQUENCE IF EXISTS InputParameter_inputID_seq
+;
+DROP TABLE IF EXISTS InputParamVal CASCADE
+;
+DROP SEQUENCE IF EXISTS InputParamVal_scenDefinitionID_seq
 ;
 DROP TABLE IF EXISTS Metric CASCADE
 ;
@@ -74,13 +82,13 @@ DROP TABLE IF EXISTS Scenario CASCADE
 ;
 DROP SEQUENCE IF EXISTS Scenario_scenID_seq
 ;
-DROP TABLE IF EXISTS ScenarioDefinition CASCADE
-;
-DROP SEQUENCE IF EXISTS ScenarioDefinition_scenDefinitionID_seq
-;
 DROP TABLE IF EXISTS ScenarioGenerator CASCADE
 ;
 DROP SEQUENCE IF EXISTS ScenarioGenerator_scenGenID_seq
+;
+DROP TABLE IF EXISTS ScenarioMetrics CASCADE
+;
+DROP SEQUENCE IF EXISTS ScenarioMetrics_scenMetricID_seq
 ;
 DROP TABLE IF EXISTS ScenGenObjectiveFunction CASCADE
 ;
@@ -133,9 +141,18 @@ CREATE SEQUENCE AlgoParam_aParamsID_seq INCREMENT 1 START 1
 CREATE TABLE AlgoParam ( 
 	aParamsID integer DEFAULT nextval(('AlgoParam_aParamsID_seq'::text)::regclass) NOT NULL,
 	algorithmID integer,
-	aParamsValue varchar(50),
-	typeID integer,
-	aParamsName varchar(50)
+	name varchar(50)
+)
+;
+
+CREATE SEQUENCE AlgoParamVal_aParamValID_seq INCREMENT 1 START 1
+;
+
+CREATE TABLE AlgoParamVal ( 
+	aParamValID integer DEFAULT nextval(('AlgoParamVal_aParamValID_seq'::text)::regclass) NOT NULL,
+	aParamsID integer NOT NULL,
+	aScenGenID integer NOT NULL,
+	value text
 )
 ;
 
@@ -144,7 +161,7 @@ CREATE SEQUENCE Algorithm_algorithmID_seq INCREMENT 1 START 1
 
 CREATE TABLE Algorithm ( 
 	algorithmID integer DEFAULT nextval(('Algorithm_algorithmID_seq'::text)::regclass) NOT NULL,
-	algorithmDesc varchar(50)
+	description text
 )
 ;
 
@@ -153,8 +170,8 @@ CREATE SEQUENCE AppUser_userID_seq INCREMENT 1 START 1
 
 CREATE TABLE AppUser ( 
 	userID integer DEFAULT nextval(('AppUser_userID_seq'::text)::regclass) NOT NULL,
-	userName varchar(50) NOT NULL,
-	userPassword varchar(50)
+	name varchar(50) NOT NULL,
+	password varchar(50)
 )
 ;
 
@@ -164,8 +181,8 @@ CREATE SEQUENCE Component_componentID_seq INCREMENT 1 START 1
 CREATE TABLE Component ( 
 	componentID integer DEFAULT nextval(('Component_componentID_seq'::text)::regclass) NOT NULL,
 	prjID integer NOT NULL,
-	componentName varchar(50) NOT NULL,
-	componentGeom geometry
+	name varchar(50) NOT NULL,
+	geometryBlob geometry
 )
 ;
 
@@ -178,15 +195,17 @@ CREATE TABLE DataReliability (
 )
 ;
 
-CREATE SEQUENCE DecisionVariable_decisionVariableID_seq INCREMENT 1 START 1
+CREATE SEQUENCE DecisionVariable_decisionVarID_seq INCREMENT 1 START 1
 ;
 
 CREATE TABLE DecisionVariable ( 
-	decisionVariableID integer DEFAULT nextval(('DecisionVariable_decisionVariableID_seq'::text)::regclass) NOT NULL,
+	decisionVarID integer DEFAULT nextval(('DecisionVariable_decisionVarID_seq'::text)::regclass) NOT NULL,
 	scenGenID integer NOT NULL,
-	inputID integer NOT NULL,
-	lowerBound varchar(50),
-	upperBound varchar(50)
+	name varchar(50),
+	expression text,
+	lowerBound double precision,
+	upperBound double precision,
+	typeID integer
 )
 ;
 
@@ -196,10 +215,10 @@ CREATE SEQUENCE ExtParam_extParamID_seq INCREMENT 1 START 1
 CREATE TABLE ExtParam ( 
 	extParamID integer DEFAULT nextval(('ExtParam_extParamID_seq'::text)::regclass) NOT NULL,
 	prjID integer,
-	defTSeriesID integer,
+	defaultTimeSeries integer,
 	unitID integer,
-	defVal varchar(50) NOT NULL,
-	extParamName varchar(50)
+	defaultValue varchar(50) NOT NULL,
+	name varchar(50)
 )
 ;
 
@@ -208,10 +227,9 @@ CREATE SEQUENCE ExtParamVal_extParamValID_seq INCREMENT 1 START 1
 
 CREATE TABLE ExtParamVal ( 
 	extParamValID integer DEFAULT nextval(('ExtParamVal_extParamValID_seq'::text)::regclass) NOT NULL,
-	scenID integer,
+	scenMetricID integer,
 	extParamID integer,
-	scenarioID integer,
-	extParamVal varchar(50),
+	value text,
 	tSeriesID integer
 )
 ;
@@ -221,10 +239,26 @@ CREATE SEQUENCE InputParameter_inputID_seq INCREMENT 1 START 1
 
 CREATE TABLE InputParameter ( 
 	inputID integer DEFAULT nextval(('InputParameter_inputID_seq'::text)::regclass) NOT NULL,
-	inputName varchar(50),
+	name varchar(50),
 	unidID integer,
 	componentID integer,
-	defParamVal varchar(50)
+	defaultValue text
+)
+;
+
+CREATE SEQUENCE InputParamVal_scenDefinitionID_seq INCREMENT 1 START 1
+;
+
+CREATE TABLE InputParamVal ( 
+	scenDefinitionID bigint DEFAULT nextval(('InputParamVal_scenDefinitionID_seq'::text)::regclass) NOT NULL,
+	scenID integer NOT NULL,
+	inputID integer NOT NULL,
+	value text NOT NULL,
+	createdOn timestamp(0),
+	updatedOn timestamp(0),
+	createdBy integer,
+	updatedBy integer,
+	dataRelID integer
 )
 ;
 
@@ -235,8 +269,8 @@ CREATE TABLE Metric (
 	metID integer DEFAULT nextval(('Metric_metID_seq'::text)::regclass) NOT NULL,
 	prjID integer,
 	unitID integer,
-	metName varchar(50),
-	metExpression varchar(50)
+	name varchar(50),
+	expression text
 )
 ;
 
@@ -246,8 +280,8 @@ CREATE SEQUENCE MetricVal_metricValID_seq INCREMENT 1 START 1
 CREATE TABLE MetricVal ( 
 	metricValID bigint DEFAULT nextval(('MetricVal_metricValID_seq'::text)::regclass) NOT NULL,
 	metID integer NOT NULL,
-	scenID integer NOT NULL,
-	metValue varchar(50),
+	scenMetricD integer NOT NULL,
+	value text,
 	tSeriedID integer
 )
 ;
@@ -259,7 +293,7 @@ CREATE TABLE ModelParameter (
 	modelParamID integer DEFAULT nextval(('ModelParameter_modelParamID_seq'::text)::regclass) NOT NULL,
 	scenGenID integer NOT NULL,
 	inputID integer NOT NULL,
-	paramValue varchar(50)
+	value text
 )
 ;
 
@@ -270,7 +304,7 @@ CREATE TABLE ObjectiveFunction (
 	obtFunctionID integer DEFAULT nextval(('ObjectiveFunction_obtFunctionID_seq'::text)::regclass) NOT NULL,
 	prjID integer,
 	typeID integer,
-	optExpression varchar(500),
+	expression text,
 	isMaximise boolean
 )
 ;
@@ -281,9 +315,9 @@ CREATE SEQUENCE OptConstraint_optConstID_seq INCREMENT 1 START 1
 CREATE TABLE OptConstraint ( 
 	optConstID integer DEFAULT nextval(('OptConstraint_optConstID_seq'::text)::regclass) NOT NULL,
 	prjID integer,
-	optConstExpression varchar(50),
-	optConstLowerBound double precision,
-	optConstUpperBound double precision
+	expression text,
+	lowerBound double precision,
+	upperBound double precision
 )
 ;
 
@@ -317,8 +351,8 @@ CREATE SEQUENCE OutputVariable_outVarID_seq INCREMENT 1 START 1
 
 CREATE TABLE OutputVariable ( 
 	outVarID integer DEFAULT nextval(('OutputVariable_outVarID_seq'::text)::regclass) NOT NULL,
-	outVarName varchar(50),
-	outVarSelected boolean,
+	name varchar(50),
+	selected boolean,
 	typeID integer,
 	componentID integer
 )
@@ -330,10 +364,10 @@ CREATE SEQUENCE Project_prjID_seq INCREMENT 1 START 1
 CREATE TABLE Project ( 
 	prjID integer DEFAULT nextval(('Project_prjID_seq'::text)::regclass) NOT NULL,
 	modelID integer,
-	prjName varchar(50) NOT NULL,
-	prjDesignTarget varchar(50),
-	prjTimeHorizon time(6),
-	prjLocation text,
+	name varchar(50) NOT NULL,
+	designTarget varchar(50),
+	timeHorizon time(6),
+	location text,
 	createdOn timestamp(0),
 	updatedOn timestamp(0),
 	createdBy integer,
@@ -347,29 +381,13 @@ CREATE SEQUENCE Scenario_scenID_seq INCREMENT 1 START 1
 CREATE TABLE Scenario ( 
 	scenID integer DEFAULT nextval(('Scenario_scenID_seq'::text)::regclass) NOT NULL,
 	prjID integer NOT NULL,
-	scenName varchar(50) NOT NULL,
-	scenDesc varchar(500),
+	name varchar(50) NOT NULL,
+	description text,
 	createdOn timestamp(0),
 	updatedOn timestamp(0),
 	createdBy integer,
 	updatedBy integer,
 	scenGenID integer
-)
-;
-
-CREATE SEQUENCE ScenarioDefinition_scenDefinitionID_seq INCREMENT 1 START 1
-;
-
-CREATE TABLE ScenarioDefinition ( 
-	scenDefinitionID bigint DEFAULT nextval(('ScenarioDefinition_scenDefinitionID_seq'::text)::regclass) NOT NULL,
-	scenID integer NOT NULL,
-	inputID integer NOT NULL,
-	paramVal varchar(50) NOT NULL,
-	createdOn timestamp(0),
-	updatedOn timestamp(0),
-	createdBy integer,
-	updatedBy integer,
-	dataRelID integer
 )
 ;
 
@@ -380,6 +398,15 @@ CREATE TABLE ScenarioGenerator (
 	scenGenID integer DEFAULT nextval(('ScenarioGenerator_scenGenID_seq'::text)::regclass) NOT NULL,
 	prjID integer,
 	algorithmID integer
+)
+;
+
+CREATE SEQUENCE ScenarioMetrics_scenMetricID_seq INCREMENT 1 START 1
+;
+
+CREATE TABLE ScenarioMetrics ( 
+	scenMetricID integer DEFAULT nextval(('ScenarioMetrics_scenMetricID_seq'::text)::regclass) NOT NULL,
+	scenID integer
 )
 ;
 
@@ -410,9 +437,9 @@ CREATE TABLE SearchConstraint (
 	scID integer DEFAULT nextval(('SearchConstraint_scID_seq'::text)::regclass) NOT NULL,
 	prjID integer,
 	unitID integer,
-	scExpression varchar(50),
-	scLowerBound double precision,
-	scUpperBound double precision
+	expression text,
+	lowerBound double precision,
+	upperBound double precision
 )
 ;
 
@@ -422,9 +449,9 @@ CREATE SEQUENCE SimulationModel_modelID_seq INCREMENT 1 START 1
 CREATE TABLE SimulationModel ( 
 	modelID integer DEFAULT nextval(('SimulationModel_modelID_seq'::text)::regclass) NOT NULL,
 	modelBlob bytea,
-	modelImageBlob bytea,
-	modelDesc varchar(500),
-	modelSimulator text,
+	imageBlob bytea,
+	description text,
+	simulator text,
 	createdOn timestamp(0),
 	updatedOn timestamp(0),
 	createdBy integer,
@@ -439,8 +466,8 @@ CREATE TABLE SimulationResult (
 	scenResID integer DEFAULT nextval(('SimulationResult_scenResID_seq'::text)::regclass) NOT NULL,
 	scenID integer,
 	outVarID integer,
-	scenResTime timestamp(0),
-	scenResValue varchar(50)
+	time timestamp(0),
+	value text
 )
 ;
 
@@ -459,8 +486,8 @@ CREATE SEQUENCE TimeSeriesVal_tSeriesValID_seq INCREMENT 1 START 1
 CREATE TABLE TimeSeriesVal ( 
 	tSeriesValID integer DEFAULT nextval(('TimeSeriesVal_tSeriesValID_seq'::text)::regclass) NOT NULL,
 	tSeriesID integer,
-	tSeriesVal varchar(50),
-	tSeriesTime timestamp(0)
+	value varchar(50),
+	time timestamp(0)
 )
 ;
 
@@ -469,7 +496,7 @@ CREATE SEQUENCE Type_typeID_seq INCREMENT 1 START 1
 
 CREATE TABLE Type ( 
 	typeID integer DEFAULT nextval(('Type_typeID_seq'::text)::regclass) NOT NULL,
-	typeName varchar(50)
+	name varchar(50)
 )
 ;
 
@@ -478,7 +505,7 @@ CREATE SEQUENCE Unit_unitID_seq INCREMENT 1 START 1
 
 CREATE TABLE Unit ( 
 	unitID integer DEFAULT nextval(('Unit_unitID_seq'::text)::regclass) NOT NULL,
-	unitName varchar(50),
+	name varchar(50),
 	typeID integer
 )
 ;
@@ -488,7 +515,7 @@ CREATE SEQUENCE UserGroup_userGroupID_seq INCREMENT 1 START 1
 
 CREATE TABLE UserGroup ( 
 	userGroupID integer DEFAULT nextval(('UserGroup_userGroupID_seq'::text)::regclass) NOT NULL,
-	userGroupName varchar(50) NOT NULL
+	name varchar(50) NOT NULL
 )
 ;
 
@@ -508,13 +535,22 @@ CREATE INDEX IXFK_AlgorithmParams_Algorithm
 	ON AlgoParam (algorithmID)
 ;
 ALTER TABLE AlgoParam
-	ADD CONSTRAINT UQ_AlgoParam_aParamsName UNIQUE (aParamsName, algorithmID)
+	ADD CONSTRAINT UQ_AlgoParam_aParamsName UNIQUE (name, algorithmID)
+;
+CREATE INDEX IXFK_AlgoParamVal_AlgoParam
+	ON AlgoParamVal (aParamsID)
+;
+CREATE INDEX IXFK_AlgoParamVal_ScenarioGenerator
+	ON AlgoParamVal (aScenGenID)
+;
+ALTER TABLE AlgoParamVal
+	ADD CONSTRAINT UQ_AlgoParamVal_aScenGenID UNIQUE (aScenGenID, aParamsID)
 ;
 ALTER TABLE AppUser
-	ADD CONSTRAINT UQ_Users_userName UNIQUE (userName)
+	ADD CONSTRAINT UQ_Users_userName UNIQUE (name)
 ;
 ALTER TABLE Component
-	ADD CONSTRAINT UQ_Component_prjID UNIQUE (prjID, componentName)
+	ADD CONSTRAINT UQ_Component_prjID UNIQUE (prjID, name)
 ;
 CREATE INDEX IXFK_Components_Project
 	ON Component (prjID)
@@ -522,11 +558,8 @@ CREATE INDEX IXFK_Components_Project
 CREATE INDEX IXFK_DecisionVariables_ScenarioGenerator
 	ON DecisionVariable (scenGenID)
 ;
-CREATE INDEX IXFK_DecisionVariables_InputParameter
-	ON DecisionVariable (inputID)
-;
-ALTER TABLE DecisionVariable
-	ADD CONSTRAINT UQ_DecisionVariable_scenGenID UNIQUE (scenGenID, inputID)
+CREATE INDEX IXFK_DecisionVariable_Type
+	ON DecisionVariable (typeID)
 ;
 CREATE INDEX IXFK_ExtParam_Unit
 	ON ExtParam (unitID)
@@ -535,10 +568,10 @@ CREATE INDEX IXFK_ExtParam_Project
 	ON ExtParam (prjID)
 ;
 ALTER TABLE ExtParam
-	ADD CONSTRAINT UQ_ExtParam_extParamName UNIQUE (extParamName, prjID)
+	ADD CONSTRAINT UQ_ExtParam_extParamName UNIQUE (name, prjID)
 ;
 CREATE INDEX IXFK_ExtParam_TimeSeries
-	ON ExtParam (defTSeriesID)
+	ON ExtParam (defaultTimeSeries)
 ;
 CREATE INDEX IXFK_ExtParamVal_ExtParam
 	ON ExtParamVal (extParamID)
@@ -546,14 +579,23 @@ CREATE INDEX IXFK_ExtParamVal_ExtParam
 CREATE INDEX IXFK_ExtParamVal_TimeSeries
 	ON ExtParamVal (tSeriesID)
 ;
-CREATE INDEX IXFK_ExtParamVal_Scenario
-	ON ExtParamVal (scenID)
+CREATE INDEX IXFK_ExtParamVal_ScenarioMetrics
+	ON ExtParamVal (scenMetricID)
 ;
 CREATE INDEX IXFK_InputParameter_Components
 	ON InputParameter (componentID)
 ;
 CREATE INDEX IXFK_InputParameter_Unit
 	ON InputParameter (unidID)
+;
+CREATE INDEX IXFK_ScenarioDefinition_Scenario
+	ON InputParamVal (scenID)
+;
+CREATE INDEX IXFK_ScenarioDefinition_InputParameter
+	ON InputParamVal (inputID)
+;
+ALTER TABLE InputParamVal
+	ADD CONSTRAINT UQ_ScenarioDefinition_scenID UNIQUE (scenID, inputID)
 ;
 CREATE INDEX IXFK_Metric_Project
 	ON Metric (prjID)
@@ -564,14 +606,11 @@ CREATE INDEX IXFK_Metric_Unit
 CREATE INDEX IXFK_MetricVal_Metric
 	ON MetricVal (metID)
 ;
-CREATE INDEX IXFK_MetricVal_Scenario
-	ON MetricVal (scenID)
-;
-ALTER TABLE MetricVal
-	ADD CONSTRAINT UQ_MetricVal_metID UNIQUE (metID, scenID)
-;
 CREATE INDEX IXFK_MetricVal_TimeSeries
 	ON MetricVal (tSeriedID)
+;
+CREATE INDEX IXFK_MetricVal_ScenarioMetrics
+	ON MetricVal (scenMetricD)
 ;
 CREATE INDEX IXFK_ModelParameters_ScenarioGenerator
 	ON ModelParameter (scenGenID)
@@ -610,13 +649,13 @@ CREATE INDEX IXFK_OutputVariables_Components
 	ON OutputVariable (componentID)
 ;
 ALTER TABLE Project
-	ADD CONSTRAINT UQ_Project_prjName UNIQUE (prjName)
+	ADD CONSTRAINT UQ_Project_prjName UNIQUE (name)
 ;
 CREATE INDEX IXFK_Project_SimulationModel
 	ON Project (modelID)
 ;
 ALTER TABLE Scenario
-	ADD CONSTRAINT UQ_Scenario_prjID UNIQUE (prjID, scenName)
+	ADD CONSTRAINT UQ_Scenario_prjID UNIQUE (prjID, name)
 ;
 CREATE INDEX IXFK_Scenario_Project
 	ON Scenario (prjID)
@@ -624,20 +663,17 @@ CREATE INDEX IXFK_Scenario_Project
 CREATE INDEX IXFK_Scenario_ScenarioGenerator
 	ON Scenario (scenGenID)
 ;
-CREATE INDEX IXFK_ScenarioDefinition_Scenario
-	ON ScenarioDefinition (scenID)
-;
-CREATE INDEX IXFK_ScenarioDefinition_InputParameter
-	ON ScenarioDefinition (inputID)
-;
-ALTER TABLE ScenarioDefinition
-	ADD CONSTRAINT UQ_ScenarioDefinition_scenID UNIQUE (scenID, inputID)
-;
 CREATE INDEX IXFK_ScenarioGenerator_Project
 	ON ScenarioGenerator (prjID)
 ;
 CREATE INDEX IXFK_ScenarioGenerator_Algorithm
 	ON ScenarioGenerator (algorithmID)
+;
+ALTER TABLE ScenarioMetrics
+	ADD CONSTRAINT UQ_ScenarioMetrics_scenID UNIQUE (scenID)
+;
+CREATE INDEX IXFK_ScenarioMetrics_Scenario
+	ON ScenarioMetrics (scenID)
 ;
 CREATE INDEX IXFK_OptFunctions_ObjectiveFunction
 	ON ScenGenObjectiveFunction (optFunctionID)
@@ -676,16 +712,16 @@ CREATE INDEX IXFK_TimeSeriesVal_TimeSeries
 	ON TimeSeriesVal (tSeriesID)
 ;
 ALTER TABLE Type
-	ADD CONSTRAINT UQ_Type_typeName UNIQUE (typeName)
+	ADD CONSTRAINT UQ_Type_typeName UNIQUE (name)
 ;
 ALTER TABLE Unit
-	ADD CONSTRAINT UQ_Unit_unitName UNIQUE (unitName)
+	ADD CONSTRAINT UQ_Unit_unitName UNIQUE (name)
 ;
 CREATE INDEX IXFK_Unit_Type
 	ON Unit (typeID)
 ;
 ALTER TABLE UserGroup
-	ADD CONSTRAINT UQ_UserGroups_userGroupName UNIQUE (userGroupName)
+	ADD CONSTRAINT UQ_UserGroups_userGroupName UNIQUE (name)
 ;
 ALTER TABLE UserGroupProject
 	ADD CONSTRAINT UQ_UserGroupProject_prjID UNIQUE (prjID, userID)
@@ -701,6 +737,11 @@ CREATE INDEX IXFK_UserGroupProject_Project
 ;
 ALTER TABLE AlgoParam ADD CONSTRAINT PK_AlgorithmParams 
 	PRIMARY KEY (aParamsID)
+;
+
+
+ALTER TABLE AlgoParamVal ADD CONSTRAINT PK_AlgoParamVal 
+	PRIMARY KEY (aParamValID)
 ;
 
 
@@ -725,7 +766,7 @@ ALTER TABLE DataReliability ADD CONSTRAINT PK_DataQuality
 
 
 ALTER TABLE DecisionVariable ADD CONSTRAINT PK_DecisionVariables 
-	PRIMARY KEY (decisionVariableID)
+	PRIMARY KEY (decisionVarID)
 ;
 
 
@@ -741,6 +782,11 @@ ALTER TABLE ExtParamVal ADD CONSTRAINT PK_ExtParamVal
 
 ALTER TABLE InputParameter ADD CONSTRAINT PK_InputParameter 
 	PRIMARY KEY (inputID)
+;
+
+
+ALTER TABLE InputParamVal ADD CONSTRAINT PK_ScenarioDefinition 
+	PRIMARY KEY (scenDefinitionID)
 ;
 
 
@@ -794,13 +840,13 @@ ALTER TABLE Scenario ADD CONSTRAINT PK_Scenario
 ;
 
 
-ALTER TABLE ScenarioDefinition ADD CONSTRAINT PK_ScenarioDefinition 
-	PRIMARY KEY (scenDefinitionID)
+ALTER TABLE ScenarioGenerator ADD CONSTRAINT PK_ScenarioGenerator 
+	PRIMARY KEY (scenGenID)
 ;
 
 
-ALTER TABLE ScenarioGenerator ADD CONSTRAINT PK_ScenarioGenerator 
-	PRIMARY KEY (scenGenID)
+ALTER TABLE ScenarioMetrics ADD CONSTRAINT PK_ScenarioMetrics 
+	PRIMARY KEY (scenMetricID)
 ;
 
 
@@ -865,6 +911,14 @@ ALTER TABLE AlgoParam ADD CONSTRAINT FK_AlgorithmParams_Algorithm
 	FOREIGN KEY (algorithmID) REFERENCES Algorithm (algorithmID)
 ;
 
+ALTER TABLE AlgoParamVal ADD CONSTRAINT FK_AlgoParamVal_AlgoParam 
+	FOREIGN KEY (aParamsID) REFERENCES AlgoParam (aParamsID)
+;
+
+ALTER TABLE AlgoParamVal ADD CONSTRAINT FK_AlgoParamVal_ScenarioGenerator 
+	FOREIGN KEY (aScenGenID) REFERENCES ScenarioGenerator (scenGenID)
+;
+
 ALTER TABLE Component ADD CONSTRAINT FK_Components_Project 
 	FOREIGN KEY (prjID) REFERENCES Project (prjID)
 ;
@@ -873,8 +927,8 @@ ALTER TABLE DecisionVariable ADD CONSTRAINT FK_DecisionVariables_ScenarioGenerat
 	FOREIGN KEY (scenGenID) REFERENCES ScenarioGenerator (scenGenID)
 ;
 
-ALTER TABLE DecisionVariable ADD CONSTRAINT FK_DecisionVariables_InputParameter 
-	FOREIGN KEY (inputID) REFERENCES InputParameter (inputID)
+ALTER TABLE DecisionVariable ADD CONSTRAINT FK_DecisionVariable_Type 
+	FOREIGN KEY (typeID) REFERENCES Type (typeID)
 ;
 
 ALTER TABLE ExtParam ADD CONSTRAINT FK_ExtParam_Unit 
@@ -882,7 +936,7 @@ ALTER TABLE ExtParam ADD CONSTRAINT FK_ExtParam_Unit
 ;
 
 ALTER TABLE ExtParam ADD CONSTRAINT FK_ExtParam_TimeSeries 
-	FOREIGN KEY (defTSeriesID) REFERENCES TimeSeries (tSeriesID)
+	FOREIGN KEY (defaultTimeSeries) REFERENCES TimeSeries (tSeriesID)
 ;
 
 ALTER TABLE ExtParam ADD CONSTRAINT FK_ExtParam_Project 
@@ -897,8 +951,8 @@ ALTER TABLE ExtParamVal ADD CONSTRAINT FK_ExtParamVal_TimeSeries
 	FOREIGN KEY (tSeriesID) REFERENCES TimeSeries (tSeriesID)
 ;
 
-ALTER TABLE ExtParamVal ADD CONSTRAINT FK_ExtParamVal_Scenario 
-	FOREIGN KEY (scenID) REFERENCES Scenario (scenID)
+ALTER TABLE ExtParamVal ADD CONSTRAINT FK_ExtParamVal_ScenarioMetrics 
+	FOREIGN KEY (scenMetricID) REFERENCES ScenarioMetrics (scenMetricID)
 ;
 
 ALTER TABLE InputParameter ADD CONSTRAINT FK_InputParameter_Components 
@@ -907,6 +961,14 @@ ALTER TABLE InputParameter ADD CONSTRAINT FK_InputParameter_Components
 
 ALTER TABLE InputParameter ADD CONSTRAINT FK_InputParameter_Unit 
 	FOREIGN KEY (unidID) REFERENCES Unit (unitID)
+;
+
+ALTER TABLE InputParamVal ADD CONSTRAINT FK_ScenarioDefinition_Scenario 
+	FOREIGN KEY (scenID) REFERENCES Scenario (scenID)
+;
+
+ALTER TABLE InputParamVal ADD CONSTRAINT FK_ScenarioDefinition_InputParameter 
+	FOREIGN KEY (inputID) REFERENCES InputParameter (inputID)
 ;
 
 ALTER TABLE Metric ADD CONSTRAINT FK_Metric_Project 
@@ -921,12 +983,12 @@ ALTER TABLE MetricVal ADD CONSTRAINT FK_MetricVal_Metric
 	FOREIGN KEY (metID) REFERENCES Metric (metID)
 ;
 
-ALTER TABLE MetricVal ADD CONSTRAINT FK_MetricVal_Scenario 
-	FOREIGN KEY (scenID) REFERENCES Scenario (scenID)
-;
-
 ALTER TABLE MetricVal ADD CONSTRAINT FK_MetricVal_TimeSeries 
 	FOREIGN KEY (tSeriedID) REFERENCES TimeSeries (tSeriesID)
+;
+
+ALTER TABLE MetricVal ADD CONSTRAINT FK_MetricVal_ScenarioMetrics 
+	FOREIGN KEY (scenMetricD) REFERENCES ScenarioMetrics (scenMetricID)
 ;
 
 ALTER TABLE ModelParameter ADD CONSTRAINT FK_ModelParameters_ScenarioGenerator 
@@ -981,20 +1043,16 @@ ALTER TABLE Scenario ADD CONSTRAINT FK_Scenario_ScenarioGenerator
 	FOREIGN KEY (scenGenID) REFERENCES ScenarioGenerator (scenGenID)
 ;
 
-ALTER TABLE ScenarioDefinition ADD CONSTRAINT FK_ScenarioDefinition_Scenario 
-	FOREIGN KEY (scenID) REFERENCES Scenario (scenID)
-;
-
-ALTER TABLE ScenarioDefinition ADD CONSTRAINT FK_ScenarioDefinition_InputParameter 
-	FOREIGN KEY (inputID) REFERENCES InputParameter (inputID)
-;
-
 ALTER TABLE ScenarioGenerator ADD CONSTRAINT FK_ScenarioGenerator_Project 
 	FOREIGN KEY (prjID) REFERENCES Project (prjID)
 ;
 
 ALTER TABLE ScenarioGenerator ADD CONSTRAINT FK_ScenarioGenerator_Algorithm 
 	FOREIGN KEY (algorithmID) REFERENCES Algorithm (algorithmID)
+;
+
+ALTER TABLE ScenarioMetrics ADD CONSTRAINT FK_ScenarioMetrics_Scenario 
+	FOREIGN KEY (scenID) REFERENCES Scenario (scenID)
 ;
 
 ALTER TABLE ScenGenObjectiveFunction ADD CONSTRAINT FK_OptFunctions_ObjectiveFunction 

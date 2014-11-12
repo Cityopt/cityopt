@@ -48,8 +48,8 @@ public class ProjectRepositoryTest {
 		projectRepository.deleteAll();
 		
 		Project project = new Project();
-		project.setPrjname("Project 1");
-		project.setPrjlocation("Vienna");
+		project.setName("Project 1");
+		project.setLocation("Vienna");
 		
 		projectRepository.saveAndFlush(project);
 	}
@@ -66,8 +66,8 @@ public class ProjectRepositoryTest {
 	public void CreateProject()
 	{	
 		Project project = new Project();
-		project.setPrjname("Project 2");
-		project.setPrjlocation("Vienna");
+		project.setName("Project 2");
+		project.setLocation("Vienna");
 		
 		int id = project.getPrjid();
 		
@@ -84,10 +84,10 @@ public class ProjectRepositoryTest {
 		List<Project> projects = projectRepository.findByName("Project 1");
 		
 		Project fproject = projects.get(0);
-		location = fproject.getPrjlocation();
-		fproject.setPrjlocation("Graz");
+		location = fproject.getLocation();
+		fproject.setLocation("Graz");
 		
-		assertNotEquals(location,fproject.getPrjlocation());	
+		assertNotEquals(location,fproject.getLocation());	
 	}	
 	
 		

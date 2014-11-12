@@ -66,17 +66,17 @@ public class UserGroupProjectRepositoryTest {
 		projectRepository.deleteAll();
 		
 		Project project = new Project();
-		project.setPrjname("My test project");
+		project.setName("My test project");
 		
 		projectRepository.save(project);
 		
 		Usergroup usergroup = new Usergroup();
-		usergroup.setUsergroupname("Administrator");
+		usergroup.setName("Administrator");
 		
 		userGroupRepository.save(usergroup);
 		
 		Appuser appuser = new Appuser();
-		appuser.setUsername("Flo");		
+		appuser.setName("Flo");		
 		
 		userRepository.save(appuser);
 		
@@ -112,17 +112,17 @@ public class UserGroupProjectRepositoryTest {
 	public void CreateUserGroupRelation2() {
 		
 		Project project = new Project();
-		project.setPrjname("My test project 2");
+		project.setName("My test project 2");
 		
 		projectRepository.saveAndFlush(project);
 		
 		Usergroup usergroup = new Usergroup();
-		usergroup.setUsergroupname("Viewer");
+		usergroup.setName("Viewer");
 		
 		userGroupRepository.save(usergroup);
 		
 		Appuser appuser = new Appuser();
-		appuser.setUsername("Detlef");		
+		appuser.setName("Detlef");		
 		
 		Usergroupproject usergroupproject = new Usergroupproject();
 		
@@ -153,12 +153,12 @@ public class UserGroupProjectRepositoryTest {
 		userGroupProjectRepository.saveAndFlush(usergroupproject);
 		
 		Project project = new Project();
-		project.setPrjname("New interesting project");
+		project.setName("New interesting project");
 		
-		String before = usergroupproject.getProject().getPrjname();
+		String before = usergroupproject.getProject().getName();
 		usergroupproject.setProject(project);
 						
-		assertNotEquals(before,usergroupproject.getProject().getPrjname());
+		assertNotEquals(before,usergroupproject.getProject().getName());
 	}
 	
 	

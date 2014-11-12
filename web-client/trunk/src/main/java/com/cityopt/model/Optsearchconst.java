@@ -1,6 +1,6 @@
 package com.cityopt.model;
 
-// Generated 14.10.2014 08:53:28 by Hibernate Tools 4.0.0
+// Generated 12.11.2014 10:44:23 by Hibernate Tools 4.0.0
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +10,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -23,22 +31,20 @@ import javax.persistence.UniqueConstraint;
 public class Optsearchconst implements java.io.Serializable {
 
 	private long optsearchconstid;
-	private Searchconstraint searchconstraint;
 	private Optimizationset optimizationset;
+	private Searchconstraint searchconstraint;
 
 	public Optsearchconst() {
 	}
 
 	public Optsearchconst(long optsearchconstid,
-			Searchconstraint searchconstraint, Optimizationset optimizationset) {
+			Optimizationset optimizationset, Searchconstraint searchconstraint) {
 		this.optsearchconstid = optsearchconstid;
-		this.searchconstraint = searchconstraint;
 		this.optimizationset = optimizationset;
+		this.searchconstraint = searchconstraint;
 	}
 
-	@SequenceGenerator(name="optsearchconst_optsearchconstid_seq",sequenceName="optsearchconst_optsearchconstid_seq")
-	  @GeneratedValue(strategy = GenerationType.SEQUENCE,
-    generator="optsearchconst_optsearchconstid_seq")
+	@SequenceGenerator(name="optsearchconst_optsearchconstid_seq",sequenceName="optsearchconst_optsearchconstid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="optsearchconst_optsearchconstid_seq")
 	@Id
 	@Column(name = "optsearchconstid", unique = true, nullable = false)
 	public long getOptsearchconstid() {
@@ -50,16 +56,6 @@ public class Optsearchconst implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "scid", nullable = false)
-	public Searchconstraint getSearchconstraint() {
-		return this.searchconstraint;
-	}
-
-	public void setSearchconstraint(Searchconstraint searchconstraint) {
-		this.searchconstraint = searchconstraint;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "optid", nullable = false)
 	public Optimizationset getOptimizationset() {
 		return this.optimizationset;
@@ -67,6 +63,16 @@ public class Optsearchconst implements java.io.Serializable {
 
 	public void setOptimizationset(Optimizationset optimizationset) {
 		this.optimizationset = optimizationset;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "scid", nullable = false)
+	public Searchconstraint getSearchconstraint() {
+		return this.searchconstraint;
+	}
+
+	public void setSearchconstraint(Searchconstraint searchconstraint) {
+		this.searchconstraint = searchconstraint;
 	}
 
 }

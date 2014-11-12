@@ -1,6 +1,6 @@
 package com.cityopt.model;
 
-// Generated 14.10.2014 08:53:28 by Hibernate Tools 4.0.0
+// Generated 12.11.2014 10:44:23 by Hibernate Tools 4.0.0
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -24,39 +24,37 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "component", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"prjid", "componentname" }))
+		"prjid", "name" }))
 public class Component implements java.io.Serializable {
 
 	private int componentid;
 	private Project project;
-	private String componentname;
-	private Serializable componentgeom;
+	private String name;
+	private Serializable geometryblob;
 	private Set<Inputparameter> inputparameters = new HashSet<Inputparameter>(0);
 	private Set<Outputvariable> outputvariables = new HashSet<Outputvariable>(0);
 
 	public Component() {
 	}
 
-	public Component(int componentid, Project project, String componentname) {
+	public Component(int componentid, Project project, String name) {
 		this.componentid = componentid;
 		this.project = project;
-		this.componentname = componentname;
+		this.name = name;
 	}
 
-	public Component(int componentid, Project project, String componentname,
-			Serializable componentgeom, Set<Inputparameter> inputparameters,
+	public Component(int componentid, Project project, String name,
+			Serializable geometryblob, Set<Inputparameter> inputparameters,
 			Set<Outputvariable> outputvariables) {
 		this.componentid = componentid;
 		this.project = project;
-		this.componentname = componentname;
-		this.componentgeom = componentgeom;
+		this.name = name;
+		this.geometryblob = geometryblob;
 		this.inputparameters = inputparameters;
 		this.outputvariables = outputvariables;
 	}
 
-	@SequenceGenerator(name="component_componentid_seq",sequenceName="component_componentid_seq")
-	  @GeneratedValue(strategy = GenerationType.SEQUENCE,
-    generator="component_componentid_seq")
+	@SequenceGenerator(name="component_componentid_seq",sequenceName="component_componentid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="component_componentid_seq")
 	@Id
 	@Column(name = "componentid", unique = true, nullable = false)
 	public int getComponentid() {
@@ -77,22 +75,22 @@ public class Component implements java.io.Serializable {
 		this.project = project;
 	}
 
-	@Column(name = "componentname", nullable = false, length = 50)
-	public String getComponentname() {
-		return this.componentname;
+	@Column(name = "name", nullable = false, length = 50)
+	public String getName() {
+		return this.name;
 	}
 
-	public void setComponentname(String componentname) {
-		this.componentname = componentname;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	@Column(name = "componentgeom")
-	public Serializable getComponentgeom() {
-		return this.componentgeom;
+	@Column(name = "geometryblob")
+	public Serializable getGeometryblob() {
+		return this.geometryblob;
 	}
 
-	public void setComponentgeom(Serializable componentgeom) {
-		this.componentgeom = componentgeom;
+	public void setGeometryblob(Serializable geometryblob) {
+		this.geometryblob = geometryblob;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component")

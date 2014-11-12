@@ -1,11 +1,11 @@
 package com.cityopt.model;
 
-// Generated 14.10.2014 08:53:28 by Hibernate Tools 4.0.0
+// Generated 12.11.2014 10:44:23 by Hibernate Tools 4.0.0
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,61 +26,59 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "scenario", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"prjid", "scenname" }))
+		"prjid", "name" }))
 public class Scenario implements java.io.Serializable {
 
 	private int scenid;
-	private Scenariogenerator scenariogenerator;
 	private Project project;
-	private String scenname;
-	private String scendesc;
+	private Scenariogenerator scenariogenerator;
+	private String name;
+	private String description;
 	private Date createdon;
 	private Date updatedon;
 	private Integer createdby;
 	private Integer updatedby;
-	private Set<Metricval> metricvals = new HashSet<Metricval>(0);
-	private Set<Simulationresult> simulationresults = new HashSet<Simulationresult>(
+	private Set<Scenariometrics> scenariometricses = new HashSet<Scenariometrics>(
 			0);
-	private Set<Scenariodefinition> scenariodefinitions = new HashSet<Scenariodefinition>(
-			0);
+	private Set<Inputparamval> inputparamvals = new HashSet<Inputparamval>(0);
 	private Set<Optimizationset> optimizationsets = new HashSet<Optimizationset>(
 			0);
-	private Set<Extparamval> extparamvals = new HashSet<Extparamval>(0);
+	private Set<Simulationresult> simulationresults = new HashSet<Simulationresult>(
+			0);
 
 	public Scenario() {
 	}
 
-	public Scenario(int scenid, Project project, String scenname) {
+	public Scenario(int scenid, Project project, String name) {
 		this.scenid = scenid;
 		this.project = project;
-		this.scenname = scenname;
+		this.name = name;
 	}
 
-	public Scenario(int scenid, Scenariogenerator scenariogenerator,
-			Project project, String scenname, String scendesc, Date createdon,
-			Date updatedon, Integer createdby, Integer updatedby,
-			Set<Metricval> metricvals, Set<Simulationresult> simulationresults,
-			Set<Scenariodefinition> scenariodefinitions,
-			Set<Optimizationset> optimizationsets, Set<Extparamval> extparamvals) {
+	public Scenario(int scenid, Project project,
+			Scenariogenerator scenariogenerator, String name,
+			String description, Date createdon, Date updatedon,
+			Integer createdby, Integer updatedby,
+			Set<Scenariometrics> scenariometricses,
+			Set<Inputparamval> inputparamvals,
+			Set<Optimizationset> optimizationsets,
+			Set<Simulationresult> simulationresults) {
 		this.scenid = scenid;
-		this.scenariogenerator = scenariogenerator;
 		this.project = project;
-		this.scenname = scenname;
-		this.scendesc = scendesc;
+		this.scenariogenerator = scenariogenerator;
+		this.name = name;
+		this.description = description;
 		this.createdon = createdon;
 		this.updatedon = updatedon;
 		this.createdby = createdby;
 		this.updatedby = updatedby;
-		this.metricvals = metricvals;
-		this.simulationresults = simulationresults;
-		this.scenariodefinitions = scenariodefinitions;
+		this.scenariometricses = scenariometricses;
+		this.inputparamvals = inputparamvals;
 		this.optimizationsets = optimizationsets;
-		this.extparamvals = extparamvals;
+		this.simulationresults = simulationresults;
 	}
 
-	@SequenceGenerator(name="scenario_scenid_seq",sequenceName="scenario_scenid_seq")
-	  @GeneratedValue(strategy = GenerationType.SEQUENCE,
-    generator="scenario_scenid_seq")
+	@SequenceGenerator(name="scenario_scenid_seq",sequenceName="scenario_scenid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="scenario_scenid_seq")
 	@Id
 	@Column(name = "scenid", unique = true, nullable = false)
 	public int getScenid() {
@@ -89,16 +87,6 @@ public class Scenario implements java.io.Serializable {
 
 	public void setScenid(int scenid) {
 		this.scenid = scenid;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "scengenid")
-	public Scenariogenerator getScenariogenerator() {
-		return this.scenariogenerator;
-	}
-
-	public void setScenariogenerator(Scenariogenerator scenariogenerator) {
-		this.scenariogenerator = scenariogenerator;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -111,22 +99,32 @@ public class Scenario implements java.io.Serializable {
 		this.project = project;
 	}
 
-	@Column(name = "scenname", nullable = false, length = 50)
-	public String getScenname() {
-		return this.scenname;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "scengenid")
+	public Scenariogenerator getScenariogenerator() {
+		return this.scenariogenerator;
 	}
 
-	public void setScenname(String scenname) {
-		this.scenname = scenname;
+	public void setScenariogenerator(Scenariogenerator scenariogenerator) {
+		this.scenariogenerator = scenariogenerator;
 	}
 
-	@Column(name = "scendesc", length = 500)
-	public String getScendesc() {
-		return this.scendesc;
+	@Column(name = "name", nullable = false, length = 50)
+	public String getName() {
+		return this.name;
 	}
 
-	public void setScendesc(String scendesc) {
-		this.scendesc = scendesc;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Column(name = "description")
+	public String getDescription() {
+		return this.description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -168,31 +166,21 @@ public class Scenario implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
-	public Set<Metricval> getMetricvals() {
-		return this.metricvals;
+	public Set<Scenariometrics> getScenariometricses() {
+		return this.scenariometricses;
 	}
 
-	public void setMetricvals(Set<Metricval> metricvals) {
-		this.metricvals = metricvals;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
-	public Set<Simulationresult> getSimulationresults() {
-		return this.simulationresults;
-	}
-
-	public void setSimulationresults(Set<Simulationresult> simulationresults) {
-		this.simulationresults = simulationresults;
+	public void setScenariometricses(Set<Scenariometrics> scenariometricses) {
+		this.scenariometricses = scenariometricses;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
-	public Set<Scenariodefinition> getScenariodefinitions() {
-		return this.scenariodefinitions;
+	public Set<Inputparamval> getInputparamvals() {
+		return this.inputparamvals;
 	}
 
-	public void setScenariodefinitions(
-			Set<Scenariodefinition> scenariodefinitions) {
-		this.scenariodefinitions = scenariodefinitions;
+	public void setInputparamvals(Set<Inputparamval> inputparamvals) {
+		this.inputparamvals = inputparamvals;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
@@ -205,12 +193,12 @@ public class Scenario implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
-	public Set<Extparamval> getExtparamvals() {
-		return this.extparamvals;
+	public Set<Simulationresult> getSimulationresults() {
+		return this.simulationresults;
 	}
 
-	public void setExtparamvals(Set<Extparamval> extparamvals) {
-		this.extparamvals = extparamvals;
+	public void setSimulationresults(Set<Simulationresult> simulationresults) {
+		this.simulationresults = simulationresults;
 	}
 
 }

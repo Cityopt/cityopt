@@ -20,6 +20,6 @@ import com.cityopt.model.Simulationmodel;
 @Repository
 public interface SimulationModelRepository extends JpaRepository<Simulationmodel,Integer>{
 	
-	@Query("select s from Simulationmodel s where Lower(s.modeldesc) like CONCAT('%',Lower(:modelDesc),'%')")
+	@Query("select s from Simulationmodel s where Lower(s.description) like CONCAT('%',Lower(:modelDesc),'%')")
 	List<Simulationmodel> findByDescription(@Param("modelDesc") String modelDescription);
 }

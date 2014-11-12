@@ -72,8 +72,8 @@ public class SimulationModelRepositoryTest {
 
 		Simulationmodel model = new Simulationmodel();
 		model.setModelblob(tmpModelarr);
-		model.setModelsimulator("APROS");
-		model.setModeldesc("My first model");
+		model.setSimulator("APROS");
+		model.setDescription("My first model");
 
 		simulationModelRepository.saveAndFlush(model);
 	
@@ -94,8 +94,8 @@ public class SimulationModelRepositoryTest {
 
 		Simulationmodel model = new Simulationmodel();
 		model.setModelblob(tmpModelarr);
-		model.setModelsimulator("APROS");
-		model.setModeldesc("My second model");
+		model.setSimulator("APROS");
+		model.setDescription("My second model");
 
 		simulationModelRepository.saveAndFlush(model);
 		
@@ -109,9 +109,9 @@ public class SimulationModelRepositoryTest {
 		String modelDesc= "My first model";		
 						
 		Simulationmodel model = simulationModelRepository.findByDescription(modelDesc).get(0);
-		model.setModeldesc("Model third updated");
+		model.setDescription("Model third updated");
 		
-		assertNotEquals(modelDesc, model.getModeldesc());
+		assertNotEquals(modelDesc, model.getDescription());
 		
 	}
 
@@ -122,8 +122,8 @@ public class SimulationModelRepositoryTest {
 		String modelDesc= "My first model";
 				
 		Project project = new Project();
-		project.setPrjname("Project 10");
-		project.setPrjlocation("Wien");
+		project.setName("Project 10");
+		project.setLocation("Wien");
 		
 		projectRepository.saveAndFlush(project);
 		
