@@ -1,6 +1,5 @@
 package com.pluralsight.model;
 
-import javax.persistence.Entity;
 
 public class Activity {
 

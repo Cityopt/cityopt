@@ -1,6 +1,6 @@
 package com.cityopt.model;
 
-// Generated 12.11.2014 10:44:23 by Hibernate Tools 4.0.0
+// Generated 13.11.2014 15:13:00 by Hibernate Tools 4.0.0
 
 import java.util.HashSet;
 import java.util.Set;

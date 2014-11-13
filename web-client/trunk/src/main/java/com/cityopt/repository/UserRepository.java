@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.cityopt.model.Appuser;
-import com.cityopt.model.Simulationmodel;
 
 @Repository("userRepository")
 public interface UserRepository extends JpaRepository<Appuser,Integer> {

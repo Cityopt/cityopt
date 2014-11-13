@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cityopt.model.Simulationmodel;
-import com.cityopt.repository.ProjectRepository;
 import com.cityopt.repository.SimulationModelRepository;
 
 	@Service("SimulationModelService")

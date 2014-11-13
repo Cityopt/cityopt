@@ -34,6 +34,14 @@ DROP TABLE IF EXISTS ExtParamVal CASCADE
 ;
 DROP SEQUENCE IF EXISTS ExtParamVal_extParamValID_seq
 ;
+DROP TABLE IF EXISTS ExtParamValScenGen CASCADE
+;
+DROP SEQUENCE IF EXISTS ExtParamValScenGen_id_seq
+;
+DROP TABLE IF EXISTS ExtParamValScenMetric CASCADE
+;
+DROP SEQUENCE IF EXISTS ExtParamValScenMetric_id_seq
+;
 DROP TABLE IF EXISTS InputParameter CASCADE
 ;
 DROP SEQUENCE IF EXISTS InputParameter_inputID_seq
@@ -227,10 +235,29 @@ CREATE SEQUENCE ExtParamVal_extParamValID_seq INCREMENT 1 START 1
 
 CREATE TABLE ExtParamVal ( 
 	extParamValID integer DEFAULT nextval(('ExtParamVal_extParamValID_seq'::text)::regclass) NOT NULL,
-	scenMetricID integer,
 	extParamID integer,
 	value text,
 	tSeriesID integer
+)
+;
+
+CREATE SEQUENCE ExtParamValScenGen_id_seq INCREMENT 1 START 1
+;
+
+CREATE TABLE ExtParamValScenGen ( 
+	id integer DEFAULT nextval(('ExtParamValScenGen_id_seq'::text)::regclass) NOT NULL,
+	scenMetricID integer,
+	scenGenID integer
+)
+;
+
+CREATE SEQUENCE ExtParamValScenMetric_id_seq INCREMENT 1 START 1
+;
+
+CREATE TABLE ExtParamValScenMetric ( 
+	id integer DEFAULT nextval(('ExtParamValScenMetric_id_seq'::text)::regclass) NOT NULL,
+	scenMetricID integer,
+	extParamValID integer
 )
 ;
 
@@ -579,8 +606,17 @@ CREATE INDEX IXFK_ExtParamVal_ExtParam
 CREATE INDEX IXFK_ExtParamVal_TimeSeries
 	ON ExtParamVal (tSeriesID)
 ;
-CREATE INDEX IXFK_ExtParamVal_ScenarioMetrics
-	ON ExtParamVal (scenMetricID)
+CREATE INDEX IXFK_extParamValScenGen_ScenarioMetrics
+	ON ExtParamValScenGen (scenMetricID)
+;
+CREATE INDEX IXFK_extParamValScenGen_ScenarioGenerator
+	ON ExtParamValScenGen (scenGenID)
+;
+CREATE INDEX IXFK_extParamValScenMetric_ScenarioMetrics
+	ON ExtParamValScenMetric (scenMetricID)
+;
+CREATE INDEX IXFK_extParamValScenMetric_ExtParamVal
+	ON ExtParamValScenMetric (extParamValID)
 ;
 CREATE INDEX IXFK_InputParameter_Components
 	ON InputParameter (componentID)
@@ -780,6 +816,16 @@ ALTER TABLE ExtParamVal ADD CONSTRAINT PK_ExtParamVal
 ;
 
 
+ALTER TABLE ExtParamValScenGen ADD CONSTRAINT PK_extParamValScenGen 
+	PRIMARY KEY (id)
+;
+
+
+ALTER TABLE ExtParamValScenMetric ADD CONSTRAINT PK_extParamValScenMetric 
+	PRIMARY KEY (id)
+;
+
+
 ALTER TABLE InputParameter ADD CONSTRAINT PK_InputParameter 
 	PRIMARY KEY (inputID)
 ;
@@ -951,8 +997,20 @@ ALTER TABLE ExtParamVal ADD CONSTRAINT FK_ExtParamVal_TimeSeries
 	FOREIGN KEY (tSeriesID) REFERENCES TimeSeries (tSeriesID)
 ;
 
-ALTER TABLE ExtParamVal ADD CONSTRAINT FK_ExtParamVal_ScenarioMetrics 
+ALTER TABLE ExtParamValScenGen ADD CONSTRAINT FK_extParamValScenGen_ScenarioMetrics 
 	FOREIGN KEY (scenMetricID) REFERENCES ScenarioMetrics (scenMetricID)
+;
+
+ALTER TABLE ExtParamValScenGen ADD CONSTRAINT FK_extParamValScenGen_ScenarioGenerator 
+	FOREIGN KEY (scenGenID) REFERENCES ScenarioGenerator (scenGenID)
+;
+
+ALTER TABLE ExtParamValScenMetric ADD CONSTRAINT FK_extParamValScenMetric_ScenarioMetrics 
+	FOREIGN KEY (scenMetricID) REFERENCES ScenarioMetrics (scenMetricID)
+;
+
+ALTER TABLE ExtParamValScenMetric ADD CONSTRAINT FK_extParamValScenMetric_ExtParamVal 
+	FOREIGN KEY (extParamValID) REFERENCES ExtParamVal (extParamValID)
 ;
 
 ALTER TABLE InputParameter ADD CONSTRAINT FK_InputParameter_Components 
