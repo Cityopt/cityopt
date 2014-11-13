@@ -1,8 +1,6 @@
 package eu.cityopt.sim.runner;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -14,14 +12,21 @@ import org.apache.commons.cli.*;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.simantics.experiment.client.Experiment;
-import org.simantics.experiment.client.ExperimentJob;
-import org.simantics.experiment.client.SimulationServer;
-import org.simantics.experiment.core.common.ExperimentException;
-import org.simantics.experiment.core.directory.IDirectory;
-import org.simantics.experiment.core.directory.MapDirectory;
-import org.simantics.experiment.core.file.IFile;
-import org.simantics.experiment.core.file.LocalFile;
+import org.simantics.simulation.scheduling.Experiment;
+import org.simantics.simulation.scheduling.Job;
+import org.simantics.simulation.scheduling.JobConfiguration;
+import org.simantics.simulation.scheduling.Server;
+import org.simantics.simulation.scheduling.ServerFactory;
+import org.simantics.simulation.scheduling.applications.Application;
+import org.simantics.simulation.scheduling.applications.ProfileApplication;
+import org.simantics.simulation.scheduling.files.FileSelector;
+import org.simantics.simulation.scheduling.files.IDirectory;
+import org.simantics.simulation.scheduling.files.IFile;
+import org.simantics.simulation.scheduling.files.LocalDirectory;
+import org.simantics.simulation.scheduling.files.MemoryDirectory;
+import org.simantics.simulation.scheduling.status.JobFinished;
+import org.simantics.simulation.scheduling.status.StatusLoggingUtils;
+import org.simantics.simulation.scheduling.status.StatusWaitingUtils;
 
 /**
  * This class controls all aspects of the application's execution
@@ -29,11 +34,12 @@ import org.simantics.experiment.core.file.LocalFile;
 public class SimRunner implements IApplication {
     private String
         appname = "simrun",
-        server = "zk:localhost:2181",
         dirname = ".",
         profile = "Apros-N3D-5.13.06-64bit",
         resfile = "results.dat";
-    private int runs = 1;
+    private int
+        cores = 1,
+        runs = 1;
 
     @Override
     public Object start(IApplicationContext context) throws Exception {
@@ -42,65 +48,81 @@ public class SimRunner implements IApplication {
         if (files == null)
             //return 1;
             return IApplication.EXIT_OK;
-        System.out.println("Server: " + server);
         Path fdir = Paths.get(dirname);
-        MapDirectory mdir = new MapDirectory();
+        Path pdir = Paths.get(profile);
+        String pname = pdir.getFileName().toString();
+        MemoryDirectory mdir = new MemoryDirectory();
         for (String f : files)
-            mdir.put(f, new LocalFile(fdir.resolve(f).toFile()));
-        SimulationServer srv = new SimulationServer(server);
-        Experiment experiment = srv.createExperiment(
-                new HashMap<String, Object>());
+            mdir.addFile(fdir.resolve(f));
+        try (TempDir tmp = new TempDir("ss")) {
+            System.out.println("TempDir: " + tmp.path
+                               + "\nProfile: " + pdir);
+            Server srv = ServerFactory.createLocalServer(tmp.path);
+            srv.installProfile(pname, new LocalDirectory(pdir));
+            {
+                Map<String, String> p = new HashMap<String, String>();
+                p.put("type", "local");
+                p.put("cpu", String.valueOf(cores));
+                srv.createNode(p);
+            }
+            StatusLoggingUtils.logServerStatus(System.out, srv);
 
-        waitJobs(startJobs(experiment, files[0], mdir));
+            Experiment experiment = srv.createExperiment(
+                    new HashMap<String, String>());
 
-        experiment.remove();
-        srv.dispose();
+            //TODO
 
+            waitJobs(startJobs(experiment, pname, files[0], mdir));
+
+            experiment.dispose();
+            srv.dispose();
+        }
         return IApplication.EXIT_OK;
     }
 
-    private List<ExperimentJob> startJobs(Experiment experiment, String script,
-                                          MapDirectory mdir)
-            throws ExperimentException {
-        List<ExperimentJob> jobs = new ArrayList<ExperimentJob>();
-
+    private List<Job> startJobs(
+            Experiment experiment, String profile, String script,
+            MemoryDirectory mdir) {
+        Application launcher = new ProfileApplication(profile, "Launcher.exe");
+        FileSelector res_sel = new FileSelector(resfile); 
+        List<Job> jobs = new ArrayList<Job>();
         for (int i = 0; i != runs; ++i) {
-            Map<String, Object> jobDescription = new HashMap<String, Object>();
-            jobDescription.put("launcher", "profile");
-            jobDescription.put("profile", profile);
-            String[] cmdParameters = {
-                    script, String.valueOf(i)
-            };
-            jobDescription.put("parameters", cmdParameters);
-            jobDescription.put("inputFiles", experiment.put(mdir));
-            jobDescription.put("outputFiles", resfile);
-            jobs.add(experiment.createJob(jobDescription));
+            JobConfiguration conf = new JobConfiguration(
+                    launcher,
+                    new String[] {script, String.valueOf(i)},
+                    mdir,
+                    res_sel);
+            Job job = experiment.createJob(
+                    String.format("job_%02d", i), conf); 
+            StatusLoggingUtils.redirectJobLog(job, System.out);
+            jobs.add(job);
         }
+        experiment.start();
         return jobs;
     }
 
-    private void waitJobs(List<ExperimentJob> jobs)
-            throws ExperimentException, IOException {
+    private void waitJobs(List<Job> jobs)
+            throws IOException, InterruptedException {
         for(int i = 0; i != runs; ++i) {
-            IDirectory result = jobs.get(i).getResult();
-            IFile r = result.getFile(resfile);
-            try (OutputStream ostr = new FileOutputStream(
-                    String.format("%02d-%s", i, resfile))) {
-                r.copyTo(ostr);
+            Job job = jobs.get(i);
+            JobFinished st = StatusWaitingUtils.waitFor(job);
+            System.out.printf("Job %i: %s\n", i, st);
+            IDirectory resdir = st.outputDirectory;
+            for (Map.Entry<String, IFile> kv : resdir.files().entrySet()) {
+                kv.getValue().writeTo(
+                        Paths.get(String.format("%02d-%s", i, kv.getKey())));
             }
         }
     }
 
     private String[] parseArgs(String[] args) {
         Options opts = new Options();
-        Option opt = new Option("s", "server", true, "Server connection");
-        opt.setArgName("zk:server:port");
-        opts.addOption(opt);
+        Option opt;
         opt = new Option("d", "directory", true, "Input file directory");
         opt.setArgName("dir");
         opts.addOption(opt);
-        opt = new Option("p", "profile", true, "Apros profile");
-        opt.setArgName("prof");
+        opt = new Option("p", "profile", true, "Apros profile directory");
+        opt.setArgName("dir");
         opts.addOption(opt);
         opt = new Option("r", "results", true, "Result file");
         opt.setArgName("file");
@@ -108,12 +130,13 @@ public class SimRunner implements IApplication {
         opt = new Option("n", "runs", true, "Number of runs");
         opt.setArgName("num");
         opts.addOption(opt);
+        opt = new Option("c", "cores", true, "Number of CPU cores");
+        opt.setArgName("num");
+        opts.addOption(opt);
         try {
             CommandLineParser parser = new GnuParser();
             CommandLine cline = parser.parse(opts, args);
             String s;
-            if ((s = cline.getOptionValue("server")) != null)
-                server = s;
             if ((s = cline.getOptionValue("directory")) != null)
                 dirname = s;
             if ((s = cline.getOptionValue("profile")) != null)
@@ -122,6 +145,8 @@ public class SimRunner implements IApplication {
                 resfile = s;
             if ((s = cline.getOptionValue("runs")) != null)
                 runs = Integer.valueOf(s);
+            if ((s = cline.getOptionValue("cores")) != null)
+                cores = Integer.valueOf(s);
             String[] files = cline.getArgs();
             if (files.length == 0)
                 throw new ParseException("No simulation sequence given");

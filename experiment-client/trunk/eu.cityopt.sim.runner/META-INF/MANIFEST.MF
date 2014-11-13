@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.simantics.experiment.client;bundle-version="1.0.0",
  org.apache.commons.cli;bundle-version="1.2.0",
- org.simantics.simulation.scheduling;bundle-version="0.0.1"
+ org.simantics.simulation.scheduling;bundle-version="0.0.1",
+ gnu.trove3;bundle-version="3.0.3"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: eu.cityopt.sim.runner;uses:="org.eclipse.equinox.app"
