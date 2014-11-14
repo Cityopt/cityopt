@@ -48,21 +48,22 @@ public class TestTimeSeries {
         ns.externals.put("b", timeSeriesType);
 
         ZonedDateTime zdt = ZonedDateTime.of(2014, 1, 1,  12, 0, 0,  0, ZoneId.systemDefault());
-        long t0 = zdt.toInstant().toEpochMilli();
-        long sec = 1000;
-        long day = 24 * 60 * 60 * sec;
+        double t0 = zdt.toEpochSecond();
+        double sec = 1;
+        double day = 24 * 60 * 60 * sec;
         ExternalParameters ep = new ExternalParameters(ns);
 
-        long[] ta = new long[] { t0, t0 + day, t0 + day + sec };
+        double[] ta = new double[] { t0, t0 + day, t0 + day + sec };
         double[] va = new double[] { 1.0, 2.0, 5.0 };
         ep.put("a", evaluator.makeTS(timeSeriesType, ta, va));
 
-        long[] tb = new long[] { t0, t0 + sec, t0 + day };
+        double[] tb = new double[] { t0, t0 + sec, t0 + day };
         double[] vb = new double[] { -4.0, 3.0, -2.0 };
         ep.put("b", evaluator.makeTS(timeSeriesType, tb, vb));
 
         assertEquals(2014, eval("a.datetimes[0].year", ep), delta);
         assertEquals(2, eval("a.datetimes[1].day", ep), delta);
+        assertEquals(12, eval("a.datetimes[2].hour", ep), delta);
         assertEquals(1, eval("a.datetimes[2].second", ep), delta);
         if (step) {
             assertEquals(1.00001157394012, eval("a.mean", ep), delta);
@@ -86,13 +87,13 @@ public class TestTimeSeries {
         }
 
         assertEquals(Math.abs(vb[0]), eval("abs(b).values[0]", ep), delta);
-        assertEquals(tb[0], eval("abs(b).timeMillis[0]", ep), delta);
+        assertEquals(tb[0], eval("abs(b).times[0]", ep), delta);
         if (step) {
             assertEquals(Math.abs(vb[1]), eval("abs(b).values[1]", ep), delta);
             assertEquals(Math.abs(vb[2]), eval("abs(b).values[2]", ep), delta);
 
-            assertEquals(tb[1], eval("abs(b).timeMillis[1]", ep), delta);
-            assertEquals(tb[2], eval("abs(b).timeMillis[2]", ep), delta);
+            assertEquals(tb[1], eval("abs(b).times[1]", ep), delta);
+            assertEquals(tb[2], eval("abs(b).times[2]", ep), delta);
 
             assertEquals(3, eval("len(abs(b).values)", ep), delta);
         } else {
@@ -101,10 +102,10 @@ public class TestTimeSeries {
             assertEquals(0.0, eval("abs(b).values[3]", ep), delta);
             assertEquals(Math.abs(vb[2]), eval("abs(b).values[4]", ep), delta);
 
-            assertEquals(t0 + 571, eval("abs(b).timeMillis[1]", ep), delta);
-            assertEquals(tb[1], eval("abs(b).timeMillis[2]", ep), delta);
-            assertEquals(t0 + 51840400, eval("abs(b).timeMillis[3]", ep), delta);
-            assertEquals(tb[2], eval("abs(b).timeMillis[4]", ep), delta);
+            assertEquals(t0 + (4 / 7.0), eval("abs(b).times[1]", ep), delta);
+            assertEquals(tb[1], eval("abs(b).times[2]", ep), delta);
+            assertEquals(t0 + 51840.4, eval("abs(b).times[3]", ep), delta);
+            assertEquals(tb[2], eval("abs(b).times[4]", ep), delta);
 
             assertEquals(5, eval("len(abs(b).values)", ep), delta);
         }
@@ -127,17 +128,17 @@ public class TestTimeSeries {
         assertEquals(0.0, eval("(a*b).values["+i+"]", ep), delta);
         assertEquals(i+1, eval("len((a*b).values)", ep), delta);
 
-        assertEquals(ta[0], eval("(a+b).timeMillis[0]", ep), delta);
-        assertEquals(tb[1], eval("(a-b).timeMillis[1]", ep), delta);
-        assertEquals(ta[1], eval("(a*b).timeMillis[2]", ep), delta);
+        assertEquals(ta[0], eval("(a+b).times[0]", ep), delta);
+        assertEquals(tb[1], eval("(a-b).times[1]", ep), delta);
+        assertEquals(ta[1], eval("(a*b).times[2]", ep), delta);
         if (step) {
-            assertEquals(ta[2], eval("(a*b).timeMillis[3]", ep), delta);
+            assertEquals(ta[2], eval("(a*b).times[3]", ep), delta);
         } else {
-            assertEquals(ta[1], eval("(a*b).timeMillis[3]", ep), delta);
-            assertEquals(ta[2], eval("(a+b).timeMillis[4]", ep), delta);
+            assertEquals(ta[1], eval("(a*b).times[3]", ep), delta);
+            assertEquals(ta[2], eval("(a+b).times[4]", ep), delta);
         }
 
-        tb = new long[] { t0 + day + sec/2, t0 + day + sec*3/4 };
+        tb = new double[] { t0 + day + sec/2, t0 + day + sec*3/4 };
         vb = new double[] { -5.0, -6.0 };
         ep.put("b", evaluator.makeTS(timeSeriesType, tb, vb));
         f = step ? 0 : (tb[0]-ta[1])/(double)(ta[2]-ta[1]);
@@ -152,7 +153,7 @@ public class TestTimeSeries {
                     eval("sum((a*b).values)", ep), delta);
         }
 
-        tb = new long[] { t0 + 2*day };
+        tb = new double[] { t0 + 2*day };
         vb = new double[] { 11.0 };
         ep.put("b", evaluator.makeTS(timeSeriesType, tb, vb));
         i = (int)eval("len((a*b).values)", ep) - 1;
@@ -171,11 +172,11 @@ public class TestTimeSeries {
 
     /** Generate subsequences of a time series for testing. */
     Collection<TimeSeries> generateSubTimeSeries(
-            long[] times, double[] values, Type timeSeriesType, int asDegree) {
+            double[] times, double[] values, Type timeSeriesType, int asDegree) {
         List<TimeSeries> list = new ArrayList<TimeSeries>(); 
         for (int i0 = 0; i0 < times.length; ++i0) {
             for (int i1 = i0; i1 < times.length; ++i1) {
-                long[] t = new long[i1 - i0];
+                double[] t = new double[i1 - i0];
                 double[] v = new double[i1 - i0];
                 System.arraycopy(times, i0, t, 0, i1 - i0);
                 System.arraycopy(values, i0, v, 0, i1 - i0);
@@ -186,7 +187,7 @@ public class TestTimeSeries {
                     if (ts.getValues().length > 0) {
                         TimeSeries b = evaluator.makeTS(
                                 Type.TIMESERIES_LINEAR,
-                                new long[] { times[0] },
+                                new double[] { times[0] },
                                 new double[] { 0.0 });
                         ts = ((TimeSeriesImpl) ts).__add__((TimeSeriesImpl) b);
                     }
@@ -197,18 +198,18 @@ public class TestTimeSeries {
         return list;
     }
 
-    static long[] sampleTimes = new long[] { 0, 100, 110, 111, 10000, 11000 };
+    static double[] sampleTimes = new double[] { 0, 100, 110, 111, 10000, 11000 };
     static double[] sampleValues = new double[] { -10, 2, 5, -9, 0, 3 };
-    static long[][] interpolationSequences = new long[][] {
+    static double[][] interpolationSequences = new double[][] {
         // interpolation points including time series points
         { -10, -1, 0, 10, 11, 200, 10000, 11000, 100000, 200000 },
         // interpolation points without time series points
         { -10, -1, 200, 10100, 100000, 200000 }
     };
-    static long[] offsetSampleTimes = offsetTimes(sampleTimes, 10);
+    static double[] offsetSampleTimes = offsetTimes(sampleTimes, 10);
 
-    private static long[] offsetTimes(long[] tt, long offset) {
-        long[] tto = new long[tt.length];
+    private static double[] offsetTimes(double[] tt, double offset) {
+        double[] tto = new double[tt.length];
         for (int i = 0; i < tt.length; ++i) {
             tto[i] = tt[i] + offset;
         }
@@ -240,10 +241,10 @@ public class TestTimeSeries {
     void testInterpolation(Collection<TimeSeries> tss) throws Exception {
         for (TimeSeries ts : tss)  {
             SimpleInterpolator si = new SimpleInterpolator(ts);
-            for (long[] sequence : interpolationSequences) {
+            for (double[] sequence : interpolationSequences) {
                 for (int i0 = 0; i0 < sequence.length; ++i0) {
                     for (int i1 = i0; i1 < sequence.length; ++i1) {
-                        long[] at = new long[i1 - i0];
+                        double[] at = new double[i1 - i0];
                         System.arraycopy(sequence, i0, at, 0, i1 - i0);
 
                         double[] vi = ts.valuesAt(at);
@@ -259,13 +260,13 @@ public class TestTimeSeries {
 
     @Test
     public void interpolateAtVerticalEdge() throws Exception {
-        long[] times = new long[] { 0, 1, 1, 2, 4, 4 };
+        double[] times = new double[] { 0, 1, 1, 2, 4, 4 };
         double[] values = new double[] { 1, 0, 3, 2, 8, 11 };
         TimeSeries ts = evaluator.makeTS(Type.TIMESERIES_LINEAR, times, values);
         assertArrayEquals(new double[] { 0, 3, 5, 5, 8, 11 },
-                ts.valuesAt(new long[] { 1, 1, 3, 3, 4, 4 }), delta);
+                ts.valuesAt(new double[] { 1, 1, 3, 3, 4, 4 }), delta);
         assertArrayEquals(new double[] { 3, 5, 11 },
-                ts.valuesAt(new long[] { 1, 3, 4, }), delta);
+                ts.valuesAt(new double[] { 1, 3, 4, }), delta);
     }
 
     @Test
@@ -291,14 +292,14 @@ public class TestTimeSeries {
      * We get baseline results from the inner class SimpleInterpolator.
      */
     void testIntegration(Collection<TimeSeries> tss) throws Exception {
-        long[] scales = new long[] { 0, 1, 1000 };
+        double[] scales = new double[] { 0, 1, 1000 };
         for (TimeSeries ts : tss) {
             PiecewiseFunction fun = ts.internalFunction();
             SimpleInterpolator si = new SimpleInterpolator(ts);
-            for (long[] sequence : interpolationSequences) {
-                for (long t0 : sequence) {
-                    for (long t1 : sequence) {
-                        for (long scale : scales) {
+            for (double[] sequence : interpolationSequences) {
+                for (double t0 : sequence) {
+                    for (double t1 : sequence) {
+                        for (double scale : scales) {
                             double s = fun.integrate(t0, t1, scale);
                             double c = si.integrate(t0, t1, scale);
                             assertEquals(c, s, delta);
@@ -370,17 +371,17 @@ public class TestTimeSeries {
      * two summands.
      */
     void testSums(Collection<TimeSeries> tss1, Collection<TimeSeries> tss2) {
-        long[] checkTimes = listCheckTimes(sampleTimes, 1);
+        double[] checkTimes = listCheckTimes(sampleTimes, 1);
 
         for (TimeSeries ts1 : tss1)  {
             SimpleInterpolator si1 = new SimpleInterpolator(ts1);
             double[] si1values = si1.interpolate(checkTimes);
-            long end1 = si1.endTime();
+            double end1 = si1.endTime();
 
             for (TimeSeries ts2 : tss2) {
                 SimpleInterpolator si2 = new SimpleInterpolator(ts2);
                 double[] si2values = si2.interpolate(checkTimes);
-                long end2 = si2.endTime();
+                double end2 = si2.endTime();
 
                 TimeSeries sum = ((TimeSeriesImpl) ts1).__add__(
                         (TimeSeriesImpl) ts2);
@@ -410,18 +411,18 @@ public class TestTimeSeries {
         }
     }
 
-    static long[] listCheckTimes(long[] times, long offset) {
-        SortedSet<Long> set = new TreeSet<Long>();
+    static double[] listCheckTimes(double[] times, double offset) {
+        SortedSet<Double> set = new TreeSet<Double>();
 
-        for (long t : times) {
+        for (double t : times) {
             set.add(t - offset);
             set.add(t);
             set.add(t + offset);
         }
 
-        long[] tt = new long[set.size()];
+        double[] tt = new double[set.size()];
         int i = 0;
-        for (Long t : set) {
+        for (Double t : set) {
             tt[i++] = t;
         }
         return tt;
@@ -432,21 +433,21 @@ public class TestTimeSeries {
      * more complex ones in the PiecewiseFunction classes.
      */
     static class SimpleInterpolator {
-        final long[] times;
+        final double[] times;
         final double[] values;
         final int degree;
 
         SimpleInterpolator(TimeSeries ts) {
-            this.times = ts.getTimeMillis().clone();
+            this.times = ts.getTimes().clone();
             this.values = ts.getValues().clone();
             this.degree = ts.getDegree();
         }
 
-        public long endTime() {
-            return times.length > 0 ? times[times.length - 1] : Long.MIN_VALUE;
+        public double endTime() {
+            return times.length > 0 ? times[times.length - 1] : Double.NEGATIVE_INFINITY;
         }
 
-        double[] interpolate(long[] tt) {
+        double[] interpolate(double[] tt) {
             double[] vv = new double[tt.length];
             for (int i = 0; i < tt.length; ++i) {
                 vv[i] = interpolate(tt[i]);
@@ -454,7 +455,7 @@ public class TestTimeSeries {
             return vv;
         }
 
-        double interpolate(long t) {
+        double interpolate(double t) {
             int n = times.length;
             if (n == 0) {
                 return 0.0;
@@ -481,7 +482,7 @@ public class TestTimeSeries {
             }
         }
 
-        double integrate(long t0, long t1, long scale) {
+        double integrate(double t0, double t1, double scale) {
             int n = times.length;
             if (n == 0) {
                 return 0.0;

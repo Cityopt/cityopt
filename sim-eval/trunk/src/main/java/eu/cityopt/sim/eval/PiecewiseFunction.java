@@ -8,13 +8,13 @@ import java.util.Arrays;
  * @author Hannu Rummukainen
  */
 public abstract class PiecewiseFunction {
-    final long[] tt;
+    final double[] tt;
     final double[] vv;
 
     /** Degree of the interpolator.  0 for step interpolator, 1 for linear. */
     public final int degree;
 
-    PiecewiseFunction(long[] tt, double[] vv, int degree) {
+    PiecewiseFunction(double[] tt, double[] vv, int degree) {
         this.tt = tt;
         this.vv = vv;
         this.degree = degree;
@@ -30,14 +30,14 @@ public abstract class PiecewiseFunction {
      *             order; when <code>degree</code> is one, non-consecutive
      *             vertical segments are also allowed.
      */
-    public static PiecewiseFunction make(long[] tt, double[] vv, int degree) {
+    public static PiecewiseFunction make(double[] tt, double[] vv, int degree) {
         // Check if the t coordinate sequence is valid.
         // If support for multiple consecutive vertical segments turns out
         // to be needed, we could in principle join such segments here.
-        long tp = (tt.length > 0) ? tt[0] : 0;
-        long tpp = tp - 1;
+        double tp = (tt.length > 0) ? tt[0] : 0;
+        double tpp = tp - 1;
         for (int i = 1; i < tt.length; ++i) {
-            long t = tt[i];
+            double t = tt[i];
             if (t <= tp) {
                 if (degree == 1 && t == tp) {
                     if (tp == tpp) {
@@ -61,16 +61,16 @@ public abstract class PiecewiseFunction {
         }
     }
 
-    protected final static int firstEqual(long[] uu, int i) {
-        long u = uu[i];
+    protected final static int firstEqual(double[] uu, int i) {
+        double u = uu[i];
         while (i > 0 && uu[i-1] == u) {
             --i;
         }
         return i;
     }
 
-    protected final static int lastEqual(long[] uu, int i) {
-        long u = uu[i];
+    protected final static int lastEqual(double[] uu, int i) {
+        double u = uu[i];
         int nx = uu.length - 1;
         while (i < nx && uu[i+1] == u) {
             ++i;
@@ -88,7 +88,7 @@ public abstract class PiecewiseFunction {
      *            coordinate gives the value at t.
      * @return values corresponding to the 'at' parameter
      */
-    public double[] interpolate(long[] at) {
+    public double[] interpolate(double[] at) {
         int no = at.length;
         double[] vvo = new double[no];
         int ni = vv.length;
@@ -134,7 +134,7 @@ public abstract class PiecewiseFunction {
     }
 
     protected abstract double[] interpolate(
-            int ii, long[] at, double[] vvo, int io0, int io1);
+            int ii, double[] at, double[] vvo, int io0, int io1);
 
     /**
      * Integral over the interval [t0, t1].
@@ -148,18 +148,18 @@ public abstract class PiecewiseFunction {
      *            case, a scale factor of 0 can be used to integrate over a
      *            zero-width interval.
      */
-    public double integrate(long t0, long t1, long scale) {
+    public double integrate(double t0, double t1, double scale) {
         int n = vv.length;
         if (scale == 0) {
             if (n == 0) {
                 return 0.0;
             }
-            long d0 = Math.max(tt[0],  Math.min(t0, t1));
-            long d1 = Math.min(tt[n-1], Math.max(t0,  t1));
+            double d0 = Math.max(tt[0],  Math.min(t0, t1));
+            double d1 = Math.min(tt[n-1], Math.max(t0,  t1));
             if (d0 > d1) {
                 return 0.0;
             } else if (d1 == d0) {
-                double v = interpolate(new long[] { d0 })[0];
+                double v = interpolate(new double[] { d0 })[0];
                 return (t0 <= t1) ? v : -v;
             } else {
                 return (t0 <= t1) ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
@@ -169,7 +169,7 @@ public abstract class PiecewiseFunction {
         } else {
             if (t0 > t1) {
                 scale = -scale;
-                long tx = t0; t0 = t1; t1 = tx; //swap
+                double tx = t0; t0 = t1; t1 = tx; //swap
             }
             // Locate the first non-vertical segment on the integration
             // interval, and point i to the segment startpoint.
@@ -236,15 +236,15 @@ public abstract class PiecewiseFunction {
         }
     }
 
-    protected abstract double integrate(int i0, int i1, long t0, long t1);
+    protected abstract double integrate(int i0, int i1, double t0, double t1);
 
     /** Mean value of the function over its domain. */
     public double mean() {
         if (tt.length == 0) {
             return 0.0;
         } else {
-            long t0 = tt[0];
-            long t1 = tt[tt.length-1];
+            double t0 = tt[0];
+            double t1 = tt[tt.length-1];
             return integrate(t0, t1, t1-t0);
         }
     }
@@ -294,10 +294,10 @@ public abstract class PiecewiseFunction {
         int d = Math.max(this.degree, other.degree);
         int tn = this.tt.length;
         int on = other.tt.length;
-        long tt0 = tn > 0 ? this.tt[0] : Long.MAX_VALUE;
-        long tt1 = tn > 0 ? this.tt[tn - 1] : Long.MIN_VALUE; 
-        long ot0 = on > 0 ? other.tt[0] : Long.MAX_VALUE;
-        long ot1 = on > 0 ? other.tt[on - 1] : Long.MIN_VALUE;
+        double tt0 = tn > 0 ? this.tt[0] : Double.POSITIVE_INFINITY;
+        double tt1 = tn > 0 ? this.tt[tn - 1] : Double.NEGATIVE_INFINITY; 
+        double ot0 = on > 0 ? other.tt[0] : Double.POSITIVE_INFINITY;
+        double ot1 = on > 0 ? other.tt[on - 1] : Double.NEGATIVE_INFINITY;
         //
         // Merge the t coordinate sequences, and interpolate the functions
         // at the merged t coordinates.  When the result degree is 1, step
@@ -311,7 +311,7 @@ public abstract class PiecewiseFunction {
         // handle the issue by using extra vertical edges in piecewise linear
         // results; however the last interpolated value has to be adjusted below.
         //
-        long[] ttr = merge(this.forCombine(d, tt0 > ot0, tt1 < ot1),
+        double[] ttr = merge(this.forCombine(d, tt0 > ot0, tt1 < ot1),
                 other.forCombine(d, ot0 > tt0, ot1 < tt1));
         double[] vvt = this.interpolate(ttr);
         if (tt1 < ot1) {
@@ -333,14 +333,14 @@ public abstract class PiecewiseFunction {
         return make(ttr, vvo, d);
     }
 
-    protected abstract long[] forCombine(
+    protected abstract double[] forCombine(
             int d, boolean zeroBegin, boolean zeroEnd);
 
     /**
      * Merges two sorted arrays. In case of duplicates, keeps the maximum number
      * that occurs in either array.
      */
-    private static long[] merge(long[] tta, long[] ttb) {
+    private static double[] merge(double[] tta, double[] ttb) {
         int na = tta.length;
         int nb = ttb.length;
 
@@ -350,8 +350,8 @@ public abstract class PiecewiseFunction {
         int ib = 0;
         while (ia < na && ib < nb) {
             ++no;
-            long ta = tta[ia];
-            long tb = ttb[ib];
+            double ta = tta[ia];
+            double tb = ttb[ib];
             if (ta <= tb) ++ia;
             if (tb <= ta) ++ib;
         }
@@ -359,13 +359,13 @@ public abstract class PiecewiseFunction {
         no += nb - ib;
 
         // Create the result by merging.
-        long[] tto = new long[no];
+        double[] tto = new double[no];
         int io = 0;
         ia = 0;
         ib = 0;
         while (ia < na && ib < nb) {
-            long ta = tta[ia];
-            long tb = ttb[ib];
+            double ta = tta[ia];
+            double tb = ttb[ib];
             if (ta < tb) {
                 tto[io] = ta;
                 ++io;

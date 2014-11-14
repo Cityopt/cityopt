@@ -5,17 +5,17 @@ package eu.cityopt.sim.eval;
  * are created by calling Evaluator.makeTS, and can be put in ExternalParameters
  * and SimulationResults.
  *
- * @see Evaluator#makeTS(Type, long[], double[])
+ * @see Evaluator#makeTS(Type, double[], double[])
  *
  * @author Hannu Rummukainen
  */
 public interface TimeSeries {
     /**
      * The time points where the time series is explicitly defined. Specified as
-     * milliseconds since 1 January 1970, just like System.currentTimeMillis().
-     * Must be in strictly ascending order.
+     * seconds since 1 January 1970 UTC. Must be in ascending order (but
+     * vertical segments are allowed in linear interpolation).
      */
-    public long[] getTimeMillis();
+    public double[] getTimes();
 
     /** The time series values at the defined time points. */
     public double[] getValues();
@@ -27,7 +27,7 @@ public interface TimeSeries {
      * Interpolate the time series values at the given time points.
      * @param t time points in increasing order
      */
-    public double[] valuesAt(long[] t);
+    public double[] valuesAt(double[] t);
 
     /**
      * The mean of the time series as a continuous function, using interpolation

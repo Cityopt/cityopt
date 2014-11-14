@@ -6,23 +6,23 @@ import java.util.Arrays;
  * Piecewise constant function defined by a sequence of (t, v) points.
  * Between two defined points, the value is defined by the earlier point.
  * 
- * @see PiecewiseFunction#make(long[], double[], int)
+ * @see PiecewiseFunction#make(double[], double[], int)
  *
  * @author Hannu Rummukainen
  */
 public class PiecewiseConstant extends PiecewiseFunction {
 
-    PiecewiseConstant(long[] tt, double[] vv) {
+    PiecewiseConstant(double[] tt, double[] vv) {
         super(tt, vv, 0);
     }
 
     @Override
     protected double[] interpolate(
-            int ii, long[] at, double[] vvo, int io0, int io1) {
+            int ii, double[] at, double[] vvo, int io0, int io1) {
         int ni = tt.length;
-        long ti = tt[ii];
+        double ti = tt[ii];
         for (int io = io0; io < io1; ++io) {
-            long to = at[io];
+            double to = at[io];
             if (to > ti) {
                 ++ii;
                 ti = tt[ii];
@@ -48,14 +48,14 @@ public class PiecewiseConstant extends PiecewiseFunction {
     }
 
     @Override
-    public double integrate(int i0, int i1, long t0, long t1) {
+    public double integrate(int i0, int i1, double t0, double t1) {
         if (i0 == i1) {
             return (t1 - t0) * vv[i0];
         } else {
-            long t = tt[i0 + 1];
+            double t = tt[i0 + 1];
             double vs = (t - t0) * vv[i0];
             for (int i = i0 + 1; i < i1; ++i) {
-                long tp = t;
+                double tp = t;
                 t = tt[i + 1];
                 vs += (t - tp) * vv[i];
             }
@@ -70,11 +70,11 @@ public class PiecewiseConstant extends PiecewiseFunction {
         if (n < 2) {
             return  0.0;
         } else {
-            long t = tt[0];
+            double t = tt[0];
             double vss = 0;
             for (int i = 1; i < n; ++i) {
-                long tn = tt[i];
-                long dt = tn - t;
+                double tn = tt[i];
+                double dt = tn - t;
                 double v = vv[i-1] - mean;
                 vss += dt * v * v;
                 t = tn;
@@ -87,7 +87,7 @@ public class PiecewiseConstant extends PiecewiseFunction {
     @Override
     public PiecewiseConstant abs() {
         int n = vv.length;
-        long[] tto = new long[n];
+        double[] tto = new double[n];
         double[] vvo = new double[n]; 
         for (int i = 0; i < n; ++i) {
             tto[i] = tt[i];
@@ -97,7 +97,7 @@ public class PiecewiseConstant extends PiecewiseFunction {
     }
 
     @Override
-    protected long[] forCombine(int d, boolean zeroBegin, boolean zeroEnd) {
+    protected double[] forCombine(int d, boolean zeroBegin, boolean zeroEnd) {
         if (d == 0) {
             return tt;
         } else {
@@ -107,7 +107,7 @@ public class PiecewiseConstant extends PiecewiseFunction {
             } else {
                 boolean addVerticalBegin = zeroBegin && vv[0] != 0;
                 int no = 2 * ni - (addVerticalBegin ? 0 : 1);
-                long[] tto = new long[no];
+                double[] tto = new double[no];
                 tto[0] = tt[0];
                 int io = 1;
                 if (addVerticalBegin) {

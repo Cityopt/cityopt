@@ -34,8 +34,8 @@ public class Evaluator {
 
     private static final String initializationCode =
             "from datetime import datetime, timedelta\n" +
-            "def convertTimeMillisToDatetimes(timeMillis):\n" +
-            "  return [datetime.fromtimestamp(0.001 * t) for t in timeMillis]\n";
+            "def convertTimestampsToDatetimes(timestamps):\n" +
+            "  return [datetime.fromtimestamp(t) for t in timestamps]\n";
 
     public Evaluator() throws EvaluationException, ScriptException {
         ScriptEngineManager manager = new ScriptEngineManager();
@@ -71,20 +71,20 @@ public class Evaluator {
      *            points. Must be Type.TIMESERIES_STEP or
      *            Type.TIMESERIES_LINEAR.
      * @param timeMillis
-     *            the defined time points, milliseconds since 1 January 1970.
-     *            Must be in ascending order (but vertical segments are allowed
-     *            in linear interpolation). Outside the closed interval from the
-     *            first to the last time point, values are assumed to be zero.
-     *            Usually there should be at least two points, so that the
-     *            series covers a non-empty time interval.
+     *            the defined time points, seconds since 1 January 1970 UTC.
+     *            Must be in ascending order (but non-consecutive vertical
+     *            segments are allowed in linear interpolation). Outside the
+     *            closed interval from the first to the last time point, values
+     *            are assumed to be zero. Usually there should be at least two
+     *            points, so that the series covers a non-empty time interval.
      * @param values
      *            the values at the defined time points. It is recommended to
      *            set the last value of a step function as 0.
      * @return a TimeSeries implementation that must be used with this Evaluator
      */
-    public TimeSeries makeTS(Type type, long[] timeMillis, double[] values) {
-        PiecewiseFunction fun = PiecewiseFunction.make(
-                timeMillis, values, type.getInterpolationDegree()); 
+    public TimeSeries makeTS(Type type, double[] timeMillis, double[] values) {
+        PiecewiseFunction fun = PiecewiseFunction.make(timeMillis, values,
+                type.getInterpolationDegree());
         return new TimeSeriesImpl(this, fun);
     }
 
@@ -154,7 +154,7 @@ public class Evaluator {
         public void __delattr__(String name) {
             super.readonlyAttributeError(name);
         }
-        
+
         @Override
         public PyObject __dir__() {
             return new PyList(attributes.keySet());
@@ -162,10 +162,10 @@ public class Evaluator {
     }
 
     /**
-     * Invokes a Python function that is known to exist.  Intended to be
-     * called from inside Python evaluation: any ScriptException from the
-     * invocation is unwrapped to re-throw the original Python Exception.
-     * Also converts NoSuchMethodException into IllegalStateException.
+     * Invokes a Python function that is known to exist. Intended to be called
+     * from inside Python evaluation: any ScriptException from the invocation is
+     * unwrapped to re-throw the original Python Exception. Also converts
+     * NoSuchMethodException into IllegalStateException.
      */
     Object invokeInternal(String name, Object... args) throws Throwable {
         try {

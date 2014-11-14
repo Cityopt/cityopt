@@ -16,9 +16,9 @@ import java.util.Locale;
  *  - List of datetime objects specifying the defined time points.
  *    See the documentation of the datetime module in the Python standard library.
  *</p>
- * <p><code> ts.timeMillis </code><br>
- *  - Array of integers specifying the defined time points as the number of
- *    milliseconds since 1 January 1970.  Equivalent to ts.datetimes.
+ * <p><code> ts.times </code><br>
+ *  - Array of doubles specifying the defined time points as the number of
+ *    seconds since 1 January 1970.  Equivalent to ts.datetimes.
  *</p>
  * <p><code> ts.values </code><br>
  *  - Array of doubles containing the time series values at the defined points. 
@@ -77,7 +77,7 @@ public class TimeSeriesImpl implements TimeSeries {
     }
 
     @Override
-    public long[] getTimeMillis() {
+    public double[] getTimes() {
         return fun.tt;
     }
 
@@ -92,7 +92,7 @@ public class TimeSeriesImpl implements TimeSeries {
     }
 
     @Override
-    public double[] valuesAt(long[] times) {
+    public double[] valuesAt(double[] times) {
         return fun.interpolate(times);
     }
 
@@ -111,8 +111,8 @@ public class TimeSeriesImpl implements TimeSeries {
     public Object getDatetimes() throws Throwable {
         if (datetimes == null) {
             datetimes = evaluator.invokeInternal(
-                    "convertTimeMillisToDatetimes",
-                    new Object[] { getTimeMillis() });
+                    "convertTimestampsToDatetimes",
+                    new Object[] { getTimes() });
         }
         return datetimes;
     }

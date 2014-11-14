@@ -12,17 +12,18 @@ import java.util.Arrays;
  * needed to support arithmetic between piecewise functions, and conversion 
  * of step-interpolated functions to linearly interpolated functions.)
  *
- * @see PiecewiseFunction#make(long[], double[], int)
+ * @see PiecewiseFunction#make(double[], double[], int)
  *
  * @author Hannu Rummukainen
  */
 public class PiecewiseLinear extends PiecewiseFunction {
 
-    PiecewiseLinear(long[] tt, double[] vv) {
+    PiecewiseLinear(double[] tt, double[] vv) {
         super(tt, vv, 1);
     }
 
-    private static final double interpolate(long t0, long t1, double v0, double v1, long t) {
+    private static final double interpolate(
+            double t0, double t1, double v0, double v1, double t) {
         assert t0 <= t && t <= t1 && t0 < t1;
         double f = (t - t0) / (double) (t1 - t0);
         return f * v1 + (1-f) * v0;
@@ -30,11 +31,11 @@ public class PiecewiseLinear extends PiecewiseFunction {
 
     @Override
     protected double[] interpolate(int ii,
-            long[] at, double[] vvo, int io0, int io1) {
+            double[] at, double[] vvo, int io0, int io1) {
         int ni = tt.length;
-        long ti = tt[ii];
+        double ti = tt[ii];
         for (int io = io0; io < io1; ++io) {
-            long to = at[io];
+            double to = at[io];
             if (to > ti) {
                 ++ii;
                 ti = tt[ii];
@@ -75,18 +76,18 @@ public class PiecewiseLinear extends PiecewiseFunction {
     }
 
     @Override
-    public double integrate(int i0, int i1, long t0, long t1) {
+    public double integrate(int i0, int i1, double t0, double t1) {
         // Integrate by the trapezoid method.
         double v0 = interpolate(tt[i0], tt[i0+1], vv[i0], vv[i0+1], t0);
         double v1 = interpolate(tt[i1], tt[i1+1], vv[i1], vv[i1+1], t1);
         if (i0 == i1) {
             return (t1 - t0) * 0.5 * (v0 + v1);
         } else {
-            long tp = t0;
-            long t = tt[i0 + 1];
+            double tp = t0;
+            double t = tt[i0 + 1];
             double vs = (t - tp) * v0;
             for (int i = i0 + 1; i < i1; ++i) {
-                long tn = tt[i+1];
+                double tn = tt[i+1];
                 vs += (tn - tp) * vv[i];
                 tp = t;
                 t = tn;
@@ -103,13 +104,13 @@ public class PiecewiseLinear extends PiecewiseFunction {
         if (n < 2) {
             return  0.0;
         } else {
-            long t = tt[1];
-            long tp = tt[0];
+            double t = tt[1];
+            double tp = tt[0];
             double v0 = vv[0] - mean;
             double v = vv[1] - mean;
             double vss = (t - tp) * v0 * (v0 + v);
             for (int i = 2; i < n; ++i) {
-                long tn = tt[i];
+                double tn = tt[i];
                 double vn = vv[i] - mean;
                 vss += v * ((tn - tp) * v + (tn - t) * vn);
                 tp = t;
@@ -137,20 +138,20 @@ public class PiecewiseLinear extends PiecewiseFunction {
                 vp = v;
             }
         }
-        long[] tto = new long[no];
+        double[] tto = new double[no];
         double[] vvo = new double[no];
         if (no > 0) {
-            long tp = tt[0];
+            double tp = tt[0];
             double vp = vv[0];
             tto[0] = tp;
             vvo[0] = Math.abs(vp);
             int io = 1;
             for (int ii = 1; ii < ni; ++ii) {
-                long t = tt[ii];
+                double t = tt[ii];
                 double v = vv[ii];
                 if (((v < 0 && vp > 0) || (v > 0 && vp < 0))
                         && (t != tp)) {
-                    tto[io] = tp + Math.round((t - tp) * ((-vp) / (v - vp)));
+                    tto[io] = tp + (t - tp) * ((-vp) / (v - vp));
                     vvo[io] = 0.0;
                     ++io;
                 }
@@ -166,7 +167,7 @@ public class PiecewiseLinear extends PiecewiseFunction {
     }
 
     @Override
-    protected long[] forCombine(int d, boolean zeroBegin, boolean zeroEnd) {
+    protected double[] forCombine(int d, boolean zeroBegin, boolean zeroEnd) {
         int ni = tt.length;
         if (ni == 0) {
             return tt;
@@ -177,7 +178,7 @@ public class PiecewiseLinear extends PiecewiseFunction {
                     && !(ni > 1 && tt[ni-1] == tt[ni-2]);
             int no = ni + (addVerticalBegin ? 1 : 0) + (addVerticalEnd ? 1 : 0);
             if (no > ni) {
-                long[] tto = new long[no];
+                double[] tto = new double[no];
                 int io = 0;
                 if (addVerticalBegin) {
                     tto[io] = tt[0];
