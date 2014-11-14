@@ -18,12 +18,12 @@ import org.python.core.PyObject;
 /**
  * Evaluation engine of the expression language. The expression language is
  * Python, the Java implementation of which is provided by the Jython project.
- *
+ * <p>
  * Generally all Python/Jython specific code paths go through Evaluator, and
  * elsewhere we use only the Java Scripting API. The TimeSeriesImpl class is a
  * part of the Python interface and is tightly coupled with Evaluator.
  *
- * @see http://www.jython.org/
+ * @see <a href="http://www.jython.org/">http://www.jython.org/</a>
  * 
  * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
  */
@@ -63,27 +63,29 @@ public class Evaluator {
     }
 
     /**
-     * Constructs a time series representation for use in expressions.
-     * Instances of TimeSeries can be put in ExternalParameters and SimulationResults.
+     * Constructs a time series representation for use in expressions. Instances
+     * of TimeSeries can be put in ExternalParameters and SimulationResults.
      *
-     * @param timeMillis the defined time points, milliseconds since 1 January 1970
-     * @param values the values at the defined time points
+     * @param type
+     *            determines how to interpolate values between the defined
+     *            points. Must be Type.TIMESERIES_STEP or
+     *            Type.TIMESERIES_LINEAR.
+     * @param timeMillis
+     *            the defined time points, milliseconds since 1 January 1970.
+     *            Must be in ascending order (but vertical segments are allowed
+     *            in linear interpolation). Outside the closed interval from the
+     *            first to the last time point, values are assumed to be zero.
+     *            Usually there should be at least two points, so that the
+     *            series covers a non-empty time interval.
+     * @param values
+     *            the values at the defined time points. It is recommended to
+     *            set the last value of a step function as 0.
      * @return a TimeSeries implementation that must be used with this Evaluator
      */
-    public TimeSeries makeTimeSeries(long[] timeMillis, double[] values) {
-        return new TimeSeriesImpl(this, timeMillis, values);
-    }
-
-    /**
-     * Constructs an empty time series representation for use in expressions.
-     * The time points and associated values must be filled in by the caller.
-     * Instances of TimeSeries can be put in ExternalParameters and SimulationResults.
-     *
-     * @param n number of points to allocate.
-     * @return a TimeSeries implementation that must be used with this Evaluator
-     */
-    public TimeSeries makeTimeSeries(int n) {
-        return makeTimeSeries(new long[n], new double[n]);
+    public TimeSeries makeTS(Type type, long[] timeMillis, double[] values) {
+        PiecewiseFunction fun = PiecewiseFunction.make(
+                timeMillis, values, type.getInterpolationDegree()); 
+        return new TimeSeriesImpl(this, fun);
     }
 
     Compilable getCompiler() {

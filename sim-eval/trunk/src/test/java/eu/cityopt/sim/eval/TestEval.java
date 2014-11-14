@@ -1,10 +1,9 @@
 package eu.cityopt.sim.eval;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,17 +25,17 @@ public class TestEval {
     public static void setup() throws Exception {
         evaluator = new Evaluator();
         ns = new Namespace(evaluator, Arrays.asList(new String[] { "C1", "C2" }));
-        ns.externals.put("a", Type.TIMESERIES);
-        ns.externals.put("b", Type.TIMESERIES);
+        ns.externals.put("a", Type.TIMESERIES_LINEAR);
+        ns.externals.put("b", Type.TIMESERIES_LINEAR);
         ns.components.get("C1").inputs.put("x5", Type.DOUBLE);
         ns.components.get("C1").inputs.put("x6", Type.DOUBLE);
         ns.components.get("C1").inputs.put("x7", Type.DOUBLE);
         ns.components.get("C1").inputs.put("x8", Type.DOUBLE);
         ns.components.get("C2").inputs.put("x9", Type.DOUBLE);
-        ns.components.get("C1").outputs.put("x1", Type.TIMESERIES);
-        ns.components.get("C1").outputs.put("x2", Type.TIMESERIES);
-        ns.components.get("C2").outputs.put("x3", Type.TIMESERIES);
-        ns.components.get("C2").outputs.put("x4", Type.TIMESERIES);
+        ns.components.get("C1").outputs.put("x1", Type.TIMESERIES_LINEAR);
+        ns.components.get("C1").outputs.put("x2", Type.TIMESERIES_LINEAR);
+        ns.components.get("C2").outputs.put("x3", Type.TIMESERIES_LINEAR);
+        ns.components.get("C2").outputs.put("x4", Type.TIMESERIES_LINEAR);
         ns.metrics.put("m1", Type.DOUBLE);
         ns.metrics.put("m2", Type.DOUBLE);
         ns.metrics.put("m3", Type.DOUBLE);
@@ -68,7 +67,7 @@ public class TestEval {
     }
 
     @Test
-    public void evaluate() throws Exception {
+    public void evaluateMockSimulation() throws Exception {
         ConstraintExpression[] constraints = {
                 new ConstraintExpression(1,
                         "C2.x9 * (C1.x5 - C1.x6) + 0.02 * C1.x6 - 0.025 * C1.x5",
@@ -150,96 +149,5 @@ public class TestEval {
 
         double value = invalidConstraint.evaluate(input);
         System.out.println("infeasibility = " + value);
-    }
-
-    @Test
-    public void timeSeriesAccess() throws ScriptException, InvalidValueException {
-        ZonedDateTime zdt = ZonedDateTime.of(2014, 1, 1,  12, 0, 0,  0, ZoneId.systemDefault());
-        long t0 = zdt.toInstant().toEpochMilli();
-        long sec = 1000;
-        long day = 24 * 60 * 60 * sec;
-        ExternalParameters ep = new ExternalParameters(ns);
-
-        long[] ta = new long[] { t0, t0 + day, t0 + day + sec };
-        double[] va = new double[] { 1.0, 2.0, 5.0 };
-        ep.put("a", evaluator.makeTimeSeries(ta, va));
-
-        long[] tb = new long[] { t0, t0 + sec, t0 + day };
-        double[] vb = new double[] { -4.0, 3.0, -2.0 };
-        ep.put("b", evaluator.makeTimeSeries(tb, vb));
-
-        double delta = 1.0e-12;
-        assertEquals(2014, eval("a.datetimes[0].year", ep), delta);
-        assertEquals(2, eval("a.datetimes[1].day", ep), delta);
-        assertEquals(1, eval("a.datetimes[2].second", ep), delta);
-        double f = (ta[2]-ta[1])/(double)(ta[2]-ta[0]);
-        assertEquals((1-f) * 1.5 + f * 3.5, eval("a.mean", ep), delta);
-        assertEquals(0.2887686695576, eval("a.stdev", ep), delta);
-
-        for (int i = 0; i < vb.length; ++i) {
-            assertEquals(vb[i], eval("b.values["+i+"]", ep), delta);
-            assertEquals(vb[i]+3, eval("(b+3).values["+i+"]", ep), delta);
-            assertEquals(3+vb[i], eval("(3+b).values["+i+"]", ep), delta);
-            assertEquals(vb[i]-3, eval("(b-3).values["+i+"]", ep), delta);
-            assertEquals(3-vb[i], eval("(3-b).values["+i+"]", ep), delta);
-            assertEquals(vb[i]*3, eval("(b*3).values["+i+"]", ep), delta);
-            assertEquals(3*vb[i], eval("(3*b).values["+i+"]", ep), delta);
-            assertEquals(-vb[i], eval("(-b).values["+i+"]", ep), delta);
-            assertEquals(+vb[i], eval("(+b).values["+i+"]", ep), delta);
-        }
-
-        assertEquals(Math.abs(vb[0]), eval("abs(b).values[0]", ep), delta);
-        assertEquals(0.0, eval("abs(b).values[1]", ep), delta);
-        assertEquals(Math.abs(vb[1]), eval("abs(b).values[2]", ep), delta);
-        assertEquals(0.0, eval("abs(b).values[3]", ep), delta);
-        assertEquals(Math.abs(vb[2]), eval("abs(b).values[4]", ep), delta);
-
-        assertEquals(tb[0], eval("abs(b).timeMillis[0]", ep), delta);
-        assertEquals(t0 + 571, eval("abs(b).timeMillis[1]", ep), delta);
-        assertEquals(tb[1], eval("abs(b).timeMillis[2]", ep), delta);
-        assertEquals(t0 + 51840400, eval("abs(b).timeMillis[3]", ep), delta);
-        assertEquals(tb[2], eval("abs(b).timeMillis[4]", ep), delta);
-
-        assertEquals(va[0] + vb[0], eval("(a+b).values[0]", ep), delta);
-        f = (tb[1]-ta[0])/(double)(ta[1]-ta[0]);
-        assertEquals((1-f)*va[0] + f*va[1] - vb[1],
-                     eval("(a-b).values[1]", ep), delta);
-        assertEquals(((1-f)*va[0] + f*va[1]) * vb[1],
-                eval("(a*b).values[1]", ep), delta);
-        f = (ta[1]-tb[1])/(double)(tb[2]-tb[1]);
-        assertEquals(va[1] + (1-f)*vb[1] + f*vb[2],
-                eval("(a+b).values[2]", ep), delta);
-        assertEquals(va[2], eval("(a+b).values[3]", ep), delta);
-        assertEquals(-va[2], eval("(b-a).values[3]", ep), delta);
-        assertEquals(0.0, eval("(a*b).values[3]", ep), delta);
-        assertEquals(4, eval("len((a*b).values)", ep), delta);
-
-        assertEquals(ta[0], eval("(a+b).timeMillis[0]", ep), delta);
-        assertEquals(tb[1], eval("(a-b).timeMillis[1]", ep), delta);
-        assertEquals(ta[1], eval("(a*b).timeMillis[2]", ep), delta);
-        assertEquals(ta[2], eval("(a+b).timeMillis[3]", ep), delta);
-
-        tb = new long[] { t0 + day + sec/2 };
-        vb = new double[] { -5.0 };
-        ep.put("b", evaluator.makeTimeSeries(tb, vb));
-        f = (tb[0]-ta[1])/(double)(ta[2]-ta[1]);
-        assertEquals(((1-f)*va[1] + f*va[2]) * vb[0],
-                     eval("(a*b).values[2]", ep), delta);
-        assertEquals(((1-f)*va[1] + f*va[2]) * vb[0],
-                eval("sum((a*b).values)", ep), delta);
-
-        tb = new long[] { t0 + 2*day };
-        vb = new double[] { 11.0 };
-        ep.put("b", evaluator.makeTimeSeries(tb, vb));
-        assertEquals(0.0, eval("sum((a*b).values)", ep), delta);
-        assertEquals(vb[0], eval("(a+b).values[3]", ep), delta);
-        assertEquals(vb[0], eval("(b-a).values[3]", ep), delta);
-        assertEquals(va[1], eval("(a+b).values[1]", ep), delta);
-        assertEquals(-va[1], eval("(b-a).values[1]", ep), delta);
-    }
-
-    private double eval(String expression, EvaluationContext context)
-            throws ScriptException, InvalidValueException {
-        return new DoubleExpression(expression, evaluator).evaluate(context);
     }
 }

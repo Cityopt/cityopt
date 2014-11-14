@@ -2,11 +2,10 @@ package eu.cityopt.sim.eval;
 
 /**
  * Time series representation for expression evaluation. TimeSeries instances
- * are created by calling Evaluator.makeTimeSeries, and can be put in
- * ExternalParameters and SimulationResults.
+ * are created by calling Evaluator.makeTS, and can be put in ExternalParameters
+ * and SimulationResults.
  *
- * @see Evaluator#makeTimeSeries(long[], double[])
- * @see Evaluator#makeTimeSeries(int)
+ * @see Evaluator#makeTS(Type, long[], double[])
  *
  * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
  */
@@ -20,4 +19,36 @@ public interface TimeSeries {
 
     /** The time series values at the defined time points. */
     public double[] getValues();
+
+    /** Degree of interpolation: 0 for step function, 1 for piecewise linear. */
+    public int getDegree();
+
+    /**
+     * Interpolate the time series values at the given time points.
+     * @param t time points in increasing order
+     */
+    public double[] valuesAt(long[] t);
+
+    /**
+     * The mean of the time series as a continuous function, using interpolation
+     * between defined points.
+     */
+    public double getMean();
+
+    /**
+     * Standard deviation of the time series as a continuous function, using
+     * interpolation between defined points.
+     */
+    public double getStdev();
+
+    /**
+     * Variance of the time series as a continuous function, using interpolation
+     * between defined points.
+     */
+    public double getVar();
+
+    /**
+     * Returns a function representation of the time series.
+     */
+    public PiecewiseFunction internalFunction();
 }
