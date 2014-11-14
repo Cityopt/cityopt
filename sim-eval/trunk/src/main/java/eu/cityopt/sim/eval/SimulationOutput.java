@@ -10,7 +10,7 @@ package eu.cityopt.sim.eval;
  * In case of an ephemeral simulation failure due to e.g. insufficient disk
  * space, an exception should be thrown instead of creating SimulationOutput.
  * 
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class SimulationOutput {
     private SimulationInput input;

@@ -6,7 +6,7 @@ import javax.script.ScriptException;
 /**
  * An expression evaluating to a double precision floating point value.
  *
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class DoubleExpression {
     private String source;

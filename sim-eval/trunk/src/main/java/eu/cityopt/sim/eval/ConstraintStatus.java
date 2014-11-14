@@ -10,7 +10,7 @@ import javax.script.ScriptException;
  * If a constraint refers to simulation results, evaluating it before simulation
  * will fail, but it is possible to ignore such errors.
  *
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
     /**

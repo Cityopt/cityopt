@@ -10,23 +10,23 @@ import java.util.Map;
  * components. This is a per-project object: only the names and types are
  * defined here. The actual parameter values may vary in different simulation
  * runs.
- * 
+ * <p> 
  * The same input parameter names and output variable names can occur in
  * multiple components. In expressions, per-component names are referenced as
  * <code>C.N</code> where <code>C</code> is the component name and
  * <code>N</code> is the name of the input or output.
- * 
+ * <p>
  * The names of external parameters and metrics are considered top-level names
  * and can be referenced directly, for example the expression <code>M</code>
  * could refer to a metric called <code>M</code>.
- * 
+ * <p>
  * The names are bound to values in the following order: components, externals,
  * inputs, outputs, metrics. Names that are bound later can currently shadow
  * earlier names, but we may yet disallow shadowing. The expressions for metrics
  * cannot refer to other metrics, only to the objects that are bound earlier in
  * the above order.
  * 
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class Namespace {
     /** The expression evaluator to use. */

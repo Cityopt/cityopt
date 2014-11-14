@@ -10,7 +10,7 @@ import javax.script.ScriptException;
  * values are intended to be recomputed from SimulationResults when needed.
  * An instance of this class is needed to compute objective values.
  *
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class MetricValues implements EvaluationContext {
     private SimulationResults results;

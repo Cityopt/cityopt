@@ -5,7 +5,7 @@ package eu.cityopt.sim.eval;
  *
  * @see Namespace
  *
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public enum Type {
     /** Double precision floating point */

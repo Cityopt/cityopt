@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * Piecewise function defined by sequence of (t, v) points.
  *
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public abstract class PiecewiseFunction {
     final long[] tt;

@@ -6,7 +6,7 @@ import javax.script.ScriptException;
  * Represents an objective in an optimization problem.
  * Can be used for both single-objective and multi-objective problems.
  *
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class ObjectiveExpression extends DoubleExpression {
     private int objectiveId;

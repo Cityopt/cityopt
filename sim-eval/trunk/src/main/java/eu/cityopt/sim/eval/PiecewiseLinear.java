@@ -14,7 +14,7 @@ import java.util.Arrays;
  *
  * @see PiecewiseFunction#make(long[], double[], int)
  *
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class PiecewiseLinear extends PiecewiseFunction {
 

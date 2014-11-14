@@ -20,7 +20,7 @@ import org.junit.Test;
 /**
  * Test time series access directly and from Python expressions.
  *
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class TestTimeSeries {
     static Evaluator evaluator;

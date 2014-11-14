@@ -5,7 +5,7 @@ import javax.script.ScriptException;
 /**
  * Represents a constraint in an optimization problem.
  *
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class ConstraintExpression extends DoubleExpression {
     private int constraintId;

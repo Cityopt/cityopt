@@ -8,7 +8,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * Wraps pre-computed data in a Future.
  * 
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  * 
  * @param <T> contained data type
  */

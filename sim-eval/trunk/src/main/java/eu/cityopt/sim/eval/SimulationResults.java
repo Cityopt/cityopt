@@ -8,7 +8,7 @@ import javax.script.ScriptException;
  * have to be constructed 1) by simulator-specific implementation code, and 
  * 2) from database when evaluating metrics for old simulation runs.
  * 
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class SimulationResults extends SimulationOutput implements
         EvaluationContext {

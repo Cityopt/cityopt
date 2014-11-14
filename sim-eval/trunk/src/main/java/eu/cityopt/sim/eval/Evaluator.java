@@ -25,7 +25,7 @@ import org.python.core.PyObject;
  *
  * @see <a href="http://www.jython.org/">http://www.jython.org/</a>
  * 
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class Evaluator {
     private ScriptEngine engine;

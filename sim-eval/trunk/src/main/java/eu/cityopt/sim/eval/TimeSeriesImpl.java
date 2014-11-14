@@ -59,7 +59,7 @@ import java.util.Locale;
  *  - Absolute values of the time series.  Zeroes are retained at the
  *    appropriate time points by using interpolation.
  *</p>
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class TimeSeriesImpl implements TimeSeries {
     private final Evaluator evaluator;

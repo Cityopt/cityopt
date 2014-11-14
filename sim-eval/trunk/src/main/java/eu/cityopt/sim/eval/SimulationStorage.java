@@ -4,7 +4,7 @@ package eu.cityopt.sim.eval;
  * Access to stored simulation runs for the sim-eval module and scenario
  * generation code. Database access should be provided via this interface.
  * 
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public interface SimulationStorage {
 

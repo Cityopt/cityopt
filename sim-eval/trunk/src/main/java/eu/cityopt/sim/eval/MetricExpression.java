@@ -9,7 +9,7 @@ import javax.script.ScriptException;
  * repeating the expressions for e.g. CO2 emissions or operational costs in
  * multiple places.
  *
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class MetricExpression extends DoubleExpression {
     private final int metricId;

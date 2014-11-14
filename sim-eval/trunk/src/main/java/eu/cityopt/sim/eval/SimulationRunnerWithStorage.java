@@ -9,7 +9,7 @@ import java.util.concurrent.Future;
  * 
  * Note that this class neither computes nor stores any metrics.
  * 
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class SimulationRunnerWithStorage implements SimulationRunner {
     private SimulationRunner runner;

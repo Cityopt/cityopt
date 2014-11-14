@@ -8,7 +8,7 @@ import javax.script.ScriptException;
  * Container for objective value(s) computed from a single simulation run. Can
  * be used in both single-objective and multi-objective problems.
  *
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class ObjectiveStatus implements PartiallyComparable<ObjectiveStatus> {
     private final Namespace namespace;

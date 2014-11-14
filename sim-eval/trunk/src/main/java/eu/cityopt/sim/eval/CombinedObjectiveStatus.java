@@ -6,7 +6,7 @@ package eu.cityopt.sim.eval;
  * Constraint violations are compared first, and only if both solutions are
  * equally feasible, are objective functions compared.
  * 
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class CombinedObjectiveStatus implements
         PartiallyComparable<CombinedObjectiveStatus> {

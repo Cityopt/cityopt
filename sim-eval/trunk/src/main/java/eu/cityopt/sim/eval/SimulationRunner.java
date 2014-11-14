@@ -2,6 +2,11 @@ package eu.cityopt.sim.eval;
 
 import java.util.concurrent.Future;
 
+/**
+ * Interface for starting new simulation jobs.
+ *
+ * @author Hannu Rummukainen
+ */
 public interface SimulationRunner {
     /**
      * Starts a simulation with the given input.

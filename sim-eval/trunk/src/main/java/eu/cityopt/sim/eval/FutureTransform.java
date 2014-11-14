@@ -8,7 +8,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * Transform the value of a Future after it becomes available.
  * 
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  * @param <T> input type of the transform, output of the required Future
  * @param <U> output type of the transform
  */

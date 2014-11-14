@@ -12,7 +12,7 @@ import javax.script.ScriptException;
  * Note that the Java scripting API only requires two global scopes, and does
  * not have direct support for Bindings in inner scopes.
  * 
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 class BindingLayer {
     private final Namespace namespace;

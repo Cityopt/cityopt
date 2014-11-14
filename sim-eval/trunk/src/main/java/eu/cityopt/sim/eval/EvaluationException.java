@@ -3,7 +3,7 @@ package eu.cityopt.sim.eval;
 /**
  * Superclass for exceptions raised by the evaluation code.
  * 
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 @SuppressWarnings("serial")
 public class EvaluationException extends Exception {

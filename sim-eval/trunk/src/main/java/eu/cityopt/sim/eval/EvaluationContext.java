@@ -6,7 +6,7 @@ import javax.script.ScriptException;
 /**
  * Associates names with values for evaluating expressions.
  * 
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public interface EvaluationContext {
     /**

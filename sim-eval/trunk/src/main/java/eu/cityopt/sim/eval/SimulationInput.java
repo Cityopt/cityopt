@@ -15,7 +15,7 @@ import javax.script.ScriptException;
  * parameters and the defined simulation inputs.  This makes it possible for
  * pre-simulation constraints to refer to external parameter values.
  *
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class SimulationInput implements EvaluationContext {
     private BindingLayer bindingLayer;

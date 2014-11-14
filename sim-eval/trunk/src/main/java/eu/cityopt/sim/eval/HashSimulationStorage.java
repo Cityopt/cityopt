@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * SimulationStorage implementation using a local hash table.
  * 
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class HashSimulationStorage implements SimulationStorage {
     private Map<SimulationInput, SimulationOutput> inputOutputCache;

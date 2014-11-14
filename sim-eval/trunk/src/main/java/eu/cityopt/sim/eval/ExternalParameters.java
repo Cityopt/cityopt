@@ -6,7 +6,7 @@ import javax.script.ScriptException;
 /**
  * Container for external parameter values.
  *
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public class ExternalParameters implements EvaluationContext {
     private BindingLayer bindingLayer;

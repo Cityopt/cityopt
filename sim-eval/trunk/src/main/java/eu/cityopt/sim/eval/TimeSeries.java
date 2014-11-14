@@ -7,7 +7,7 @@ package eu.cityopt.sim.eval;
  *
  * @see Evaluator#makeTS(Type, long[], double[])
  *
- * @author Hannu Rummukainen <Hannu.Rummukainen@vtt.fi>
+ * @author Hannu Rummukainen
  */
 public interface TimeSeries {
     /**
