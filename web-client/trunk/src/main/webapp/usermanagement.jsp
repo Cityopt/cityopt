@@ -1,20 +1,11 @@
 <%@ page language="java" contentType="text/html"
     pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
 		<title>CityOpt User management</title>
 		<link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
-    <!-- <style type="text/css">
-      body { font-size: 80%; font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif; }
-      ul#tabs { list-style-type: none; margin: 0 0 0 0; padding: 0 0 0.3em 0; }
-      ul#tabs li { display: inline; }
-      ul#tabs li a { color: #42454a; background-color: #dedbde; border: 1px solid #c9c3ba; border-bottom: none; padding: 0.3em; text-decoration: none; }
-      ul#tabs li a:hover { background-color: #f1f0ee; }
-      ul#tabs li a.selected { color: #000; background-color: #f1f0ee; font-weight: bold; padding: 0.7em 0.3em 0.38em 0.3em; }
-      div.tabContent { border: 1px solid #c9c3ba; padding: 0.5em; background-color: #f1f0ee; }
-      div.tabContent.hide { display: none; }
-    </style>-->
 
     <script type="text/javascript">
     //<![CDATA[
@@ -89,9 +80,9 @@
     </script>
 </head>
 <body>
+<%@include file='mainmenu.inc'%>
 <table>
    	<tr>
-   		<td width="200"><%@include file='mainmenu.inc'%></td>
       	<td valign="top">
       		<table>
       			<tr>
