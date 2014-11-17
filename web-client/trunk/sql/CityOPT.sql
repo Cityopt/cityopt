@@ -246,7 +246,7 @@ CREATE SEQUENCE ExtParamValScenGen_id_seq INCREMENT 1 START 1
 
 CREATE TABLE ExtParamValScenGen ( 
 	id integer DEFAULT nextval(('ExtParamValScenGen_id_seq'::text)::regclass) NOT NULL,
-	scenMetricID integer,
+	extParamValID integer,
 	scenGenID integer
 )
 ;
@@ -606,11 +606,11 @@ CREATE INDEX IXFK_ExtParamVal_ExtParam
 CREATE INDEX IXFK_ExtParamVal_TimeSeries
 	ON ExtParamVal (tSeriesID)
 ;
-CREATE INDEX IXFK_extParamValScenGen_ScenarioMetrics
-	ON ExtParamValScenGen (scenMetricID)
-;
 CREATE INDEX IXFK_extParamValScenGen_ScenarioGenerator
 	ON ExtParamValScenGen (scenGenID)
+;
+CREATE INDEX IXFK_ExtParamValScenGen_ExtParamVal
+	ON ExtParamValScenGen (extParamValID)
 ;
 CREATE INDEX IXFK_extParamValScenMetric_ScenarioMetrics
 	ON ExtParamValScenMetric (scenMetricID)
@@ -997,12 +997,12 @@ ALTER TABLE ExtParamVal ADD CONSTRAINT FK_ExtParamVal_TimeSeries
 	FOREIGN KEY (tSeriesID) REFERENCES TimeSeries (tSeriesID)
 ;
 
-ALTER TABLE ExtParamValScenGen ADD CONSTRAINT FK_extParamValScenGen_ScenarioMetrics 
-	FOREIGN KEY (scenMetricID) REFERENCES ScenarioMetrics (scenMetricID)
-;
-
 ALTER TABLE ExtParamValScenGen ADD CONSTRAINT FK_extParamValScenGen_ScenarioGenerator 
 	FOREIGN KEY (scenGenID) REFERENCES ScenarioGenerator (scenGenID)
+;
+
+ALTER TABLE ExtParamValScenGen ADD CONSTRAINT FK_ExtParamValScenGen_ExtParamVal 
+	FOREIGN KEY (extParamValID) REFERENCES ExtParamVal (extParamValID)
 ;
 
 ALTER TABLE ExtParamValScenMetric ADD CONSTRAINT FK_extParamValScenMetric_ScenarioMetrics 
