@@ -1,6 +1,6 @@
 package com.cityopt.model;
 
-// Generated 13.11.2014 15:13:00 by Hibernate Tools 4.0.0
+// Generated 17.11.2014 09:26:01 by Hibernate Tools 4.0.0
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,8 +27,6 @@ public class Scenariometrics implements java.io.Serializable {
 
 	private int scenmetricid;
 	private Scenario scenario;
-	private Set<Extparamvalscengen> extparamvalscengens = new HashSet<Extparamvalscengen>(
-			0);
 	private Set<Metricval> metricvals = new HashSet<Metricval>(0);
 	private Set<Extparamvalscenmetric> extparamvalscenmetrics = new HashSet<Extparamvalscenmetric>(
 			0);
@@ -41,12 +39,10 @@ public class Scenariometrics implements java.io.Serializable {
 	}
 
 	public Scenariometrics(int scenmetricid, Scenario scenario,
-			Set<Extparamvalscengen> extparamvalscengens,
 			Set<Metricval> metricvals,
 			Set<Extparamvalscenmetric> extparamvalscenmetrics) {
 		this.scenmetricid = scenmetricid;
 		this.scenario = scenario;
-		this.extparamvalscengens = extparamvalscengens;
 		this.metricvals = metricvals;
 		this.extparamvalscenmetrics = extparamvalscenmetrics;
 	}
@@ -70,16 +66,6 @@ public class Scenariometrics implements java.io.Serializable {
 
 	public void setScenario(Scenario scenario) {
 		this.scenario = scenario;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariometrics")
-	public Set<Extparamvalscengen> getExtparamvalscengens() {
-		return this.extparamvalscengens;
-	}
-
-	public void setExtparamvalscengens(
-			Set<Extparamvalscengen> extparamvalscengens) {
-		this.extparamvalscengens = extparamvalscengens;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariometrics")

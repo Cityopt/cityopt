@@ -1,6 +1,6 @@
 package com.cityopt.model;
 
-// Generated 13.11.2014 15:13:00 by Hibernate Tools 4.0.0
+// Generated 17.11.2014 09:26:01 by Hibernate Tools 4.0.0
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +21,7 @@ import javax.persistence.Table;
 public class Extparamvalscengen implements java.io.Serializable {
 
 	private int id;
-	private Scenariometrics scenariometrics;
+	private Extparamval extparamval;
 	private Scenariogenerator scenariogenerator;
 
 	public Extparamvalscengen() {
@@ -31,10 +31,10 @@ public class Extparamvalscengen implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public Extparamvalscengen(int id, Scenariometrics scenariometrics,
+	public Extparamvalscengen(int id, Extparamval extparamval,
 			Scenariogenerator scenariogenerator) {
 		this.id = id;
-		this.scenariometrics = scenariometrics;
+		this.extparamval = extparamval;
 		this.scenariogenerator = scenariogenerator;
 	}
 
@@ -51,13 +51,13 @@ public class Extparamvalscengen implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "scenmetricid")
-	public Scenariometrics getScenariometrics() {
-		return this.scenariometrics;
+	@JoinColumn(name = "extparamvalid")
+	public Extparamval getExtparamval() {
+		return this.extparamval;
 	}
 
-	public void setScenariometrics(Scenariometrics scenariometrics) {
-		this.scenariometrics = scenariometrics;
+	public void setExtparamval(Extparamval extparamval) {
+		this.extparamval = extparamval;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

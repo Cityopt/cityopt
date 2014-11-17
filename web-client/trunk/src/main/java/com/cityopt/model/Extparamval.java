@@ -1,6 +1,6 @@
 package com.cityopt.model;
 
-// Generated 13.11.2014 15:13:00 by Hibernate Tools 4.0.0
+// Generated 17.11.2014 09:26:01 by Hibernate Tools 4.0.0
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +30,8 @@ public class Extparamval implements java.io.Serializable {
 	private String value;
 	private Set<Extparamvalscenmetric> extparamvalscenmetrics = new HashSet<Extparamvalscenmetric>(
 			0);
+	private Set<Extparamvalscengen> extparamvalscengens = new HashSet<Extparamvalscengen>(
+			0);
 
 	public Extparamval() {
 	}
@@ -40,12 +42,14 @@ public class Extparamval implements java.io.Serializable {
 
 	public Extparamval(int extparamvalid, Timeseries timeseries,
 			Extparam extparam, String value,
-			Set<Extparamvalscenmetric> extparamvalscenmetrics) {
+			Set<Extparamvalscenmetric> extparamvalscenmetrics,
+			Set<Extparamvalscengen> extparamvalscengens) {
 		this.extparamvalid = extparamvalid;
 		this.timeseries = timeseries;
 		this.extparam = extparam;
 		this.value = value;
 		this.extparamvalscenmetrics = extparamvalscenmetrics;
+		this.extparamvalscengens = extparamvalscengens;
 	}
 
 	@SequenceGenerator(name="extparamval_extparamvalid_seq",sequenceName="extparamval_extparamvalid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="extparamval_extparamvalid_seq")
@@ -96,6 +100,16 @@ public class Extparamval implements java.io.Serializable {
 	public void setExtparamvalscenmetrics(
 			Set<Extparamvalscenmetric> extparamvalscenmetrics) {
 		this.extparamvalscenmetrics = extparamvalscenmetrics;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "extparamval")
+	public Set<Extparamvalscengen> getExtparamvalscengens() {
+		return this.extparamvalscengens;
+	}
+
+	public void setExtparamvalscengens(
+			Set<Extparamvalscengen> extparamvalscengens) {
+		this.extparamvalscengens = extparamvalscengens;
 	}
 
 }
