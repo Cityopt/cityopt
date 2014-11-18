@@ -1,11 +1,19 @@
 package eu.cityopt.sim.eval;
 
+import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.Invocable;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -28,16 +36,24 @@ import org.python.core.PyObject;
  * @author Hannu Rummukainen
  */
 public class Evaluator {
-    private ScriptEngine engine;
-
     private static final String ENGINE_NAME = "python";
 
-    private static final String initializationCode =
-            "from datetime import datetime, timedelta\n" +
-            "def convertTimestampsToDatetimes(timestamps):\n" +
-            "  return [datetime.fromtimestamp(t) for t in timestamps]\n";
+    private static Object initialSetupMutex = new Object();
+    private static volatile boolean initialSetupDone = false;
+
+    private static final String PYTHON_IMPORTS =
+            "import __builtin__\n" +
+            "from datetime import *\n" +
+            "from math import *\n" +
+            "import __cityopt__\n" +
+            "from __cityopt__ import *\n";
+
+    private ScriptEngine engine;
+    private PyObject _convertTimestampsToDatetimes;
 
     public Evaluator() throws EvaluationException, ScriptException {
+        doInitialSetup();
+
         ScriptEngineManager manager = new ScriptEngineManager();
         this.engine = manager.getEngineByName(ENGINE_NAME);
         if (engine == null) {
@@ -58,8 +74,66 @@ public class Evaluator {
             throw new EvaluationException("Scripting engine \"" + ENGINE_NAME
                     + "\" is not multi-threaded");
         }
-        engine.eval(initializationCode);
+        engine.eval(PYTHON_IMPORTS);
+
+        _convertTimestampsToDatetimes = (PyObject) engine.eval(
+                "__cityopt__._convertTimestampsToDatetimes");
         // TODO: engine.setContext
+    }
+
+    private static void doInitialSetup() {
+        synchronized (initialSetupMutex) {
+            if ( ! initialSetupDone) {
+                initPythonPath();
+                initialSetupDone = true;
+            }
+        }
+    }
+
+    /**
+     * Adds our Lib directory to the Python module search path.
+     * <p>
+     * When the sim-eval module is packaged in a JAR file, a copy of the Python
+     * Lib directory is included in the JAR via maven-resources-plugin, and we
+     * use that copy in the Python search path. When running directly from class
+     * files, which should occur only in JUnit testing, we use use the source
+     * directory src/main/resources/Lib.
+     * <p>
+     * Jython authors promote bundling Jython with user code in a single
+     * combined JAR file, in which case Jython automatically finds any Python
+     * modules in the Lib directory in the common JAR. There is a
+     * maven-jython-compile-plugin which automates the bundling process and is
+     * also able to include additional Python modules via easy_install. However,
+     * there is no plugin solution for running JUnit tests.
+     * <p>
+     * One point of potential fragility in our solution should be noted: When
+     * Maven runs unit tests between the compile and package phases, Jython
+     * saves bytecode versions of the Python files in the source directory, and
+     * those bytecode files are then copied to the produced JAR.
+     */
+    private static void initPythonPath() {
+        final String PYTHON_PATH = "python.path";
+        URL url = Evaluator.class.getResource("/Lib/__cityopt__.py");
+        try {
+            String libraryPath;
+            URI uri = url.toURI();
+            if (uri.getScheme().equalsIgnoreCase("jar")) {
+                JarURLConnection jarUrl = (JarURLConnection) url.openConnection();
+                Path jarPath = Paths.get(jarUrl.getJarFileURL().toURI());
+                libraryPath = jarPath.resolve(jarUrl.getEntryName()).getParent().toString();
+            } else {
+                libraryPath = "src/main/resources/Lib";
+            }
+            String oldLibraryPath = System.getProperty(PYTHON_PATH); 
+            if (oldLibraryPath != null) {
+                libraryPath = libraryPath + System.getProperty("path.separator") 
+                        + oldLibraryPath;
+            }
+            System.setProperty(PYTHON_PATH, libraryPath.toString());
+        } catch (URISyntaxException | IOException e) {
+            throw new IllegalStateException(
+                    "Invalid Python resource URL: " + url, e);
+        }
     }
 
     /**
@@ -97,7 +171,9 @@ public class Evaluator {
     }
 
     Bindings makeTopLevelBindings() {
-        return engine.createBindings();
+        Bindings b = engine.createBindings();
+        b.putAll(engine.getBindings(ScriptContext.ENGINE_SCOPE));
+        return b;
     }
 
     Bindings makeAttributeBindings() {
@@ -161,20 +237,8 @@ public class Evaluator {
         }
     }
 
-    /**
-     * Invokes a Python function that is known to exist. Intended to be called
-     * from inside Python evaluation: any ScriptException from the invocation is
-     * unwrapped to re-throw the original Python Exception. Also converts
-     * NoSuchMethodException into IllegalStateException.
-     */
-    Object invokeInternal(String name, Object... args) throws Throwable {
-        try {
-            return getInvoker().invokeFunction(name, args);
-        } catch (NoSuchMethodException e) {
-            throw new IllegalStateException(
-                    "The Python function \"" + name + "\" disappeared", e);
-        } catch (ScriptException e) {
-            throw (e.getCause() != null) ? e.getCause() : e;
-        }
+    PyObject convertTimestampsToDatetimes(double[] times) {
+        return _convertTimestampsToDatetimes.__call__(
+                Py.javas2pys(new Object[] { times }));
     }
 }

@@ -1,6 +1,7 @@
 package eu.cityopt.sim.eval;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -40,10 +41,10 @@ public class TestEval {
         ns.metrics.put("m2", Type.DOUBLE);
         ns.metrics.put("m3", Type.DOUBLE);
     }
-    
+
     ExternalParameters externalParameters;
     SimulationInput input;
-    
+
     @Before
     public void setupInput() {
         externalParameters = new ExternalParameters(ns);
@@ -54,7 +55,7 @@ public class TestEval {
         input.put("C1", "x8", 4.0);
         input.put("C2", "x9", 5.0);
     }
-    
+
     @Test
     public void testDir() throws Exception {
         CompiledScript script = evaluator.getCompiler().compile("dir(C1)");
@@ -78,7 +79,7 @@ public class TestEval {
         MetricExpression[] metrics = {
                 new MetricExpression(1, "m1", "-9 * C1.x5 - 15 * C1.x8", evaluator),
                 new MetricExpression(2, "m2", "10 * (C1.x6 + C1.x7)", evaluator),
-                new MetricExpression(3, "m3", "6 * C1.x1.values[0] + 16 * C1.x2.mean", evaluator)
+                new MetricExpression(3, "m3", "6 * C1.x1.values[0] + 16 * mean(C1.x2)", evaluator)
         };
         ObjectiveExpression[] objectives = { new ObjectiveExpression(
                 1, "m1 + m2", false, evaluator) };
@@ -149,5 +150,26 @@ public class TestEval {
 
         double value = invalidConstraint.evaluate(input);
         System.out.println("infeasibility = " + value);
+    }
+
+    /** Test our global Python functions with non-timeseries data. */
+    @Test
+    public void globalPythonFunctions() throws Exception {
+        assertEquals(3, eval("mean([2, 4])", input), 0.0);
+        assertEquals(2, eval("var([2, 4])", input), 0.0);
+        assertEquals(Math.sqrt(2.0), eval("stdev([2, 4])", input), 0.0);
+        assertEquals(2, eval("min([2, 4])", input), 0.0);
+        assertEquals(4, eval("max([2, 4])", input), 0.0);
+
+        assertEquals(1, eval("min(2, 4, 1, 3)", input), 0.0);
+        assertEquals(4, eval("max(2, 4, 1, 3)", input), 0.0);
+
+        assertEquals(1, eval("min([2], [4], [1], [3], key=lambda a: a[0])[0]", input), 0.0);
+        assertEquals(4, eval("max([2], [4], [1], [3], key=lambda a: a[0])[0]", input), 0.0);
+    }
+
+    private double eval(String expression, EvaluationContext context)
+            throws ScriptException, InvalidValueException {
+        return new DoubleExpression(expression, evaluator).evaluate(context);
     }
 }

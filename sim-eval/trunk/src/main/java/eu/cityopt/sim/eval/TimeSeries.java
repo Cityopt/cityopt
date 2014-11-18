@@ -47,6 +47,12 @@ public interface TimeSeries {
      */
     public double getVar();
 
+    /** Minimum value. */
+    public double getMin();
+
+    /** Maximum value. */
+    public double getMax();
+
     /**
      * Returns a function representation of the time series.
      */

@@ -73,6 +73,13 @@ public class TestTimeSeries {
             assertEquals((1-f) * 1.5 + f * 3.5, eval("a.mean", ep), delta);
             assertEquals(0.2887686695576, eval("a.stdev", ep), delta);
         }
+        assertEquals(eval("a.mean", ep), eval("mean(a)", ep), delta);
+        assertEquals(eval("a.stdev", ep), eval("stdev(a)", ep), delta);
+        assertEquals(eval("a.var", ep), eval("var(a)", ep), delta);
+        assertEquals(1, eval("a.min", ep), delta);
+        assertEquals(1, eval("min(a)", ep), delta);
+        assertEquals(5, eval("a.max", ep), delta);
+        assertEquals(5, eval("max(a)", ep), delta);
 
         for (int i = 0; i < vb.length; ++i) {
             assertEquals(vb[i], eval("b.values["+i+"]", ep), delta);

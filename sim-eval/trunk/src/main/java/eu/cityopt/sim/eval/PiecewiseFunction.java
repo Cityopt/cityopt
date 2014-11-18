@@ -96,36 +96,36 @@ public abstract class PiecewiseFunction {
             return vvo;
         }
 
-        // Find first element of 'at' in the domain of the time series.
+        // Find first element of 'at' in the domain of the function
         int io0 = 0;
         if (at[0] < tt[0]) {
             int bs0 = Arrays.binarySearch(at, tt[0]);
             io0 = (bs0 < 0) ? ~bs0 : firstEqual(at, bs0);
             if (io0 == no) {
-                // at[no-1] < times[0] 
+                // at[no-1] < tt[0] 
                 return vvo;
             }
         }
         assert at[io0] >= tt[0] && (io0 == 0 || at[io0-1] < tt[0]);
 
-        // Find first element of 'at' beyond the domain of the time series.
+        // Find first element of 'at' beyond the domain of the function.
         int io1 = no;
         if (at[no-1] > tt[ni-1]) {
             int bs1 = Arrays.binarySearch(at, io0, no, tt[ni-1]);
             io1 = (bs1 < 0) ? ~bs1 : lastEqual(at, bs1) + 1;
             if (io1 == 0) {
-                // times[ni-1] < at[0]
+                // tt[ni-1] < at[0]
                 return vvo;
             }
         }
         assert (io1 == no || at[io1] >= tt[ni-1]) && at[io1-1] <= tt[ni-1];
 
-        // Find which time series segment at[io0] is on.
+        // Find which segment at[io0] is on.
         // Point ii to the segment endpoint.
         int bs2 = Arrays.binarySearch(tt, at[io0]);
         int ii = (bs2 < 0) ? ~bs2 : firstEqual(tt, bs2);
         if (ii == ni) {
-            // times[ni-1] < at[io]
+            // tt[ni-1] < at[io]
             return vvo;
         }
         assert tt[ii] >= at[io0] && (ii == 0 || tt[ii-1] <= at[io0]);
@@ -252,6 +252,30 @@ public abstract class PiecewiseFunction {
     /** Variance of the function over its domain. */
     public abstract double variance(double mean);
 
+    /** Supremum value over the domain of the function. */
+    public double sup() {
+        double m = Double.NEGATIVE_INFINITY;
+        for (int i = 0; i < tt.length; ++i) {
+            double v = vv[i];
+            if (v > m) {
+                m = v;
+            }
+        }
+        return m;
+    }
+
+    /** Infimum value over the domain of the function. */
+    public double inf() {
+        double m = Double.POSITIVE_INFINITY;
+        for (int i = 0; i < tt.length; ++i) {
+            double v = vv[i];
+            if (v < m) {
+                m = v;
+            }
+        }
+        return m;
+    }
+
     /**
      * Computes the interpolated absolute value function.
      * 
@@ -344,7 +368,7 @@ public abstract class PiecewiseFunction {
         int na = tta.length;
         int nb = ttb.length;
 
-        // Count the time points in the result.
+        // Count the size of the result.
         int no = 0;
         int ia = 0;
         int ib = 0;
