@@ -31,7 +31,7 @@ import org.springframework.web.servlet.view.xml.MarshallingView;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan({"com.pluralsight"}) 
+@ComponentScan({"com.pluralsight","com.cityopt"}) 
 public class appConfig extends WebMvcConfigurerAdapter {
 
 	public void addInterceptors(InterceptorRegistry registry) {
