@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Open project</title>
+<title>CityOpt Delete project</title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -20,7 +20,7 @@
 
 <div style="overflow:scroll;height:400px;width:500px;overflow:auto">
 <form method="get" action="ProjectController">
-<h2>Open project</h2>
+<h2>Delete project</h2>
 <table class="tablestyle" width="400" border="1">
 
 <tr height="20">
@@ -28,7 +28,7 @@
     <th>User</th>
     <th>Description</th>
     <th>Creation date</th>
-    <th>Open</th>
+    <th>Delete</th>
 </tr>
 
 <c:forEach items="${projects}" var="project">
@@ -40,7 +40,6 @@
     	<td><input type="radio"/></td>
    	</tr>
 </c:forEach>
-
 
 <% //for(int i=0; i<l.size();i++) {%>
 <!--    <tr>
@@ -57,7 +56,7 @@
 
 <tr>
 	<td align="right">
-		<input align="right" type="submit" value="Open project"/>
+		<input align="right" type="submit" value="Delete project"/>
     </td>
 </tr>
       

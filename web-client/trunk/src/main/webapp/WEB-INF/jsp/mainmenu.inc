@@ -1,85 +1,88 @@
-<form action="MenuServlet" method="post">
-<table align="left">
+<table class="menustyle" align="left">
 <tr>
-	<td bgcolor=#aa00ff>
+	<td>
+		<b>Main menu</b>
+	</td>
+</tr>
+<tr>
+	<td>
 		<a href="usermanagement.jsp">User management</a>
 	</td>
 </tr>
 <tr>
-	<td>Project</td>
+	<td><b>Project</b></td>
 </tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="createproject.jsp">Create project</a>
+	<td>
+		<a href="createproject.html">Create project</a>
 	</td>
 </tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="openproject.jsp">Open project</a>
+	<td>
+		<a href="openproject.html">Open project</a>
 	</td>
 </tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="deleteproject.jsp">Delete project</a>
+	<td>
+		<a href="deleteproject.html">Delete project</a>
 	</td>
 </tr>
 <tr>
-	<td>Scenario</td>
+	<td><b>Scenario</b></td>
 </tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="createscenario.jsp">Create scenario</a>
+	<td>
+		<a href="createscenario.html">Create scenario</a>
 	</td>
 </tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="openscenario.jsp">Open scenario</a>
+	<td>
+		<a href="openscenario.html">Open scenario</a>
 	</td></tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="deletescenario.jsp">Delete scenario</a>
+	<td>
+		<a href="deletescenario.html">Delete scenario</a>
 	</td></tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="">Run multi-scenario</a>
+	<td>
+		<a href="runmultiscenario.html">Run multi-scenario</a>
 	</td></tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="metricdefinition.jsp">Metric definition</a>
+	<td>
+		<a href="metricdefinition.html">Metric definition</a>
 	</td></tr>
 <tr>
-	<td>Optimization set</td>
+	<td><b>Optimization set</b></td>
 </tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="databaseoptimization.jsp">Database optimization</a>
+	<td>
+		<a href="databaseoptimization.html">Database optimization</a>
 	</td></tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="geneticalgorithm.jsp">Genetic algorithm</a>
+	<td>
+		<a href="geneticalgorithm.html">Genetic algorithm</a>
 	</td></tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="openoptimizationset.jsp">Open optimization set</a>
+	<td>
+		<a href="openoptimizationset.html">Open optimization set</a>
 	</td></tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="deleteoptimizationset.jsp">Delete optimization set</a>
+	<td>
+		<a href="deleteoptimizationset.html">Delete optimization set</a>
 	</td></tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="">Run multi-optimization set</a>
+	<td>
+		<a href="runmultioptimizationset.html">Run multi-optimization set</a>
 	</td></tr>
 <tr>
-	<td>Visualization</td>
+	<td><b>Visualization</b></td>
 </tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="viewchart.jsp">Chart</a>
+	<td>
+		<a href="viewchart.html">Chart</a>
 	</td></tr>
 <tr>
-	<td bgcolor=#aa00ff>
-		<a href="viewtable.jsp">Table</a>
+	<td>
+		<a href="viewtable.html">Table</a>
 	</td></tr>
 </table>
-</form>

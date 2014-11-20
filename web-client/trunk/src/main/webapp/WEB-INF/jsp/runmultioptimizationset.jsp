@@ -1,11 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Open project</title>
+<title>CityOpt Run Multi-Optimization Set</title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -18,29 +17,43 @@
 	//b = SqlSentencesList.showCatalog(); // this method returns an arrayList with all books
 %>
 
-<div style="overflow:scroll;height:400px;width:500px;overflow:auto">
-<form method="get" action="ProjectController">
-<h2>Open project</h2>
-<table class="tablestyle" width="400" border="1">
+<div style="overflow:scroll;height:400px;width:600px;overflow:auto">
+<form method="get" action="OptimizationController">
+<h2>Run Multi-Optimization Set</h2>
+<table class="tablestyle" width="600" border="1">
 
 <tr height="20">
     <th>Name</th>
+    <th>Type</th>
     <th>User</th>
     <th>Description</th>
     <th>Creation date</th>
-    <th>Open</th>
+    <th>Setting</th>
+    <th>Run</th>
+    <th>Select</th>
 </tr>
 
-<c:forEach items="${projects}" var="project">
-	<tr>
-		<td>${project.name}</td>
-		<td>${project.prjid}</td>			
-		<td></td>
-		<td></td>
-    	<td><input type="radio"/></td>
-   	</tr>
-</c:forEach>
+<tr height="20">
+    <td>optimization set 1</td>
+    <td>x</td>
+    <td>x</td>
+    <td>x</td>
+    <td>x</td>
+    <td>x</td>
+    <td>x</td>
+    <td> <input type="checkbox"/> </td>
+</tr>
 
+<tr height="20">
+    <td>optimization set 2</td>
+    <td>x</td>
+    <td>x</td>
+    <td>x</td>
+    <td>x</td>
+    <td>x</td>
+    <td>x</td>
+    <td> <input type="checkbox"/> </td>
+</tr>
 
 <% //for(int i=0; i<l.size();i++) {%>
 <!--    <tr>
@@ -53,11 +66,11 @@
 <% //} %>
 </table>
 
-<table width="400">
+<table width="600">
 
 <tr>
 	<td align="right">
-		<input align="right" type="submit" value="Open project"/>
+		<input align="right" type="submit" value="Run Multi-Optimization Set"/>
     </td>
 </tr>
       

@@ -28,5 +28,32 @@ public class ProjectController {
 		
 		return "getProjects";
 	}	
+
+	@RequestMapping(value="openproject",method=RequestMethod.GET)
+	public String getStringProjects(Model model){
+		List<Project> projects = projectService.findAllProjects();
+		model.addAttribute("projects",projects);
+		
+		return "openproject";
+	}	
+
+	@RequestMapping(value="index",method=RequestMethod.GET)
+	public String getIndex(Model model){
 	
+		return "index";
+	}
+
+	@RequestMapping(value="start",method=RequestMethod.GET)
+	public String getStart(Model model){
+	
+		return "start";
+	}
+
+	@RequestMapping(value="deleteproject",method=RequestMethod.GET)
+	public String getDeleteProject(Model model){
+		List<Project> projects = projectService.findAllProjects();
+		model.addAttribute("projects",projects);
+	
+		return "deleteproject";
+	}
 }

@@ -1,11 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Open project</title>
+<title>CityOpt Open scenario</title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -19,8 +18,8 @@
 %>
 
 <div style="overflow:scroll;height:400px;width:500px;overflow:auto">
-<form method="get" action="ProjectController">
-<h2>Open project</h2>
+<form method="get" action="OpenScenarioController">
+<h2>Open scenario</h2>
 <table class="tablestyle" width="400" border="1">
 
 <tr height="20">
@@ -28,19 +27,30 @@
     <th>User</th>
     <th>Description</th>
     <th>Creation date</th>
+    <th>Setting</th>
+    <th>Run</th>
     <th>Open</th>
 </tr>
 
-<c:forEach items="${projects}" var="project">
-	<tr>
-		<td>${project.name}</td>
-		<td>${project.prjid}</td>			
-		<td></td>
-		<td></td>
-    	<td><input type="radio"/></td>
-   	</tr>
-</c:forEach>
+<tr height="20">
+    <td>scenario 1</td>
+    <td>x</td>
+    <td>x</td>
+    <td>x</td>
+    <td>x</td>
+    <td>x</td>
+    <td> <input type="radio"/> </td>
+</tr>
 
+<tr height="20">
+    <td>scenario 2</td>
+    <td>x</td>
+    <td>x</td>
+    <td>x</td>
+    <td>x</td>
+    <td>x</td>
+    <td> <input type="radio"/> </td>
+</tr>
 
 <% //for(int i=0; i<l.size();i++) {%>
 <!--    <tr>
@@ -57,7 +67,7 @@
 
 <tr>
 	<td align="right">
-		<input align="right" type="submit" value="Open project"/>
+		<input align="right" type="submit" value="Open scenario"/>
     </td>
 </tr>
       
