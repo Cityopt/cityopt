@@ -1,8 +1,6 @@
 package eu.cityopt.sim.eval;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,24 +45,17 @@ public class TestEval {
 
     @Before
     public void setupInput() {
+        double[] ta = new double[] { 0.0 };
+        double[] va = new double[] { -1.0 };
         externalParameters = new ExternalParameters(ns);
+        externalParameters.put("a", evaluator.makeTS(Type.TIMESERIES_LINEAR, ta, va));
+        externalParameters.put("b", evaluator.makeTS(Type.TIMESERIES_LINEAR, ta, va));
         input = new SimulationInput(externalParameters);
         input.put("C1", "x5", 1.0);
         input.put("C1", "x6", 2.0);
         input.put("C1", "x7", 3.0);
         input.put("C1", "x8", 4.0);
         input.put("C2", "x9", 5.0);
-    }
-
-    @Test
-    public void testDir() throws Exception {
-        CompiledScript script = evaluator.getCompiler().compile("dir(C1)");
-        @SuppressWarnings("unchecked")
-        ArrayList<String> names = new ArrayList<String>(
-                (List<String>)script.eval(input.toBindings()));
-        Collections.sort(names);
-        String[] good = {"x5", "x6", "x7", "x8"};
-        assertArrayEquals(good, names.toArray());
     }
 
     @Test
@@ -152,6 +143,17 @@ public class TestEval {
         System.out.println("infeasibility = " + value);
     }
 
+    @Test
+    public void testDir() throws Exception {
+        CompiledScript script = evaluator.getCompiler().compile("dir(C1)");
+        @SuppressWarnings("unchecked")
+        ArrayList<String> names = new ArrayList<String>(
+                (List<String>)script.eval(input.toBindings()));
+        Collections.sort(names);
+        String[] good = {"x5", "x6", "x7", "x8"};
+        assertArrayEquals(good, names.toArray());
+    }
+
     /** Test our global Python functions with non-timeseries data. */
     @Test
     public void globalPythonFunctions() throws Exception {
@@ -171,5 +173,71 @@ public class TestEval {
     private double eval(String expression, EvaluationContext context)
             throws ScriptException, InvalidValueException {
         return new DoubleExpression(expression, evaluator).evaluate(context);
+    }
+
+    @Test
+    public void identifierValidation() throws ScriptException {
+        SyntaxChecker sc = new SyntaxChecker(evaluator);
+        assertTrue(sc.isValidTopLevelName("_Arina_9"));
+        assertFalse(sc.isValidTopLevelName("Örinä"));
+        assertFalse(sc.isValidTopLevelName("min"));
+        assertFalse(sc.isValidTopLevelName("class"));
+
+        assertTrue(sc.isValidAttributeName("_Arina_9"));
+        assertFalse(sc.isValidAttributeName("Örinä"));
+        assertTrue(sc.isValidAttributeName("min"));
+        assertFalse(sc.isValidAttributeName("class"));
+
+        assertEquals("Orina", sc.normalizeTopLevelName("Örinä"));
+        assertEquals("as_", sc.normalizeTopLevelName("as"));
+        assertEquals("min_", sc.normalizeTopLevelName("min"));
+        assertEquals("min_", sc.normalizeTopLevelName("min_"));
+        assertEquals("pow_", sc.normalizeTopLevelName("pow"));
+        assertEquals("pow_", sc.normalizeTopLevelName("pow_"));
+
+        assertEquals("_Orina_", sc.normalizeAttributeName("_Örinä'"));
+        assertEquals("as_", sc.normalizeAttributeName("as"));
+        assertEquals("min", sc.normalizeAttributeName("min"));
+        assertEquals("min_", sc.normalizeAttributeName("min_"));
+    }
+
+    @Test
+    public void expressionValidation_free() throws ScriptException {
+        testExpressionValidation(null);
+    }
+
+    @Test
+    public void expressionValidation_context() throws ScriptException {
+        testExpressionValidation(input);
+    }
+
+    public void testExpressionValidation(EvaluationContext ec)
+            throws ScriptException {
+        SyntaxChecker sc = new SyntaxChecker(evaluator);
+        boolean all = (ec != null);
+        assertNull(check(sc, "1+1", ec, all));
+        assertNotNull(check(sc, "", ec, all));
+        assertNotNull(check(sc, "C1.x5.mean.xxx.yyy", ec, all));
+        //TODO get simulation results here
+        if (ec == null) {
+            assertNull(check(sc, "C1.x1.mean", ec, all));
+        }
+        assertNull(check(sc, "C1.x5", ec, all));
+        assertNull(check(sc, "a", ec, all));
+        assertNotNull(check(sc, "C1.x5.mean.at(1)", ec, all));
+        //TODO implement Python methods for time series, so that we can test one here
+        if (ec == null) {
+            assertNull(check(sc, "C1.x5.at(1)", ec, all));
+            assertNull(check(sc, "a.at(1)", ec, all));
+        }
+        assertNotNull(check(sc, "b(1)", ec, all));
+        assertNull(check(sc, "min(1)", ec, all));
+    }
+
+    public String check(SyntaxChecker checker, String source, 
+            EvaluationContext context, boolean complete) throws ScriptException {
+        SyntaxChecker.ErrorMessage error =
+                checker.checkExpressionSyntax(source, context, complete);
+        return (error != null) ? error.message : null;
     }
 }

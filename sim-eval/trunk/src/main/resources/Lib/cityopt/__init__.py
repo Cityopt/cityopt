@@ -3,6 +3,9 @@ from math import sqrt
 from datetime import datetime
 from eu.cityopt.sim.eval import TimeSeries
 
+from keyword import kwlist
+import ast
+
 __all__ = ['mean', 'stdev', 'var', 'min', 'max']
 
 def _convertTimestampsToDatetimes(timestamps):

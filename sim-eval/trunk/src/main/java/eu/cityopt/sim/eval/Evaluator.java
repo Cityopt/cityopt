@@ -42,11 +42,13 @@ public class Evaluator {
     private static volatile boolean initialSetupDone = false;
 
     private static final String PYTHON_IMPORTS =
-            "import __builtin__\n" +
+            "import __builtin__, math, cmath, itertools, functools\n" +
+            "import cityopt, cityopt.syntax\n" +
             "from datetime import *\n" +
             "from math import *\n" +
-            "import __cityopt__\n" +
-            "from __cityopt__ import *\n";
+            // built-in pow is preferred to math.pow
+            "del pow\n" +
+            "from cityopt import *\n";
 
     private ScriptEngine engine;
     private PyObject _convertTimestampsToDatetimes;
@@ -77,7 +79,7 @@ public class Evaluator {
         engine.eval(PYTHON_IMPORTS);
 
         _convertTimestampsToDatetimes = (PyObject) engine.eval(
-                "__cityopt__._convertTimestampsToDatetimes");
+                "cityopt._convertTimestampsToDatetimes");
         // TODO: engine.setContext
     }
 
@@ -113,7 +115,7 @@ public class Evaluator {
      */
     private static void initPythonPath() {
         final String PYTHON_PATH = "python.path";
-        URL url = Evaluator.class.getResource("/Lib/__cityopt__.py");
+        URL url = Evaluator.class.getResource("/Lib/cityopt/__init__.py");
         try {
             String libraryPath;
             URI uri = url.toURI();
@@ -160,6 +162,10 @@ public class Evaluator {
         PiecewiseFunction fun = PiecewiseFunction.make(timeMillis, values,
                 type.getInterpolationDegree());
         return new TimeSeriesImpl(this, fun);
+    }
+
+    Object eval(String code) throws ScriptException {
+        return engine.eval(code);
     }
 
     Compilable getCompiler() {
