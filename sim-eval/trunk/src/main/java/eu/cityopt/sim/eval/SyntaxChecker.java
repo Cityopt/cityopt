@@ -41,22 +41,19 @@ public class SyntaxChecker {
      */
     private static final String[] RESERVED_GLOBALS_ARRAY = {
         // Python built-ins
-        "False", "None", "True", "abs", "all", "any", "bool", "cmp", "dict",
-        "enumerate", "filter", "float", "int", "len", "list", "map", "max",
-        "min", "pow", "range", "reduce", "reversed", "round", "set", "sorted",
+        "False", "None", "True", "abs", "all", "any", "bool", "dict",
+        "enumerate", "float", "int", "len", "list", "map", "max", "min",
+        "pow", "range", "reduce", "reversed", "round", "set", "sorted",
         "str", "sum", "tuple", "xrange", "zip",
         // from the standard math module
-        "acos", "acosh", "asin", "asinh", "atan", "atanh", "atan2", "ceil",
-        "cos", "cosh", "e", "erf", "erfc", "exp", "expm1", "floor", "gamma",
-        "hypot", "isinf", "isnan", "lgamma", "log", "log1p", "log10", "pi",
-        "sin", "sinh", "sqrt", "tan", "tanh",
+        "acos", "asin", "atan", "atan2", "ceil", "cos", "cosh", "e", "exp",
+        "floor", "hypot", "log", "pi", "sin", "sinh", "sqrt", "tan", "tanh",
         // from the standard datetime module
         "datetime", "timedelta",
         // from the cityopt module
         "integrate", "mean", "stdev", "var",
         // module names
-        "__builtin__", "math", "cmath", "cityopt",
-        "itertools", "functools" 
+        "__builtin__", "math", "cmath", "cityopt", "itertools" 
     };
     private static final Set<String> reservedGlobals =
             prepareReservedNames(Arrays.asList(RESERVED_GLOBALS_ARRAY));
