@@ -11,10 +11,7 @@ LATER = 2
 
 def checkExpressionSyntax(expr, env, env_complete):
     if not env_complete:
-        # TODO support incomplete components in env
         env = LooseGlobalEnv(env)
-    else:
-        env = dict(env)
     try:
         t = ast.parse(expr, filename='<script>', mode='eval')
     except SyntaxError, e:

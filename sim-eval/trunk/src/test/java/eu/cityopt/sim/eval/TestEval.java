@@ -203,41 +203,52 @@ public class TestEval {
 
     @Test
     public void expressionValidation_free() throws ScriptException {
-        testExpressionValidation(null);
+        testExpressionValidation(new SyntaxChecker(evaluator, null, false), false);
     }
 
     @Test
-    public void expressionValidation_context() throws ScriptException {
-        testExpressionValidation(input);
+    public void expressionValidation_complete() throws ScriptException {
+        testExpressionValidation(new SyntaxChecker(evaluator, ns, true), true);
     }
 
-    public void testExpressionValidation(EvaluationContext ec)
+    public void testExpressionValidation(SyntaxChecker sc, boolean complete)
             throws ScriptException {
-        SyntaxChecker sc = new SyntaxChecker(evaluator);
-        boolean all = (ec != null);
-        assertNull(check(sc, "1+1", ec, all));
-        assertNotNull(check(sc, "", ec, all));
-        assertNotNull(check(sc, "C1.x5.mean.xxx.yyy", ec, all));
-        //TODO get simulation results here
-        if (ec == null) {
-            assertNull(check(sc, "C1.x1.mean", ec, all));
-        }
-        assertNull(check(sc, "C1.x5", ec, all));
-        assertNull(check(sc, "a", ec, all));
-        assertNotNull(check(sc, "C1.x5.mean.at(1)", ec, all));
+        assertNull(msg(sc.checkConstraintExpression("1+1")));
+        assertNotNull(msg(sc.checkConstraintExpression("")));
+        assertNotNull(msg(sc.checkConstraintExpression("C1.x5.mean.xxx.yyy")));
+        assertNull(msg(sc.checkConstraintExpression("C1.x1.mean")));
+        assertNull(msg(sc.checkConstraintExpression("C1.x5")));
+        assertNull(msg(sc.checkConstraintExpression("a")));
+        assertNotNull(msg(sc.checkConstraintExpression("C1.x5.mean.at(1)")));
         //TODO implement Python methods for time series, so that we can test one here
-        if (ec == null) {
-            assertNull(check(sc, "C1.x5.at(1)", ec, all));
-            assertNull(check(sc, "a.at(1)", ec, all));
+        if (!complete) {
+            assertNull(msg(sc.checkConstraintExpression("C1.x1.at(1)")));
+            assertNull(msg(sc.checkConstraintExpression("a.at(1)")));
         }
-        assertNotNull(check(sc, "b(1)", ec, all));
-        assertNull(check(sc, "min(1)", ec, all));
+        assertNotNull(msg(sc.checkConstraintExpression("b(1)")));
+        assertNull(msg(sc.checkConstraintExpression("min(1)")));
+        assertNull(msg(sc.checkConstraintExpression("m1")));
+        if (complete) {
+            assertNotNull(msg(sc.checkConstraintExpression("m1.mean")));
+            assertNotNull(msg(sc.checkMetricExpression("m1")));
+            assertNotNull(msg(sc.checkMetricExpression("m1.mean")));
+            assertNotNull(msg(sc.checkMetricExpression("C1.x9")));
+            assertNotNull(msg(sc.checkMetricExpression("C1.x9.mean")));
+            assertNull(msg(sc.checkMetricExpression("C1.x1")));
+            assertNull(msg(sc.checkMetricExpression("C1.x1.mean")));
+            assertNotNull(msg(sc.checkPreConstraintExpression("C1.x1")));
+            assertNotNull(msg(sc.checkPreConstraintExpression("C1.x1.mean")));
+        }
+        assertNull(msg(sc.checkPreConstraintExpression("C1.x5")));
+        assertNull(msg(sc.checkPreConstraintExpression("a")));
     }
 
-    public String check(SyntaxChecker checker, String source, 
-            EvaluationContext context, boolean complete) throws ScriptException {
-        SyntaxChecker.ErrorMessage error =
-                checker.checkExpressionSyntax(source, context, complete);
-        return (error != null) ? error.message : null;
+    public String msg(SyntaxChecker.Error error) {
+        if (error != null) {
+            assertEquals(0, error.line);
+            return error.message;
+        } else {
+            return null;
+        }
     }
 }

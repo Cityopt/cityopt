@@ -1,10 +1,13 @@
 package eu.cityopt.sim.eval;
 
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -17,7 +20,14 @@ import org.python.core.PyObject;
 /**
  * Checks expressions for errors without running them. Can be used to provide
  * feedback at the user interface level, or at the time of starting an
- * optimization run.
+ * optimization run. Provides also features for validating identifier names and
+ * converting user-entered names into valid identifiers in the expression
+ * language.
+ * <p>
+ * The expression checking is not complete, i.e. it does not detect all possible
+ * errors that could occur when the expressions are used. The checking is
+ * focused on the syntax of the expression language, and whether there are
+ * references to undefined functions or variables.
  *
  * @author Hannu Rummukainen
  */
@@ -51,13 +61,58 @@ public class SyntaxChecker {
     private static final Set<String> reservedGlobals =
             prepareReservedNames(Arrays.asList(RESERVED_GLOBALS_ARRAY));
 
+    private final Set<String> reservedKeywords;
+
     private final Evaluator evaluator;
     private final PyObject _checkExpressionSyntax;
 
-    private final Set<String> reservedKeywords;
+    private final PyDictionary environmentWithInputs;
+    private final PyDictionary environmentWithResults;
+    private final PyDictionary environmentWithMetrics;
+    private final boolean environmentsAreComplete;
 
+    /**
+     * Constructs an incomplete syntax checker via SyntaxChecker(evaluator, null, false).
+     * @see #SyntaxChecker(Evaluator, Namespace, boolean)
+     */
     public SyntaxChecker(Evaluator evaluator) throws ScriptException {
+        this(evaluator, null, false);
+    }
+
+    /**
+     * Constructs a syntax checker, optionally with a specific set of defined
+     * names.
+     *
+     * @param evaluator the expression language evaluator object to use
+     * @param namespace either a Namespace object specifying the valid names
+     *  of parameters and variables in the CITYOPT project, or null, in which
+     *  case only global function names are checked.
+     * @param namespaceComplete whether the Namespace should be assumed to be 
+     *  complete, i.e. whether all parameters and variables are defined there.
+     *  A complete namespace allows stricter checking.
+     *  Ignored if namespace is null.
+     */
+    public SyntaxChecker(Evaluator evaluator, Namespace namespace, boolean namespaceComplete)
+            throws ScriptException {
         this.evaluator = evaluator;
+        if (namespace != null) {
+            if (namespace.evaluator != evaluator) {
+                throw new IllegalArgumentException("Different evaluator in namespace");
+            }
+            this.environmentWithInputs= new PyDictionary();
+            this.environmentWithResults = new PyDictionary();
+            this.environmentWithMetrics = new PyDictionary();
+            fillEnvironments(namespace);
+            this.environmentsAreComplete = namespaceComplete;
+        } else {
+            PyDictionary globalEnvironment = new PyDictionary();
+            globalEnvironment.putAll(evaluator.makeTopLevelBindings());
+            this.environmentWithInputs = globalEnvironment;
+            this.environmentWithResults = globalEnvironment;
+            this.environmentWithMetrics = globalEnvironment;
+            this.environmentsAreComplete = false;
+        }
+
         _checkExpressionSyntax = (PyObject) evaluator.eval(
                 "cityopt.syntax.checkExpressionSyntax");
 
@@ -65,6 +120,69 @@ public class SyntaxChecker {
         List<String> keywordList = 
                 (List<String>) evaluator.eval("cityopt.syntax.kwlist");
         reservedKeywords = prepareReservedNames(keywordList);
+    }
+
+    private void fillEnvironments(Namespace namespace) throws ScriptException {
+        EnumMap<Type, Object> placeholders = makePlaceholders(namespace.evaluator);
+
+        ExternalParameters externals = new ExternalParameters(namespace);
+        for (Map.Entry<String, Type> ee : namespace.externals.entrySet()) {
+            externals.put(ee.getKey(), placeholders.get(ee.getValue()));
+        }
+
+        SimulationInput input = new SimulationInput(externals);
+        for (Map.Entry<String, Namespace.Component> ce : namespace.components.entrySet()) {
+            for (Map.Entry<String, Type> ie : ce.getValue().inputs.entrySet()) {
+                input.put(ce.getKey(), ie.getKey(), placeholders.get(ie.getValue()));
+            }
+        }
+        environmentWithInputs.putAll(input.toBindings());
+
+        SimulationResults results = new SimulationResults(input, "");
+        for (Map.Entry<String, Namespace.Component> ce : namespace.components.entrySet()) {
+            for (Map.Entry<String, Type> oe : ce.getValue().outputs.entrySet()) {
+                results.put(ce.getKey(), oe.getKey(), placeholders.get(oe.getValue()));
+            }
+        }
+        environmentWithResults.putAll(results.toBindings());
+
+        List<MetricExpression> metricList = new ArrayList<MetricExpression>();
+        for (Map.Entry<String, Type> me : namespace.metrics.entrySet()) {
+            metricList.add(new MetricExpression(0, me.getKey(), "1", evaluator));
+        }
+        try {
+            MetricValues metrics = new MetricValues(results, metricList);
+            environmentWithMetrics.putAll(metrics.toBindings());
+        } catch (InvalidValueException e) {
+            // Should not happen since the expressions are simply "1"
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static EnumMap<Type, Object> makePlaceholders(Evaluator evaluator) {
+        EnumMap<Type, Object> placeholders = new EnumMap<Type, Object>(Type.class);
+        for (Type type : Type.values()) {
+            Object p;
+            switch (type) {
+            case DOUBLE:
+                p = Double.valueOf(1.0);
+                break;
+            case INTEGER:
+                p = Integer.valueOf(1);
+                break;
+            case STRING:
+                p = "";
+                break;
+            case TIMESERIES_LINEAR:
+            case TIMESERIES_STEP:
+                p = evaluator.makeTS(type, new double[] { 0.0 }, new double[] { 1.0 });
+                break;
+            default:
+                throw new IllegalStateException("No placeholder defined for "+type);
+            }
+            placeholders.put(type, p);
+        }
+        return placeholders;
     }
 
     private static Set<String> prepareReservedNames(Collection<String> names) {
@@ -150,7 +268,7 @@ public class SyntaxChecker {
     /**
      * An error message related to a Python expression.
      */
-    public static class ErrorMessage {
+    public static class Error {
         /** Line number starting from 0. */
         public final int line;
 
@@ -160,7 +278,7 @@ public class SyntaxChecker {
         /** Human-readable error message. */
         public final String message;
 
-        public ErrorMessage(int line, int column, String message) {
+        public Error(int line, int column, String message) {
             this.line = line;
             this.column = column;
             this.message = message;
@@ -168,40 +286,57 @@ public class SyntaxChecker {
     }
 
     /**
-     * Checks the syntax of an expression and optionally any identifier
-     * references.  Possible parameter and variable values are not considered,
-     * and thus the check will not find all possible runtime failures.
-     * 
-     * @param source  the expression to check
-     * @param context either a valid evaluation context associating names
-     *  with values, or null, in which case only global function names are
-     *  checked.
-     * @param complete whether the context is complete, i.e. no additional
-     *  names will be defined before the expression is evaluated.
-     *  Ignored if context is null.
-     * @return null if there are no errors detected; otherwise an
-     *  ErrorMessage describing the detected problem.
+     * Checks for errors in an optimization constraint expression THAT IS
+     * EVALUATED BEFORE SIMULATION.
+     * @param source the expression text
+     * @return null if no errors are detected, otherwise an error message
+     * @see #checkConstraintExpression(String)
      */
-    public ErrorMessage checkExpressionSyntax(
-            String source, EvaluationContext context, boolean complete) {
-        try {
-            PyDictionary env = new PyDictionary();
-            if (context != null) {
-                env.putAll(context.toBindings());
-            } else {
-                env.putAll(evaluator.makeTopLevelBindings());
-                complete = false;
-            }
-            PyObject o = _checkExpressionSyntax.__call__(
-                    Py.javas2pys(new Object[] { source, env, complete }));
-            if (o == Py.None) {
-                return null;
-            } else {
-                return new ErrorMessage(o.__getitem__(0).asIndex(),
-                        o.__getitem__(1).asIndex(), o.__getitem__(2).asString());
-            }
-        } catch (ScriptException e) {
-            throw new RuntimeException(e);
+    public Error checkPreConstraintExpression(String source) {
+        return checkExpressionSyntax(source, environmentWithInputs);
+    }
+
+    /**
+     * Checks for errors in an expression defining a metric. 
+     * @param source the expression text
+     * @return null if no errors are detected, otherwise an error message
+     */
+    public Error checkMetricExpression(String source) {
+        return checkExpressionSyntax(source, environmentWithResults);
+    }
+
+    /**
+     * Checks for errors in an optimization constraint expression.
+     * Assumes that the constraint is evaluated after simulation, so that
+     * simulation results are available.
+     *
+     * @param source the expression text
+     * @return null if no errors are detected, otherwise an error message
+     */
+    public Error checkConstraintExpression(String source) {
+        return checkExpressionSyntax(source, environmentWithMetrics);
+    }
+
+    /**
+     * Checks for errors in an objective function expression.
+     *
+     * @param source the expression text
+     * @return null if no errors are detected, otherwise an error message
+     */
+    public Error checkObjectiveExpression(String source) {
+        return checkExpressionSyntax(source, environmentWithMetrics);
+    }
+
+    /** Calls the Python function cityopt.syntax.checkExpressionSyntax. */
+    private Error checkExpressionSyntax(String source, PyDictionary environment) {
+        PyObject o = _checkExpressionSyntax.__call__(
+                Py.javas2pys(new Object[] { 
+                        source, environment, environmentsAreComplete }));
+        if (o == Py.None) {
+            return null;
+        } else {
+            return new Error(Math.max(0, o.__getitem__(0).asIndex() - 1),
+                    o.__getitem__(1).asIndex(), o.__getitem__(2).asString());
         }
     }
 }
