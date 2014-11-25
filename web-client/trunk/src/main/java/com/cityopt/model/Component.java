@@ -31,8 +31,8 @@ public class Component implements java.io.Serializable {
 	private Project project;
 	private String name;
 	private Serializable geometryblob;
-	private Set<Inputparameter> inputparameters = new HashSet<Inputparameter>(0);
-	private Set<Outputvariable> outputvariables = new HashSet<Outputvariable>(0);
+	private Set<InputParameter> inputparameters = new HashSet<InputParameter>(0);
+	private Set<OutputVariable> outputvariables = new HashSet<OutputVariable>(0);
 
 	public Component() {
 	}
@@ -44,8 +44,8 @@ public class Component implements java.io.Serializable {
 	}
 
 	public Component(int componentid, Project project, String name,
-			Serializable geometryblob, Set<Inputparameter> inputparameters,
-			Set<Outputvariable> outputvariables) {
+			Serializable geometryblob, Set<InputParameter> inputparameters,
+			Set<OutputVariable> outputvariables) {
 		this.componentid = componentid;
 		this.project = project;
 		this.name = name;
@@ -94,20 +94,20 @@ public class Component implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component")
-	public Set<Inputparameter> getInputparameters() {
+	public Set<InputParameter> getInputparameters() {
 		return this.inputparameters;
 	}
 
-	public void setInputparameters(Set<Inputparameter> inputparameters) {
+	public void setInputparameters(Set<InputParameter> inputparameters) {
 		this.inputparameters = inputparameters;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component")
-	public Set<Outputvariable> getOutputvariables() {
+	public Set<OutputVariable> getOutputvariables() {
 		return this.outputvariables;
 	}
 
-	public void setOutputvariables(Set<Outputvariable> outputvariables) {
+	public void setOutputvariables(Set<OutputVariable> outputvariables) {
 		this.outputvariables = outputvariables;
 	}
 

@@ -22,25 +22,25 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "timeseries", schema = "public")
-public class Timeseries implements java.io.Serializable {
+public class TimeSeries implements java.io.Serializable {
 
 	private int tseriesid;
 	private Type type;
-	private Set<Timeseriesval> timeseriesvals = new HashSet<Timeseriesval>(0);
-	private Set<Extparam> extparams = new HashSet<Extparam>(0);
-	private Set<Metricval> metricvals = new HashSet<Metricval>(0);
-	private Set<Extparamval> extparamvals = new HashSet<Extparamval>(0);
+	private Set<TimeSeriesVal> timeseriesvals = new HashSet<TimeSeriesVal>(0);
+	private Set<ExtParam> extparams = new HashSet<ExtParam>(0);
+	private Set<MetricVal> metricvals = new HashSet<MetricVal>(0);
+	private Set<ExtParamVal> extparamvals = new HashSet<ExtParamVal>(0);
 
-	public Timeseries() {
+	public TimeSeries() {
 	}
 
-	public Timeseries(int tseriesid) {
+	public TimeSeries(int tseriesid) {
 		this.tseriesid = tseriesid;
 	}
 
-	public Timeseries(int tseriesid, Type type,
-			Set<Timeseriesval> timeseriesvals, Set<Extparam> extparams,
-			Set<Metricval> metricvals, Set<Extparamval> extparamvals) {
+	public TimeSeries(int tseriesid, Type type,
+			Set<TimeSeriesVal> timeseriesvals, Set<ExtParam> extparams,
+			Set<MetricVal> metricvals, Set<ExtParamVal> extparamvals) {
 		this.tseriesid = tseriesid;
 		this.type = type;
 		this.timeseriesvals = timeseriesvals;
@@ -71,38 +71,38 @@ public class Timeseries implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries")
-	public Set<Timeseriesval> getTimeseriesvals() {
+	public Set<TimeSeriesVal> getTimeseriesvals() {
 		return this.timeseriesvals;
 	}
 
-	public void setTimeseriesvals(Set<Timeseriesval> timeseriesvals) {
+	public void setTimeseriesvals(Set<TimeSeriesVal> timeseriesvals) {
 		this.timeseriesvals = timeseriesvals;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries")
-	public Set<Extparam> getExtparams() {
+	public Set<ExtParam> getExtparams() {
 		return this.extparams;
 	}
 
-	public void setExtparams(Set<Extparam> extparams) {
+	public void setExtparams(Set<ExtParam> extparams) {
 		this.extparams = extparams;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries")
-	public Set<Metricval> getMetricvals() {
+	public Set<MetricVal> getMetricvals() {
 		return this.metricvals;
 	}
 
-	public void setMetricvals(Set<Metricval> metricvals) {
+	public void setMetricvals(Set<MetricVal> metricvals) {
 		this.metricvals = metricvals;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries")
-	public Set<Extparamval> getExtparamvals() {
+	public Set<ExtParamVal> getExtparamvals() {
 		return this.extparamvals;
 	}
 
-	public void setExtparamvals(Set<Extparamval> extparamvals) {
+	public void setExtparamvals(Set<ExtParamVal> extparamvals) {
 		this.extparamvals = extparamvals;
 	}
 

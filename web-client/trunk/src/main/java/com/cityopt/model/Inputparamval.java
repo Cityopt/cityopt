@@ -24,10 +24,10 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "inputparamval", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"scenid", "inputid" }))
-public class Inputparamval implements java.io.Serializable {
+public class InputParamVal implements java.io.Serializable {
 
 	private long scendefinitionid;
-	private Inputparameter inputparameter;
+	private InputParameter inputparameter;
 	private Scenario scenario;
 	private String value;
 	private Date createdon;
@@ -36,10 +36,10 @@ public class Inputparamval implements java.io.Serializable {
 	private Integer updatedby;
 	private Integer datarelid;
 
-	public Inputparamval() {
+	public InputParamVal() {
 	}
 
-	public Inputparamval(long scendefinitionid, Inputparameter inputparameter,
+	public InputParamVal(long scendefinitionid, InputParameter inputparameter,
 			Scenario scenario, String value) {
 		this.scendefinitionid = scendefinitionid;
 		this.inputparameter = inputparameter;
@@ -47,7 +47,7 @@ public class Inputparamval implements java.io.Serializable {
 		this.value = value;
 	}
 
-	public Inputparamval(long scendefinitionid, Inputparameter inputparameter,
+	public InputParamVal(long scendefinitionid, InputParameter inputparameter,
 			Scenario scenario, String value, Date createdon, Date updatedon,
 			Integer createdby, Integer updatedby, Integer datarelid) {
 		this.scendefinitionid = scendefinitionid;
@@ -74,11 +74,11 @@ public class Inputparamval implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "inputid", nullable = false)
-	public Inputparameter getInputparameter() {
+	public InputParameter getInputparameter() {
 		return this.inputparameter;
 	}
 
-	public void setInputparameter(Inputparameter inputparameter) {
+	public void setInputparameter(InputParameter inputparameter) {
 		this.inputparameter = inputparameter;
 	}
 

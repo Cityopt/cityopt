@@ -20,25 +20,25 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "algoparamval", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"ascengenid", "aparamsid" }))
-public class Algoparamval implements java.io.Serializable {
+public class AlgoParamVal implements java.io.Serializable {
 
 	private int aparamvalid;
-	private Scenariogenerator scenariogenerator;
-	private Algoparam algoparam;
+	private ScenarioGenerator scenariogenerator;
+	private AlgoParam algoparam;
 	private String value;
 
-	public Algoparamval() {
+	public AlgoParamVal() {
 	}
 
-	public Algoparamval(int aparamvalid, Scenariogenerator scenariogenerator,
-			Algoparam algoparam) {
+	public AlgoParamVal(int aparamvalid, ScenarioGenerator scenariogenerator,
+			AlgoParam algoparam) {
 		this.aparamvalid = aparamvalid;
 		this.scenariogenerator = scenariogenerator;
 		this.algoparam = algoparam;
 	}
 
-	public Algoparamval(int aparamvalid, Scenariogenerator scenariogenerator,
-			Algoparam algoparam, String value) {
+	public AlgoParamVal(int aparamvalid, ScenarioGenerator scenariogenerator,
+			AlgoParam algoparam, String value) {
 		this.aparamvalid = aparamvalid;
 		this.scenariogenerator = scenariogenerator;
 		this.algoparam = algoparam;
@@ -58,21 +58,21 @@ public class Algoparamval implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ascengenid", nullable = false)
-	public Scenariogenerator getScenariogenerator() {
+	public ScenarioGenerator getScenariogenerator() {
 		return this.scenariogenerator;
 	}
 
-	public void setScenariogenerator(Scenariogenerator scenariogenerator) {
+	public void setScenariogenerator(ScenarioGenerator scenariogenerator) {
 		this.scenariogenerator = scenariogenerator;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "aparamsid", nullable = false)
-	public Algoparam getAlgoparam() {
+	public AlgoParam getAlgoparam() {
 		return this.algoparam;
 	}
 
-	public void setAlgoparam(Algoparam algoparam) {
+	public void setAlgoparam(AlgoParam algoparam) {
 		this.algoparam = algoparam;
 	}
 

@@ -22,28 +22,28 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "extparamval", schema = "public")
-public class Extparamval implements java.io.Serializable {
+public class ExtParamVal implements java.io.Serializable {
 
 	private int extparamvalid;
-	private Timeseries timeseries;
-	private Extparam extparam;
+	private TimeSeries timeseries;
+	private ExtParam extparam;
 	private String value;
-	private Set<Extparamvalscenmetric> extparamvalscenmetrics = new HashSet<Extparamvalscenmetric>(
+	private Set<ExtParamValScenMetric> extparamvalscenmetrics = new HashSet<ExtParamValScenMetric>(
 			0);
-	private Set<Extparamvalscengen> extparamvalscengens = new HashSet<Extparamvalscengen>(
+	private Set<ExtParamValScenGen> extparamvalscengens = new HashSet<ExtParamValScenGen>(
 			0);
 
-	public Extparamval() {
+	public ExtParamVal() {
 	}
 
-	public Extparamval(int extparamvalid) {
+	public ExtParamVal(int extparamvalid) {
 		this.extparamvalid = extparamvalid;
 	}
 
-	public Extparamval(int extparamvalid, Timeseries timeseries,
-			Extparam extparam, String value,
-			Set<Extparamvalscenmetric> extparamvalscenmetrics,
-			Set<Extparamvalscengen> extparamvalscengens) {
+	public ExtParamVal(int extparamvalid, TimeSeries timeseries,
+			ExtParam extparam, String value,
+			Set<ExtParamValScenMetric> extparamvalscenmetrics,
+			Set<ExtParamValScenGen> extparamvalscengens) {
 		this.extparamvalid = extparamvalid;
 		this.timeseries = timeseries;
 		this.extparam = extparam;
@@ -65,21 +65,21 @@ public class Extparamval implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tseriesid")
-	public Timeseries getTimeseries() {
+	public TimeSeries getTimeseries() {
 		return this.timeseries;
 	}
 
-	public void setTimeseries(Timeseries timeseries) {
+	public void setTimeseries(TimeSeries timeseries) {
 		this.timeseries = timeseries;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "extparamid")
-	public Extparam getExtparam() {
+	public ExtParam getExtparam() {
 		return this.extparam;
 	}
 
-	public void setExtparam(Extparam extparam) {
+	public void setExtparam(ExtParam extparam) {
 		this.extparam = extparam;
 	}
 
@@ -93,22 +93,22 @@ public class Extparamval implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "extparamval")
-	public Set<Extparamvalscenmetric> getExtparamvalscenmetrics() {
+	public Set<ExtParamValScenMetric> getExtparamvalscenmetrics() {
 		return this.extparamvalscenmetrics;
 	}
 
 	public void setExtparamvalscenmetrics(
-			Set<Extparamvalscenmetric> extparamvalscenmetrics) {
+			Set<ExtParamValScenMetric> extparamvalscenmetrics) {
 		this.extparamvalscenmetrics = extparamvalscenmetrics;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "extparamval")
-	public Set<Extparamvalscengen> getExtparamvalscengens() {
+	public Set<ExtParamValScenGen> getExtparamvalscengens() {
 		return this.extparamvalscengens;
 	}
 
 	public void setExtparamvalscengens(
-			Set<Extparamvalscengen> extparamvalscengens) {
+			Set<ExtParamValScenGen> extparamvalscengens) {
 		this.extparamvalscengens = extparamvalscengens;
 	}
 

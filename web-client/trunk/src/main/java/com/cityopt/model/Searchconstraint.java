@@ -22,7 +22,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "searchconstraint", schema = "public")
-public class Searchconstraint implements java.io.Serializable {
+public class SearchConstraint implements java.io.Serializable {
 
 	private int scid;
 	private Unit unit;
@@ -30,18 +30,18 @@ public class Searchconstraint implements java.io.Serializable {
 	private String expression;
 	private Double lowerbound;
 	private Double upperbound;
-	private Set<Optsearchconst> optsearchconsts = new HashSet<Optsearchconst>(0);
+	private Set<OptSearchConst> optsearchconsts = new HashSet<OptSearchConst>(0);
 
-	public Searchconstraint() {
+	public SearchConstraint() {
 	}
 
-	public Searchconstraint(int scid) {
+	public SearchConstraint(int scid) {
 		this.scid = scid;
 	}
 
-	public Searchconstraint(int scid, Unit unit, Project project,
+	public SearchConstraint(int scid, Unit unit, Project project,
 			String expression, Double lowerbound, Double upperbound,
-			Set<Optsearchconst> optsearchconsts) {
+			Set<OptSearchConst> optsearchconsts) {
 		this.scid = scid;
 		this.unit = unit;
 		this.project = project;
@@ -110,11 +110,11 @@ public class Searchconstraint implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "searchconstraint")
-	public Set<Optsearchconst> getOptsearchconsts() {
+	public Set<OptSearchConst> getOptsearchconsts() {
 		return this.optsearchconsts;
 	}
 
-	public void setOptsearchconsts(Set<Optsearchconst> optsearchconsts) {
+	public void setOptsearchconsts(Set<OptSearchConst> optsearchconsts) {
 		this.optsearchconsts = optsearchconsts;
 	}
 

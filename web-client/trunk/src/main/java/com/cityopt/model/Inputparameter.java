@@ -22,27 +22,27 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "inputparameter", schema = "public")
-public class Inputparameter implements java.io.Serializable {
+public class InputParameter implements java.io.Serializable {
 
 	private int inputid;
 	private Unit unit;
 	private Component component;
 	private String name;
 	private String defaultvalue;
-	private Set<Modelparameter> modelparameters = new HashSet<Modelparameter>(0);
-	private Set<Inputparamval> inputparamvals = new HashSet<Inputparamval>(0);
+	private Set<ModelParameter> modelparameters = new HashSet<ModelParameter>(0);
+	private Set<InputParamVal> inputparamvals = new HashSet<InputParamVal>(0);
 
-	public Inputparameter() {
+	public InputParameter() {
 	}
 
-	public Inputparameter(int inputid) {
+	public InputParameter(int inputid) {
 		this.inputid = inputid;
 	}
 
-	public Inputparameter(int inputid, Unit unit, Component component,
+	public InputParameter(int inputid, Unit unit, Component component,
 			String name, String defaultvalue,
-			Set<Modelparameter> modelparameters,
-			Set<Inputparamval> inputparamvals) {
+			Set<ModelParameter> modelparameters,
+			Set<InputParamVal> inputparamvals) {
 		this.inputid = inputid;
 		this.unit = unit;
 		this.component = component;
@@ -102,20 +102,20 @@ public class Inputparameter implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter")
-	public Set<Modelparameter> getModelparameters() {
+	public Set<ModelParameter> getModelparameters() {
 		return this.modelparameters;
 	}
 
-	public void setModelparameters(Set<Modelparameter> modelparameters) {
+	public void setModelparameters(Set<ModelParameter> modelparameters) {
 		this.modelparameters = modelparameters;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter")
-	public Set<Inputparamval> getInputparamvals() {
+	public Set<InputParamVal> getInputparamvals() {
 		return this.inputparamvals;
 	}
 
-	public void setInputparamvals(Set<Inputparamval> inputparamvals) {
+	public void setInputparamvals(Set<InputParamVal> inputparamvals) {
 		this.inputparamvals = inputparamvals;
 	}
 

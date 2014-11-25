@@ -28,10 +28,10 @@ public class Unit implements java.io.Serializable {
 	private int unitid;
 	private Type type;
 	private String name;
-	private Set<Extparam> extparams = new HashSet<Extparam>(0);
-	private Set<Searchconstraint> searchconstraints = new HashSet<Searchconstraint>(
+	private Set<ExtParam> extparams = new HashSet<ExtParam>(0);
+	private Set<SearchConstraint> searchconstraints = new HashSet<SearchConstraint>(
 			0);
-	private Set<Inputparameter> inputparameters = new HashSet<Inputparameter>(0);
+	private Set<InputParameter> inputparameters = new HashSet<InputParameter>(0);
 	private Set<Metric> metrics = new HashSet<Metric>(0);
 
 	public Unit() {
@@ -41,9 +41,9 @@ public class Unit implements java.io.Serializable {
 		this.unitid = unitid;
 	}
 
-	public Unit(int unitid, Type type, String name, Set<Extparam> extparams,
-			Set<Searchconstraint> searchconstraints,
-			Set<Inputparameter> inputparameters, Set<Metric> metrics) {
+	public Unit(int unitid, Type type, String name, Set<ExtParam> extparams,
+			Set<SearchConstraint> searchconstraints,
+			Set<InputParameter> inputparameters, Set<Metric> metrics) {
 		this.unitid = unitid;
 		this.type = type;
 		this.name = name;
@@ -84,29 +84,29 @@ public class Unit implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "unit")
-	public Set<Extparam> getExtparams() {
+	public Set<ExtParam> getExtparams() {
 		return this.extparams;
 	}
 
-	public void setExtparams(Set<Extparam> extparams) {
+	public void setExtparams(Set<ExtParam> extparams) {
 		this.extparams = extparams;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "unit")
-	public Set<Searchconstraint> getSearchconstraints() {
+	public Set<SearchConstraint> getSearchconstraints() {
 		return this.searchconstraints;
 	}
 
-	public void setSearchconstraints(Set<Searchconstraint> searchconstraints) {
+	public void setSearchconstraints(Set<SearchConstraint> searchconstraints) {
 		this.searchconstraints = searchconstraints;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "unit")
-	public Set<Inputparameter> getInputparameters() {
+	public Set<InputParameter> getInputparameters() {
 		return this.inputparameters;
 	}
 
-	public void setInputparameters(Set<Inputparameter> inputparameters) {
+	public void setInputparameters(Set<InputParameter> inputparameters) {
 		this.inputparameters = inputparameters;
 	}
 

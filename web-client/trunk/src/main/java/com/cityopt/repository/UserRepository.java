@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.cityopt.model.Appuser;
+import com.cityopt.model.AppUser;
 
 @Repository("userRepository")
-public interface UserRepository extends JpaRepository<Appuser,Integer> {
-	@Query("select u from Appuser u where Lower(u.name) like CONCAT('%',Lower(:userName),'%')")
-	List<Appuser> findByUserName(@Param("userName") String userName);
+public interface UserRepository extends JpaRepository<AppUser,Integer> {
+	@Query("select u from AppUser u where Lower(u.name) like CONCAT('%',Lower(:userName),'%')")
+	List<AppUser> findByUserName(@Param("userName") String userName);
 	
 }

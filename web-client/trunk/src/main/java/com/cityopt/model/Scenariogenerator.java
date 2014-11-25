@@ -22,37 +22,37 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "scenariogenerator", schema = "public")
-public class Scenariogenerator implements java.io.Serializable {
+public class ScenarioGenerator implements java.io.Serializable {
 
 	private int scengenid;
 	private Algorithm algorithm;
 	private Project project;
-	private Set<Decisionvariable> decisionvariables = new HashSet<Decisionvariable>(
+	private Set<DecisionVariable> decisionvariables = new HashSet<DecisionVariable>(
 			0);
-	private Set<Modelparameter> modelparameters = new HashSet<Modelparameter>(0);
-	private Set<Scengenoptconstraint> scengenoptconstraints = new HashSet<Scengenoptconstraint>(
+	private Set<ModelParameter> modelparameters = new HashSet<ModelParameter>(0);
+	private Set<ScenGenOptConstraint> scengenoptconstraints = new HashSet<ScenGenOptConstraint>(
 			0);
 	private Set<Scenario> scenarios = new HashSet<Scenario>(0);
-	private Set<Algoparamval> algoparamvals = new HashSet<Algoparamval>(0);
-	private Set<Extparamvalscengen> extparamvalscengens = new HashSet<Extparamvalscengen>(
+	private Set<AlgoParamVal> algoparamvals = new HashSet<AlgoParamVal>(0);
+	private Set<ExtParamValScenGen> extparamvalscengens = new HashSet<ExtParamValScenGen>(
 			0);
-	private Set<Scengenobjectivefunction> scengenobjectivefunctions = new HashSet<Scengenobjectivefunction>(
+	private Set<ScenGenObjectiveFunction> scengenobjectivefunctions = new HashSet<ScenGenObjectiveFunction>(
 			0);
 
-	public Scenariogenerator() {
+	public ScenarioGenerator() {
 	}
 
-	public Scenariogenerator(int scengenid) {
+	public ScenarioGenerator(int scengenid) {
 		this.scengenid = scengenid;
 	}
 
-	public Scenariogenerator(int scengenid, Algorithm algorithm,
-			Project project, Set<Decisionvariable> decisionvariables,
-			Set<Modelparameter> modelparameters,
-			Set<Scengenoptconstraint> scengenoptconstraints,
-			Set<Scenario> scenarios, Set<Algoparamval> algoparamvals,
-			Set<Extparamvalscengen> extparamvalscengens,
-			Set<Scengenobjectivefunction> scengenobjectivefunctions) {
+	public ScenarioGenerator(int scengenid, Algorithm algorithm,
+			Project project, Set<DecisionVariable> decisionvariables,
+			Set<ModelParameter> modelparameters,
+			Set<ScenGenOptConstraint> scengenoptconstraints,
+			Set<Scenario> scenarios, Set<AlgoParamVal> algoparamvals,
+			Set<ExtParamValScenGen> extparamvalscengens,
+			Set<ScenGenObjectiveFunction> scengenobjectivefunctions) {
 		this.scengenid = scengenid;
 		this.algorithm = algorithm;
 		this.project = project;
@@ -97,30 +97,30 @@ public class Scenariogenerator implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
-	public Set<Decisionvariable> getDecisionvariables() {
+	public Set<DecisionVariable> getDecisionvariables() {
 		return this.decisionvariables;
 	}
 
-	public void setDecisionvariables(Set<Decisionvariable> decisionvariables) {
+	public void setDecisionvariables(Set<DecisionVariable> decisionvariables) {
 		this.decisionvariables = decisionvariables;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
-	public Set<Modelparameter> getModelparameters() {
+	public Set<ModelParameter> getModelparameters() {
 		return this.modelparameters;
 	}
 
-	public void setModelparameters(Set<Modelparameter> modelparameters) {
+	public void setModelparameters(Set<ModelParameter> modelparameters) {
 		this.modelparameters = modelparameters;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
-	public Set<Scengenoptconstraint> getScengenoptconstraints() {
+	public Set<ScenGenOptConstraint> getScengenoptconstraints() {
 		return this.scengenoptconstraints;
 	}
 
 	public void setScengenoptconstraints(
-			Set<Scengenoptconstraint> scengenoptconstraints) {
+			Set<ScenGenOptConstraint> scengenoptconstraints) {
 		this.scengenoptconstraints = scengenoptconstraints;
 	}
 
@@ -134,31 +134,31 @@ public class Scenariogenerator implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
-	public Set<Algoparamval> getAlgoparamvals() {
+	public Set<AlgoParamVal> getAlgoparamvals() {
 		return this.algoparamvals;
 	}
 
-	public void setAlgoparamvals(Set<Algoparamval> algoparamvals) {
+	public void setAlgoparamvals(Set<AlgoParamVal> algoparamvals) {
 		this.algoparamvals = algoparamvals;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
-	public Set<Extparamvalscengen> getExtparamvalscengens() {
+	public Set<ExtParamValScenGen> getExtparamvalscengens() {
 		return this.extparamvalscengens;
 	}
 
 	public void setExtparamvalscengens(
-			Set<Extparamvalscengen> extparamvalscengens) {
+			Set<ExtParamValScenGen> extparamvalscengens) {
 		this.extparamvalscengens = extparamvalscengens;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
-	public Set<Scengenobjectivefunction> getScengenobjectivefunctions() {
+	public Set<ScenGenObjectiveFunction> getScengenobjectivefunctions() {
 		return this.scengenobjectivefunctions;
 	}
 
 	public void setScengenobjectivefunctions(
-			Set<Scengenobjectivefunction> scengenobjectivefunctions) {
+			Set<ScenGenObjectiveFunction> scengenobjectivefunctions) {
 		this.scengenobjectivefunctions = scengenobjectivefunctions;
 	}
 

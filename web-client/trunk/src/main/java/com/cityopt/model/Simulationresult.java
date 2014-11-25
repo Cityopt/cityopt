@@ -22,22 +22,22 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "simulationresult", schema = "public")
-public class Simulationresult implements java.io.Serializable {
+public class SimulationResult implements java.io.Serializable {
 
 	private int scenresid;
-	private Outputvariable outputvariable;
+	private OutputVariable outputvariable;
 	private Scenario scenario;
 	private Date time;
 	private String value;
 
-	public Simulationresult() {
+	public SimulationResult() {
 	}
 
-	public Simulationresult(int scenresid) {
+	public SimulationResult(int scenresid) {
 		this.scenresid = scenresid;
 	}
 
-	public Simulationresult(int scenresid, Outputvariable outputvariable,
+	public SimulationResult(int scenresid, OutputVariable outputvariable,
 			Scenario scenario, Date time, String value) {
 		this.scenresid = scenresid;
 		this.outputvariable = outputvariable;
@@ -59,11 +59,11 @@ public class Simulationresult implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "outvarid")
-	public Outputvariable getOutputvariable() {
+	public OutputVariable getOutputvariable() {
 		return this.outputvariable;
 	}
 
-	public void setOutputvariable(Outputvariable outputvariable) {
+	public void setOutputvariable(OutputVariable outputvariable) {
 		this.outputvariable = outputvariable;
 	}
 

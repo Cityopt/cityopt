@@ -25,29 +25,29 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "optimizationset", schema = "public")
-public class Optimizationset implements java.io.Serializable {
+public class OptimizationSet implements java.io.Serializable {
 
 	private int optid;
-	private Objectivefunction objectivefunction;
+	private ObjectiveFunction objectivefunction;
 	private Scenario scenario;
 	private Integer prjid;
 	private Date createdon;
 	private Date updatedon;
 	private Integer createdby;
 	private Integer updatedby;
-	private Set<Optsearchconst> optsearchconsts = new HashSet<Optsearchconst>(0);
+	private Set<OptSearchConst> optsearchconsts = new HashSet<OptSearchConst>(0);
 
-	public Optimizationset() {
+	public OptimizationSet() {
 	}
 
-	public Optimizationset(int optid) {
+	public OptimizationSet(int optid) {
 		this.optid = optid;
 	}
 
-	public Optimizationset(int optid, Objectivefunction objectivefunction,
+	public OptimizationSet(int optid, ObjectiveFunction objectivefunction,
 			Scenario scenario, Integer prjid, Date createdon, Date updatedon,
 			Integer createdby, Integer updatedby,
-			Set<Optsearchconst> optsearchconsts) {
+			Set<OptSearchConst> optsearchconsts) {
 		this.optid = optid;
 		this.objectivefunction = objectivefunction;
 		this.scenario = scenario;
@@ -72,11 +72,11 @@ public class Optimizationset implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "optfunctionid")
-	public Objectivefunction getObjectivefunction() {
+	public ObjectiveFunction getObjectivefunction() {
 		return this.objectivefunction;
 	}
 
-	public void setObjectivefunction(Objectivefunction objectivefunction) {
+	public void setObjectivefunction(ObjectiveFunction objectivefunction) {
 		this.objectivefunction = objectivefunction;
 	}
 
@@ -138,11 +138,11 @@ public class Optimizationset implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "optimizationset")
-	public Set<Optsearchconst> getOptsearchconsts() {
+	public Set<OptSearchConst> getOptsearchconsts() {
 		return this.optsearchconsts;
 	}
 
-	public void setOptsearchconsts(Set<Optsearchconst> optsearchconsts) {
+	public void setOptsearchconsts(Set<OptSearchConst> optsearchconsts) {
 		this.optsearchconsts = optsearchconsts;
 	}
 

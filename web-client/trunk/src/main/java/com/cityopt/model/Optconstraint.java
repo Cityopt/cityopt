@@ -22,26 +22,26 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "optconstraint", schema = "public")
-public class Optconstraint implements java.io.Serializable {
+public class OptConstraint implements java.io.Serializable {
 
 	private int optconstid;
 	private Project project;
 	private String expression;
 	private Double lowerbound;
 	private Double upperbound;
-	private Set<Scengenoptconstraint> scengenoptconstraints = new HashSet<Scengenoptconstraint>(
+	private Set<ScenGenOptConstraint> scengenoptconstraints = new HashSet<ScenGenOptConstraint>(
 			0);
 
-	public Optconstraint() {
+	public OptConstraint() {
 	}
 
-	public Optconstraint(int optconstid) {
+	public OptConstraint(int optconstid) {
 		this.optconstid = optconstid;
 	}
 
-	public Optconstraint(int optconstid, Project project, String expression,
+	public OptConstraint(int optconstid, Project project, String expression,
 			Double lowerbound, Double upperbound,
-			Set<Scengenoptconstraint> scengenoptconstraints) {
+			Set<ScenGenOptConstraint> scengenoptconstraints) {
 		this.optconstid = optconstid;
 		this.project = project;
 		this.expression = expression;
@@ -99,12 +99,12 @@ public class Optconstraint implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "optconstraint")
-	public Set<Scengenoptconstraint> getScengenoptconstraints() {
+	public Set<ScenGenOptConstraint> getScengenoptconstraints() {
 		return this.scengenoptconstraints;
 	}
 
 	public void setScengenoptconstraints(
-			Set<Scengenoptconstraint> scengenoptconstraints) {
+			Set<ScenGenOptConstraint> scengenoptconstraints) {
 		this.scengenoptconstraints = scengenoptconstraints;
 	}
 

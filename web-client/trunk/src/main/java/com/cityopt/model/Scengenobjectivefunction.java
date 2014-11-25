@@ -20,18 +20,18 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "scengenobjectivefunction", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"scengenid", "optfunctionid" }))
-public class Scengenobjectivefunction implements java.io.Serializable {
+public class ScenGenObjectiveFunction implements java.io.Serializable {
 
 	private long sgobfunctionid;
-	private Objectivefunction objectivefunction;
-	private Scenariogenerator scenariogenerator;
+	private ObjectiveFunction objectivefunction;
+	private ScenarioGenerator scenariogenerator;
 
-	public Scengenobjectivefunction() {
+	public ScenGenObjectiveFunction() {
 	}
 
-	public Scengenobjectivefunction(long sgobfunctionid,
-			Objectivefunction objectivefunction,
-			Scenariogenerator scenariogenerator) {
+	public ScenGenObjectiveFunction(long sgobfunctionid,
+			ObjectiveFunction objectivefunction,
+			ScenarioGenerator scenariogenerator) {
 		this.sgobfunctionid = sgobfunctionid;
 		this.objectivefunction = objectivefunction;
 		this.scenariogenerator = scenariogenerator;
@@ -50,21 +50,21 @@ public class Scengenobjectivefunction implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "optfunctionid", nullable = false)
-	public Objectivefunction getObjectivefunction() {
+	public ObjectiveFunction getObjectivefunction() {
 		return this.objectivefunction;
 	}
 
-	public void setObjectivefunction(Objectivefunction objectivefunction) {
+	public void setObjectivefunction(ObjectiveFunction objectivefunction) {
 		this.objectivefunction = objectivefunction;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scengenid", nullable = false)
-	public Scenariogenerator getScenariogenerator() {
+	public ScenarioGenerator getScenariogenerator() {
 		return this.scenariogenerator;
 	}
 
-	public void setScenariogenerator(Scenariogenerator scenariogenerator) {
+	public void setScenariogenerator(ScenarioGenerator scenariogenerator) {
 		this.scenariogenerator = scenariogenerator;
 	}
 

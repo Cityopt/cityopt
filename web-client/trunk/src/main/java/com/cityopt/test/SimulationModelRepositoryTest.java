@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cityopt.helper.Helper;
 import com.cityopt.model.Project;
-import com.cityopt.model.Simulationmodel;
+import com.cityopt.model.SimulationModel;
 import com.cityopt.repository.ProjectRepository;
 import com.cityopt.repository.SimulationModelRepository;
 import com.cityopt.repository.UserGroupProjectRepository;
@@ -66,7 +66,7 @@ public class SimulationModelRepositoryTest {
 
 		byte[] tmpModelarr = Helper.getFileBytes(tmpModel);
 
-		Simulationmodel model = new Simulationmodel();
+		SimulationModel model = new SimulationModel();
 		model.setModelblob(tmpModelarr);
 		model.setSimulator("APROS");
 		model.setDescription("My first model");
@@ -88,7 +88,7 @@ public class SimulationModelRepositoryTest {
 
 		byte[] tmpModelarr = Helper.getFileBytes(tmpModel);
 
-		Simulationmodel model = new Simulationmodel();
+		SimulationModel model = new SimulationModel();
 		model.setModelblob(tmpModelarr);
 		model.setSimulator("APROS");
 		model.setDescription("My second model");
@@ -104,7 +104,7 @@ public class SimulationModelRepositoryTest {
 
 		String modelDesc= "My first model";		
 						
-		Simulationmodel model = simulationModelRepository.findByDescription(modelDesc).get(0);
+		SimulationModel model = simulationModelRepository.findByDescription(modelDesc).get(0);
 		model.setDescription("Model third updated");
 		
 		assertNotEquals(modelDesc, model.getDescription());
@@ -125,7 +125,7 @@ public class SimulationModelRepositoryTest {
 		
 		assertNotEquals(0,project.getPrjid());
 
-		Simulationmodel model = simulationModelRepository.findByDescription(modelDesc).get(0);
+		SimulationModel model = simulationModelRepository.findByDescription(modelDesc).get(0);
 		project.setSimulationmodel(model);
 		
 		assertNotEquals(null,project.getSimulationmodel());
@@ -138,7 +138,7 @@ public class SimulationModelRepositoryTest {
 		
 		String modelDesc= "My first model";
 
-		Simulationmodel model = simulationModelRepository.findByDescription(modelDesc).get(0);
+		SimulationModel model = simulationModelRepository.findByDescription(modelDesc).get(0);
 		int modelID = model.getModelid();
 
 		assertNotEquals(0, modelID);

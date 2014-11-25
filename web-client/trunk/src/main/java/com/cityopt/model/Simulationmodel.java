@@ -24,7 +24,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "simulationmodel", schema = "public")
-public class Simulationmodel implements java.io.Serializable {
+public class SimulationModel implements java.io.Serializable {
 
 	private int modelid;
 	private byte[] modelblob;
@@ -37,14 +37,14 @@ public class Simulationmodel implements java.io.Serializable {
 	private Integer updatedby;
 	private Set<Project> projects = new HashSet<Project>(0);
 
-	public Simulationmodel() {
+	public SimulationModel() {
 	}
 
-	public Simulationmodel(int modelid) {
+	public SimulationModel(int modelid) {
 		this.modelid = modelid;
 	}
 
-	public Simulationmodel(int modelid, byte[] modelblob, byte[] imageblob,
+	public SimulationModel(int modelid, byte[] modelblob, byte[] imageblob,
 			String description, String simulator, Date createdon,
 			Date updatedon, Integer createdby, Integer updatedby,
 			Set<Project> projects) {

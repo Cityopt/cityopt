@@ -18,21 +18,21 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "extparamvalscengen", schema = "public")
-public class Extparamvalscengen implements java.io.Serializable {
+public class ExtParamValScenGen implements java.io.Serializable {
 
 	private int id;
-	private Extparamval extparamval;
-	private Scenariogenerator scenariogenerator;
+	private ExtParamVal extparamval;
+	private ScenarioGenerator scenariogenerator;
 
-	public Extparamvalscengen() {
+	public ExtParamValScenGen() {
 	}
 
-	public Extparamvalscengen(int id) {
+	public ExtParamValScenGen(int id) {
 		this.id = id;
 	}
 
-	public Extparamvalscengen(int id, Extparamval extparamval,
-			Scenariogenerator scenariogenerator) {
+	public ExtParamValScenGen(int id, ExtParamVal extparamval,
+			ScenarioGenerator scenariogenerator) {
 		this.id = id;
 		this.extparamval = extparamval;
 		this.scenariogenerator = scenariogenerator;
@@ -52,21 +52,21 @@ public class Extparamvalscengen implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "extparamvalid")
-	public Extparamval getExtparamval() {
+	public ExtParamVal getExtparamval() {
 		return this.extparamval;
 	}
 
-	public void setExtparamval(Extparamval extparamval) {
+	public void setExtparamval(ExtParamVal extparamval) {
 		this.extparamval = extparamval;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scengenid")
-	public Scenariogenerator getScenariogenerator() {
+	public ScenarioGenerator getScenariogenerator() {
 		return this.scenariogenerator;
 	}
 
-	public void setScenariogenerator(Scenariogenerator scenariogenerator) {
+	public void setScenariogenerator(ScenarioGenerator scenariogenerator) {
 		this.scenariogenerator = scenariogenerator;
 	}
 

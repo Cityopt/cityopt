@@ -3,9 +3,9 @@ package com.cityopt.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.cityopt.model.Usergroupproject;
+import com.cityopt.model.UserGroupProject;
 
 @Repository("userGroupProjectRepository")
-public interface UserGroupProjectRepository extends JpaRepository<Usergroupproject, Integer> {
+public interface UserGroupProjectRepository extends JpaRepository<UserGroupProject, Integer> {
 
 }

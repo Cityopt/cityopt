@@ -17,10 +17,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cityopt.model.Appuser;
+import com.cityopt.model.AppUser;
 import com.cityopt.model.Project;
-import com.cityopt.model.Usergroup;
-import com.cityopt.model.Usergroupproject;
+import com.cityopt.model.UserGroup;
+import com.cityopt.model.UserGroupProject;
 import com.cityopt.repository.ProjectRepository;
 import com.cityopt.repository.UserGroupProjectRepository;
 import com.cityopt.repository.UserGroupRepository;
@@ -69,12 +69,12 @@ public class UserGroupProjectRepositoryTest {
 		
 		projectRepository.save(project);
 		
-		Usergroup usergroup = new Usergroup();
+		UserGroup usergroup = new UserGroup();
 		usergroup.setName("Administrator");
 		
 		userGroupRepository.save(usergroup);
 		
-		Appuser appuser = new Appuser();
+		AppUser appuser = new AppUser();
 		appuser.setName("Flo");		
 		
 		userRepository.save(appuser);
@@ -90,10 +90,10 @@ public class UserGroupProjectRepositoryTest {
 	public void CreateUserGroupRelation() {
 		
 		List<Project> projects = projectRepository.findByName("My test project");
-		List<Usergroup> groups = userGroupRepository.findByGroupName("Administrator");
-		List<Appuser> user = userRepository.findByUserName("Flo");
+		List<UserGroup> groups = userGroupRepository.findByGroupName("Administrator");
+		List<AppUser> user = userRepository.findByUserName("Flo");
 		
-		Usergroupproject usergroupproject = new Usergroupproject();
+		UserGroupProject usergroupproject = new UserGroupProject();
 		
 		usergroupproject.setAppuser(user.get(0));
 		usergroupproject.setProject(projects.get(0));		
@@ -115,15 +115,15 @@ public class UserGroupProjectRepositoryTest {
 		
 		projectRepository.saveAndFlush(project);
 		
-		Usergroup usergroup = new Usergroup();
+		UserGroup usergroup = new UserGroup();
 		usergroup.setName("Viewer");
 		
 		userGroupRepository.save(usergroup);
 		
-		Appuser appuser = new Appuser();
+		AppUser appuser = new AppUser();
 		appuser.setName("Detlef");		
 		
-		Usergroupproject usergroupproject = new Usergroupproject();
+		UserGroupProject usergroupproject = new UserGroupProject();
 		
 		usergroupproject.setAppuser(appuser);
 		usergroupproject.setProject(project);		
@@ -140,10 +140,10 @@ public class UserGroupProjectRepositoryTest {
 	public void UpdateUserGroupRelation2() {
 		
 		List<Project> projects = projectRepository.findByName("My test project");
-		List<Usergroup> groups = userGroupRepository.findByGroupName("Administrator");
-		List<Appuser> user = userRepository.findByUserName("Flo");
+		List<UserGroup> groups = userGroupRepository.findByGroupName("Administrator");
+		List<AppUser> user = userRepository.findByUserName("Flo");
 		
-		Usergroupproject usergroupproject = new Usergroupproject();
+		UserGroupProject usergroupproject = new UserGroupProject();
 		
 		usergroupproject.setAppuser(user.get(0));
 		usergroupproject.setProject(projects.get(0));		
@@ -165,7 +165,7 @@ public class UserGroupProjectRepositoryTest {
 	@Rollback(true)
 	public void DeleteUserGroupRelation2() {
 		
-		List<Usergroupproject> userGroupProjects = userGroupProjectRepository.findAll();
+		List<UserGroupProject> userGroupProjects = userGroupProjectRepository.findAll();
 		userGroupProjectRepository.delete(userGroupProjects);
 		
 		assertEquals(0, userGroupProjectRepository.findAll().size());

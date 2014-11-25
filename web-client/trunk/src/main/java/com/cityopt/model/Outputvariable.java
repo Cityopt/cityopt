@@ -22,26 +22,26 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "outputvariable", schema = "public")
-public class Outputvariable implements java.io.Serializable {
+public class OutputVariable implements java.io.Serializable {
 
 	private int outvarid;
 	private Component component;
 	private String name;
 	private Boolean selected;
 	private Integer typeid;
-	private Set<Simulationresult> simulationresults = new HashSet<Simulationresult>(
+	private Set<SimulationResult> simulationresults = new HashSet<SimulationResult>(
 			0);
 
-	public Outputvariable() {
+	public OutputVariable() {
 	}
 
-	public Outputvariable(int outvarid) {
+	public OutputVariable(int outvarid) {
 		this.outvarid = outvarid;
 	}
 
-	public Outputvariable(int outvarid, Component component, String name,
+	public OutputVariable(int outvarid, Component component, String name,
 			Boolean selected, Integer typeid,
-			Set<Simulationresult> simulationresults) {
+			Set<SimulationResult> simulationresults) {
 		this.outvarid = outvarid;
 		this.component = component;
 		this.name = name;
@@ -99,11 +99,11 @@ public class Outputvariable implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "outputvariable")
-	public Set<Simulationresult> getSimulationresults() {
+	public Set<SimulationResult> getSimulationresults() {
 		return this.simulationresults;
 	}
 
-	public void setSimulationresults(Set<Simulationresult> simulationresults) {
+	public void setSimulationresults(Set<SimulationResult> simulationresults) {
 		this.simulationresults = simulationresults;
 	}
 

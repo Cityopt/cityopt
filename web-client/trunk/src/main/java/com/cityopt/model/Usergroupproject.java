@@ -21,18 +21,18 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "usergroupproject", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"prjid", "userid" }))
-public class Usergroupproject implements java.io.Serializable {
+public class UserGroupProject implements java.io.Serializable {
 
 	private long usergroupprojectid;
-	private Usergroup usergroup;
+	private UserGroup usergroup;
 	private Project project;
-	private Appuser appuser;
+	private AppUser appuser;
 
-	public Usergroupproject() {
+	public UserGroupProject() {
 	}
 
-	public Usergroupproject(long usergroupprojectid, Usergroup usergroup,
-			Project project, Appuser appuser) {
+	public UserGroupProject(long usergroupprojectid, UserGroup usergroup,
+			Project project, AppUser appuser) {
 		this.usergroupprojectid = usergroupprojectid;
 		this.usergroup = usergroup;
 		this.project = project;
@@ -52,11 +52,11 @@ public class Usergroupproject implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.PERSIST)
 	@JoinColumn(name = "usergroupid", nullable = false)
-	public Usergroup getUsergroup() {
+	public UserGroup getUsergroup() {
 		return this.usergroup;
 	}
 
-	public void setUsergroup(Usergroup usergroup) {
+	public void setUsergroup(UserGroup usergroup) {
 		this.usergroup = usergroup;
 	}
 
@@ -72,11 +72,11 @@ public class Usergroupproject implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.PERSIST)
 	@JoinColumn(name = "userid", nullable = false)
-	public Appuser getAppuser() {
+	public AppUser getAppuser() {
 		return this.appuser;
 	}
 
-	public void setAppuser(Appuser appuser) {
+	public void setAppuser(AppUser appuser) {
 		this.appuser = appuser;
 	}
 

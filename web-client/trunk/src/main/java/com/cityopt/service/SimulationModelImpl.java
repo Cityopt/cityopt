@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cityopt.model.Simulationmodel;
+import com.cityopt.model.SimulationModel;
 import com.cityopt.repository.SimulationModelRepository;
 
 	@Service("SimulationModelService")
@@ -16,12 +16,12 @@ import com.cityopt.repository.SimulationModelRepository;
 	@Autowired
 	private SimulationModelRepository simulationModelRepository;
 	
-	public List<Simulationmodel> findAllSimulationModel() {
+	public List<SimulationModel> findAllSimulationModel() {
 		return simulationModelRepository.findAll();
 	}
 	
 	@Transactional
-	public Simulationmodel save(Simulationmodel model) {
+	public SimulationModel save(SimulationModel model) {
 		return simulationModelRepository.save(model);
 	}
 	

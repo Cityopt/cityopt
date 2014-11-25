@@ -24,27 +24,27 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "extparam", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"name", "prjid" }))
-public class Extparam implements java.io.Serializable {
+public class ExtParam implements java.io.Serializable {
 
 	private int extparamid;
 	private Unit unit;
-	private Timeseries timeseries;
+	private TimeSeries timeseries;
 	private Project project;
 	private String defaultvalue;
 	private String name;
-	private Set<Extparamval> extparamvals = new HashSet<Extparamval>(0);
+	private Set<ExtParamVal> extparamvals = new HashSet<ExtParamVal>(0);
 
-	public Extparam() {
+	public ExtParam() {
 	}
 
-	public Extparam(int extparamid, String defaultvalue) {
+	public ExtParam(int extparamid, String defaultvalue) {
 		this.extparamid = extparamid;
 		this.defaultvalue = defaultvalue;
 	}
 
-	public Extparam(int extparamid, Unit unit, Timeseries timeseries,
+	public ExtParam(int extparamid, Unit unit, TimeSeries timeseries,
 			Project project, String defaultvalue, String name,
-			Set<Extparamval> extparamvals) {
+			Set<ExtParamVal> extparamvals) {
 		this.extparamid = extparamid;
 		this.unit = unit;
 		this.timeseries = timeseries;
@@ -77,11 +77,11 @@ public class Extparam implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "defaulttimeseries")
-	public Timeseries getTimeseries() {
+	public TimeSeries getTimeseries() {
 		return this.timeseries;
 	}
 
-	public void setTimeseries(Timeseries timeseries) {
+	public void setTimeseries(TimeSeries timeseries) {
 		this.timeseries = timeseries;
 	}
 
@@ -114,11 +114,11 @@ public class Extparam implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "extparam")
-	public Set<Extparamval> getExtparamvals() {
+	public Set<ExtParamVal> getExtparamvals() {
 		return this.extparamvals;
 	}
 
-	public void setExtparamvals(Set<Extparamval> extparamvals) {
+	public void setExtparamvals(Set<ExtParamVal> extparamvals) {
 		this.extparamvals = extparamvals;
 	}
 

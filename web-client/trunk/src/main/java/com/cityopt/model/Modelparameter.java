@@ -20,25 +20,25 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "modelparameter", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"scengenid", "inputid" }))
-public class Modelparameter implements java.io.Serializable {
+public class ModelParameter implements java.io.Serializable {
 
 	private int modelparamid;
-	private Inputparameter inputparameter;
-	private Scenariogenerator scenariogenerator;
+	private InputParameter inputparameter;
+	private ScenarioGenerator scenariogenerator;
 	private String value;
 
-	public Modelparameter() {
+	public ModelParameter() {
 	}
 
-	public Modelparameter(int modelparamid, Inputparameter inputparameter,
-			Scenariogenerator scenariogenerator) {
+	public ModelParameter(int modelparamid, InputParameter inputparameter,
+			ScenarioGenerator scenariogenerator) {
 		this.modelparamid = modelparamid;
 		this.inputparameter = inputparameter;
 		this.scenariogenerator = scenariogenerator;
 	}
 
-	public Modelparameter(int modelparamid, Inputparameter inputparameter,
-			Scenariogenerator scenariogenerator, String value) {
+	public ModelParameter(int modelparamid, InputParameter inputparameter,
+			ScenarioGenerator scenariogenerator, String value) {
 		this.modelparamid = modelparamid;
 		this.inputparameter = inputparameter;
 		this.scenariogenerator = scenariogenerator;
@@ -58,21 +58,21 @@ public class Modelparameter implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "inputid", nullable = false)
-	public Inputparameter getInputparameter() {
+	public InputParameter getInputparameter() {
 		return this.inputparameter;
 	}
 
-	public void setInputparameter(Inputparameter inputparameter) {
+	public void setInputparameter(InputParameter inputparameter) {
 		this.inputparameter = inputparameter;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scengenid", nullable = false)
-	public Scenariogenerator getScenariogenerator() {
+	public ScenarioGenerator getScenariogenerator() {
 		return this.scenariogenerator;
 	}
 
-	public void setScenariogenerator(Scenariogenerator scenariogenerator) {
+	public void setScenariogenerator(ScenarioGenerator scenariogenerator) {
 		this.scenariogenerator = scenariogenerator;
 	}
 

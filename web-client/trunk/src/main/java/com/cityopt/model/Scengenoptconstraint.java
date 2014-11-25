@@ -20,21 +20,21 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "scengenoptconstraint", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"scengenid", "optconstid" }))
-public class Scengenoptconstraint implements java.io.Serializable {
+public class ScenGenOptConstraint implements java.io.Serializable {
 
 	private int sgoptconstraintid;
-	private Optconstraint optconstraint;
-	private Scenariogenerator scenariogenerator;
+	private OptConstraint optconstraint;
+	private ScenarioGenerator scenariogenerator;
 
-	public Scengenoptconstraint() {
+	public ScenGenOptConstraint() {
 	}
 
-	public Scengenoptconstraint(int sgoptconstraintid) {
+	public ScenGenOptConstraint(int sgoptconstraintid) {
 		this.sgoptconstraintid = sgoptconstraintid;
 	}
 
-	public Scengenoptconstraint(int sgoptconstraintid,
-			Optconstraint optconstraint, Scenariogenerator scenariogenerator) {
+	public ScenGenOptConstraint(int sgoptconstraintid,
+			OptConstraint optconstraint, ScenarioGenerator scenariogenerator) {
 		this.sgoptconstraintid = sgoptconstraintid;
 		this.optconstraint = optconstraint;
 		this.scenariogenerator = scenariogenerator;
@@ -53,21 +53,21 @@ public class Scengenoptconstraint implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "optconstid")
-	public Optconstraint getOptconstraint() {
+	public OptConstraint getOptconstraint() {
 		return this.optconstraint;
 	}
 
-	public void setOptconstraint(Optconstraint optconstraint) {
+	public void setOptconstraint(OptConstraint optconstraint) {
 		this.optconstraint = optconstraint;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scengenid")
-	public Scenariogenerator getScenariogenerator() {
+	public ScenarioGenerator getScenariogenerator() {
 		return this.scenariogenerator;
 	}
 
-	public void setScenariogenerator(Scenariogenerator scenariogenerator) {
+	public void setScenariogenerator(ScenarioGenerator scenariogenerator) {
 		this.scenariogenerator = scenariogenerator;
 	}
 

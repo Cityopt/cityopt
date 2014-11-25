@@ -18,27 +18,27 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "decisionvariable", schema = "public")
-public class Decisionvariable implements java.io.Serializable {
+public class DecisionVariable implements java.io.Serializable {
 
 	private int decisionvarid;
 	private Type type;
-	private Scenariogenerator scenariogenerator;
+	private ScenarioGenerator scenariogenerator;
 	private String name;
 	private String expression;
 	private Double lowerbound;
 	private Double upperbound;
 
-	public Decisionvariable() {
+	public DecisionVariable() {
 	}
 
-	public Decisionvariable(int decisionvarid,
-			Scenariogenerator scenariogenerator) {
+	public DecisionVariable(int decisionvarid,
+			ScenarioGenerator scenariogenerator) {
 		this.decisionvarid = decisionvarid;
 		this.scenariogenerator = scenariogenerator;
 	}
 
-	public Decisionvariable(int decisionvarid, Type type,
-			Scenariogenerator scenariogenerator, String name,
+	public DecisionVariable(int decisionvarid, Type type,
+			ScenarioGenerator scenariogenerator, String name,
 			String expression, Double lowerbound, Double upperbound) {
 		this.decisionvarid = decisionvarid;
 		this.type = type;
@@ -73,11 +73,11 @@ public class Decisionvariable implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scengenid", nullable = false)
-	public Scenariogenerator getScenariogenerator() {
+	public ScenarioGenerator getScenariogenerator() {
 		return this.scenariogenerator;
 	}
 
-	public void setScenariogenerator(Scenariogenerator scenariogenerator) {
+	public void setScenariogenerator(ScenarioGenerator scenariogenerator) {
 		this.scenariogenerator = scenariogenerator;
 	}
 

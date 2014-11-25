@@ -21,24 +21,24 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "appuser", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
-public class Appuser implements java.io.Serializable {
+public class AppUser implements java.io.Serializable {
 
 	private int userid;
 	private String name;
 	private String password;
-	private Set<Usergroupproject> usergroupprojects = new HashSet<Usergroupproject>(
+	private Set<UserGroupProject> usergroupprojects = new HashSet<UserGroupProject>(
 			0);
 
-	public Appuser() {
+	public AppUser() {
 	}
 
-	public Appuser(int userid, String name) {
+	public AppUser(int userid, String name) {
 		this.userid = userid;
 		this.name = name;
 	}
 
-	public Appuser(int userid, String name, String password,
-			Set<Usergroupproject> usergroupprojects) {
+	public AppUser(int userid, String name, String password,
+			Set<UserGroupProject> usergroupprojects) {
 		this.userid = userid;
 		this.name = name;
 		this.password = password;
@@ -75,11 +75,11 @@ public class Appuser implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appuser")
-	public Set<Usergroupproject> getUsergroupprojects() {
+	public Set<UserGroupProject> getUsergroupprojects() {
 		return this.usergroupprojects;
 	}
 
-	public void setUsergroupprojects(Set<Usergroupproject> usergroupprojects) {
+	public void setUsergroupprojects(Set<UserGroupProject> usergroupprojects) {
 		this.usergroupprojects = usergroupprojects;
 	}
 

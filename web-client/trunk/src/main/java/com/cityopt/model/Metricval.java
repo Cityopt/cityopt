@@ -18,26 +18,26 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "metricval", schema = "public")
-public class Metricval implements java.io.Serializable {
+public class MetricVal implements java.io.Serializable {
 
 	private long metricvalid;
 	private Metric metric;
-	private Scenariometrics scenariometrics;
-	private Timeseries timeseries;
+	private ScenarioMetrics scenariometrics;
+	private TimeSeries timeseries;
 	private String value;
 
-	public Metricval() {
+	public MetricVal() {
 	}
 
-	public Metricval(long metricvalid, Metric metric,
-			Scenariometrics scenariometrics) {
+	public MetricVal(long metricvalid, Metric metric,
+			ScenarioMetrics scenariometrics) {
 		this.metricvalid = metricvalid;
 		this.metric = metric;
 		this.scenariometrics = scenariometrics;
 	}
 
-	public Metricval(long metricvalid, Metric metric,
-			Scenariometrics scenariometrics, Timeseries timeseries, String value) {
+	public MetricVal(long metricvalid, Metric metric,
+			ScenarioMetrics scenariometrics, TimeSeries timeseries, String value) {
 		this.metricvalid = metricvalid;
 		this.metric = metric;
 		this.scenariometrics = scenariometrics;
@@ -68,21 +68,21 @@ public class Metricval implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scenmetricd", nullable = false)
-	public Scenariometrics getScenariometrics() {
+	public ScenarioMetrics getScenariometrics() {
 		return this.scenariometrics;
 	}
 
-	public void setScenariometrics(Scenariometrics scenariometrics) {
+	public void setScenariometrics(ScenarioMetrics scenariometrics) {
 		this.scenariometrics = scenariometrics;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tseriedid")
-	public Timeseries getTimeseries() {
+	public TimeSeries getTimeseries() {
 		return this.timeseries;
 	}
 
-	public void setTimeseries(Timeseries timeseries) {
+	public void setTimeseries(TimeSeries timeseries) {
 		this.timeseries = timeseries;
 	}
 

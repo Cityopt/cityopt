@@ -20,17 +20,17 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "optsearchconst", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"optid", "scid" }))
-public class Optsearchconst implements java.io.Serializable {
+public class OptSearchConst implements java.io.Serializable {
 
 	private long optsearchconstid;
-	private Optimizationset optimizationset;
-	private Searchconstraint searchconstraint;
+	private OptimizationSet optimizationset;
+	private SearchConstraint searchconstraint;
 
-	public Optsearchconst() {
+	public OptSearchConst() {
 	}
 
-	public Optsearchconst(long optsearchconstid,
-			Optimizationset optimizationset, Searchconstraint searchconstraint) {
+	public OptSearchConst(long optsearchconstid,
+			OptimizationSet optimizationset, SearchConstraint searchconstraint) {
 		this.optsearchconstid = optsearchconstid;
 		this.optimizationset = optimizationset;
 		this.searchconstraint = searchconstraint;
@@ -49,21 +49,21 @@ public class Optsearchconst implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "optid", nullable = false)
-	public Optimizationset getOptimizationset() {
+	public OptimizationSet getOptimizationset() {
 		return this.optimizationset;
 	}
 
-	public void setOptimizationset(Optimizationset optimizationset) {
+	public void setOptimizationset(OptimizationSet optimizationset) {
 		this.optimizationset = optimizationset;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scid", nullable = false)
-	public Searchconstraint getSearchconstraint() {
+	public SearchConstraint getSearchconstraint() {
 		return this.searchconstraint;
 	}
 
-	public void setSearchconstraint(Searchconstraint searchconstraint) {
+	public void setSearchconstraint(SearchConstraint searchconstraint) {
 		this.searchconstraint = searchconstraint;
 	}
 

@@ -23,24 +23,24 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "scenariometrics", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = "scenid"))
-public class Scenariometrics implements java.io.Serializable {
+public class ScenarioMetrics implements java.io.Serializable {
 
 	private int scenmetricid;
 	private Scenario scenario;
-	private Set<Metricval> metricvals = new HashSet<Metricval>(0);
-	private Set<Extparamvalscenmetric> extparamvalscenmetrics = new HashSet<Extparamvalscenmetric>(
+	private Set<MetricVal> metricvals = new HashSet<MetricVal>(0);
+	private Set<ExtParamValScenMetric> extparamvalscenmetrics = new HashSet<ExtParamValScenMetric>(
 			0);
 
-	public Scenariometrics() {
+	public ScenarioMetrics() {
 	}
 
-	public Scenariometrics(int scenmetricid) {
+	public ScenarioMetrics(int scenmetricid) {
 		this.scenmetricid = scenmetricid;
 	}
 
-	public Scenariometrics(int scenmetricid, Scenario scenario,
-			Set<Metricval> metricvals,
-			Set<Extparamvalscenmetric> extparamvalscenmetrics) {
+	public ScenarioMetrics(int scenmetricid, Scenario scenario,
+			Set<MetricVal> metricvals,
+			Set<ExtParamValScenMetric> extparamvalscenmetrics) {
 		this.scenmetricid = scenmetricid;
 		this.scenario = scenario;
 		this.metricvals = metricvals;
@@ -69,21 +69,21 @@ public class Scenariometrics implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariometrics")
-	public Set<Metricval> getMetricvals() {
+	public Set<MetricVal> getMetricvals() {
 		return this.metricvals;
 	}
 
-	public void setMetricvals(Set<Metricval> metricvals) {
+	public void setMetricvals(Set<MetricVal> metricvals) {
 		this.metricvals = metricvals;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariometrics")
-	public Set<Extparamvalscenmetric> getExtparamvalscenmetrics() {
+	public Set<ExtParamValScenMetric> getExtparamvalscenmetrics() {
 		return this.extparamvalscenmetrics;
 	}
 
 	public void setExtparamvalscenmetrics(
-			Set<Extparamvalscenmetric> extparamvalscenmetrics) {
+			Set<ExtParamValScenMetric> extparamvalscenmetrics) {
 		this.extparamvalscenmetrics = extparamvalscenmetrics;
 	}
 

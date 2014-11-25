@@ -30,7 +30,7 @@ import javax.persistence.UniqueConstraint;
 public class Project implements java.io.Serializable {
 
 	private int prjid;
-	private Simulationmodel simulationmodel;
+	private SimulationModel simulationmodel;
 	private String name;
 	private String designtarget;
 	private Date timehorizon;
@@ -39,19 +39,19 @@ public class Project implements java.io.Serializable {
 	private Date updatedon;
 	private Integer createdby;
 	private Integer updatedby;
-	private Set<Objectivefunction> objectivefunctions = new HashSet<Objectivefunction>(
+	private Set<ObjectiveFunction> objectivefunctions = new HashSet<ObjectiveFunction>(
 			0);
 	private Set<Scenario> scenarios = new HashSet<Scenario>(0);
-	private Set<Scenariogenerator> scenariogenerators = new HashSet<Scenariogenerator>(
+	private Set<ScenarioGenerator> scenariogenerators = new HashSet<ScenarioGenerator>(
 			0);
 	private Set<Component> components = new HashSet<Component>(0);
-	private Set<Optconstraint> optconstraints = new HashSet<Optconstraint>(0);
-	private Set<Searchconstraint> searchconstraints = new HashSet<Searchconstraint>(
+	private Set<OptConstraint> optconstraints = new HashSet<OptConstraint>(0);
+	private Set<SearchConstraint> searchconstraints = new HashSet<SearchConstraint>(
 			0);
 	private Set<Metric> metrics = new HashSet<Metric>(0);
-	private Set<Usergroupproject> usergroupprojects = new HashSet<Usergroupproject>(
+	private Set<UserGroupProject> usergroupprojects = new HashSet<UserGroupProject>(
 			0);
-	private Set<Extparam> extparams = new HashSet<Extparam>(0);
+	private Set<ExtParam> extparams = new HashSet<ExtParam>(0);
 
 	public Project() {
 	}
@@ -61,14 +61,14 @@ public class Project implements java.io.Serializable {
 		this.name = name;
 	}
 
-	public Project(int prjid, Simulationmodel simulationmodel, String name,
+	public Project(int prjid, SimulationModel simulationmodel, String name,
 			String designtarget, Date timehorizon, String location,
 			Date createdon, Date updatedon, Integer createdby,
-			Integer updatedby, Set<Objectivefunction> objectivefunctions,
-			Set<Scenario> scenarios, Set<Scenariogenerator> scenariogenerators,
-			Set<Component> components, Set<Optconstraint> optconstraints,
-			Set<Searchconstraint> searchconstraints, Set<Metric> metrics,
-			Set<Usergroupproject> usergroupprojects, Set<Extparam> extparams) {
+			Integer updatedby, Set<ObjectiveFunction> objectivefunctions,
+			Set<Scenario> scenarios, Set<ScenarioGenerator> scenariogenerators,
+			Set<Component> components, Set<OptConstraint> optconstraints,
+			Set<SearchConstraint> searchconstraints, Set<Metric> metrics,
+			Set<UserGroupProject> usergroupprojects, Set<ExtParam> extparams) {
 		this.prjid = prjid;
 		this.simulationmodel = simulationmodel;
 		this.name = name;
@@ -103,11 +103,11 @@ public class Project implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.PERSIST)
 	@JoinColumn(name = "modelid")
-	public Simulationmodel getSimulationmodel() {
+	public SimulationModel getSimulationmodel() {
 		return this.simulationmodel;
 	}
 
-	public void setSimulationmodel(Simulationmodel simulationmodel) {
+	public void setSimulationmodel(SimulationModel simulationmodel) {
 		this.simulationmodel = simulationmodel;
 	}
 
@@ -187,11 +187,11 @@ public class Project implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
-	public Set<Objectivefunction> getObjectivefunctions() {
+	public Set<ObjectiveFunction> getObjectivefunctions() {
 		return this.objectivefunctions;
 	}
 
-	public void setObjectivefunctions(Set<Objectivefunction> objectivefunctions) {
+	public void setObjectivefunctions(Set<ObjectiveFunction> objectivefunctions) {
 		this.objectivefunctions = objectivefunctions;
 	}
 
@@ -205,11 +205,11 @@ public class Project implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
-	public Set<Scenariogenerator> getScenariogenerators() {
+	public Set<ScenarioGenerator> getScenariogenerators() {
 		return this.scenariogenerators;
 	}
 
-	public void setScenariogenerators(Set<Scenariogenerator> scenariogenerators) {
+	public void setScenariogenerators(Set<ScenarioGenerator> scenariogenerators) {
 		this.scenariogenerators = scenariogenerators;
 	}
 
@@ -223,20 +223,20 @@ public class Project implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
-	public Set<Optconstraint> getOptconstraints() {
+	public Set<OptConstraint> getOptconstraints() {
 		return this.optconstraints;
 	}
 
-	public void setOptconstraints(Set<Optconstraint> optconstraints) {
+	public void setOptconstraints(Set<OptConstraint> optconstraints) {
 		this.optconstraints = optconstraints;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
-	public Set<Searchconstraint> getSearchconstraints() {
+	public Set<SearchConstraint> getSearchconstraints() {
 		return this.searchconstraints;
 	}
 
-	public void setSearchconstraints(Set<Searchconstraint> searchconstraints) {
+	public void setSearchconstraints(Set<SearchConstraint> searchconstraints) {
 		this.searchconstraints = searchconstraints;
 	}
 
@@ -250,20 +250,20 @@ public class Project implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
-	public Set<Usergroupproject> getUsergroupprojects() {
+	public Set<UserGroupProject> getUsergroupprojects() {
 		return this.usergroupprojects;
 	}
 
-	public void setUsergroupprojects(Set<Usergroupproject> usergroupprojects) {
+	public void setUsergroupprojects(Set<UserGroupProject> usergroupprojects) {
 		this.usergroupprojects = usergroupprojects;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
-	public Set<Extparam> getExtparams() {
+	public Set<ExtParam> getExtparams() {
 		return this.extparams;
 	}
 
-	public void setExtparams(Set<Extparam> extparams) {
+	public void setExtparams(Set<ExtParam> extparams) {
 		this.extparams = extparams;
 	}
 

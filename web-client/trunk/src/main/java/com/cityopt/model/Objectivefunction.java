@@ -22,29 +22,29 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "objectivefunction", schema = "public")
-public class Objectivefunction implements java.io.Serializable {
+public class ObjectiveFunction implements java.io.Serializable {
 
 	private int obtfunctionid;
 	private Type type;
 	private Project project;
 	private String expression;
 	private Boolean ismaximise;
-	private Set<Optimizationset> optimizationsets = new HashSet<Optimizationset>(
+	private Set<OptimizationSet> optimizationsets = new HashSet<OptimizationSet>(
 			0);
-	private Set<Scengenobjectivefunction> scengenobjectivefunctions = new HashSet<Scengenobjectivefunction>(
+	private Set<ScenGenObjectiveFunction> scengenobjectivefunctions = new HashSet<ScenGenObjectiveFunction>(
 			0);
 
-	public Objectivefunction() {
+	public ObjectiveFunction() {
 	}
 
-	public Objectivefunction(int obtfunctionid) {
+	public ObjectiveFunction(int obtfunctionid) {
 		this.obtfunctionid = obtfunctionid;
 	}
 
-	public Objectivefunction(int obtfunctionid, Type type, Project project,
+	public ObjectiveFunction(int obtfunctionid, Type type, Project project,
 			String expression, Boolean ismaximise,
-			Set<Optimizationset> optimizationsets,
-			Set<Scengenobjectivefunction> scengenobjectivefunctions) {
+			Set<OptimizationSet> optimizationsets,
+			Set<ScenGenObjectiveFunction> scengenobjectivefunctions) {
 		this.obtfunctionid = obtfunctionid;
 		this.type = type;
 		this.project = project;
@@ -104,21 +104,21 @@ public class Objectivefunction implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "objectivefunction")
-	public Set<Optimizationset> getOptimizationsets() {
+	public Set<OptimizationSet> getOptimizationsets() {
 		return this.optimizationsets;
 	}
 
-	public void setOptimizationsets(Set<Optimizationset> optimizationsets) {
+	public void setOptimizationsets(Set<OptimizationSet> optimizationsets) {
 		this.optimizationsets = optimizationsets;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "objectivefunction")
-	public Set<Scengenobjectivefunction> getScengenobjectivefunctions() {
+	public Set<ScenGenObjectiveFunction> getScengenobjectivefunctions() {
 		return this.scengenobjectivefunctions;
 	}
 
 	public void setScengenobjectivefunctions(
-			Set<Scengenobjectivefunction> scengenobjectivefunctions) {
+			Set<ScenGenObjectiveFunction> scengenobjectivefunctions) {
 		this.scengenobjectivefunctions = scengenobjectivefunctions;
 	}
 

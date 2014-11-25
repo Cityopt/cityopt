@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cityopt.model.Project;
-import com.cityopt.model.Simulationmodel;
+import com.cityopt.model.SimulationModel;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:/test-context.xml"})
@@ -62,7 +62,7 @@ public class ProjectServiceTest {
 		
 		byte[] tmpModelarr = getFileBytes(tmpModel);
 		
-		Simulationmodel model = new Simulationmodel();
+		SimulationModel model = new SimulationModel();
 		model.setModelblob(tmpModelarr);
 		model.setSimulator("APROS");
 		model.setDescription("My seconds model");				
@@ -72,7 +72,7 @@ public class ProjectServiceTest {
 		projectService.save(project_2);
 		
 		Project fproject = projectService.findByID(project_2.getPrjid());
-		Simulationmodel modact = fproject.getSimulationmodel();
+		SimulationModel modact = fproject.getSimulationmodel();
 		String mydesc = modact.getDescription();
 	}
 	

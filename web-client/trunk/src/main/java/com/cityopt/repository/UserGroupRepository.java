@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.cityopt.model.Usergroup;
+import com.cityopt.model.UserGroup;
 
 @Repository("userGroupRepository")
-public interface UserGroupRepository extends JpaRepository<Usergroup, Integer> {
-	@Query("select u from Usergroup u where Lower(u.name) like CONCAT('%',Lower(:userGroupName),'%')")
-	List<Usergroup> findByGroupName(@Param("userGroupName") String userGroupName);
+public interface UserGroupRepository extends JpaRepository<UserGroup, Integer> {
+	@Query("select u from UserGroup u where Lower(u.name) like CONCAT('%',Lower(:userGroupName),'%')")
+	List<UserGroup> findByGroupName(@Param("userGroupName") String userGroupName);
 }

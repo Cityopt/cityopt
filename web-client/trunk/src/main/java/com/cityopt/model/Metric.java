@@ -29,7 +29,7 @@ public class Metric implements java.io.Serializable {
 	private Project project;
 	private String name;
 	private String expression;
-	private Set<Metricval> metricvals = new HashSet<Metricval>(0);
+	private Set<MetricVal> metricvals = new HashSet<MetricVal>(0);
 
 	public Metric() {
 	}
@@ -39,7 +39,7 @@ public class Metric implements java.io.Serializable {
 	}
 
 	public Metric(int metid, Unit unit, Project project, String name,
-			String expression, Set<Metricval> metricvals) {
+			String expression, Set<MetricVal> metricvals) {
 		this.metid = metid;
 		this.unit = unit;
 		this.project = project;
@@ -98,11 +98,11 @@ public class Metric implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "metric")
-	public Set<Metricval> getMetricvals() {
+	public Set<MetricVal> getMetricvals() {
 		return this.metricvals;
 	}
 
-	public void setMetricvals(Set<Metricval> metricvals) {
+	public void setMetricvals(Set<MetricVal> metricvals) {
 		this.metricvals = metricvals;
 	}
 

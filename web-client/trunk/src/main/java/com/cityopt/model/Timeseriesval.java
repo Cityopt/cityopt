@@ -22,21 +22,21 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "timeseriesval", schema = "public")
-public class Timeseriesval implements java.io.Serializable {
+public class TimeSeriesVal implements java.io.Serializable {
 
 	private int tseriesvalid;
-	private Timeseries timeseries;
+	private TimeSeries timeseries;
 	private String value;
 	private Date time;
 
-	public Timeseriesval() {
+	public TimeSeriesVal() {
 	}
 
-	public Timeseriesval(int tseriesvalid) {
+	public TimeSeriesVal(int tseriesvalid) {
 		this.tseriesvalid = tseriesvalid;
 	}
 
-	public Timeseriesval(int tseriesvalid, Timeseries timeseries, String value,
+	public TimeSeriesVal(int tseriesvalid, TimeSeries timeseries, String value,
 			Date time) {
 		this.tseriesvalid = tseriesvalid;
 		this.timeseries = timeseries;
@@ -57,11 +57,11 @@ public class Timeseriesval implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tseriesid")
-	public Timeseries getTimeseries() {
+	public TimeSeries getTimeseries() {
 		return this.timeseries;
 	}
 
-	public void setTimeseries(Timeseries timeseries) {
+	public void setTimeseries(TimeSeries timeseries) {
 		this.timeseries = timeseries;
 	}
 

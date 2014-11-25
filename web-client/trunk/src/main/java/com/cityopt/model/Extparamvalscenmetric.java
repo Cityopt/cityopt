@@ -18,21 +18,21 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "extparamvalscenmetric", schema = "public")
-public class Extparamvalscenmetric implements java.io.Serializable {
+public class ExtParamValScenMetric implements java.io.Serializable {
 
 	private int id;
-	private Extparamval extparamval;
-	private Scenariometrics scenariometrics;
+	private ExtParamVal extparamval;
+	private ScenarioMetrics scenariometrics;
 
-	public Extparamvalscenmetric() {
+	public ExtParamValScenMetric() {
 	}
 
-	public Extparamvalscenmetric(int id) {
+	public ExtParamValScenMetric(int id) {
 		this.id = id;
 	}
 
-	public Extparamvalscenmetric(int id, Extparamval extparamval,
-			Scenariometrics scenariometrics) {
+	public ExtParamValScenMetric(int id, ExtParamVal extparamval,
+			ScenarioMetrics scenariometrics) {
 		this.id = id;
 		this.extparamval = extparamval;
 		this.scenariometrics = scenariometrics;
@@ -52,21 +52,21 @@ public class Extparamvalscenmetric implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "extparamvalid")
-	public Extparamval getExtparamval() {
+	public ExtParamVal getExtparamval() {
 		return this.extparamval;
 	}
 
-	public void setExtparamval(Extparamval extparamval) {
+	public void setExtparamval(ExtParamVal extparamval) {
 		this.extparamval = extparamval;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scenmetricid")
-	public Scenariometrics getScenariometrics() {
+	public ScenarioMetrics getScenariometrics() {
 		return this.scenariometrics;
 	}
 
-	public void setScenariometrics(Scenariometrics scenariometrics) {
+	public void setScenariometrics(ScenarioMetrics scenariometrics) {
 		this.scenariometrics = scenariometrics;
 	}
 

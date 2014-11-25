@@ -15,19 +15,19 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "datareliability", schema = "public")
-public class Datareliability implements java.io.Serializable {
+public class DataReliability implements java.io.Serializable {
 
 	private int datarelid;
 	private String datareldesc;
 
-	public Datareliability() {
+	public DataReliability() {
 	}
 
-	public Datareliability(int datarelid) {
+	public DataReliability(int datarelid) {
 		this.datarelid = datarelid;
 	}
 
-	public Datareliability(int datarelid, String datareldesc) {
+	public DataReliability(int datarelid, String datareldesc) {
 		this.datarelid = datarelid;
 		this.datareldesc = datareldesc;
 	}

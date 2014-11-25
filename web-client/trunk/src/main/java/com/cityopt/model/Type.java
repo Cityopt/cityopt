@@ -26,10 +26,10 @@ public class Type implements java.io.Serializable {
 	private int typeid;
 	private String name;
 	private Set<Unit> units = new HashSet<Unit>(0);
-	private Set<Objectivefunction> objectivefunctions = new HashSet<Objectivefunction>(
+	private Set<ObjectiveFunction> objectivefunctions = new HashSet<ObjectiveFunction>(
 			0);
-	private Set<Timeseries> timeserieses = new HashSet<Timeseries>(0);
-	private Set<Decisionvariable> decisionvariables = new HashSet<Decisionvariable>(
+	private Set<TimeSeries> timeserieses = new HashSet<TimeSeries>(0);
+	private Set<DecisionVariable> decisionvariables = new HashSet<DecisionVariable>(
 			0);
 
 	public Type() {
@@ -40,9 +40,9 @@ public class Type implements java.io.Serializable {
 	}
 
 	public Type(int typeid, String name, Set<Unit> units,
-			Set<Objectivefunction> objectivefunctions,
-			Set<Timeseries> timeserieses,
-			Set<Decisionvariable> decisionvariables) {
+			Set<ObjectiveFunction> objectivefunctions,
+			Set<TimeSeries> timeserieses,
+			Set<DecisionVariable> decisionvariables) {
 		this.typeid = typeid;
 		this.name = name;
 		this.units = units;
@@ -81,29 +81,29 @@ public class Type implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "type")
-	public Set<Objectivefunction> getObjectivefunctions() {
+	public Set<ObjectiveFunction> getObjectivefunctions() {
 		return this.objectivefunctions;
 	}
 
-	public void setObjectivefunctions(Set<Objectivefunction> objectivefunctions) {
+	public void setObjectivefunctions(Set<ObjectiveFunction> objectivefunctions) {
 		this.objectivefunctions = objectivefunctions;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "type")
-	public Set<Timeseries> getTimeserieses() {
+	public Set<TimeSeries> getTimeserieses() {
 		return this.timeserieses;
 	}
 
-	public void setTimeserieses(Set<Timeseries> timeserieses) {
+	public void setTimeserieses(Set<TimeSeries> timeserieses) {
 		this.timeserieses = timeserieses;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "type")
-	public Set<Decisionvariable> getDecisionvariables() {
+	public Set<DecisionVariable> getDecisionvariables() {
 		return this.decisionvariables;
 	}
 
-	public void setDecisionvariables(Set<Decisionvariable> decisionvariables) {
+	public void setDecisionvariables(Set<DecisionVariable> decisionvariables) {
 		this.decisionvariables = decisionvariables;
 	}
 

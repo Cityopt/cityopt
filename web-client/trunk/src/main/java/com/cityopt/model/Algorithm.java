@@ -24,8 +24,8 @@ public class Algorithm implements java.io.Serializable {
 
 	private int algorithmid;
 	private String description;
-	private Set<Algoparam> algoparams = new HashSet<Algoparam>(0);
-	private Set<Scenariogenerator> scenariogenerators = new HashSet<Scenariogenerator>(
+	private Set<AlgoParam> algoparams = new HashSet<AlgoParam>(0);
+	private Set<ScenarioGenerator> scenariogenerators = new HashSet<ScenarioGenerator>(
 			0);
 
 	public Algorithm() {
@@ -36,7 +36,7 @@ public class Algorithm implements java.io.Serializable {
 	}
 
 	public Algorithm(int algorithmid, String description,
-			Set<Algoparam> algoparams, Set<Scenariogenerator> scenariogenerators) {
+			Set<AlgoParam> algoparams, Set<ScenarioGenerator> scenariogenerators) {
 		this.algorithmid = algorithmid;
 		this.description = description;
 		this.algoparams = algoparams;
@@ -64,20 +64,20 @@ public class Algorithm implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "algorithm")
-	public Set<Algoparam> getAlgoparams() {
+	public Set<AlgoParam> getAlgoparams() {
 		return this.algoparams;
 	}
 
-	public void setAlgoparams(Set<Algoparam> algoparams) {
+	public void setAlgoparams(Set<AlgoParam> algoparams) {
 		this.algoparams = algoparams;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "algorithm")
-	public Set<Scenariogenerator> getScenariogenerators() {
+	public Set<ScenarioGenerator> getScenariogenerators() {
 		return this.scenariogenerators;
 	}
 
-	public void setScenariogenerators(Set<Scenariogenerator> scenariogenerators) {
+	public void setScenariogenerators(Set<ScenarioGenerator> scenariogenerators) {
 		this.scenariogenerators = scenariogenerators;
 	}
 

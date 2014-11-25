@@ -24,22 +24,22 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "algoparam", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"name", "algorithmid" }))
-public class Algoparam implements java.io.Serializable {
+public class AlgoParam implements java.io.Serializable {
 
 	private int aparamsid;
 	private Algorithm algorithm;
 	private String name;
-	private Set<Algoparamval> algoparamvals = new HashSet<Algoparamval>(0);
+	private Set<AlgoParamVal> algoparamvals = new HashSet<AlgoParamVal>(0);
 
-	public Algoparam() {
+	public AlgoParam() {
 	}
 
-	public Algoparam(int aparamsid) {
+	public AlgoParam(int aparamsid) {
 		this.aparamsid = aparamsid;
 	}
 
-	public Algoparam(int aparamsid, Algorithm algorithm, String name,
-			Set<Algoparamval> algoparamvals) {
+	public AlgoParam(int aparamsid, Algorithm algorithm, String name,
+			Set<AlgoParamVal> algoparamvals) {
 		this.aparamsid = aparamsid;
 		this.algorithm = algorithm;
 		this.name = name;
@@ -77,11 +77,11 @@ public class Algoparam implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "algoparam")
-	public Set<Algoparamval> getAlgoparamvals() {
+	public Set<AlgoParamVal> getAlgoparamvals() {
 		return this.algoparamvals;
 	}
 
-	public void setAlgoparamvals(Set<Algoparamval> algoparamvals) {
+	public void setAlgoparamvals(Set<AlgoParamVal> algoparamvals) {
 		this.algoparamvals = algoparamvals;
 	}
 

@@ -2,12 +2,12 @@ package com.cityopt.service;
 
 import java.util.List;
 
-import com.cityopt.model.Simulationmodel;
+import com.cityopt.model.SimulationModel;
 
 public interface SimulationModelService {
-	List<Simulationmodel> findAllSimulationModel();
+	List<SimulationModel> findAllSimulationModel();
 
-	Simulationmodel save(Simulationmodel model);
+	SimulationModel save(SimulationModel model);
 	
 	void deleteAll();
 

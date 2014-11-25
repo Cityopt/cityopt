@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.cityopt.model.Simulationmodel;
+import com.cityopt.model.SimulationModel;
 
 @Repository
-public interface SimulationModelRepository extends JpaRepository<Simulationmodel,Integer>{
+public interface SimulationModelRepository extends JpaRepository<SimulationModel,Integer>{
 	
-	@Query("select s from Simulationmodel s where Lower(s.description) like CONCAT('%',Lower(:modelDesc),'%')")
-	List<Simulationmodel> findByDescription(@Param("modelDesc") String modelDescription);
+	@Query("select s from SimulationModel s where Lower(s.description) like CONCAT('%',Lower(:modelDesc),'%')")
+	List<SimulationModel> findByDescription(@Param("modelDesc") String modelDescription);
 }
