@@ -51,7 +51,7 @@ public class SyntaxChecker {
         // from the standard datetime module
         "datetime", "timedelta",
         // from the cityopt module
-        "integrate", "mean", "stdev", "var",
+        "integrate", "mean", "stdev", "totimestamp", "var",
         // module names
         "__builtin__", "math", "cmath", "cityopt", "itertools" 
     };

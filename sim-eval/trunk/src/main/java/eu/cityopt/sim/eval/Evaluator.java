@@ -53,6 +53,7 @@ public class Evaluator {
 
     private ScriptEngine engine;
     private PyObject _convertTimestampsToDatetimes;
+    private PyObject _convertToTimestamps;
 
     public Evaluator() throws EvaluationException, ScriptException {
         doInitialSetup();
@@ -81,6 +82,8 @@ public class Evaluator {
 
         _convertTimestampsToDatetimes = (PyObject) engine.eval(
                 "cityopt._convertTimestampsToDatetimes");
+        _convertToTimestamps = (PyObject) engine.eval(
+                "cityopt._convertToTimestamps");
         // TODO: engine.setContext
     }
 
@@ -247,5 +250,10 @@ public class Evaluator {
     PyObject convertTimestampsToDatetimes(double[] times) {
         return _convertTimestampsToDatetimes.__call__(
                 Py.javas2pys(new Object[] { times }));
+    }
+
+    double[] convertToTimeStamps(PyObject arg) {
+        PyObject result = _convertToTimestamps.__call__(arg);
+        return (double[]) result.__tojava__(double[].class);
     }
 }

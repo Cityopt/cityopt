@@ -27,7 +27,7 @@ public interface TimeSeries {
      * Interpolate the time series values at the given time points.
      * @param t time points in increasing order
      */
-    public double[] valuesAt(double[] t);
+    public double[] at(double[] t);
 
     /**
      * The mean of the time series as a continuous function, using interpolation

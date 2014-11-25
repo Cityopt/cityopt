@@ -25,6 +25,11 @@ import org.python.core.PyObject;
  *  <code> ts.values </code><br>
  *  - Array of doubles containing the time series values at the defined points. 
  * <p>
+ *  <code> ts.at(times) </code><br>
+ *  <code> ts.at(datetimes) </code><br>
+ *  - Returns an array of double with interpolated time series values at the
+ *    given time points.
+ * <p>
  *  <code> ts.min </code><br>
  *  <code> min(ts) </code><br>
  *  - The minimum value of the time series.  (Infimum if the time series is
@@ -70,6 +75,10 @@ import org.python.core.PyObject;
  *  <code> abs(ts) </code><br>
  *  - Absolute values of the time series.  Zeroes are retained at the
  *    appropriate time points by using interpolation.
+ * <p>
+ *  <code> integrate(ts, a, b[, scale]) </code><br>
+ *  - Integral from a to b, with the time unit 'scale' (default 1 second).
+ *    a and b can be timestamps or datetime objects.
  *
  * @author Hannu Rummukainen
  */
@@ -106,8 +115,16 @@ public class TimeSeriesImpl implements TimeSeries {
     }
 
     @Override
-    public double[] valuesAt(double[] times) {
+    public double[] at(double[] times) {
         return fun.interpolate(times);
+    }
+
+    public double[] at(double time) {
+        return fun.interpolate(new double[] { time });
+    }
+
+    public double[] at(PyObject args) {
+        return at(evaluator.convertToTimeStamps(args));
     }
 
     @Override

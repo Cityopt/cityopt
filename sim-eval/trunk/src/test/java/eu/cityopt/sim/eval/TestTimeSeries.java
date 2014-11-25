@@ -170,6 +170,25 @@ public class TestTimeSeries {
         assertEquals(vb[0], eval("(b-a).values["+i+"]", ep), delta);
         assertEquals(va[1], eval("(a+b).values[1]", ep), delta);
         assertEquals(-va[1], eval("(b-a).values[1]", ep), delta);
+
+        for (int j = 0; j < ta.length; ++j) {
+            assertEquals(va[j], eval("a.at("+ta[j]+")[0]", ep), delta);
+        }
+        assertEquals(3, eval("len(a.at([1,2,3]))", ep), delta);
+        assertEquals(0, eval("sum(a.at([1,2,3]))", ep), delta);
+        assertEquals(va[0], eval("a.at(datetime(2014,1,1,12,0,0))[0]", ep), delta);
+        assertEquals(va[1],
+                eval("a.at([datetime(2014,1,d,12,0,0) for d in [1,2]])[1]", ep), delta);
+        f = step ? 0.0 : 0.5;
+        assertEquals((1-f)*va[0] + f*va[1],
+                eval("a.at(datetime(2014,1,2,0,0,0))[0]", ep), delta);
+        assertEquals((1-f)*va[1] + f*va[2],
+                eval("integrate(a, "+ta[1]+", "+ta[2]+")", ep), delta);
+        assertEquals(0.5 * ((1-f)*va[1] + f*va[2]),
+                eval("integrate(a, "+ta[1]+", "+(ta[2]+1)+", 2)", ep), delta);
+        assertEquals((1-f)*va[0] + f*va[1],
+                eval("integrate(a, datetime(2014,1,1,12), "
+                        + "datetime(2014,1,2,12), 86400)", ep), delta);
     }
 
     private double eval(String expression, EvaluationContext context)
@@ -254,7 +273,7 @@ public class TestTimeSeries {
                         double[] at = new double[i1 - i0];
                         System.arraycopy(sequence, i0, at, 0, i1 - i0);
 
-                        double[] vi = ts.valuesAt(at);
+                        double[] vi = ts.at(at);
 
                         for (int i = 0; i < at.length; ++i) {
                             assertEquals(si.interpolate(at[i]), vi[i], delta);
@@ -271,9 +290,9 @@ public class TestTimeSeries {
         double[] values = new double[] { 1, 0, 3, 2, 8, 11 };
         TimeSeries ts = evaluator.makeTS(Type.TIMESERIES_LINEAR, times, values);
         assertArrayEquals(new double[] { 0, 3, 5, 5, 8, 11 },
-                ts.valuesAt(new double[] { 1, 1, 3, 3, 4, 4 }), delta);
+                ts.at(new double[] { 1, 1, 3, 3, 4, 4 }), delta);
         assertArrayEquals(new double[] { 3, 5, 11 },
-                ts.valuesAt(new double[] { 1, 3, 4, }), delta);
+                ts.at(new double[] { 1, 3, 4, }), delta);
     }
 
     @Test
@@ -392,7 +411,7 @@ public class TestTimeSeries {
 
                 TimeSeries sum = ((TimeSeriesImpl) ts1).__add__(
                         (TimeSeriesImpl) ts2);
-                double[] sumValues = sum.valuesAt(checkTimes);
+                double[] sumValues = sum.at(checkTimes);
 
                 for (int i = 0; i < sumValues.length; ++i) {
                     double v1 = si1values[i];

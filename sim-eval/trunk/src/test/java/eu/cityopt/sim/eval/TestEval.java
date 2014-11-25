@@ -220,11 +220,8 @@ public class TestEval {
         assertNull(msg(sc.checkConstraintExpression("C1.x5")));
         assertNull(msg(sc.checkConstraintExpression("a")));
         assertNotNull(msg(sc.checkConstraintExpression("C1.x5.mean.at(1)")));
-        //TODO implement Python methods for time series, so that we can test one here
-        if (!complete) {
-            assertNull(msg(sc.checkConstraintExpression("C1.x1.at(1)")));
-            assertNull(msg(sc.checkConstraintExpression("a.at(1)")));
-        }
+        assertNull(msg(sc.checkConstraintExpression("C1.x1.at(1)")));
+        assertNull(msg(sc.checkConstraintExpression("a.at(1)")));
         assertNotNull(msg(sc.checkConstraintExpression("b(1)")));
         assertNull(msg(sc.checkConstraintExpression("min(1)")));
         assertNull(msg(sc.checkConstraintExpression("m1")));
