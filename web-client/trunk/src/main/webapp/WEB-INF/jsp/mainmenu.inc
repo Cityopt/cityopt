@@ -6,7 +6,7 @@
 </tr>
 <tr>
 	<td>
-		<a href="usermanagement.jsp">User management</a>
+		<a href="usermanagement.html">User management</a>
 	</td>
 </tr>
 <tr>
@@ -15,6 +15,11 @@
 <tr>
 	<td>
 		<a href="createproject.html">Create project</a>
+	</td>
+</tr>
+<tr>
+	<td>
+		<a href="editproject.html">Edit project</a>
 	</td>
 </tr>
 <tr>
@@ -33,6 +38,11 @@
 <tr>
 	<td>
 		<a href="createscenario.html">Create scenario</a>
+	</td>
+</tr>
+<tr>
+	<td>
+		<a href="editscenario.html">Edit scenario</a>
 	</td>
 </tr>
 <tr>
