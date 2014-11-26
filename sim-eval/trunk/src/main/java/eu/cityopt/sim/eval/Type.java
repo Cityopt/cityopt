@@ -72,8 +72,8 @@ public enum Type {
 
         @Override
         public boolean isInstance(Object value) {
-            return (value instanceof TimeSeries)
-                    && ((TimeSeries) value).getDegree() == 0;
+            return (value instanceof TimeSeriesI)
+                    && ((TimeSeriesI) value).getDegree() == 0;
         }
 
         @Override
@@ -98,8 +98,8 @@ public enum Type {
 
         @Override
         public boolean isInstance(Object value) {
-            return (value instanceof TimeSeries)
-                    && ((TimeSeries) value).getDegree() == 1;
+            return (value instanceof TimeSeriesI)
+                    && ((TimeSeriesI) value).getDegree() == 1;
         }
 
         @Override

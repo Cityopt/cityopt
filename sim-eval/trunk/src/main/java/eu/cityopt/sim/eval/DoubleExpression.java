@@ -9,17 +9,19 @@ import javax.script.ScriptException;
  * @author Hannu Rummukainen
  */
 public class DoubleExpression {
-    private String source;
-    private CompiledScript script;
+    private final String source;
+    private final Evaluator evaluator;
+    private final CompiledScript script;
 
     DoubleExpression(String source, Evaluator evaluator) throws ScriptException {
         this.source = source;
+        this.evaluator = evaluator;
         this.script = evaluator.getCompiler().compile(source);
     }
 
     public double evaluate(EvaluationContext context) throws ScriptException,
             InvalidValueException {
-        Object o = script.eval(context.toBindings());
+        Object o = evaluator.eval(script, context.toBindings());
         double value;
         if (o instanceof Number) {
             value = ((Number) o).doubleValue();

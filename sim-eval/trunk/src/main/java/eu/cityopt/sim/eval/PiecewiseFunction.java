@@ -30,10 +30,13 @@ public abstract class PiecewiseFunction {
      *             order; when <code>degree</code> is one, non-consecutive
      *             vertical segments are also allowed.
      */
-    public static PiecewiseFunction make(double[] tt, double[] vv, int degree) {
+    public static PiecewiseFunction make(int degree, double[] tt, double[] vv) {
         // Check if the t coordinate sequence is valid.
         // If support for multiple consecutive vertical segments turns out
         // to be needed, we could in principle join such segments here.
+        if (tt.length != vv.length) {
+            throw new IllegalArgumentException("Different number of times and values");
+        }
         double tp = (tt.length > 0) ? tt[0] : 0;
         double tpp = tp - 1;
         for (int i = 1; i < tt.length; ++i) {
@@ -297,7 +300,7 @@ public abstract class PiecewiseFunction {
     public PiecewiseFunction transform(UnaryOperation op) {
         double[] vvo = new double[vv.length];
         op.transform(vv, vvo);
-        return make(tt.clone(), vvo, degree);
+        return make(degree, tt.clone(), vvo);
     }
 
     interface BinaryOperation {
@@ -354,7 +357,7 @@ public abstract class PiecewiseFunction {
 
         op.operate(vvt, vvo);
 
-        return make(ttr, vvo, d);
+        return make(d, ttr, vvo);
     }
 
     protected abstract double[] forCombine(

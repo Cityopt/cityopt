@@ -61,10 +61,13 @@ public class TestTimeSeries {
         double[] vb = new double[] { -4.0, 3.0, -2.0 };
         ep.put("b", evaluator.makeTS(timeSeriesType, tb, vb));
 
+        // Datetime access
         assertEquals(2014, eval("a.datetimes[0].year", ep), delta);
         assertEquals(2, eval("a.datetimes[1].day", ep), delta);
         assertEquals(12, eval("a.datetimes[2].hour", ep), delta);
         assertEquals(1, eval("a.datetimes[2].second", ep), delta);
+
+        // The functions mean, stdev, var, min, max
         if (step) {
             assertEquals(1.00001157394012, eval("a.mean", ep), delta);
             assertEquals(0.00340202971182287, eval("a.stdev", ep), delta);
@@ -81,6 +84,7 @@ public class TestTimeSeries {
         assertEquals(5, eval("a.max", ep), delta);
         assertEquals(5, eval("max(a)", ep), delta);
 
+        // Arithmetic with a scalar constant
         for (int i = 0; i < vb.length; ++i) {
             assertEquals(vb[i], eval("b.values["+i+"]", ep), delta);
             assertEquals(vb[i]+3, eval("(b+3).values["+i+"]", ep), delta);
@@ -93,6 +97,7 @@ public class TestTimeSeries {
             assertEquals(+vb[i], eval("(+b).values["+i+"]", ep), delta);
         }
 
+        // abs function
         assertEquals(Math.abs(vb[0]), eval("abs(b).values[0]", ep), delta);
         assertEquals(tb[0], eval("abs(b).times[0]", ep), delta);
         if (step) {
@@ -117,6 +122,7 @@ public class TestTimeSeries {
             assertEquals(5, eval("len(abs(b).values)", ep), delta);
         }
 
+        // Arithmetic between two time series
         assertEquals(va[0] + vb[0], eval("(a+b).values[0]", ep), delta);
         double f = step ? 0 : (tb[1]-ta[0])/(double)(ta[1]-ta[0]);
         assertEquals((1-f)*va[0] + f*va[1] - vb[1],
@@ -171,6 +177,7 @@ public class TestTimeSeries {
         assertEquals(va[1], eval("(a+b).values[1]", ep), delta);
         assertEquals(-va[1], eval("(b-a).values[1]", ep), delta);
 
+        // Interpolation and integration expressions
         for (int j = 0; j < ta.length; ++j) {
             assertEquals(va[j], eval("a.at("+ta[j]+")[0]", ep), delta);
         }
@@ -189,6 +196,22 @@ public class TestTimeSeries {
         assertEquals((1-f)*va[0] + f*va[1],
                 eval("integrate(a, datetime(2014,1,1,12), "
                         + "datetime(2014,1,2,12), 86400)", ep), delta);
+
+        // Time series constructors
+        assertEquals(2, eval("len(TimeSeries(0, [0.0, 1.0], [2.0, 4.0]).values)", ep), delta);
+        assertEquals(29, eval("sum(TimeSeries(0, [datetime.fromtimestamp(9), "
+                            + "datetime.fromtimestamp(20)], [2.0, 4.0]).times)", ep), delta);
+        String constructor = step ? "step" : "linear";
+        assertEquals(2, eval("len(TimeSeries." + constructor
+                            + "((t, 2*t) for t in [1, 2]).values)", ep), delta);
+        assertEquals(110, eval("sum(TimeSeries."+constructor+"((t, 2*t)"
+                            + " for t in range(1, 11)).values)", ep), delta);
+        int degree = step ? 0 : 1;
+        assertEquals(degree, eval("TimeSeries."+constructor+"((t, 2*t)"
+                + " for t in range(1, 11)).degree", ep), delta);
+        assertEquals(va[0]+va[1]+va[2],
+                eval("sum(TimeSeries."+constructor+"(a.iter()).values)", ep), delta);
+        assertEquals(ta[0]+ta[1]+ta[2], eval("sum(t for t, v in a.iter())", ep), delta);
     }
 
     private double eval(String expression, EvaluationContext context)
@@ -197,25 +220,25 @@ public class TestTimeSeries {
     }
 
     /** Generate subsequences of a time series for testing. */
-    Collection<TimeSeries> generateSubTimeSeries(
+    Collection<TimeSeriesI> generateSubTimeSeries(
             double[] times, double[] values, Type timeSeriesType, int asDegree) {
-        List<TimeSeries> list = new ArrayList<TimeSeries>(); 
+        List<TimeSeriesI> list = new ArrayList<TimeSeriesI>(); 
         for (int i0 = 0; i0 < times.length; ++i0) {
             for (int i1 = i0; i1 < times.length; ++i1) {
                 double[] t = new double[i1 - i0];
                 double[] v = new double[i1 - i0];
                 System.arraycopy(times, i0, t, 0, i1 - i0);
                 System.arraycopy(values, i0, v, 0, i1 - i0);
-                TimeSeries ts = evaluator.makeTS(timeSeriesType, times, values);
+                TimeSeriesI ts = evaluator.makeTS(timeSeriesType, times, values);
                 if (timeSeriesType.getInterpolationDegree() != asDegree) {
                     // Convert a step function to a piecewise linear
                     // representation with vertical segments.
                     if (ts.getValues().length > 0) {
-                        TimeSeries b = evaluator.makeTS(
+                        TimeSeriesI b = evaluator.makeTS(
                                 Type.TIMESERIES_LINEAR,
                                 new double[] { times[0] },
                                 new double[] { 0.0 });
-                        ts = ((TimeSeriesImpl) ts).__add__((TimeSeriesImpl) b);
+                        ts = ((TimeSeries) ts).__add__((TimeSeries) b);
                     }
                 }
                 list.add(ts);
@@ -264,8 +287,8 @@ public class TestTimeSeries {
      * Check if TimeSeries.valuesAt returns correct results.
      * We get baseline results from the inner class SimpleInterpolator.
      */
-    void testInterpolation(Collection<TimeSeries> tss) throws Exception {
-        for (TimeSeries ts : tss)  {
+    void testInterpolation(Collection<TimeSeriesI> tss) throws Exception {
+        for (TimeSeriesI ts : tss)  {
             SimpleInterpolator si = new SimpleInterpolator(ts);
             for (double[] sequence : interpolationSequences) {
                 for (int i0 = 0; i0 < sequence.length; ++i0) {
@@ -288,7 +311,7 @@ public class TestTimeSeries {
     public void interpolateAtVerticalEdge() throws Exception {
         double[] times = new double[] { 0, 1, 1, 2, 4, 4 };
         double[] values = new double[] { 1, 0, 3, 2, 8, 11 };
-        TimeSeries ts = evaluator.makeTS(Type.TIMESERIES_LINEAR, times, values);
+        TimeSeriesI ts = evaluator.makeTS(Type.TIMESERIES_LINEAR, times, values);
         assertArrayEquals(new double[] { 0, 3, 5, 5, 8, 11 },
                 ts.at(new double[] { 1, 1, 3, 3, 4, 4 }), delta);
         assertArrayEquals(new double[] { 3, 5, 11 },
@@ -317,9 +340,9 @@ public class TestTimeSeries {
      * Check if integrate returns correct results.
      * We get baseline results from the inner class SimpleInterpolator.
      */
-    void testIntegration(Collection<TimeSeries> tss) throws Exception {
+    void testIntegration(Collection<TimeSeriesI> tss) throws Exception {
         double[] scales = new double[] { 0, 1, 1000 };
-        for (TimeSeries ts : tss) {
+        for (TimeSeriesI ts : tss) {
             PiecewiseFunction fun = ts.internalFunction();
             SimpleInterpolator si = new SimpleInterpolator(ts);
             for (double[] sequence : interpolationSequences) {
@@ -396,21 +419,21 @@ public class TestTimeSeries {
      * comparing with the sum of SimpleInterpolator results from the
      * two summands.
      */
-    void testSums(Collection<TimeSeries> tss1, Collection<TimeSeries> tss2) {
+    void testSums(Collection<TimeSeriesI> tss1, Collection<TimeSeriesI> tss2) {
         double[] checkTimes = listCheckTimes(sampleTimes, 1);
 
-        for (TimeSeries ts1 : tss1)  {
+        for (TimeSeriesI ts1 : tss1)  {
             SimpleInterpolator si1 = new SimpleInterpolator(ts1);
             double[] si1values = si1.interpolate(checkTimes);
             double end1 = si1.endTime();
 
-            for (TimeSeries ts2 : tss2) {
+            for (TimeSeriesI ts2 : tss2) {
                 SimpleInterpolator si2 = new SimpleInterpolator(ts2);
                 double[] si2values = si2.interpolate(checkTimes);
                 double end2 = si2.endTime();
 
-                TimeSeries sum = ((TimeSeriesImpl) ts1).__add__(
-                        (TimeSeriesImpl) ts2);
+                TimeSeriesI sum = ((TimeSeries) ts1).__add__(
+                        (TimeSeries) ts2);
                 double[] sumValues = sum.at(checkTimes);
 
                 for (int i = 0; i < sumValues.length; ++i) {
@@ -463,7 +486,7 @@ public class TestTimeSeries {
         final double[] values;
         final int degree;
 
-        SimpleInterpolator(TimeSeries ts) {
+        SimpleInterpolator(TimeSeriesI ts) {
             this.times = ts.getTimes().clone();
             this.values = ts.getValues().clone();
             this.degree = ts.getDegree();

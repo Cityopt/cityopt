@@ -12,7 +12,7 @@ import java.util.Arrays;
  * needed to support arithmetic between piecewise functions, and conversion 
  * of step-interpolated functions to linearly interpolated functions.)
  *
- * @see PiecewiseFunction#make(double[], double[], int)
+ * @see PiecewiseFunction#make(int, double[], double[])
  *
  * @author Hannu Rummukainen
  */

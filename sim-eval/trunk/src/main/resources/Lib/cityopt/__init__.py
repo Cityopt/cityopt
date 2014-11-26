@@ -4,10 +4,7 @@ from datetime import datetime
 from array import array
 from eu.cityopt.sim.eval import TimeSeries
 
-from keyword import kwlist
-import ast
-
-__all__ = ['totimestamp', 'integrate',
+__all__ = ['TimeSeries', 'totimestamp', 'integrate',
            'mean', 'stdev', 'var', 'min', 'max']
 
 _epoch = datetime.fromtimestamp(0)

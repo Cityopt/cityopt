@@ -52,7 +52,7 @@ public class SimJob implements Future<SimulationOutput> {
         return out;
     }
 
-    private TimeSeries ts(double value) {
+    private TimeSeriesI ts(double value) {
         return input.getNamespace().evaluator.makeTS( 
                 Type.TIMESERIES_LINEAR, new double[] { 0 }, new double[] { value });
     }

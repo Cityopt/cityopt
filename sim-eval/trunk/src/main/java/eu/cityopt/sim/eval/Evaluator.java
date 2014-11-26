@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.script.Bindings;
 import javax.script.Compilable;
+import javax.script.CompiledScript;
 import javax.script.Invocable;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -28,10 +29,11 @@ import org.python.core.PyObject;
  * Python, the Java implementation of which is provided by the Jython project.
  * <p>
  * Generally all Python/Jython specific code paths go through Evaluator, and
- * elsewhere we use only the Java Scripting API. The TimeSeriesImpl class is a
+ * elsewhere we use only the Java Scripting API. The TimeSeries class is a
  * part of the Python interface and is tightly coupled with Evaluator.
  *
  * @see <a href="http://www.jython.org/">http://www.jython.org/</a>
+ * @see SyntaxChecker
  * 
  * @author Hannu Rummukainen
  */
@@ -51,9 +53,15 @@ public class Evaluator {
             "del pow\n" +
             "from cityopt import *\n";
 
+    /** Points to Evaluator instance when a thread is running Python code. */
+    private static ThreadLocal<Evaluator> activeEvaluator =
+            new ThreadLocal<Evaluator>();
+
     private ScriptEngine engine;
     private PyObject _convertTimestampsToDatetimes;
     private PyObject _convertToTimestamps;
+    private PyObject _convertToTimestamp;
+    private PyObject _izip;
 
     public Evaluator() throws EvaluationException, ScriptException {
         doInitialSetup();
@@ -84,6 +92,9 @@ public class Evaluator {
                 "cityopt._convertTimestampsToDatetimes");
         _convertToTimestamps = (PyObject) engine.eval(
                 "cityopt._convertToTimestamps");
+        _convertToTimestamp = (PyObject) engine.eval(
+                "cityopt._convertToTimestamp");
+        _izip = (PyObject) engine.eval("itertools.izip");
         // TODO: engine.setContext
     }
 
@@ -144,13 +155,13 @@ public class Evaluator {
 
     /**
      * Constructs a time series representation for use in expressions. Instances
-     * of TimeSeries can be put in ExternalParameters and SimulationResults.
+     * of TimeSeriesI can be put in ExternalParameters and SimulationResults.
      *
      * @param type
      *            determines how to interpolate values between the defined
      *            points. Must be Type.TIMESERIES_STEP or
      *            Type.TIMESERIES_LINEAR.
-     * @param timeMillis
+     * @param times
      *            the defined time points, seconds since 1 January 1970 UTC.
      *            Must be in ascending order (but non-consecutive vertical
      *            segments are allowed in linear interpolation). Outside the
@@ -160,24 +171,64 @@ public class Evaluator {
      * @param values
      *            the values at the defined time points. It is recommended to
      *            set the last value of a step function as 0.
-     * @return a TimeSeries implementation that must be used with this Evaluator
+     * @return a TimeSeriesI instance
      */
-    public TimeSeries makeTS(Type type, double[] timeMillis, double[] values) {
-        PiecewiseFunction fun = PiecewiseFunction.make(timeMillis, values,
-                type.getInterpolationDegree());
-        return new TimeSeriesImpl(this, fun);
+    public TimeSeriesI makeTS(Type type, double[] times, double[] values) {
+        return new TimeSeries(PiecewiseFunction.make(
+                type.getInterpolationDegree(), times, values));
     }
 
+    /**
+     * Returns the evaluator running Python code in the current thread.
+     * @throws IllegalStateException if no Python code is being run.
+     */
+    static Evaluator getActiveEvaluator() {
+        Evaluator evaluator = activeEvaluator.get();
+        if (evaluator == null) {
+            throw new IllegalStateException("Expected to be called from Python " +
+                    "code, but there is no active Evaluator in this thread.");
+        }
+        return evaluator;
+    }
+
+    /**
+     * Evaluates a script.
+     * @return result of the script
+     */
     Object eval(String code) throws ScriptException {
-        return engine.eval(code);
+        activeEvaluator.set(this);
+        Object value;
+        try {
+            value = engine.eval(code);
+        } finally {
+            activeEvaluator.set(null);
+        }
+        return value;
     }
 
+    /**
+     * Evaluates a compiled script.  Sets up the context for the CITYOPT
+     * Python support code and then calls CompiledScript.eval.
+     * @return result of the script
+     */
+    Object eval(CompiledScript script, Bindings bindings) throws ScriptException {
+        activeEvaluator.set(this);
+        Object value;
+        try {
+            value = script.eval(bindings);
+        } finally {
+            activeEvaluator.set(null);
+        }
+        return value;
+    }
+
+    /**
+     * Access to the script compiler.  To support all CITYOPT functionality,
+     * please use Evaluator to evaluate any compiled scripts. 
+     * @see #eval(CompiledScript, Bindings)
+     */
     Compilable getCompiler() {
         return (Compilable) engine;
-    }
-
-    Invocable getInvoker() {
-        return (Invocable) engine;
     }
 
     Bindings makeTopLevelBindings() {
@@ -252,8 +303,16 @@ public class Evaluator {
                 Py.javas2pys(new Object[] { times }));
     }
 
-    double[] convertToTimeStamps(PyObject arg) {
+    double[] convertToTimestamps(PyObject arg) {
         PyObject result = _convertToTimestamps.__call__(arg);
         return (double[]) result.__tojava__(double[].class);
+    }
+
+    double convertToTimestamp(PyObject arg) {
+        return _convertToTimestamp.__call__(arg).asDouble();
+    }
+
+    PyObject izip(double[] times, double[] values) {
+        return _izip.__call__(Py.javas2pys(new Object[] { times, values }));
     }
 }

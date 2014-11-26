@@ -148,7 +148,7 @@ public class TestEval {
         CompiledScript script = evaluator.getCompiler().compile("dir(C1)");
         @SuppressWarnings("unchecked")
         ArrayList<String> names = new ArrayList<String>(
-                (List<String>)script.eval(input.toBindings()));
+                (List<String>)evaluator.eval(script, input.toBindings()));
         Collections.sort(names);
         String[] good = {"x5", "x6", "x7", "x8"};
         assertArrayEquals(good, names.toArray());

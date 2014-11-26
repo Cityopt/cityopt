@@ -6,7 +6,7 @@ import java.util.Arrays;
  * Piecewise constant function defined by a sequence of (t, v) points.
  * Between two defined points, the value is defined by the earlier point.
  * 
- * @see PiecewiseFunction#make(double[], double[], int)
+ * @see PiecewiseFunction#make(int, double[], double[])
  *
  * @author Hannu Rummukainen
  */

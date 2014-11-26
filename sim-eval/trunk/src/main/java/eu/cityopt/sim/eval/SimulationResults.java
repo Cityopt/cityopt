@@ -31,8 +31,8 @@ public class SimulationResults extends SimulationOutput implements
     }
 
     /** Gets an output variable time series. */
-    public TimeSeries getTS(String componentName, String outputName) {
-        return (TimeSeries) bindingLayer.get(componentName, outputName);
+    public TimeSeriesI getTS(String componentName, String outputName) {
+        return (TimeSeriesI) bindingLayer.get(componentName, outputName);
     }
 
     /**
