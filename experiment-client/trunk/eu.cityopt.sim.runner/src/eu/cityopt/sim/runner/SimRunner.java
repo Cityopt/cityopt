@@ -7,11 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.cli.*;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.equinox.app.IApplication;
-import org.eclipse.equinox.app.IApplicationContext;
 import org.simantics.simulation.scheduling.Experiment;
 import org.simantics.simulation.scheduling.Job;
 import org.simantics.simulation.scheduling.JobConfiguration;
@@ -31,23 +29,35 @@ import org.simantics.simulation.scheduling.status.StatusWaitingUtils;
 /**
  * This class controls all aspects of the application's execution
  */
-public class SimRunner implements IApplication {
+public class SimRunner implements Callable<Integer> {
     private String
         appname = "simrun",
         dirname = ".",
         profile = "Apros-N3D-5.13.06-64bit",
-        resfile = "results.dat";
+        resfile = "results.dat",
+        files[];
     private int
         cores = 1,
         runs = 1;
 
-    @Override
-    public Object start(IApplicationContext context) throws Exception {
+    public SimRunner(String[] args) {
         //appname = context.getBrandingName();
-        String[] files = parseArgs(Platform.getApplicationArgs());
+        files = parseArgs(args);
+    }
+    
+    public static void main(String[] args) {
+        SimRunner runner = new SimRunner(args);
+        try {
+            System.exit(runner.call());
+        } catch (IOException | InterruptedException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+    
+    @Override
+    public Integer call() throws IOException, InterruptedException {
         if (files == null)
-            //return 1;
-            return IApplication.EXIT_OK;
+            return 1;
         Path fdir = Paths.get(dirname);
         Path pdir = Paths.get(profile);
         String pname = pdir.getFileName().toString();
@@ -77,7 +87,7 @@ public class SimRunner implements IApplication {
             experiment.dispose();
             srv.dispose();
         }
-        return IApplication.EXIT_OK;
+        return 0;
     }
 
     private List<Job> startJobs(
@@ -164,7 +174,4 @@ public class SimRunner implements IApplication {
                 appname + " [options] sequence.scl [data files ...]",
                 opts);
     }
-
-    @Override
-    public void stop() {}
 }
