@@ -111,7 +111,7 @@ public class SimulationModelRepositoryTest {
 		
 	}
 
-		@Test
+	@Test
 	@Rollback(true)
 	public void AssignModelToProject_1() throws IOException {
 
@@ -131,6 +131,33 @@ public class SimulationModelRepositoryTest {
 		assertNotEquals(null,project.getSimulationmodel());
 		
 	}	
+	
+	@Test
+	@Rollback(true)
+	public void AssignModelToProject_2() throws IOException {
+		
+		File tmpModel = File.createTempFile("simModel", ".txt");
+		FileUtils.writeStringToFile(tmpModel, "Hello File");
+
+		byte[] tmpModelarr = Helper.getFileBytes(tmpModel);
+
+		SimulationModel model = new SimulationModel();
+		model.setModelblob(tmpModelarr);
+		model.setSimulator("APROS");
+		model.setDescription("My third model");
+		
+		Project project = new Project();
+		project.setName("Project 10");
+		project.setLocation("Wien");
+		project.setSimulationmodel(model);
+		
+		projectRepository.saveAndFlush(project);
+		
+		assertNotEquals(0,project.getPrjid());
+		assertNotEquals(null,project.getSimulationmodel());
+		
+	}	
+
 	
 	@Test
 	@Rollback(true)
