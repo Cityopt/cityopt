@@ -35,7 +35,11 @@ public class ProjectServiceImpl implements ProjectService{
 	@Transactional
 	public void deleteAll() {
 		projectRepository.deleteAll();
-		
+	}
+	
+	@Transactional
+	public void deleteProject(Project p) {
+		projectRepository.delete(p);
 	}
 	
 	public Project findByID(Integer id) {
