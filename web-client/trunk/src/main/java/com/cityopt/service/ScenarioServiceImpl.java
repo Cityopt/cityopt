@@ -1,0 +1,40 @@
+package com.cityopt.service;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.cityopt.model.AppUser;
+import com.cityopt.model.Scenario;
+import com.cityopt.repository.ScenarioRepository;
+
+@Service("ScenarioService")
+public class ScenarioServiceImpl implements ScenarioService {
+	@Autowired
+	private ScenarioRepository scenarioRepository;
+	
+	public List<Scenario> findAll(){
+		return scenarioRepository.findAll();
+	}
+
+	@Transactional
+	public Scenario save(Scenario s){
+		return scenarioRepository.save(s);
+	}
+	
+	@Transactional
+	public void delete(Scenario s){
+		scenarioRepository.delete(s);
+	}
+
+	public Scenario findByID(Integer id){
+		return scenarioRepository.findOne(id);
+	}
+
+	public List<Scenario> findByCreationDate(Date dateLower, Date dateUpper){
+		return scenarioRepository.findByCreationDate(dateLower, dateUpper);
+	}
+}
