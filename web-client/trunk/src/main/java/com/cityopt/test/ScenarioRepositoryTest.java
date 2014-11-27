@@ -5,6 +5,7 @@ package com.cityopt.test;
 
 import static org.junit.Assert.*;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -116,5 +117,30 @@ public class ScenarioRepositoryTest {
 		List<Scenario> resList = scenarioRepository.findAll();
 		
 		assertFalse(resList.isEmpty());
+	}
+	
+	@Test
+	@Rollback(true)
+	public void findByDate() {
+		
+		Project project = new Project();
+		project.setName("Project 2");
+		project.setLocation("Helsinki");
+		
+		//generate scenario from year 2013
+		Scenario testScenario = new Scenario(); 
+		testScenario.setName(testScenName);
+		testScenario.setDescription(testScenDescription);
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, 2013);
+		testScenario.setCreatedon(cal.getTime());
+		testScenario.setUpdatedon(new Date());
+		testScenario.setProject(project);
+		
+		scenarioRepository.saveAndFlush(testScenario);
+		
+		//scenario from 2013 should not be found
+		List<Scenario> resList = scenarioRepository.findByCreationDate(testScenCreatedon, new Date());
+		assertEquals(resList.size(), 1);
 	}
 }

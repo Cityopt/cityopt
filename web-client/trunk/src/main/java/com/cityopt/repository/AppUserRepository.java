@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.cityopt.model.AppUser;
 
 @Repository("userRepository")
-public interface UserRepository extends JpaRepository<AppUser,Integer> {
+public interface AppUserRepository extends JpaRepository<AppUser,Integer> {
 	@Query("select u from AppUser u where Lower(u.name) like CONCAT('%',Lower(:userName),'%')")
 	List<AppUser> findByUserName(@Param("userName") String userName);
 	

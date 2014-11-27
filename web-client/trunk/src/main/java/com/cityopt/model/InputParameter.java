@@ -5,6 +5,7 @@ package com.cityopt.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -63,7 +64,7 @@ public class InputParameter implements java.io.Serializable {
 		this.inputid = inputid;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
 	@JoinColumn(name = "unidid")
 	public Unit getUnit() {
 		return this.unit;

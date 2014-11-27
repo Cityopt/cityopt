@@ -1,0 +1,53 @@
+package com.cityopt.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.cityopt.model.AppUser;
+import com.cityopt.repository.AppUserRepository;
+
+@Service("AppUserService")
+public class AppUserServiceImpl implements AppUserService {
+	
+	@Autowired
+	private AppUserRepository appuserRepository;
+
+	public AppUserRepository getAppuserRepository() {
+		return appuserRepository;
+	}
+
+	public void setAppuserRepository(AppUserRepository appuserRepository) {
+		this.appuserRepository = appuserRepository;
+	}
+	
+	public List<AppUser> findAll() {
+		return appuserRepository.findAll();
+	}
+
+	@Transactional
+	public AppUser save(AppUser u) {
+		return appuserRepository.save(u);
+	}
+
+	@Transactional
+	public void deleteAll() {
+		appuserRepository.deleteAll();
+	}
+	
+	@Transactional
+	public void delete(AppUser u) {
+		appuserRepository.delete(u);
+	}
+	
+	public AppUser findByID(Integer id) {
+		return appuserRepository.findOne(id);
+	}
+	
+	public List<AppUser> findByUserName(String name) {
+		return appuserRepository.findByUserName(name);
+	}
+	
+}

@@ -5,6 +5,7 @@ package com.cityopt.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -64,7 +65,7 @@ public class Unit implements java.io.Serializable {
 		this.unitid = unitid;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
 	@JoinColumn(name = "typeid")
 	public Type getType() {
 		return this.type;

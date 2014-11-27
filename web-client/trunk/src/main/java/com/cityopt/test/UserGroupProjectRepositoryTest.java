@@ -24,7 +24,7 @@ import com.cityopt.model.UserGroupProject;
 import com.cityopt.repository.ProjectRepository;
 import com.cityopt.repository.UserGroupProjectRepository;
 import com.cityopt.repository.UserGroupRepository;
-import com.cityopt.repository.UserRepository;
+import com.cityopt.repository.AppUserRepository;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -42,7 +42,7 @@ public class UserGroupProjectRepositoryTest {
 	UserGroupRepository userGroupRepository;
 	
 	@Autowired
-	UserRepository userRepository;
+	AppUserRepository userRepository;
 
 	
 	@BeforeClass
