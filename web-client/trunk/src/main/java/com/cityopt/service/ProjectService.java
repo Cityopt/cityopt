@@ -11,6 +11,8 @@ public interface ProjectService {
 	
 	void deleteAll();
 	
+	void deleteProject(Project p);
+	
 	Project findByID(Integer id);
 
 }
