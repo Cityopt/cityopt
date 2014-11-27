@@ -44,6 +44,7 @@ public class Evaluator {
     private static volatile boolean initialSetupDone = false;
 
     private static final String PYTHON_IMPORTS =
+            "from __future__ import division\n" +
             "import __builtin__, math, cmath, itertools\n" +
             "import cityopt, cityopt.syntax\n" +
             "import datetime as _datetime\n" +
