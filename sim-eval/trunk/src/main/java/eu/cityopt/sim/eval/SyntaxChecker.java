@@ -46,11 +46,12 @@ public class SyntaxChecker {
         "pow", "range", "reduce", "reversed", "round", "set", "sorted",
         "str", "sum", "tuple", "xrange", "zip",
         // from the standard math module
-        "acos", "asin", "atan", "atan2", "ceil", "cos", "cosh", "e", "exp",
-        "floor", "hypot", "log", "pi", "sin", "sinh", "sqrt", "tan", "tanh",
+        "acos", "asin", "atan", "atan2", "ceil", "cos", "cosh", "exp",
+        "floor", "hypot", "log", "sin", "sinh", "sqrt", "tan", "tanh",
         // from the standard datetime module
         "datetime", "timedelta",
         // from the cityopt module
+        "DAY_S", "HOUR_S", "MINUTE_S", "TimeSeries",
         "integrate", "mean", "stdev", "totimestamp", "var",
         // module names
         "__builtin__", "math", "cmath", "cityopt", "itertools" 

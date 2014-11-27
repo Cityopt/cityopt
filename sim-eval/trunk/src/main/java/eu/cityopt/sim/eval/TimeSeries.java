@@ -134,56 +134,43 @@ public class TimeSeries implements TimeSeriesI {
     }
 
     /** Constructor for use from Python code */
-    public TimeSeries(int degree, PyObject iterableOrTimeSeries) {
-        if (iterableOrTimeSeries instanceof Iterable) {
-            Evaluator evaluator = Evaluator.getActiveEvaluator();
-            @SuppressWarnings("unchecked")
-            Iterable<Object> iterable = (Iterable<Object>) iterableOrTimeSeries;
-            List<Pair> pairs = new ArrayList<Pair>();
-            for (Object o : iterable) {
-                PyObject p = (PyObject) o;
-                if (p.__len__() != 2) {
-                    throw Py.IndexError("Element is not a pair: " + p.__repr__());
-                }
-                PyObject first = p.__getitem__(0);
-                PyObject second = p.__getitem__(1);
+    public TimeSeries(int degree, Iterable<Object> iterable) {
+        Evaluator evaluator = Evaluator.getActiveEvaluator();
+        List<Pair> pairs = new ArrayList<Pair>();
+        for (Object o : iterable) {
+            PyObject p = (PyObject) o;
+            if (p.__len__() != 2) {
+                throw Py.IndexError("Element is not a pair: " + p.__repr__());
+            }
+            PyObject first = p.__getitem__(0);
+            PyObject second = p.__getitem__(1);
 
-                Pair pair = new Pair();
-                try {
-                    pair.time = first.asDouble();
-                } catch (PyException e) {
-                    pair.time = evaluator.convertToTimestamp(first);
-                }
-                pair.value = second.asDouble();
-                pairs.add(pair);
+            Pair pair = new Pair();
+            try {
+                pair.time = first.asDouble();
+            } catch (PyException e) {
+                pair.time = evaluator.convertToTimestamp(first);
             }
-            int n = pairs.size();
-            double[] times = new double[n];
-            double[] values = new double[n];
-            for (int i = 0; i < n; ++i) {
-                Pair pair = pairs.get(i);
-                times[i] = pair.time;
-                values[i] = pair.value;
-            }
-            this.fun = PiecewiseFunction.make(degree, times, values);
-        } else {
-            Object j = iterableOrTimeSeries.__tojava__(TimeSeries.class);
-            if (j == Py.NoConversion) {
-                throw Py.TypeError("Cannot construct TimeSeries from "
-                        + iterableOrTimeSeries.getType().getName());
-            }
-            TimeSeries timeSeries = (TimeSeries) j;
-            this.fun = PiecewiseFunction.make(
-                    degree, timeSeries.getTimes(), timeSeries.getValues());
+            pair.value = second.asDouble();
+            pairs.add(pair);
         }
+        int n = pairs.size();
+        double[] times = new double[n];
+        double[] values = new double[n];
+        for (int i = 0; i < n; ++i) {
+            Pair pair = pairs.get(i);
+            times[i] = pair.time;
+            values[i] = pair.value;
+        }
+        this.fun = PiecewiseFunction.make(degree, times, values);
     }
 
-    public static TimeSeries step(PyObject iterableOrTimeSeries) {
-        return new TimeSeries(0, iterableOrTimeSeries);
+    public static TimeSeries step(Iterable<Object> iterable) {
+        return new TimeSeries(0, iterable);
     }
 
-    public static TimeSeries linear(PyObject iterableOrTimeSeries) {
-        return new TimeSeries(1, iterableOrTimeSeries);
+    public static TimeSeries linear(Iterable<Object> iterable) {
+        return new TimeSeries(1, iterable);
     }
 
     @Override
@@ -280,6 +267,16 @@ public class TimeSeries implements TimeSeriesI {
         max = fun.sup();
         min = fun.inf();
         statisticsOk = true;
+    }
+
+    public TimeSeries slice(double t0, double t1) {
+        return new TimeSeries(fun.slice(t0, t1));
+    }
+
+    public TimeSeries slice(PyObject t0, PyObject t1) {
+        Evaluator evaluator = Evaluator.getActiveEvaluator();
+        return slice(evaluator.convertToTimestamp(t0),
+                evaluator.convertToTimestamp(t1));
     }
 
     public PyObject iter() {

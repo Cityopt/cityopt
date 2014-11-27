@@ -5,9 +5,14 @@ from array import array
 from eu.cityopt.sim.eval import TimeSeries
 
 __all__ = ['TimeSeries', 'totimestamp', 'integrate',
-           'mean', 'stdev', 'var', 'min', 'max']
+           'mean', 'stdev', 'var', 'min', 'max',
+           'MINUTE_S', 'HOUR_S', 'DAY_S']
 
 _epoch = datetime.fromtimestamp(0)
+
+MINUTE_S = 60
+HOUR_S = 60 * MINUTE_S
+DAY_S = 24 * HOUR_S
 
 def _convertTimestampsToDatetimes(timestamps):
     return [datetime.fromtimestamp(t) for t in timestamps]

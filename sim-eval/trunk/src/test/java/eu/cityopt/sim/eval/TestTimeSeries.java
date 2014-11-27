@@ -212,6 +212,20 @@ public class TestTimeSeries {
         assertEquals(va[0]+va[1]+va[2],
                 eval("sum(TimeSeries."+constructor+"(a.iter()).values)", ep), delta);
         assertEquals(ta[0]+ta[1]+ta[2], eval("sum(t for t, v in a.iter())", ep), delta);
+
+        // Slicing
+        assertEquals(0, eval("len(a.slice(0, 1).values)", ep), delta);
+        assertEquals(1, eval("len(a.slice("+ta[0]+", "+ta[0]+").values)", ep), delta);
+        assertEquals(va[0], eval("a.slice("+ta[0]+", "+ta[0]+").values[0]", ep), delta);
+        assertEquals(2, eval("len(a.slice(datetime(2014,1,1,12), "+ta[1]+").values)", ep), delta);
+        assertEquals(va[0]+va[1], eval(
+                "sum(a.slice(datetime(2014,1,1,12), datetime(2014,1,2,12)).values)", ep), delta);
+        assertEquals(3, eval("len(a.slice("+(ta[0]+sec)+", "
+                                    +(ta[1]+0.5*sec)+").values)", ep), delta);
+        f = step ? 0.0 : 0.375;
+        assertEquals((1-f)*va[0] + f*va[1],
+                eval("mean(a.slice("+(0.75*ta[0]+0.25*ta[1])+", "
+                                +(0.5*ta[0]+0.5*ta[1])+"))", ep), delta);
     }
 
     private double eval(String expression, EvaluationContext context)
@@ -284,7 +298,7 @@ public class TestTimeSeries {
     }
 
     /**
-     * Check if TimeSeries.valuesAt returns correct results.
+     * Check if TimeSeries.at returns correct results.
      * We get baseline results from the inner class SimpleInterpolator.
      */
     void testInterpolation(Collection<TimeSeriesI> tss) throws Exception {
@@ -420,7 +434,7 @@ public class TestTimeSeries {
      * two summands.
      */
     void testSums(Collection<TimeSeriesI> tss1, Collection<TimeSeriesI> tss2) {
-        double[] checkTimes = listCheckTimes(sampleTimes, 1);
+        double[] checkTimes = listNearbyTimes(sampleTimes, 1);
 
         for (TimeSeriesI ts1 : tss1)  {
             SimpleInterpolator si1 = new SimpleInterpolator(ts1);
@@ -460,7 +474,11 @@ public class TestTimeSeries {
         }
     }
 
-    static double[] listCheckTimes(double[] times, double offset) {
+    /**
+     * Given an array 'times', returns an ordered array containing
+     * t, t-offset and t+offset for each t in times.
+     */
+    static double[] listNearbyTimes(double[] times, double offset) {
         SortedSet<Double> set = new TreeSet<Double>();
 
         for (double t : times) {
@@ -475,6 +493,63 @@ public class TestTimeSeries {
             tt[i++] = t;
         }
         return tt;
+    }
+
+    @Test
+    public void sliceAtVerticalEdge() throws Exception {
+        double[] times = new double[] { 0, 1, 1, 2, 4, 4 };
+        double[] values = new double[] { 1, 0, 3, 2, 8, 11 };
+        TimeSeries ts = (TimeSeries) evaluator.makeTS(Type.TIMESERIES_LINEAR, times, values);
+        assertArrayEquals(new double[] { 0, 1, 1 }, ts.slice(0, 1).getTimes(), delta);
+        assertArrayEquals(new double[] { 1, 0, 3 }, ts.slice(0, 1).getValues(), delta);
+        assertArrayEquals(new double[] { 1, 2, 3 }, ts.slice(1, 3).getTimes(), delta);
+        assertArrayEquals(new double[] { 3, 2, 5 }, ts.slice(1, 3).getValues(), delta);
+        assertArrayEquals(times, ts.slice(0, 4).getTimes(), delta);
+        assertArrayEquals(values, ts.slice(0, 4).getValues(), delta);
+    }
+
+    @Test
+    public void slice_step() throws Exception {
+        testSlicing(generateSubTimeSeries(
+                sampleTimes, sampleValues, Type.TIMESERIES_STEP, 0));
+    }
+
+    @Test
+    public void slice_linear() throws Exception {
+        testSlicing(generateSubTimeSeries(
+                sampleTimes, sampleValues, Type.TIMESERIES_LINEAR, 1));
+    }
+
+    @Test
+    public void slice_linearFromStep() throws Exception {
+        testSlicing(generateSubTimeSeries(
+                sampleTimes, sampleValues, Type.TIMESERIES_STEP, 1));
+    }
+
+    /**
+     * Check if TimeSeries.slice returns correct results.
+     * We get baseline results by interpolating with SimpleInterpolator.
+     */
+    void testSlicing(Collection<TimeSeriesI> tss) throws Exception {
+        for (TimeSeriesI ts : tss)  {
+            SimpleInterpolator si = new SimpleInterpolator(ts);
+            double[] sliceTimes = listNearbyTimes(ts.getTimes(), 1);
+            double[] checkTimes = listNearbyTimes(sliceTimes, 1);
+            for (int i0 = 0; i0 < sliceTimes.length; ++i0) {
+                double t0 = sliceTimes[i0];
+                for (int i1 = i0; i1 < sliceTimes.length; ++i1) {
+                    double t1 = sliceTimes[i1];
+                    TimeSeriesI slice = ((TimeSeries) ts).slice(t0, t1);
+                    double[] vi = slice.at(checkTimes);
+
+                    for (int i = 0; i < checkTimes.length; ++i) {
+                        double t = checkTimes[i];
+                        double v = (t0 <= t && t <= t1) ? si.interpolate(t) : 0.0;
+                        assertEquals(v, vi[i], delta);
+                    }
+                }
+            }
+        }
     }
 
     /**

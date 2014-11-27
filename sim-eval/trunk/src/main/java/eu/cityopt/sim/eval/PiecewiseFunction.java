@@ -139,6 +139,8 @@ public abstract class PiecewiseFunction {
     protected abstract double[] interpolate(
             int ii, double[] at, double[] vvo, int io0, int io1);
 
+    protected abstract double interpolateOnSegment(int i0, double t);
+
     /**
      * Integral over the interval [t0, t1].
      * 
@@ -175,61 +177,21 @@ public abstract class PiecewiseFunction {
                 double tx = t0; t0 = t1; t1 = tx; //swap
             }
             // Locate the first non-vertical segment on the integration
-            // interval, and point i to the segment startpoint.
-            // Adjust t0 to lie on the segment.
-            int i0;
+            // interval, and point i0 to the segment startpoint.
+            t0 = Math.max(t0, tt[0]);
             int bs0 = Arrays.binarySearch(tt, t0);
-            if (bs0 >= 0) {
-                // t0 is at a defined point
-                i0 = lastEqual(tt, bs0);
-                if (i0 == n-1) {
-                    return 0.0;
-                }
-            } else {
-                int bp0 = ~bs0;
-                if (bp0 == 0) {
-                    // t0 is before the first defined point
-                    t0 = tt[0];
-                    i0 = 0;
-                } else if (bp0 == n) {
-                    // t0 is after the last defined point
-                    return 0.0;
-                } else {
-                    // t0 is between two defined points
-                    i0 = bp0 - 1;
-                }
+            int i0 = (bs0 >= 0) ? lastEqual(tt, bs0) : ~bs0 - 1;
+            if (i0 >= n-1) {
+                return 0.0;
             }
+
             // Locate the last non-vertical segment of the integration interval,
             // and point i1 to the segment startpoint.
-            // Adjust t1 to lie on the segment.
-            int i1;
+            t1 = Math.min(t1, tt[n-1]);
             int bs1 = Arrays.binarySearch(tt, i0, n, t1);
-            if (bs1 >= 0) {
-                // t1 is at a defined point
-                i1 = firstEqual(tt, bs1);
-                if (i1 == 0) {
-                    return 0.0;
-                } else {
-                    --i1;
-                }
-            } else {
-                int bp1 = ~bs1;
-                if (bp1 == 0) {
-                    // t1 is before the first defined point
-                    return 0.0;
-                } else if (bp1 == n) {
-                    // t1 is after the last defined point
-                    t1 = tt[n - 1];
-                    i1 = firstEqual(tt, n - 1);
-                    if (i1 == 0) {
-                        return 0.0;
-                    } else {
-                        --i1;
-                    }
-                } else {
-                    // t1 is between two defined points
-                    i1 = bp1 - 1;
-                }
+            int i1 = (bs1 >= 0) ? firstEqual(tt, bs1) - 1 : ~bs1 - 1;
+            if (i1 < 0) {
+                return 0.0;
             }
 
             assert t0 <= t1 && i0 <= i1;
@@ -285,6 +247,56 @@ public abstract class PiecewiseFunction {
      * @return a piecewise function of the same type as this function
      */
     public abstract PiecewiseFunction abs();
+
+    /**
+     * Limits the domain of the function to the given interval.
+     * @return a piecewise function of the same type as this function
+     */
+    public PiecewiseFunction slice(double t0, double t1) {
+        if (t0 > t1) {
+            throw new IllegalArgumentException(
+                    "Invalid slice: start "+t0+" greater than end "+t1);
+        }
+        int n = tt.length;
+        if (n == 0 || t0 > tt[n-1] || t1 < tt[0]) {
+            return make(degree, new double[0], new double[0]);
+        }
+
+        // Point i0 to the start point of the segment defining the right value at t0.
+        t0 = Math.max(t0, tt[0]);
+        int bs0 = Arrays.binarySearch(tt, t0);
+        int i0 = (bs0 >= 0) ? lastEqual(tt, bs0) : ~bs0 - 1;
+        assert tt[i0] <= t0 && (i0 == n-1 || t0 < tt[i0+1]);
+        double v0 = (i0 == n-1) ? vv[i0] : interpolateOnSegment(i0, t0);
+
+        // Point i1 to the start point of the segment defining the left value at t1.
+        t1 = Math.min(t1, tt[n-1]);
+        if (t0 == t1) {
+            return make(degree, new double[] { t0 }, new double[] { v0 } );
+        }
+        int bs1 = Arrays.binarySearch(tt, i0, n, t1);
+        int i1 = (bs1 >= 0) ? lastEqual(tt, bs1) - 1 : ~bs1 - 1;
+        assert (tt[i1] < t1 && t1 <= tt[i1+1]) || (tt[i1] == t1 && t1 == tt[i1+1]);
+        assert t0 < t1 && i0 <= i1;
+        double v1 = (t1 == tt[i1+1]) ? vv[i1+1] : interpolateOnSegment(i1, t1);
+
+        int ni = i1 - i0;
+        int no = ni + 2;
+        double[] tto = new double[no];
+        double[] vvo = new double[no];
+        int o = 0;
+        tto[o] = t0;
+        vvo[o] = v0;
+        ++o;
+        System.arraycopy(tt, i0+1, tto, o, ni);
+        System.arraycopy(vv, i0+1, vvo, o, ni);
+        o += ni;
+        tto[o] = t1;
+        vvo[o] = v1;
+        ++o;
+        assert o == no;
+        return make(degree, tto, vvo);
+    }
 
     interface UnaryOperation {
         /** Compute operation on source, writing result in target. */

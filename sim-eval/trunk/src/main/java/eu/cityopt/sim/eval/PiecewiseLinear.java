@@ -30,6 +30,15 @@ public class PiecewiseLinear extends PiecewiseFunction {
     }
 
     @Override
+    protected double interpolateOnSegment(int i0, double t) {
+        double t0 = tt[i0];
+        double v0 = vv[i0];
+        double t1 = tt[i0+1];
+        double v1 = vv[i0+1];
+        return interpolate(t0, t1, v0, v1, t);
+    }
+
+    @Override
     protected double[] interpolate(int ii,
             double[] at, double[] vvo, int io0, int io1) {
         int ni = tt.length;

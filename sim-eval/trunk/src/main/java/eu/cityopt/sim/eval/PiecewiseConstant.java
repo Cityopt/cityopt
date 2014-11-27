@@ -17,6 +17,12 @@ public class PiecewiseConstant extends PiecewiseFunction {
     }
 
     @Override
+    protected double interpolateOnSegment(int i0, double t) {
+        assert tt[i0] <= t && (i0 == tt.length-1 || t <= tt[i0+1]);
+        return vv[i0];
+    }
+
+    @Override
     protected double[] interpolate(
             int ii, double[] at, double[] vvo, int io0, int io1) {
         int ni = tt.length;
