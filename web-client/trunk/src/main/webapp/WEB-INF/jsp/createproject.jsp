@@ -1,4 +1,6 @@
+<%--@elvariable id="projectForm" type="com.cityopt.controller.ProjectForm"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -7,7 +9,7 @@
 </head>
 <body>
 <%@ include file="mainmenu.inc"%>
-<form>
+<form:form method="post" action="editproject.html?action=create" modelAttribute="projectForm">
 <table style="width:900px">
 	<tr><td><h2>Project definition</h2></td></tr>
 	<tr>
@@ -15,31 +17,31 @@
 			<table>
 				<tr>
 					<td>Project name:</td>
-					<td><input type="text" id="projectname"></td>
+					<td><form:input type="text" path="projectName"/></td>
 				</tr>
 				<tr>						
 					<td>Location:</td>
-					<td><input type="text" id="location"></td>
+					<td><form:input type="text" path="location"/></td>
 				</tr>
 				<tr>						
 					<td>Project creator:</td>
-					<td><input type="text" id="creator"></td>
+					<td><form:input type="text" path="projectCreator"/></td>
 				</tr>
 				<tr>						
 					<td>Date:</td>
-					<td><input type="text" id="date"></td>
+					<td><form:input type="text" path="date"/></td>
 				</tr>
 				<tr>						
 					<td>Description:</td>
-					<td><textarea type="text" rows="3" id="description"></textarea></td>
+					<td><form:textarea type="text" rows="3" path="description"></form:textarea></td>
 				</tr>
 				<tr>						
 					<td>Energy model:</td>
-					<td><input type="text" id="energymodel"></td>
+					<td><form:input type="text" path="energyModel"/></td>
 				</tr>
 				<tr>						
 					<td></td>
-					<td><input type="button" id="upload" value="Upload"></td>
+					<td><input type="button" id="upload" value="Upload"/></td>
 				</tr>
 			</table>
 		</td>
@@ -49,7 +51,7 @@
 	</tr>
 	<tr>
 		<td colspan="2" align="Right">
-			<input type="button" value="Upload diagram">
+			<input type="button" id="uploadDiagram" value="Upload diagram"/>
 		</td>
 	</tr>
 	<tr>
@@ -71,13 +73,13 @@
 				<tr>
 					<td>GIS Coordinates</td>
 					<td><input type="button" value="Set" style="width:150px"></td>
-					<td align="right"><input type="button" value="Create a project" style="width:150px"></td>
+					<td align="right"><input type="submit" value="Create a project" style="width:150px"></td>
 				</tr>
 			</table>
 		</td>
 		
 	</tr>
 </table>
-</form>
+</form:form>
 </body>
 </html>

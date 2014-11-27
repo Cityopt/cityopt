@@ -1,6 +1,8 @@
 package com.cityopt.controller;
 
+import java.awt.Desktop.Action;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,18 +10,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cityopt.model.Project;
-import com.cityopt.model.Scenario;
 import com.cityopt.service.ProjectService;
-import com.pluralsight.model.GoalReport;
 
 
 
 @Controller
 public class ProjectController {
 
+	ProjectForm projectForm;
+	ProjectForm newProjectForm;
+	Project project;
+	
 	@Autowired
 	ProjectService projectService; 
 
@@ -27,42 +30,92 @@ public class ProjectController {
 	//ScenarioService scenarioService; 
 
 	@RequestMapping(value="getProjects",method=RequestMethod.GET)
-	public String getGoalReports(Model model){
+	public String getGoalReports(Model model) {
 		List<Project> projects = projectService.findAllProjects();
 		model.addAttribute("projects",projects);
 		
 		return "getProjects";
 	}	
 
-	@RequestMapping(value="createproject",method=RequestMethod.GET)
-	public String getCreateProject(Model model){
-	
+	@RequestMapping(value="createproject", method=RequestMethod.GET)
+	public String getCreateProject(Map<String, Object> model) {
+		newProjectForm = new ProjectForm();
+		model.put("projectForm", newProjectForm);
 		return "createproject";
 	}
 
 	@RequestMapping(value="createscenario",method=RequestMethod.GET)
-	public String getCreateScenario(Model model){
+	public String getCreateScenario(Model model) {
 	
 		return "createscenario";
 	}
 
 	@RequestMapping(value="openproject", method=RequestMethod.GET)
-	public String getStringProjects(Model model, @RequestParam(value="prjid", required=false) String prjid)
+	public String getStringProjects(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid)
 	{
 		List<Project> projects = projectService.findAllProjects();
-		model.addAttribute("projects",projects);
+		model.put("projects", projects);
 	
 		if (prjid != null)
 		{
-			Project project = projectService.findByID(Integer.parseInt(prjid));
+			project = projectService.findByID(Integer.parseInt(prjid));
+			
+			projectForm = new ProjectForm();
+			projectForm.setProjectName(project.getName());
+			projectForm.setProjectCreator("" + project.getCreatedby());
+			projectForm.setLocation(project.getLocation());
+			//projectForm.setDate(project.getCreatedon().toString());
+			//projectForm.setDescription(project.getName());
+			
+			model.put("projectForm", projectForm);
+			
 			return "editproject";
 		}
 		
 		return "openproject";
 	}	
 
+	@RequestMapping(value="editproject", method=RequestMethod.GET)
+	public String getEditProject(Map<String, Object> model) {
+		if (projectForm == null)
+		{
+			projectForm = new ProjectForm();
+		}
+		
+		model.put("projectForm", projectForm);
+		return "editproject";
+	}
+
+	@RequestMapping(value="editproject", method=RequestMethod.POST)
+	public String getEditProjectPost(ProjectForm form, Map<String, Object> model, 
+		@RequestParam(value="action", required=false) String action) {
+		newProjectForm = form;
+		
+		if (newProjectForm != null && action != null)
+		{
+			projectForm = newProjectForm;
+
+			if (action.equals("create"))
+			{
+				project = new Project();
+				project.getPrjid();
+				project.setName(projectForm.getProjectName());
+				//	...
+			}
+			else if (action.equals("update"))
+			{
+			}
+			
+			project.setName(projectForm.getProjectName());
+			projectService.save(project);
+		}
+		
+		model.put("projectForm", projectForm);
+		return "editproject";
+	}
+
 	@RequestMapping(value="index",method=RequestMethod.GET)
-	public String getIndex(Model model){
+	public String getIndex(Model model) {
 	
 		return "index";
 	}
@@ -79,12 +132,6 @@ public class ProjectController {
 		model.addAttribute("projects",projects);
 	
 		return "deleteproject";
-	}
-
-	@RequestMapping(value="editproject",method=RequestMethod.GET)
-	public String getEditProject(Model model){
-	
-		return "editproject";
 	}
 
 	@RequestMapping(value="openscenario",method=RequestMethod.GET)

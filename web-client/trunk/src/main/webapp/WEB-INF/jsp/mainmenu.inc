@@ -19,12 +19,12 @@
 </tr>
 <tr>
 	<td>
-		<a href="editproject.html">Edit project</a>
+		<a href="openproject.html">Open project</a>
 	</td>
 </tr>
 <tr>
 	<td>
-		<a href="openproject.html">Open project</a>
+		<a href="editproject.html">Edit project</a>
 	</td>
 </tr>
 <tr>
@@ -42,13 +42,13 @@
 </tr>
 <tr>
 	<td>
+		<a href="openscenario.html">Open scenario</a>
+	</td></tr>
+<tr>
+	<td>
 		<a href="editscenario.html">Edit scenario</a>
 	</td>
 </tr>
-<tr>
-	<td>
-		<a href="openscenario.html">Open scenario</a>
-	</td></tr>
 <tr>
 	<td>
 		<a href="deletescenario.html">Delete scenario</a>
