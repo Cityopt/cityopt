@@ -127,10 +127,16 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="deleteproject",method=RequestMethod.GET)
-	public String getDeleteProject(Model model){
+	public String getDeleteProject(Model model, @RequestParam(value="prjid", required=false) String prjid){
+		if (prjid != null)
+		{
+			Project tempProject = projectService.findByID(Integer.parseInt(prjid));
+			projectService.deleteProject(tempProject);
+		}
+
 		List<Project> projects = projectService.findAllProjects();
 		model.addAttribute("projects",projects);
-	
+
 		return "deleteproject";
 	}
 

@@ -10,69 +10,66 @@
 </head>
 
 <body>
-<%@ include file="mainmenu.inc"%>
+<table cellspacing="0px" cellpadding="0px">
+	<tr>
+		<td>
+			<%@ include file="mainmenu.inc"%>
+		</td>
+		<td width=30></td>
+		<td>
 
 <%
 	//ArrayList<Book> b = new ArrayList<Book>();
 	//b = SqlSentencesList.showCatalog(); // this method returns an arrayList with all books
 %>
+			
+			<div style="overflow:scroll;height:500px;width:600px;overflow:auto">
+			<form method="get" action="OpenScenarioController">
+			<h2>Open scenario</h2>
+			<table class="tablestyle" width="400" border="1">
+			
+				<tr height="20">
+				    <th>Name</th>
+				    <th>User</th>
+				    <th>Description</th>
+				    <th>Creation date</th>
+				    <th>Setting</th>
+				    <th>Run</th>
+				    <th>Open</th>
+				</tr>
+				
+				<tr height="20">
+				    <td>scenario 1</td>
+				    <td>x</td>
+				    <td>x</td>
+				    <td>x</td>
+				    <td>x</td>
+				    <td>x</td>
+				    				    <td> <a href="<c:url value='openscenario.html?prjid=${project.prjid}'/>">
+							<button align="right" type="button" value="Open">Open</button>
+						</a>
+					</td>
 
-<div style="overflow:scroll;height:400px;width:500px;overflow:auto">
-<form method="get" action="OpenScenarioController">
-<h2>Open scenario</h2>
-<table class="tablestyle" width="400" border="1">
-
-<tr height="20">
-    <th>Name</th>
-    <th>User</th>
-    <th>Description</th>
-    <th>Creation date</th>
-    <th>Setting</th>
-    <th>Run</th>
-    <th>Open</th>
-</tr>
-
-<tr height="20">
-    <td>scenario 1</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td> <input type="radio"/> </td>
-</tr>
-
-<tr height="20">
-    <td>scenario 2</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td> <input type="radio"/> </td>
-</tr>
-
-<% //for(int i=0; i<l.size();i++) {%>
-<!--    <tr>
-        <td> <%//out.print(b.get(i).getIsbn());%> </td>
-        <td> <%//out.print(b.get(i).getTitle());%> </td>
-        <td> <%//out.print(b.get(i).getAuthor());%> </td>
-        <td> <%//out.print(b.get(i).getPrice());%> </td>
-        <td> <!-- <input type="radio" name="project" value="<%//Integer.toString(i);%>"/>--> </td>
-    <!-- </tr>-->
-<% //} %>
-</table>
-
-<table width="400">
-
-<tr>
-	<td align="right">
-		<input align="right" type="submit" value="Open scenario"/>
-    </td>
-</tr>
-      
-</table>
-</form>
-</div>
+				</tr>
+				
+				<tr height="20">
+				    <td>scenario 2</td>
+				    <td>x</td>
+				    <td>x</td>
+				    <td>x</td>
+				    <td>x</td>
+				    <td>x</td>
+				    <td> <a href="<c:url value='openscenario.html?prjid=${project.prjid}'/>">
+							<button align="right" type="button" value="Open">Open</button>
+						</a>
+					</td>
+				</tr>
+			</table>
+			
+			</form>
+			</div>
+		</td>
+    </tr>
+</table>	  
 </body>
 </html>
