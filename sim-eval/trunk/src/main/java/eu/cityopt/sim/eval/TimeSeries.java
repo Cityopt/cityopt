@@ -1,6 +1,7 @@
 package eu.cityopt.sim.eval;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -206,13 +207,6 @@ public class TimeSeries implements TimeSeriesI {
         return fun;
     }
 
-    /** Returns a brief human-readable overview of the time series. */
-    @Override
-    public String toString() {
-        return String.format(Locale.ROOT, "{ length = %d, mean = %g, stdev = %g }",
-                fun.vv.length, getMean(), getStdev());
-    }
-
     public Object getDatetimes() throws Throwable {
         if (datetimes == null) {
             datetimes = Evaluator.getActiveEvaluator()
@@ -277,6 +271,23 @@ public class TimeSeries implements TimeSeriesI {
         Evaluator evaluator = Evaluator.getActiveEvaluator();
         return slice(evaluator.convertToTimestamp(t0),
                 evaluator.convertToTimestamp(t1));
+    }
+
+    /** Returns a brief human-readable overview of the time series. */
+    @Override
+    public String toString() {
+        return String.format(Locale.ROOT,
+                "{ degree = %d, length = %d, mean = %g, stdev = %g }",
+                getDegree(), fun.vv.length, getMean(), getStdev());
+    }
+
+    public String __str__() {
+        return __repr__();
+    }
+
+    public String __repr__() {
+        return "TimeSeries(" + getDegree() + ", " + Arrays.toString(getTimes())
+                + ", " + Arrays.toString(getValues()) + ")";
     }
 
     public PyObject iter() {
@@ -350,11 +361,127 @@ public class TimeSeries implements TimeSeriesI {
                 }));
     }
 
+    public TimeSeries __floordiv__(double a) {
+        return new TimeSeries(fun.transform(
+                (double[] u, double[] v) -> {
+                    for (int i = 0; i < u.length; ++i) {
+                        v[i] = Math.floor(u[i] / a);
+                    }
+                }));
+    }
+
+    public TimeSeries __rfloordiv__(double a) {
+        return new TimeSeries(fun.transform(
+                (double[] u, double[] v) -> {
+                    for (int i = 0; i < u.length; ++i) {
+                        v[i] = Math.floor(a / u[i]);
+                    }
+                }));
+    }
+
+    public TimeSeries __floordiv__(TimeSeries other) {
+        return new TimeSeries(fun.combine(other.fun,
+                (double[] u, double[] v) -> {
+                    for (int i = 0; i < u.length; ++i) {
+                        v[i] = Math.floor(u[i] / v[i]);
+                    }
+                }));
+    }
+
+    private static final double modulo(double x, double y) {
+        double z = Math.IEEEremainder(x, y);
+        return (z * y < 0) ? z + y : z;
+    }
+
+    public TimeSeries __mod__(double a) {
+        return new TimeSeries(fun.transform(
+                (double[] u, double[] v) -> {
+                    for (int i = 0; i < u.length; ++i) {
+                        v[i] = modulo(u[i], a); 
+                    }
+                }));
+    }
+
+    public TimeSeries __rmod__(double a) {
+        return new TimeSeries(fun.transform(
+                (double[] u, double[] v) -> {
+                    for (int i = 0; i < u.length; ++i) {
+                        v[i] = modulo(a, u[i]); 
+                    }
+                }));
+    }
+
+    public TimeSeries __mod__(TimeSeries other) {
+        return new TimeSeries(fun.combine(other.fun,
+                (double[] u, double[] v) -> {
+                    for (int i = 0; i < u.length; ++i) {
+                        v[i] = modulo(u[i], v[i]); 
+                    }
+                }));
+    }
+
+    public TimeSeries __div__(double a) {
+        return __floordiv__(a);
+    }
+
+    public TimeSeries __rdiv__(double a) {
+        return __rfloordiv__(a);
+    }
+
+    public TimeSeries __div__(TimeSeries other) {
+        return __floordiv__(other);
+    }
+
+    public TimeSeries __truediv__(double a) {
+        return new TimeSeries(fun.transform(
+                (double[] u, double[] v) -> {
+                    for (int i = 0; i < u.length; ++i) {
+                        v[i] = u[i] / a;
+                    }
+                }));
+    }
+
+    public TimeSeries __rtruediv__(double a) {
+        return new TimeSeries(fun.transform(
+                (double[] u, double[] v) -> {
+                    for (int i = 0; i < u.length; ++i) {
+                        v[i] = a / u[i];
+                    }
+                }));
+    }
+
+    public TimeSeries __truediv__(TimeSeries other) {
+        return new TimeSeries(fun.combine(other.fun,
+                (double[] u, double[] v) -> {
+                    for (int i = 0; i < u.length; ++i) {
+                        v[i] = u[i] / v[i];
+                    }
+                }));
+    }
+
     public TimeSeries __pow__(double a) {
         return new TimeSeries(fun.transform(
                 (double[] u, double[] v) -> {
                     for (int i = 0; i < u.length; ++i) {
                         v[i] = Math.pow(u[i],  a);
+                    }
+                }));
+    }
+
+    public TimeSeries __rpow__(double a) {
+        return new TimeSeries(fun.transform(
+                (double[] u, double[] v) -> {
+                    for (int i = 0; i < u.length; ++i) {
+                        v[i] = Math.pow(a, u[i]);
+                    }
+                }));
+    }
+
+    public TimeSeries __pow__(TimeSeries other) {
+        return new TimeSeries(fun.combine(other.fun,
+                (double[] u, double[] v) -> {
+                    for (int i = 0; i < u.length; ++i) {
+                        v[i] = Math.pow(u[i],  v[i]);
                     }
                 }));
     }

@@ -93,6 +93,18 @@ public class TestTimeSeries {
             assertEquals(3-vb[i], eval("(3-b).values["+i+"]", ep), delta);
             assertEquals(vb[i]*3, eval("(b*3).values["+i+"]", ep), delta);
             assertEquals(3*vb[i], eval("(3*b).values["+i+"]", ep), delta);
+            assertEquals(Math.pow(3, vb[i]), eval("(3**b).values["+i+"]", ep), delta);
+            assertEquals(Math.pow(vb[i], 3), eval("(b**3).values["+i+"]", ep), delta);
+            assertEquals(Math.pow(vb[i], 3), eval("pow(b, 3).values["+i+"]", ep), delta);
+            assertEquals(3/vb[i], eval("(3/b).values["+i+"]", ep), delta);
+            assertEquals(vb[i]/3, eval("(b/3).values["+i+"]", ep), delta);
+            assertEquals(Math.floor(3/vb[i]), eval("(3//b).values["+i+"]", ep), delta);
+            assertEquals(Math.floor(vb[i]/3), eval("(b//3).values["+i+"]", ep), delta);
+            // Python modulo operator satisfies x == (x//y)*y + (x%y)
+            assertEquals(0, eval("(3-(3//b)*b-3%b).values["+i+"]", ep), delta);
+            assertEquals(0, eval("(b-(b//3)*3-b%3).values["+i+"]", ep), delta);
+            assertEquals(0, eval("(-3-((-3)//b)*b-(-3)%b).values["+i+"]", ep), delta);
+            assertEquals(0, eval("(b-(b//(-3))*(-3)-b%(-3)).values["+i+"]", ep), delta);
             assertEquals(-vb[i], eval("(-b).values["+i+"]", ep), delta);
             assertEquals(+vb[i], eval("(+b).values["+i+"]", ep), delta);
         }
@@ -150,6 +162,12 @@ public class TestTimeSeries {
             assertEquals(ta[1], eval("(a*b).times[3]", ep), delta);
             assertEquals(ta[2], eval("(a+b).times[4]", ep), delta);
         }
+
+        assertEquals(Math.pow(va[0], vb[0]), eval("(a**b).values[0]", ep), delta);
+        assertEquals(va[0]/vb[0], eval("(a/b).values[0]", ep), delta);
+        assertEquals(Math.floor(va[0]/vb[0]), eval("(a//b).values[0]", ep), delta);
+        // Python modulo operator satisfies x == (x//y)*y + (x%y)
+        assertEquals(0, eval("max(abs(a-(a//b)*b-a%b))", ep), delta);
 
         tb = new double[] { t0 + day + sec/2, t0 + day + sec*3/4 };
         vb = new double[] { -5.0, -6.0 };
