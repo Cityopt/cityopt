@@ -80,8 +80,6 @@ public class SimRunner implements Callable<Integer> {
             Experiment experiment = srv.createExperiment(
                     new HashMap<String, String>());
 
-            //TODO
-
             waitJobs(startJobs(experiment, pname, files[0], mdir));
 
             experiment.dispose();
@@ -116,7 +114,7 @@ public class SimRunner implements Callable<Integer> {
         for(int i = 0; i != runs; ++i) {
             Job job = jobs.get(i);
             JobFinished st = StatusWaitingUtils.waitFor(job);
-            System.out.printf("Job %i: %s\n", i, st);
+            System.out.printf("Job %d: %s\n", i, st);
             IDirectory resdir = st.outputDirectory;
             for (Map.Entry<String, IFile> kv : resdir.files().entrySet()) {
                 kv.getValue().writeTo(
