@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -80,82 +82,119 @@
     </script>
 </head>
 <body>
-<%@include file='mainmenu.inc'%>
-<table>
-   	<tr>
-      	<td valign="top">
-      		<table>
-      			<tr>
-      				<td><h2>User definition</h2></td>
-   				</tr>
-      			<tr>
-      			   	<td>
-	      			   	<table class="tablestyle" border="1">
-				      		<tr>
-				      			<th>Name</th>
-				      			<th>Company</th>
-				      			<th>User name</th>
-				      			<th>Password</th>
-				      			<th>Email</th>
-				      			<th>User role</th>
-				      			<th>Start rights</th>
-				      			<th>Finish projects</th>
-				      			<th>Project</th>
-				   			</tr>
-				      		<tr>
-				      			<td>x</td>
-				      			<td>x</td>
-				      			<td>x</td>
-				      			<td>x</td>
-				      			<td>x</td>
-				      			<td>x</td>
-				      			<td>x</td>
-				      			<td>x</td>
-				      			<td>x</td>
-				   			</tr>
+<table cellspacing="0" cellpadding="0">
+	<tr>
+		<td>
+			<%@include file='mainmenu.inc'%>
+		</td>
+		<td width="30"></td>
+		<td valign="top">
+			<table>
+			   	<tr>
+			      	<td valign="top">
+			      		<table>
+			      			<tr>
+			      				<td><h2>User definition</h2></td>
+			   				</tr>
+			      			<tr>
+			      			   	<td>
+				      			   	<table class="tablestyle" border="1">
+							      		<tr>
+							      			<th>Name</th>
+							      			<th>Company</th>
+							      			<th>User name</th>
+							      			<th>Password</th>
+							      			<th>Email</th>
+							      			<th>User role</th>
+							      			<th>Start rights</th>
+							      			<th>Finish projects</th>
+							      			<th>Project</th>
+							      			<th>Edit</th>
+							      			<th>Delete</th>
+							   			</tr>
+							      		<tr>
+							      			<td>x</td>
+							      			<td>x</td>
+							      			<td>x</td>
+							      			<td>x</td>
+							      			<td>x</td>
+							      			<td>x</td>
+							      			<td>x</td>
+							      			<td>x</td>
+							      			<td>x</td>
+			   								<td>
+												<a href="<c:url value='edit.html'/>">
+													<button align="right" type="button" value="Edit">Edit</button>
+												</a>
+											</td>
+			   								<td>
+												<a href="<c:url value='deleteuser.html'/>">
+													<button align="right" type="button" value="Delete">Delete</button>
+												</a>
+											</td>
+							      			
+							   			</tr>
+							   			
+							   				<c:forEach items="${userGroups}" var="userGroups">
+												<tr>
+													<td>${userGroups.name}</td>
+											    	<td>${userGroups.usergroupid}</td>
+													<td></td>			
+													<td></td>
+													<td>
+													</td>
+											   	</tr>
+											</c:forEach>
+						
+							      	</table>
+					      		</td>
+					      	</tr>
+					      	<tr height="0">
+					      		<td></td>
+					      	</tr>
+							<tr>
+								<td align="right">
+				      				<a href="createuser.html"><button type="button">Create user</button></a>
+			      				</td>
+			   				</tr>
+			      			      	<!-- <tr width="600" valign="bottom">
+					      		<table valign="top" width="400" align="right">
+							    <ul id="tabs">
+							      <li><a href="#about">About JavaScript tabs</a></li>
+							      <li><a href="#advantages">Advantages of tabs</a></li>
+							      <li><a href="#usage">Using tabs</a></li>
+							    </ul>
+							
+							    <div width="400" class="tabContent" id="about">
+							      <h2>About JavaScript tabs</h2>
+							      <div width="400">
+							        <p>JavaScript tabs partition your Web page content into tabbed sections. Only one section at a time is visible.</p>
+							        <p>The code is written in such a way that the page degrades gracefully in browsers that don't support JavaScript or CSS.</p>
+							      </div>
+							    </div>
+							
+							    <div width="400" class="tabContent" id="advantages">
+							      <h2>Advantages of tabs</h2>
+							      <div width="400">
+							        <p>JavaScript tabs are great if your Web page contains a large amount of content.</p>
+							        <p>They're also good for things like multi-step Web forms.</p>
+							      </div>
+							    </div>
+							
+							    <div width="400" class="tabContent" id="usage">
+							      <h2>Using tabs</h2>
+							      <div width="400">
+							        <p>Click a tab to view the tab's content. Using tabs couldn't be easier!</p>
+							      </div>
+							    </div>
+							    </table>
+				      		</tr>-->
 				      	</table>
-		      		</td>
-		      	</tr>
-				<tr>
-					<td align="right">
-	      				<input type="submit" value="Create"><input type="submit" value="Edit"><input type="submit" value="Delete">
-      				</td>
-   				</tr>
-      			      	<!-- <tr width="600" valign="bottom">
-		      		<table valign="top" width="400" align="right">
-				    <ul id="tabs">
-				      <li><a href="#about">About JavaScript tabs</a></li>
-				      <li><a href="#advantages">Advantages of tabs</a></li>
-				      <li><a href="#usage">Using tabs</a></li>
-				    </ul>
-				
-				    <div width="400" class="tabContent" id="about">
-				      <h2>About JavaScript tabs</h2>
-				      <div width="400">
-				        <p>JavaScript tabs partition your Web page content into tabbed sections. Only one section at a time is visible.</p>
-				        <p>The code is written in such a way that the page degrades gracefully in browsers that don't support JavaScript or CSS.</p>
-				      </div>
-				    </div>
-				
-				    <div width="400" class="tabContent" id="advantages">
-				      <h2>Advantages of tabs</h2>
-				      <div width="400">
-				        <p>JavaScript tabs are great if your Web page contains a large amount of content.</p>
-				        <p>They're also good for things like multi-step Web forms.</p>
-				      </div>
-				    </div>
-				
-				    <div width="400" class="tabContent" id="usage">
-				      <h2>Using tabs</h2>
-				      <div width="400">
-				        <p>Click a tab to view the tab's content. Using tabs couldn't be easier!</p>
-				      </div>
-				    </div>
-				    </table>
-	      		</tr>-->
-	      	</table>
-      	</td>
-   	</tr>
+			      	</td>
+			   	</tr>
+			</table>
+		</td>
+	</tr>
 </table>
 </body>
 </html>

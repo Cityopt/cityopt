@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cityopt.model.Project;
+import com.cityopt.model.Scenario;
+import com.cityopt.model.UserGroup;
 import com.cityopt.service.ProjectService;
+import com.cityopt.service.ScenarioService;
+import com.cityopt.service.UserGroupService;
 
 
 
@@ -22,12 +26,18 @@ public class ProjectController {
 	ProjectForm projectForm;
 	ProjectForm newProjectForm;
 	Project project;
+	UserForm userForm;
+	Scenario scenario;
+	Scenario newScenario;
 	
 	@Autowired
 	ProjectService projectService; 
 
-	//@Autowired
-	//ScenarioService scenarioService; 
+	@Autowired
+	UserGroupService userGroupService;
+	
+	@Autowired
+	ScenarioService scenarioService; 
 
 	@RequestMapping(value="getProjects",method=RequestMethod.GET)
 	public String getGoalReports(Model model) {
@@ -45,8 +55,9 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="createscenario",method=RequestMethod.GET)
-	public String getCreateScenario(Model model) {
-	
+	public String getCreateScenario(Map<String, Object> model) {
+		newScenario = new Scenario();
+		model.put("scenario", newScenario);
 		return "createscenario";
 	}
 
@@ -141,7 +152,20 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="openscenario",method=RequestMethod.GET)
-	public String getOpenScenario (Model model){
+	public String getOpenScenario (Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid)
+	{
+		List<Scenario> scenarios = scenarioService.findAll();
+		model.put("scenarios", scenarios);
+	
+		if (scenarioid != null)
+		{
+			scenario = scenarioService.findByID(Integer.parseInt(scenarioid));
+			
+			model.put("scenario", scenario);
+			
+			return "editscenario";
+		}
+
 		//List<Scenario> scenarios = scenarioService.findAllScenarios();
 		//model.addAttribute("scenarios",scenarios);
 	
@@ -149,26 +173,89 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="editscenario",method=RequestMethod.GET)
-	public String getEditScenario (Model model){
-		//List<Scenario> scenarios = scenarioService.findAllScenarios();
-		//model.addAttribute("scenarios",scenarios);
-	
+	public String getEditScenario (Map<String, Object> model){
+		model.put("scenario", scenario);
+		
 		return "editscenario";
 	}
 
+	@RequestMapping(value="editscenario",method=RequestMethod.POST)
+	public String getEditScenarioPost(Scenario newScenario, Map<String, Object> model, 
+		@RequestParam(value="action", required=false) String action) {
+
+		if (project != null && newScenario != null && action != null)
+		{
+			scenario = newScenario;
+			
+			scenario.setProject(project);
+			
+			if (action.equals("create"))
+			{
+				//scenario = new Scenario();
+				//scenario.getPrjid();
+				//scenario.setName(scenario.getProjectName());
+				//	...
+			}
+			else if (action.equals("update"))
+			{
+			}
+			
+			scenarioService.save(scenario);
+		}
+		else
+		{
+			//project null
+		}
+			
+		model.put("scenario", scenario);
+		return "editscenario";
+	}
+	
 	@RequestMapping(value="deletescenario",method=RequestMethod.GET)
-	public String getDeleteScenario (Model model){
+	public String getDeleteScenario(Model model, @RequestParam(value="scenarioid", required=false) String scenarioid){
 		//List<Scenario> scenarios = scenarioService.findAllScenarios();
 		//model.addAttribute("scenarios",scenarios);
 	
+		if (scenarioid != null)
+		{
+			Scenario tempScenario = scenarioService.findByID(Integer.parseInt(scenarioid));
+			scenarioService.delete(tempScenario);
+		}
+
+		List<Scenario> scenarios = scenarioService.findAll();
+		model.addAttribute("scenarios", scenarios);
+
 		return "deletescenario";
 	}
 
 	
 	@RequestMapping(value="usermanagement",method=RequestMethod.GET)
 	public String getUserManagement(Model model){
+		List<UserGroup> userGroups = userGroupService.findAll();
+		model.addAttribute("userGroups", userGroups);
 	
 		return "usermanagement";
+	}
+
+	@RequestMapping(value="createuser",method=RequestMethod.GET)
+	public String getCreateUser(Map<String, Object> model) {
+		userForm = new UserForm();
+		model.put("userForm", userForm);
+	
+		return "createuser";
+	}
+
+	@RequestMapping(value="createuser", method=RequestMethod.POST)
+	public String getCreateUserPost(UserForm userForm, Map<String, Object> model) {
+		//User user = new User();
+		
+		return "createuser";
+	}
+
+	@RequestMapping(value="edituser",method=RequestMethod.GET)
+	public String getEditUser(Model model) {
+	
+		return "edituser";
 	}
 
 	@RequestMapping(value="viewchart",method=RequestMethod.GET)

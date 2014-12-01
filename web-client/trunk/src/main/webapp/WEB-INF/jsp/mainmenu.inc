@@ -9,6 +9,11 @@
 		<a href="usermanagement.html">User management</a>
 	</td>
 </tr>
+<tr height=10>
+	<td>
+		<!--<img src="assets/img/line.png">-->
+	</td>
+</tr>
 <tr>
 	<td><b>Project</b></td>
 </tr>
@@ -30,6 +35,11 @@
 <tr>
 	<td>
 		<a href="deleteproject.html">Delete project</a>
+	</td>
+</tr>
+<tr height=10>
+	<td>
+		
 	</td>
 </tr>
 <tr>
@@ -57,10 +67,20 @@
 	<td>
 		<a href="runmultiscenario.html">Run multi-scenario</a>
 	</td></tr>
+<tr height=10>
+	<td>
+		
+	</td>
+</tr>
 <tr>
 	<td>
 		<a href="metricdefinition.html">Metric definition</a>
 	</td></tr>
+<tr height=10>
+	<td>
+		
+	</td>
+</tr>
 <tr>
 	<td><b>Optimization set</b></td>
 </tr>
@@ -84,6 +104,11 @@
 	<td>
 		<a href="runmultioptimizationset.html">Run multi-optimization set</a>
 	</td></tr>
+<tr height=10>
+	<td>
+		
+	</td>
+</tr>
 <tr>
 	<td><b>Visualization</b></td>
 </tr>
