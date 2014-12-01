@@ -13,6 +13,8 @@ import java.nio.file.SimpleFileVisitor;
  * The directory (including all contents) is automatically deleted on close.
  */
 public class TempDir implements Closeable {
+    private boolean isClosed;
+    
     /// Path to the temporary directory.
     final public Path path;
     
@@ -24,11 +26,15 @@ public class TempDir implements Closeable {
      */
     public TempDir(String prefix) throws IOException {
         path = Files.createTempDirectory(prefix);
+        isClosed = false;
     }
 
     /// Delete the directory and its contents.
     @Override
     public void close() throws IOException {
+        if (isClosed)
+            return;
+        isClosed = true;
         // Copied from the Javadoc of FileVisitor.
         Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
             @Override
