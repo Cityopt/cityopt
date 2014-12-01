@@ -14,14 +14,6 @@ public class AppUserServiceImpl implements AppUserService {
 	
 	@Autowired
 	private AppUserRepository appuserRepository;
-
-	public AppUserRepository getAppuserRepository() {
-		return appuserRepository;
-	}
-
-	public void setAppuserRepository(AppUserRepository appuserRepository) {
-		this.appuserRepository = appuserRepository;
-	}
 	
 	public List<AppUser> findAll() {
 		return appuserRepository.findAll();
@@ -48,6 +40,10 @@ public class AppUserServiceImpl implements AppUserService {
 	
 	public List<AppUser> findByUserName(String name) {
 		return appuserRepository.findByUserName(name);
+	}
+	
+	public AppUser authenticateUser(String name, String password) {
+		return appuserRepository.authenticateUser(name, password);
 	}
 	
 }

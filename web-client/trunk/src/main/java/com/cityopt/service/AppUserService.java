@@ -19,5 +19,7 @@ public interface AppUserService {
 	AppUser findByID(Integer id);
 
 	List<AppUser> findByUserName(String name);
+	
+	AppUser authenticateUser(String name, String password);
 
 }
