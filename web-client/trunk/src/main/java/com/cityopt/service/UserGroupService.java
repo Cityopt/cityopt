@@ -2,8 +2,6 @@ package com.cityopt.service;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import com.cityopt.model.UserGroup;
 
 public interface UserGroupService {

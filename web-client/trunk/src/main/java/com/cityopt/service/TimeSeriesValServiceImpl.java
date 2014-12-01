@@ -1,0 +1,36 @@
+package com.cityopt.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.cityopt.model.TimeSeriesVal;
+import com.cityopt.repository.TimeSeriesValRepository;
+
+@Service("TimeSeriesValService")
+public class TimeSeriesValServiceImpl implements TimeSeriesValService {
+	
+	@Autowired
+	private TimeSeriesValRepository timeSeriesValRepository;
+	
+	public List<TimeSeriesVal> findAll() {
+		return timeSeriesValRepository.findAll();
+	}
+
+	@Transactional
+	public TimeSeriesVal save(TimeSeriesVal u) {
+		return timeSeriesValRepository.save(u);
+	}
+
+	@Transactional
+	public void delete(TimeSeriesVal u) {
+		timeSeriesValRepository.delete(u);
+	}
+	
+	public TimeSeriesVal findByID(Integer id) {
+		return timeSeriesValRepository.findOne(id);
+	}
+	
+}

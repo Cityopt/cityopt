@@ -3,8 +3,6 @@ package com.cityopt.service;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.cityopt.model.Scenario;
 
 public interface ScenarioService {
