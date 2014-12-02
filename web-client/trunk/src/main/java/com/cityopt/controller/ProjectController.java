@@ -41,7 +41,7 @@ public class ProjectController {
 
 	@RequestMapping(value="getProjects",method=RequestMethod.GET)
 	public String getGoalReports(Model model) {
-		List<Project> projects = projectService.findAllProjects();
+		List<Project> projects = projectService.findAll();
 		model.addAttribute("projects",projects);
 		
 		return "getProjects";
@@ -64,7 +64,7 @@ public class ProjectController {
 	@RequestMapping(value="openproject", method=RequestMethod.GET)
 	public String getStringProjects(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid)
 	{
-		List<Project> projects = projectService.findAllProjects();
+		List<Project> projects = projectService.findAll();
 		model.put("projects", projects);
 	
 		if (prjid != null)
@@ -142,10 +142,10 @@ public class ProjectController {
 		if (prjid != null)
 		{
 			Project tempProject = projectService.findByID(Integer.parseInt(prjid));
-			projectService.deleteProject(tempProject);
+			projectService.delete(tempProject);
 		}
 
-		List<Project> projects = projectService.findAllProjects();
+		List<Project> projects = projectService.findAll();
 		model.addAttribute("projects",projects);
 
 		return "deleteproject";

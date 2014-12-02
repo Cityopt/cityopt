@@ -101,7 +101,7 @@ public class UserGroupProjectRepositoryTest {
 		
 		userGroupProjectRepository.saveAndFlush(usergroupproject);
 		
-		assertNotEquals(0, usergroupproject.getUsergroupprojectid());
+		assertNotEquals((Integer) 0, usergroupproject.getUsergroupprojectid());
 	}
 	
 	
@@ -132,7 +132,7 @@ public class UserGroupProjectRepositoryTest {
 		//Cascade is enable!
 		userGroupProjectRepository.saveAndFlush(usergroupproject);
 		
-		assertNotEquals(0, usergroupproject.getUsergroupprojectid());
+		assertNotEquals((Integer) 0, usergroupproject.getUsergroupprojectid());
 	}
 	
 	@Test

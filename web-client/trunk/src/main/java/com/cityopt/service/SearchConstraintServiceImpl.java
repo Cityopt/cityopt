@@ -10,13 +10,17 @@ import com.cityopt.model.SearchConstraint;
 import com.cityopt.repository.SearchConstraintRepository;
 
 @Service("SearchConstraintService")
-public class SearchConstraintServiceImpl implements SearchConstrintService {
+public class SearchConstraintServiceImpl implements SearchConstraintService {
 	
 	@Autowired
 	private SearchConstraintRepository searchConstraintRepository;
 	
 	public List<SearchConstraint> findAll() {
 		return searchConstraintRepository.findAll();
+	}
+	
+	public SearchConstraint findByID(Integer id) {
+		return searchConstraintRepository.findOne(id);
 	}
 
 	@Transactional
@@ -25,12 +29,24 @@ public class SearchConstraintServiceImpl implements SearchConstrintService {
 	}
 
 	@Transactional
-	public void delete(SearchConstraint u) {
+	public void delete(SearchConstraint u) throws EntityNotFoundException {
+		
+		if(searchConstraintRepository.findOne(u.getScid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		searchConstraintRepository.delete(u);
 	}
 	
-	public SearchConstraint findByID(Integer id) {
-		return searchConstraintRepository.findOne(id);
+	@Transactional
+	public SearchConstraint update(SearchConstraint toUpdate) throws EntityNotFoundException {
+		
+		if(searchConstraintRepository.findOne(toUpdate.getScid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
+	
 	
 }

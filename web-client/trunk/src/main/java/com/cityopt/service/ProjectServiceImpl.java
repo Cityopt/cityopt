@@ -23,7 +23,7 @@ public class ProjectServiceImpl implements ProjectService{
 		this.projectRepository = projectRepository;
 	}
 
-	public List<Project> findAllProjects() {
+	public List<Project> findAll() {
 		return projectRepository.findAll();
 	}
 
@@ -38,14 +38,26 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 	
 	@Transactional
-	public void deleteProject(Project p) {
+	public void delete(Project p) throws EntityNotFoundException {
+		
+		if(projectRepository.findOne(p.getPrjid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		projectRepository.delete(p);
+	}
+	
+	@Transactional
+	public Project update(Project toUpdate) throws EntityNotFoundException {
+		
+		if(projectRepository.findOne(toUpdate.getPrjid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 	
 	public Project findByID(Integer id) {
 		return projectRepository.findOne(id);
 	}
-	
-	
-
 }

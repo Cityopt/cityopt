@@ -30,8 +30,23 @@ public class AppUserServiceImpl implements AppUserService {
 	}
 	
 	@Transactional
-	public void delete(AppUser u) {
+	public void delete(AppUser u) throws EntityNotFoundException {
+		
+		if(appuserRepository.findOne(u.getUserid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		appuserRepository.delete(u);
+	}
+	
+	@Transactional
+	public AppUser update(AppUser toUpdate) throws EntityNotFoundException {
+		
+		if(appuserRepository.findOne(toUpdate.getUserid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 	
 	public AppUser findByID(Integer id) {

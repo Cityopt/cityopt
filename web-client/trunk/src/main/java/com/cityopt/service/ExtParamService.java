@@ -10,7 +10,9 @@ public interface ExtParamService {
 
 	ExtParam save(ExtParam u);
 
-	void delete(ExtParam u);
+	void delete(ExtParam u) throws EntityNotFoundException;
+	
+	ExtParam update(ExtParam toUpdate) throws EntityNotFoundException;
 
 	ExtParam findByID(Integer id);
 

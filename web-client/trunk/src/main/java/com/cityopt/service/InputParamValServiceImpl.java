@@ -25,8 +25,23 @@ public class InputParamValServiceImpl implements InputParamValService {
 	}
 
 	@Transactional
-	public void delete(InputParamVal u) {
+	public void delete(InputParamVal u) throws EntityNotFoundException {
+		
+		if(inputParamValRepository.findOne(u.getScendefinitionid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		inputParamValRepository.delete(u);
+	}
+	
+	@Transactional
+	public InputParamVal update(InputParamVal toUpdate) throws EntityNotFoundException {
+		
+		if(inputParamValRepository.findOne(toUpdate.getScendefinitionid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 	
 	public InputParamVal findByID(Integer id) {

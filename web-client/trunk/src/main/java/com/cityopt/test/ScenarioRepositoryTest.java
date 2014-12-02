@@ -16,13 +16,19 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cityopt.model.Project;
 import com.cityopt.model.Scenario;
 import com.cityopt.repository.ProjectRepository;
 import com.cityopt.repository.ScenarioRepository;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 /**
  * @author MayerhoferM
@@ -31,6 +37,11 @@ import com.cityopt.repository.ScenarioRepository;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/test-context.xml" })
 @Transactional
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+    DirtiesContextTestExecutionListener.class,
+    TransactionalTestExecutionListener.class,
+    DbUnitTestExecutionListener.class })
+@DatabaseSetup("classpath:/testData.xml")
 public class ScenarioRepositoryTest {
 	
 	@Autowired
@@ -49,21 +60,21 @@ public class ScenarioRepositoryTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		scenarioRepository.deleteAll();
-		projectRepository.deleteAll();
-		
-		Project project = new Project();
-		project.setName("Project 1");
-		project.setLocation("Vienna");
-		
-		Scenario testScenario = new Scenario(); 
-		testScenario.setName(testScenName);
-		testScenario.setDescription(testScenDescription);
-		testScenario.setCreatedon(testScenCreatedon);
-		testScenario.setUpdatedon(new Date());
-		testScenario.setProject(project);
-		
-		scenarioRepository.saveAndFlush(testScenario);
+//		scenarioRepository.deleteAll();
+//		projectRepository.deleteAll();
+//		
+//		Project project = new Project();
+//		project.setName("Project 1");
+//		project.setLocation("Vienna");
+//		
+//		Scenario testScenario = new Scenario(); 
+//		testScenario.setName(testScenName);
+//		testScenario.setDescription(testScenDescription);
+//		testScenario.setCreatedon(testScenCreatedon);
+//		testScenario.setUpdatedon(new Date());
+//		testScenario.setProject(project);
+//		
+//		scenarioRepository.saveAndFlush(testScenario);
 	}
 
 	/**

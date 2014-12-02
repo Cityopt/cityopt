@@ -25,8 +25,23 @@ public class ObjectiveFunctionServiceImpl implements ObjectiveFunctionService {
 	}
 
 	@Transactional
-	public void delete(ObjectiveFunction u) {
+	public void delete(ObjectiveFunction u) throws EntityNotFoundException {
+		
+		if(objectiveFunctionRepository.findOne(u.getObtfunctionid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		objectiveFunctionRepository.delete(u);
+	}
+	
+	@Transactional
+	public ObjectiveFunction update(ObjectiveFunction toUpdate) throws EntityNotFoundException {
+		
+		if(objectiveFunctionRepository.findOne(toUpdate.getObtfunctionid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 	
 	public ObjectiveFunction findByID(Integer id) {

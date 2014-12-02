@@ -25,8 +25,23 @@ public class ExtParamValServiceImpl implements ExtParamValService {
 	}
 
 	@Transactional
-	public void delete(ExtParamVal u) {
+	public void delete(ExtParamVal u) throws EntityNotFoundException {
+		
+		if(extParamValRepository.findOne(u.getExtparamvalid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		extParamValRepository.delete(u);
+	}
+	
+	@Transactional
+	public ExtParamVal update(ExtParamVal toUpdate) throws EntityNotFoundException {
+		
+		if(extParamValRepository.findOne(toUpdate.getExtparamvalid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 	
 	public ExtParamVal findByID(Integer id) {

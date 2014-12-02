@@ -25,8 +25,23 @@ public class MetricServiceImpl implements MetricService {
 	}
 
 	@Transactional
-	public void delete(Metric u) {
+	public void delete(Metric u) throws EntityNotFoundException {
+		
+		if(metricRepository.findOne(u.getMetid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		metricRepository.delete(u);
+	}
+	
+	@Transactional
+	public Metric update(Metric toUpdate) throws EntityNotFoundException {
+		
+		if(metricRepository.findOne(toUpdate.getMetid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 	
 	public Metric findByID(Integer id) {

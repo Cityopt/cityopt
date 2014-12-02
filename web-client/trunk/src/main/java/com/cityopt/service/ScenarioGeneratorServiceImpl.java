@@ -25,8 +25,23 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 	}
 
 	@Transactional
-	public void delete(ScenarioGenerator u) {
+	public void delete(ScenarioGenerator u) throws EntityNotFoundException {
+		
+		if(scenarioGeneratorRepository.findOne(u.getScengenid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		scenarioGeneratorRepository.delete(u);
+	}
+	
+	@Transactional
+	public ScenarioGenerator update(ScenarioGenerator toUpdate) throws EntityNotFoundException {
+		
+		if(scenarioGeneratorRepository.findOne(toUpdate.getScengenid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 	
 	public ScenarioGenerator findByID(Integer id) {

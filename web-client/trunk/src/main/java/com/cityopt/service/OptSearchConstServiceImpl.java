@@ -25,8 +25,23 @@ public class OptSearchConstServiceImpl implements OptSearchConstService {
 	}
 
 	@Transactional
-	public void delete(OptSearchConst u) {
+	public void delete(OptSearchConst u) throws EntityNotFoundException {
+		
+		if(optSearchConstRepository.findOne(u.getOptsearchconstid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		optSearchConstRepository.delete(u);
+	}
+	
+	@Transactional
+	public OptSearchConst update(OptSearchConst toUpdate) throws EntityNotFoundException {
+		
+		if(optSearchConstRepository.findOne(toUpdate.getOptsearchconstid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 	
 	public OptSearchConst findByID(Integer id) {

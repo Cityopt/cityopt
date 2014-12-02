@@ -10,7 +10,9 @@ public interface ExtParamValScenGenService {
 
 	ExtParamValScenGen save(ExtParamValScenGen u);
 
-	void delete(ExtParamValScenGen u);
+	void delete(ExtParamValScenGen u) throws EntityNotFoundException;
+	
+	ExtParamValScenGen update(ExtParamValScenGen toUpdate) throws EntityNotFoundException;
 
 	ExtParamValScenGen findByID(Integer id);
 

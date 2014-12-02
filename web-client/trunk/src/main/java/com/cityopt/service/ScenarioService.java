@@ -5,16 +5,8 @@ import java.util.List;
 
 import com.cityopt.model.Scenario;
 
-public interface ScenarioService {
-
-	List<Scenario> findAll();
-
-	Scenario save(Scenario s);
-
-	void delete(Scenario s);
-
-	Scenario findByID(Integer id);
-
+public interface ScenarioService extends CityOptService<Scenario>{
+	
 	List<Scenario> findByCreationDate(Date dateLower, Date dateUpper);
 
 }

@@ -25,8 +25,23 @@ public class UnitServiceImpl implements UnitService {
 	}
 
 	@Transactional
-	public void delete(Unit u) {
+	public void delete(Unit u) throws EntityNotFoundException {
+		
+		if(unitRepository.findOne(u.getUnitid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		unitRepository.delete(u);
+	}
+	
+	@Transactional
+	public Unit update(Unit toUpdate) throws EntityNotFoundException {
+		
+		if(unitRepository.findOne(toUpdate.getUnitid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 	
 	public Unit findByID(Integer id) {

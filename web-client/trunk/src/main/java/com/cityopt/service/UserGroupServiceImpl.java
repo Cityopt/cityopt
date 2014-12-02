@@ -20,6 +20,10 @@ public class UserGroupServiceImpl implements UserGroupService {
 		return userGroupRepository.findAll();
 	}
 	
+	public UserGroup findByID(Integer id) {
+		return userGroupRepository.findOne(id);
+	}
+	
 	public List<UserGroup> findByGroupName(String userGroupName) {
 		return userGroupRepository.findByGroupName(userGroupName);
 	}
@@ -35,8 +39,22 @@ public class UserGroupServiceImpl implements UserGroupService {
 	}
 	
 	@Transactional
-	public void delete(UserGroup userGroup) {
+	public void delete(UserGroup userGroup) throws EntityNotFoundException {
+		
+		if(userGroupRepository.findOne(userGroup.getUsergroupid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		userGroupRepository.delete(userGroup);
 	}
 
+	@Transactional
+	public UserGroup update(UserGroup toUpdate) throws EntityNotFoundException {
+		
+		if(userGroupRepository.findOne(toUpdate.getUsergroupid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
+	}
 }

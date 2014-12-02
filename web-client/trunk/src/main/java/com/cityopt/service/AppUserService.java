@@ -4,17 +4,9 @@ import java.util.List;
 
 import com.cityopt.model.AppUser;
 
-public interface AppUserService {
-
-	List<AppUser> findAll();
-
-	AppUser save(AppUser u);
+public interface AppUserService extends CityOptService<AppUser>{
 
 	void deleteAll();
-
-	void delete(AppUser u);
-
-	AppUser findByID(Integer id);
 
 	List<AppUser> findByUserName(String name);
 	

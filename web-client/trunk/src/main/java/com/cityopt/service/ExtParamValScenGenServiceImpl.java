@@ -25,8 +25,23 @@ public class ExtParamValScenGenServiceImpl implements ExtParamValScenGenService 
 	}
 
 	@Transactional
-	public void delete(ExtParamValScenGen u) {
+	public void delete(ExtParamValScenGen u) throws EntityNotFoundException {
+		
+		if(extParamValScenGenRepository.findOne(u.getId()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		extParamValScenGenRepository.delete(u);
+	}
+	
+	@Transactional
+	public ExtParamValScenGen update(ExtParamValScenGen toUpdate) throws EntityNotFoundException {
+		
+		if(extParamValScenGenRepository.findOne(toUpdate.getId()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 	
 	public ExtParamValScenGen findByID(Integer id) {

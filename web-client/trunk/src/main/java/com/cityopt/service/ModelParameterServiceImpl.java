@@ -25,8 +25,23 @@ public class ModelParameterServiceImpl implements ModelParameterService {
 	}
 
 	@Transactional
-	public void delete(ModelParameter u) {
+	public void delete(ModelParameter u) throws EntityNotFoundException {
+		
+		if(modelParameterRepository.findOne(u.getModelparamid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		modelParameterRepository.delete(u);
+	}
+	
+	@Transactional
+	public ModelParameter update(ModelParameter toUpdate) throws EntityNotFoundException {
+		
+		if(modelParameterRepository.findOne(toUpdate.getModelparamid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 	
 	public ModelParameter findByID(Integer id) {

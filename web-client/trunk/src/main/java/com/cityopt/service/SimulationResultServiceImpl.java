@@ -25,8 +25,23 @@ public class SimulationResultServiceImpl implements SimulationResultService {
 	}
 
 	@Transactional
-	public void delete(SimulationResult u) {
+	public void delete(SimulationResult u) throws EntityNotFoundException {
+		
+		if(simulationResultRepository.findOne(u.getScenresid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		simulationResultRepository.delete(u);
+	}
+	
+	@Transactional
+	public SimulationResult update(SimulationResult toUpdate) throws EntityNotFoundException {
+		
+		if(simulationResultRepository.findOne(toUpdate.getScenresid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 	
 	public SimulationResult findByID(Integer id) {

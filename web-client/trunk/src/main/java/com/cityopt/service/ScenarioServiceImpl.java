@@ -25,8 +25,23 @@ public class ScenarioServiceImpl implements ScenarioService {
 	}
 	
 	@Transactional
-	public void delete(Scenario s){
+	public void delete(Scenario s) throws EntityNotFoundException {
+		
+		if(scenarioRepository.findOne(s.getScenid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		scenarioRepository.delete(s);
+	}
+	
+	@Transactional
+	public Scenario update(Scenario toUpdate) throws EntityNotFoundException {
+		
+		if(scenarioRepository.findOne(toUpdate.getScenid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 
 	public Scenario findByID(Integer id){

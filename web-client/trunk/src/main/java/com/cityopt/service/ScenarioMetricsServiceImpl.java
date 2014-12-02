@@ -25,8 +25,23 @@ public class ScenarioMetricsServiceImpl implements ScenarioMetricsService {
 	}
 
 	@Transactional
-	public void delete(ScenarioMetrics u) {
+	public void delete(ScenarioMetrics u) throws EntityNotFoundException {
+		
+		if(scenarioMetricsRepository.findOne(u.getScenmetricid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		scenarioMetricsRepository.delete(u);
+	}
+	
+	@Transactional
+	public ScenarioMetrics update(ScenarioMetrics toUpdate) throws EntityNotFoundException {
+		
+		if(scenarioMetricsRepository.findOne(toUpdate.getScenmetricid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 	
 	public ScenarioMetrics findByID(Integer id) {

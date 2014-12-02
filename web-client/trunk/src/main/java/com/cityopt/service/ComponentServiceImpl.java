@@ -25,8 +25,23 @@ public class ComponentServiceImpl implements ComponentService {
 	}
 
 	@Transactional
-	public void delete(Component u) {
+	public void delete(Component u) throws EntityNotFoundException {
+		
+		if(componentRepository.findOne(u.getComponentid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
 		componentRepository.delete(u);
+	}
+	
+	@Transactional
+	public Component update(Component toUpdate) throws EntityNotFoundException {
+		
+		if(componentRepository.findOne(toUpdate.getComponentid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(toUpdate);
 	}
 	
 	public Component findByID(Integer id) {
