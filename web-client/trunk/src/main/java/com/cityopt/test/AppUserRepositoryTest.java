@@ -29,7 +29,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
-@DatabaseSetup("classpath:/testData.xml")
+@DatabaseSetup("classpath:/testData/appUser_TestData.xml")
 public class AppUserRepositoryTest {
 
 	@Autowired
@@ -37,11 +37,7 @@ public class AppUserRepositoryTest {
 	
 	@Before
 	public void setUp() throws Exception {
-//		appuserRepository.deleteAll();
-//		AppUser user = new AppUser();
-//		user.setName("Michael");
-//		user.setPassword("s1cher");
-//		appuserRepository.saveAndFlush(user);
+
 	}
 
 	@Test

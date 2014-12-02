@@ -14,16 +14,27 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cityopt.model.Project;
 import com.cityopt.repository.ProjectRepository;
 import com.cityopt.repository.UserGroupProjectRepository;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:/test-context.xml"})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+    DirtiesContextTestExecutionListener.class,
+    TransactionalTestExecutionListener.class,
+    DbUnitTestExecutionListener.class })
+@DatabaseSetup("classpath:/testData/scenario_TestData.xml")
 public class ProjectRepositoryTest {
 
 	@Autowired
@@ -44,14 +55,6 @@ public class ProjectRepositoryTest {
 	@Before
 	public void setUp() throws Exception {	
 		
-		userGroupProjectRepository.deleteAll();		
-		projectRepository.deleteAll();
-		
-		Project project = new Project();
-		project.setName("Project 1");
-		project.setLocation("Vienna");
-		
-		projectRepository.saveAndFlush(project);
 	}
 
 	@After
@@ -95,7 +98,7 @@ public class ProjectRepositoryTest {
 	public void findAll() {
 	
 		List<Project> projects = projectRepository.findAll();
-		assertEquals(1, projects.size());	
+		assertEquals(2, projects.size());	
 	}
 	
 	@Test
@@ -105,7 +108,7 @@ public class ProjectRepositoryTest {
 		assertEquals(1, projects.size());	
 		
 		projects = projectRepository.findByName("Project");
-		assertEquals(1, projects.size());
+		assertEquals(2, projects.size());
 		
 		projects = projectRepository.findByName("Projedsct");
 		assertEquals(0, projects.size());
@@ -115,11 +118,11 @@ public class ProjectRepositoryTest {
 	@Rollback(true)
 	public void DeleteProject()
 	{		
-		List<Project> projects = projectRepository.findByName("Project 1");
+		List<Project> projects = projectRepository.findByName("Project 3");
 		
 		projectRepository.delete(projects);
 				
-		assertEquals(0, projectRepository.findByName("Project 1").size());	
+		assertEquals(0, projectRepository.findByName("Project 3").size());	
 	}	
 
 }

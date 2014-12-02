@@ -41,7 +41,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
-@DatabaseSetup("classpath:/testData.xml")
+@DatabaseSetup("classpath:/testData/scenario_TestData.xml")
 public class ScenarioRepositoryTest {
 	
 	@Autowired
@@ -52,7 +52,6 @@ public class ScenarioRepositoryTest {
 	
 	String testScenName = "test";
 	String testScenDescription = "this is a test";
-	Date testScenCreatedon = new Date();
 	
 	
 	/**
@@ -60,21 +59,7 @@ public class ScenarioRepositoryTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-//		scenarioRepository.deleteAll();
-//		projectRepository.deleteAll();
-//		
-//		Project project = new Project();
-//		project.setName("Project 1");
-//		project.setLocation("Vienna");
-//		
-//		Scenario testScenario = new Scenario(); 
-//		testScenario.setName(testScenName);
-//		testScenario.setDescription(testScenDescription);
-//		testScenario.setCreatedon(testScenCreatedon);
-//		testScenario.setUpdatedon(new Date());
-//		testScenario.setProject(project);
-//		
-//		scenarioRepository.saveAndFlush(testScenario);
+		
 	}
 
 	/**
@@ -90,9 +75,8 @@ public class ScenarioRepositoryTest {
 		List<Scenario> resList = scenarioRepository.findByName(testScenName);
 		Scenario result = resList.get(0);
 		assertNotNull(result);
-		assertEquals(result.getName(), testScenName);
-		assertEquals(result.getDescription(), testScenDescription);
-		assertEquals(result.getCreatedon(), testScenCreatedon);	
+		assertEquals(testScenName, result.getName());
+		assertEquals(testScenDescription, result.getDescription());
 	}
 	
 	@Test
@@ -150,8 +134,12 @@ public class ScenarioRepositoryTest {
 		
 		scenarioRepository.saveAndFlush(testScenario);
 		
+		Calendar cal2 = Calendar.getInstance();
+		cal2.set(2014, Calendar.NOVEMBER, 1);
+		Date testScenLower = cal2.getTime();
+		
 		//scenario from 2013 should not be found
-		List<Scenario> resList = scenarioRepository.findByCreationDate(testScenCreatedon, new Date());
-		assertEquals(resList.size(), 1);
+		List<Scenario> resList = scenarioRepository.findByCreationDate(testScenLower, new Date());
+		assertEquals(1, resList.size());
 	}
 }
