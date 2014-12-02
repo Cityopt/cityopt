@@ -214,6 +214,7 @@ public class TestTimeSeries {
         assertEquals((1-f)*va[0] + f*va[1],
                 eval("integrate(a, datetime(2014,1,1,12), "
                         + "datetime(2014,1,2,12), 86400)", ep), delta);
+        assertEquals(0, eval("integrate(a, 0, INFINITY, 86401)-mean(a)", ep), delta);
 
         // Time series constructors
         assertEquals(2, eval("len(TimeSeries(0, [0.0, 1.0], [2.0, 4.0]).values)", ep), delta);

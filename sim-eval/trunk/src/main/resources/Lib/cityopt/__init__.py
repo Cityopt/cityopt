@@ -6,13 +6,14 @@ from eu.cityopt.sim.eval import TimeSeries
 
 __all__ = ['TimeSeries', 'totimestamp', 'integrate',
            'mean', 'stdev', 'var', 'min', 'max',
-           'MINUTE_S', 'HOUR_S', 'DAY_S']
+           'MINUTE_S', 'HOUR_S', 'DAY_S', 'INFINITY']
 
 _epoch = datetime.fromtimestamp(0)
 
 MINUTE_S = 60
 HOUR_S = 60 * MINUTE_S
 DAY_S = 24 * HOUR_S
+INFINITY = float('inf')
 
 def _convertTimestampsToDatetimes(timestamps):
     return [datetime.fromtimestamp(t) for t in timestamps]
