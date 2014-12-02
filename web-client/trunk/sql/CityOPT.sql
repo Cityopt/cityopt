@@ -279,7 +279,7 @@ CREATE SEQUENCE InputParamVal_scenDefinitionID_seq INCREMENT 1 START 1
 ;
 
 CREATE TABLE InputParamVal ( 
-	scenDefinitionID bigint DEFAULT nextval(('InputParamVal_scenDefinitionID_seq'::text)::regclass) NOT NULL,
+	scenDefinitionID integer DEFAULT nextval(('InputParamVal_scenDefinitionID_seq'::text)::regclass) NOT NULL,
 	scenID integer NOT NULL,
 	inputID integer NOT NULL,
 	value text NOT NULL,
@@ -369,7 +369,7 @@ CREATE SEQUENCE OptSearchConst_optSearchConstID_seq INCREMENT 1 START 1
 ;
 
 CREATE TABLE OptSearchConst ( 
-	optSearchConstID bigint DEFAULT nextval(('OptSearchConst_optSearchConstID_seq'::text)::regclass) NOT NULL,
+	optSearchConstID integer DEFAULT nextval(('OptSearchConst_optSearchConstID_seq'::text)::regclass) NOT NULL,
 	optID integer NOT NULL,
 	scID integer NOT NULL
 )
@@ -443,7 +443,7 @@ CREATE SEQUENCE ScenGenObjectiveFunction_sgObFunctionID_seq INCREMENT 1 START 1
 ;
 
 CREATE TABLE ScenGenObjectiveFunction ( 
-	sgObFunctionID bigint DEFAULT nextval(('ScenGenObjectiveFunction_sgObFunctionID_seq'::text)::regclass) NOT NULL,
+	sgObFunctionID integer DEFAULT nextval(('ScenGenObjectiveFunction_sgObFunctionID_seq'::text)::regclass) NOT NULL,
 	scenGenID integer NOT NULL,
 	optFunctionID integer NOT NULL
 )
@@ -552,7 +552,7 @@ CREATE SEQUENCE UserGroupProject_usergroupprojectid_seq INCREMENT 1 START 1
 ;
 
 CREATE TABLE UserGroupProject ( 
-	usergroupprojectid bigint DEFAULT nextval(('UserGroupProject_usergroupprojectid_seq'::text)::regclass) NOT NULL,
+	usergroupprojectid integer DEFAULT nextval(('UserGroupProject_usergroupprojectid_seq'::text)::regclass) NOT NULL,
 	userGroupID integer NOT NULL,
 	prjID integer NOT NULL,
 	userID integer NOT NULL
