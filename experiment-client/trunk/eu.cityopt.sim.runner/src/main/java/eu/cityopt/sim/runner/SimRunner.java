@@ -64,8 +64,9 @@ public class SimRunner implements Callable<Integer> {
         MemoryDirectory mdir = new MemoryDirectory();
         for (String f : files)
             mdir.addFile(fdir.resolve(f));
-        try (TempDir tmp = new TempDir("ss")) {
-            System.out.println("TempDir: " + tmp.path
+        try (TempDir tmp = new TempDir("sim-runner")) {
+            System.out.println("Scheduling: " + runs + " runs on "
+                               + cores + " cores\nTempDir: " + tmp.path
                                + "\nProfile: " + pdir);
             Server srv = ServerFactory.createLocalServer(tmp.path);
             srv.installProfile(pname, new LocalDirectory(pdir));
