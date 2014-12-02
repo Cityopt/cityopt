@@ -22,14 +22,14 @@ import javax.persistence.UniqueConstraint;
 		"scengenid", "optfunctionid" }))
 public class ScenGenObjectiveFunction implements java.io.Serializable {
 
-	private long sgobfunctionid;
+	private Integer sgobfunctionid;
 	private ObjectiveFunction objectivefunction;
 	private ScenarioGenerator scenariogenerator;
 
 	public ScenGenObjectiveFunction() {
 	}
 
-	public ScenGenObjectiveFunction(long sgobfunctionid,
+	public ScenGenObjectiveFunction(Integer sgobfunctionid,
 			ObjectiveFunction objectivefunction,
 			ScenarioGenerator scenariogenerator) {
 		this.sgobfunctionid = sgobfunctionid;
@@ -40,11 +40,11 @@ public class ScenGenObjectiveFunction implements java.io.Serializable {
 	@SequenceGenerator(name="scengenobjectivefunction_sgobfunctionid_seq",sequenceName="scengenobjectivefunction_sgobfunctionid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="scengenobjectivefunction_sgobfunctionid_seq")
 	@Id
 	@Column(name = "sgobfunctionid", unique = true, nullable = false)
-	public long getSgobfunctionid() {
+	public Integer getSgobfunctionid() {
 		return this.sgobfunctionid;
 	}
 
-	public void setSgobfunctionid(long sgobfunctionid) {
+	public void setSgobfunctionid(Integer sgobfunctionid) {
 		this.sgobfunctionid = sgobfunctionid;
 	}
 

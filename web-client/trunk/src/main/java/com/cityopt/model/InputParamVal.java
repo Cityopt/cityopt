@@ -29,7 +29,7 @@ import org.hibernate.annotations.Cascade;
 		"scenid", "inputid" }))
 public class InputParamVal implements java.io.Serializable {
 
-	private long scendefinitionid;
+	private Integer scendefinitionid;
 	private InputParameter inputparameter;
 	private Scenario scenario;
 	private String value;
@@ -42,7 +42,7 @@ public class InputParamVal implements java.io.Serializable {
 	public InputParamVal() {
 	}
 
-	public InputParamVal(long scendefinitionid, InputParameter inputparameter,
+	public InputParamVal(Integer scendefinitionid, InputParameter inputparameter,
 			Scenario scenario, String value) {
 		this.scendefinitionid = scendefinitionid;
 		this.inputparameter = inputparameter;
@@ -50,7 +50,7 @@ public class InputParamVal implements java.io.Serializable {
 		this.value = value;
 	}
 
-	public InputParamVal(long scendefinitionid, InputParameter inputparameter,
+	public InputParamVal(Integer scendefinitionid, InputParameter inputparameter,
 			Scenario scenario, String value, Date createdon, Date updatedon,
 			Integer createdby, Integer updatedby, Integer datarelid) {
 		this.scendefinitionid = scendefinitionid;
@@ -67,11 +67,11 @@ public class InputParamVal implements java.io.Serializable {
 	@SequenceGenerator(name="inputparamval_scendefinitionid_seq",sequenceName="inputparamval_scendefinitionid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="inputparamval_scendefinitionid_seq")
 	@Id
 	@Column(name = "scendefinitionid", unique = true, nullable = false)
-	public long getScendefinitionid() {
+	public Integer getScendefinitionid() {
 		return this.scendefinitionid;
 	}
 
-	public void setScendefinitionid(long scendefinitionid) {
+	public void setScendefinitionid(Integer scendefinitionid) {
 		this.scendefinitionid = scendefinitionid;
 	}
 

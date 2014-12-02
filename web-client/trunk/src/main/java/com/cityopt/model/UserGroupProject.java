@@ -23,7 +23,7 @@ import javax.persistence.UniqueConstraint;
 		"prjid", "userid" }))
 public class UserGroupProject implements java.io.Serializable {
 
-	private long usergroupprojectid;
+	private Integer usergroupprojectid;
 	private UserGroup usergroup;
 	private Project project;
 	private AppUser appuser;
@@ -31,7 +31,7 @@ public class UserGroupProject implements java.io.Serializable {
 	public UserGroupProject() {
 	}
 
-	public UserGroupProject(long usergroupprojectid, UserGroup usergroup,
+	public UserGroupProject(Integer usergroupprojectid, UserGroup usergroup,
 			Project project, AppUser appuser) {
 		this.usergroupprojectid = usergroupprojectid;
 		this.usergroup = usergroup;
@@ -42,11 +42,11 @@ public class UserGroupProject implements java.io.Serializable {
 	@SequenceGenerator(name="usergroupproject_usergroupprojectid_seq",sequenceName="usergroupproject_usergroupprojectid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="usergroupproject_usergroupprojectid_seq")
 	@Id
 	@Column(name = "usergroupprojectid", unique = true, nullable = false)
-	public long getUsergroupprojectid() {
+	public Integer getUsergroupprojectid() {
 		return this.usergroupprojectid;
 	}
 
-	public void setUsergroupprojectid(long usergroupprojectid) {
+	public void setUsergroupprojectid(Integer usergroupprojectid) {
 		this.usergroupprojectid = usergroupprojectid;
 	}
 

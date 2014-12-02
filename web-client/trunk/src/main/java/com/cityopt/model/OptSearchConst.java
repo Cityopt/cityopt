@@ -22,14 +22,14 @@ import javax.persistence.UniqueConstraint;
 		"optid", "scid" }))
 public class OptSearchConst implements java.io.Serializable {
 
-	private long optsearchconstid;
+	private Integer optsearchconstid;
 	private OptimizationSet optimizationset;
 	private SearchConstraint searchconstraint;
 
 	public OptSearchConst() {
 	}
 
-	public OptSearchConst(long optsearchconstid,
+	public OptSearchConst(Integer optsearchconstid,
 			OptimizationSet optimizationset, SearchConstraint searchconstraint) {
 		this.optsearchconstid = optsearchconstid;
 		this.optimizationset = optimizationset;
@@ -39,11 +39,11 @@ public class OptSearchConst implements java.io.Serializable {
 	@SequenceGenerator(name="optsearchconst_optsearchconstid_seq",sequenceName="optsearchconst_optsearchconstid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="optsearchconst_optsearchconstid_seq")
 	@Id
 	@Column(name = "optsearchconstid", unique = true, nullable = false)
-	public long getOptsearchconstid() {
+	public Integer getOptsearchconstid() {
 		return this.optsearchconstid;
 	}
 
-	public void setOptsearchconstid(long optsearchconstid) {
+	public void setOptsearchconstid(Integer optsearchconstid) {
 		this.optsearchconstid = optsearchconstid;
 	}
 
