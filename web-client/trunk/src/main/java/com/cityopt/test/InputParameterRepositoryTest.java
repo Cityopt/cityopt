@@ -39,17 +39,7 @@ public class InputParameterRepositoryTest {
 	
 	@Before
 	public void setUp() throws Exception {
-//		inParamRepository.deleteAll();
-//		InputParameter newInParam = new InputParameter();
-//		newInParam.setName("my new Input Parameter");
-//		
-//		Type type = new Type();
-//		type.setName("MyType");
-//		Unit unit = new Unit();
-//		unit.setType(type);
-//		newInParam.setUnit(unit);	
-//		
-//		inParamRepository.saveAndFlush(newInParam);
+
 	}
 	
 	@Test

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -18,7 +19,11 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cityopt.helper.Helper;
@@ -27,11 +32,18 @@ import com.cityopt.model.SimulationModel;
 import com.cityopt.repository.ProjectRepository;
 import com.cityopt.repository.SimulationModelRepository;
 import com.cityopt.repository.UserGroupProjectRepository;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/test-context.xml" })
 @Transactional
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+    DirtiesContextTestExecutionListener.class,
+    TransactionalTestExecutionListener.class,
+    DbUnitTestExecutionListener.class })
+@DatabaseSetup("classpath:/testData/simulationModel_TestData.xml")
 public class SimulationModelRepositoryTest {
 
 	@Autowired
@@ -54,24 +66,24 @@ public class SimulationModelRepositoryTest {
 	@Before
 	public void setUp() throws Exception {
 		
-		userGroupProjectRepository.deleteAll();		
-		
-		projectRepository.deleteAll();		
-
-		simulationModelRepository.deleteAll();
-
-		
-		File tmpModel = File.createTempFile("simModel", ".txt");
-		FileUtils.writeStringToFile(tmpModel, "Hello File");
-
-		byte[] tmpModelarr = Helper.getFileBytes(tmpModel);
-
-		SimulationModel model = new SimulationModel();
-		model.setModelblob(tmpModelarr);
-		model.setSimulator("APROS");
-		model.setDescription("My first model");
-
-		simulationModelRepository.saveAndFlush(model);
+//		userGroupProjectRepository.deleteAll();		
+//		
+//		projectRepository.deleteAll();		
+//
+//		simulationModelRepository.deleteAll();
+//
+//		
+//		File tmpModel = File.createTempFile("simModel", ".txt");
+//		FileUtils.writeStringToFile(tmpModel, "Hello File");
+//
+//		byte[] tmpModelarr = Helper.getFileBytes(tmpModel);
+//
+//		SimulationModel model = new SimulationModel();
+//		model.setModelblob(tmpModelarr);
+//		model.setSimulator("APROS");
+//		model.setDescription("My first model");
+//
+//		simulationModelRepository.saveAndFlush(model);
 	
 	}
 
@@ -83,6 +95,8 @@ public class SimulationModelRepositoryTest {
 	@Rollback(true)
 	public void CreateSimulationModel() throws IOException {
 
+		Integer sizeBefore = simulationModelRepository.findAll().size();
+		
 		File tmpModel = File.createTempFile("simModel", ".txt");
 		FileUtils.writeStringToFile(tmpModel, "Hello File");
 
@@ -95,7 +109,7 @@ public class SimulationModelRepositoryTest {
 
 		simulationModelRepository.saveAndFlush(model);
 		
-		assertEquals(2,simulationModelRepository.findAll().size());
+		assertEquals((sizeBefore+1),simulationModelRepository.findAll().size());
 	}
 
 	@Test
@@ -158,6 +172,33 @@ public class SimulationModelRepositoryTest {
 		
 	}	
 
+	@Test	
+	@Rollback(true)
+	public void GetSimulationModel_FileTest() throws IOException {
+		String modelDesc= "My first model";
+
+		SimulationModel model = simulationModelRepository.findByDescription(modelDesc).get(0);
+		
+		byte[] tmpModelarr = model.getModelblob();
+		
+		String content = new String(tmpModelarr, StandardCharsets.UTF_8);
+		
+		assertEquals("this is a test file for dbunit blob data.",content);
+	}
+	
+	@Test	
+	@Rollback(true)
+	public void GetSimulationModel_FileTest_2() throws IOException {
+		String modelDesc= "model with Base64";
+
+		SimulationModel model = simulationModelRepository.findByDescription(modelDesc).get(0);
+		
+		byte[] tmpModelarr = model.getModelblob();
+		
+		String content = new String(tmpModelarr, StandardCharsets.UTF_8);
+		
+		assertEquals("this is a test file for dbunit blob data.",content);
+	}
 	
 	@Test
 	@Rollback(true)
