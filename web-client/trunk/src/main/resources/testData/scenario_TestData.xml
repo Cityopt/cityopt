@@ -2,7 +2,7 @@
 
 <dataset>
 
-<project prjid="1" name="Project 1" location="Vienna"/>
+<project prjid="1" name="Project 1" location="Vienna" description="this is a good description"/>
 <project prjid="2" name="Project 3" location="Helsinki"/>
 
 <scenario name="test" description="this is a test" createdon="2014-12-02" updatedon="2014-12-01" prjid="1"/>

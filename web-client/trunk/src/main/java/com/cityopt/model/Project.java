@@ -32,6 +32,7 @@ public class Project implements java.io.Serializable {
 	private int prjid;
 	private SimulationModel simulationmodel;
 	private String name;
+	private String description;
 	private String designtarget;
 	private Date timehorizon;
 	private String location;
@@ -62,7 +63,7 @@ public class Project implements java.io.Serializable {
 	}
 
 	public Project(int prjid, SimulationModel simulationmodel, String name,
-			String designtarget, Date timehorizon, String location,
+			String description, String designtarget, Date timehorizon, String location,
 			Date createdon, Date updatedon, Integer createdby,
 			Integer updatedby, Set<ObjectiveFunction> objectivefunctions,
 			Set<Scenario> scenarios, Set<ScenarioGenerator> scenariogenerators,
@@ -72,6 +73,7 @@ public class Project implements java.io.Serializable {
 		this.prjid = prjid;
 		this.simulationmodel = simulationmodel;
 		this.name = name;
+		this.description = description;
 		this.designtarget = designtarget;
 		this.timehorizon = timehorizon;
 		this.location = location;
@@ -120,6 +122,15 @@ public class Project implements java.io.Serializable {
 		this.name = name;
 	}
 
+	@Column(name = "description")
+	public String getDescription() {
+		return this.description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 	@Column(name = "designtarget", length = 50)
 	public String getDesigntarget() {
 		return this.designtarget;

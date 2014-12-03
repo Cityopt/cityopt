@@ -93,6 +93,15 @@ public class ProjectRepositoryTest {
 		assertNotEquals(location,fproject.getLocation());	
 	}	
 	
+	@Test
+	@Rollback(true)
+	public void getProjectDescription()
+	{	
+		String location;
+		List<Project> projects = projectRepository.findByName("Project 1");
+		Project fproject = projects.get(0);
+		assertEquals("this is a good description",fproject.getDescription());	
+	}	
 		
 	@Test
 	public void findAll() {
