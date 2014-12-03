@@ -2,8 +2,8 @@
 
 <dataset>
 	<appuser name="Michael" password="s1cher"/>
-	<appuser name="Michael2" password="s1ch3rer"/>
-	<appuser name="Flo"/>	
+
+	<appuser name="Florian" password="s3curity" />	
 
 	<project prjid="1" name="My test project"/>
 	

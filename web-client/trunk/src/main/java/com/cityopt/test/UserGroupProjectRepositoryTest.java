@@ -14,7 +14,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cityopt.model.AppUser;
@@ -25,11 +29,18 @@ import com.cityopt.repository.ProjectRepository;
 import com.cityopt.repository.UserGroupProjectRepository;
 import com.cityopt.repository.UserGroupRepository;
 import com.cityopt.repository.AppUserRepository;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/test-context.xml" })
 @Transactional
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+    DirtiesContextTestExecutionListener.class,
+    TransactionalTestExecutionListener.class,
+    DbUnitTestExecutionListener.class })
+@DatabaseSetup("classpath:/testData/appUser_TestData.xml")
 public class UserGroupProjectRepositoryTest {
 	
 	@Autowired
@@ -56,28 +67,28 @@ public class UserGroupProjectRepositoryTest {
 	@Before
 	public void setUp() throws Exception {
 
-		userGroupProjectRepository.deleteAll();
-				
-		userGroupRepository.deleteAll();
-		
-		userRepository.deleteAll();
-		
-		projectRepository.deleteAll();
-		
-		Project project = new Project();
-		project.setName("My test project");
-		
-		projectRepository.save(project);
-		
-		UserGroup usergroup = new UserGroup();
-		usergroup.setName("Administrator");
-		
-		userGroupRepository.save(usergroup);
-		
-		AppUser appuser = new AppUser();
-		appuser.setName("Flo");		
-		
-		userRepository.save(appuser);
+//		userGroupProjectRepository.deleteAll();
+//				
+//		userGroupRepository.deleteAll();
+//		
+//		userRepository.deleteAll();
+//		
+//		projectRepository.deleteAll();
+//		
+//		Project project = new Project();
+//		project.setName("My test project");
+//		
+//		projectRepository.save(project);
+//		
+//		UserGroup usergroup = new UserGroup();
+//		usergroup.setName("Administrator");
+//		
+//		userGroupRepository.save(usergroup);
+//		
+//		AppUser appuser = new AppUser();
+//		appuser.setName("Flo");		
+//		
+//		userRepository.save(appuser);
 		
 	}
 

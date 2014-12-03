@@ -21,6 +21,8 @@ import com.cityopt.model.AppUser;
 import com.cityopt.repository.AppUserRepository;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/test-context.xml" })
@@ -63,6 +65,22 @@ public class AppUserRepositoryTest {
 		Integer sizeAfter = appuserRepository.findAll().size();
 		
 		assertEquals((Integer) sizeAfter, (Integer) sizeBefore);
+	}
+	
+	@Test
+	@Rollback(true)
+	@ExpectedDatabase(assertionMode=DatabaseAssertionMode.NON_STRICT, value="classpath:/testData/appUser_ExpectedData.xml")
+	//mode= non_strict because dbunit tries to match the number of database tables instead
+	public void updateUser() {
+		List<AppUser> result = appuserRepository.findByUserName("Michael2");
+		appuserRepository.delete(result);
+		
+		result = appuserRepository.findByUserName("Flo");
+		
+		AppUser user = result.get(0);
+		user.setName("Florian");
+		user.setPassword("s3curity");
+		appuserRepository.saveAndFlush(user);
 	}
 	
 	@Test
