@@ -1,6 +1,8 @@
 package eu.cityopt.sim.runner;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -35,10 +37,13 @@ public class SimRunner implements Callable<Integer> {
         dirname = ".",
         profile = "Apros-N3D-5.13.06-64bit",
         resfile = "results.dat",
+        logTemplate = "job-%02d.log",
         files[];
     private int
         cores = 1,
         runs = 1;
+    private Map<String, OutputStream>
+        jobLogs = new HashMap<String, OutputStream>();
 
     public SimRunner(String[] args) {
         //appname = context.getBrandingName();
@@ -65,9 +70,10 @@ public class SimRunner implements Callable<Integer> {
         for (String f : files)
             mdir.addFile(fdir.resolve(f));
         try (TempDir tmp = new TempDir("sim-runner")) {
-            System.out.println("Scheduling: " + runs + " runs on "
-                               + cores + " cores\nTempDir: " + tmp.path
-                               + "\nProfile: " + pdir);
+            System.out.println(
+                    "Scheduling: " + runs + " runs on " + cores
+                    + " cores\nTempDir: " + tmp.path + "\nProfile: "
+                    + pdir + "\nJob logs: " + logTemplate);
             Server srv = ServerFactory.createLocalServer(tmp.path);
             srv.installProfile(pname, new LocalDirectory(pdir));
             {
@@ -85,13 +91,16 @@ public class SimRunner implements Callable<Integer> {
 
             experiment.dispose();
             srv.dispose();
+        } finally {
+            for (OutputStream log : jobLogs.values())
+                log.close();
         }
         return 0;
     }
 
     private List<Job> startJobs(
             Experiment experiment, String profile, String script,
-            MemoryDirectory mdir) {
+            MemoryDirectory mdir) throws IOException {
         Application launcher = new ProfileApplication(profile, "Launcher.exe");
         FileSelector res_sel = new FileSelector(resfile); 
         List<Job> jobs = new ArrayList<Job>();
@@ -101,9 +110,15 @@ public class SimRunner implements Callable<Integer> {
                     new String[] {script, String.valueOf(i)},
                     mdir,
                     res_sel);
+            String logname = String.format(logTemplate, i);
+            OutputStream log = jobLogs.get(logname);
+            if (log == null) {
+                log = Files.newOutputStream(Paths.get(logname));
+                jobLogs.put(logname, log);
+            }
             Job job = experiment.createJob(
-                    String.format("job_%02d", i), conf); 
-            StatusLoggingUtils.redirectJobLog(job, System.out);
+                    String.format("job_%02d", i), conf);
+            StatusLoggingUtils.redirectJobLog(job, log);
             jobs.add(job);
         }
         experiment.start();
@@ -133,6 +148,9 @@ public class SimRunner implements Callable<Integer> {
         opt = new Option("p", "profile", true, "Apros profile directory");
         opt.setArgName("dir");
         opts.addOption(opt);
+        opt = new Option("l", "logfile", true, "Job log file name template");
+        opt.setArgName("template");
+        opts.addOption(opt);
         opt = new Option("r", "results", true, "Result file");
         opt.setArgName("file");
         opts.addOption(opt);
@@ -150,6 +168,8 @@ public class SimRunner implements Callable<Integer> {
                 dirname = s;
             if ((s = cline.getOptionValue("profile")) != null)
                 profile = s;
+            if ((s = cline.getOptionValue("logfile")) != null)
+                logTemplate = s;
             if ((s = cline.getOptionValue("results")) != null)
                 resfile = s;
             if ((s = cline.getOptionValue("runs")) != null)
