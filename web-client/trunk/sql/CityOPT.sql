@@ -394,6 +394,7 @@ CREATE TABLE Project (
 	prjID integer DEFAULT nextval(('Project_prjID_seq'::text)::regclass) NOT NULL,
 	modelID integer,
 	name varchar(50) NOT NULL,
+	description text,
 	designTarget varchar(50),
 	timeHorizon time(6),
 	location text,
