@@ -1,6 +1,5 @@
 package com.cityopt.controller;
 
-import java.awt.Desktop.Action;
 import java.util.List;
 import java.util.Map;
 
@@ -11,14 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.cityopt.model.AppUser;
 import com.cityopt.model.Project;
 import com.cityopt.model.Scenario;
-import com.cityopt.model.UserGroup;
+import com.cityopt.service.AppUserService;
+import com.cityopt.service.EntityNotFoundException;
 import com.cityopt.service.ProjectService;
 import com.cityopt.service.ScenarioService;
-import com.cityopt.service.UserGroupService;
-
-
 
 @Controller
 public class ProjectController {
@@ -26,6 +24,7 @@ public class ProjectController {
 	ProjectForm projectForm;
 	ProjectForm newProjectForm;
 	Project project;
+	AppUser user;
 	UserForm userForm;
 	Scenario scenario;
 	Scenario newScenario;
@@ -34,7 +33,7 @@ public class ProjectController {
 	ProjectService projectService; 
 
 	@Autowired
-	UserGroupService userGroupService;
+	AppUserService userService;
 	
 	@Autowired
 	ScenarioService scenarioService; 
@@ -142,7 +141,12 @@ public class ProjectController {
 		if (prjid != null)
 		{
 			Project tempProject = projectService.findByID(Integer.parseInt(prjid));
-			projectService.delete(tempProject);
+			try {
+				projectService.delete(tempProject);
+			} catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		List<Project> projects = projectService.findAll();
@@ -219,7 +223,12 @@ public class ProjectController {
 		if (scenarioid != null)
 		{
 			Scenario tempScenario = scenarioService.findByID(Integer.parseInt(scenarioid));
-			scenarioService.delete(tempScenario);
+			try {
+				scenarioService.delete(tempScenario);
+			} catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		List<Scenario> scenarios = scenarioService.findAll();
@@ -229,10 +238,10 @@ public class ProjectController {
 	}
 
 	
-	@RequestMapping(value="usermanagement",method=RequestMethod.GET)
+	@RequestMapping(value="usermanagement", method=RequestMethod.GET)
 	public String getUserManagement(Model model){
-		List<UserGroup> userGroups = userGroupService.findAll();
-		model.addAttribute("userGroups", userGroups);
+		List<AppUser> users = userService.findAll();
+		model.addAttribute("users", users);
 	
 		return "usermanagement";
 	}
@@ -247,17 +256,67 @@ public class ProjectController {
 
 	@RequestMapping(value="createuser", method=RequestMethod.POST)
 	public String getCreateUserPost(UserForm userForm, Map<String, Object> model) {
-		//User user = new User();
-		
-		return "createuser";
+		if (userForm.getName() != null)
+		{
+			AppUser user = new AppUser();
+			user.setName(userForm.getName());
+			user.getUserid();
+			userService.save(user);
+		}
+
+		List<AppUser> users = userService.findAll();
+		model.put("users", users);
+
+		return "usermanagement";
 	}
 
 	@RequestMapping(value="edituser",method=RequestMethod.GET)
-	public String getEditUser(Model model) {
-	
+	public String getEditUser(Model model, @RequestParam(value="userid", required=true) String userid) {
+		int nUserId = Integer.parseInt(userid);
+		
+		user = userService.findByID(nUserId);
+		userForm = new UserForm();
+		userForm.setName(user.getName());
+		model.addAttribute("userForm", userForm);
+
 		return "edituser";
 	}
 
+	@RequestMapping(value="edituser", method=RequestMethod.POST)
+	public String getEditUserPost(UserForm userForm, Map<String, Object> model) {
+		if (userForm.getName() != null)
+		{
+			user.setName(userForm.getName());
+			userService.save(user);
+		}
+
+		List<AppUser> users = userService.findAll();
+		model.put("users", users);
+
+		return "usermanagement";
+	}
+	
+	@RequestMapping(value="deleteuser", method=RequestMethod.GET)
+	public String getDeleteUser(Model model, @RequestParam(value="userid") String userid){
+		int nUserId = Integer.parseInt(userid);
+		
+		if (nUserId >= 0)
+		{
+			AppUser user = userService.findByID(nUserId);
+			try {
+				userService.delete(user);
+			} catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		List<AppUser> users = userService.findAll();
+		model.addAttribute("users", users);
+
+		return "usermanagement";
+	}
+	
 	@RequestMapping(value="viewchart",method=RequestMethod.GET)
 	public String getViewChart(Model model){
 	

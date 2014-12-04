@@ -26,7 +26,7 @@
 		<td width=30></td>
 		<td>
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" modelAttribute="userForm">
+			<form:form method="post" action="edituser.html?action=save" modelAttribute="userForm">
 			<h2>Edit user</h2>
 
 			<table align="center">
@@ -111,7 +111,7 @@
 				<tr>
 					<td></td>
 					<td align="right"><input style="width:100px" type="submit" value="Update"/>
-					<input style="width:100px" type="submit" value="Cancel"/></td>
+					<a href="usermanagement.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
 				</tr>
 			</table>
 			

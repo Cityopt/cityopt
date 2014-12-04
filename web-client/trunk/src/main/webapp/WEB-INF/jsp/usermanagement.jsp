@@ -101,10 +101,11 @@
 				      			   	<table class="tablestyle" border="1">
 							      		<tr>
 							      			<th>Name</th>
-							      			<th>Company</th>
+							      			<th>Id</th>
 							      			<th>User name</th>
 							      			<th>Password</th>
 							      			<th>Email</th>
+							      			<th>Company</th>
 							      			<th>User role</th>
 							      			<th>Start rights</th>
 							      			<th>Finish projects</th>
@@ -112,40 +113,31 @@
 							      			<th>Edit</th>
 							      			<th>Delete</th>
 							   			</tr>
-							      		<tr>
-							      			<td>x</td>
-							      			<td>x</td>
-							      			<td>x</td>
-							      			<td>x</td>
-							      			<td>x</td>
-							      			<td>x</td>
-							      			<td>x</td>
-							      			<td>x</td>
-							      			<td>x</td>
+							   			
+						   				<c:forEach items="${users}" var="user">
+										<tr>
+											<td>${user.name}</td>
+									    	<td>${user.userid}</td>
+											<td></td>			
+											<td></td>
+											<td></td>			
+											<td></td>			
+											<td></td>			
+											<td></td>			
+											<td></td>			
+											<td>
+											</td>
 			   								<td>
-												<a href="<c:url value='edit.html'/>">
+												<a href="<c:url value='edituser.html?userid=${user.userid}'/>">
 													<button align="right" type="button" value="Edit">Edit</button>
 												</a>
 											</td>
-			   								<td>
-												<a href="<c:url value='deleteuser.html'/>">
+			   								<td><a href="<c:url value='deleteuser.html?userid=${user.userid}'/>">
 													<button align="right" type="button" value="Delete">Delete</button>
 												</a>
 											</td>
-							      			
-							   			</tr>
-							   			
-							   				<c:forEach items="${userGroups}" var="userGroups">
-												<tr>
-													<td>${userGroups.name}</td>
-											    	<td>${userGroups.usergroupid}</td>
-													<td></td>			
-													<td></td>
-													<td>
-													</td>
-											   	</tr>
-											</c:forEach>
-						
+									   	</tr>
+										</c:forEach>
 							      	</table>
 					      		</td>
 					      	</tr>
