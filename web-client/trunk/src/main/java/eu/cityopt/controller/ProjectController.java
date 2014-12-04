@@ -1,4 +1,4 @@
-package com.cityopt.controller;
+package eu.cityopt.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.cityopt.model.AppUser;
-import com.cityopt.model.Project;
-import com.cityopt.model.Scenario;
-import com.cityopt.service.AppUserService;
-import com.cityopt.service.EntityNotFoundException;
-import com.cityopt.service.ProjectService;
-import com.cityopt.service.ScenarioService;
+import eu.cityopt.model.AppUser;
+import eu.cityopt.model.Project;
+import eu.cityopt.model.Scenario;
+import eu.cityopt.service.AppUserService;
+import eu.cityopt.service.EntityNotFoundException;
+import eu.cityopt.service.ProjectService;
+import eu.cityopt.service.ScenarioService;
 
 @Controller
 public class ProjectController {
