@@ -12,8 +12,8 @@
 
 <context:annotation-config/>
 
-<context:component-scan base-package="com.pluralsight.repository, com.pluralsight.service, com.cityopt.repository, com.cityopt.service"/>
-<jpa:repositories base-package="com.pluralsight.repository,com.cityopt.repository"/>
+<context:component-scan base-package="com.pluralsight.repository, com.pluralsight.service, eu.cityopt.repository, eu.cityopt.service"/>
+<jpa:repositories base-package="com.pluralsight.repository,eu.cityopt.repository"/>
 
 <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 

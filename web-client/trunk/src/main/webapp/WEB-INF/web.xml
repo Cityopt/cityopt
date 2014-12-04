@@ -27,7 +27,7 @@
     </init-param>
     <init-param>
       <param-name>contextConfigLocation</param-name>
-      <param-value>com.cityopt.config.appConfig</param-value>
+      <param-value>eu.cityopt.config.appConfig</param-value>
     </init-param>      
     
   </servlet>
