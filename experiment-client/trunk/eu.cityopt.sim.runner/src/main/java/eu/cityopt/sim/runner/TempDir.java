@@ -35,30 +35,32 @@ public class TempDir implements Closeable {
         if (isClosed)
             return;
         isClosed = true;
-        // Copied from the Javadoc of FileVisitor.
-        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(
-                    Path file, BasicFileAttributes attrs)
-                throws IOException
-            {
-                Files.delete(file);
-                return FileVisitResult.CONTINUE;
-            }
-            
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException e)
-                throws IOException
-            {
-                if (e == null) {
-                    Files.delete(dir);
+        if (Files.isDirectory(path)) {
+            // Copied from the Javadoc of FileVisitor.
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(
+                        Path file, BasicFileAttributes attrs)
+                                throws IOException
+                {
+                    Files.delete(file);
                     return FileVisitResult.CONTINUE;
-                } else {
-                    // directory iteration failed
-                    throw e;
                 }
-            }
-        });
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException e)
+                        throws IOException
+                {
+                    if (e == null) {
+                        Files.delete(dir);
+                        return FileVisitResult.CONTINUE;
+                    } else {
+                        // directory iteration failed
+                        throw e;
+                    }
+                }
+            });
+        }
     }
 
 }
