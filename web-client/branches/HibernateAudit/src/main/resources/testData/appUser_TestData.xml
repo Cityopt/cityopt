@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dataset>
+	<appuser name="Michael" password="s1cher"/>
+	<appuser name="Michael2" password="s1ch3rer"/>
+	<appuser name="Flo"/>	
+
+	<project prjid="1" name="My test project"/>
+	
+	<usergroup name="Administrator"/>
+	
+
+</dataset>
