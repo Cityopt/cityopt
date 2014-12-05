@@ -1,4 +1,4 @@
-package eu.cityopt.test;
+package eu.cityopt.repository;
 
 import static org.junit.Assert.*;
 

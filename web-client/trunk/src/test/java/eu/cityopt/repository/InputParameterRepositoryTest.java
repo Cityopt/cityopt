@@ -1,4 +1,4 @@
-package eu.cityopt.test;
+package eu.cityopt.repository;
 
 import static org.junit.Assert.*;
 
@@ -21,9 +21,8 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.model.InputParameter;
-import eu.cityopt.model.Type;
-import eu.cityopt.model.Unit;
 import eu.cityopt.repository.InputParameterRepository;
+
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)

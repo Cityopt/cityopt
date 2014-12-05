@@ -1,4 +1,4 @@
-package eu.cityopt.test;
+package eu.cityopt.repository;
 
 import static org.junit.Assert.*;
 
@@ -44,7 +44,6 @@ public class AppUserRepositoryTest {
 	}
 
 	@Test
-	@Rollback(true)
 	public void delete() {
 		List<AppUser> result = appuserRepository.findByUserName("Michael");
 		
