@@ -1,11 +1,6 @@
-This directory contains support libraries for Apros batch runs.
-There are two such libraries: org.simantics.experiment.client and
-org.simantics.simulation.scheduling.  Both are available at the
-[Simantics](http://www.simantics.org) SVN repository (open source but
-registration required).  experiment.client is older and intended to be
-replaced by the brand new simulation.scheduling.  We are now using
-simulation.scheduling because it works without OSGI unlike
-the older library.
+This directory contains org.simantics.simulation.scheduling, a library for
+Apros batch runs.  The library is available from the [Simantics](http://www.simantics.org) SVN repository (open source but
+registration required).
 
 - `Install simulation client library.launch`: an Eclipse launch
   configuration for installing the simulation.scheduling binary jar into your
@@ -17,6 +12,6 @@ the older library.
   above.  You can find the artifact details here.  This POM also declares
   the dependencies of the simulation.scheduling library: those will be
   downloaded from the Maven central repository as needed. 
-- `cityopt-target.target`: an Eclipse plugin development target platform
-  containing both client libraries and all their prerequisites.  This is now
-  obsolete as we are no longer using OSGI or the PDE.
+- `cityopt-target.target`: an Eclipse plug-in development target
+  platform for building the simulation.scheduling library.  Contains its few
+  prerequisites.
