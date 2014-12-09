@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Cityopt target" sequenceNumber="15">
+<?pde version="3.8"?><target name="Cityopt target" sequenceNumber="17">
 <locations>
-<location path="${workspace_loc:cityopt-target}/uncert_target" type="Directory"/>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.rcp.source.feature.group" version="4.3.2.v20140221-1700"/>
 <unit id="org.eclipse.equinox.sdk.feature.group" version="3.9.0.v20140221-1852"/>
 <unit id="org.eclipse.rcp.feature.group" version="4.3.2.v20140221-1700"/>
 <repository location="http://download.eclipse.org/eclipse/updates/4.3"/>
 </location>
-<location path="${workspace_loc:cityopt-target}/org.simantics.simulation.scheduling-target" type="Directory"/>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.commons.lang" version="2.6.0.v201404270220"/>
 <unit id="com.jcraft.jsch" version="0.1.50.v201403120620"/>
@@ -17,81 +15,13 @@
 <unit id="org.apache.commons.cli" version="1.2.0.v201404270220"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/"/>
 </location>
+<location path="${workspace_loc:cityopt-target}" type="Directory"/>
 </locations>
 <includeBundles>
-<plugin id="ch.qos.logback.classic"/>
-<plugin id="ch.qos.logback.core"/>
-<plugin id="ch.qos.logback.slf4j"/>
-<plugin id="com.esotericsoftware.wildcard"/>
-<plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
-<plugin id="com.fasterxml.jackson.core.jackson-core"/>
-<plugin id="com.fasterxml.jackson.core.jackson-databind"/>
 <plugin id="com.jcraft.jsch"/>
 <plugin id="com.jcraft.jsch.source"/>
-<plugin id="gnu.trove3" version="3.0.3"/>
-<plugin id="javax.xml"/>
-<plugin id="org.apache.commons.cli"/>
-<plugin id="org.apache.commons.cli.source"/>
-<plugin id="org.apache.commons.codec" version="1.4.0.v201209201156"/>
-<plugin id="org.apache.commons.codec.source"/>
-<plugin id="org.apache.commons.io"/>
-<plugin id="org.apache.commons.lang"/>
-<plugin id="org.apache.commons.lang.source"/>
-<plugin id="org.apache.commons.logging"/>
-<plugin id="org.apache.commons.logging.source"/>
-<plugin id="org.apache.felix.gogo.command" version="0.10.0.v201209301215"/>
-<plugin id="org.apache.felix.gogo.command.source"/>
-<plugin id="org.apache.felix.gogo.runtime" version="0.10.0.v201209301036"/>
-<plugin id="org.apache.felix.gogo.runtime.source"/>
-<plugin id="org.apache.felix.gogo.shell" version="0.10.0.v201212101605"/>
-<plugin id="org.apache.felix.gogo.shell.source"/>
-<plugin id="org.apache.hadoop.zookeeper"/>
-<plugin id="org.eclipse.core.contenttype"/>
-<plugin id="org.eclipse.core.contenttype.source"/>
-<plugin id="org.eclipse.core.jobs"/>
-<plugin id="org.eclipse.core.jobs.source"/>
-<plugin id="org.eclipse.core.runtime"/>
-<plugin id="org.eclipse.core.runtime.source"/>
-<plugin id="org.eclipse.equinox.app"/>
-<plugin id="org.eclipse.equinox.app.source"/>
-<plugin id="org.eclipse.equinox.common"/>
-<plugin id="org.eclipse.equinox.common.source"/>
-<plugin id="org.eclipse.equinox.console"/>
-<plugin id="org.eclipse.equinox.console.source"/>
-<plugin id="org.eclipse.equinox.ds"/>
-<plugin id="org.eclipse.equinox.ds.source"/>
-<plugin id="org.eclipse.equinox.launcher"/>
-<plugin id="org.eclipse.equinox.launcher.gtk.linux.x86"/>
-<plugin id="org.eclipse.equinox.launcher.gtk.linux.x86_64"/>
-<plugin id="org.eclipse.equinox.launcher.source"/>
-<plugin id="org.eclipse.equinox.launcher.win32.win32.x86"/>
-<plugin id="org.eclipse.equinox.launcher.win32.win32.x86_64"/>
-<plugin id="org.eclipse.equinox.preferences"/>
-<plugin id="org.eclipse.equinox.preferences.source"/>
-<plugin id="org.eclipse.equinox.registry"/>
-<plugin id="org.eclipse.equinox.registry.source"/>
-<plugin id="org.eclipse.equinox.util"/>
-<plugin id="org.eclipse.equinox.util.source"/>
-<plugin id="org.eclipse.osgi"/>
-<plugin id="org.eclipse.osgi.services"/>
-<plugin id="org.eclipse.osgi.services.source"/>
-<plugin id="org.eclipse.osgi.source"/>
-<plugin id="org.eclipse.osgi.util"/>
-<plugin id="org.eclipse.osgi.util.source"/>
-<plugin id="org.hamcrest.core" version="1.3.0.v201303031735"/>
-<plugin id="org.hamcrest.core.source"/>
-<plugin id="org.junit" version="4.11.0.v201303080030"/>
+<plugin id="gnu.trove3"/>
+<plugin id="org.junit"/>
 <plugin id="org.junit.source"/>
-<plugin id="org.junit4"/>
-<plugin id="org.simantics.experiment.client"/>
-<plugin id="org.simantics.experiment.client.test"/>
-<plugin id="org.simantics.experiment.core"/>
-<plugin id="org.simantics.experiment.file"/>
-<plugin id="org.simantics.experiment.logback.configuration"/>
-<plugin id="org.simantics.experiment.zookeeper"/>
-<plugin id="org.simantics.simulation.scheduling"/>
-<plugin id="org.simantics.simulation.scheduling.source"/>
-<plugin id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
-<plugin id="org.slf4j.api.source"/>
 </includeBundles>
 </target>
