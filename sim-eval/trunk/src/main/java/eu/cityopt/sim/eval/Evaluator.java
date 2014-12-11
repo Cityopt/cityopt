@@ -114,7 +114,7 @@ public class Evaluator {
      * When the sim-eval module is packaged in a JAR file, a copy of the Python
      * Lib directory is included in the JAR via maven-resources-plugin, and we
      * use that copy in the Python search path. When running directly from class
-     * files, which should occur only in JUnit testing, we use use the source
+     * files, which should occur only in JUnit testing, we use the source
      * directory src/main/resources/Lib.
      * <p>
      * Jython authors promote bundling Jython with user code in a single
@@ -140,7 +140,8 @@ public class Evaluator {
                 Path jarPath = Paths.get(jarUrl.getJarFileURL().toURI());
                 libraryPath = jarPath.resolve(jarUrl.getEntryName()).getParent().toString();
             } else {
-                libraryPath = "src/main/resources/Lib";
+                libraryPath = Paths.get(url.toURI()).resolve(
+                        "../../../../../src/main/resources/Lib").normalize().toString();
             }
             String oldLibraryPath = System.getProperty(PYTHON_PATH); 
             if (oldLibraryPath != null) {
