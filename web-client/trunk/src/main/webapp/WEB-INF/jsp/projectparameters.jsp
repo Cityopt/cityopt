@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -18,7 +20,6 @@
 %>
 
 <div style="overflow:scroll;height:600px;width:1100px;overflow:auto">
-<form method="get" action="ProjectController">
 <table>
 	<col style="width:40px">
 	<col style="width:1000px">	
@@ -47,12 +48,25 @@
 								<td>
 									<table class="tablestyle">
 										<col style="width:150px">
+										<col style="width:80px">
+										<col style="width:80px">
 										<tr>
 											<th>Components</th>
+											<th>Id</th>
+											<th>Edit</th>
 										</tr>
+
+										<c:forEach items="${components}" var="component">
 										<tr>
-											<td>x</td>
-										</tr>
+											<td>${component.name}</td>
+									    	<td>${component.componentid}</td>
+											<td>
+												<a href="<c:url value='editcomponent.html?componentid=${component.componentid}'/>">
+													<button align="right" type="button" value="Edit">Edit</button>
+												</a>
+											</td>
+									   	</tr>
+										</c:forEach>
 									</table>
 								</td>
 								<td>
@@ -84,6 +98,14 @@
 									<input type="radio">Completed parameters<br>	
 									<input type="radio">Empty parameters<br><br>
 									<input type="button" value="Upload default values">	
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<a href="createcomponent.html"><button type="button">Create component</button></a>
+								</td>
+								<td>
+									<a href="createinputparameter.html"><button type="button">Create input parameter</button></a>
 								</td>
 							</tr>
 						</table>
@@ -132,15 +154,6 @@
 							    <td> <input type="radio"/> </td>
 							</tr>
 							
-							<% //for(int i=0; i<l.size();i++) {%>
-							<!--    <tr>
-							        <td> <%//out.print(b.get(i).getIsbn());%> </td>
-							        <td> <%//out.print(b.get(i).getTitle());%> </td>
-							        <td> <%//out.print(b.get(i).getAuthor());%> </td>
-							        <td> <%//out.print(b.get(i).getPrice());%> </td>
-							        <td> <!-- <input type="radio" name="project" value="<%//Integer.toString(i);%>"/>--> </td>
-							    <!-- </tr>-->
-							<% //} %>
 						</table>
 						
 						<table width="100%">
@@ -150,8 +163,7 @@
 							</tr>
 							<tr>
 								<td align="right">
-									<input align="right" type="submit" value="Accept"/>
-									<input align="right" type="submit" value="Cancel"/>
+									<a href="editproject.html"><button type="button">Close</button></a>
 							    </td>
 							</tr>
 							      
@@ -162,7 +174,6 @@
 		</td>
 	</tr>	
 </table>
-</form>
 </div>
 </body>
 </html>

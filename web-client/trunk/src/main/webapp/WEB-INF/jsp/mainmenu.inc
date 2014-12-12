@@ -27,11 +27,19 @@
 		<a href="openproject.html">Open project</a>
 	</td>
 </tr>
+<% if (request.getSession().getAttribute("project") != null) { %>
 <tr>
 	<td>
 		<a href="editproject.html">Edit project</a>
 	</td>
 </tr>
+<% } else { %>
+<tr>
+	<td>
+		Edit project
+	</td>
+</tr>
+<% } %>
 <tr>
 	<td>
 		<a href="deleteproject.html">Delete project</a>
@@ -45,6 +53,7 @@
 <tr>
 	<td><b>Scenario</b></td>
 </tr>
+<% if (request.getSession().getAttribute("project") != null) { %>
 <tr>
 	<td>
 		<a href="createscenario.html">Create scenario</a>
@@ -62,11 +71,37 @@
 <tr>
 	<td>
 		<a href="deletescenario.html">Delete scenario</a>
-	</td></tr>
+	</td>
+</tr>
 <tr>
 	<td>
 		<a href="runmultiscenario.html">Run multi-scenario</a>
+	</td>
+</tr>
+<% } else { %>
+<tr>
+	<td>
+		Create scenario
+	</td>
+</tr>
+<tr>
+	<td>
+		Open scenario
 	</td></tr>
+<tr>
+	<td>
+		Edit scenario
+	</td>
+</tr>
+<tr>
+	<td>
+		Delete scenario
+	</td></tr>
+<tr>
+	<td>
+		Run multi-scenario
+	</td></tr>
+<% } %>
 <tr height=10>
 	<td>
 		

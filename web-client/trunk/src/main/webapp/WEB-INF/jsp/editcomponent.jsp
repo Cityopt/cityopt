@@ -1,4 +1,4 @@
-<%--@elvariable id="project" type="com.cityopt.model.Project"--%>
+<%--@elvariable id="componentForm" type="eu.cityopt.model.Component"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Open project</title>
+<title>CityOpt edit component</title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -26,34 +26,40 @@
 		<td width=30></td>
 		<td>
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" modelAttribute="projectSelected">
-			<h2>Open project</h2>
-			<table class="tablestyle" width="400" border="1">
-			
-			<tr height="20">
-			    <th>Name</th>
-			    <th>Id</th>
-			    <th>Location</th>
-			    <th>Description</th>
-			    <th>Apros version</th>
-			    <th>Open</th>
-			</tr>
-			
-			<c:forEach items="${projects}" var="project">
+			<form:form method="post" action="edituser.html?action=save" modelAttribute="userForm">
+			<h2>Edit component</h2>
+
+			<table align="center">
+				<col style="width:150px">
+				<col style="width:80px">
+				<col style="width:80px">
 				<tr>
-					<td>${project.name}</td>
-			    	<td>${project.prjid}</td>
-					<td>${project.location}</td>			
-					<td>${project.description}</td>			
-					<td></td>
 					<td>
-						<a href="<c:url value='editproject.html?prjid=${project.prjid}'/>">
-							<button align="right"  type="button" value="Open">Open</button>
-						</a>
+						Name
 					</td>
-			   	</tr>
-			</c:forEach>
+					<td>
+						<form:input style="width:300px" type="text" path="name"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Id
+					</td>
+					<td>
+						<form:input style="width:300px" type="text" path="componentid"/>
+					</td>
+				</tr>
+				<tr height="10">
+					<td>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td align="right"><input style="width:100px" type="submit" value="Update"/>
+					<a href="editproject.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+				</tr>
 			</table>
+			
 			</form:form>
 			</div>
 		</td>

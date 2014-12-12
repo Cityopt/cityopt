@@ -1,4 +1,4 @@
-<%--@elvariable id="projectForm" type="com.cityopt.controller.ProjectForm"--%>
+<%--@elvariable id="project" type="com.cityopt.model.Project"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -16,7 +16,7 @@
 		<td width=30></td>
 		<td>
 			<div style="overflow:scroll;height:500px;width:1000px;overflow:auto">
-			<form:form method="post" action="editproject.html?action=save" modelAttribute="projectForm">
+			<form:form method="post" action="editproject.html?action=save" modelAttribute="project">
 			<table style="width:900px">
 				<tr><td><h2>Edit project</h2></td></tr>
 				<tr>
@@ -24,19 +24,15 @@
 						<table>
 							<tr>
 								<td>Project name:</td>
-								<td><form:input type="text" path="projectName"/></td>
+								<td><form:input type="text" path="name"/></td>
 							</tr>
 							<tr>						
 								<td>Location:</td>
 								<td><form:input type="text" path="location"/></td>
 							</tr>
 							<tr>						
-								<td>Project creator:</td>
-								<td><form:input type="text" path="projectCreator"/></td>
-							</tr>
-							<tr>						
-								<td>Date:</td>
-								<td><form:input type="text" path="date"/></td>
+								<td>Design target:</td>
+								<td><form:input type="text" path="designtarget"/></td>
 							</tr>
 							<tr>						
 								<td>Description:</td>
@@ -44,7 +40,7 @@
 							</tr>
 							<tr>						
 								<td>Energy model:</td>
-								<td><form:input type="text" path="energyModel"/></td>
+								<td></td>
 							</tr>
 							<tr>						
 								<td></td>
@@ -69,18 +65,18 @@
 							<col style="width:600px">
 							<tr>
 								<td>Input parameters</td>
-								<td><input type="button" value="Set" style="width:150px"></td>
+								<td><a href="projectparameters.html"><button type="button" style="width:150px">Set</button></a></td>
 								<td></td>
 							</tr>
 							<tr>
 								<td>Output variables</td>
-								<td><input type="button" value="Set" style="width:150px"></td>
-								<td></td>
+								<td><a href="outputvariables.html"><button type="button" style="width:150px">Set</button></a></td>
+								<td align="right"><a href="closeproject.html"><button type="button" style="width:120px">Close project</button></a></td>
 							</tr>
 							<tr>
 								<td>GIS Coordinates</td>
-								<td><input type="button" value="Set" style="width:150px"></td>
-								<td align="right"><form:input type="submit" path="" value="Save project" style="width:150px"/></td>
+								<td><a href="coordinates.html"><button type="button" style="width:150px">Set</button></a></td>
+								<td align="right"><form:input type="submit" path="" value="Save project" style="width:120px"/></td>
 							</tr>
 						</table>
 					</td>

@@ -1,3 +1,4 @@
+<%--@elvariable id="project" type="com.cityopt.model.Project"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -20,13 +21,7 @@
 		<td width=30></td>
 		<td>
 
-<%
-	//ArrayList<Book> b = new ArrayList<Book>();
-	//b = SqlSentencesList.showCatalog(); // this method returns an arrayList with all books
-%>
-			
 			<div style="overflow:scroll;height:500px;width:600px;overflow:auto">
-			<form method="get" action="OpenScenarioController">
 			<h2>Open scenario</h2>
 			<table class="tablestyle" width="400" border="1">
 			
@@ -56,8 +51,6 @@
 			   	</tr>
 				</c:forEach>				
 			</table>
-			
-			</form>
 			</div>
 		</td>
     </tr>
