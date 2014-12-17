@@ -81,11 +81,6 @@ class BindingLayer {
         return namespace;
     }
 
-    /** Returns the bindings of this layer only. */
-    Map<String, Bindings> getLocalBindings() {
-        return localBindings;
-    }
-
     /**
      * Creates top-level bindings for expression evaluation. Component names are
      * bound to special objects that contain component-level bindings. All names
@@ -95,7 +90,7 @@ class BindingLayer {
      */
     Bindings toBindings() throws ScriptException {
         if (evaluationBindings == null) {
-            Bindings newEvaluationBindings = getEvaluator().makeTopLevelBindings();
+            Bindings newEvaluationBindings = getEvaluator().copyGlobalBindings();
 
             // Merge the per-component bindings from binding layers, and bind
             // component objects in our new top level environment.
@@ -263,6 +258,53 @@ class BindingLayer {
                     }
                 }
             }
+        }
+        return true;
+    }
+
+    /**
+     * Computes a hash code for the bindings on this layer.
+     * This is a work-around for a JDK bug: SimpleBindings does not implement hashcode.
+     */
+    public int localHashCode() {
+        int h = 0;
+        for (Map.Entry<String, Bindings> entry : localBindings.entrySet()) {
+            String key = entry.getKey();
+            int i = 0;
+            for (Map.Entry<String, Object> binding : entry.getValue().entrySet()) {
+                i += binding.hashCode();
+            }
+            h += i ^ ((key == null) ? 0 : entry.getKey().hashCode());
+        }
+        return h;
+    }
+
+    /**
+     * Whether all names on this layer have the same values as in the other instance.
+     * This is a work-around for a JDK bug: SimpleBindings does not implement equals.
+     */
+    public boolean localBindingsEqual(BindingLayer other) {
+        if (localBindings.size() != other.localBindings.size()) {
+            return false;
+        }
+        try {
+            for (Map.Entry<String, Bindings> entry : localBindings.entrySet()) {
+                Bindings thisBindings = entry.getValue();
+                Bindings otherBindings = other.localBindings.get(entry.getKey());
+                if (thisBindings.size() != otherBindings.size()) {
+                    return false;
+                }
+                for (Map.Entry<String, Object> thisBinding : thisBindings.entrySet()) {
+                    String name = thisBinding.getKey();
+                    if ( ! thisBinding.getValue().equals(otherBindings.get(name))) {
+                        return false;
+                    }
+                }
+            }
+        } catch (ClassCastException e) {
+            return false;
+        } catch (NullPointerException e) {
+            return false;
         }
         return true;
     }

@@ -104,7 +104,7 @@ public class SyntaxChecker {
             this.environmentsAreComplete = namespaceComplete;
         } else {
             PyDictionary globalEnvironment = new PyDictionary();
-            globalEnvironment.putAll(evaluator.makeTopLevelBindings());
+            globalEnvironment.putAll(evaluator.copyGlobalBindings());
             this.environmentWithInputs = globalEnvironment;
             this.environmentWithResults = globalEnvironment;
             this.environmentWithMetrics = globalEnvironment;

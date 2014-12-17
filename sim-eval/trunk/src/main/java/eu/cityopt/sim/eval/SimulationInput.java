@@ -37,7 +37,7 @@ public class SimulationInput implements EvaluationContext {
     public SimulationInput(SimulationInput other) {
         this.bindingLayer = new BindingLayer(other.bindingLayer);
     }
-    
+
     public Namespace getNamespace() {
         return bindingLayer.getNamespace();
     }
@@ -84,14 +84,14 @@ public class SimulationInput implements EvaluationContext {
         } else if (other == this) {
             return true;
         } else {
-            return bindingLayer.getLocalBindings().equals(
-                    ((SimulationInput) other).bindingLayer.getLocalBindings());
+            return bindingLayer.localBindingsEqual(
+                    ((SimulationInput) other).bindingLayer);
         }
     }
 
     @Override
     public int hashCode() {
-        return bindingLayer.getLocalBindings().hashCode();
+        return bindingLayer.localHashCode();
     }
 
     @Override

@@ -233,10 +233,14 @@ public class Evaluator {
         return (Compilable) engine;
     }
 
-    Bindings makeTopLevelBindings() {
+    Bindings copyGlobalBindings() {
         Bindings b = engine.createBindings();
         b.putAll(engine.getBindings(ScriptContext.ENGINE_SCOPE));
         return b;
+    }
+
+    Bindings makeTopLevelBindings() {
+        return engine.createBindings();
     }
 
     Bindings makeAttributeBindings() {
