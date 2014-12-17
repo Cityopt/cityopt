@@ -1,5 +1,7 @@
 package eu.cityopt.sim.eval;
 
+import java.util.Collection;
+
 import javax.script.Bindings;
 import javax.script.ScriptException;
 
@@ -20,6 +22,11 @@ import javax.script.ScriptException;
 public class SimulationInput implements EvaluationContext {
     private BindingLayer bindingLayer;
 
+    /**
+     * Constructs an empty SimulationInput.
+     * @param externalParameters instance to be used in the evaluation
+     *  of constraints, metrics and objectives
+     */
     public SimulationInput(ExternalParameters externalParameters) {
         final Namespace namespace = externalParameters.getNamespace(); 
         this.bindingLayer = new BindingLayer(
@@ -28,6 +35,23 @@ public class SimulationInput implements EvaluationContext {
                     Namespace.Component c = namespace.components.get(name);
                     return (c != null) ? c.inputs : null;
                 }, "input parameter");
+    }
+
+    /**
+     * Constructs a SimulationInput based on optimization decision variables.
+     * 
+     * @param decisions
+     *            the values of the decision variables referenced in expressions
+     * @param inputExpressions
+     *            collection of input expressions associated with specific input
+     *            variables
+     * @see #putExpressionValues(DecisionValues, Collection)
+     */
+    public SimulationInput(DecisionValues decisions,
+            Collection<InputExpression> inputExpressions)
+                    throws ScriptException, InvalidValueException {
+        this(decisions.getExternalParameters());
+        putExpressionValues(decisions, inputExpressions);
     }
 
     /**
@@ -60,6 +84,24 @@ public class SimulationInput implements EvaluationContext {
     /** Parses an input parameter value and stores it. */
     public Object putString(String componentName, String inputName, String value) {
         return bindingLayer.putString(componentName, inputName, value);
+    }
+
+    /**
+     * Sets the values of input variables by evaluating input expressions.
+     * 
+     * @param decisions
+     *            the values of the decision variables referenced in expressions
+     * @param inputExpressions
+     *            collection of input expressions associated with specific input
+     *            variables
+     */
+    public void putExpressionValues(
+            DecisionValues decisions, Collection<InputExpression> inputExpressions)
+                    throws ScriptException, InvalidValueException {
+        for (InputExpression expression : inputExpressions) {
+            double value = expression.evaluate(decisions);
+            put(expression.getComponentName(), expression.getInputName(), value);
+        }
     }
 
     /** Returns whether all input parameters have a value. */

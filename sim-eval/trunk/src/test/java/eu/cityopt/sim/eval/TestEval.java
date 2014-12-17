@@ -23,7 +23,7 @@ public class TestEval {
     @BeforeClass
     public static void setup() throws Exception {
         evaluator = new Evaluator();
-        ns = new Namespace(evaluator, Arrays.asList(new String[] { "C1", "C2" }));
+        ns = new Namespace(evaluator, Arrays.asList(new String[] { "C1", "C2" }), true);
         ns.externals.put("a", Type.TIMESERIES_LINEAR);
         ns.externals.put("b", Type.TIMESERIES_LINEAR);
         ns.components.get("C1").inputs.put("x5", Type.DOUBLE);
@@ -38,6 +38,12 @@ public class TestEval {
         ns.metrics.put("m1", Type.DOUBLE);
         ns.metrics.put("m2", Type.DOUBLE);
         ns.metrics.put("m3", Type.DOUBLE);
+
+        ns.decisions.put("d", Type.DOUBLE);
+        ns.decisions.put("i", Type.INTEGER);
+        ns.components.get("C1").decisions.put("x8", Type.DOUBLE);
+        ns.components.get("C2").decisions.put("x9", Type.DOUBLE);
+        ns.components.get("C2").decisions.put("d", Type.DOUBLE);
     }
 
     ExternalParameters externalParameters;
@@ -56,6 +62,30 @@ public class TestEval {
         input.put("C1", "x7", 3.0);
         input.put("C1", "x8", 4.0);
         input.put("C2", "x9", 5.0);
+    }
+
+    @Test
+    public void derivedInput() throws Exception {
+        DecisionValues dv = new DecisionValues(externalParameters);
+        dv.put(null, "i", 1);
+        dv.put(null, "d", 2.0);
+        dv.put("C1",  "x8",  4.0);
+        dv.put("C2", "x9", 5.0);
+        InputExpression[] inputExpressions = {
+                new InputExpression("C1", "x5", "-a.values[0]", evaluator),
+                new InputExpression("C1", "x6", "d", evaluator),
+                new InputExpression("C1", "x7", "i+d", evaluator),
+                new InputExpression("C1", "x8", "C1.x8", evaluator),
+                new InputExpression("C2", "x9", "C2.x9", evaluator)
+        };
+        SimulationInput derivedInput = new SimulationInput(dv, Arrays.asList(inputExpressions));
+        assertEquals(1.0, derivedInput.get("C1", "x5"));
+        assertEquals(2.0, derivedInput.get("C1", "x6"));
+        assertEquals(3.0, derivedInput.get("C1", "x7"));
+        assertEquals(4.0, derivedInput.get("C1", "x8"));
+        assertEquals(5.0, derivedInput.get("C2", "x9"));
+        assertEquals(input, derivedInput);
+        assertEquals(input.hashCode(), derivedInput.hashCode());
     }
 
     @Test
@@ -225,7 +255,9 @@ public class TestEval {
         assertNotNull(msg(sc.checkConstraintExpression("b(1)")));
         assertNull(msg(sc.checkConstraintExpression("min(1)")));
         assertNull(msg(sc.checkConstraintExpression("m1")));
+        assertNull(msg(sc.checkExternalExpression("2**a")));
         if (complete) {
+            assertNotNull(msg(sc.checkExternalExpression("m1")));
             assertNotNull(msg(sc.checkConstraintExpression("m1.mean")));
             assertNotNull(msg(sc.checkMetricExpression("m1")));
             assertNotNull(msg(sc.checkMetricExpression("m1.mean")));
@@ -235,7 +267,12 @@ public class TestEval {
             assertNull(msg(sc.checkMetricExpression("C1.x1.mean")));
             assertNotNull(msg(sc.checkPreConstraintExpression("C1.x1")));
             assertNotNull(msg(sc.checkPreConstraintExpression("C1.x1.mean")));
+            assertNotNull(msg(sc.checkInputExpression("C1.x7")));
+            assertNotNull(msg(sc.checkInputExpression("C2.x8")));
         }
+        assertNull(msg(sc.checkInputExpression("C1.x8")));
+        assertNull(msg(sc.checkInputExpression("C2.x9")));
+        assertNull(msg(sc.checkInputExpression("i+d")));
         assertNull(msg(sc.checkPreConstraintExpression("C1.x5")));
         assertNull(msg(sc.checkPreConstraintExpression("a")));
     }

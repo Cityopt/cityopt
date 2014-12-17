@@ -64,6 +64,8 @@ public class SyntaxChecker {
     private final Evaluator evaluator;
     private final PyObject _checkExpressionSyntax;
 
+    private final PyDictionary environmentWithExternals;
+    private final PyDictionary environmentWithDecisions;
     private final PyDictionary environmentWithInputs;
     private final PyDictionary environmentWithResults;
     private final PyDictionary environmentWithMetrics;
@@ -97,6 +99,9 @@ public class SyntaxChecker {
             if (namespace.evaluator != evaluator) {
                 throw new IllegalArgumentException("Different evaluator in namespace");
             }
+            this.environmentWithExternals = new PyDictionary();
+            this.environmentWithDecisions =
+                    (namespace.decisions != null) ? new PyDictionary() : null;
             this.environmentWithInputs= new PyDictionary();
             this.environmentWithResults = new PyDictionary();
             this.environmentWithMetrics = new PyDictionary();
@@ -105,6 +110,8 @@ public class SyntaxChecker {
         } else {
             PyDictionary globalEnvironment = new PyDictionary();
             globalEnvironment.putAll(evaluator.copyGlobalBindings());
+            this.environmentWithExternals = globalEnvironment;
+            this.environmentWithDecisions = globalEnvironment;
             this.environmentWithInputs = globalEnvironment;
             this.environmentWithResults = globalEnvironment;
             this.environmentWithMetrics = globalEnvironment;
@@ -126,6 +133,20 @@ public class SyntaxChecker {
         ExternalParameters externals = new ExternalParameters(namespace);
         for (Map.Entry<String, Type> ee : namespace.externals.entrySet()) {
             externals.put(ee.getKey(), placeholders.get(ee.getValue()));
+        }
+        environmentWithExternals.putAll(externals.toBindings());
+
+        if (environmentWithDecisions != null) {
+            DecisionValues decisions = new DecisionValues(externals);
+            for (Map.Entry<String, Type> de : namespace.decisions.entrySet()) {
+                decisions.put(null, de.getKey(), placeholders.get(de.getValue()));
+            }
+            for (Map.Entry<String, Namespace.Component> ce : namespace.components.entrySet()) {
+                for (Map.Entry<String, Type> de : ce.getValue().decisions.entrySet()) {
+                    decisions.put(ce.getKey(), de.getKey(), placeholders.get(de.getValue()));
+                }
+            }
+            environmentWithDecisions.putAll(decisions.toBindings());
         }
 
         SimulationInput input = new SimulationInput(externals);
@@ -281,6 +302,33 @@ public class SyntaxChecker {
             this.column = column;
             this.message = message;
         }
+    }
+
+    /**
+     * Checks for errors in an expression that is evaluated using
+     * external parameters only.  Such expressions could be used for
+     * defining the range of a decision variable.
+     * @param source the expression text
+     * @return null if no errors are detected, otherwise an error message
+     */
+    public Error checkExternalExpression(String source) {
+        return checkExpressionSyntax(source, environmentWithExternals);
+    }
+
+    /**
+     * Checks for errors in an expression defining an input variable.
+     * Input expressions are only used in scenario generation optimization.
+     * @param source the expression text
+     * @return null if no errors are detected, otherwise an error message
+     * @throws IllegalStateException if the namespace does not have
+     *   decision variables.
+     */
+    public Error checkInputExpression(String source) {
+        if (environmentWithDecisions == null) {
+            throw new IllegalStateException(
+                    "Cannot check input expressions because decision variables have not been defined");
+        }
+        return checkExpressionSyntax(source, environmentWithDecisions);
     }
 
     /**
