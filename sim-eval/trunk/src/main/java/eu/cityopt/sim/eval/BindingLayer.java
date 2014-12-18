@@ -1,5 +1,6 @@
 package eu.cityopt.sim.eval;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -202,8 +203,10 @@ class BindingLayer {
      * @param value
      *            String containing a new value for the name
      * @return old value associated with the name, or null
+     * @throws ParseException if the string cannot be parsed as the correct type
      */
-    Object putString(String componentName, String name, String value) {
+    Object putString(String componentName, String name, String value)
+            throws ParseException {
         Type type = validate(componentName, name);
         Object object = type.parse(value);
         mergedBindings = null;

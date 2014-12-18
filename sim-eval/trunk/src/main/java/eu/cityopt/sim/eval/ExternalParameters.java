@@ -1,5 +1,7 @@
 package eu.cityopt.sim.eval;
 
+import java.text.ParseException;
+
 import javax.script.Bindings;
 import javax.script.ScriptException;
 
@@ -43,8 +45,9 @@ public class ExternalParameters implements EvaluationContext {
     /**
      * Parses the value of a named external parameter and stores it.
      * Not useful for time series.
+     * @throws ParseException if the string cannot be parsed as the correct type
      */
-    public Object putString(String externalName, String value) {
+    public Object putString(String externalName, String value) throws ParseException {
         return bindingLayer.putString(null, externalName, value);
     }
 

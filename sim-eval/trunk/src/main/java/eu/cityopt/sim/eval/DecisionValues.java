@@ -1,5 +1,7 @@
 package eu.cityopt.sim.eval;
 
+import java.text.ParseException;
+
 import javax.script.Bindings;
 import javax.script.ScriptException;
 
@@ -78,8 +80,10 @@ public class DecisionValues implements EvaluationContext {
     /**
      * Parses the value of a named decision variable and stores it.
      * Use null componentName for a top-level decision variable.
+     * @throws ParseException if the string cannot be parsed as the correct type 
      */
-    public Object putString(String componentName, String decisionName, String value) {
+    public Object putString(String componentName, String decisionName, String value)
+            throws ParseException {
         return bindingLayer.putString(componentName, decisionName, value);
     }
 

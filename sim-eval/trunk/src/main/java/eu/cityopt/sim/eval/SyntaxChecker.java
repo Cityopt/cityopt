@@ -196,6 +196,12 @@ public class SyntaxChecker {
             case TIMESERIES_STEP:
                 p = evaluator.makeTS(type, new double[] { 0.0 }, new double[] { 1.0 });
                 break;
+            case LIST_OF_INTEGER:
+                p = Arrays.asList(1);
+                break;
+            case LIST_OF_DOUBLE:
+                p = Arrays.asList(1.0);
+                break;
             default:
                 throw new IllegalStateException("No placeholder defined for "+type);
             }

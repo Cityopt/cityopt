@@ -1,5 +1,7 @@
 package eu.cityopt.sim.eval;
 
+import java.text.ParseException;
+
 import javax.script.Bindings;
 import javax.script.ScriptException;
 
@@ -51,8 +53,10 @@ public class SimulationResults extends SimulationOutput implements
     /**
      * Parses an input parameter value and stores it. Not useful for time
      * series.
+     * @throws ParseException if the string cannot be parsed as the correct type
      */
-    public Object putString(String componentName, String outputName, String value) {
+    public Object putString(String componentName, String outputName, String value)
+            throws ParseException {
         return bindingLayer.putString(componentName, outputName, value);
     }
 

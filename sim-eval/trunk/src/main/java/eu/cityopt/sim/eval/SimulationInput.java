@@ -1,5 +1,6 @@
 package eu.cityopt.sim.eval;
 
+import java.text.ParseException;
 import java.util.Collection;
 
 import javax.script.Bindings;
@@ -81,8 +82,12 @@ public class SimulationInput implements EvaluationContext {
         return bindingLayer.getString(componentName, inputName);
     }
 
-    /** Parses an input parameter value and stores it. */
-    public Object putString(String componentName, String inputName, String value) {
+    /**
+     * Parses an input parameter value and stores it.
+     * @throws ParseException if the string cannot be parsed as the correct type
+     */
+    public Object putString(String componentName, String inputName, String value)
+            throws ParseException {
         return bindingLayer.putString(componentName, inputName, value);
     }
 

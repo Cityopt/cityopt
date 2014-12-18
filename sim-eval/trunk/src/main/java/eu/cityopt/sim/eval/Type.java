@@ -1,5 +1,19 @@
 package eu.cityopt.sim.eval;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.ListIterator;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 /**
  * Indicates the type of a named value.
  *
@@ -11,7 +25,7 @@ public enum Type {
     /** Double precision floating point */
     DOUBLE("Double") {
         @Override
-        public Object parse(String value) {
+        public Double parse(String value) {
             return Double.parseDouble(value);
         }
 
@@ -29,7 +43,7 @@ public enum Type {
     /** 32-bit signed integer */
     INTEGER("Integer") {
         @Override
-        public Object parse(String value) {
+        public Integer parse(String value) {
             return Integer.parseInt(value);
         }
 
@@ -47,7 +61,7 @@ public enum Type {
     /** Unicode string */
     STRING("String") {
         @Override
-        public Object parse(String value) {
+        public String parse(String value) {
             return value;
         }
 
@@ -65,7 +79,7 @@ public enum Type {
     /** Time series treated as a step function with values of type double. */
     TIMESERIES_STEP("TimeSeries/Step") {
         @Override
-        public Object parse(String value) {
+        public TimeSeries parse(String value) {
             throw new UnsupportedOperationException(
                     "Cannot parse a time series");
         }
@@ -91,7 +105,7 @@ public enum Type {
     /** Time series treated as a piecewise linear function with values of type double. */
     TIMESERIES_LINEAR("TimeSeries/Linear") {
         @Override
-        public Object parse(String value) {
+        public TimeSeries parse(String value) {
             throw new UnsupportedOperationException(
                     "Cannot parse a time series");
         }
@@ -112,15 +126,108 @@ public enum Type {
         public int getInterpolationDegree() {
             return 1;
         }
+    },
+
+    LIST_OF_INTEGER("List of Integer") {
+        @Override
+        public List<Integer> parse(String value) throws ParseException {
+            try {
+                int[] array = objectMapper.readValue(value, int[].class);
+                List<Integer> list = new ArrayList<Integer>(array.length);
+                for (int i : array) {
+                    list.add(i);
+                }
+                return list;
+            } catch (IOException e) {
+                throw new ParseException(e.getMessage(), 0);
+            }
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public boolean isInstance(Object value) {
+            if ( ! (value instanceof List)) {
+                return false;
+            } else {
+                for (Object element : (List) value) {
+                    if ( ! (element instanceof Integer)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public String format(Object value) {
+            try {
+                return objectWriter.writeValueAsString((List) value);
+            } catch (JsonProcessingException e) {
+                throw new ClassCastException(
+                        "Not a formattable list of integers: " + value);
+            }
+        }
+    },
+
+    LIST_OF_DOUBLE("List of Double") {
+        @Override
+        public List<Double> parse(String value) throws ParseException {
+            try {
+                double[] array = objectMapper.readValue(value, double[].class);
+                List<Double> list = new ArrayList<Double>(array.length);
+                for (double d : array) {
+                    list.add(d);
+                }
+                return list;
+            } catch (IOException e) {
+                throw new ParseException(e.getMessage(), 0);
+            }
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public boolean isInstance(Object value) {
+            if ( ! (value instanceof List)) {
+                return false;
+            } else {
+                for (Object element : (List) value) {
+                    if ( ! (element instanceof Double)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public String format(Object value) {
+            try {
+                return objectWriter.writeValueAsString((List) value);
+            } catch (JsonProcessingException e) {
+                throw new ClassCastException(
+                        "Not a formattable list of doubles: " + value);
+            }
+        }
     };
 
-    /** Constructs an object of this type, given a string representation of a value. */
-    abstract public Object parse(String value);
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
+
+    /**
+     * Constructs an object of this type, given a string representation of a value.
+     * @throws ParseException if the string cannot be parsed as the correct type
+     */
+    abstract public Object parse(String value) throws ParseException;
 
     /** Determines whether the given object is of this particular type. */
     abstract public boolean isInstance(Object value);
 
-    /** Formats an object of this type into its string representation. */
+    /**
+     * Formats an object of this type into its string representation.
+     * @throws ClassCastException if the object is of some other type 
+     */
     abstract public String format(Object value);
 
     /**

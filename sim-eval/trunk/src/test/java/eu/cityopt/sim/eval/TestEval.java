@@ -26,6 +26,8 @@ public class TestEval {
         ns = new Namespace(evaluator, Arrays.asList(new String[] { "C1", "C2" }), true);
         ns.externals.put("a", Type.TIMESERIES_LINEAR);
         ns.externals.put("b", Type.TIMESERIES_LINEAR);
+        ns.externals.put("li", Type.LIST_OF_INTEGER);
+        ns.externals.put("ld", Type.LIST_OF_DOUBLE);
         ns.components.get("C1").inputs.put("x5", Type.DOUBLE);
         ns.components.get("C1").inputs.put("x6", Type.DOUBLE);
         ns.components.get("C1").inputs.put("x7", Type.DOUBLE);
@@ -56,6 +58,8 @@ public class TestEval {
         externalParameters = new ExternalParameters(ns);
         externalParameters.put("a", evaluator.makeTS(Type.TIMESERIES_LINEAR, ta, va));
         externalParameters.put("b", evaluator.makeTS(Type.TIMESERIES_LINEAR, ta, va));
+        externalParameters.put("li", Arrays.asList(1, 2, 3));
+        externalParameters.put("ld", Arrays.asList(4.0, 5.0, 6.0));
         input = new SimulationInput(externalParameters);
         input.put("C1", "x5", 1.0);
         input.put("C1", "x6", 2.0);
@@ -182,6 +186,19 @@ public class TestEval {
         Collections.sort(names);
         String[] good = {"x5", "x6", "x7", "x8"};
         assertArrayEquals(good, names.toArray());
+    }
+
+    @Test
+    public void listAccess() throws Exception {
+        assertEquals(1, eval("li[0]", input), 0.0);
+        assertEquals(2, eval("li[1]", input), 0.0);
+        assertEquals(3, eval("li[2]", input), 0.0);
+        assertEquals(3, eval("len(li)", input), 0.0);
+
+        assertEquals(4, eval("ld[0]", input), 0.0);
+        assertEquals(5, eval("ld[1]", input), 0.0);
+        assertEquals(6, eval("ld[2]", input), 0.0);
+        assertEquals(3, eval("len(ld)", input), 0.0);
     }
 
     /** Test our global Python functions with non-timeseries data. */
