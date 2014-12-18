@@ -1,3 +1,5 @@
+CREATE EXTENSION postgis;
+
 DROP TABLE IF EXISTS AlgoParam CASCADE
 ;
 DROP SEQUENCE IF EXISTS AlgoParam_aParamsID_seq
@@ -77,6 +79,10 @@ DROP SEQUENCE IF EXISTS OptimizationSet_optID_seq
 DROP TABLE IF EXISTS OptSearchConst CASCADE
 ;
 DROP SEQUENCE IF EXISTS OptSearchConst_optSearchConstID_seq
+;
+DROP TABLE IF EXISTS OptSetScenarios CASCADE
+;
+DROP SEQUENCE IF EXISTS OptSetScenarios_optScenID_seq
 ;
 DROP TABLE IF EXISTS OutputVariable CASCADE
 ;
@@ -373,6 +379,17 @@ CREATE TABLE OptSearchConst (
 )
 ;
 
+CREATE SEQUENCE OptSetScenarios_optScenID_seq INCREMENT 1 START 1
+;
+
+CREATE TABLE OptSetScenarios ( 
+	optScenID integer DEFAULT nextval(('OptSetScenarios_optScenID_seq'::text)::regclass) NOT NULL,
+	optID integer,
+	value text,
+	scenID integer NOT NULL
+)
+;
+
 CREATE SEQUENCE OutputVariable_outVarID_seq INCREMENT 1 START 1
 ;
 
@@ -392,14 +409,14 @@ CREATE TABLE Project (
 	prjID integer DEFAULT nextval(('Project_prjID_seq'::text)::regclass) NOT NULL,
 	modelID integer,
 	name varchar(50) NOT NULL,
-	description text,
 	designTarget varchar(50),
 	timeHorizon time(6),
 	location text,
 	createdOn timestamp(0),
 	updatedOn timestamp(0),
 	createdBy integer,
-	updatedBy integer
+	updatedBy integer,
+	description text
 )
 ;
 
@@ -682,6 +699,12 @@ CREATE INDEX IXFK_OptSearchConst_OptimizationSet
 ALTER TABLE OptSearchConst
 	ADD CONSTRAINT UQ_OptSearchConst_optID UNIQUE (optID, scID)
 ;
+CREATE INDEX IXFK_optID_02
+	ON OptSetScenarios (optID)
+;
+CREATE INDEX IXFK_OptSetScenarios_Scenario
+	ON OptSetScenarios (scenID)
+;
 CREATE INDEX IXFK_OutputVariables_Components
 	ON OutputVariable (componentID)
 ;
@@ -869,6 +892,11 @@ ALTER TABLE OptimizationSet ADD CONSTRAINT PK_OptimizationSet
 
 ALTER TABLE OptSearchConst ADD CONSTRAINT PK_OptSearchConstraints 
 	PRIMARY KEY (optSearchConstID)
+;
+
+
+ALTER TABLE OptSetScenarios ADD CONSTRAINT PK_OptSetScenarios 
+	PRIMARY KEY (optScenID)
 ;
 
 
@@ -1084,6 +1112,14 @@ ALTER TABLE OptSearchConst ADD CONSTRAINT FK_OptSearchConst_SearchConstraint
 
 ALTER TABLE OptSearchConst ADD CONSTRAINT FK_OptSearchConst_OptimizationSet 
 	FOREIGN KEY (optID) REFERENCES OptimizationSet (optID)
+;
+
+ALTER TABLE OptSetScenarios ADD CONSTRAINT FK_optID_02 
+	FOREIGN KEY (optID) REFERENCES OptimizationSet (optID)
+;
+
+ALTER TABLE OptSetScenarios ADD CONSTRAINT FK_OptSetScenarios_Scenario 
+	FOREIGN KEY (scenID) REFERENCES Scenario (scenID)
 ;
 
 ALTER TABLE OutputVariable ADD CONSTRAINT FK_OutputVariables_Components 
