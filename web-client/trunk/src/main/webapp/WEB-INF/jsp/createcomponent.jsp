@@ -36,14 +36,6 @@
 						<form:input style="width:300px" type="text" path="name"/>
 					</td>
 				</tr>
-				<tr>
-					<td>
-						Id
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="componentid"/>
-					</td>
-				</tr>
 				<tr height="10">
 					<td>
 					</td>

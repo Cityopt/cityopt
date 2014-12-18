@@ -8,9 +8,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.JFileChooser;
 
+import org.hibernate.Hibernate;
 import org.hibernate.collection.internal.PersistentSet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,10 +27,13 @@ import eu.cityopt.model.Component;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
+import eu.cityopt.model.Unit;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.AppUserServiceImpl;
+import eu.cityopt.service.AprosService;
 import eu.cityopt.service.ComponentServiceImpl;
 import eu.cityopt.service.EntityNotFoundException;
+import eu.cityopt.service.InputParameterServiceImpl;
 import eu.cityopt.service.ProjectService;
 import eu.cityopt.service.ProjectServiceImpl;
 import eu.cityopt.service.ScenarioService;
@@ -57,6 +63,9 @@ public class ProjectController {
 
 	@Autowired
 	ComponentServiceImpl componentService;
+	
+	@Autowired
+	InputParameterServiceImpl inputParamService;
 	
 	@RequestMapping(value="getProjects",method=RequestMethod.GET)
 	public String getGoalReports(Model model) {
@@ -119,12 +128,18 @@ public class ProjectController {
 			{
 			}
 			
+			if (true) //project.getAprosFileName() != null)
+			{
+				AprosService aprosService = new AprosService();
+				String strFileName = "";//project.getAprosFileName();
+				aprosService.readDiagramFile(strFileName);
+			}
+			
 			//project.setName(projectForm.getProjectName());
 			project.getPrjid();
 			projectService.save(project);
 			model.put("project", project);
 		}
-		
 		return "editproject";
 	}
 
@@ -393,6 +408,7 @@ public class ProjectController {
 			return "error";
 		}
 		
+		Hibernate.initialize(project.getComponents());
 		Set<Component> projectComponents = project.getComponents();
 		
 		if (projectComponents != null && projectComponents.size() > 0)
@@ -422,7 +438,8 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="projectparameters", method=RequestMethod.GET)
-	public String getProjectParameters(Map<String, Object> model){
+	public String getProjectParameters(Map<String, Object> model, 
+		@RequestParam(value="selectedCompId", required=false) String selectedCompId){
 		Project project = (Project) model.get("project");
 
 		if (project == null)
@@ -430,7 +447,15 @@ public class ProjectController {
 			return "error";
 		}
 		
-		Set<Component> setComponents = project.getComponents();
+		//Hibernate.initialize(project.getComponents());
+		//Set<Component> projectComponents = project.getComponents();
+		
+		/*if (projectComponents != null && projectComponents.size() > 0)
+		{
+			model.put("components", projectComponents);
+		}*/
+	
+		/*Set<Component> setComponents = project.getComponents();
 		List<Component> listComponents = new ArrayList<Component>();
         Iterator<Component> iterator = setComponents.iterator();
         
@@ -444,7 +469,31 @@ public class ProjectController {
 		if (listComponents != null && listComponents.size() > 0)
 		{
 			model.put("components", listComponents);
+		}*/
+
+		Component selectedComponent = null;
+		
+		// Select the first component if no component is selected
+		/*if (selectedCompId == null && projectComponents != null && projectComponents.size() > 0)
+		{
+			selectedComponent = projectComponents.iterator().next();
+			model.put("selectedCompId", selectedComponent.getComponentid());
+			//Hibernate.initialize(selectedComponent.getInputparameters());
+			//model.put("inputParams", selectedComponent.getInputparameters());
+			model.put("selectedComponent",  selectedComponent);
+		}*/
+		
+		if (selectedCompId != null)
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			selectedComponent = componentService.findByID(nSelectedCompId);
+			model.put("selectedCompId", selectedCompId);
+			//Hibernate.initialize(selectedComponent.getInputparameters());
+			//model.put("inputParams", selectedComponent.getInputparameters());
+			model.put("selectedComponent",  selectedComponent);
 		}
+
+		model.put("project", project);
 		
 		return "projectparameters";
 	}
@@ -467,8 +516,17 @@ public class ProjectController {
 			return "error";
 		}
 
+		component.setComponentid(0);
 		component.setProject(project);
 		componentService.save(component);
+				
+		Hibernate.initialize(project.getComponents());
+		Set<Component> projectComponents = project.getComponents();
+		
+		if (projectComponents != null && projectComponents.size() > 0)
+		{
+			model.put("components", projectComponents);
+		}
 		return "projectparameters";
 	}
 
@@ -481,6 +539,38 @@ public class ProjectController {
 		return "editcomponent";
 	}
 
+	@RequestMapping(value="editinputparameter", method=RequestMethod.GET)
+	public String getEditInputParameter(Model model, @RequestParam(value="inputparameterid", required=true) String inputid) {
+		int nInputId = Integer.parseInt(inputid);
+		InputParameter inputParam = inputParamService.findByID(nInputId);
+		model.addAttribute("inputParam", inputParam);
+		
+		return "editinputparameter";
+	}
+
+	@RequestMapping(value="editinputparameter", method=RequestMethod.POST)
+	public String getEditInputParameterPost(InputParameter inputParam, Map<String, Object> model){
+		Project project = (Project) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		inputParamService.save(inputParam);
+				
+		Hibernate.initialize(project.getComponents());
+		Set<Component> projectComponents = project.getComponents();
+		
+		if (projectComponents != null && projectComponents.size() > 0)
+		{
+			model.put("components", projectComponents);
+		}
+		model.put("inputParams", inputParamService.findAll());
+
+		return "projectparameters";
+	}
+
 	@RequestMapping(value="createinputparameter", method=RequestMethod.GET)
 	public String getCreateInputParameter(Map<String, Object> model){
 		Project project = (Project) model.get("project");
@@ -491,9 +581,10 @@ public class ProjectController {
 		}
 
 		InputParameter newInputParameter = new InputParameter();
-		model.put("inputParamForm", newInputParameter);
+		newInputParameter.setUnit(new Unit(0));
+		model.put("inputParam", newInputParameter);
 		
-		return "createcomponent";
+		return "createinputparameter";
 	}
 
 	@RequestMapping(value="createinputparameter", method=RequestMethod.POST)
@@ -504,8 +595,50 @@ public class ProjectController {
 		{
 			return "error";
 		}
-
+		
+		//inputParam.setComponent(component);
+		inputParamService.save(inputParam);
+				
+		Hibernate.initialize(project.getComponents());
+		Set<Component> projectComponents = project.getComponents();
+		
+		if (projectComponents != null && projectComponents.size() > 0)
+		{
+			model.put("components", projectComponents);
+		}
 		
 		return "projectparameters";
 	}
+	
+	@RequestMapping(value="uploaddiagram", method=RequestMethod.GET)
+	public String getUploadDiagram(HttpServletRequest request, Map<String, Object> model){
+		Project project = (Project) model.get("project");
+
+		AprosService aprosService = new AprosService();
+		String strFileName = request.getParameter("uploadFile");
+		aprosService.readDiagramFile(strFileName);
+		String strTest = "";
+		
+		for (int i = 0; i < aprosService.listNewComponents.size(); i++)
+		{
+			Component component = aprosService.listNewComponents.get(i);
+			component.setProject(project);
+			componentService.save(component);
+			strTest += component.getName() + " ";
+		}
+
+		for (int i = 0; i < aprosService.listNewInputParams.size(); i++)
+		{
+			InputParameter inputParam = aprosService.listNewInputParams.get(i);
+			//inputParamService.save(inputParam);
+			strTest += inputParam.getName() + " ";
+		}
+		
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		return "editproject";
+	}	
 }

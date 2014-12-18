@@ -1,3 +1,7 @@
+<%--@elvariable id="project" type="com.cityopt.model.Project"--%>
+<%--@elvariable id="component" type="com.cityopt.model.Component"--%>
+<%--@elvariable id="inputParam" type="com.cityopt.model.InputParameter"--%>
+<%--@elvariable id="selectedCompId" type="int"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -13,11 +17,6 @@
 
 <body>
 <%@ include file="mainmenu.inc"%>
-
-<%
-	//ArrayList<Book> b = new ArrayList<Book>();
-	//b = SqlSentencesList.showCatalog(); // this method returns an arrayList with all books
-%>
 
 <div style="overflow:scroll;height:600px;width:1100px;overflow:auto">
 <table>
@@ -42,22 +41,31 @@
 					<td>
 						<table width="1000">
 							<col style="width:150px">
-							<col style="width:600px">
+							<col style="width:50px">
+							<col style="width:550px">
 							<col style="width:250px">
 							<tr>						
 								<td>
 									<table class="tablestyle">
+										<col style="width:80px">
 										<col style="width:150px">
 										<col style="width:80px">
-										<col style="width:80px">
+										<col style="width:50px">
 										<tr>
+											<th>Select</th>
 											<th>Components</th>
 											<th>Id</th>
 											<th>Edit</th>
 										</tr>
 
-										<c:forEach items="${components}" var="component">
-										<tr>
+										<c:forEach items="${project.components}" var="component">
+										<c:if test="${selectedCompId == component.componentid}">
+											<tr class="selectedRowStyle"><p>selected ${selectedCompId} </p>
+										</c:if>
+										<c:if test="${selectedCompId != component.componentid}">
+											<tr>
+										</c:if>
+											<td><a href="<c:url value='projectparameters.html?selectedcomponentid=${component.componentid}'/>">Select</a></td>
 											<td>${component.name}</td>
 									    	<td>${component.componentid}</td>
 											<td>
@@ -69,27 +77,33 @@
 										</c:forEach>
 									</table>
 								</td>
+								<td></td>
 								<td>
 									<table class="tablestyle">
 										<col style="width:120px">
-										<col style="width:120px">
-										<col style="width:120px">
-										<col style="width:120px">
-										<col style="width:120px">
+										<col style="width:60px">
+										<col style="width:80px">
+										<col style="width:60px">
 										<tr>
 											<th>Input parameter</th>
+											<th>Id</th>
 											<th>Default value</th>
-											<th>Units</th>
-											<th>Date</th>
-											<th>Reliability</th>
+											<th>Edit</th>
 										</tr>
+										
+										<c:forEach items="${selectedComponent.inputparameters}" var="inputParam">
 										<tr>
-											<td>x</td>
-											<td>x</td>
-											<td>x</td>
-											<td>x</td>
-											<td>x</td>
-										</tr>
+											<td>${inputParam.name}</td>
+									    	<td>${inputParam.inputid}</td>
+									    	<td>${inputParam.defaultvalue}</td>
+											<td>
+												<a href="<c:url value='editinputparameter.html?inputparameterid=${inputParam.inputid}'/>">
+													<button align="right" type="button" value="Edit">Edit</button>
+												</a>
+											</td>
+									   	</tr>
+										</c:forEach>
+										
 									</table>
 								</td>
 								<td>
@@ -104,6 +118,7 @@
 								<td>
 									<a href="createcomponent.html"><button type="button">Create component</button></a>
 								</td>
+								<td></td>
 								<td>
 									<a href="createinputparameter.html"><button type="button">Create input parameter</button></a>
 								</td>

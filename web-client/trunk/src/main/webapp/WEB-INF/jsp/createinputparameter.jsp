@@ -1,4 +1,4 @@
-<%--@elvariable id="inputParamForm" type="eu.cityopt.model.InputParameter"--%>
+<%--@elvariable id="inputParam" type="eu.cityopt.model.InputParameter"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -18,15 +18,10 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-
-<%
-	//ArrayList<Book> b = new ArrayList<Book>();
-	//b = SqlSentencesList.showCatalog(); // this method returns an arrayList with all books
-%>
 		<td width=30></td>
 		<td>
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="createinputparameter.html" modelAttribute="inputParamForm">
+			<form:form method="post" action="createinputparameter.html" modelAttribute="inputParam">
 			<h2>Create input parameter</h2>
 
 			<table align="center">
@@ -43,14 +38,6 @@
 				</tr>
 				<tr>
 					<td>
-						Id
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="inputid"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
 						Default value
 					</td>
 					<td>
@@ -63,8 +50,8 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td align="right"><input style="width:100px" type="submit" value="Update"/>
-					<a href="editproject.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<td align="right"><input style="width:100px" type="submit" value="Create"/>
+					<a href="projectparameters.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
 				</tr>
 			</table>
 			</form:form>

@@ -16,7 +16,8 @@
 		<td width=30></td>
 		<td>
 			<div style="overflow:scroll;height:500px;width:1000px;overflow:auto">
-			<form:form method="post" action="editproject.html?action=save" modelAttribute="project">
+			<form:form method="post" action="editproject.html?action=save" modelAttribute="project" 
+				enctype="multipart/form-data">
 			<table style="width:900px">
 				<tr><td><h2>Edit project</h2></td></tr>
 				<tr>
@@ -40,11 +41,12 @@
 							</tr>
 							<tr>						
 								<td>Energy model:</td>
-								<td></td>
+								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
 							</tr>
 							<tr>						
 								<td></td>
-								<td><input type="button" id="upload" value="Upload"/></td>
+								<td><a href="uploaddiagram.html"><button type="button">Upload</button></a>
+								<!--<form:input type="submit" path="" value="Upload" style="width:120px"/>--></td>
 							</tr>
 						</table>
 					</td>
@@ -54,7 +56,7 @@
 				</tr>
 				<tr>
 					<td colspan="2" align="Right">
-						<input type="button" id="uploadDiagram" value="Upload diagram"/>
+						<td><input type="button" id="upload" value="Upload"/></td>
 					</td>
 				</tr>
 				<tr>

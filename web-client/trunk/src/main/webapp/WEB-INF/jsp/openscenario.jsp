@@ -45,7 +45,7 @@
 					<td></td>
 					<td>
 						<a href="<c:url value='openscenario.html?scenarioid=${scenario.scenid}'/>">
-							<button align="right"  type="button" value="Open">Open</button>
+							<button align="right" type="button" value="Open">Open</button>
 						</a>
 					</td>
 			   	</tr>
