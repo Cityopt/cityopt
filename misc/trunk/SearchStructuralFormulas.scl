@@ -1,0 +1,80 @@
+import "Simantics/DB"
+import "Simantics/Variables"
+import "Apros/Variables"
+import "http://www.apros.fi/Apros-6.1" as APROS
+
+// This function is defined in Prelude of current development version of Apros
+@private
+@inline
+mapMaybe :: (a -> <e> Maybe b) -> [a] -> <e> [b]
+mapMaybe f l = build (\empty cons -> foldl (\cur x -> match f x with Just v -> cons cur v ; _ -> cur) empty l)
+
+data Property = ConstantProperty String String
+              | ExpressionProperty String String
+
+deriving instance Show Property
+              
+data Node = Node
+    String // Simantics name (unique between siblings)
+    String // Apros name (unique globally)
+    [Node] // Children
+    [Property] // Properties
+    Boolean // Is instance of a user component
+
+deriving instance Show Node
+
+@private
+isInterestingNode (Node _ _ [] [] _) = False
+isInterestingNode _ = True
+
+@private
+solverName v = fromMaybe "#" mdo
+    av <- possibleActiveVariable v
+    possiblePropertyValue av "solverModuleName"
+
+searchFormulas :: <ReadGraph> Node
+searchFormulas = toNode ((variable $ uriOf currentModel)
+                         `child` "Configuration")
+  where
+    toNode v = let
+        cs = filter isInterestingNode 
+             $ map toNode 
+             $ filter (\c -> name c != "__CONTAINER__") 
+             $ children v
+        props = filter notMonitor (properties v)
+        ps = match cs with
+            [] -> mapMaybe possibleExpressionOf props
+            _ -> map valueOf $ filter isStructuralProperty props
+        isUC = isUserComponent (possiblePropertyValue v "Type")
+      in Node (name v) (solverName v) cs ps isUC
+    possibleExpressionOf prop = mdo
+        exp <- possiblePropertyValue prop "expression"
+        return $ ExpressionProperty (name prop) exp
+    notMonitor prop = map uriOf (possiblePropertyValue prop "Type")
+        != Just "http://www.simantics.org/Modeling-1.2/MonitorValue"
+    isUserComponent Nothing = False
+    isUserComponent (Just r) = not $ existsStatement r APROS.HasAprosName
+    valueOf prop = possibleExpressionOf prop
+        `orElse` ConstantProperty (name prop)
+                                  (possiblePropertyValue prop "HasDisplayValue"
+                                   `orElse` "")
+    isStructuralProperty prop
+        = match possiblePropertyValue prop "classifications" with
+            Nothing -> False
+            Just l -> elem "http://www.simantics.org/Structural-1.2/Property" l
+
+
+printNodeAsXml node = loop node
+  where
+    loop (Node name moduleName cs ps isUC) = do
+        print ("<node name=\"" + name + "\" moduleName=\"" + moduleName
+               + "\" isUC=\"" + show isUC + "\">")
+        for ps $ \prop -> match prop with
+            ConstantProperty name value ->
+                print ("<property type=\"constant\" name=\"" + name
+                       + "\" value=\"" + value + "\"/>")
+            ExpressionProperty name value ->
+                print ("<property type=\"expression\" name=\"" + name
+                       + "\" value=\"" + value + "\"/>")    
+        for cs loop
+        print ("</node>")
