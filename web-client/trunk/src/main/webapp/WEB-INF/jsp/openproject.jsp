@@ -46,6 +46,7 @@
 					<td>${project.location}</td>			
 					<td>${project.description}</td>			
 					<td></td>
+					
 					<td>
 						<a href="<c:url value='editproject.html?prjid=${project.prjid}'/>">
 							<button align="right"  type="button" value="Open">Open</button>

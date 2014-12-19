@@ -47,14 +47,14 @@ public class AprosService {
             //Node rootNode = doc.getFirstChild();
             NodeList nodeLst = doc.getElementsByTagName(NODE);
             Node rootNode = nodeLst.item(0);
-            handleNode(rootNode, null);
+            handleNode(rootNode, null, 0);
         }
         catch (Exception e) {
         	e.printStackTrace();
         }
 	}
 	
-	private void handleNode(Node node, Component parentComponent)
+	private void handleNode(Node node, Component parentComponent, int level)
 	{
 	    NodeList nodeChildren = node.getChildNodes();
 	    
@@ -98,7 +98,7 @@ public class AprosService {
                 newId++;
                 listNewComponents.add(component);
 
-                handleNode(childNode, parentComponent);
+                handleNode(childNode, parentComponent, level + 1);
             }
         }
 	}

@@ -1,4 +1,5 @@
 <%--@elvariable id="inputParam" type="eu.cityopt.model.InputParameter"--%>
+<%--@elvariable id="selectedcompid" type="int"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -21,7 +22,7 @@
 		<td width=30></td>
 		<td>
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="createinputparameter.html" modelAttribute="inputParam">
+			<form:form method="post" action="createinputparameter.html?selectedcompid=${selectedcompid}" modelAttribute="inputParam">
 			<h2>Create input parameter</h2>
 
 			<table align="center">

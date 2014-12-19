@@ -1,7 +1,8 @@
 <%--@elvariable id="project" type="com.cityopt.model.Project"--%>
 <%--@elvariable id="component" type="com.cityopt.model.Component"--%>
+<%--@elvariable id="selectedComponent" type="com.cityopt.model.Component"--%>
 <%--@elvariable id="inputParam" type="com.cityopt.model.InputParameter"--%>
-<%--@elvariable id="selectedCompId" type="int"--%>
+<%--@elvariable id="selectedcompid" type="int"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -57,15 +58,15 @@
 											<th>Id</th>
 											<th>Edit</th>
 										</tr>
-
+										
 										<c:forEach items="${project.components}" var="component">
-										<c:if test="${selectedCompId == component.componentid}">
-											<tr class="selectedRowStyle"><p>selected ${selectedCompId} </p>
+										<c:if test="${selectedcompid == component.componentid}">
+											<tr style="background-color: rgb(140, 200, 200)">
 										</c:if>
-										<c:if test="${selectedCompId != component.componentid}">
+										<c:if test="${selectedcompid != component.componentid}">
 											<tr>
 										</c:if>
-											<td><a href="<c:url value='projectparameters.html?selectedcomponentid=${component.componentid}'/>">Select</a></td>
+											<td><a href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
 											<td>${component.name}</td>
 									    	<td>${component.componentid}</td>
 											<td>
@@ -120,7 +121,7 @@
 								</td>
 								<td></td>
 								<td>
-									<a href="createinputparameter.html"><button type="button">Create input parameter</button></a>
+									<a href="createinputparameter.html?selectedcompid=${selectedcompid}"><button type="button">Create input parameter</button></a>
 								</td>
 							</tr>
 						</table>

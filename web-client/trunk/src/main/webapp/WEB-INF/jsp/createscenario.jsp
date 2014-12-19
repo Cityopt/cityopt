@@ -29,25 +29,25 @@
 								<td>Project name:</td>
 								<td><form:input type="text" path="name"/></td>
 								<td></td>
-								<td><input type="submit" value="Create scenario"></td>
+								<td><input type="submit" value="Create scenario" style="width:120px"></td>
 							</tr>
 							<tr>						
-								<td>Id:</td>
-								<td><form:input type="text" path="scenid"/></td>
 								<td></td>
-								<td><input type="submit" value="Run scenario"></td>
+								<td></td>
+								<td></td>
+								<td><input type="submit" value="Run scenario" style="width:120px"></td>
 							</tr>
 							<tr>						
 								<td>Description:</td>
 								<td><form:textarea type="text" rows="3" path="description"></form:textarea></td>
 								<td></td>
-								<td><input type="submit" value="Abort run scenario"></td>
+								<td><input type="submit" value="Abort run scenario" style="width:120px"></td>
 							</tr>
 							<tr>						
 								<td></td>
 								<td></td>
 								<td></td>
-								<td><input type="submit" value="Clone scenario"></td>
+								<td><input type="submit" value="Clone scenario" style="width:120px"></td>
 							</tr>
 							<tr>						
 								<td>External parameters:</td>

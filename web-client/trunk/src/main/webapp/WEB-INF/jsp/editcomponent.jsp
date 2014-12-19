@@ -1,4 +1,4 @@
-<%--@elvariable id="componentForm" type="eu.cityopt.model.Component"--%>
+<%--@elvariable id="component" type="eu.cityopt.model.Component"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -19,14 +19,10 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 
-<%
-	//ArrayList<Book> b = new ArrayList<Book>();
-	//b = SqlSentencesList.showCatalog(); // this method returns an arrayList with all books
-%>
 		<td width=30></td>
 		<td>
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="edituser.html?action=save" modelAttribute="userForm">
+			<form:form method="post" action="editcomponent.html?componentid=${component.componentid}" modelAttribute="component">
 			<h2>Edit component</h2>
 
 			<table align="center">
@@ -39,14 +35,6 @@
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="name"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Id
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="componentid"/>
 					</td>
 				</tr>
 				<tr height="10">

@@ -19,14 +19,10 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 
-<%
-	//ArrayList<Book> b = new ArrayList<Book>();
-	//b = SqlSentencesList.showCatalog(); // this method returns an arrayList with all books
-%>
 		<td width=30></td>
 		<td>
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="editinputparameter.html" modelAttribute="inputParam">
+			<form:form method="post" action="editinputparameter.html?inputparamid=${inputParam.inputid}" modelAttribute="inputParam">
 			<h2>Edit input parameter</h2>
 
 			<table align="center">
@@ -39,14 +35,6 @@
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="name"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Id
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="inputid"/>
 					</td>
 				</tr>
 				<tr>

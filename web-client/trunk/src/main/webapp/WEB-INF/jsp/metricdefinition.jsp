@@ -10,66 +10,55 @@
 </head>
 
 <body>
-<%@ include file="mainmenu.inc"%>
-
-<%
-	//ArrayList<Book> b = new ArrayList<Book>();
-	//b = SqlSentencesList.showCatalog(); // this method returns an arrayList with all books
-%>
-
-<div style="overflow:scroll;height:400px;width:500px;overflow:auto">
-<form method="get" action="MetricController">
-<h2>Metric definition</h2>
-<table class="tablestyle" width="400" border="1">
-
-<tr height="20">
-    <th>Name</th>
-    <th>Equation</th>
-    <th>Unit</th>
-    <th>Selected</th>
-</tr>
-
-<tr height="20">
-    <td>project 1</td>
-    <td>x</td>
-    <td>x</td>
-    <td> <input type="radio"/> </td>
-</tr>
-
-<tr height="20">
-    <td>project 2</td>
-    <td>x</td>
-    <td>x</td>
-    <td> <input type="radio"/> </td>
-</tr>
-
-<% //for(int i=0; i<l.size();i++) {%>
-<!--    <tr>
-        <td> <%//out.print(b.get(i).getIsbn());%> </td>
-        <td> <%//out.print(b.get(i).getTitle());%> </td>
-        <td> <%//out.print(b.get(i).getAuthor());%> </td>
-        <td> <%//out.print(b.get(i).getPrice());%> </td>
-        <td> <!-- <input type="radio" name="project" value="<%//Integer.toString(i);%>"/>--> </td>
-    <!-- </tr>-->
-<% //} %>
+<table cellspacing="0" cellpadding="0">
+	<tr>	
+		<td><%@ include file="mainmenu.inc"%></td>
+		<td width="50"></td>
+		<td>
+			<div style="overflow:scroll;height:400px;width:500px;overflow:auto">
+			<h2>Metric definition</h2>
+			<table class="tablestyle" width="400" border="1">
+			
+			<tr height="20">
+			    <th>Name</th>
+			    <th>Equation</th>
+			    <th>Unit</th>
+			    <th>Selected</th>
+			</tr>
+			
+			<tr height="20">
+			    <td>project 1</td>
+			    <td>x</td>
+			    <td>x</td>
+			    <td> <input type="radio"/> </td>
+			</tr>
+			
+			<tr height="20">
+			    <td>project 2</td>
+			    <td>x</td>
+			    <td>x</td>
+			    <td> <input type="radio"/> </td>
+			</tr>
+			</table>
+			
+			<table width="400">
+			
+			<tr>
+				<td align="left">
+					<input align="left" type="submit" value="Upload the metrics"/>
+				</td>
+				<td align="right">
+					<input align="right" type="submit" value="Create"/>
+					<input align="right" type="submit" value="Clone"/>
+					<input align="right" type="submit" value="Edit"/>
+					<input align="right" type="submit" value="Delete"/>
+			    </td>
+			</tr>
+			      
+			</table>
+			</div>
+		</td>
+	</tr>
 </table>
-
-<table width="400">
-
-<tr>
-	<td align="left">
-		<input align="left" type="submit" value="Upload the metrics"/>
-	</td>
-	<td align="right">
-		<input align="right" type="submit" value="Create"/>
-		<input align="right" type="submit" value="Clone"/>
-		<input align="right" type="submit" value="Edit"/>
-		<input align="right" type="submit" value="Delete"/>
-    </td>
-</tr>
-      
-</table>
-</form>
-</div>
 </body>
 </html>

@@ -1,3 +1,8 @@
+<%--@elvariable id="project" type="com.cityopt.model.Project"--%>
+<%--@elvariable id="component" type="com.cityopt.model.Component"--%>
+<%--@elvariable id="selectedComponent" type="com.cityopt.model.Component"--%>
+<%--@elvariable id="outputVar" type="com.cityopt.model.OutputVariable"--%>
+<%--@elvariable id="selectedcompid" type="int"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -14,7 +19,7 @@
 <body>
 <table cellspacing="0" cellpadding="0">
 	<tr>
-		<td>
+		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width="30"></td>
@@ -46,51 +51,35 @@
 										<tr>						
 											<td>
 												<table class="tablestyle" height="400">
+													<col style="width:60px">
 													<col style="width:150px">
+													<col style="width:60px">
+													<col style="width:60px">
 													<tr>
-														<th>Components</th>
+														<th>Select</th>
+														<th>Component</th>
+														<th>Id</th>
+														<th>Edit</th>
 													</tr>
-													
-													<c:forEach items="${components}" var="component">
+										
+													<c:forEach items="${project.components}" var="component">
 													<tr>
+														<c:if test="${selectedcompid == component.componentid}">
+															<tr style="background-color: rgb(140, 200, 200)">
+														</c:if>
+														<c:if test="${selectedcompid != component.componentid}">
+															<tr>
+														</c:if>
+															<td><a href="<c:url value='outputvariables.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+															<td>${component.name}</td>
+													    	<td>${component.componentid}</td>
 														<td>			
-															<a href="<c:url value='outputvariables.html?componentid=${component.componentid}'/>">
-																<button align="right" type="button" value="Edit">${component.name}</button>
+															<a href="<c:url value='editvariables.html?componentid=${component.componentid}'/>">
+																<button align="right" type="button" value="Edit">Edit</button>
 															</a>
 														</td>
 												   	</tr>
 													</c:forEach>
-																
-													<tr>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-													</tr>
 												</table>
 											</td>
 											<td>
@@ -180,9 +169,9 @@
 					</td>
 				</tr>	
 			</table>
+			</div>
 		</td>
 	</tr>
 </table>
-</div>
 </body>
 </html>

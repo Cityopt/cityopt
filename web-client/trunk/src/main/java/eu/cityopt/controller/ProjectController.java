@@ -400,7 +400,9 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="outputvariables",method=RequestMethod.GET)
-	public String getOutputVariables(Map<String, Object> model){
+	public String getOutputVariables(Map<String, Object> model,
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+
 		Project project = (Project) model.get("project");
 
 		if (project == null)
@@ -408,14 +410,18 @@ public class ProjectController {
 			return "error";
 		}
 		
-		Hibernate.initialize(project.getComponents());
-		Set<Component> projectComponents = project.getComponents();
-		
-		if (projectComponents != null && projectComponents.size() > 0)
+		if (selectedCompId != null)
 		{
-			model.put("components", projectComponents);
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			Component selectedComponent = componentService.findByID(nSelectedCompId);
+			model.put("selectedcompid", selectedCompId);
+			//Hibernate.initialize(selectedComponent.getInputparameters());
+			//model.put("inputParams", selectedComponent.getInputparameters());
+			model.put("selectedComponent",  selectedComponent);
 		}
-	
+
+		model.put("project", project);
+		
 		return "outputvariables";
 	}
 	
@@ -439,7 +445,7 @@ public class ProjectController {
 
 	@RequestMapping(value="projectparameters", method=RequestMethod.GET)
 	public String getProjectParameters(Map<String, Object> model, 
-		@RequestParam(value="selectedCompId", required=false) String selectedCompId){
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId){
 		Project project = (Project) model.get("project");
 
 		if (project == null)
@@ -487,7 +493,7 @@ public class ProjectController {
 		{
 			int nSelectedCompId = Integer.parseInt(selectedCompId);
 			selectedComponent = componentService.findByID(nSelectedCompId);
-			model.put("selectedCompId", selectedCompId);
+			model.put("selectedcompid", selectedCompId);
 			//Hibernate.initialize(selectedComponent.getInputparameters());
 			//model.put("inputParams", selectedComponent.getInputparameters());
 			model.put("selectedComponent",  selectedComponent);
@@ -516,17 +522,12 @@ public class ProjectController {
 			return "error";
 		}
 
-		component.setComponentid(0);
+		component.setComponentid(1);
 		component.setProject(project);
 		componentService.save(component);
-				
-		Hibernate.initialize(project.getComponents());
-		Set<Component> projectComponents = project.getComponents();
 		
-		if (projectComponents != null && projectComponents.size() > 0)
-		{
-			model.put("components", projectComponents);
-		}
+		model.put("project", projectService.findByID(project.getPrjid()));
+		
 		return "projectparameters";
 	}
 
@@ -539,6 +540,29 @@ public class ProjectController {
 		return "editcomponent";
 	}
 
+	@RequestMapping(value="editcomponent", method=RequestMethod.POST)
+	public String getEditComponentPost(Component component, Map<String, Object> model,
+		@RequestParam(value="componentid", required=true) String componentid) {
+		Project project = (Project) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		int nCompId = Integer.parseInt(componentid);
+		Component oldComponent = componentService.findByID(nCompId);
+		oldComponent.setName(component.getName());
+		
+		componentService.save(oldComponent);
+		model.put("selectedcompid", oldComponent.getComponentid());
+		model.put("selectedComponent",  oldComponent);
+
+		model.put("project", projectService.findByID(project.getPrjid()));
+		
+		return "projectparameters";
+	}
+
 	@RequestMapping(value="editinputparameter", method=RequestMethod.GET)
 	public String getEditInputParameter(Model model, @RequestParam(value="inputparameterid", required=true) String inputid) {
 		int nInputId = Integer.parseInt(inputid);
@@ -549,7 +573,8 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="editinputparameter", method=RequestMethod.POST)
-	public String getEditInputParameterPost(InputParameter inputParam, Map<String, Object> model){
+	public String getEditInputParameterPost(InputParameter inputParam, Map<String, Object> model,
+		@RequestParam(value="inputparamid", required=true) String inputParamId){
 		Project project = (Project) model.get("project");
 		
 		if (project == null)
@@ -557,22 +582,22 @@ public class ProjectController {
 			return "error";
 		}
 
-		inputParamService.save(inputParam);
+		int nInputParamId = Integer.parseInt(inputParamId);
+		InputParameter updatedInputParam = inputParamService.findByID(nInputParamId);
+		updatedInputParam.setName(inputParam.getName());
+		updatedInputParam.setDefaultvalue(inputParam.getDefaultvalue());
+		inputParamService.save(updatedInputParam);
 				
-		Hibernate.initialize(project.getComponents());
-		Set<Component> projectComponents = project.getComponents();
-		
-		if (projectComponents != null && projectComponents.size() > 0)
-		{
-			model.put("components", projectComponents);
-		}
-		model.put("inputParams", inputParamService.findAll());
+		model.put("selectedcompid", updatedInputParam.getComponent().getComponentid());
+		model.put("selectedComponent",  updatedInputParam.getComponent());
+		model.put("project", project);
 
 		return "projectparameters";
 	}
 
 	@RequestMapping(value="createinputparameter", method=RequestMethod.GET)
-	public String getCreateInputParameter(Map<String, Object> model){
+	public String getCreateInputParameter(Map<String, Object> model,
+		@RequestParam(value="selectedcompid", required=true) String strSelectedCompId) {
 		Project project = (Project) model.get("project");
 
 		if (project == null)
@@ -580,33 +605,38 @@ public class ProjectController {
 			return "error";
 		}
 
+		int nSelectedCompId = Integer.parseInt(strSelectedCompId);
+		Component component = componentService.findByID(nSelectedCompId);
+
 		InputParameter newInputParameter = new InputParameter();
 		newInputParameter.setUnit(new Unit(0));
+		newInputParameter.setComponent(component);
 		model.put("inputParam", newInputParameter);
+		model.put("selectedcompid", nSelectedCompId);
 		
 		return "createinputparameter";
 	}
 
 	@RequestMapping(value="createinputparameter", method=RequestMethod.POST)
-	public String getCreateInputParamPost(InputParameter inputParam, Map<String, Object> model){
+	public String getCreateInputParamPost(InputParameter inputParam, Map<String, Object> model,
+		@RequestParam(value="selectedcompid", required=true) String strSelectedCompId) {
 		Project project = (Project) model.get("project");
 
 		if (project == null)
 		{
 			return "error";
 		}
-		
-		//inputParam.setComponent(component);
+
+		int nSelectedCompId = Integer.parseInt(strSelectedCompId);
+		Component component = componentService.findByID(nSelectedCompId);
+		inputParam.setComponent(component);
 		inputParamService.save(inputParam);
 				
-		Hibernate.initialize(project.getComponents());
-		Set<Component> projectComponents = project.getComponents();
-		
-		if (projectComponents != null && projectComponents.size() > 0)
-		{
-			model.put("components", projectComponents);
-		}
-		
+		model.put("selectedcompid", nSelectedCompId);
+		model.put("selectedComponent",  component);
+	
+		model.put("project", project);
+	
 		return "projectparameters";
 	}
 	
@@ -614,6 +644,79 @@ public class ProjectController {
 	public String getUploadDiagram(HttpServletRequest request, Map<String, Object> model){
 		Project project = (Project) model.get("project");
 
+		/*File file ;
+		int maxFileSize = 5000 * 1024;
+		int maxMemSize = 5000 * 1024;
+		ServletContext context = pageContext.getServletContext();
+		String filePath = context.getInitParameter("file-upload");
+
+		// Verify the content type
+		String contentType = request.getContentType();
+		if ((contentType.indexOf("multipart/form-data") >= 0)) {
+
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+			// maximum size that will be stored in memory
+			factory.setSizeThreshold(maxMemSize);
+			// Location to save data that is larger than maxMemSize.
+			factory.setRepository(new File("c:\\temp"));
+
+			// Create a new file upload handler
+			ServletFileUpload upload = new ServletFileUpload(factory);
+			// maximum file size to be uploaded.
+			upload.setSizeMax( maxFileSize );
+			try{ 
+		         // Parse the request to get file items.
+		         List fileItems = upload.parseRequest(request);
+
+		         // Process the uploaded file items
+		         Iterator i = fileItems.iterator();
+
+		         out.println("<html>");
+		         out.println("<head>");
+		         out.println("<title>JSP File upload</title>");  
+		         out.println("</head>");
+		         out.println("<body>");
+		         while ( i.hasNext () ) 
+		         {
+		            FileItem fi = (FileItem)i.next();
+		            if ( !fi.isFormField () )	
+		            {
+		            // Get the uploaded file parameters
+		            String fieldName = fi.getFieldName();
+		            String fileName = fi.getName();
+		            boolean isInMemory = fi.isInMemory();
+		            long sizeInBytes = fi.getSize();
+		            // Write the file
+		            if( fileName.lastIndexOf("\\") >= 0 ){
+		            file = new File( filePath + 
+		            fileName.substring( fileName.lastIndexOf("\\"))) ;
+		            }else{
+		            file = new File( filePath + 
+		            fileName.substring(fileName.lastIndexOf("\\")+1)) ;
+		            }
+		            fi.write( file ) ;
+		            out.println("Uploaded Filename: " + filePath + 
+		            fileName + "<br>");
+		            }
+		         }
+		         out.println("</body>");
+		         out.println("</html>");
+		      }catch(Exception ex) {
+		         System.out.println(ex);
+		      }
+		   }else{
+		      out.println("<html>");
+		      out.println("<head>");
+		      out.println("<title>Servlet upload</title>");  
+		      out.println("</head>");
+		      out.println("<body>");
+		      out.println("<p>No file uploaded</p>"); 
+		      out.println("</body>");
+		      out.println("</html>");
+		   }*/
+		   
+		   
+		   
 		AprosService aprosService = new AprosService();
 		String strFileName = request.getParameter("uploadFile");
 		aprosService.readDiagramFile(strFileName);
