@@ -3,14 +3,9 @@ package eu.cityopt.sim.eval;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
@@ -260,5 +255,27 @@ public enum Type {
             }
         }
         throw new IllegalArgumentException("Unknown type \"" + name + "\"");
+    }
+
+    /**
+     * Determines the type of a literal value.
+     *
+     * @param value a string representing an object of one of the defined types
+     * @return 
+     * @throws ParseException if the 
+     */
+    public static Type getFromValue(String value) throws ParseException {
+        Object object;
+        try {
+            object = objectMapper.readValue(value, Object.class);
+        } catch (IOException e) {
+            throw new ParseException(e.getMessage(), 0);
+        }
+        for (Type type : values()) {
+            if (type.isInstance(object)) {
+                return type;
+            }
+        }
+        throw new ParseException("Unsupported literal: " + value, 0);
     }
 }

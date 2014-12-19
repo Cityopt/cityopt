@@ -57,4 +57,23 @@ public class TestType {
     public void parseListOfDouble_Scalar() throws Exception {
         System.out.println(Type.LIST_OF_DOUBLE.parse("1.0"));
     }
+
+    @Test
+    public void getTypeFromValue() throws Exception {
+        assertEquals(Type.DOUBLE, Type.getFromValue("1.0"));
+        assertEquals(Type.INTEGER, Type.getFromValue("13"));
+        assertEquals(Type.STRING, Type.getFromValue("\"foo\""));
+        assertEquals(Type.LIST_OF_INTEGER, Type.getFromValue("[9]"));
+        assertEquals(Type.LIST_OF_DOUBLE, Type.getFromValue("[2.0]"));
+    }
+
+    @Test(expected=ParseException.class)
+    public void getTypeFromValue_Object() throws Exception {
+        Type.getFromValue("{ \"id\" : 1 }");
+    }
+
+    @Test(expected=ParseException.class)
+    public void getTypeFromValue_UnquotedName() throws Exception {
+        Type.getFromValue("argh");
+    }
 }
