@@ -84,66 +84,31 @@
 											</td>
 											<td>
 											</td>
-											<td>
-												<table height="400" class="tablestyle">
+											<td valign="top">
+												<table class="tablestyle">
 													<col style="width:120px">
 													<col style="width:120px">
 													<col style="width:120px">
 													<col style="width:120px">
 													<tr>
-														<th>Project variable</th>
-														<th>Unit</th>
-														<th>Type</th>
-														<th>Select</th>
+														<th>Output variable</th>
+														<th>Id</th>
+														<th>Default value</th>
+														<th>Edit</th>
 													</tr>
+								
+													<c:forEach items="${selectedComponent.outputvariables}" var="outputVar">
 													<tr>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-													</tr>
-													<tr>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-														<td>x</td>
-													</tr>
+														<td>${outputVar.name}</td>
+												    	<td>${outputVar.inputid}</td>
+												    	<td>${outputVar.defaultvalue}</td>
+														<td>
+															<a href="<c:url value='editoutputvariable.html?outvarid=${outputVar.outvarid}'/>">
+																<button align="right" type="button" value="Edit">Edit</button>
+															</a>
+														</td>
+												   	</tr>
+													</c:forEach>
 												</table>
 											</td>
 										</tr>

@@ -1,5 +1,8 @@
+<%--@elvariable id="project" type="com.cityopt.model.Project"--%>
+<%--@elvariable id="component" type="com.cityopt.model.Component"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -12,13 +15,7 @@
 <body>
 <%@ include file="mainmenu.inc"%>
 
-<%
-	//ArrayList<Book> b = new ArrayList<Book>();
-	//b = SqlSentencesList.showCatalog(); // this method returns an arrayList with all books
-%>
-
 <div style="overflow:scroll;height:500px;width:900px;overflow:auto">
-<form method="get" action="CoordinateController">
 <table>
 <col style="width: 50px">
 <col style="width: 300px">
@@ -38,53 +35,21 @@
 		<td>
 			<table class="tablestyle" height="300">
 				<col style="width: 150px">
-				<col style="width: 100px">
+				<col style="width: 60px">
 				<col style="width: 100px">
 				<tr height="20">
     				<th>Component</th>
-    				<th>Geometry</th>
+    				<th>Id</th>
     				<th>Type</th>
 				</tr>
+				<c:forEach items="${project.components}" var="component">
 				<tr>
-					<td>x</td>			
-					<td>x</td>			
-					<td>x</td>			
-				</tr>			
-				<tr>
-					<td>x</td>			
-					<td>x</td>			
-					<td>x</td>			
-				</tr>			
-				<tr>
-					<td>x</td>			
-					<td>x</td>			
-					<td>x</td>			
-				</tr>			
-				<tr>
-					<td>x</td>			
-					<td>x</td>			
-					<td>x</td>			
-				</tr>			
-				<tr>
-					<td>x</td>			
-					<td>x</td>			
-					<td>x</td>			
-				</tr>			
-				<tr>
-					<td>x</td>			
-					<td>x</td>			
-					<td>x</td>			
-				</tr>			
-				<tr>
-					<td>x</td>			
-					<td>x</td>			
-					<td>x</td>			
-				</tr>			
-				<tr>
-					<td>x</td>			
-					<td>x</td>			
-					<td>x</td>			
-				</tr>			
+					<td>${component.name}</td>
+			    	<td>${component.componentid}</td>
+					<td>			
+					</td>
+			   	</tr>
+				</c:forEach>
 			</table>
 		</td>
 	</tr>
@@ -102,22 +67,11 @@
 	    <td></td>
 	    <td></td>
 	    <td align="right">
-	    	<input type="button" value="Accept">
-	    	<input type="button" value="Cancel">
+	    	<a href="editproject.html"><button>Close</button></a>
     	</td>
 	</tr>
 
-<% //for(int i=0; i<l.size();i++) {%>
-<!--    <tr>
-        <td> <%//out.print(b.get(i).getIsbn());%> </td>
-        <td> <%//out.print(b.get(i).getTitle());%> </td>
-        <td> <%//out.print(b.get(i).getAuthor());%> </td>
-        <td> <%//out.print(b.get(i).getPrice());%> </td>
-        <td> <!-- <input type="radio" name="project" value="<%//Integer.toString(i);%>"/>--> </td>
-    <!-- </tr>-->
-<% //} %>
 </table>
-</form>
 </div>
 </body>
 </html>

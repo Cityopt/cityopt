@@ -2,6 +2,7 @@
 <%--@elvariable id="component" type="com.cityopt.model.Component"--%>
 <%--@elvariable id="selectedComponent" type="com.cityopt.model.Component"--%>
 <%--@elvariable id="inputParam" type="com.cityopt.model.InputParameter"--%>
+<%--@elvariable id="extParam" type="com.cityopt.model.ExtParam"--%>
 <%--@elvariable id="selectedcompid" type="int"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -79,11 +80,11 @@
 									</table>
 								</td>
 								<td></td>
-								<td>
+								<td valign="top">
 									<table class="tablestyle">
-										<col style="width:120px">
+										<col style="width:150px">
 										<col style="width:60px">
-										<col style="width:80px">
+										<col style="width:100px">
 										<col style="width:60px">
 										<tr>
 											<th>Input parameter</th>
@@ -141,35 +142,26 @@
 						<table class="tablestyle" width="800">
 						
 							<tr height="20">
-							    <th>Variable</th>
-							    <th>Units</th>
-							    <th>Upload default profile</th>
-							    <th>Date</th>
-							    <th>Reliability</th>
-							    <th>Visualize</th>
-							    <th>Select</th>
+							    <th>Name</th>
+							    <th>Id</th>
+							    <th>Default value</th>
+							    <th>Edit</th>
+							    <th>Delete</th>
 							</tr>
 							
-							<tr height="20">
-							    <td>variable 1</td>
-							    <td>x</td>
-							    <td>x</td>
-							    <td>x</td>
-							    <td>x</td>
-							    <td>x</td>
-							    <td> <input type="radio"/> </td>
-							</tr>
-							
-							<tr height="20">
-							    <td>variable 2</td>
-							    <td>x</td>
-							    <td>x</td>
-							    <td>x</td>
-							    <td>x</td>
-							    <td>x</td>
-							    <td> <input type="radio"/> </td>
-							</tr>
-							
+							<!--forEach items="{extparams}" var="extParam">
+							<tr>
+								<td>${extParam.name}</td>
+						    	<td>${extParam.extparamid}</td>
+						    	<td>${extParam.defaultvalue}</td>
+								<td>
+									<a href="<c:url value='editextparam.html?extparamid=${extParam.extparamid}'/>">
+										<button align="right" type="button" value="Edit">Edit</button>
+									</a>
+								</td>
+								<td>Delete</td>
+						   	</tr>
+							</forEach>-->
 						</table>
 						
 						<table width="100%">
