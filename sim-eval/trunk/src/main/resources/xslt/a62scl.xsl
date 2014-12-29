@@ -24,7 +24,7 @@ setupUCs = let node n m x = x
   </xsl:template>
 
   <xsl:template
-      match="property[@type='expression' and ../@isUC = 'False']"
+      match="property[../@isUC = 'False']"
       priority="1">
     <xsl:param name="indent"/>
     <xsl:value-of select="$indent"/>set "<xsl:value-of
