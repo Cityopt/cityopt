@@ -97,7 +97,7 @@ public class AprosRunner implements SimulationRunner, Closeable {
             throws IOException, TransformerConfigurationException {
         TransformerFactory xff = TransformerFactory.newInstance();
         try (InputStream xslt = AprosRunner.class.getResourceAsStream(
-                "/xslt/a62scl.xsl")) {
+                "xslt/a62scl.xsl")) {
             return xff.newTransformer(new StreamSource(xslt));
         }
     }
