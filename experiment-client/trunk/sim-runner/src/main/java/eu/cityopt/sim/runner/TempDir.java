@@ -13,12 +13,14 @@ import java.nio.file.SimpleFileVisitor;
  * The directory (including all contents) is automatically deleted on close.
  */
 public class TempDir implements Closeable {
-    private boolean isClosed;
+    private final Path path;
+    private boolean is_closed;
     
-    /// Path to the temporary directory.
-    final public Path path;
-    
-    /** Create a temporary directory and store its path.
+    /** Path to the temporary directory. */
+    public Path getPath() {return path;}
+
+    /**
+     * Create a temporary directory and store its path.
      * @param prefix passed to {@link
      *     java.nio.file.Files#createTempDirectory
      *     Files.createTempDirectory}
@@ -26,15 +28,18 @@ public class TempDir implements Closeable {
      */
     public TempDir(String prefix) throws IOException {
         path = Files.createTempDirectory(prefix);
-        isClosed = false;
+        is_closed = false;
     }
+    
+    /** Check whether close() has been called. */
+    public boolean isClosed() {return is_closed;} 
 
-    /// Delete the directory and its contents.
+    /** Delete the directory and its contents. */
     @Override
     public void close() throws IOException {
-        if (isClosed)
+        if (is_closed)
             return;
-        isClosed = true;
+        is_closed = true;
         if (Files.isDirectory(path)) {
             // Copied from the Javadoc of FileVisitor.
             Files.walkFileTree(path, new SimpleFileVisitor<Path>() {

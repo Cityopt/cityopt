@@ -72,9 +72,9 @@ public class SimRunner implements Callable<Integer> {
         try (TempDir tmp = new TempDir("sim-runner")) {
             System.out.println(
                     "Scheduling: " + runs + " runs on " + cores
-                    + " cores\nTempDir: " + tmp.path + "\nProfile: "
+                    + " cores\nTempDir: " + tmp.getPath() + "\nProfile: "
                     + pdir + "\nJob logs: " + logTemplate);
-            Server srv = ServerFactory.createLocalServer(tmp.path);
+            Server srv = ServerFactory.createLocalServer(tmp.getPath());
             srv.installProfile(pname, new LocalDirectory(pdir));
             {
                 Map<String, String> p = new HashMap<String, String>();

@@ -15,12 +15,12 @@ public class TempDirTest {
         TempDir tmp = new TempDir("test");
         try {
             assertTrue("Directory not created",
-                       Files.isDirectory(tmp.path));
+                       Files.isDirectory(tmp.getPath()));
         } finally {
             tmp.close();
         }
         assertFalse("Temporary directory not removed.",
-                    Files.exists(tmp.path));
+                    Files.exists(tmp.getPath()));
     }
     
     @Test
@@ -28,12 +28,13 @@ public class TempDirTest {
         String[] lines = {"Hello sailor."};
         TempDir tmp = new TempDir("test");
         try {
-            Files.write(tmp.path.resolve("foo.txt"), Arrays.asList(lines));
+            Files.write(tmp.getPath().resolve("foo.txt"),
+                        Arrays.asList(lines));
         } finally {
             tmp.close();
         }
         assertFalse("Temporary directory not removed.",
-                    Files.exists(tmp.path));
+                    Files.exists(tmp.getPath()));
     }
     
     @Test
