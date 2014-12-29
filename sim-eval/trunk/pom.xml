@@ -38,6 +38,11 @@
     	<artifactId>simulation.scheduling</artifactId>
     	<version>0.0.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+    	<groupId>eu.cityopt</groupId>
+    	<artifactId>sim-runner</artifactId>
+    	<version>0.0.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   <build>
   	<plugins>
