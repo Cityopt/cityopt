@@ -1,0 +1,12 @@
+<node name="Configuration" moduleName="COMP_ROOT">
+  <node name="big pic" moduleName="BIG_PIC">
+    <node name="01" moduleName="01">
+      <property type="expression" name="flow" value="PIP01.PI12_MIX_MASS_FLOW"/>
+      <property type="constant" name="diams" value="[1.0, 3.0, 5.0, 10.0]"/>
+      <property type="constant" name="typ" value="2"/>
+      <node name="PIP01" moduleName="PIP01">
+        <property type="expression" name="PI12_DIAMETER" value="diams ! typ"/>
+      </node>
+    </node>
+  </node>
+</node>
