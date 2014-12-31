@@ -28,6 +28,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.runner.TempDir;
@@ -61,7 +62,8 @@ public class AprosRunner implements SimulationRunner, Closeable {
         return null;
     }
     
-    public AprosRunner(String profile, Document uc_props, Path modelDir) {
+    public AprosRunner(
+            String profile, Namespace ns, Document uc_props, Path modelDir) {
         this.profile = profile;
         this.modelDir = new LocalDirectory(modelDir);
         if (a62scl == null) {
