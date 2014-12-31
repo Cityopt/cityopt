@@ -14,9 +14,17 @@ setupUCs = let node n m x = x
     <xsl:value-of select="$indent"/>node "<xsl:value-of select="@name"
     />" "<xsl:value-of select="@moduleName"/>" mdo {<xsl:text>
 </xsl:text>
-    <xsl:apply-templates select="property|node">
-      <xsl:with-param name="indent" select="concat('  ', $indent)"/>
-    </xsl:apply-templates>
+    <xsl:choose>
+      <xsl:when test="property|node">
+        <xsl:apply-templates select="property|node">
+          <xsl:with-param name="indent" select="concat('  ', $indent)"/>
+        </xsl:apply-templates>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:copy-of select="$indent"/>  return ()<xsl:text>
+</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:copy-of select="$indent"/>}<xsl:if
     test="position() != last()">;</xsl:if>
     <xsl:text>
