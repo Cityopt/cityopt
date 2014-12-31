@@ -1,5 +1,6 @@
 package eu.cityopt.sim.eval;
 
+import java.io.Closeable;
 import java.util.concurrent.Future;
 
 /**
@@ -7,7 +8,7 @@ import java.util.concurrent.Future;
  *
  * @author Hannu Rummukainen
  */
-public interface SimulationRunner {
+public interface SimulationRunner extends Closeable {
     /**
      * Starts a simulation with the given input.
      * Do not modify the SimulationInput object afterward.

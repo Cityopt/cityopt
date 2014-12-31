@@ -37,7 +37,7 @@ import eu.cityopt.sim.runner.TempDir;
  * A factory of AprosJobs for one model.
  * @author ttekth
  */
-public class AprosRunner implements SimulationRunner, Closeable {
+public class AprosRunner implements SimulationRunner {
     /** Directory containing apros profiles (as subdirectories). */
     public static Path profileDir = Paths.get(".");
     /** Prefix for temporary directories. */

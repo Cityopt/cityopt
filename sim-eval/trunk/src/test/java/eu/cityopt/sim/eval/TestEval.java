@@ -2,6 +2,7 @@ package eu.cityopt.sim.eval;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -114,13 +115,17 @@ public class TestEval {
             public Future<SimulationOutput> start(SimulationInput input) {
                 return new SimJob(input);
             }
+
+            @Override
+            public void close() throws IOException {}
         };
-        SimulationRunnerWithStorage runner = new SimulationRunnerWithStorage(
-                actualRunner, new HashSimulationStorage());
+        SimulationOutput output;
+        try (SimulationRunner runner = new SimulationRunnerWithStorage(
+                actualRunner, new HashSimulationStorage())) {
 
-        Future<SimulationOutput> job = runner.start(input);
-
-        SimulationOutput output = job.get();
+            Future<SimulationOutput> job = runner.start(input);
+            output = job.get();
+        }
         String messages = output.getMessages();
         if (!messages.isEmpty()) {
             System.out.print(messages);

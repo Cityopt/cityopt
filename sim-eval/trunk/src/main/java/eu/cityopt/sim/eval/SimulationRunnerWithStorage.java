@@ -1,5 +1,6 @@
 package eu.cityopt.sim.eval;
 
+import java.io.IOException;
 import java.util.concurrent.Future;
 
 /**
@@ -46,4 +47,7 @@ public class SimulationRunnerWithStorage implements SimulationRunner {
             };
         }
     }
+
+    @Override
+    public void close() throws IOException {}
 }
