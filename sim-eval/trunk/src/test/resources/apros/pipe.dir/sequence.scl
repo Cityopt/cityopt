@@ -1,0 +1,10 @@
+// Integer is not supported.
+main :: Double -> <Proc> ()
+main i = do
+    print $ "===== Job " + (show i) + " ====="
+    runApros mdo
+        loadIC "pipe.snp.gz"
+        setTime i
+        startSubscription "subscr.dat" "results.dat"
+        wait 60.0
+        stopSubscription "results.dat"
