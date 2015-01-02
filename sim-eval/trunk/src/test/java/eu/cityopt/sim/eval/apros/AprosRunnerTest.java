@@ -17,7 +17,11 @@ import org.junit.*;
 import org.w3c.dom.Document;
 
 import eu.cityopt.sim.eval.Evaluator;
+import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.SimulationInput;
+import eu.cityopt.sim.eval.SimulationOutput;
+import eu.cityopt.sim.eval.Type;
 
 public class AprosRunnerTest {
     private final static String propsName = "/apros/test.properties";
@@ -42,16 +46,20 @@ public class AprosRunnerTest {
     }
     
     @Test
-    public void testAprosRunner() throws Exception {
+    public void testRun() throws Exception {
         Namespace ns = new Namespace(new Evaluator(), Collections.emptyList());
+        ExternalParameters dumb = new ExternalParameters(ns);
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document ucs = db.parse(
                 dataDir.resolve(props.getProperty("uc_props")).toFile());
         Path modelDir = dataDir.resolve(props.getProperty("model_dir"));
         try (AprosRunner arun = new AprosRunner(
-                props.getProperty("profile"), ns, ucs, modelDir)) {
-            
+                props.getProperty("profile"), ns, ucs, modelDir,
+                props.getProperty("result_file"))) {
+            SimulationInput in = new SimulationInput(dumb);
+            AprosJob job = arun.start(in);
+            SimulationOutput out = job.get();
         }
     }
 }

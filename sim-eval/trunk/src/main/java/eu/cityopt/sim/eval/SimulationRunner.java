@@ -5,6 +5,10 @@ import java.util.concurrent.Future;
 
 /**
  * Interface for starting new simulation jobs.
+ * The runner must be closed when no longer needed.  Closing invalidates
+ * all jobs started by the runner; they must not be accessed after closing
+ * the runner.  It is recommended that all jobs are waited for (with get)
+ * or cancelled before closing the runner.
  *
  * @author Hannu Rummukainen
  */

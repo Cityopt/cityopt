@@ -8,7 +8,7 @@ package eu.cityopt.sim.eval;
  * @author Hannu Rummukainen
  */
 public class SimulationFailure extends SimulationOutput {
-    SimulationFailure(SimulationInput input, String messages) {
+    public SimulationFailure(SimulationInput input, String messages) {
         super(input, messages);
     }
 }

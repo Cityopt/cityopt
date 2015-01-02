@@ -1,11 +1,25 @@
 package eu.cityopt.sim.eval.apros;
 
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.simantics.simulation.scheduling.Experiment;
+import org.simantics.simulation.scheduling.Job;
+import org.simantics.simulation.scheduling.status.JobDisposed;
+import org.simantics.simulation.scheduling.status.JobFailed;
+import org.simantics.simulation.scheduling.status.JobFinished;
+import org.simantics.simulation.scheduling.status.JobRunning;
+import org.simantics.simulation.scheduling.status.JobStatus;
+import org.simantics.simulation.scheduling.status.JobSucceeded;
+import org.simantics.simulation.scheduling.status.StatusWaitingUtils;
+
+import eu.cityopt.sim.eval.SimulationFailure;
+import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
+import eu.cityopt.sim.eval.SimulationResults;
 
 /**
  * An Apros simulation run.
@@ -14,37 +28,69 @@ import eu.cityopt.sim.eval.SimulationOutput;
  *
  */
 public class AprosJob implements Future<SimulationOutput> {
+    private final AprosRunner runner;
+    private final SimulationInput input;
+    private Job job;
+    private boolean cancelled = false;
+    private SimulationOutput output = null;
+    
+    AprosJob(AprosRunner runner, SimulationInput input, Job job) {
+        this.runner = runner;
+        this.input = input;
+        this.job = job;
+    }
 
     @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
-        // TODO Auto-generated method stub
-        return false;
+    public synchronized boolean cancel(boolean mayInterruptIfRunning) {
+        if (cancelled)
+            return true;
+        if (isDone() || !mayInterruptIfRunning)
+            return false;
+        Experiment x = job.getExperiment();
+        job = null;
+        cancelled = true;
+        x.dispose();
+        return true;
     }
 
     @Override
     public boolean isCancelled() {
-        // TODO Auto-generated method stub
-        return false;
+        return cancelled;
     }
 
     @Override
     public boolean isDone() {
-        // TODO Auto-generated method stub
-        return false;
+        return job == null || !(job.status().get() instanceof JobRunning);
     }
 
     @Override
-    public SimulationOutput get() throws InterruptedException,
+    public synchronized SimulationOutput get() throws InterruptedException,
             ExecutionException {
-        // TODO Auto-generated method stub
-        return null;
+        JobFinished st;
+        if (cancelled)
+            throw new CancellationException();
+        if (job != null) {
+            st = StatusWaitingUtils.waitFor(job);
+            if (st instanceof JobSucceeded) {
+                //TODO What are we supposed to pass as the second argument?
+                SimulationResults res = new SimulationResults(input, "");
+                output = res;
+                //TODO Retrieve the output and store in res.
+            } else {
+                output = new SimulationFailure(input, st.toString());
+            }
+            Experiment x = job.getExperiment();
+            job = null;
+            x.dispose();
+        }
+        return output;
     }
 
     @Override
     public SimulationOutput get(long timeout, TimeUnit unit)
             throws InterruptedException, ExecutionException, TimeoutException {
-        // TODO Auto-generated method stub
-        return null;
+        //TODO Add this once implemented in the library.
+        throw new UnsupportedOperationException("Timed wait not supported.");
     }
 
 }
