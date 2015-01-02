@@ -19,10 +19,6 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 
-<%
-	//ArrayList<Book> b = new ArrayList<Book>();
-	//b = SqlSentencesList.showCatalog(); // this method returns an arrayList with all books
-%>
 		<td width=30></td>
 		<td>
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">

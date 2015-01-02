@@ -40,17 +40,9 @@ import eu.cityopt.service.ScenarioService;
 import eu.cityopt.service.ScenarioServiceImpl;
 
 @Controller
-@SessionAttributes("project")
+@SessionAttributes({"project", "scenario"})
 public class ProjectController {
 
-//	Project project;
-//	Project newProject;
-	AppUser user;
-	UserForm userForm;
-	Scenario scenario;
-	Scenario newScenario;
-	Component component;
-	//InputParameter newInputParameter;
 	
 	@Autowired
 	ProjectServiceImpl projectService; 
@@ -185,11 +177,34 @@ public class ProjectController {
 
 	@RequestMapping(value="createscenario",method=RequestMethod.GET)
 	public String getCreateScenario(Map<String, Object> model) {
-		newScenario = new Scenario();
-		model.put("scenario", newScenario);
+		Scenario scenario = new Scenario();
+		model.put("scenario", scenario);
 		return "createscenario";
 	}
 
+	@RequestMapping(value="createscenario",method=RequestMethod.POST)
+	public String getCreateScenarioPost(Scenario formScenario, Map<String, Object> model) {
+
+		if (model.containsKey("project") && formScenario != null)
+		{
+			Project project = (Project) model.get("project");
+			model.put("project", project);
+			Scenario scenario = new Scenario();
+			scenario.setName(formScenario.getName());
+			scenario.setDescription(formScenario.getDescription());
+			scenario.setProject(project);
+			scenario.getScenid();
+			scenarioService.save(scenario);
+			model.put("scenario", scenario);
+			return "editscenario";
+		}
+		else
+		{
+			//project null
+			return "error";
+		}
+	}
+	
 	@RequestMapping(value="openscenario",method=RequestMethod.GET)
 	public String getOpenScenario (Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid)
 	{
@@ -197,18 +212,13 @@ public class ProjectController {
 		
 		if (project == null)
 		{
-			return "createscenario";
+			return "createproject";
 		}
 		
-		Set<Scenario> projectScenarios = project.getScenarios();
-		model.put("scenarios", projectScenarios);
-
 		if (scenarioid != null)
 		{
-			scenario = scenarioService.findByID(Integer.parseInt(scenarioid));
-			
+			Scenario scenario = scenarioService.findByID(Integer.parseInt(scenarioid));
 			model.put("scenario", scenario);
-			
 			return "editscenario";
 		}
 
@@ -217,47 +227,43 @@ public class ProjectController {
 
 	@RequestMapping(value="editscenario",method=RequestMethod.GET)
 	public String getEditScenario (Map<String, Object> model) {
+		Scenario scenario = (Scenario) model.get("scenario");
 		
 		if (scenario != null)
 		{
 			model.put("scenario", scenario);
+			return "editscenario";
 		}
 		else
 		{
-			newScenario = new Scenario();
-			model.put("scenario", newScenario);
+			scenario = new Scenario();
+			model.put("scenario", scenario);
 			return "createscenario";
 		}
-		
-		return "editscenario";
 	}
 
 	@RequestMapping(value="editscenario",method=RequestMethod.POST)
-	public String getEditScenarioPost(Scenario newScenario, Map<String, Object> model, 
+	public String getEditScenarioPost(Scenario formScenario, Map<String, Object> model, 
 		@RequestParam(value="action", required=false) String action) {
 
-		if (model.containsKey("project") && newScenario != null && action != null)
+		if (model.containsKey("project") && formScenario != null)
 		{
 			Project project = (Project) model.get("project");
-			scenario = newScenario;
+			Scenario scenario = (Scenario) model.get("scenario");
 			
 			scenario.setProject(project);
-			
-			if (action.equals("create"))
-			{
-			}
-			else if (action.equals("update"))
-			{
-			}
+			scenario.setName(formScenario.getName());
+			scenario.setDescription(formScenario.getDescription());
 			
 			scenarioService.save(scenario);
+			model.put("scenario", scenario);
 		}
 		else
 		{
 			//project null
+			return "error";
 		}
 			
-		model.put("scenario", scenario);
 		return "editscenario";
 	}
 	
@@ -283,6 +289,46 @@ public class ProjectController {
 		return "deletescenario";
 	}
 
+	@RequestMapping(value="scenarioparameters", method=RequestMethod.GET)
+	public String getScenarioParameters(Map<String, Object> model, 
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId){
+		Project project = (Project) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		Component selectedComponent = null;
+		
+		if (selectedCompId != null)
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			selectedComponent = componentService.findByID(nSelectedCompId);
+			model.put("selectedcompid", selectedCompId);
+			model.put("selectedComponent",  selectedComponent);
+		}
+
+		model.put("project", project);
+		
+		return "scenarioparameters";
+	}
+	
+	@RequestMapping(value="scenariovariables",method=RequestMethod.GET)
+	public String getScenarioVariables(Map<String, Object> model,
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+
+		Project project = (Project) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		model.put("project", project);
+		
+		return "scenariovariables";
+	}
 	
 	@RequestMapping(value="usermanagement", method=RequestMethod.GET)
 	public String getUserManagement(Model model){
@@ -294,7 +340,7 @@ public class ProjectController {
 
 	@RequestMapping(value="createuser",method=RequestMethod.GET)
 	public String getCreateUser(Map<String, Object> model) {
-		userForm = new UserForm();
+		UserForm userForm = new UserForm();
 		model.put("userForm", userForm);
 	
 		return "createuser";
@@ -320,8 +366,8 @@ public class ProjectController {
 	public String getEditUser(Model model, @RequestParam(value="userid", required=true) String userid) {
 		int nUserId = Integer.parseInt(userid);
 		
-		user = userService.findByID(nUserId);
-		userForm = new UserForm();
+		AppUser user = userService.findByID(nUserId);
+		UserForm userForm = new UserForm();
 		userForm.setName(user.getName());
 		model.addAttribute("userForm", userForm);
 
@@ -329,7 +375,11 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="edituser", method=RequestMethod.POST)
-	public String getEditUserPost(UserForm userForm, Map<String, Object> model) {
+	public String getEditUserPost(UserForm userForm, Map<String, Object> model,
+		@RequestParam(value="userid", required=true) String userId) {
+
+		AppUser user = (AppUser) userService.findByID(Integer.parseInt(userId));
+		
 		if (userForm.getName() != null)
 		{
 			user.setName(userForm.getName());
@@ -534,7 +584,7 @@ public class ProjectController {
 	@RequestMapping(value="editcomponent", method=RequestMethod.GET)
 	public String getEditComponent(Model model, @RequestParam(value="componentid", required=true) String componentid) {
 		int nCompId = Integer.parseInt(componentid);
-		component = componentService.findByID(nCompId);
+		Component  component = componentService.findByID(nCompId);
 		model.addAttribute("component", component);
 		
 		return "editcomponent";

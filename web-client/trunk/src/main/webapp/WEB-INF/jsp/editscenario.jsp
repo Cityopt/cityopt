@@ -1,3 +1,4 @@
+<%--@elvariable id="project" type="com.cityopt.model.Project"--%>
 <%--@elvariable id="scenario" type="eu.cityopt.model.Scenario"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -50,12 +51,12 @@
 								<td><input type="submit" value="Clone scenario" style="width:120px"></td>
 							</tr>
 							<tr>						
-								<td>External parameters:</td>
-								<td><input type="submit" value="Ok"></td>
+								<td>Input parameters:</td>
+								<td><a href="scenarioparameters.html"><button type="button" style="width:150px">Set</button></a></td>
 							</tr>
 							<tr>						
-								<td>Set the input parameters:</td>
-								<td><input type="submit" value="Ok"></td>
+								<td>External parameters:</td>
+								<td><a href="scenariovariables.html"><button type="button" style="width:150px">Set</button></a></td>
 							</tr>
 							<tr>						
 								<td>

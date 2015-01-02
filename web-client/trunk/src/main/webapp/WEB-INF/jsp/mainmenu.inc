@@ -63,11 +63,19 @@
 	<td>
 		<a href="openscenario.html">Open scenario</a>
 	</td></tr>
+<% if (request.getSession().getAttribute("scenario") != null) { %>
 <tr>
 	<td>
 		<a href="editscenario.html">Edit scenario</a>
 	</td>
 </tr>
+<% } else { %>
+<tr>
+	<td>
+		Edit scenario
+	</td>
+</tr> 
+<% } %>
 <tr>
 	<td>
 		<a href="deletescenario.html">Delete scenario</a>

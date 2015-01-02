@@ -26,7 +26,7 @@
 		<td width=30></td>
 		<td>
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="edituser.html?action=save" modelAttribute="userForm">
+			<form:form method="post" action="edituser.html?action=save&userid=${userForm.userid}" modelAttribute="userForm">
 			<h2>Edit user</h2>
 
 			<table align="center">
