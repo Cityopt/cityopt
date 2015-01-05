@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eu.cityopt.model.AppUser;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.InputParameter;
+import eu.cityopt.model.Metric;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.Unit;
@@ -34,6 +35,7 @@ import eu.cityopt.service.AprosService;
 import eu.cityopt.service.ComponentServiceImpl;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.InputParameterServiceImpl;
+import eu.cityopt.service.MetricServiceImpl;
 import eu.cityopt.service.ProjectService;
 import eu.cityopt.service.ProjectServiceImpl;
 import eu.cityopt.service.ScenarioService;
@@ -58,6 +60,9 @@ public class ProjectController {
 	
 	@Autowired
 	InputParameterServiceImpl inputParamService;
+	
+	@Autowired
+	MetricServiceImpl metricService;
 	
 	@RequestMapping(value="getProjects",method=RequestMethod.GET)
 	public String getGoalReports(Model model) {
@@ -488,8 +493,16 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="metricdefinition",method=RequestMethod.GET)
-	public String getMetricDefinition(Model model){
-	
+	public String getMetricDefinition(Map<String, Object> model){
+		Project project = (Project) model.get("project");
+
+		if (project == null)
+		{
+			return "createproject";
+		}
+		
+		model.put("project", project);
+
 		return "metricdefinition";
 	}
 
@@ -689,7 +702,63 @@ public class ProjectController {
 	
 		return "projectparameters";
 	}
-	
+
+	@RequestMapping(value="createmetric", method=RequestMethod.GET)
+	public String getCreateMetric(Model model) {
+
+		Metric newMetric = new Metric();
+		model.addAttribute("metric", newMetric);
+		
+		return "createmetric";
+	}
+
+	@RequestMapping(value="createmetric", method=RequestMethod.POST)
+	public String getCreateMetricPost(Metric metric, Map<String, Object> model){
+		Project project = (Project) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		metric.setProject(project);
+		metricService.save(metric);
+		
+		model.put("project", projectService.findByID(project.getPrjid()));
+		
+		return "metricdefinition";
+	}
+
+	@RequestMapping(value="editmetric", method=RequestMethod.GET)
+	public String getEditMetric(Model model, @RequestParam(value="metricid", required=true) String metricid) {
+		int nMetricId = Integer.parseInt(metricid);
+		Metric metric = metricService.findByID(nMetricId);
+		model.addAttribute("component", metric);
+		
+		return "editmetric";
+	}
+
+	@RequestMapping(value="editmetric", method=RequestMethod.POST)
+	public String getEditMetricPost(Metric metric, Map<String, Object> model,
+		@RequestParam(value="metricid", required=true) String metricid) {
+		Project project = (Project) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		int nMetricId = Integer.parseInt(metricid);
+		Metric oldMetric = metricService.findByID(nMetricId);
+		oldMetric.setName(metric.getName());
+		
+		metricService.save(oldMetric);
+
+		model.put("project", projectService.findByID(project.getPrjid()));
+		
+		return "metricdefinition";
+	}
+
 	@RequestMapping(value="uploaddiagram", method=RequestMethod.GET)
 	public String getUploadDiagram(HttpServletRequest request, Map<String, Object> model){
 		Project project = (Project) model.get("project");
