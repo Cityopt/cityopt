@@ -21,6 +21,7 @@ import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
+import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.Type;
 
 public class AprosRunnerTest {
@@ -60,6 +61,9 @@ public class AprosRunnerTest {
             SimulationInput in = new SimulationInput(dumb);
             AprosJob job = arun.start(in);
             SimulationOutput out = job.get();
+            System.out.println("Job log:\n" + out.getMessages()
+                               + "Job log ends.");
+            assertTrue(out instanceof SimulationResults);
         }
     }
 }

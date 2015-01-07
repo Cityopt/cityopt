@@ -1,5 +1,7 @@
 package eu.cityopt.sim.eval.apros;
 
+import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -8,12 +10,14 @@ import java.util.concurrent.TimeoutException;
 
 import org.simantics.simulation.scheduling.Experiment;
 import org.simantics.simulation.scheduling.Job;
+import org.simantics.simulation.scheduling.JobConfiguration;
 import org.simantics.simulation.scheduling.status.JobDisposed;
 import org.simantics.simulation.scheduling.status.JobFailed;
 import org.simantics.simulation.scheduling.status.JobFinished;
 import org.simantics.simulation.scheduling.status.JobRunning;
 import org.simantics.simulation.scheduling.status.JobStatus;
 import org.simantics.simulation.scheduling.status.JobSucceeded;
+import org.simantics.simulation.scheduling.status.StatusLoggingUtils;
 import org.simantics.simulation.scheduling.status.StatusWaitingUtils;
 
 import eu.cityopt.sim.eval.SimulationFailure;
@@ -33,11 +37,14 @@ public class AprosJob implements Future<SimulationOutput> {
     private Job job;
     private boolean cancelled = false;
     private SimulationOutput output = null;
+    private ByteArrayOutputStream ostr = new ByteArrayOutputStream();
     
-    AprosJob(AprosRunner runner, SimulationInput input, Job job) {
+    AprosJob(AprosRunner runner, SimulationInput input,
+             Experiment xpt, JobConfiguration conf) {
         this.runner = runner;
         this.input = input;
-        this.job = job;
+        job = xpt.createJob("job", conf);
+        StatusLoggingUtils.redirectJobLog(job, ostr);
     }
 
     @Override
@@ -50,6 +57,7 @@ public class AprosJob implements Future<SimulationOutput> {
         job = null;
         cancelled = true;
         x.dispose();
+        ostr.reset();
         return true;
     }
 
@@ -72,16 +80,18 @@ public class AprosJob implements Future<SimulationOutput> {
         if (job != null) {
             st = StatusWaitingUtils.waitFor(job);
             if (st instanceof JobSucceeded) {
-                //TODO What are we supposed to pass as the second argument?
-                SimulationResults res = new SimulationResults(input, "");
+                SimulationResults
+                    res = new SimulationResults(input, ostr.toString());
                 output = res;
                 //TODO Retrieve the output and store in res.
             } else {
-                output = new SimulationFailure(input, st.toString());
+                output = new SimulationFailure(
+                        input, st.toString() + "\n" + ostr.toString());
             }
             Experiment x = job.getExperiment();
             job = null;
             x.dispose();
+            ostr.reset();
         }
         return output;
     }

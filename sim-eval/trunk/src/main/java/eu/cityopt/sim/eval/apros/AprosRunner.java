@@ -70,15 +70,13 @@ public class AprosRunner implements SimulationRunner {
         MemoryDirectory mdir = new MemoryDirectory(modelDir.files(),
                                                    modelDir.directories());
         Application launcher = new ProfileApplication(profile, "Launcher.exe");
-        FileSelector res_sel = new FileSelector(resultFile);
         String[] args = makeScript(mdir, input);
+        FileSelector res_sel = new FileSelector(resultFile);
         JobConfiguration conf = new JobConfiguration(launcher, args,
                                                      mdir, res_sel);
-        Job job = xpt.createJob("job", conf);
-        StatusLoggingUtils.redirectJobLog(job, System.out);
+        AprosJob ajob = new AprosJob(this, input, xpt, conf);
         xpt.start();
-
-        return new AprosJob(this, input, job);
+        return ajob;
     }
     
     private String[] makeScript(MemoryDirectory mdir, SimulationInput input) {
