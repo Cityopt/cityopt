@@ -137,7 +137,7 @@ public class AprosRunner implements SimulationRunner {
         Map<String, Replacer> smap = new HashMap<>();
         try {
             NodeList names = (NodeList)xp.evaluate(
-                    "//node[@isUC = 'False']/property/@name",
+                    "//node[@isUC != 'False']/property/@name",
                     uc_structure, XPathConstants.NODESET);
             for (int in = 0; in != names.getLength(); ++in) {
                 Attr na = (Attr)names.item(in);

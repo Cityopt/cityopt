@@ -17,6 +17,8 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.junit.*;
 import org.w3c.dom.Document;
@@ -90,6 +92,15 @@ public class AprosRunnerTest {
                 assertTrue("Duplicate id " + id + " |-> " + sid,
                            sids.add(sid));
             }
+        }
+    }
+    
+    @Test
+    public void printSCL() throws Exception {
+        try (AprosRunner arun = makeRunner()) {
+            AprosRunner.getTransformer().transform(
+                    new DOMSource(arun.uc_structure),
+                    new StreamResult(System.out));
         }
     }
 }
