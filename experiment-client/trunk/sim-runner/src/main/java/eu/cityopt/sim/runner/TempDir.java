@@ -63,6 +63,8 @@ public class TempDir implements Closeable {
                         IOException exc) throws IOException {
                     if (exc instanceof AccessDeniedException) {
                         System.err.println(exc);
+                    } else {
+                        throw exc;
                     }
                     return FileVisitResult.CONTINUE;
                 }
