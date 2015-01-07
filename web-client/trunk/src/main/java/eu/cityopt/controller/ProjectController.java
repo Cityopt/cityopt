@@ -215,6 +215,7 @@ public class ProjectController {
 	public String getOpenScenario (Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid)
 	{
 		Project project = (Project) model.get("project");
+		project = projectService.findByID(project.getPrjid());
 		
 		if (project == null)
 		{
@@ -493,25 +494,12 @@ public class ProjectController {
 		return "runmultioptimizationset";
 	}
 
-	@RequestMapping(value="metricdefinition",method=RequestMethod.GET)
-	public String getMetricDefinition(Map<String, Object> model){
-		Project project = (Project) model.get("project");
-
-		if (project == null)
-		{
-			return "createproject";
-		}
-		
-		model.put("project", project);
-
-		return "metricdefinition";
-	}
-
 	@RequestMapping(value="projectparameters", method=RequestMethod.GET)
 	public String getProjectParameters(Map<String, Object> model, 
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId){
 		Project project = (Project) model.get("project");
-
+		project = projectService.findByID(project.getPrjid());
+		
 		if (project == null)
 		{
 			return "error";
@@ -710,6 +698,50 @@ public class ProjectController {
 		return "projectparameters";
 	}
 
+	@RequestMapping(value="metricdefinition",method=RequestMethod.GET)
+	public String getMetricDefinition(Map<String, Object> model,
+		@RequestParam(value="metricid", required=false) String metricid,
+		@RequestParam(value="action", required=false) String action) {
+		
+		Project project = (Project) model.get("project");
+		
+		if (project == null)
+		{
+			return "createproject";
+		}
+
+		project = projectService.findByID(project.getPrjid());
+
+		if (action != null && metricid != null)
+		{
+			int nMetricId = Integer.parseInt(metricid);
+			
+			if (action.equals("clone")) {
+				Metric metric = metricService.findByID(nMetricId);
+				Metric cloneMetric = new Metric();
+				cloneMetric.setName(metric.getName() + "_new");
+				cloneMetric.setExpression(metric.getExpression());
+				cloneMetric.setProject(project);
+				metricService.save(cloneMetric);
+			}
+			else if (action.equals("delete")) {
+				Metric metric = metricService.findByID(nMetricId);
+
+				try {
+					metricService.delete(metric);
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+					return "error";
+				}
+			}
+		}
+		
+		project = projectService.findByID(project.getPrjid());
+		model.put("project", project);
+
+		return "metricdefinition";
+	}
+
 	@RequestMapping(value="createmetric", method=RequestMethod.GET)
 	public String getCreateMetric(Model model) {
 
@@ -722,6 +754,7 @@ public class ProjectController {
 	@RequestMapping(value="createmetric", method=RequestMethod.POST)
 	public String getCreateMetricPost(Metric metric, Map<String, Object> model){
 		Project project = (Project) model.get("project");
+		project = projectService.findByID(project.getPrjid());
 		
 		if (project == null)
 		{
@@ -740,7 +773,7 @@ public class ProjectController {
 	public String getEditMetric(Model model, @RequestParam(value="metricid", required=true) String metricid) {
 		int nMetricId = Integer.parseInt(metricid);
 		Metric metric = metricService.findByID(nMetricId);
-		model.addAttribute("component", metric);
+		model.addAttribute("metric", metric);
 		
 		return "editmetric";
 	}
@@ -749,6 +782,7 @@ public class ProjectController {
 	public String getEditMetricPost(Metric metric, Map<String, Object> model,
 		@RequestParam(value="metricid", required=true) String metricid) {
 		Project project = (Project) model.get("project");
+		project = projectService.findByID(project.getPrjid());
 		
 		if (project == null)
 		{
@@ -758,10 +792,11 @@ public class ProjectController {
 		int nMetricId = Integer.parseInt(metricid);
 		Metric oldMetric = metricService.findByID(nMetricId);
 		oldMetric.setName(metric.getName());
+		oldMetric.setExpression(metric.getExpression());
 		
 		metricService.save(oldMetric);
 
-		model.put("project", projectService.findByID(project.getPrjid()));
+		model.put("project", project);
 		
 		return "metricdefinition";
 	}

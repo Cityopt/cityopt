@@ -1,3 +1,4 @@
+<%--@elvariable id="project" type="com.cityopt.model.Project"--%>
 <%--@elvariable id="metric" type="com.cityopt.model.Metric"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -37,7 +38,7 @@
 		    	<td>${metric.metid}</td>
 		    	<td>${metric.expression}</td>
 				<td>
-					<a href="<c:url value='editmetric.html?metricid=${metric.metid}'/>">
+					<a href="<c:url value='metricdefinition.html?metricid=${metric.metid}&action=clone'/>">
 						<button align="right" type="button" value="Clone">Clone</button>
 					</a>
 				</td>
@@ -47,7 +48,7 @@
 					</a>
 				</td>
 				<td>
-					<a href="<c:url value='editmetric.html?metricid=${metric.metid}'/>">
+					<a href="<c:url value='metricdefinition.html?metricid=${metric.metid}&action=delete'/>" onclick="return confirm('Are you sure you want to delete metric')">
 						<button align="right" type="button" value="Delete">Delete</button>
 					</a>
 				</td>
