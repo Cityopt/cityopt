@@ -11,6 +11,10 @@ Extension for database:
 Execute CityOPT Scripts as cityopt user!
 
 
+
+Alternative:
+
+
 Re-assigning role later (choose db before):
 
 SELECT 'ALTER TABLE '|| schemaname || '.' || tablename ||' OWNER TO cityopt;'
