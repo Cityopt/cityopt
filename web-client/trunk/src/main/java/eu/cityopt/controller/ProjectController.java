@@ -193,6 +193,7 @@ public class ProjectController {
 		if (model.containsKey("project") && formScenario != null)
 		{
 			Project project = (Project) model.get("project");
+			project = projectService.findByID(project.getPrjid());
 			model.put("project", project);
 			Scenario scenario = new Scenario();
 			scenario.setName(formScenario.getName());
