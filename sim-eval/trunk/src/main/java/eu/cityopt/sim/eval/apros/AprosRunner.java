@@ -1,28 +1,18 @@
 package eu.cityopt.sim.eval.apros;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.management.RuntimeErrorException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
 import org.simantics.simulation.scheduling.Experiment;
-import org.simantics.simulation.scheduling.Job;
 import org.simantics.simulation.scheduling.JobConfiguration;
 import org.simantics.simulation.scheduling.Server;
 import org.simantics.simulation.scheduling.ServerFactory;
@@ -33,13 +23,10 @@ import org.simantics.simulation.scheduling.files.LocalDirectory;
 import org.simantics.simulation.scheduling.files.MemoryDirectory;
 import org.simantics.simulation.scheduling.status.StatusLoggingUtils;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationRunner;
-import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.runner.TempDir;
 
 /**

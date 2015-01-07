@@ -1,7 +1,6 @@
 package eu.cityopt.sim.eval.apros;
 
 import java.io.ByteArrayOutputStream;
-import java.util.HashMap;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -11,11 +10,8 @@ import java.util.concurrent.TimeoutException;
 import org.simantics.simulation.scheduling.Experiment;
 import org.simantics.simulation.scheduling.Job;
 import org.simantics.simulation.scheduling.JobConfiguration;
-import org.simantics.simulation.scheduling.status.JobDisposed;
-import org.simantics.simulation.scheduling.status.JobFailed;
 import org.simantics.simulation.scheduling.status.JobFinished;
 import org.simantics.simulation.scheduling.status.JobRunning;
-import org.simantics.simulation.scheduling.status.JobStatus;
 import org.simantics.simulation.scheduling.status.JobSucceeded;
 import org.simantics.simulation.scheduling.status.StatusLoggingUtils;
 import org.simantics.simulation.scheduling.status.StatusWaitingUtils;
