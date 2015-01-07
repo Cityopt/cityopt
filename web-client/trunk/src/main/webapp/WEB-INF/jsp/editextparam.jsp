@@ -1,4 +1,4 @@
-<%--@elvariable id="component" type="eu.cityopt.model.Component"--%>
+<%--@elvariable id="extParam" type="eu.cityopt.model.ExtParam"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt edit component</title>
+<title>CityOpt edit external parameter</title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -22,8 +22,8 @@
 		<td width=30></td>
 		<td>
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="editcomponent.html?componentid=${component.componentid}" modelAttribute="component">
-			<h2>Edit component</h2>
+			<form:form method="post" action="editextparam.html?extparamid=${extParam.extparamid}" modelAttribute="extParam">
+			<h2>Edit external parameter</h2>
 
 			<table align="center">
 				<col style="width:150px">

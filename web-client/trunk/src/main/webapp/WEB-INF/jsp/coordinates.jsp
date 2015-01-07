@@ -32,8 +32,8 @@
 		<td>
 			<img src="assets/img/test_map.jpg"/>
 		</td>			
-		<td>
-			<table class="tablestyle" height="300">
+		<td valign="top">
+			<table class="tablestyle">
 				<col style="width: 150px">
 				<col style="width: 60px">
 				<col style="width: 100px">

@@ -18,170 +18,177 @@
 </head>
 
 <body>
-<%@ include file="mainmenu.inc"%>
-
-<div style="overflow:scroll;height:600px;width:1100px;overflow:auto">
-<table>
-	<col style="width:40px">
-	<col style="width:1000px">	
+<table cellspacing="0" cellpadding="0">
 	<tr>
-		<td colspan="2" height="80">
-			<h2>Project parameters</h2>
+		<td valign="top">
+			<%@ include file="mainmenu.inc"%>
+		</td>
+		<td width="50"></td>
+		<td>
+			<div style="overflow:scroll;height:600px;width:1000px;overflow:auto">
+			<table>
+				<col style="width:40px">
+				<col style="width:950px">	
+				<tr>
+					<td colspan="2" height="80">
+						<h2>Project parameters</h2>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					</td>
+					<td>
+						<table>
+							<tr>
+								<td>
+									<table width="950">
+										<col style="width:150px">
+										<col style="width:50px">
+										<col style="width:550px">
+										<col style="width:200px">
+										<tr>						
+											<td valign="top">
+												<p>Components</p>
+												<table class="tablestyle">
+													<col style="width:80px">
+													<col style="width:150px">
+													<col style="width:80px">
+													<col style="width:50px">
+													<tr>
+														<th>Select</th>
+														<th>Components</th>
+														<th>Id</th>
+														<th>Edit</th>
+													</tr>
+													
+													<c:forEach items="${project.components}" var="component">
+													<c:if test="${selectedcompid == component.componentid}">
+														<tr style="background-color: rgb(140, 200, 200)">
+													</c:if>
+													<c:if test="${selectedcompid != component.componentid}">
+														<tr>
+													</c:if>
+														<td><a href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+														<td>${component.name}</td>
+												    	<td>${component.componentid}</td>
+														<td>
+															<a href="<c:url value='editcomponent.html?componentid=${component.componentid}'/>">
+																<button align="right" type="button" value="Edit">Edit</button>
+															</a>
+														</td>
+												   	</tr>
+													</c:forEach>
+												</table>
+											</td>
+											<td></td>
+											<td valign="top">
+												<p>Input parameters</p>
+												<table class="tablestyle">
+													<col style="width:150px">
+													<col style="width:60px">
+													<col style="width:100px">
+													<col style="width:60px">
+													<tr>
+														<th>Input parameter</th>
+														<th>Id</th>
+														<th>Default value</th>
+														<th>Edit</th>
+													</tr>
+													
+													<c:forEach items="${selectedComponent.inputparameters}" var="inputParam">
+													<tr>
+														<td>${inputParam.name}</td>
+												    	<td>${inputParam.inputid}</td>
+												    	<td>${inputParam.defaultvalue}</td>
+														<td>
+															<a href="<c:url value='editinputparameter.html?inputparameterid=${inputParam.inputid}'/>">
+																<button align="right" type="button" value="Edit">Edit</button>
+															</a>
+														</td>
+												   	</tr>
+													</c:forEach>
+													
+												</table>
+											</td>
+											<td>
+												<b>Parameters selection</b><br>
+												<input type="radio" >All parameters<br>	
+												<input type="radio">Completed parameters<br>	
+												<input type="radio">Empty parameters<br><br>
+												<input type="button" value="Upload default values">	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<a href="createcomponent.html"><button type="button">Create component</button></a>
+											</td>
+											<td></td>
+											<td>
+												<c:if test="${selectedcompid != null}">
+													<a href="createinputparameter.html?selectedcompid=${selectedcompid}"><button type="button">Create input parameter</button></a>
+												</c:if>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr height="50">
+								<td>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<b>External parameters</b>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<table class="tablestyle" width="800">
+									
+										<tr height="20">
+										    <th>Name</th>
+										    <th>Id</th>
+										    <th>Default value</th>
+										    <th>Edit</th>
+										    <th>Delete</th>
+										</tr>
+										
+										<c:forEach items="${project.extparams}" var="extParam">
+										<tr>
+											<td>${extParam.name}</td>
+									    	<td>${extParam.extparamid}</td>
+									    	<td></td>
+											<td>
+												<a href="<c:url value='editextparam.html?extparamid=${extParam.extparamid}'/>">
+													<button align="right" type="button" value="Edit">Edit</button>
+												</a>
+											</td>
+											<td>Delete</td>
+									   	</tr>
+										</c:forEach>
+									</table>
+									
+									<table width="100%">
+									
+										<tr height="30">
+											<td></td>
+										</tr>
+										<tr>
+											<td align="right">
+												<a href="editproject.html"><button type="button">Close</button></a>
+										    </td>
+										</tr>
+										      
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>	
+			</table>
+			</div>
 		</td>
 	</tr>
-	<tr>
-		<td>
-		</td>
-		<td>
-			<table>
-				<tr>
-					<td>
-						<b>Components parameters</b>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<table width="1000">
-							<col style="width:150px">
-							<col style="width:50px">
-							<col style="width:550px">
-							<col style="width:250px">
-							<tr>						
-								<td>
-									<table class="tablestyle">
-										<col style="width:80px">
-										<col style="width:150px">
-										<col style="width:80px">
-										<col style="width:50px">
-										<tr>
-											<th>Select</th>
-											<th>Components</th>
-											<th>Id</th>
-											<th>Edit</th>
-										</tr>
-										
-										<c:forEach items="${project.components}" var="component">
-										<c:if test="${selectedcompid == component.componentid}">
-											<tr style="background-color: rgb(140, 200, 200)">
-										</c:if>
-										<c:if test="${selectedcompid != component.componentid}">
-											<tr>
-										</c:if>
-											<td><a href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
-											<td>${component.name}</td>
-									    	<td>${component.componentid}</td>
-											<td>
-												<a href="<c:url value='editcomponent.html?componentid=${component.componentid}'/>">
-													<button align="right" type="button" value="Edit">Edit</button>
-												</a>
-											</td>
-									   	</tr>
-										</c:forEach>
-									</table>
-								</td>
-								<td></td>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:150px">
-										<col style="width:60px">
-										<col style="width:100px">
-										<col style="width:60px">
-										<tr>
-											<th>Input parameter</th>
-											<th>Id</th>
-											<th>Default value</th>
-											<th>Edit</th>
-										</tr>
-										
-										<c:forEach items="${selectedComponent.inputparameters}" var="inputParam">
-										<tr>
-											<td>${inputParam.name}</td>
-									    	<td>${inputParam.inputid}</td>
-									    	<td>${inputParam.defaultvalue}</td>
-											<td>
-												<a href="<c:url value='editinputparameter.html?inputparameterid=${inputParam.inputid}'/>">
-													<button align="right" type="button" value="Edit">Edit</button>
-												</a>
-											</td>
-									   	</tr>
-										</c:forEach>
-										
-									</table>
-								</td>
-								<td>
-									<b>Parameters selection</b><br>
-									<input type="radio" >All parameters<br>	
-									<input type="radio">Completed parameters<br>	
-									<input type="radio">Empty parameters<br><br>
-									<input type="button" value="Upload default values">	
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<a href="createcomponent.html"><button type="button">Create component</button></a>
-								</td>
-								<td></td>
-								<td>
-									<a href="createinputparameter.html?selectedcompid=${selectedcompid}"><button type="button">Create input parameter</button></a>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr height="50">
-					<td>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b>External parameters</b>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<table class="tablestyle" width="800">
-						
-							<tr height="20">
-							    <th>Name</th>
-							    <th>Id</th>
-							    <th>Default value</th>
-							    <th>Edit</th>
-							    <th>Delete</th>
-							</tr>
-							
-							<!--forEach items="{extparams}" var="extParam">
-							<tr>
-								<td>${extParam.name}</td>
-						    	<td>${extParam.extparamid}</td>
-						    	<td>${extParam.defaultvalue}</td>
-								<td>
-									<a href="<c:url value='editextparam.html?extparamid=${extParam.extparamid}'/>">
-										<button align="right" type="button" value="Edit">Edit</button>
-									</a>
-								</td>
-								<td>Delete</td>
-						   	</tr>
-							</forEach>-->
-						</table>
-						
-						<table width="100%">
-						
-							<tr height="30">
-								<td></td>
-							</tr>
-							<tr>
-								<td align="right">
-									<a href="editproject.html"><button type="button">Close</button></a>
-							    </td>
-							</tr>
-							      
-						</table>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>	
 </table>
-</div>
 </body>
 </html>

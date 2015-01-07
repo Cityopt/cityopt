@@ -668,6 +668,12 @@ public class ProjectController {
 			return "error";
 		}
 
+		if (strSelectedCompId == null || strSelectedCompId.isEmpty())
+		{
+			model.put("project", project);
+			return "projectparameters";
+		}
+		
 		int nSelectedCompId = Integer.parseInt(strSelectedCompId);
 		Component component = componentService.findByID(nSelectedCompId);
 
