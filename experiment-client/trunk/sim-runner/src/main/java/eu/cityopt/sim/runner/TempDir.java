@@ -62,7 +62,7 @@ public class TempDir implements Closeable {
                 public FileVisitResult visitFileFailed(Path file,
                         IOException exc) throws IOException {
                     if (exc instanceof AccessDeniedException) {
-                        System.err.println(exc);
+                        System.err.println("visitFileFailed: " + exc);
                     } else {
                         throw exc;
                     }
@@ -76,10 +76,9 @@ public class TempDir implements Closeable {
                         if (exc != null)
                             throw exc;
                         Files.delete(dir);
-                    } catch (AccessDeniedException
-                             | DirectoryNotEmptyException e) {
-                        System.err.println(e);
-                    }
+                    } catch (AccessDeniedException e) {
+                        System.err.println("postVisitDirectory: " + e);
+                    } catch (DirectoryNotEmptyException e) {}
                     return FileVisitResult.CONTINUE;
                 }
             });
