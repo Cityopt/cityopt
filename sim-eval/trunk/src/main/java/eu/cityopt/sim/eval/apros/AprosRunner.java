@@ -75,6 +75,7 @@ public class AprosRunner implements SimulationRunner {
         JobConfiguration conf = new JobConfiguration(launcher, args,
                                                      mdir, res_sel);
         Job job = xpt.createJob("job", conf);
+        StatusLoggingUtils.redirectJobLog(job, System.out);
         xpt.start();
 
         return new AprosJob(this, input, job);
