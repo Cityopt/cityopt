@@ -6,21 +6,19 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.junit.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.w3c.dom.Document;
 
 import eu.cityopt.sim.eval.Evaluator;
@@ -49,7 +47,7 @@ public class AprosRunnerTest {
     
     @Test
     public void testGetTransformer() throws Exception {
-        Transformer tf = AprosRunner.getTransformer();
+        assertNotNull(AprosRunner.getTransformer());
     }
     
     private AprosRunner makeRunner() throws Exception {

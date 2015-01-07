@@ -29,7 +29,6 @@ import org.simantics.simulation.scheduling.files.MemoryDirectory;
 import org.simantics.simulation.scheduling.status.StatusLoggingUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.cityopt.sim.eval.Namespace;
