@@ -2,6 +2,8 @@ package eu.cityopt.sim.runner;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,31 +43,44 @@ public class TempDir implements Closeable {
             return;
         is_closed = true;
         if (Files.isDirectory(path)) {
-            // Copied from the Javadoc of FileVisitor.
+            /* Initially copied from the Javadoc of FileVisitor.
+               However, Windows seems to throw AccessDeniedExceptions for no
+               clear reason.  Little one can do except leave files behind.
+               Coping with that makes this even more complicated than it
+               would normally be. */
             Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+
                 @Override
                 public FileVisitResult visitFile(
                         Path file, BasicFileAttributes attrs)
-                                throws IOException
-                {
+                                throws IOException {
                     Files.delete(file);
+                    return FileVisitResult.CONTINUE;
+                }
+                
+                @Override
+                public FileVisitResult visitFileFailed(Path file,
+                        IOException exc) throws IOException {
+                    if (exc instanceof AccessDeniedException) {
+                        System.err.println(exc);
+                    }
                     return FileVisitResult.CONTINUE;
                 }
 
                 @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException e)
-                        throws IOException
-                {
-                    if (e == null) {
+                public FileVisitResult postVisitDirectory(
+                        Path dir, IOException exc) throws IOException {
+                    try {
+                        if (exc != null)
+                            throw exc;
                         Files.delete(dir);
-                        return FileVisitResult.CONTINUE;
-                    } else {
-                        // directory iteration failed
-                        throw e;
+                    } catch (AccessDeniedException
+                             | DirectoryNotEmptyException e) {
+                        System.err.println(e);
                     }
+                    return FileVisitResult.CONTINUE;
                 }
             });
         }
     }
-
 }
