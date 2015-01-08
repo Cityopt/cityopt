@@ -29,9 +29,11 @@ public class SimulationRunnerWithStorage implements SimulationRunner {
      * @param input
      * @return a future that will provide the simulation output if it can be
      *         determined, or fail with an exception.
+     * @throws IOException 
      */
     @Override
-    public Future<SimulationOutput> start(SimulationInput input) {
+    public Future<SimulationOutput> start(SimulationInput input)
+            throws IOException {
         SimulationOutput output = storage.get(input);
         if (output != null) {
             return new ImmediateFuture<SimulationOutput>(output);

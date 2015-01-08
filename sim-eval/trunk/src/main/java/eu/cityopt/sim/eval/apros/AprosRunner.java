@@ -2,19 +2,29 @@ package eu.cityopt.sim.eval.apros;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.xml.namespace.QName;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
@@ -25,16 +35,19 @@ import org.simantics.simulation.scheduling.ServerFactory;
 import org.simantics.simulation.scheduling.applications.Application;
 import org.simantics.simulation.scheduling.applications.ProfileApplication;
 import org.simantics.simulation.scheduling.files.FileSelector;
+import org.simantics.simulation.scheduling.files.IDirectory;
 import org.simantics.simulation.scheduling.files.LocalDirectory;
 import org.simantics.simulation.scheduling.files.MemoryDirectory;
 import org.simantics.simulation.scheduling.status.StatusLoggingUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationRunner;
+import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.runner.TempDir;
 
 /**
@@ -51,23 +64,40 @@ public class AprosRunner implements SimulationRunner {
     
     final Namespace nameSpace;
     Document uc_structure;
-    final LocalDirectory modelDir;
+    private final IDirectory modelDir;
     private static Templates a62scl = loadXSL();
     //TODO: Maybe share some stuff if there are multiple AprosRunners?
     private final TempDir tmp;
     private final Server server;
     private final String profile;
-    final String resultFile;
+    final String[] resultFiles;
+    private final Path setup_scl;
+    private Map<String, Map<String, String>> inputNames = new HashMap<>();
+
+    /**
+     * Map input parameters to globally unique SCL identifiers.
+     * @return an unmodifiable map component |-> parameter |-> SCL name
+     */
+    public Map<String, Map<String, String>> getInputNames() {
+        return Collections.unmodifiableMap(inputNames);
+    }
+    
+    private static synchronized XPath getXPath() {
+        return XPathFactory.newInstance().newXPath();
+    }
 
     @Override
-    public AprosJob start(SimulationInput input) {
-        Experiment xpt = server.createExperiment(
-                new HashMap<String, String>());
-        MemoryDirectory mdir = new MemoryDirectory(modelDir.files(),
-                                                   modelDir.directories());
+    public AprosJob start(SimulationInput input) throws IOException {
+        Experiment xpt = server.createExperiment(new HashMap<>());
+        MemoryDirectory
+            mdir = new MemoryDirectory(modelDir.files(),
+                                       new HashMap<>(modelDir.directories())),
+            cdir = new MemoryDirectory();
+        mdir.addDirectory("cityopt", cdir);
+        cdir.addFile(setup_scl);
         Application launcher = new ProfileApplication(profile, "Launcher.exe");
-        String[] args = makeScript(mdir, input);
-        FileSelector res_sel = new FileSelector(resultFile);
+        String[] args = makeScript(mdir, cdir, input);
+        FileSelector res_sel = new FileSelector(resultFiles);
         JobConfiguration conf = new JobConfiguration(launcher, args,
                                                      mdir, res_sel);
         AprosJob ajob = new AprosJob(this, input, xpt, conf);
@@ -75,25 +105,31 @@ public class AprosRunner implements SimulationRunner {
         return ajob;
     }
     
-    private String[] makeScript(MemoryDirectory mdir, SimulationInput input) {
+    private String[] makeScript(MemoryDirectory mdir, MemoryDirectory cdir,
+                                SimulationInput input) {
         // TODO stub
         return new String[] {"sequence.scl", "0"};
     }
 
     public AprosRunner(
             String profile, Namespace ns,
-            Document uc_props, Path modelDir, String resultFile) {
+            Document uc_props, Path modelDir, String... resultFiles)
+                    throws TransformerException {
         this.profile = profile;
         nameSpace = ns;
         this.modelDir = new LocalDirectory(modelDir);
-        this.resultFile = resultFile;
+        this.resultFiles = resultFiles;
         uc_structure = (Document)uc_props.cloneNode(true);
         sanitizeUCS();
-        patchUCS(ns);
+        makeInputNames();
+        patchUCS();
         try {
             tmp = new TempDir(tmpPrefix);
             try {
-                server = ServerFactory.createLocalServer(tmp.getPath());
+                setup_scl = tmp.getPath().resolve("setup.scl");
+                writeSetup();
+                server = ServerFactory.createLocalServer(
+                        Files.createDirectory(tmp.getPath().resolve("srv")));
                 server.installProfile(profile, new LocalDirectory(
                         profileDir.resolve(profile)));
                 Map<String, String> p = new HashMap<String, String>();
@@ -108,11 +144,6 @@ public class AprosRunner implements SimulationRunner {
         } catch (IOException e) {
             throw new RuntimeException("Simulation server setup failed.", e);
         }
-    }
-
-    private void patchUCS(Namespace ns) {
-        // TODO Auto-generated method stub
-        
     }
 
     private static Templates loadXSL() {
@@ -135,7 +166,7 @@ public class AprosRunner implements SimulationRunner {
             Pattern p;
             String rs;
         }
-        XPath xp = XPathFactory.newInstance().newXPath();
+        XPath xp = getXPath();
         Map<String, Replacer> smap = new HashMap<>();
         try {
             NodeList names = (NodeList)xp.evaluate(
@@ -178,6 +209,79 @@ public class AprosRunner implements SimulationRunner {
         }
     }
     
+    private void makeInputNames() {
+        Set<String> used_names = new HashSet<>();
+
+        for (Map.Entry<String, Namespace.Component>
+                 ckv : nameSpace.components.entrySet()) {
+            if (ckv.getValue().inputs.isEmpty())
+                continue;
+            Map<String, String> names = new HashMap<>();
+            inputNames.put(ckv.getKey(), names);
+            for (Map.Entry<String, Type>
+                     pkv : ckv.getValue().inputs.entrySet()) {
+                String
+                    name0 = sanitize(ckv.getKey() + "__" + pkv.getKey()),
+                    name = name0;
+                for (int i = 0; used_names.contains(name); ++i) {
+                    name = name0 + "_" + i;
+                }
+                names.put(pkv.getKey(), name);
+                used_names.add(name);
+            }
+        }
+    }
+
+    private void patchUCS() {
+        XPath xp = getXPath();
+        Map<QName, Object> vars = new HashMap<>();
+        xp.setXPathVariableResolver(vars::get);
+        try {
+            final QName
+                qn_comp = new QName("comp"),
+                qn_param = new QName("param");
+            XPathExpression
+                xp_comp = xp.compile("//node[@moduleName = $comp]"),
+                xp_value = xp.compile("./property[@name = $param]/@value");
+            for (Map.Entry<String, Map<String, String>>
+                     ckv : inputNames.entrySet()) {
+                vars.put(qn_comp, ckv.getKey());
+                NodeList nodes = (NodeList)xp_comp.evaluate(
+                        uc_structure, XPathConstants.NODESET);
+                switch (nodes.getLength()) {
+                case 1:
+                    Node node = nodes.item(0);
+                    for (Map.Entry<String, String>
+                             pkv : ckv.getValue().entrySet()) {
+                        vars.put(qn_param, sanitize(pkv.getKey()));
+                        NodeList vals = (NodeList)xp_value.evaluate(
+                                node, XPathConstants.NODESET);
+                        for (int iv = 0; iv != vals.getLength(); ++iv) {
+                            Attr val = (Attr)vals.item(iv);
+                            val.setValue("In." + pkv.getValue());
+                        }
+                        //TODO Cope with empty vals.
+                    }
+                    break;
+                case 0:
+                default:
+                    //TODO
+                }
+            }
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeSetup() throws IOException, TransformerException {
+        try (PrintStream setup = new PrintStream(setup_scl.toFile())) {
+            getTransformer().transform(
+                    new DOMSource(uc_structure),
+                    new StreamResult(setup));
+            // TODO Write the primitive component stuff.
+        }
+    }
+
     private static final Pattern re = Pattern.compile("^([^a-z])"); 
     
     public String sanitize(String name) {

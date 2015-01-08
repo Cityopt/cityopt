@@ -1,6 +1,7 @@
 package eu.cityopt.sim.eval.apros;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -10,6 +11,7 @@ import java.util.concurrent.TimeoutException;
 import org.simantics.simulation.scheduling.Experiment;
 import org.simantics.simulation.scheduling.Job;
 import org.simantics.simulation.scheduling.JobConfiguration;
+import org.simantics.simulation.scheduling.files.IFile;
 import org.simantics.simulation.scheduling.status.JobFinished;
 import org.simantics.simulation.scheduling.status.JobRunning;
 import org.simantics.simulation.scheduling.status.JobSucceeded;
@@ -79,7 +81,14 @@ public class AprosJob implements Future<SimulationOutput> {
                 SimulationResults
                     res = new SimulationResults(input, ostr.toString());
                 output = res;
-                //TODO Retrieve the output and store in res.
+                try {
+                    for (IFile f : st.outputDirectory.files().values()) {
+                        //TODO Retrieve the output and store in res.        
+                    }
+                } catch (IOException e) {
+                    throw new ExecutionException(
+                            "Result retrieval failed", e);
+                }
             } else {
                 output = new SimulationFailure(
                         input, st.toString() + "\n" + ostr.toString());

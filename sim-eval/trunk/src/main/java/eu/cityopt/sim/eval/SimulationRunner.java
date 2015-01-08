@@ -1,6 +1,7 @@
 package eu.cityopt.sim.eval;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.concurrent.Future;
 
 /**
@@ -20,6 +21,8 @@ public interface SimulationRunner extends Closeable {
      * @param input
      * @return a future that will provide the simulation output if it can be
      *         determined, or otherwise fail with an exception.
+     * @throws IOException 
      */
-    public Future<SimulationOutput> start(SimulationInput input);
+    public Future<SimulationOutput> start(SimulationInput input)
+            throws IOException;
 }
