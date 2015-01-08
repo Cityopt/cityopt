@@ -1,5 +1,3 @@
-CREATE EXTENSION postgis;
-
 DROP TABLE IF EXISTS AlgoParam CASCADE
 ;
 DROP SEQUENCE IF EXISTS AlgoParam_aParamsID_seq
@@ -326,7 +324,7 @@ CREATE TABLE ModelParameter (
 	modelParamID integer DEFAULT nextval(('ModelParameter_modelParamID_seq'::text)::regclass) NOT NULL,
 	scenGenID integer NOT NULL,
 	inputID integer NOT NULL,
-	value text
+	expression text
 )
 ;
 
