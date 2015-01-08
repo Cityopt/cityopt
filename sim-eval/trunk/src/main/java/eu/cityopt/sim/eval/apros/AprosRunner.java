@@ -8,8 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
@@ -51,7 +52,7 @@ public class AprosRunner implements SimulationRunner {
     final Namespace nameSpace;
     Document uc_structure;
     final LocalDirectory modelDir;
-    private static Transformer a62scl = null;
+    private static Templates a62scl = loadXSL();
     //TODO: Maybe share some stuff if there are multiple AprosRunners?
     private final TempDir tmp;
     private final Server server;
@@ -86,9 +87,6 @@ public class AprosRunner implements SimulationRunner {
         nameSpace = ns;
         this.modelDir = new LocalDirectory(modelDir);
         this.resultFile = resultFile;
-        if (a62scl == null) {
-            a62scl = getTransformer();
-        }
         uc_structure = (Document)uc_props.cloneNode(true);
         sanitizeUCS();
         patchUCS(ns);
@@ -117,15 +115,20 @@ public class AprosRunner implements SimulationRunner {
         
     }
 
-    static Transformer getTransformer() {
+    private static Templates loadXSL() {
         try (InputStream xslt = AprosRunner.class.getResourceAsStream(
                 "xslt/a62scl.xsl")) {
-            return TransformerFactory.newInstance().newTransformer(
+            return TransformerFactory.newInstance().newTemplates(
                     new StreamSource(xslt));
-        } catch (IOException | TransformerException e) {
+        } catch (IOException | TransformerConfigurationException e) {
             throw new RuntimeException("Failed to load XSLT.", e);
         }
     }
+    
+    public static Transformer getTransformer()
+            throws TransformerConfigurationException {
+        return a62scl.newTransformer();
+    } 
 
     private void sanitizeUCS() {
         class Replacer {
