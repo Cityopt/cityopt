@@ -18,109 +18,117 @@
 </head>
 
 <body>
-<%@ include file="mainmenu.inc"%>
-
-<div style="overflow:scroll;height:600px;width:1100px;overflow:auto">
-<table>
-	<col style="width:40px">
-	<col style="width:1000px">	
+<table cellspacing="0" cellpadding="0">
+	<col style="width:100px">
+	<col style="width:800px">
 	<tr>
-		<td colspan="2" height="80">
-			<h2>Scenario parameters</h2>
-		</td>
-	</tr>
-	<tr>
-		<td>
+		<td valign="top">
+			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td>
+			<div style="overflow:scroll;height:600px;width:800px;overflow:auto">
 			<table>
+				<col style="width:30px">
+				<col style="width:750px">	
 				<tr>
-					<td>
-						<b>Components parameters</b>
+					<td colspan="2" height="80">
+						<h2>Scenario parameters</h2>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<table width="1000">
-							<col style="width:150px">
-							<col style="width:50px">
-							<col style="width:550px">
-							<col style="width:250px">
-							<tr>						
+					</td>
+					<td>
+						<table>
+							<tr>
 								<td>
-									<table class="tablestyle">
-										<col style="width:80px">
-										<col style="width:150px">
-										<col style="width:80px">
-										<tr>
-											<th>Select</th>
-											<th>Components</th>
-											<th>Id</th>
-										</tr>
-										
-										<c:forEach items="${project.components}" var="component">
-										<c:if test="${selectedcompid == component.componentid}">
-											<tr style="background-color: rgb(140, 200, 200)">
-										</c:if>
-										<c:if test="${selectedcompid != component.componentid}">
-											<tr>
-										</c:if>
-											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
-											<td>${component.name}</td>
-									    	<td>${component.componentid}</td>
-									   	</tr>
-										</c:forEach>
-									</table>
+									<b>Components parameters</b>
 								</td>
-								<td></td>
-								<td valign="top">
-									<table class="tablestyle">
+							</tr>
+							<tr>
+								<td>
+									<table width="750">
 										<col style="width:150px">
-										<col style="width:60px">
-										<col style="width:100px">
-										<col style="width:60px">
-										<tr>
-											<th>Input parameter</th>
-											<th>Id</th>
-											<th>Default value</th>
-											<th>Edit</th>
-										</tr>
-										
-										<c:forEach items="${selectedComponent.inputparameters}" var="inputParam">
-										<tr>
-											<td>${inputParam.name}</td>
-									    	<td>${inputParam.inputid}</td>
-									    	<td>${inputParam.defaultvalue}</td>
+										<col style="width:50px">
+										<col style="width:400px">
+										<col style="width:150px">
+										<tr>						
 											<td>
-												<a href="<c:url value='editinputparameter.html?inputparameterid=${inputParam.inputid}'/>">
-													<button align="right" type="button" value="Edit">Edit</button>
-												</a>
+												<table class="tablestyle">
+													<col style="width:80px">
+													<col style="width:150px">
+													<col style="width:80px">
+													<tr>
+														<th>Select</th>
+														<th>Components</th>
+														<th>Id</th>
+													</tr>
+													
+													<c:forEach items="${project.components}" var="component">
+													<c:if test="${selectedcompid == component.componentid}">
+														<tr style="background-color: rgb(140, 200, 200)">
+													</c:if>
+													<c:if test="${selectedcompid != component.componentid}">
+														<tr>
+													</c:if>
+														<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+														<td>${component.name}</td>
+												    	<td>${component.componentid}</td>
+												   	</tr>
+													</c:forEach>
+												</table>
 											</td>
-									   	</tr>
-										</c:forEach>
-										
+											<td></td>
+											<td valign="top">
+												<table class="tablestyle">
+													<col style="width:150px">
+													<col style="width:60px">
+													<col style="width:100px">
+													<col style="width:60px">
+													<tr>
+														<th>Input parameter</th>
+														<th>Id</th>
+														<th>Default value</th>
+														<th>Edit</th>
+													</tr>
+													
+													<c:forEach items="${selectedComponent.inputparameters}" var="inputParam">
+													<tr>
+														<td>${inputParam.name}</td>
+												    	<td>${inputParam.inputid}</td>
+												    	<td>${inputParam.defaultvalue}</td>
+														<td>
+															<a href="<c:url value='editinputparameter.html?inputparameterid=${inputParam.inputid}'/>">
+																<button align="right" type="button" value="Edit">Edit</button>
+															</a>
+														</td>
+												   	</tr>
+													</c:forEach>
+												</table>
+											</td>
+											<td>
+												<b>Parameters selection</b><br>
+												<input type="radio" >All parameters<br>	
+												<input type="radio">Completed parameters<br>	
+												<input type="radio">Empty parameters<br><br>
+												<input type="button" value="Upload default values">	
+											</td>
+										</tr>
 									</table>
 								</td>
-								<td>
-									<b>Parameters selection</b><br>
-									<input type="radio" >All parameters<br>	
-									<input type="radio">Completed parameters<br>	
-									<input type="radio">Empty parameters<br><br>
-									<input type="button" value="Upload default values">	
-								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									<a href="editscenario.html"><button type="button">Close</button></a>
+							    </td>
 							</tr>
 						</table>
 					</td>
-				</tr>
-				<tr>
-					<td align="right">
-						<a href="editscenario.html"><button type="button">Close</button></a>
-				    </td>
-				</tr>
+				</tr>	
 			</table>
+			</div>
 		</td>
-	</tr>	
+	</tr>
 </table>
-</div>
 </body>
 </html>

@@ -20,15 +20,15 @@
 <body>
 <table cellspacing="0" cellpadding="0">
 	<tr>
-		<td valign="top">
+		<td width="100" valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="50"></td>
+		<td width="30"></td>
 		<td>
-			<div style="overflow:scroll;height:600px;width:1000px;overflow:auto">
+			<div style="overflow:scroll;height:600px;width:850px;overflow:auto">
 			<table>
-				<col style="width:40px">
-				<col style="width:950px">	
+				<col style="width:30px">
+				<col style="width:750px">	
 				<tr>
 					<td colspan="2" height="80">
 						<h2>Project parameters</h2>
@@ -41,11 +41,11 @@
 						<table>
 							<tr>
 								<td>
-									<table width="950">
+									<table width="750">
 										<col style="width:150px">
 										<col style="width:50px">
-										<col style="width:550px">
-										<col style="width:200px">
+										<col style="width:400px">
+										<col style="width:150px">
 										<tr>						
 											<td valign="top">
 												<p>Components</p>
@@ -119,11 +119,11 @@
 											</td>
 										</tr>
 										<tr>
-											<td>
+											<td align="right">
 												<a href="createcomponent.html"><button type="button">Create component</button></a>
 											</td>
 											<td></td>
-											<td>
+											<td align="right">
 												<c:if test="${selectedcompid != null}">
 													<a href="createinputparameter.html?selectedcompid=${selectedcompid}"><button type="button">Create input parameter</button></a>
 												</c:if>
@@ -143,42 +143,37 @@
 							</tr>
 							<tr>
 								<td>
-									<table class="tablestyle" width="800">
-									
-										<tr height="20">
-										    <th>Name</th>
-										    <th>Id</th>
-										    <th>Default value</th>
-										    <th>Edit</th>
-										    <th>Delete</th>
-										</tr>
-										
-										<c:forEach items="${project.extparams}" var="extParam">
-										<tr>
-											<td>${extParam.name}</td>
-									    	<td>${extParam.extparamid}</td>
-									    	<td></td>
-											<td>
-												<a href="<c:url value='editextparam.html?extparamid=${extParam.extparamid}'/>">
-													<button align="right" type="button" value="Edit">Edit</button>
-												</a>
-											</td>
-											<td>Delete</td>
-									   	</tr>
-										</c:forEach>
-									</table>
-									
 									<table width="100%">
-									
-										<tr height="30">
-											<td></td>
+										<tr>
+											<td>
+												<table class="tablestyle" width="400">
+													<col style="width:200px">
+													<col style="width:100px">
+													<col style="width:100px">
+													<tr height="20">
+													    <th>Name</th>
+													    <th>Id</th>
+													    <th>Default value</th>
+													</tr>
+													
+													<c:forEach items="${project.extparams}" var="extParam">
+													<tr>
+														<td>${extParam.name}</td>
+												    	<td>${extParam.extparamid}</td>
+												    	<td>${extParam.defaultvalue}</td>
+												   	</tr>
+													</c:forEach>
+												</table>
+											</td>
 										</tr>
 										<tr>
+											<td width="400" align="right">
+												<a href="createextparam.html"><button type="button">Create external parameter</button></a>
+											</td>
 											<td align="right">
 												<a href="editproject.html"><button type="button">Close</button></a>
-										    </td>
+											</td>
 										</tr>
-										      
 									</table>
 								</td>
 							</tr>

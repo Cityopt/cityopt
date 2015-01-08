@@ -1,6 +1,9 @@
 <%--@elvariable id="project" type="com.cityopt.model.Project"--%>
 <%--@elvariable id="scenario" type="eu.cityopt.model.Scenario"--%>
+<%--@elvariable id="component" type="com.cityopt.model.Component"--%>
+<%--@elvariable id="inputParamVal" type="com.cityopt.model.InputParamVal"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -10,12 +13,16 @@
 </head>
 <body>
 <table cellspacing="0" cellpadding="0">
+	<col style="width:100px">
+	<col style="width:30px">
+	<col style="width:800px">
 	<tr>
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td>
-			<div style="overflow:scroll;height:500px;width:1000px;overflow:auto">
+		<td></td>
+		<td valign="top">
+			<div style="overflow:scroll;height:500px;width:800px;overflow:auto">
 			<form:form method="post" action="editscenario.html?action=update" modelAttribute="scenario">
 			<table>
 				<tr>
@@ -62,29 +69,34 @@
 								<td>
 									<table class="tablestyle" border="1">
 										<col style="width:150px">
+										<col style="width:50px">
 										<tr>
-											<th>Components</th>
+											<th>Component</th>
+											<th>Id</th>
 										</tr>
+
+										<c:forEach items="${project.components}" var="component">
 										<tr>
-											<td>x</td>
-										</tr>
+											<td>${component.name}</td>
+									    	<td>${component.componentid}</td>
+									   	</tr>
+										</c:forEach>
 									</table>
 								</td>
 								<td>
 									<table class="tablestyle" border="1">
 										<col style="width:150px">
-										<col style="width:150px">
-										<col style="width:150px">
+										<col style="width:50px">
 										<tr>
-											<th>Parameters</th>
+											<th>Parameter name</th>
 											<th>Value</th>
-											<th>Units</th>
 										</tr>
+										<c:forEach items="${scenario.inputparamvals}" var="inputParamVal">
 										<tr>
-											<td>x</td>
-											<td>x</td>
-											<td>x</td>
-										</tr>
+											<td>${inputParamVal.inputparameter.name}</td>
+									    	<td>${inputParamVal.value}</td>
+									   	</tr>
+										</c:forEach>
 									</table>
 								</td>
 								<td>

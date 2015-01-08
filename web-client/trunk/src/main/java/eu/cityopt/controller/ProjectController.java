@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eu.cityopt.model.AppUser;
 import eu.cityopt.model.Component;
+import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.Metric;
 import eu.cityopt.model.Project;
@@ -34,6 +35,7 @@ import eu.cityopt.service.AppUserServiceImpl;
 import eu.cityopt.service.AprosService;
 import eu.cityopt.service.ComponentServiceImpl;
 import eu.cityopt.service.EntityNotFoundException;
+import eu.cityopt.service.ExtParamServiceImpl;
 import eu.cityopt.service.InputParameterServiceImpl;
 import eu.cityopt.service.MetricServiceImpl;
 import eu.cityopt.service.ProjectService;
@@ -60,6 +62,9 @@ public class ProjectController {
 	
 	@Autowired
 	InputParameterServiceImpl inputParamService;
+	
+	@Autowired
+	ExtParamServiceImpl extParamService;
 	
 	@Autowired
 	MetricServiceImpl metricService;
@@ -698,6 +703,46 @@ public class ProjectController {
 		return "projectparameters";
 	}
 
+	@RequestMapping(value="createextparam", method=RequestMethod.GET)
+	public String getCreateExtParam(Map<String, Object> model) {
+		Project project = (Project) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		project = projectService.findByID(project.getPrjid());
+		model.put("project", project);
+		
+		ExtParam extParam = new ExtParam();
+		model.put("extParam", extParam);
+		
+		return "createextparam";
+	}
+
+	@RequestMapping(value="createextparam", method=RequestMethod.POST)
+	public String getCreateExtParamPost(ExtParam extParam, Map<String, Object> model) {
+		Project project = (Project) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+
+		project = projectService.findByID(project.getPrjid());
+
+		ExtParam newExtParam = new ExtParam();
+		newExtParam.setName(extParam.getName());
+		newExtParam.setDefaultvalue(extParam.getDefaultvalue());
+		newExtParam.setProject(project);
+		
+		extParamService.save(newExtParam);
+
+		model.put("project", project);
+
+		return "projectparameters";
+	}
+	
 	@RequestMapping(value="metricdefinition",method=RequestMethod.GET)
 	public String getMetricDefinition(Map<String, Object> model,
 		@RequestParam(value="metricid", required=false) String metricid,
