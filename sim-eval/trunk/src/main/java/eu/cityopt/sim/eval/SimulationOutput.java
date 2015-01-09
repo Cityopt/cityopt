@@ -17,6 +17,7 @@ public class SimulationOutput {
     private String messages;
 
     protected SimulationOutput(SimulationInput input, String messages) {
+        //FIXME Isn't it rather too late to worry about this?
         if (!input.isComplete()) {
             throw new IllegalArgumentException("Incomplete input");
         }

@@ -71,9 +71,15 @@ public class AprosRunnerTest {
             ExternalParameters dumb = new ExternalParameters(arun.nameSpace);
             SimulationInput in = new SimulationInput(dumb);
             AprosJob job = arun.start(in);
+            System.out.println("---8<--- inputs.scl");
+            job.conf.inputDirectory.directories().get(
+                    "cityopt").files().get(
+                    "inputs.scl").writeTo(System.out);
+            System.out.println("--->8--- end of inputs.scl");
             SimulationOutput out = job.get();
-            System.out.println("Job log:\n" + out.getMessages()
-                               + "Job log ends.");
+            System.out.println("---8<--- job log");
+            System.out.print(out.getMessages());
+            System.out.println("--->8--- end of job log");
             assertTrue(out instanceof SimulationResults);
         }
     }
@@ -96,7 +102,7 @@ public class AprosRunnerTest {
     }
     
     @Test
-    public void printSCL() throws Exception {
+    public void printSetup() throws Exception {
         try (AprosRunner arun = makeRunner();
              InputStream scl = new FileInputStream(arun.setup_scl.toFile())) {
             System.out.println("---8<--- setup.scl");

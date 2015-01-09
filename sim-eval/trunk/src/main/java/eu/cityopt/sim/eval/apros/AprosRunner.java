@@ -39,6 +39,7 @@ import org.simantics.simulation.scheduling.files.FileSelector;
 import org.simantics.simulation.scheduling.files.IDirectory;
 import org.simantics.simulation.scheduling.files.LocalDirectory;
 import org.simantics.simulation.scheduling.files.MemoryDirectory;
+import org.simantics.simulation.scheduling.files.MemoryFile;
 import org.simantics.simulation.scheduling.status.StatusLoggingUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -91,6 +92,9 @@ public class AprosRunner implements SimulationRunner {
 
     @Override
     public AprosJob start(SimulationInput input) throws IOException {
+        if (!input.isComplete()) {
+            throw new IllegalArgumentException("Incomplete input");
+        }
         Experiment xpt = server.createExperiment(new HashMap<>());
         MemoryDirectory
             mdir = new MemoryDirectory(modelDir.files(),
@@ -104,13 +108,30 @@ public class AprosRunner implements SimulationRunner {
         JobConfiguration conf = new JobConfiguration(launcher, args,
                                                      mdir, res_sel);
         AprosJob ajob = new AprosJob(this, input, xpt, conf);
+        Files.createDirectories(Paths.get("C:/DATA/cityopt/foo"));
+        mdir.writeTo(Paths.get("C:/DATA/cityopt/foo"));
         xpt.start();
         return ajob;
     }
     
     private String[] makeScript(MemoryDirectory mdir, MemoryDirectory cdir,
                                 SimulationInput input) {
-        // TODO stub
+        ByteArrayOutputStream inp_ba = new ByteArrayOutputStream();
+        try (PrintStream inp = new PrintStream(inp_ba)) {
+            for (Map.Entry<String, Map<String, String>>
+                     ckv : inputNames.entrySet()) {
+                for (Map.Entry<String, String>
+                         pkv : ckv.getValue().entrySet()) {
+                    inp.printf("%s = %s%n", pkv.getValue(),
+                               input.get(ckv.getKey(), pkv.getKey()));
+                }
+            }            
+        }
+        cdir.addFile("inputs.scl", new MemoryFile(inp_ba.toByteArray()));
+        //TODO stub
+        /* XXX Bug: there needs to be at least one argument.
+           Wonkiness in the simulation server or client library.
+           No harm if there are more arguments than SCL main takes. */
         return new String[] {"sequence.scl", "0"};
     }
 
@@ -287,7 +308,7 @@ public class AprosRunner implements SimulationRunner {
             setup.printf(
                     "%nsetup :: AprosSequence ()%n"
                     + "setup = do {%n"
-                    + "  setupUCS;%n");
+                    + "  setupUCs;%n");
             setup.write(orphanSets);
             setup.printf("  return ()%n}%n");
         }

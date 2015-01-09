@@ -32,6 +32,7 @@ import eu.cityopt.sim.eval.SimulationResults;
 public class AprosJob implements Future<SimulationOutput> {
     private final AprosRunner runner;
     private final SimulationInput input;
+    final JobConfiguration conf;
     private Job job;
     private boolean cancelled = false;
     private SimulationOutput output = null;
@@ -41,6 +42,7 @@ public class AprosJob implements Future<SimulationOutput> {
              Experiment xpt, JobConfiguration conf) {
         this.runner = runner;
         this.input = input;
+        this.conf = conf;
         job = xpt.createJob("job", conf);
         StatusLoggingUtils.redirectJobLog(job, ostr);
     }

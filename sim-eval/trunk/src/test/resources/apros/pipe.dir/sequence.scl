@@ -1,10 +1,10 @@
-// Integer is not supported.
-main :: Double -> <Proc> ()
-main i = do
-    print $ "===== Job " + (show i) + " ====="
-    runApros mdo
-        loadIC "pipe.snp.gz"
-        setTime i
-        startSubscription "subscr.dat" "results.dat"
-        wait 60.0
-        stopSubscription "results.dat"
+import "file:cityopt/setup.scl" as CO
+
+main :: <Proc> ()
+main = runApros mdo
+    loadIC "pipe.snp.gz"
+    CO.setup
+    setTime 0
+    startSubscription "subscr.dat" "results.dat"
+    wait 60.0
+    stopSubscription "results.dat"

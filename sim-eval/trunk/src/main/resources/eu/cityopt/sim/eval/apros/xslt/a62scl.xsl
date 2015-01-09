@@ -4,7 +4,8 @@
   version="1.0">
   <xsl:output method="text"/>
   
-  <xsl:template match="/">input "file:cityopt/inputs.scl" as In
+  <xsl:template match="/">import "Sequence"
+import "file:cityopt/inputs.scl" as In
 
 setupUCs :: AprosSequence ()
 setupUCs = let node n m x = x
