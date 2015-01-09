@@ -1,5 +1,6 @@
 package eu.cityopt.sim.eval.apros;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -41,7 +42,6 @@ import org.simantics.simulation.scheduling.files.MemoryDirectory;
 import org.simantics.simulation.scheduling.status.StatusLoggingUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.cityopt.sim.eval.Namespace;
@@ -71,8 +71,11 @@ public class AprosRunner implements SimulationRunner {
     private final Server server;
     private final String profile;
     final String[] resultFiles;
-    private final Path setup_scl;
+    final Path setup_scl;
     private Map<String, Map<String, String>> inputNames = new HashMap<>();
+    /* A sequence of SCL set commands for input parameters
+       not found in uc_structure. */
+    private byte[] orphanSets;
 
     /**
      * Map input parameters to globally unique SCL identifiers.
@@ -236,7 +239,8 @@ public class AprosRunner implements SimulationRunner {
         XPath xp = getXPath();
         Map<QName, Object> vars = new HashMap<>();
         xp.setXPathVariableResolver(vars::get);
-        try {
+        ByteArrayOutputStream set_baos = new ByteArrayOutputStream();
+        try (PrintStream set_str = new PrintStream(set_baos)) {
             final QName
                 qn_comp = new QName("comp"),
                 qn_param = new QName("param");
@@ -248,29 +252,31 @@ public class AprosRunner implements SimulationRunner {
                 vars.put(qn_comp, ckv.getKey());
                 NodeList nodes = (NodeList)xp_comp.evaluate(
                         uc_structure, XPathConstants.NODESET);
-                switch (nodes.getLength()) {
-                case 1:
-                    Node node = nodes.item(0);
-                    for (Map.Entry<String, String>
-                             pkv : ckv.getValue().entrySet()) {
+                //TODO if (nodes.getLength() > 1) freak out
+                for (Map.Entry<String, String>
+                         pkv : ckv.getValue().entrySet()) {
+                    if (nodes.getLength() != 0) {
                         vars.put(qn_param, sanitize(pkv.getKey()));
                         NodeList vals = (NodeList)xp_value.evaluate(
-                                node, XPathConstants.NODESET);
-                        for (int iv = 0; iv != vals.getLength(); ++iv) {
-                            Attr val = (Attr)vals.item(iv);
-                            val.setValue("In." + pkv.getValue());
+                                nodes.item(0), XPathConstants.NODESET);
+                        switch (vals.getLength()) {
+                        case 1:
+                            ((Attr)vals.item(0)).setValue(pkv.getValue());
+                            continue;
+                        default:
+                            //TODO
+                        case 0:
                         }
-                        //TODO Cope with empty vals.
                     }
-                    break;
-                case 0:
-                default:
-                    //TODO
+                    set_str.printf(
+                            "  set \"%s#%s\" In.%s%n",
+                            ckv.getKey(), pkv.getKey(), pkv.getValue());
                 }
             }
         } catch (XPathExpressionException e) {
             throw new RuntimeException(e);
         }
+        orphanSets = set_baos.toByteArray();
     }
 
     private void writeSetup() throws IOException, TransformerException {
@@ -278,7 +284,12 @@ public class AprosRunner implements SimulationRunner {
             getTransformer().transform(
                     new DOMSource(uc_structure),
                     new StreamResult(setup));
-            // TODO Write the primitive component stuff.
+            setup.printf(
+                    "%nsetup :: AprosSequence ()%n"
+                    + "setup = do {%n"
+                    + "  setupUCS;%n");
+            setup.write(orphanSets);
+            setup.printf("  return ()%n}%n");
         }
     }
 

@@ -1,7 +1,9 @@
 package eu.cityopt.sim.eval.apros;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
@@ -14,12 +16,12 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
+
+import com.google.common.io.ByteStreams;
 
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
@@ -95,10 +97,11 @@ public class AprosRunnerTest {
     
     @Test
     public void printSCL() throws Exception {
-        try (AprosRunner arun = makeRunner()) {
-            AprosRunner.getTransformer().transform(
-                    new DOMSource(arun.uc_structure),
-                    new StreamResult(System.out));
+        try (AprosRunner arun = makeRunner();
+             InputStream scl = new FileInputStream(arun.setup_scl.toFile())) {
+            System.out.println("---8<--- setup.scl");
+            ByteStreams.copy(scl, System.out);
+            System.out.println("--->8--- end of setup.scl");
         }
     }
 }
