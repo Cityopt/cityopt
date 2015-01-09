@@ -37,7 +37,7 @@
 								<td>Project name:</td>
 								<td><form:input type="text" path="name"/></td>
 								<td></td>
-								<td><input type="submit" value="Edit scenario" style="width:120px"></td>
+								<td><input type="submit" value="Update scenario" style="width:120px"></td>
 							</tr>
 							<tr>						
 								<td></td>
@@ -65,8 +65,9 @@
 								<td>External parameters:</td>
 								<td><a href="scenariovariables.html"><button type="button" style="width:150px">Set</button></a></td>
 							</tr>
+							<tr height="10"></tr>
 							<tr>						
-								<td>
+								<td valign="top">
 									<table class="tablestyle" border="1">
 										<col style="width:150px">
 										<col style="width:50px">
@@ -83,7 +84,7 @@
 										</c:forEach>
 									</table>
 								</td>
-								<td>
+								<td valign="top">
 									<table class="tablestyle" border="1">
 										<col style="width:150px">
 										<col style="width:50px">

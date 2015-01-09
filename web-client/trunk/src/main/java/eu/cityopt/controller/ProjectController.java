@@ -69,14 +69,6 @@ public class ProjectController {
 	@Autowired
 	MetricServiceImpl metricService;
 	
-	@RequestMapping(value="getProjects",method=RequestMethod.GET)
-	public String getGoalReports(Model model) {
-		List<Project> projects = projectService.findAll();
-		model.addAttribute("projects",projects);
-		
-		return "getProjects";
-	}	
-
 	@RequestMapping(value="createproject", method=RequestMethod.GET)
 	public String getCreateProject(Map<String, Object> model) {
 		Project newProject = new Project();
@@ -261,6 +253,8 @@ public class ProjectController {
 		if (model.containsKey("project") && formScenario != null)
 		{
 			Project project = (Project) model.get("project");
+			project = projectService.findByID(project.getPrjid());
+			
 			Scenario scenario = (Scenario) model.get("scenario");
 			
 			scenario.setProject(project);
@@ -337,6 +331,7 @@ public class ProjectController {
 			return "error";
 		}
 		
+		project = projectService.findByID(project.getPrjid());
 		model.put("project", project);
 		
 		return "scenariovariables";
@@ -743,6 +738,48 @@ public class ProjectController {
 		return "projectparameters";
 	}
 	
+	@RequestMapping(value="editextparam", method=RequestMethod.GET)
+	public String getEditExtParam(Map<String, Object> model,
+		@RequestParam(value="extparamid", required=true) String extparamid) {
+		Project project = (Project) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		project = projectService.findByID(project.getPrjid());
+		model.put("project", project);
+
+		int nExtParamId = Integer.parseInt(extparamid);
+		ExtParam extParam = extParamService.findByID(nExtParamId);
+		model.put("extParam", extParam);
+
+		return "editextparam";
+	}
+
+	@RequestMapping(value="editextparam", method=RequestMethod.POST)
+	public String getEditExtParamPost(ExtParam extParam, Map<String, Object> model,
+		@RequestParam(value="extparamid", required=true) String extParamId){
+		Project project = (Project) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		project = projectService.findByID(project.getPrjid());
+
+		int nExtParamId = Integer.parseInt(extParamId);
+		ExtParam updatedExtParam = extParamService.findByID(nExtParamId);
+		updatedExtParam.setName(extParam.getName());
+		updatedExtParam.setDefaultvalue(extParam.getDefaultvalue());
+		extParamService.save(updatedExtParam);
+
+		model.put("project", project);
+
+		return "scenariovariables";
+	}
+
 	@RequestMapping(value="metricdefinition",method=RequestMethod.GET)
 	public String getMetricDefinition(Map<String, Object> model,
 		@RequestParam(value="metricid", required=false) String metricid,
@@ -950,4 +987,11 @@ public class ProjectController {
 		
 		return "editproject";
 	}	
+	
+	@RequestMapping(value="error", method=RequestMethod.GET)
+	public String getError(Map<String, Object> model)
+	{
+		return "error";
+	}	
+
 }

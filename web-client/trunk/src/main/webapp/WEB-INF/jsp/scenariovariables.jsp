@@ -27,32 +27,36 @@
 				<col style="width:850px">	
 				<tr>
 					<td>
-						<b>External parameters</b>
+						<h2>External parameters</h2>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<table class="tablestyle" width="800">
-						
+						<table class="tablestyle" width="450">
+							<col style="width:200px">
+							<col style="width:100px">
+							<col style="width:100px">
+							<col style="width:50px">
+									
 							<tr height="20">
 							    <th>Name</th>
 							    <th>Id</th>
 							    <th>Default value</th>
+							    <th>Edit</th>
 							</tr>
 							
-							<!--forEach items="{extparams}" var="extParam">
+							<c:forEach items="${project.extparams}" var="extParam">
 							<tr>
 								<td>${extParam.name}</td>
 						    	<td>${extParam.extparamid}</td>
 						    	<td>${extParam.defaultvalue}</td>
-								<td>
+						    	<td>
 									<a href="<c:url value='editextparam.html?extparamid=${extParam.extparamid}'/>">
 										<button align="right" type="button" value="Edit">Edit</button>
 									</a>
 								</td>
-								<td>Delete</td>
 						   	</tr>
-							</forEach>-->
+							</c:forEach>
 						</table>
 						
 						<table width="100%">

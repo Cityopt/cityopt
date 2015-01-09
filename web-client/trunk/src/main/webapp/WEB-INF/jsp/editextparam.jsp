@@ -37,6 +37,14 @@
 						<form:input style="width:300px" type="text" path="name"/>
 					</td>
 				</tr>
+				<tr>
+					<td>
+						Default value
+					</td>
+					<td>
+						<form:input style="width:300px" type="text" path="defaultvalue"/>
+					</td>
+				</tr>
 				<tr height="10">
 					<td>
 					</td>
@@ -44,7 +52,7 @@
 				<tr>
 					<td></td>
 					<td align="right"><input style="width:100px" type="submit" value="Update"/>
-					<a href="projectparameters.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<a href="scenariovariables.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
 				</tr>
 			</table>
 			

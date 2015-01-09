@@ -14,7 +14,7 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width=30></td>
-		<td>
+		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:1000px;overflow:auto">
 			<form:form method="post" action="editproject.html?action=save" modelAttribute="project" 
 				enctype="multipart/form-data">
