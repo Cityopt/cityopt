@@ -5,6 +5,7 @@ main = runApros mdo
     loadIC "pipe.snp.gz"
     CO.setup
     setTime 0
-    startSubscription "subscr.dat" "results.dat"
+    acl "modi is01 io_file_name results.dat"
+    acl "io open is01"
     wait 60.0
-    stopSubscription "results.dat"
+    acl "io close is01"
