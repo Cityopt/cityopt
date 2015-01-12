@@ -117,8 +117,8 @@ public class AprosRunnerTest {
     
     @Test
     public void testSanitize() throws Exception {
-        Pattern re = Pattern.compile("^[a-z_][a-zA-Z0-9_]*$");
-        String[] ids = {"a1b", "A1b", "_", "__", "_A1b"};
+        Pattern re = Pattern.compile("^[a-z][a-zA-Z0-9_]*$");
+        String[] ids = {"a1b", "A1b", "_", "__", "_A1b", "Z", "z_Z", "zz_Z"};
         Set<String> sids = new HashSet<>();
         
         try (AprosRunner arun = makeRunner()) {
