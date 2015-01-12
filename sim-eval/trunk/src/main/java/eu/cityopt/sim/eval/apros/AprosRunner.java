@@ -282,7 +282,8 @@ public class AprosRunner implements SimulationRunner {
                                 nodes.item(0), XPathConstants.NODESET);
                         switch (vals.getLength()) {
                         case 1:
-                            ((Attr)vals.item(0)).setValue(pkv.getValue());
+                            ((Attr)vals.item(0)).setValue(
+                                    "In." + pkv.getValue());
                             continue;
                         default:
                             //TODO
@@ -290,7 +291,7 @@ public class AprosRunner implements SimulationRunner {
                         }
                     }
                     set_str.printf(
-                            "  set \"%s#%s\" In.%s%n",
+                            "  set \"%s#%s\" (In.%s);%n",
                             ckv.getKey(), pkv.getKey(), pkv.getValue());
                 }
             }
@@ -301,23 +302,38 @@ public class AprosRunner implements SimulationRunner {
     }
 
     private void writeSetup() throws IOException, TransformerException {
+        String[]
+            start = {"import \"Sequence\"",
+                     "import \"file:cityopt/inputs.scl\" as In",
+                     ""},
+            middle = {"",
+                      "setup :: AprosSequence ()",
+                      "setup = mdo {",
+                      "  setupUCs;"},
+            end = {"  return ()",
+                   "}"};
+                
         try (PrintStream setup = new PrintStream(setup_scl.toFile())) {
+            for (String s: start)
+                setup.println(s);
             getTransformer().transform(
                     new DOMSource(uc_structure),
                     new StreamResult(setup));
-            setup.printf(
-                    "%nsetup :: AprosSequence ()%n"
-                    + "setup = do {%n"
-                    + "  setupUCs;%n");
+            for (String s: middle)
+                setup.println(s);
             setup.write(orphanSets);
-            setup.printf("  return ()%n}%n");
+            for (String s: end)
+                setup.println(s);
         }
     }
 
-    private static final Pattern re = Pattern.compile("^([^a-z])"); 
+    private static final Pattern
+        re1 = Pattern.compile("^(z+)_"),
+        re2 = Pattern.compile("^([^a-z])"); 
     
     public String sanitize(String name) {
-        return re.matcher(name).replaceAll("_$1");
+        String foo = re1.matcher(name).replaceAll("$1z_");
+        return re2.matcher(foo).replaceAll("z_$1");
     }
 
     @Override

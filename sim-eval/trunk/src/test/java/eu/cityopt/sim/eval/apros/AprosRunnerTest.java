@@ -6,8 +6,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Properties;
@@ -29,11 +31,13 @@ import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
+import eu.cityopt.sim.eval.Type;
 
 public class AprosRunnerTest {
     private final static String propsName = "/apros/test.properties";
     private static Properties props;
     private static Path dataDir;
+    private Namespace ns;
     
     @BeforeClass
     public static void setupProps() throws Exception {
@@ -52,8 +56,30 @@ public class AprosRunnerTest {
         assertNotNull(AprosRunner.getTransformer());
     }
     
+    private SimulationInput makeInput() throws Exception {
+        String
+            pcomp = props.getProperty("ip_comp"),
+            pname = props.getProperty("ip_name"),
+            ptype = props.getProperty("ip_type"),
+            pvalue = props.getProperty("ip_value");
+        Type type = ptype != null ? Type.getByName(ptype) : null;
+        if (type != null) {
+            ns = new Namespace(new Evaluator(), Arrays.asList(pcomp));
+            ns.components.get(pcomp).inputs.put(pname, Type.getByName(ptype));
+        } else {
+            ns = new Namespace(new Evaluator(), Collections.emptyList());
+        }
+        ExternalParameters dumb = new ExternalParameters(ns);
+        SimulationInput in = new SimulationInput(dumb);
+        if (type != null) {
+            in.put(pcomp, pname, type.parse(pvalue));
+        }
+        return in;
+    }
+    
     private AprosRunner makeRunner() throws Exception {
-        Namespace ns = new Namespace(new Evaluator(), Collections.emptyList());
+        if (ns == null)
+            makeInput();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document ucs = db.parse(
@@ -67,10 +93,15 @@ public class AprosRunnerTest {
     
     @Test
     public void testRun() throws Exception {
+        SimulationInput in = makeInput();
         try (AprosRunner arun = makeRunner()) {
-            ExternalParameters dumb = new ExternalParameters(arun.nameSpace);
-            SimulationInput in = new SimulationInput(dumb);
             AprosJob job = arun.start(in);
+            String ccdir = props.getProperty("copy_conf_dir");
+            if (ccdir != null) {
+                System.out.println("Copying job conf to " + ccdir);
+                Path p = Files.createDirectories(Paths.get(ccdir));
+                job.conf.inputDirectory.writeTo(p);
+            }
             System.out.println("---8<--- inputs.scl");
             job.conf.inputDirectory.directories().get(
                     "cityopt").files().get(
