@@ -291,7 +291,7 @@ public class AprosRunner implements SimulationRunner {
                         }
                     }
                     set_str.printf(
-                            "  set \"%s#%s\" (In.%s);%n",
+                            "  set \"%s#%s\" In.%s;%n",
                             ckv.getKey(), pkv.getKey(), pkv.getValue());
                 }
             }

@@ -1,0 +1,10 @@
+import "file:cityopt/setup.scl" as CO
+
+main :: <Proc> ()
+main = runApros mdo
+    loadIC "plumbing.snp.gz"
+    CO.setup
+    setTime 0
+    startSubscription "subscr.dat" "results.dat"
+    wait 60.0
+    stopSubscription "results.dat"
