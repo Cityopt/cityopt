@@ -1,7 +1,12 @@
 package eu.cityopt.sim.eval.apros;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -18,10 +23,14 @@ import org.simantics.simulation.scheduling.status.JobSucceeded;
 import org.simantics.simulation.scheduling.status.StatusLoggingUtils;
 import org.simantics.simulation.scheduling.status.StatusWaitingUtils;
 
+import com.google.common.primitives.Doubles;
+
+import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationFailure;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
+import eu.cityopt.sim.eval.Type;
 
 /**
  * An Apros simulation run.
@@ -82,15 +91,16 @@ public class AprosJob implements Future<SimulationOutput> {
             if (st instanceof JobSucceeded) {
                 SimulationResults
                     res = new SimulationResults(input, ostr.toString());
-                output = res;
                 try {
                     for (IFile f : st.outputDirectory.files().values()) {
-                        //TODO Retrieve the output and store in res.        
+                        readResultFile(f, res);        
                     }
                 } catch (IOException e) {
                     throw new ExecutionException(
                             "Result retrieval failed", e);
                 }
+                //TODO Check that all outputs were found.
+                output = res;
             } else {
                 output = new SimulationFailure(
                         input, st.toString() + "\n" + ostr.toString());
@@ -101,6 +111,79 @@ public class AprosJob implements Future<SimulationOutput> {
             ostr.reset();
         }
         return output;
+    }
+
+    private static String[] readAndSplit(BufferedReader rd)
+            throws IOException {
+        String line = rd.readLine(); 
+        return line == null ? null : line.trim().split("[ \t]+");
+    }
+        
+    
+    private void readResultFile(IFile file, SimulationResults res) 
+            throws IOException {
+        Namespace ns = res.getNamespace();
+        try (InputStream str = file.open();
+             BufferedReader in = new BufferedReader(
+                     new InputStreamReader(str))) {
+            String [] line = readAndSplit(in);
+            int n_cols;
+            if (line.length != 1
+                || (n_cols = Integer.parseInt(line[0])) < 1) {
+                throw new IOException("Bad first line");
+            }
+            List<List<Double>> vals = new ArrayList<>(n_cols);
+            // First column is always time.
+            readAndSplit(in);
+            vals.add(new ArrayList<>());
+            class Output {
+                String comp, name;
+                int column;
+                Output(String[] line, int col) {
+                    comp = line[0];
+                    name = line[1];
+                    column = col;
+                }
+            }
+            List<Output> outs = new ArrayList<>();
+            for (int i = 1; i != n_cols; ++i) {
+                line = readAndSplit(in);
+                if (line == null) {
+                    throw new IOException("Premature EOF");
+                }
+                if (line.length != 2) {
+                    throw new IOException(
+                            "Bad header line " + (i + 1) + ": " + line.length
+                            + " columns");
+                }
+                Namespace.Component comp = ns.components.get(line[0]);
+                if (comp != null && comp.outputs.containsKey(line[1])) {
+                    outs.add(new Output(line, i));
+                    vals.add(new ArrayList<>());
+                }
+            } 
+            for (int ln = n_cols + 2;
+                 (line = readAndSplit(in)) != null;
+                 ++ln) {
+                if (line.length < n_cols) {
+                    throw new IOException(
+                            "Line " + ln + " too short: " + line.length
+                            + " < " + n_cols + " columns");
+                }
+                vals.get(0).add(Double.parseDouble(line[0]));
+                int i = 1;
+                for (Output out : outs) {
+                    vals.get(i++).add(Double.parseDouble(line[out.column]));
+                }
+            }
+            int i = 1;
+            for (Output out : outs) {
+                res.put(out.comp, out.name,
+                        ns.evaluator.makeTS(Type.TIMESERIES_LINEAR,
+                                            Doubles.toArray(vals.get(0)),
+                                            Doubles.toArray(vals.get(i++))));
+            }
+        }
     }
 
     @Override
