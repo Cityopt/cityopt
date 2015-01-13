@@ -132,20 +132,13 @@ public class AprosJob implements Future<SimulationOutput> {
                 || (n_cols = Integer.parseInt(line[0])) < 1) {
                 throw new IOException("Bad first line");
             }
-            List<List<Double>> vals = new ArrayList<>(n_cols);
+            List<String []> names = new ArrayList<>();
+            List<Integer> cols = new ArrayList<>();
+            List<Type> types = new ArrayList<>();
+            List<List<Double>> vals = new ArrayList<>();
             // First column is always time.
             readAndSplit(in);
-            vals.add(new ArrayList<>());
-            class Output {
-                String comp, name;
-                int column;
-                Output(String[] line, int col) {
-                    comp = line[0];
-                    name = line[1];
-                    column = col;
-                }
-            }
-            List<Output> outs = new ArrayList<>();
+            List<Double> times = new ArrayList<>();
             for (int i = 1; i != n_cols; ++i) {
                 line = readAndSplit(in);
                 if (line == null) {
@@ -153,12 +146,15 @@ public class AprosJob implements Future<SimulationOutput> {
                 }
                 if (line.length != 2) {
                     throw new IOException(
-                            "Bad header line " + (i + 1) + ": " + line.length
-                            + " columns");
+                            "Bad header line " + (i + 1) + ": "
+                            + line.length + " columns");
                 }
                 Namespace.Component comp = ns.components.get(line[0]);
-                if (comp != null && comp.outputs.containsKey(line[1])) {
-                    outs.add(new Output(line, i));
+                Type type = comp != null ? comp.outputs.get(line[1]) : null;
+                if (type != null) {
+                    names.add(line);
+                    cols.add(i);
+                    types.add(type);
                     vals.add(new ArrayList<>());
                 }
             } 
@@ -170,18 +166,17 @@ public class AprosJob implements Future<SimulationOutput> {
                             "Line " + ln + " too short: " + line.length
                             + " < " + n_cols + " columns");
                 }
-                vals.get(0).add(Double.parseDouble(line[0]));
-                int i = 1;
-                for (Output out : outs) {
-                    vals.get(i++).add(Double.parseDouble(line[out.column]));
+                times.add(Double.parseDouble(line[0]));
+                for (int i = 0; i != cols.size(); ++i) {
+                    vals.get(i).add(Double.parseDouble(line[cols.get(i)]));
                 }
             }
-            int i = 1;
-            for (Output out : outs) {
-                res.put(out.comp, out.name,
-                        ns.evaluator.makeTS(Type.TIMESERIES_LINEAR,
-                                            Doubles.toArray(vals.get(0)),
-                                            Doubles.toArray(vals.get(i++))));
+            for (int i = 0; i != names.size(); ++i) {
+                String[] n = names.get(i);
+                double[] t = Doubles.toArray(times); 
+                res.put(n[0], n[1],
+                        ns.evaluator.makeTS(types.get(i), t, 
+                                            Doubles.toArray(vals.get(i))));
             }
         }
     }

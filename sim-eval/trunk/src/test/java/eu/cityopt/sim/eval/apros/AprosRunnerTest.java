@@ -1,7 +1,6 @@
 package eu.cityopt.sim.eval.apros;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -9,8 +8,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -31,6 +28,7 @@ import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
+import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
 
 public class AprosRunnerTest {
@@ -58,21 +56,32 @@ public class AprosRunnerTest {
     
     private SimulationInput makeInput() throws Exception {
         String
-            pcomp = props.getProperty("ip_comp"),
-            pname = props.getProperty("ip_name"),
+            picomp = props.getProperty("ip_comp"),
+            piname = props.getProperty("ip_name"),
             ptype = props.getProperty("ip_type"),
-            pvalue = props.getProperty("ip_value");
+            pvalue = props.getProperty("ip_value"),
+            pocomp = props.getProperty("op_comp"),
+            poname = props.getProperty("op_name");
+        ns = new Namespace(new Evaluator());
         Type type = ptype != null ? Type.getByName(ptype) : null;
-        if (type != null) {
-            ns = new Namespace(new Evaluator(), Arrays.asList(pcomp));
-            ns.components.get(pcomp).inputs.put(pname, Type.getByName(ptype));
-        } else {
-            ns = new Namespace(new Evaluator(), Collections.emptyList());
+        boolean has_ip = false;
+        if (picomp != null) {
+            Namespace.Component comp = ns.getOrNew(picomp);
+            if (piname != null && type != null) {
+                comp.inputs.put(piname, type);
+                has_ip = true;
+            }
+        }
+        if (pocomp != null) {
+            Namespace.Component comp = ns.getOrNew(pocomp);
+            if (poname != null) {
+                comp.outputs.put(poname, Type.TIMESERIES_LINEAR);
+            }
         }
         ExternalParameters dumb = new ExternalParameters(ns);
         SimulationInput in = new SimulationInput(dumb);
-        if (type != null) {
-            in.put(pcomp, pname, type.parse(pvalue));
+        if (has_ip && pvalue != null) {
+            in.put(picomp, piname, type.parse(pvalue));
         }
         return in;
     }
@@ -111,7 +120,26 @@ public class AprosRunnerTest {
             System.out.println("---8<--- job log");
             System.out.print(out.getMessages());
             System.out.println("--->8--- end of job log");
-            assertTrue(out instanceof SimulationResults);
+            if (out instanceof SimulationResults) {
+                String
+                    pocomp = props.getProperty("op_comp"),
+                    poname = props.getProperty("op_name");
+                if (pocomp != null && poname != null) {
+                    TimeSeriesI ts = ((SimulationResults)out).getTS(
+                            pocomp, poname);
+                    double[] t = ts.getTimes(), v = ts.getValues();
+                    assertEquals(t.length, v.length);
+                    System.out.printf("---8<--- output: %s.%s%n",
+                                      pocomp, poname);
+                    for (int i = 0; i != t.length; ++i) {
+                        System.out.printf("%10g %10g%n", t[i], v[i]);
+                    }
+                    System.out.println("--->8--- end of output");
+                }
+              
+            } else {
+                fail("Simulation failed.");
+            }
         }
     }
     

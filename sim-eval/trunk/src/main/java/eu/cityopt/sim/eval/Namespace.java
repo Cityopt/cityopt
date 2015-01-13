@@ -1,6 +1,7 @@
 package eu.cityopt.sim.eval;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +32,9 @@ import java.util.Map;
  * evaluating simulation input expressions, only external parameters and named
  * decision variables are bound. Named decision variables cannot be referenced
  * in other contexts such as constraint or metric expressions.
+ * <p>
+ * Do not modify the Namespace after creating {@link BindingLayer}s from it.
+ * Creating an {@link ExternalParameters} creates a {@link BindingLayer}.
  *
  * @author Hannu Rummukainen
  */
@@ -91,11 +95,17 @@ public class Namespace {
     public Map<String, Type> decisions;
 
     /**
-     * Constructs an empty namespace, given a list of component names. The
-     * component names should be unique.
+     * Constructs a namespace containing just the named empty components.
+     * The component names should be unique.
      */
     public Namespace(Evaluator evaluator, Collection<String> componentNames) {
         this(evaluator, componentNames, false);
+    }
+    
+    /** Constructs an empty namespace.
+     */
+    public Namespace(Evaluator ev) {
+        this(ev, Collections.emptySet());
     }
 
     /**
@@ -126,5 +136,20 @@ public class Namespace {
         this.externals = externals;
         this.metrics = metrics;
         this.decisions = decisions;
+    }
+    
+    public boolean usesDecisions() {
+        return decisions != null;
+    }
+    
+    /** Retrieve or create a component by name.
+     *  If no component with the given name exists, create it.
+     * 
+     * @param name name of the component to return.
+     * @return the component corresponding to name.
+     */
+    public Component getOrNew(String name) {
+        return components.computeIfAbsent(
+                name, n -> new Component(usesDecisions()));
     }
 }
