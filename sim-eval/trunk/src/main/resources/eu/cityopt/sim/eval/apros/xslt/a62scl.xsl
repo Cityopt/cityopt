@@ -6,6 +6,8 @@
   
   <xsl:template match="/">setupUCs :: AprosSequence ()
 setupUCs = let node n m x = x
+               true = True
+               false = False
            in <xsl:apply-templates select="node"/>
   </xsl:template>
 
