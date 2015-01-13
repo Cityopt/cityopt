@@ -286,8 +286,9 @@ public class AprosRunner implements SimulationRunner {
                                     "In." + pkv.getValue());
                             continue;
                         default:
-                            //TODO
+                            //TODO freak out
                         case 0:
+                            //nothing
                         }
                     }
                     set_str.printf(
