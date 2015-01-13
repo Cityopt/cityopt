@@ -2,8 +2,11 @@ package eu.cityopt.sim.eval.apros;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
+import java.io.Writer;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +19,8 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -123,18 +128,26 @@ public class AprosRunnerTest {
             if (out instanceof SimulationResults) {
                 String
                     pocomp = props.getProperty("op_comp"),
-                    poname = props.getProperty("op_name");
+                    poname = props.getProperty("op_name"),
+                    pofile = props.getProperty("op_file");
                 if (pocomp != null && poname != null) {
                     TimeSeriesI ts = ((SimulationResults)out).getTS(
                             pocomp, poname);
+                    assertNotNull(ts);
                     double[] t = ts.getTimes(), v = ts.getValues();
                     assertEquals(t.length, v.length);
-                    System.out.printf("---8<--- output: %s.%s%n",
-                                      pocomp, poname);
-                    for (int i = 0; i != t.length; ++i) {
-                        System.out.printf("%10g %10g%n", t[i], v[i]);
+                    if (pofile != null) {
+                        CSVFormat fmt = CSVFormat.DEFAULT.withHeader(
+                                "time", pocomp + "." + poname);
+                        try (Writer w = new FileWriter(
+                                dataDir.resolve(pofile).toFile());
+                             CSVPrinter prn = fmt.print(
+                                     new BufferedWriter(w))) {
+                            for (int i = 0; i != t.length; ++i) {
+                                prn.printRecord(t[i], v[i]);
+                            }
+                        }
                     }
-                    System.out.println("--->8--- end of output");
                 }
               
             } else {
