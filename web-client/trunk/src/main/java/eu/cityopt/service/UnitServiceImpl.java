@@ -2,40 +2,49 @@ package eu.cityopt.service;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.reflect.TypeToken;
+
+import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.model.Unit;
 import eu.cityopt.repository.UnitRepository;
 
 @Service("UnitService")
 public class UnitServiceImpl implements UnitService {
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	@Autowired
 	private UnitRepository unitRepository;
 	
-	public List<Unit> findAll() {
-		return unitRepository.findAll();
+	public List<UnitDTO> findAll() {
+		return modelMapper.map(unitRepository.findAll(), 
+				new TypeToken<List<UnitDTO>>() {}.getType());
 	}
 
 	@Transactional
-	public Unit save(Unit u) {
-		return unitRepository.save(u);
+	public UnitDTO save(UnitDTO u) {
+		Unit unit = modelMapper.map(u, Unit.class);
+		unit = unitRepository.save(unit);
+		return modelMapper.map(unit, UnitDTO.class);
 	}
 
 	@Transactional
-	public void delete(Unit u) throws EntityNotFoundException {
+	public void delete(Integer id) throws EntityNotFoundException {
 		
-		if(unitRepository.findOne(u.getUnitid()) == null) {
+		if(unitRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		unitRepository.delete(u);
+		unitRepository.delete(id);
 	}
 	
 	@Transactional
-	public Unit update(Unit toUpdate) throws EntityNotFoundException {
+	public UnitDTO update(UnitDTO toUpdate) throws EntityNotFoundException {
 		
 		if(unitRepository.findOne(toUpdate.getUnitid()) == null) {
 			throw new EntityNotFoundException();
@@ -44,8 +53,13 @@ public class UnitServiceImpl implements UnitService {
 		return save(toUpdate);
 	}
 	
-	public Unit findByID(Integer id) {
-		return unitRepository.findOne(id);
+	public UnitDTO findByID(Integer id) throws EntityNotFoundException {
+		
+		if(unitRepository.findOne(id) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return modelMapper.map(unitRepository.findOne(id), UnitDTO.class);
 	}
 	
 }

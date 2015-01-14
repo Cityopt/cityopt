@@ -29,13 +29,13 @@ public class SearchConstraintServiceImpl implements SearchConstraintService {
 	}
 
 	@Transactional
-	public void delete(SearchConstraint u) throws EntityNotFoundException {
+	public void delete(Integer id) throws EntityNotFoundException {
 		
-		if(searchConstraintRepository.findOne(u.getScid()) == null) {
+		if(searchConstraintRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		searchConstraintRepository.delete(u);
+		searchConstraintRepository.delete(id);
 	}
 	
 	@Transactional

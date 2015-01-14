@@ -1,7 +1,7 @@
 package eu.cityopt.service;
 
-import eu.cityopt.model.Metric;
+import eu.cityopt.DTO.MetricDTO;
 
-public interface MetricService extends CityOptService<Metric> {
+public interface MetricService extends CityOptService<MetricDTO> {
 
 }

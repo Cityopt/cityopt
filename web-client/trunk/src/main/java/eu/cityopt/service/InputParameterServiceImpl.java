@@ -2,50 +2,80 @@ package eu.cityopt.service;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.reflect.TypeToken;
+
+import eu.cityopt.DTO.InputParameterDTO;
+import eu.cityopt.model.Component;
 import eu.cityopt.model.InputParameter;
+import eu.cityopt.model.Unit;
+import eu.cityopt.repository.ComponentRepository;
+import eu.cityopt.repository.ExtParamRepository;
 import eu.cityopt.repository.InputParameterRepository;
+import eu.cityopt.repository.UnitRepository;
 
 @Service("InputParameterService")
 public class InputParameterServiceImpl implements InputParameterService {
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	@Autowired
 	private InputParameterRepository inputParameterRepository;
 	
-	public List<InputParameter> findAll() {
-		return inputParameterRepository.findAll();
+	@Autowired
+	private UnitRepository unitRepository;
+	
+	@Autowired
+	private ComponentRepository componentRepository;
+	
+	public List<InputParameterDTO> findAll() {
+		return modelMapper.map(inputParameterRepository.findAll(), 
+				new TypeToken<List<InputParameterDTO>>() {}.getType());
 	}
 
 	@Transactional
-	public InputParameter save(InputParameter u) {
-		return inputParameterRepository.save(u);
-	}
-
-	@Transactional
-	public void delete(InputParameter u) throws EntityNotFoundException {
+	public InputParameterDTO save(InputParameterDTO u, int componentId, int unitId) {
+		InputParameter param = modelMapper.map(u, InputParameter.class);
+		Component com = componentRepository.getOne(componentId);
+		Unit unit = unitRepository.getOne(unitId);
 		
-		if(inputParameterRepository.findOne(u.getInputid()) == null) {
+		param.setComponent(com);
+		param.setUnit(unit);
+		param = inputParameterRepository.save(param);
+		return modelMapper.map(param, InputParameterDTO.class);
+	}
+
+	@Transactional
+	public void delete(Integer id) throws EntityNotFoundException {
+		
+		if(inputParameterRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		inputParameterRepository.delete(u);
+		inputParameterRepository.delete(id);
 	}
 	
 	@Transactional
-	public InputParameter update(InputParameter toUpdate) throws EntityNotFoundException {
+	public InputParameterDTO update(InputParameterDTO toUpdate, int componentId, int unitId) throws EntityNotFoundException {
 		
 		if(inputParameterRepository.findOne(toUpdate.getInputid()) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		return save(toUpdate);
+		return save(toUpdate, componentId, unitId);
 	}
 	
-	public InputParameter findByID(Integer id) {
-		return inputParameterRepository.findOne(id);
+	public InputParameterDTO findByID(Integer id) throws EntityNotFoundException {
+		
+		if(inputParameterRepository.findOne(id) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return modelMapper.map(inputParameterRepository.findOne(id), InputParameterDTO.class);
 	}
 	
 }

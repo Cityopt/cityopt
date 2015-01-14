@@ -1,7 +1,7 @@
 package eu.cityopt.service;
 
-import eu.cityopt.model.Unit;
+import eu.cityopt.DTO.UnitDTO;
 
-public interface UnitService extends CityOptService<Unit> {
+public interface UnitService extends CityOptService<UnitDTO> {
 
 }

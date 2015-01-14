@@ -2,40 +2,54 @@ package eu.cityopt.service;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.reflect.TypeToken;
+
+import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.model.Metric;
+import eu.cityopt.model.Project;
 import eu.cityopt.repository.MetricRepository;
+import eu.cityopt.repository.ProjectRepository;
 
 @Service("MetricService")
 public class MetricServiceImpl implements MetricService {
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	@Autowired
 	private MetricRepository metricRepository;
 	
-	public List<Metric> findAll() {
-		return metricRepository.findAll();
+	@Autowired
+	private ProjectRepository projectRepository;
+	
+	public List<MetricDTO> findAll() {
+		return modelMapper.map(metricRepository.findAll(), 
+				new TypeToken<List<MetricDTO>>() {}.getType());
 	}
 
 	@Transactional
-	public Metric save(Metric u) {
-		return metricRepository.save(u);
+	public MetricDTO save(MetricDTO u) {
+		Metric metric = modelMapper.map(u, Metric.class);
+		metric = metricRepository.save(metric);
+		return modelMapper.map(metric, MetricDTO.class);
 	}
 
 	@Transactional
-	public void delete(Metric u) throws EntityNotFoundException {
+	public void delete(Integer id) throws EntityNotFoundException {
 		
-		if(metricRepository.findOne(u.getMetid()) == null) {
+		if(metricRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		metricRepository.delete(u);
+		metricRepository.delete(id);
 	}
 	
 	@Transactional
-	public Metric update(Metric toUpdate) throws EntityNotFoundException {
+	public MetricDTO update(MetricDTO toUpdate) throws EntityNotFoundException {
 		
 		if(metricRepository.findOne(toUpdate.getMetid()) == null) {
 			throw new EntityNotFoundException();
@@ -44,8 +58,20 @@ public class MetricServiceImpl implements MetricService {
 		return save(toUpdate);
 	}
 	
-	public Metric findByID(Integer id) {
-		return metricRepository.findOne(id);
+	public MetricDTO findByID(Integer id) throws EntityNotFoundException {
+		
+		if(metricRepository.findOne(id) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return modelMapper.map(metricRepository.findOne(id), MetricDTO.class);
+	}
+	
+	public void setProject(int metId, int prjid){
+		Metric met = metricRepository.findOne(metId);
+		Project p = projectRepository.findOne(prjid);
+		met.setProject(p);
+		metricRepository.save(met);
 	}
 	
 }

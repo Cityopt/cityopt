@@ -34,18 +34,13 @@ public class UserGroupServiceImpl implements UserGroupService {
 	}
 	
 	@Transactional
-	public void deleteAll() {
-		userGroupRepository.deleteAll();
-	}
-	
-	@Transactional
-	public void delete(UserGroup userGroup) throws EntityNotFoundException {
+	public void delete(Integer id) throws EntityNotFoundException {
 		
-		if(userGroupRepository.findOne(userGroup.getUsergroupid()) == null) {
+		if(userGroupRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		userGroupRepository.delete(userGroup);
+		userGroupRepository.delete(id);
 	}
 
 	@Transactional

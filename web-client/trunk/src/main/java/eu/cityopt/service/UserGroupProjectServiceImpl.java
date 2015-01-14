@@ -25,13 +25,13 @@ public class UserGroupProjectServiceImpl implements UserGroupProjectService {
 	}
 
 	@Transactional
-	public void delete(UserGroupProject u) throws EntityNotFoundException {
+	public void delete(Integer id) throws EntityNotFoundException {
 		
-		if(userGroupProjectRepository.findOne(u.getUsergroupprojectid()) == null) {
+		if(userGroupProjectRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		userGroupProjectRepository.delete(u);
+		userGroupProjectRepository.delete(id);
 	}
 	
 	@Transactional

@@ -1,7 +1,7 @@
 package eu.cityopt.service;
 
-import eu.cityopt.model.InputParameter;
+import eu.cityopt.DTO.InputParameterDTO;
 
-public interface InputParameterService extends CityOptService<InputParameter>{
+public interface InputParameterService extends CityOptService<InputParameterDTO>{
 
 }

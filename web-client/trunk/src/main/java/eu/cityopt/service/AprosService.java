@@ -15,6 +15,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.cityopt.DTO.ComponentDTO;
+import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.InputParameter;
 
@@ -31,8 +33,8 @@ public class AprosService {
 	private final String CONSTANT = "constant";
 	private final String EXPRESSION = "expression";
 	
-	public List<Component> listNewComponents = new ArrayList<Component>();
-	public List<InputParameter> listNewInputParams = new ArrayList<InputParameter>(); 
+	public List<ComponentDTO> listNewComponents = new ArrayList<ComponentDTO>();
+	public List<InputParameterDTO> listNewInputParams = new ArrayList<InputParameterDTO>(); 
 	private int newId = 1;
 	
 	public void readDiagramFile(String xmlFile) {
@@ -54,7 +56,7 @@ public class AprosService {
         }
 	}
 	
-	private void handleNode(Node node, Component parentComponent, int level)
+	private void handleNode(Node node, ComponentDTO parentComponent, int level)
 	{
 	    NodeList nodeChildren = node.getChildNodes();
 	    
@@ -82,8 +84,8 @@ public class AprosService {
             		
             	}
             	
-            	InputParameter inputParam = new InputParameter();
-            	inputParam.setComponent(parentComponent);
+            	InputParameterDTO inputParam = new InputParameterDTO();
+            	//inputParam.setComponent(parentComponent);
             	inputParam.setName(name);
             	inputParam.setDefaultvalue(value);
             	inputParam.getInputid();
@@ -91,7 +93,7 @@ public class AprosService {
         	}
             else if (childNode.getNodeName().equals(NODE))
             {
-                Component component = new Component();
+                ComponentDTO component = new ComponentDTO();
                 String compName = childNode.getAttributes().getNamedItem(NAME).getNodeValue();
                 component.setName(compName);
                 component.setComponentid(newId);

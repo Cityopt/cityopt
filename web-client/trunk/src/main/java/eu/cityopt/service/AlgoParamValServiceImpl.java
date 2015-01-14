@@ -25,13 +25,13 @@ public class AlgoParamValServiceImpl implements AlgoParamValService{
 	}
 	
 	@Transactional
-	public void delete(AlgoParamVal u) throws EntityNotFoundException {
+	public void delete(Integer id) throws EntityNotFoundException {
 		
-		if(algoParamValRepository.findOne(u.getAparamvalid()) == null) {
+		if(algoParamValRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		algoParamValRepository.delete(u);
+		algoParamValRepository.delete(id);
 	}
 	
 	@Transactional

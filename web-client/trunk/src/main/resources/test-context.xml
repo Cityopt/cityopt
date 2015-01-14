@@ -40,9 +40,19 @@
 
 <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 	<property name="driverClassName" value="org.postgresql.Driver"></property>	
-	<property name="url" value="jdbc:postgresql://localhost:5432/CityOPT?autoReconnect=true"></property>
+	<property name="url" value="jdbc:postgresql://localhost:5432/CityOptEmptyTestDb?autoReconnect=true"></property>
 	<property name="username" value="postgres"></property>
 	<property name="password" value="admin"></property>	
 </bean>
+	
+	
+<!--<bean id="JTransfo" class="org.jtransfo.JTransfoImpl">
+</bean>
+<bean class="org.jtransfo.ListTypeConverter">
+	<constructor-arg value="scenarioDTOList" />
+	<constructor-arg value="eu.cityopt.DTO.ScenarioDTO" />
+</bean>-->
+<bean id="ModelMapper" class="org.modelmapper.ModelMapper"></bean>
+
 	
 </beans>

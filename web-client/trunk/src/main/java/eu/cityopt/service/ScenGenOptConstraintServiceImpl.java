@@ -25,13 +25,13 @@ public class ScenGenOptConstraintServiceImpl implements ScenGenOptConstraintServ
 	}
 
 	@Transactional
-	public void delete(ScenGenOptConstraint u) throws EntityNotFoundException {
+	public void delete(Integer id) throws EntityNotFoundException {
 		
-		if(scenGenOptConstraintRepository.findOne(u.getSgoptconstraintid()) == null) {
+		if(scenGenOptConstraintRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		scenGenOptConstraintRepository.delete(u);
+		scenGenOptConstraintRepository.delete(id);
 	}
 	
 	@Transactional

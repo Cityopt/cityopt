@@ -2,50 +2,71 @@ package eu.cityopt.service;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.reflect.TypeToken;
+
+import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.model.ExtParam;
+import eu.cityopt.model.Project;
 import eu.cityopt.repository.ExtParamRepository;
+import eu.cityopt.repository.ProjectRepository;
 
 @Service("ExtParamService")
 public class ExtParamServiceImpl implements ExtParamService {
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	@Autowired
 	private ExtParamRepository extParamRepository;
 	
-	public List<ExtParam> findAll() {
-		return extParamRepository.findAll();
+	@Autowired
+	private ProjectRepository projectRepository;
+	
+	public List<ExtParamDTO> findAll() {
+		return modelMapper.map(extParamRepository.findAll(), 
+				new TypeToken<List<ExtParamDTO>>() {}.getType());
 	}
 
 	@Transactional
-	public ExtParam save(ExtParam u) {
-		return extParamRepository.save(u);
+	public ExtParamDTO save(ExtParamDTO u, int prjid) {
+		ExtParam eparam = modelMapper.map(u, ExtParam.class);
+		Project p = projectRepository.findOne(prjid);
+		eparam.setProject(p);
+		eparam = extParamRepository.save(eparam);
+		return modelMapper.map(eparam, ExtParamDTO.class);
 	}
 
 	@Transactional
-	public void delete(ExtParam u) throws EntityNotFoundException {
+	public void delete(Integer id) throws EntityNotFoundException {
 		
-		if(extParamRepository.findOne(u.getExtparamid()) == null) {
+		if(extParamRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		extParamRepository.delete(u);
+		extParamRepository.delete(id);
 	}
 	
 	@Transactional
-	public ExtParam update(ExtParam toUpdate) throws EntityNotFoundException {
+	public ExtParamDTO update(ExtParamDTO toUpdate, int prjid) throws EntityNotFoundException {
 		
 		if(extParamRepository.findOne(toUpdate.getExtparamid()) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		return save(toUpdate);
+		return save(toUpdate, prjid);
 	}
 	
-	public ExtParam findByID(Integer id) {
-		return extParamRepository.findOne(id);
+	public ExtParamDTO findByID(Integer id) throws EntityNotFoundException {
+		
+		if(extParamRepository.findOne(id) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return modelMapper.map(extParamRepository.findOne(id), ExtParamDTO.class);		
 	}
 	
 }

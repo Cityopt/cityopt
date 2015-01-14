@@ -2,26 +2,35 @@ package eu.cityopt.service;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.reflect.TypeToken;
+
+import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.model.AppUser;
 import eu.cityopt.repository.AppUserRepository;
 
 @Service("AppUserService")
 public class AppUserServiceImpl implements AppUserService {
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	@Autowired
 	private AppUserRepository appuserRepository;
 	
-	public List<AppUser> findAll() {
-		return appuserRepository.findAll();
+	public List<AppUserDTO> findAll() {
+		return modelMapper.map(appuserRepository.findAll(), 
+				new TypeToken<List<AppUserDTO>>() {}.getType());
 	}
 
 	@Transactional
-	public AppUser save(AppUser u) {
-		return appuserRepository.save(u);
+	public AppUserDTO save(AppUserDTO u) {
+		AppUser user = modelMapper.map(u, AppUser.class);
+		user = appuserRepository.save(user);
+		return modelMapper.map(user, AppUserDTO.class);
 	}
 
 	@Transactional
@@ -30,17 +39,17 @@ public class AppUserServiceImpl implements AppUserService {
 	}
 	
 	@Transactional
-	public void delete(AppUser u) throws EntityNotFoundException {
+	public void delete(Integer id) throws EntityNotFoundException {
 		
-		if(appuserRepository.findOne(u.getUserid()) == null) {
+		if(appuserRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		appuserRepository.delete(u);
+		appuserRepository.delete(id);
 	}
 	
 	@Transactional
-	public AppUser update(AppUser toUpdate) throws EntityNotFoundException {
+	public AppUserDTO update(AppUserDTO toUpdate) throws EntityNotFoundException {
 		
 		if(appuserRepository.findOne(toUpdate.getUserid()) == null) {
 			throw new EntityNotFoundException();
@@ -49,16 +58,12 @@ public class AppUserServiceImpl implements AppUserService {
 		return save(toUpdate);
 	}
 	
-	public AppUser findByID(Integer id) {
-		return appuserRepository.findOne(id);
-	}
-	
-	public List<AppUser> findByUserName(String name) {
-		return appuserRepository.findByUserName(name);
-	}
-	
-	public AppUser authenticateUser(String name, String password) {
-		return appuserRepository.authenticateUser(name, password);
-	}
+	public AppUserDTO findByID(Integer id) throws EntityNotFoundException {
+		if(appuserRepository.findOne(id) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return modelMapper.map(appuserRepository.findOne(id), AppUserDTO.class);
+	}	
 	
 }

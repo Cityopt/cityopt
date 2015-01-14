@@ -25,13 +25,13 @@ public class AlgorithmServiceImpl implements AlgorithmService{
 	}
 
 	@Transactional
-	public void delete(Algorithm u) throws EntityNotFoundException{
+	public void delete(Integer id) throws EntityNotFoundException{
 		
-		if(algorithmRepository.findOne(u.getAlgorithmid()) == null) {
+		if(algorithmRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		algorithmRepository.delete(u);
+		algorithmRepository.delete(id);
 	}
 	
 	@Transactional

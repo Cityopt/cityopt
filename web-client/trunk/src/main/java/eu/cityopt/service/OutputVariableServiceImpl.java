@@ -25,13 +25,13 @@ public class OutputVariableServiceImpl implements OutputVariableService {
 	}
 
 	@Transactional
-	public void delete(OutputVariable u) throws EntityNotFoundException {
+	public void delete(Integer id) throws EntityNotFoundException {
 		
-		if(outputVariableRepository.findOne(u.getOutvarid()) == null) {
+		if(outputVariableRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		outputVariableRepository.delete(u);
+		outputVariableRepository.delete(id);
 	}
 	
 	@Transactional

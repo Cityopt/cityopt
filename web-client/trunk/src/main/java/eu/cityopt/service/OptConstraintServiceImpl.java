@@ -25,13 +25,13 @@ public class OptConstraintServiceImpl implements OptConstraintService {
 	}
 
 	@Transactional
-	public void delete(OptConstraint u) throws EntityNotFoundException {
+	public void delete(Integer id) throws EntityNotFoundException {
 		
-		if(optConstraintRepository.findOne(u.getOptconstid()) == null) {
+		if(optConstraintRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		optConstraintRepository.delete(u);
+		optConstraintRepository.delete(id);
 	}
 	
 	@Transactional

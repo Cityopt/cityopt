@@ -30,13 +30,13 @@ import eu.cityopt.repository.SimulationModelRepository;
 	}
 	
 	@Transactional
-	public void delete(SimulationModel u) throws EntityNotFoundException {
+	public void delete(Integer id) throws EntityNotFoundException {
 		
-		if(simulationModelRepository.findOne(u.getModelid()) == null) {
+		if(simulationModelRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		simulationModelRepository.delete(u);
+		simulationModelRepository.delete(id);
 	}
 	
 	@Transactional
