@@ -137,6 +137,8 @@ public class AprosRunnerTest {
                     double[] t = ts.getTimes(), v = ts.getValues();
                     assertEquals(t.length, v.length);
                     if (pofile != null) {
+                        System.out.println(
+                                "Writing simulation output to " + pofile);
                         CSVFormat fmt = CSVFormat.DEFAULT.withHeader(
                                 "time", pocomp + "." + poname);
                         try (Writer w = new FileWriter(
