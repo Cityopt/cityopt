@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Cityopt target" sequenceNumber="17">
+<?pde version="3.8"?><target name="Cityopt target" sequenceNumber="23">
 <locations>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="com.jcraft.jsch" version="0.1.50.v201310081430"/>
+<unit id="org.junit" version="4.11.0.v201303080030"/>
+<unit id="org.apache.commons.cli" version="1.2.0.v201105210650"/>
+<unit id="org.hamcrest.core" version="1.3.0.v201303031735"/>
+<unit id="org.apache.commons.lang" version="2.6.0.v201205030909"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository/"/>
+</location>
+<location path="${workspace_loc:cityopt-target}" type="Directory"/>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.rcp.source.feature.group" version="4.3.2.v20140221-1700"/>
 <unit id="org.eclipse.equinox.sdk.feature.group" version="3.9.0.v20140221-1852"/>
 <unit id="org.eclipse.rcp.feature.group" version="4.3.2.v20140221-1700"/>
 <repository location="http://download.eclipse.org/eclipse/updates/4.3"/>
 </location>
-<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.apache.commons.lang" version="2.6.0.v201404270220"/>
-<unit id="com.jcraft.jsch" version="0.1.50.v201403120620"/>
-<unit id="org.hamcrest.core" version="1.3.0.v201303031735"/>
-<unit id="org.junit" version="4.11.0.v201303080030"/>
-<unit id="org.apache.commons.cli" version="1.2.0.v201404270220"/>
-<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/"/>
-</location>
-<location path="${workspace_loc:cityopt-target}" type="Directory"/>
 </locations>
 <includeBundles>
 <plugin id="com.jcraft.jsch"/>
 <plugin id="com.jcraft.jsch.source"/>
 <plugin id="gnu.trove3"/>
+<plugin id="org.hamcrest.core"/>
+<plugin id="org.hamcrest.core.source"/>
 <plugin id="org.junit"/>
 <plugin id="org.junit.source"/>
 </includeBundles>
