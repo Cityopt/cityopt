@@ -92,6 +92,8 @@ public class AprosJob implements Future<SimulationOutput> {
                 SimulationResults
                     res = new SimulationResults(input, ostr.toString());
                 try {
+                    System.out.printf("Result files: %s%n", String.join(", ",
+                            st.outputDirectory.files().keySet()));
                     for (IFile f : st.outputDirectory.files().values()) {
                         readResultFile(f, res);        
                     }
@@ -149,6 +151,7 @@ public class AprosJob implements Future<SimulationOutput> {
                             "Bad header line " + (i + 1) + ": "
                             + line.length + " columns");
                 }
+                System.out.printf("Output: %s.%s%n", line[0], line[1]);
                 Namespace.Component comp = ns.components.get(line[0]);
                 Type type = comp != null ? comp.outputs.get(line[1]) : null;
                 if (type != null) {
