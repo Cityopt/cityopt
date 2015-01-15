@@ -126,12 +126,13 @@ public class AprosRunnerTest {
             System.out.print(out.getMessages());
             System.out.println("--->8--- end of job log");
             if (out instanceof SimulationResults) {
+                SimulationResults res = (SimulationResults)out;
                 String
                     pocomp = props.getProperty("op_comp"),
                     poname = props.getProperty("op_name"),
                     pofile = props.getProperty("op_file");
                 if (pocomp != null && poname != null) {
-                    TimeSeriesI ts = ((SimulationResults)out).getTS(
+                    TimeSeriesI ts = res.getTS(
                             pocomp, poname);
                     assertNotNull(ts);
                     double[] t = ts.getTimes(), v = ts.getValues();
@@ -151,7 +152,7 @@ public class AprosRunnerTest {
                         }
                     }
                 }
-              
+                assertTrue(res.isComplete());
             } else {
                 fail("Simulation failed.");
             }
