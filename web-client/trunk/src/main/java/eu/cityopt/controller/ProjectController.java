@@ -994,7 +994,8 @@ public class ProjectController {
 	@RequestMapping(value="uploaddiagram", method=RequestMethod.GET)
 	public String getUploadDiagram(HttpServletRequest request, Map<String, Object> model){
 		ProjectDTO project = (ProjectDTO) model.get("project");
-
+		project = projectService.findByID(project.getPrjid());
+		
 		/*File file ;
 		int maxFileSize = 5000 * 1024;
 		int maxMemSize = 5000 * 1024;
@@ -1076,14 +1077,42 @@ public class ProjectController {
 		for (int i = 0; i < aprosService.listNewComponents.size(); i++)
 		{
 			ComponentDTO component = aprosService.listNewComponents.get(i);
-			componentService.save(component, project.getPrjid());
-			strTest += component.getName() + " ";
+			//component.setProject(project);
+			ComponentDTO existingComponent = componentService.findByID(component.getComponentid());
+			
+			if (existingComponent != null)
+			{
+				try {
+					componentService.update(component);
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				componentService.save(component);
+			}			strTest += component.getName() + " ";
 		}
 
 		for (int i = 0; i < aprosService.listNewInputParams.size(); i++)
 		{
 			InputParameterDTO inputParam = aprosService.listNewInputParams.get(i);
 			//inputParamService.save(inputParam);
+			InputParameterDTO existingInputParam = inputParamService.findByID(inputParam.getInputid());
+			
+			if (existingInputParam != null)
+			{
+				try {
+					inputParamService.update(inputParam);
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				inputParamService.save(inputParam);
+			}
+						
 			strTest += inputParam.getName() + " ";
 		}
 		
