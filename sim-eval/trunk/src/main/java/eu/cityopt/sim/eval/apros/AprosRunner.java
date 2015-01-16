@@ -49,7 +49,6 @@ import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.Type;
-import eu.cityopt.sim.runner.TempDir;
 
 /**
  * A factory of AprosJobs for one model.

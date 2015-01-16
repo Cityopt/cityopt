@@ -1,4 +1,4 @@
-package eu.cityopt.sim.runner;
+package eu.cityopt.sim.eval.apros;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import java.util.Arrays;
 
 import org.junit.Test;
+
+import eu.cityopt.sim.eval.apros.TempDir;
 
 public class TempDirTest {
 
