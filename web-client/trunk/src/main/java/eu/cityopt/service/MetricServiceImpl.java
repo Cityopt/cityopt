@@ -39,7 +39,7 @@ public class MetricServiceImpl implements MetricService {
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(metricRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -58,7 +58,7 @@ public class MetricServiceImpl implements MetricService {
 		return save(toUpdate);
 	}
 	
-	public MetricDTO findByID(Integer id) throws EntityNotFoundException {
+	public MetricDTO findByID(int id) throws EntityNotFoundException {
 		
 		if(metricRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();

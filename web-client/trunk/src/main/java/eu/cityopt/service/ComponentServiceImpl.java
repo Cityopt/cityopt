@@ -1,6 +1,7 @@
 package eu.cityopt.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.ComponentDTO;
+import eu.cityopt.DTO.InputParameterDTO;
+import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.model.Component;
+import eu.cityopt.model.InputParameter;
+import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.repository.ComponentRepository;
 import eu.cityopt.repository.ProjectRepository;
@@ -41,7 +46,7 @@ public class ComponentServiceImpl implements ComponentService {
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(componentRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -60,12 +65,26 @@ public class ComponentServiceImpl implements ComponentService {
 		return save(toUpdate, prjid);
 	}
 	
-	public ComponentDTO findByID(Integer id) throws EntityNotFoundException {
+	public ComponentDTO findByID(int id) throws EntityNotFoundException {
 		if(componentRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
 		
 		return  modelMapper.map(componentRepository.findOne(id), ComponentDTO.class);
+	}
+	
+	public Set<InputParameterDTO> getInputParameters(int componentId)
+	{
+		Component comp = componentRepository.findOne(componentId);
+		Set<InputParameter> inputParamVals = comp.getInputparameters();
+		return modelMapper.map(inputParamVals, new TypeToken<Set<InputParameterDTO>>() {}.getType());
+	}
+	
+	public Set<OutputVariableDTO> getOutputVariables(int componentId)
+	{
+		Component comp = componentRepository.findOne(componentId);
+		Set<OutputVariable> inputParamVals = comp.getOutputvariables();
+		return modelMapper.map(inputParamVals, new TypeToken<Set<OutputVariableDTO>>() {}.getType());
 	}
 	
 }

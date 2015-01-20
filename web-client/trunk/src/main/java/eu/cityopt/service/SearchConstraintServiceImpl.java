@@ -19,7 +19,7 @@ public class SearchConstraintServiceImpl implements SearchConstraintService {
 		return searchConstraintRepository.findAll();
 	}
 	
-	public SearchConstraint findByID(Integer id) {
+	public SearchConstraint findByID(int id) {
 		return searchConstraintRepository.findOne(id);
 	}
 
@@ -29,7 +29,7 @@ public class SearchConstraintServiceImpl implements SearchConstraintService {
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(searchConstraintRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();

@@ -23,7 +23,7 @@ public class OptSetScenariosImpl implements OptSetScenariosService {
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(optSetScenariosRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -42,7 +42,7 @@ public class OptSetScenariosImpl implements OptSetScenariosService {
 		return save(toUpdate);
 	}
 	
-	public OptSetScenarios findByID(Integer id) {
+	public OptSetScenarios findByID(int id) {
 		return optSetScenariosRepository.findOne(id);
 	}
 }

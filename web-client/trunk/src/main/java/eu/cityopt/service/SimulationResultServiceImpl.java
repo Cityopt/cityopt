@@ -25,7 +25,7 @@ public class SimulationResultServiceImpl implements SimulationResultService {
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(simulationResultRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -44,7 +44,7 @@ public class SimulationResultServiceImpl implements SimulationResultService {
 		return save(toUpdate);
 	}
 	
-	public SimulationResult findByID(Integer id) {
+	public SimulationResult findByID(int id) {
 		return simulationResultRepository.findOne(id);
 	}
 	

@@ -25,7 +25,7 @@ public class TypeServiceImpl implements TypeService {
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(typeRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -44,7 +44,7 @@ public class TypeServiceImpl implements TypeService {
 		return save(toUpdate);
 	}
 	
-	public Type findByID(Integer id) {
+	public Type findByID(int id) {
 		return typeRepository.findOne(id);
 	}
 	

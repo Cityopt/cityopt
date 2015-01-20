@@ -25,7 +25,7 @@ public class ScenarioMetricsServiceImpl implements ScenarioMetricsService {
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(scenarioMetricsRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -44,7 +44,7 @@ public class ScenarioMetricsServiceImpl implements ScenarioMetricsService {
 		return save(toUpdate);
 	}
 	
-	public ScenarioMetrics findByID(Integer id) {
+	public ScenarioMetrics findByID(int id) {
 		return scenarioMetricsRepository.findOne(id);
 	}
 	

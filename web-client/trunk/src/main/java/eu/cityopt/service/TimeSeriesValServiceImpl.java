@@ -25,7 +25,7 @@ public class TimeSeriesValServiceImpl implements TimeSeriesValService {
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(timeSeriesValRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -44,7 +44,7 @@ public class TimeSeriesValServiceImpl implements TimeSeriesValService {
 		return save(toUpdate);
 	}
 	
-	public TimeSeriesVal findByID(Integer id) {
+	public TimeSeriesVal findByID(int id) {
 		return timeSeriesValRepository.findOne(id);
 	}
 	

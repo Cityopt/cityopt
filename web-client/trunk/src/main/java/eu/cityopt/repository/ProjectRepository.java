@@ -19,4 +19,7 @@ public interface ProjectRepository extends JpaRepository<Project,Integer>{
 //	
 //	@Query("select distinct p from Project p LEFT JOIN FETCH p.components comps")	
 //	public List<Project> findAll();
+	
+	@Query("select distinct p from Project p LEFT JOIN FETCH p.scenarios scens")    
+    public List<Project> findAllWithScenarios();
 }

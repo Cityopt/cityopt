@@ -1,11 +1,41 @@
 package eu.cityopt.service;
 
-import eu.cityopt.DTO.ProjectDTO;
-import eu.cityopt.model.Project;
+import java.util.List;
+import java.util.Set;
 
-public interface ProjectService extends CityOptService<Project> {
+import eu.cityopt.DTO.ComponentDTO;
+import eu.cityopt.DTO.ExtParamDTO;
+import eu.cityopt.DTO.MetricDTO;
+import eu.cityopt.DTO.ProjectDTO;
+import eu.cityopt.DTO.ProjectScenariosDTO;
+import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.repository.ProjectRepository;
+
+
+public interface ProjectService extends CityOptService<ProjectDTO> {
 
 	ProjectDTO save(ProjectDTO projectDTO);
 	
+	ProjectRepository getProjectRepository();
+
+	void setProjectRepository(ProjectRepository projectRepository);
+
+	List<ProjectScenariosDTO> findAllWithScenarios();
+
 	void deleteAll();
+
+	void delete(int id) throws EntityNotFoundException;
+
+	ProjectDTO update(ProjectDTO toUpdate) throws EntityNotFoundException;
+
+	Set<ScenarioDTO> getScenarios(int prjid);
+
+	void setScenarios(int prjid, Set<ScenarioDTO> scenarios);
+
+	Set<ComponentDTO> getComponents(int prjid);
+	
+	Set<ExtParamDTO> getExtParams(int prjid);
+	
+	Set<MetricDTO> getMetrics(int prjid);
+
 }

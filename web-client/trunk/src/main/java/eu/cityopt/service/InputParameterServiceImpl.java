@@ -50,7 +50,7 @@ public class InputParameterServiceImpl implements InputParameterService {
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(inputParameterRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -69,7 +69,7 @@ public class InputParameterServiceImpl implements InputParameterService {
 		return save(toUpdate, componentId, unitId);
 	}
 	
-	public InputParameterDTO findByID(Integer id) throws EntityNotFoundException {
+	public InputParameterDTO findByID(int id) throws EntityNotFoundException {
 		
 		if(inputParameterRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();

@@ -39,7 +39,7 @@ public class AppUserServiceImpl implements AppUserService {
 	}
 	
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(appuserRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -58,7 +58,7 @@ public class AppUserServiceImpl implements AppUserService {
 		return save(toUpdate);
 	}
 	
-	public AppUserDTO findByID(Integer id) throws EntityNotFoundException {
+	public AppUserDTO findByID(int id) throws EntityNotFoundException {
 		if(appuserRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}

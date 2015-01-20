@@ -25,7 +25,7 @@ public class DataReliabilityServiceImpl implements DataReliabilityService {
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(dataReliabilityRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -44,7 +44,7 @@ public class DataReliabilityServiceImpl implements DataReliabilityService {
 		return save(toUpdate);
 	}
 	
-	public DataReliability findByID(Integer id) {
+	public DataReliability findByID(int id) {
 		return dataReliabilityRepository.findOne(id);
 	}
 	

@@ -34,7 +34,7 @@ public class UnitServiceImpl implements UnitService {
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(unitRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -53,7 +53,7 @@ public class UnitServiceImpl implements UnitService {
 		return save(toUpdate);
 	}
 	
-	public UnitDTO findByID(Integer id) throws EntityNotFoundException {
+	public UnitDTO findByID(int id) throws EntityNotFoundException {
 		
 		if(unitRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();

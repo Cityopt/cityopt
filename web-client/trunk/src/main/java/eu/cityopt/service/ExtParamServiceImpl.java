@@ -41,7 +41,7 @@ public class ExtParamServiceImpl implements ExtParamService {
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(extParamRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -60,7 +60,7 @@ public class ExtParamServiceImpl implements ExtParamService {
 		return save(toUpdate, prjid);
 	}
 	
-	public ExtParamDTO findByID(Integer id) throws EntityNotFoundException {
+	public ExtParamDTO findByID(int id) throws EntityNotFoundException {
 		
 		if(extParamRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();

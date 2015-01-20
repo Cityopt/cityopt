@@ -1,29 +1,28 @@
 package eu.cityopt.service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.reflect.TypeToken;
 
+import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioRepository;
 
 @Service("ScenarioService")
-public class ScenarioServiceImpl {
+public class ScenarioServiceImpl implements ScenarioService {
 	@Autowired
 	private ModelMapper modelMapper;
 	
@@ -71,9 +70,16 @@ public class ScenarioServiceImpl {
 		return save(toUpdate, prjid);
 	}
 
-	public ScenarioDTO findByID(Integer id){
+	public ScenarioDTO findByID(int id){
 		Scenario scen = scenarioRepository.findOne(id);
 		return modelMapper.map(scen, ScenarioDTO.class);
+	}
+	
+	public Set<InputParamValDTO> getInputParamVals(int scenId)
+	{
+		Scenario scen = scenarioRepository.findOne(scenId);
+		Set<InputParamVal> inputParamVals = scen.getInputparamvals();
+		return modelMapper.map(inputParamVals, new TypeToken<Set<InputParamValDTO>>() {}.getType());
 	}
 
 //	public List<ScenarioDTO> findByCreationDate(Date dateLower, Date dateUpper){

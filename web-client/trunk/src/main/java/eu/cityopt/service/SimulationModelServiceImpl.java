@@ -20,7 +20,7 @@ import eu.cityopt.repository.SimulationModelRepository;
 		return simulationModelRepository.findAll();
 	}
 	
-	public SimulationModel findByID(Integer id) {
+	public SimulationModel findByID(int id) {
 		return simulationModelRepository.findOne(id);
 	}
 	
@@ -30,7 +30,7 @@ import eu.cityopt.repository.SimulationModelRepository;
 	}
 	
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(simulationModelRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();

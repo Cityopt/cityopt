@@ -25,7 +25,7 @@ public class ExtParamValScenMetricServiceImpl implements ExtParamValScenMetricSe
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(extParamValScenMetricRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -44,7 +44,7 @@ public class ExtParamValScenMetricServiceImpl implements ExtParamValScenMetricSe
 		return save(toUpdate);
 	}
 	
-	public ExtParamValScenMetric findByID(Integer id) {
+	public ExtParamValScenMetric findByID(int id) {
 		return extParamValScenMetricRepository.findOne(id);
 	}
 	

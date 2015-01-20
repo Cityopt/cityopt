@@ -7,9 +7,9 @@ public interface CityOptService<T> {
 
 //	T save(T u);
 
-	void delete(Integer id) throws EntityNotFoundException;
+	void delete(int id) throws EntityNotFoundException;
 
 //	T update(T toUpdate) throws EntityNotFoundException;
 	
-	T findByID(Integer id) throws EntityNotFoundException;
+	T findByID(int id) throws EntityNotFoundException;
 }

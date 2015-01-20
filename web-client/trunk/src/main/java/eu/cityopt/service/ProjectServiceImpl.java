@@ -1,7 +1,5 @@
 package eu.cityopt.service;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -13,16 +11,19 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.ComponentDTO;
+import eu.cityopt.DTO.ExtParamDTO;
+import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ProjectScenariosDTO;
 import eu.cityopt.DTO.ScenarioDTO;
-import eu.cityopt.DTO.ScenarioMap;
+import eu.cityopt.model.ExtParam;
+import eu.cityopt.model.Metric;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.repository.ProjectRepository;
 
-@Service("projectServiceImpl")
-public class ProjectServiceImpl{
+@Service("ProjectService")
+public class ProjectServiceImpl implements ProjectService{
 	@Autowired
 	private ModelMapper modelMapper;
 	
@@ -50,7 +51,7 @@ public class ProjectServiceImpl{
 	}
 	
 	public List<ProjectScenariosDTO> findAllWithScenarios() {
-		List<Project> projects = projectRepository.findAll();
+		List<Project> projects = projectRepository.findAllWithScenarios();
 		List<ProjectScenariosDTO> result 
 			= modelMapper.map(projects, new TypeToken<List<ProjectScenariosDTO>>() {}.getType());
 		return result;
@@ -71,7 +72,7 @@ public class ProjectServiceImpl{
 	}
 	
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(projectRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -89,20 +90,20 @@ public class ProjectServiceImpl{
 		return save(toUpdate);
 	}
 	
-	public ProjectDTO findByID(Integer id) {
+	public ProjectDTO findByID(int id) {
 		Project item = projectRepository.findOne(id);
 		ProjectDTO itemDTO = modelMapper.map(item, ProjectDTO.class);
 		return itemDTO;
 	}
 	
-	public Set<ScenarioDTO> getScenarios(Integer prjid) {
+	public Set<ScenarioDTO> getScenarios(int prjid) {
 		Project item = projectRepository.findOne(prjid);
 		Set<Scenario> scenarios = item.getScenarios(); 
 		return modelMapper.map(scenarios, new TypeToken<Set<ScenarioDTO>>() {}.getType());
 	}
 	
 	@Transactional
-	public void setScenarios(Integer prjid, Set<ScenarioDTO> scenarios) {
+	public void setScenarios(int prjid, Set<ScenarioDTO> scenarios) {
 		Project item = projectRepository.findOne(prjid);
 		Set<Scenario> scen = modelMapper.map(scenarios, new TypeToken<Set<Scenario>>() {}.getType());
 		
@@ -110,10 +111,22 @@ public class ProjectServiceImpl{
 		projectRepository.saveAndFlush(item);
 	}
 	
-	public Set<ComponentDTO> getComponents(Integer prjid) {
+	public Set<ComponentDTO> getComponents(int prjid) {
 		Project item = projectRepository.findOne(prjid);
 		Set<Scenario> scenarios = item.getScenarios(); 
 		return modelMapper.map(scenarios, new TypeToken<Set<ComponentDTO>>() {}.getType());
+	}
+	
+	public Set<ExtParamDTO> getExtParams(int prjid) {
+		Project item = projectRepository.findOne(prjid);
+		Set<ExtParam> scenarios = item.getExtparams(); 
+		return modelMapper.map(scenarios, new TypeToken<Set<ExtParamDTO>>() {}.getType());
+	}
+	
+	public Set<MetricDTO> getMetrics(int prjid) {
+		Project item = projectRepository.findOne(prjid);
+		Set<Metric> scenarios = item.getMetrics(); 
+		return modelMapper.map(scenarios, new TypeToken<Set<MetricDTO>>() {}.getType());
 	}
 }
 

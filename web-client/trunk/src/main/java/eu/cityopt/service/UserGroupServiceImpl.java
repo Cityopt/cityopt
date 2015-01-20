@@ -20,7 +20,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 		return userGroupRepository.findAll();
 	}
 	
-	public UserGroup findByID(Integer id) {
+	public UserGroup findByID(int id) {
 		return userGroupRepository.findOne(id);
 	}
 	
@@ -34,7 +34,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 	}
 	
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(userGroupRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();

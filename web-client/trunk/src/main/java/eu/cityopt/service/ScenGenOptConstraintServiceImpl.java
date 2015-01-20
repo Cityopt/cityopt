@@ -25,7 +25,7 @@ public class ScenGenOptConstraintServiceImpl implements ScenGenOptConstraintServ
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(scenGenOptConstraintRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -44,7 +44,7 @@ public class ScenGenOptConstraintServiceImpl implements ScenGenOptConstraintServ
 		return save(toUpdate);
 	}
 	
-	public ScenGenOptConstraint findByID(Integer id) {
+	public ScenGenOptConstraint findByID(int id) {
 		return scenGenOptConstraintRepository.findOne(id);
 	}
 	

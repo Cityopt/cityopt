@@ -25,7 +25,7 @@ public class InputParamValServiceImpl implements InputParamValService {
 	}
 
 	@Transactional
-	public void delete(Integer id) throws EntityNotFoundException {
+	public void delete(int id) throws EntityNotFoundException {
 		
 		if(inputParamValRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -44,7 +44,7 @@ public class InputParamValServiceImpl implements InputParamValService {
 		return save(toUpdate);
 	}
 	
-	public InputParamVal findByID(Integer id) {
+	public InputParamVal findByID(int id) {
 		return inputParamValRepository.findOne(id);
 	}
 	
