@@ -1,7 +1,7 @@
-<%--@elvariable id="project" type="com.cityopt.model.Project"--%>
-<%--@elvariable id="component" type="com.cityopt.model.Component"--%>
-<%--@elvariable id="selectedComponent" type="com.cityopt.model.Component"--%>
-<%--@elvariable id="outputVar" type="com.cityopt.model.OutputVariable"--%>
+<%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
+<%--@elvariable id="component" type="com.cityopt.DTO.ComponentDTO"--%>
+<%--@elvariable id="selectedComponent" type="com.cityopt.DTO.ComponentDTO"--%>
+<%--@elvariable id="outputVar" type="com.cityopt.DTO.OutputVariableDTO"--%>
 <%--@elvariable id="selectedcompid" type="int"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -62,7 +62,7 @@
 														<th>Edit</th>
 													</tr>
 										
-													<c:forEach items="${project.components}" var="component">
+													<c:forEach items="${components}" var="component">
 													<tr>
 														<c:if test="${selectedcompid == component.componentid}">
 															<tr style="background-color: rgb(140, 200, 200)">

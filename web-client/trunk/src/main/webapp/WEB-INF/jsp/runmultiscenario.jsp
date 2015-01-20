@@ -1,5 +1,5 @@
-<%--@elvariable id="project" type="com.cityopt.model.Project"--%>
-<%--@elvariable id="scenario" type="com.cityopt.model.Scenario"--%>
+<%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
+<%--@elvariable id="scenario" type="com.cityopt.DTO.ScenarioDTO"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -20,7 +20,7 @@
 		<%@ include file="mainmenu.inc"%>
 	</td>
 	<td width="50"></td>
-	<td>
+	<td valign="top">
 		<div style="overflow:scroll;height:400px;width:600px;overflow:auto">
 		<form method="post" action="runmultiscenario.html">
 		<h2>Run Multi-scenario</h2>
@@ -36,7 +36,7 @@
 			    <th>Select</th>
 			</tr>
 
-		<c:forEach items="${project.scenarios}" var="scenario">
+		<c:forEach items="${scenarios}" var="scenario">
 		<tr>
 			<td>${scenario.name}</td>
 		   	<td>${scenario.scenid}</td>

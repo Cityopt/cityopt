@@ -1,5 +1,5 @@
-<%--@elvariable id="project" type="com.cityopt.model.Project"--%>
-<%--@elvariable id="component" type="com.cityopt.model.Component"--%>
+<%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
+<%--@elvariable id="component" type="com.cityopt.DTO.ComponentDTO"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -42,7 +42,7 @@
     				<th>Id</th>
     				<th>Type</th>
 				</tr>
-				<c:forEach items="${project.components}" var="component">
+				<c:forEach items="${components}" var="component">
 				<tr>
 					<td>${component.name}</td>
 			    	<td>${component.componentid}</td>

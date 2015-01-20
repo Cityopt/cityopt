@@ -1,7 +1,9 @@
 package eu.cityopt.controller;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,18 +18,12 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
+import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.UnitDTO;
-import eu.cityopt.model.AppUser;
-import eu.cityopt.model.Component;
-import eu.cityopt.model.ExtParam;
-import eu.cityopt.model.InputParameter;
-import eu.cityopt.model.Metric;
-//import eu.cityopt.model.Project;
-import eu.cityopt.model.Scenario;
 import eu.cityopt.model.Unit;
 import eu.cityopt.service.AppUserServiceImpl;
 import eu.cityopt.service.AprosService;
@@ -109,10 +105,10 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="editproject", method=RequestMethod.POST)
-	public String getEditProjectPost(ProjectDTO project, Map<String, Object> model, 
+	public String getEditProjectPost(ProjectDTO projectForm, Map<String, Object> model, 
 		@RequestParam(value="action", required=false) String action) {
 	
-		if (project != null && action != null)
+		if (projectForm != null && action != null)
 		{
 			if (action.equals("create"))
 			{
@@ -128,7 +124,8 @@ public class ProjectController {
 				aprosService.readDiagramFile(strFileName);
 			}
 			
-			//project.setName(projectForm.getProjectName());
+			ProjectDTO project = new ProjectDTO();
+			project.setName(projectForm.getName());
 			project.getPrjid();
 			projectService.save(project);
 			model.put("project", project);
@@ -178,13 +175,13 @@ public class ProjectController {
 
 	@RequestMapping(value="createscenario",method=RequestMethod.GET)
 	public String getCreateScenario(Map<String, Object> model) {
-		Scenario scenario = new Scenario();
+		ScenarioDTO scenario = new ScenarioDTO();
 		model.put("scenario", scenario);
 		return "createscenario";
 	}
 
 	@RequestMapping(value="createscenario",method=RequestMethod.POST)
-	public String getCreateScenarioPost(Scenario formScenario, Map<String, Object> model) {
+	public String getCreateScenarioPost(ScenarioDTO formScenario, Map<String, Object> model) {
 
 		if (model.containsKey("project") && formScenario != null)
 		{
@@ -221,29 +218,46 @@ public class ProjectController {
 			model.put("scenario", scenario);
 			return "editscenario";
 		}
+		else
+		{
+			Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
+			model.put("scenarios", scenarios);
+		}
 
 		return "openscenario";
 	}
 
 	@RequestMapping(value="editscenario",method=RequestMethod.GET)
 	public String getEditScenario (Map<String, Object> model) {
-		Scenario scenario = (Scenario) model.get("scenario");
+		if (!model.containsKey("project"))
+		{
+			return "error";
+		}
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		project = projectService.findByID(project.getPrjid());
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
 		if (scenario != null)
 		{
 			model.put("scenario", scenario);
+			Set<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+			model.put("components", components);
+			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+			model.put("inputParamVals", inputParamVals);
+		
 			return "editscenario";
 		}
 		else
 		{
-			scenario = new Scenario();
+			scenario = new ScenarioDTO();
 			model.put("scenario", scenario);
 			return "createscenario";
 		}
 	}
 
 	@RequestMapping(value="editscenario",method=RequestMethod.POST)
-	public String getEditScenarioPost(Scenario formScenario, Map<String, Object> model, 
+	public String getEditScenarioPost(ScenarioDTO formScenario, Map<String, Object> model, 
 		@RequestParam(value="action", required=false) String action) {
 
 		if (model.containsKey("project") && formScenario != null)
@@ -300,7 +314,8 @@ public class ProjectController {
 		{
 			return "error";
 		}
-		
+
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		ComponentDTO selectedComponent = null;
 		
 		if (selectedCompId != null)
@@ -314,10 +329,16 @@ public class ProjectController {
 			}
 			model.put("selectedcompid", selectedCompId);
 			model.put("selectedComponent",  selectedComponent);
+			
+			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+			model.put("inputParamVals", inputParamVals);
 		}
 
 		model.put("project", project);
 		
+		Set<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+				
 		return "scenarioparameters";
 	}
 	
@@ -334,6 +355,8 @@ public class ProjectController {
 		
 		project = projectService.findByID(project.getPrjid());
 		model.put("project", project);
+		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+		model.put("extParams", extParams);
 		
 		return "scenariovariables";
 	}
@@ -455,8 +478,18 @@ public class ProjectController {
 	}
 	
 	@RequestMapping(value="coordinates",method=RequestMethod.GET)
-	public String getCoordinates(Model model){
-	
+	public String getCoordinates(Map<String, Object> model){
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		project = projectService.findByID(project.getPrjid());
+		Set<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+		
 		return "coordinates";
 	}
 	
@@ -505,13 +538,25 @@ public class ProjectController {
 		}
 
 		model.put("project", project);
+		Set<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
 		
 		return "outputvariables";
 	}
 	
 	@RequestMapping(value="runmultiscenario",method=RequestMethod.GET)
-	public String getRunMultiScenario(Model model){
-	
+	public String getRunMultiScenario(Map<String, Object> model){
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		project = projectService.findByID(project.getPrjid());
+		
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
+		model.put("scenarios", scenarios);
+		
 		return "runmultiscenario";
 	}
 	
@@ -581,9 +626,16 @@ public class ProjectController {
 			//Hibernate.initialize(selectedComponent.getInputparameters());
 			//model.put("inputParams", selectedComponent.getInputparameters());
 			model.put("selectedComponent",  selectedComponent);
+			Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+			model.put("inputParameters", inputParams);
+			Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+			model.put("extParams", extParams);
+			
 		}
 
 		model.put("project", project);
+		Set<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
 		
 		return "projectparameters";
 	}
@@ -606,7 +658,6 @@ public class ProjectController {
 			return "error";
 		}
 
-		component.setComponentid(1);
 		componentService.save(component, project.getPrjid());
 		
 		model.put("project", projectService.findByID(project.getPrjid()));
@@ -674,7 +725,7 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="editinputparameter", method=RequestMethod.POST)
-	public String getEditInputParameterPost(InputParameter inputParam, Map<String, Object> model,
+	public String getEditInputParameterPost(InputParameterDTO inputParam, Map<String, Object> model,
 		@RequestParam(value="inputparamid", required=true) String inputParamId){
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -789,7 +840,7 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="createextparam", method=RequestMethod.POST)
-	public String getCreateExtParamPost(ExtParam extParam, Map<String, Object> model) {
+	public String getCreateExtParamPost(ExtParamDTO extParam, Map<String, Object> model) {
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
 		if (project == null)
@@ -836,7 +887,7 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="editextparam", method=RequestMethod.POST)
-	public String getEditExtParamPost(ExtParam extParam, Map<String, Object> model,
+	public String getEditExtParamPost(ExtParamDTO extParam, Map<String, Object> model,
 		@RequestParam(value="extparamid", required=true) String extParamId){
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -916,6 +967,8 @@ public class ProjectController {
 		
 		project = projectService.findByID(project.getPrjid());
 		model.put("project", project);
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
 
 		return "metricdefinition";
 	}
@@ -923,7 +976,7 @@ public class ProjectController {
 	@RequestMapping(value="createmetric", method=RequestMethod.GET)
 	public String getCreateMetric(Model model) {
 
-		Metric newMetric = new Metric();
+		MetricDTO newMetric = new MetricDTO();
 		model.addAttribute("metric", newMetric);
 		
 		return "createmetric";
@@ -963,7 +1016,7 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="editmetric", method=RequestMethod.POST)
-	public String getEditMetricPost(Metric metric, Map<String, Object> model,
+	public String getEditMetricPost(MetricDTO metric, Map<String, Object> model,
 		@RequestParam(value="metricid", required=true) String metricid) {
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		project = projectService.findByID(project.getPrjid());
@@ -1078,19 +1131,25 @@ public class ProjectController {
 		{
 			ComponentDTO component = aprosService.listNewComponents.get(i);
 			//component.setProject(project);
-			ComponentDTO existingComponent = componentService.findByID(component.getComponentid());
+			ComponentDTO existingComponent = null;
+			
+			try {
+				existingComponent = componentService.findByID(component.getComponentid());
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
 			
 			if (existingComponent != null)
 			{
 				try {
-					componentService.update(component);
+					componentService.update(component, project.getPrjid());
 				} catch (EntityNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
 			else
 			{
-				componentService.save(component);
+				componentService.save(component, project.getPrjid());
 			}			strTest += component.getName() + " ";
 		}
 
@@ -1098,19 +1157,25 @@ public class ProjectController {
 		{
 			InputParameterDTO inputParam = aprosService.listNewInputParams.get(i);
 			//inputParamService.save(inputParam);
-			InputParameterDTO existingInputParam = inputParamService.findByID(inputParam.getInputid());
+			InputParameterDTO existingInputParam = null;
+			
+			try {
+				existingInputParam = inputParamService.findByID(inputParam.getInputid());
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
 			
 			if (existingInputParam != null)
 			{
 				try {
-					inputParamService.update(inputParam);
+					inputParamService.update(inputParam, inputParam.getComponentID(), project.getPrjid());
 				} catch (EntityNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
 			else
 			{
-				inputParamService.save(inputParam);
+				inputParamService.save(inputParam, inputParam.getComponentID(), inputParam.getInputid());
 			}
 						
 			strTest += inputParam.getName() + " ";

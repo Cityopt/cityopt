@@ -28,6 +28,7 @@ public class AprosService {
 	private final String NODE = "node";
 	private final String PROPERTY = "property";
 	private final String NAME = "name";
+	private final String MODULE_NAME = "moduleName";
 	private final String TYPE = "type";
 	private final String VALUE = "value";
 	private final String CONSTANT = "constant";
@@ -94,7 +95,7 @@ public class AprosService {
             else if (childNode.getNodeName().equals(NODE))
             {
                 ComponentDTO component = new ComponentDTO();
-                String compName = childNode.getAttributes().getNamedItem(NAME).getNodeValue();
+                String compName = childNode.getAttributes().getNamedItem(MODULE_NAME).getNodeValue();
                 component.setName(compName);
                 component.setComponentid(newId);
                 newId++;

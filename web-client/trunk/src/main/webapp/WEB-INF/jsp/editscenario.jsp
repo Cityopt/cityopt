@@ -1,7 +1,7 @@
-<%--@elvariable id="project" type="com.cityopt.model.Project"--%>
-<%--@elvariable id="scenario" type="eu.cityopt.model.Scenario"--%>
-<%--@elvariable id="component" type="com.cityopt.model.Component"--%>
-<%--@elvariable id="inputParamVal" type="com.cityopt.model.InputParamVal"--%>
+<%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
+<%--@elvariable id="scenario" type="eu.cityopt.DTO.ScenarioDTO"--%>
+<%--@elvariable id="component" type="com.cityopt.DTO.ComponentDTO"--%>
+<%--@elvariable id="inputParamVal" type="com.cityopt.DTO.InputParamValDTO"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -76,7 +76,7 @@
 											<th>Id</th>
 										</tr>
 
-										<c:forEach items="${project.components}" var="component">
+										<c:forEach items="${components}" var="component">
 										<tr>
 											<td>${component.name}</td>
 									    	<td>${component.componentid}</td>
@@ -92,7 +92,7 @@
 											<th>Parameter name</th>
 											<th>Value</th>
 										</tr>
-										<c:forEach items="${scenario.inputparamvals}" var="inputParamVal">
+										<c:forEach items="${inputParamVals}" var="inputParamVal">
 										<tr>
 											<td>${inputParamVal.inputparameter.name}</td>
 									    	<td>${inputParamVal.value}</td>

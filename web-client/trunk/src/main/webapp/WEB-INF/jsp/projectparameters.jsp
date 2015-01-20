@@ -1,8 +1,8 @@
-<%--@elvariable id="project" type="com.cityopt.model.Project"--%>
-<%--@elvariable id="component" type="com.cityopt.model.Component"--%>
-<%--@elvariable id="selectedComponent" type="com.cityopt.model.Component"--%>
-<%--@elvariable id="inputParam" type="com.cityopt.model.InputParameter"--%>
-<%--@elvariable id="extParam" type="com.cityopt.model.ExtParam"--%>
+<%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
+<%--@elvariable id="component" type="com.cityopt.DTO.ComponentDTO"--%>
+<%--@elvariable id="selectedComponent" type="com.cityopt.DTO.ComponentDTO"--%>
+<%--@elvariable id="inputParam" type="com.cityopt.DTO.InputParameterDTO"--%>
+<%--@elvariable id="extParam" type="com.cityopt.DTO.ExtParamDTO"--%>
 <%--@elvariable id="selectedcompid" type="int"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -61,7 +61,7 @@
 														<th>Edit</th>
 													</tr>
 													
-													<c:forEach items="${project.components}" var="component">
+													<c:forEach items="${components}" var="component">
 													<c:if test="${selectedcompid == component.componentid}">
 														<tr style="background-color: rgb(140, 200, 200)">
 													</c:if>
@@ -95,7 +95,7 @@
 														<th>Edit</th>
 													</tr>
 													
-													<c:forEach items="${selectedComponent.inputparameters}" var="inputParam">
+													<c:forEach items="${inputparameters}" var="inputParam">
 													<tr>
 														<td>${inputParam.name}</td>
 												    	<td>${inputParam.inputid}</td>
@@ -156,7 +156,7 @@
 													    <th>Default value</th>
 													</tr>
 													
-													<c:forEach items="${project.extparams}" var="extParam">
+													<c:forEach items="${extParams}" var="extParam">
 													<tr>
 														<td>${extParam.name}</td>
 												    	<td>${extParam.extparamid}</td>

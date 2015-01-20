@@ -1,5 +1,5 @@
-<%--@elvariable id="project" type="com.cityopt.model.Project"--%>
-<%--@elvariable id="metric" type="com.cityopt.model.Metric"--%>
+<%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
+<%--@elvariable id="metric" type="com.cityopt.DTO.MetricDTO"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -18,7 +18,7 @@
 	<tr>	
 		<td><%@ include file="mainmenu.inc"%></td>
 		<td width="50"></td>
-		<td>
+		<td valign="top">
 			<div style="overflow:scroll;height:400px;width:500px;overflow:auto">
 			<h2>Project metrics</h2>
 			<table class="tablestyle" width="400" border="1">
@@ -32,7 +32,7 @@
 			    <th>Delete</th>
 			</tr>
 			
-			<c:forEach items="${project.metrics}" var="metric">
+			<c:forEach items="${metrics}" var="metric">
 				<tr>
 				<td>${metric.name}</td>
 		    	<td>${metric.metid}</td>
