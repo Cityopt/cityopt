@@ -16,6 +16,7 @@ import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ProjectScenariosDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.model.Component;
 import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.Metric;
 import eu.cityopt.model.Project;
@@ -112,20 +113,20 @@ public class ProjectServiceImpl implements ProjectService{
 	
 	public Set<ComponentDTO> getComponents(int prjid) {
 		Project item = projectRepository.findOne(prjid);
-		Set<Scenario> scenarios = item.getScenarios(); 
-		return modelMapper.map(scenarios, new TypeToken<Set<ComponentDTO>>() {}.getType());
+		Set<Component> components = item.getComponents(); 
+		return modelMapper.map(components, new TypeToken<Set<ComponentDTO>>() {}.getType());
 	}
 	
 	public Set<ExtParamDTO> getExtParams(int prjid) {
 		Project item = projectRepository.findOne(prjid);
-		Set<ExtParam> scenarios = item.getExtparams(); 
-		return modelMapper.map(scenarios, new TypeToken<Set<ExtParamDTO>>() {}.getType());
+		Set<ExtParam> extParams = item.getExtparams(); 
+		return modelMapper.map(extParams, new TypeToken<Set<ExtParamDTO>>() {}.getType());
 	}
 	
 	public Set<MetricDTO> getMetrics(int prjid) {
 		Project item = projectRepository.findOne(prjid);
-		Set<Metric> scenarios = item.getMetrics(); 
-		return modelMapper.map(scenarios, new TypeToken<Set<MetricDTO>>() {}.getType());
+		Set<Metric> metrics = item.getMetrics(); 
+		return modelMapper.map(metrics, new TypeToken<Set<MetricDTO>>() {}.getType());
 	}
 }
 
