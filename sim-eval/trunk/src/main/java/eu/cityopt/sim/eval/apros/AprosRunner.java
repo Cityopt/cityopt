@@ -48,6 +48,7 @@ import org.w3c.dom.NodeList;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationRunner;
+import eu.cityopt.sim.eval.SimulationRunnerFactory;
 import eu.cityopt.sim.eval.Type;
 
 /**
@@ -134,6 +135,32 @@ public class AprosRunner implements SimulationRunner {
         return new String[] {"sequence.scl", "0"};
     }
 
+    /**
+     * Constructor.  Eventually everyone should be using
+     * {@link SimulationRunnerFactory} instead of constructing AprosRunners
+     * directly.
+     * @param profile names a subdirectory of {@link #profileDir} containing
+     *   the Apros profile to use.
+     * @param ns a {@link Namespace} defining the inputs and outputs
+     *   (everything else in ns is ignored).
+     * @param uc_props the XML document describing the user component structure
+     *   of the Apros model.
+     * @param modelDir a directory of model-related files that are shipped to
+     *   the simulation server.  sequence.scl in this directory contains the
+     *   main program (<code>main :: &lt;Proc&gt; ()</code>) and should
+     *   import <code>file:cityopt/setup.scl</code>.  The cityopt directory
+     *   is created by AprosRunner and must not exist in modelDir.  The main
+     *   program should load the model (with <code>loadIC</code>), call
+     *   <code>setup :: AprosSequence ()</code> in the imported setup.scl
+     *   and simulate.  The main program is also responsible for managing
+     *   Apros <code>IO_SET</code>s for output.
+     * @param resultFiles wildcards for Apros output files.
+     *   All matching files are fetched from the simulation server, parsed
+     *   as Apros <code>IO_SET</code> data and searched for the outputs
+     *   in ns.  Unknown outputs in the files are ignored.
+     * @throws TransformerException if setup.scl cannot be generated,
+     *   possibly because of malformed uc_props.  
+     */
     public AprosRunner(
             String profile, Namespace ns,
             Document uc_props, Path modelDir, String... resultFiles)
