@@ -16,7 +16,7 @@ import java.util.concurrent.Future;
 public interface SimulationRunner extends Closeable {
     /**
      * Starts a simulation with the given input.
-     * Do not modify the SimulationInput object afterward.
+     * The input object must not be modified afterwards.
      *
      * @param input
      * @return a future that will provide the simulation output if it can be

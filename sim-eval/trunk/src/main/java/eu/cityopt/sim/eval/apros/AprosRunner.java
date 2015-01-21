@@ -52,7 +52,7 @@ import eu.cityopt.sim.eval.SimulationRunnerFactory;
 import eu.cityopt.sim.eval.Type;
 
 /**
- * A factory of AprosJobs for one model.
+ * A factory of {@link AprosJob}s for one model.
  * @author ttekth
  */
 public class AprosRunner implements SimulationRunner {
@@ -80,7 +80,7 @@ public class AprosRunner implements SimulationRunner {
 
     /**
      * Map input parameters to globally unique SCL identifiers.
-     * @return an unmodifiable map component |-> parameter |-> SCL name
+     * @return an unmodifiable map component |-&gt; parameter |-&gt; SCL name
      */
     public Map<String, Map<String, String>> getInputNames() {
         return Collections.unmodifiableMap(inputNames);

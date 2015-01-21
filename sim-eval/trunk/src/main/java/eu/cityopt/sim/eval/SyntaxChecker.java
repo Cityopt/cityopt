@@ -263,7 +263,7 @@ public class SyntaxChecker {
 
     /**
      * Converts an arbitrary string into a valid Python identifier. Diacritical
-     * marks are removed (e.g. ä -> a) and otherwise invalid characters are
+     * marks are removed (e.g. ä -&gt; a) and otherwise invalid characters are
      * converted to underscores. If the result is a Python keyword, underscores
      * are appended.
      * <p>

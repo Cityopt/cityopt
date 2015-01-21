@@ -34,7 +34,7 @@ import eu.cityopt.sim.eval.Type;
 
 /**
  * An Apros simulation run.
- * These are created with AprosRunner.start. 
+ * These are created with {@link AprosRunner#start}. 
  * @author ttekth
  *
  */
