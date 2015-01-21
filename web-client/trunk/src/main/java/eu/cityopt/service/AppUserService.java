@@ -6,5 +6,8 @@ import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.model.AppUser;
 
 public interface AppUserService extends CityOptService<AppUserDTO>{
-
+	AppUserDTO save(AppUserDTO u);
+	
+	AppUserDTO update(AppUserDTO toUpdate)  throws EntityNotFoundException;
+	
 }

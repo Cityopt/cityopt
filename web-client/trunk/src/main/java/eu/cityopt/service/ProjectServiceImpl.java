@@ -59,9 +59,8 @@ public class ProjectServiceImpl implements ProjectService{
 
 	@Transactional
 	public ProjectDTO save(ProjectDTO projectDTO) {
-		Project project = new Project();
 		Project result = modelMapper.map(projectDTO, Project.class);
-		result = projectRepository.save(project);
+		result = projectRepository.save(result);
 		modelMapper.map(result, projectDTO);
 		return projectDTO;
 	}
