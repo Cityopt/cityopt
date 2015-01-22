@@ -15,9 +15,11 @@ import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.ScenarioMetricsDTO;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
+import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioRepository;
 
@@ -75,13 +77,18 @@ public class ScenarioServiceImpl implements ScenarioService {
 		return modelMapper.map(scen, ScenarioDTO.class);
 	}
 	
-	public Set<InputParamValDTO> getInputParamVals(int scenId)
-	{
+	public Set<InputParamValDTO> getInputParamVals(int scenId)	{
 		Scenario scen = scenarioRepository.findOne(scenId);
 		Set<InputParamVal> inputParamVals = scen.getInputparamvals();
 		return modelMapper.map(inputParamVals, new TypeToken<Set<InputParamValDTO>>() {}.getType());
 	}
 
+	public Set<ScenarioMetricsDTO> getScenarioMetrics(int scenId)	{
+		Scenario scen = scenarioRepository.findOne(scenId);
+		Set<ScenarioMetrics> scenarioMetrics = scen.getScenariometricses();
+		return modelMapper.map(scenarioMetrics, new TypeToken<Set<ScenarioMetricsDTO>>() {}.getType());
+	}
+	
 //	public List<ScenarioDTO> findByCreationDate(Date dateLower, Date dateUpper){
 //		return scenarioRepository.findByCreationDate(dateLower, dateUpper);
 //	}

@@ -1,6 +1,7 @@
 package eu.cityopt.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.reflect.TypeToken;
 
+import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.model.Component;
+import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.InputParameter;
+import eu.cityopt.model.Scenario;
 import eu.cityopt.model.Unit;
 import eu.cityopt.repository.ComponentRepository;
 import eu.cityopt.repository.ExtParamRepository;
@@ -78,4 +82,9 @@ public class InputParameterServiceImpl implements InputParameterService {
 		return modelMapper.map(inputParameterRepository.findOne(id), InputParameterDTO.class);
 	}
 	
+	public Set<InputParamValDTO> getInputParamVals(int id){
+		InputParameter iparam = inputParameterRepository.findOne(id);
+		Set<InputParamVal> inputParamVals = iparam.getInputparamvals();
+		return modelMapper.map(inputParamVals, new TypeToken<Set<InputParamValDTO>>() {}.getType());
+	}
 }

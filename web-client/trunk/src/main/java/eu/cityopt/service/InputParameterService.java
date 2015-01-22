@@ -1,5 +1,8 @@
 package eu.cityopt.service;
 
+import java.util.Set;
+
+import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 
 public interface InputParameterService extends CityOptService<InputParameterDTO>{
@@ -13,4 +16,6 @@ public interface InputParameterService extends CityOptService<InputParameterDTO>
 	InputParameterDTO update(InputParameterDTO toUpdate, int componentId, int unitId) throws EntityNotFoundException;
 	
 	InputParameterDTO findByID(int id) throws EntityNotFoundException;
+	
+	Set<InputParamValDTO> getInputParamVals(int id);
 }

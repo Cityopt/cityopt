@@ -1,6 +1,7 @@
 package eu.cityopt.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.ExtParamDTO;
+import eu.cityopt.DTO.ExtParamValDTO;
+import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.model.ExtParam;
+import eu.cityopt.model.ExtParamVal;
+import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.Project;
+import eu.cityopt.model.Scenario;
 import eu.cityopt.repository.ExtParamRepository;
 import eu.cityopt.repository.ProjectRepository;
 
@@ -69,4 +75,9 @@ public class ExtParamServiceImpl implements ExtParamService {
 		return modelMapper.map(extParamRepository.findOne(id), ExtParamDTO.class);		
 	}
 	
+	public Set<ExtParamValDTO> getExtParamVals(int id){
+		ExtParam eparam = extParamRepository.findOne(id);
+		Set<ExtParamVal> inputParamVals = eparam.getExtparamvals();
+		return modelMapper.map(inputParamVals, new TypeToken<Set<ExtParamVal>>() {}.getType());
+	}
 }

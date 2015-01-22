@@ -2,9 +2,13 @@ package eu.cityopt.model;
 
 // Generated 13.11.2014 15:13:00 by Hibernate Tools 4.0.0
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -46,7 +50,7 @@ public class Project implements java.io.Serializable {
 	private Set<Scenario> scenarios = new HashSet<Scenario>(0);
 	private Set<ScenarioGenerator> scenariogenerators = new HashSet<ScenarioGenerator>(
 			0);
-	private Set<Component> components = new HashSet<Component>(0);
+	private List<Component> components = new ArrayList<Component>();
 	private Set<OptConstraint> optconstraints = new HashSet<OptConstraint>(0);
 	private Set<SearchConstraint> searchconstraints = new HashSet<SearchConstraint>(
 			0);
@@ -68,7 +72,7 @@ public class Project implements java.io.Serializable {
 			Date createdon, Date updatedon, Integer createdby,
 			Integer updatedby, Set<ObjectiveFunction> objectivefunctions,
 			Set<Scenario> scenarios, Set<ScenarioGenerator> scenariogenerators,
-			Set<Component> components, Set<OptConstraint> optconstraints,
+			List<Component> components, Set<OptConstraint> optconstraints,
 			Set<SearchConstraint> searchconstraints, Set<Metric> metrics,
 			Set<UserGroupProject> usergroupprojects, Set<ExtParam> extparams) {
 		this.prjid = prjid;
@@ -227,11 +231,11 @@ public class Project implements java.io.Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
 	@OrderBy("componentid")
-	public Set<Component> getComponents() {
+	public List<Component> getComponents() {
 		return this.components;
 	}
 
-	public void setComponents(Set<Component> components) {
+	public void setComponents(List<Component> components) {
 		this.components = components;
 	}
 

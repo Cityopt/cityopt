@@ -2,6 +2,7 @@ package eu.cityopt.service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
@@ -32,7 +33,7 @@ public interface ProjectService extends CityOptService<ProjectDTO> {
 
 	void setScenarios(int prjid, Set<ScenarioDTO> scenarios);
 
-	Set<ComponentDTO> getComponents(int prjid);
+	List<ComponentDTO> getComponents(int prjid);
 	
 	Set<ExtParamDTO> getExtParams(int prjid);
 	

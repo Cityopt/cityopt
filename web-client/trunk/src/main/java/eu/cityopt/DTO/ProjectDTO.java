@@ -18,7 +18,7 @@ public class ProjectDTO {
 		
 		@Getter @Setter private String description;
 		
-//		private SimulationModel simulationmodel;
+		@Getter @Setter private SimulationModelDTO simulationmodel;
 		@Getter @Setter private String designtarget;
 //		private Date timehorizon;
 //		private Date createdon;

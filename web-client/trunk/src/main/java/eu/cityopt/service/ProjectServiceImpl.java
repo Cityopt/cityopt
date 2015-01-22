@@ -2,6 +2,7 @@ package eu.cityopt.service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,10 +112,10 @@ public class ProjectServiceImpl implements ProjectService{
 		projectRepository.saveAndFlush(item);
 	}
 	
-	public Set<ComponentDTO> getComponents(int prjid) {
+	public List<ComponentDTO> getComponents(int prjid) {
 		Project item = projectRepository.findOne(prjid);
-		Set<Component> components = item.getComponents(); 
-		return modelMapper.map(components, new TypeToken<Set<ComponentDTO>>() {}.getType());
+		List<Component> components = item.getComponents(); 
+		return modelMapper.map(components, new TypeToken<List<ComponentDTO>>() {}.getType());
 	}
 	
 	public Set<ExtParamDTO> getExtParams(int prjid) {

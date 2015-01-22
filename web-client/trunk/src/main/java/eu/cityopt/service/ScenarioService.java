@@ -4,6 +4,7 @@ import java.util.Set;
 
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.ScenarioMetricsDTO;
 
 public interface ScenarioService extends CityOptService<ScenarioDTO>{
 	
@@ -16,5 +17,7 @@ public interface ScenarioService extends CityOptService<ScenarioDTO>{
 	void delete(int id) throws EntityNotFoundException;
 
 	ScenarioDTO update(ScenarioDTO toUpdate, int prjid) throws EntityNotFoundException;
+	
+	Set<ScenarioMetricsDTO> getScenarioMetrics(int scenId);
 	
 }
