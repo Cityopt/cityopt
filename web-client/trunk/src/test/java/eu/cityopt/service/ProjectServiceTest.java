@@ -1,5 +1,7 @@
 package eu.cityopt.service;
 
+import static org.junit.Assert.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,16 +17,30 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.DTO.ProjectDTO;
+import eu.cityopt.DTO.SimulationModelDTO;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.SimulationModel;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:/test-context.xml"})
 @Transactional
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"classpath:/jpaContext.xml", "classpath:/test-context.xml"})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+    DirtiesContextTestExecutionListener.class,
+    TransactionalTestExecutionListener.class,
+    DbUnitTestExecutionListener.class })
+@DatabaseSetup("classpath:/testData/scenario_TestData.xml")
 public class ProjectServiceTest {
 
 	@Autowired
@@ -43,8 +59,8 @@ public class ProjectServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		projectService.deleteAll();
-		simulationModelService.deleteAll();
+//		projectService.deleteAll();
+//		simulationModelService.deleteAll();
 	}
 
 	@After
@@ -52,7 +68,7 @@ public class ProjectServiceTest {
 	}
 
 	@Test	
-	public void CreateProject() throws IOException, EntityNotFoundException {
+	public void CreateProjectWithSimulationModel() throws IOException, EntityNotFoundException {
 		
 		ProjectDTO project_2 = new ProjectDTO();
 		project_2.setName("Project 2");
@@ -63,18 +79,20 @@ public class ProjectServiceTest {
 		
 		byte[] tmpModelarr = getFileBytes(tmpModel);
 		
-		SimulationModel model = new SimulationModel();
+		SimulationModelDTO model = new SimulationModelDTO();
 		model.setModelblob(tmpModelarr);
 		model.setSimulator("APROS");
-		model.setDescription("My seconds model");				
+		model.setDescription("My second model");				
 		
-		//project_2.setSimulationmodel(model);
+		project_2.setSimulationmodel(model);
 		
 		projectService.save(project_2);
 		
-		Project fproject = projectService.findByID(project_2.getPrjid());
-		SimulationModel modact = fproject.getSimulationmodel();
+		ProjectDTO fproject = projectService.findByID(project_2.getPrjid());
+		SimulationModelDTO modact = fproject.getSimulationmodel();
 		String mydesc = modact.getDescription();
+		
+		assertEquals("My second model", modact.getDescription());
 	}
 	
 	

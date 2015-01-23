@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.InputParamValDTO;
-import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioMetricsDTO;
 import eu.cityopt.model.InputParamVal;
@@ -73,8 +72,11 @@ public class ScenarioServiceImpl implements ScenarioService {
 		return save(toUpdate, prjid);
 	}
 
-	public ScenarioDTO findByID(int id){
+	public ScenarioDTO findByID(int id) throws EntityNotFoundException {
 		Scenario scen = scenarioRepository.findOne(id);
+		if(scen == null) 
+			throw new EntityNotFoundException();
+		
 		return modelMapper.map(scen, ScenarioDTO.class);
 	}
 	

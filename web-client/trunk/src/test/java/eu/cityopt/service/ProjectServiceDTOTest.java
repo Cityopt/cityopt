@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.function.Predicate;
 
 import javax.persistence.EntityManager;
@@ -26,13 +27,16 @@ import org.springframework.util.Assert;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
+import eu.cityopt.DTO.ComponentDTO;
+import eu.cityopt.DTO.ExtParamDTO;
+import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ProjectScenariosDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:/test-context.xml"})
+@ContextConfiguration(locations={"classpath:/jpaContext.xml", "classpath:/test-context.xml"})
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class,
@@ -41,26 +45,41 @@ import eu.cityopt.DTO.ScenarioDTO;
 public class ProjectServiceDTOTest {
 
 	@Autowired
-	ProjectServiceImpl projectService;
+	ProjectService projectService;
 	
 	@Autowired
-	ScenarioServiceImpl scenarioService;
+	ScenarioService scenarioService;
+	
+	@PersistenceContext
+	EntityManager em;
 	
 	@Before
 	public void setUp() throws Exception {
 	}
 
 	@Test
-	public void test() {
-		
-		//ProjectDTO item = projectService.findByID(50);
-		//int size = item.getComponents().size();
+	public void findAll() {
 		List<ProjectDTO> list = projectService.findAll();
 		Assert.notNull(list);
+		assertTrue(list.size() > 0);
 	}
 	
 	@Test
-	public void getScenarios() {		
+	public void findByNameTest() {
+		List<ProjectDTO> list = projectService.findByName("project");
+		Assert.notNull(list);
+		assertTrue(list.size() == 2);
+	}
+	
+	@Test
+	public void findByNameTest2() {
+		List<ProjectDTO> list = projectService.findByName("notAProjectName");
+		Assert.notNull(list);
+		assertTrue(list.size() == 0);
+	}
+	
+	@Test
+	public void getScenarios() throws EntityNotFoundException {		
 		//Scenarios are not loaded with the ProjectDTO object 
 		//if needed, load them from the service using the project's ID
 		ProjectDTO item = projectService.findByID(1);
@@ -71,6 +90,64 @@ public class ProjectServiceDTOTest {
 		ScenarioDTO element2 = scenarios2.iterator().next();
 		assertEquals("this is a test", element2.getDescription());
 		assertEquals("test", element2.getName());
+	}
+	
+	@Test
+	public void getComponents() throws EntityNotFoundException {		
+		//Scenarios are not loaded with the ProjectDTO object 
+		//if needed, load them from the service using the project's ID
+		ProjectDTO item = projectService.findByID(1);
+		Assert.notNull(item);
+		
+		List<ComponentDTO> components = projectService.getComponents(item.getPrjid());
+		Assert.notNull(components);
+		ComponentDTO element2 = components.iterator().next();
+		assertEquals("testcomponent 1", element2.getName());
+	}
+	
+	@Test
+	public void updateProject() throws EntityNotFoundException {		
+		ProjectDTO item = projectService.findByID(1);
+		Assert.notNull(item);
+		
+		item.setName("new project name");
+		item.setDescription("new project description");
+		
+		projectService.update(item);
+		ProjectDTO item2 = projectService.findByID(1);
+		assertNotNull(item2);
+		assertEquals("new project name", item2.getName());
+		assertEquals("new project description", item2.getDescription());
+	}
+	
+	@Test
+	public void getMetrics() throws EntityNotFoundException {		
+		ProjectDTO item = projectService.findByID(1);
+		Assert.notNull(item);
+		
+		Set<MetricDTO> metrics = projectService.getMetrics(item.getPrjid());
+		Assert.notNull(metrics);
+		MetricDTO met = metrics.iterator().next();
+		assertEquals("myMetric", met.getName());
+		assertEquals("my expression != bad", met.getExpression()); 
+	}
+	
+	@Test
+	public void getExtParams() throws EntityNotFoundException {		
+		ProjectDTO item = projectService.findByID(1);
+		Assert.notNull(item);
+		
+		Set<ExtParamDTO> metrics = projectService.getExtParams(item.getPrjid());
+		Assert.notNull(metrics);
+	}
+	
+	@Test
+	public void getSimmulationModel() throws EntityNotFoundException {		
+		ProjectDTO item = projectService.findByID(1);
+		Assert.notNull(item);
+		
+		Set<ExtParamDTO> metrics = projectService.getExtParams(item.getPrjid());
+		Assert.notNull(metrics);
 	}
 	
 	@Test
@@ -108,12 +185,8 @@ public class ProjectServiceDTOTest {
 		
 		newScen.setScenid(0);
 		assertEquals(sizeBefore +1, sizeAfter);
-		//assertTrue(scenarios.contains(newScen));
-		
+		//assertTrue(scenarios.contains(newScen));		
 	}
-	
-	@PersistenceContext
-	EntityManager em;
 	
 	@Test
 	public void setScenarioOnScenarioServiceTest() {	
