@@ -7,7 +7,7 @@ public class ExtParamValDTO implements java.io.Serializable {
 
 	@Getter @Setter private int extparamvalid;
 //	@Getter @Setter private TimeSeries timeseries;
-//	@Getter @Setter private ExtParam extparam;
+	@Getter @Setter private ExtParamDTO extparam;
 	@Getter @Setter private String value;
 //	@Getter @Setter private Set<ExtParamValScenMetric> extparamvalscenmetrics = new HashSet<ExtParamValScenMetric>(
 //			0);
