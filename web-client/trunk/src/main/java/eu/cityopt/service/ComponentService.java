@@ -1,5 +1,6 @@
 package eu.cityopt.service;
 
+import java.util.List;
 import java.util.Set;
 
 import eu.cityopt.DTO.ComponentDTO;
@@ -14,4 +15,6 @@ public interface ComponentService extends CityOptService<ComponentDTO>{
 	Set<InputParameterDTO> getInputParameters(int componentId);
 	
 	Set<OutputVariableDTO> getOutputVariables(int componentId);
+	
+	List<ComponentDTO> findByName(String name);
 }
