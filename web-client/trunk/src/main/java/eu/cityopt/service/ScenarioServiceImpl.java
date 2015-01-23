@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.InputParamValDTO;
+import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioMetricsDTO;
 import eu.cityopt.model.InputParamVal;
@@ -87,6 +88,13 @@ public class ScenarioServiceImpl implements ScenarioService {
 		Scenario scen = scenarioRepository.findOne(scenId);
 		Set<ScenarioMetrics> scenarioMetrics = scen.getScenariometricses();
 		return modelMapper.map(scenarioMetrics, new TypeToken<Set<ScenarioMetricsDTO>>() {}.getType());
+	}
+	
+	public List<ScenarioDTO> findByName(String name) {
+		List<Scenario> scenarios = scenarioRepository.findByName(name);
+		List<ScenarioDTO> result 
+			= modelMapper.map(scenarios, new TypeToken<List<ScenarioDTO>>() {}.getType());
+		return result;
 	}
 	
 //	public List<ScenarioDTO> findByCreationDate(Date dateLower, Date dateUpper){

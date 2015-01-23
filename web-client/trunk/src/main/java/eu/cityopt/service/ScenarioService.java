@@ -1,5 +1,6 @@
 package eu.cityopt.service;
 
+import java.util.List;
 import java.util.Set;
 
 import eu.cityopt.DTO.InputParamValDTO;
@@ -20,4 +21,5 @@ public interface ScenarioService extends CityOptService<ScenarioDTO>{
 	
 	Set<ScenarioMetricsDTO> getScenarioMetrics(int scenId);
 	
+	List<ScenarioDTO> findByName(String name);
 }

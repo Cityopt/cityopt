@@ -10,9 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.reflect.TypeToken;
 
+import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.model.Component;
+import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.Scenario;
@@ -39,6 +41,13 @@ public class InputParameterServiceImpl implements InputParameterService {
 	public List<InputParameterDTO> findAll() {
 		return modelMapper.map(inputParameterRepository.findAll(), 
 				new TypeToken<List<InputParameterDTO>>() {}.getType());
+	}
+	
+	public List<InputParameterDTO> findByName(String name) {
+		List<InputParameter> iparams = inputParameterRepository.findByName(name);
+		List<InputParameterDTO> result 
+			= modelMapper.map(iparams, new TypeToken<List<InputParameterDTO>>() {}.getType());
+		return result;
 	}
 
 	@Transactional

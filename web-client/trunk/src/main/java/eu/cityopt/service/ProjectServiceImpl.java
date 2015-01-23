@@ -2,7 +2,6 @@ package eu.cityopt.service;
 
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.repository.ProjectRepository;
 
-@Service("ProjectService")
+@Service
 public class ProjectServiceImpl implements ProjectService{
 	@Autowired
 	private ModelMapper modelMapper;
@@ -56,6 +55,13 @@ public class ProjectServiceImpl implements ProjectService{
 		List<Project> projects = projectRepository.findAllWithScenarios();
 		List<ProjectScenariosDTO> result 
 			= modelMapper.map(projects, new TypeToken<List<ProjectScenariosDTO>>() {}.getType());
+		return result;
+	}
+	
+	public List<ProjectDTO> findByName(String name) {
+		List<Project> projects = projectRepository.findByName(name);
+		List<ProjectDTO> result 
+			= modelMapper.map(projects, new TypeToken<List<ProjectDTO>>() {}.getType());
 		return result;
 	}
 

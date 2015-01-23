@@ -13,6 +13,7 @@ import com.google.common.reflect.TypeToken;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.InputParamValDTO;
+import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.ExtParamVal;
 import eu.cityopt.model.InputParamVal;
@@ -35,6 +36,13 @@ public class ExtParamServiceImpl implements ExtParamService {
 	public List<ExtParamDTO> findAll() {
 		return modelMapper.map(extParamRepository.findAll(), 
 				new TypeToken<List<ExtParamDTO>>() {}.getType());
+	}
+	
+	public List<ExtParamDTO> findByName(String name) {
+		List<ExtParam> extparams = extParamRepository.findByName(name);
+		List<ExtParamDTO> result 
+			= modelMapper.map(extparams, new TypeToken<List<ExtParamDTO>>() {}.getType());
+		return result;
 	}
 
 	@Transactional

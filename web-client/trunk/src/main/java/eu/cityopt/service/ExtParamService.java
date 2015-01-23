@@ -3,15 +3,8 @@ package eu.cityopt.service;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.transaction.annotation.Transactional;
-
-import com.google.common.reflect.TypeToken;
-
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
-import eu.cityopt.model.ExtParam;
-import eu.cityopt.model.ExtParamVal;
-import eu.cityopt.model.Project;
 
 public interface ExtParamService extends CityOptService<ExtParamDTO> {
 	
@@ -22,4 +15,6 @@ public interface ExtParamService extends CityOptService<ExtParamDTO> {
 	public ExtParamDTO findByID(int id) throws EntityNotFoundException;
 	
 	public Set<ExtParamValDTO> getExtParamVals(int id);
+	
+	List<ExtParamDTO> findByName(String name);
 }
