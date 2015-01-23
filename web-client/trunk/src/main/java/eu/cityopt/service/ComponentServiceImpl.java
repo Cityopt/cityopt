@@ -11,9 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.ComponentDTO;
+import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.model.Component;
+import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
@@ -36,6 +38,13 @@ public class ComponentServiceImpl implements ComponentService {
 				new TypeToken<List<ComponentDTO>>() {}.getType());
 	}
 
+	public List<ComponentDTO> findByName(String name) {
+		List<Component> components = componentRepository.findByName(name);
+		List<ComponentDTO> result 
+			= modelMapper.map(components, new TypeToken<List<ComponentDTO>>() {}.getType());
+		return result;
+	}
+	
 	@Transactional
 	public ComponentDTO save(ComponentDTO u, int prjid) {
 		Component component = modelMapper.map(u, Component.class);
