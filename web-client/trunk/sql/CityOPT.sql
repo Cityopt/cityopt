@@ -395,7 +395,7 @@ CREATE TABLE OutputVariable (
 	outVarID integer DEFAULT nextval(('OutputVariable_outVarID_seq'::text)::regclass) NOT NULL,
 	name varchar(50),
 	selected boolean,
-	typeID integer,
+	unitID integer,
 	componentID integer
 )
 ;
@@ -706,6 +706,9 @@ CREATE INDEX IXFK_OptSetScenarios_Scenario
 ;
 CREATE INDEX IXFK_OutputVariables_Components
 	ON OutputVariable (componentID)
+;
+CREATE INDEX IXFK_OutputVariable_Unit
+	ON OutputVariable (unitID)
 ;
 ALTER TABLE Project
 	ADD CONSTRAINT UQ_Project_prjName UNIQUE (name)
@@ -1123,6 +1126,10 @@ ALTER TABLE OptSetScenarios ADD CONSTRAINT FK_OptSetScenarios_Scenario
 
 ALTER TABLE OutputVariable ADD CONSTRAINT FK_OutputVariables_Components 
 	FOREIGN KEY (componentID) REFERENCES Component (componentID)
+;
+
+ALTER TABLE OutputVariable ADD CONSTRAINT FK_OutputVariable_Unit 
+	FOREIGN KEY (unitID) REFERENCES Unit (unitID)
 ;
 
 ALTER TABLE Project ADD CONSTRAINT FK_Project_SimulationModel 
