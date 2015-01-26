@@ -43,6 +43,19 @@
 								<td>Energy model:</td>
 								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
 							</tr>
+							<tr>
+								<td>
+									Parameter level:
+								</td>
+								<td>
+							 		<select name="parameterLevel">
+									  	<option value="1">1</option>
+									  	<option value="2">2</option>
+									  	<option value="3">3</option>
+									  	<option value="4">4</option>
+									</select>
+								</td> 
+							</tr>
 							<tr>						
 								<td></td>
 								<td><a href="uploaddiagram.html"><button type="button">Upload</button></a>

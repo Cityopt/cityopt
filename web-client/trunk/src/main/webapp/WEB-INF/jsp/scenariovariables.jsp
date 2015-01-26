@@ -41,6 +41,7 @@
 							<tr height="20">
 							    <th>Name</th>
 							    <th>Id</th>
+								<th>Value</th>
 							    <th>Default value</th>
 							    <th>Edit</th>
 							</tr>
@@ -49,6 +50,7 @@
 							<tr>
 								<td>${extParam.name}</td>
 						    	<td>${extParam.extparamid}</td>
+						    	<td>${extParam.defaultvalue}</td>
 						    	<td>${extParam.defaultvalue}</td>
 						    	<td>
 									<a href="<c:url value='editextparam.html?extparamid=${extParam.extparamid}'/>">

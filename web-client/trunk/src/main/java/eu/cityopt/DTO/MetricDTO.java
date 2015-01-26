@@ -2,8 +2,6 @@ package eu.cityopt.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
-import eu.cityopt.model.Project;
-import eu.cityopt.model.Unit;
 
 public class MetricDTO {
 	@Getter @Setter private int metid;

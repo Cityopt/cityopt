@@ -1,7 +1,7 @@
 <%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
 <%--@elvariable id="component" type="com.cityopt.DTO.ComponentDTO"--%>
 <%--@elvariable id="selectedComponent" type="com.cityopt.DTO.ComponentDTO"--%>
-<%--@elvariable id="inputParam" type="com.cityopt.DTO.InputParameterDTO"--%>
+<%--@elvariable id="inputParamVal" type="com.cityopt.DTO.InputParamValDTO"--%>
 <%--@elvariable id="extParam" type="com.cityopt.DTO.ExtParamDTO"--%>
 <%--@elvariable id="selectedcompid" type="int"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -83,20 +83,25 @@
 												<table class="tablestyle">
 													<col style="width:150px">
 													<col style="width:60px">
-													<col style="width:100px">
+													<col style="width:60px">
+													<col style="width:60px">
+													<col style="width:60px">
 													<col style="width:60px">
 													<tr>
 														<th>Input parameter</th>
 														<th>Id</th>
+														<th>Value</th>
 														<th>Default value</th>
+														<th>Unit</th>
 														<th>Edit</th>
 													</tr>
 													
-													<c:forEach items="${inputParameters}" var="inputParam">
+													<c:forEach items="${inputParamVals}" var="inputParamVal">
 													<tr>
-														<td>${inputParam.name}</td>
-												    	<td>${inputParam.inputid}</td>
-												    	<td>${inputParam.defaultvalue}</td>
+														<td></td>
+												    	<td></td>
+												    	<td>${inputParamVal.value}</td>
+												    	<td></td>
 														<td>
 															<a href="<c:url value='editinputparameter.html?inputparameterid=${inputParam.inputid}'/>">
 																<button align="right" type="button" value="Edit">Edit</button>
@@ -105,13 +110,6 @@
 												   	</tr>
 													</c:forEach>
 												</table>
-											</td>
-											<td>
-												<b>Parameters selection</b><br>
-												<input type="radio" >All parameters<br>	
-												<input type="radio">Completed parameters<br>	
-												<input type="radio">Empty parameters<br><br>
-												<input type="button" value="Upload default values">	
 											</td>
 										</tr>
 									</table>

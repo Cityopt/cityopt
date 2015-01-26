@@ -22,7 +22,6 @@
 		<td width=30></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" modelAttribute="projectSelected">
 			<h2>Open project</h2>
 			<table class="tablestyle" width="400" border="1">
 			
@@ -51,7 +50,6 @@
 			   	</tr>
 			</c:forEach>
 			</table>
-			</form:form>
 			</div>
 		</td>
      </tr>

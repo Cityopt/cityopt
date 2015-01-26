@@ -2,8 +2,6 @@ package eu.cityopt.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
-import eu.cityopt.model.Component;
-import eu.cityopt.model.Unit;
 
 public class InputParameterDTO {
 	@Getter @Setter private int inputid;

@@ -29,7 +29,7 @@
 	</tr>
 	<tr>
 		<td></td>
-		<td>
+		<td valign="top">
 			<img src="assets/img/test_map.jpg"/>
 		</td>			
 		<td valign="top">

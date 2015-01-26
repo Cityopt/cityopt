@@ -2,8 +2,6 @@ package eu.cityopt.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
-import eu.cityopt.model.TimeSeries;
-import eu.cityopt.model.Unit;
 
 public class ExtParamDTO {
 	@Getter @Setter private int extparamid;

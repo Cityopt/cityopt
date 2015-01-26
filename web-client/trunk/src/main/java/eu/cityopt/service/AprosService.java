@@ -17,8 +17,6 @@ import org.w3c.dom.NodeList;
 
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.InputParameterDTO;
-import eu.cityopt.model.Component;
-import eu.cityopt.model.InputParameter;
 
 /**
  * @author Olli Stenlund
@@ -36,9 +34,8 @@ public class AprosService {
 	
 	public List<ComponentDTO> listNewComponents = new ArrayList<ComponentDTO>();
 	public List<InputParameterDTO> listNewInputParams = new ArrayList<InputParameterDTO>(); 
-	private int newId = 1;
 	
-	public void readDiagramFile(String xmlFile) {
+	public void readDiagramFile(String xmlFile, int maxLevel) {
         try 
         {
             File file = new File("demo-nodes.xml");//xmlFile);
@@ -50,14 +47,14 @@ public class AprosService {
             //Node rootNode = doc.getFirstChild();
             NodeList nodeLst = doc.getElementsByTagName(NODE);
             Node rootNode = nodeLst.item(0);
-            handleNode(rootNode, null, 0);
+            handleNode(rootNode, null, 0, maxLevel);
         }
         catch (Exception e) {
         	e.printStackTrace();
         }
 	}
 	
-	private void handleNode(Node node, ComponentDTO parentComponent, int level)
+	private void handleNode(Node node, ComponentDTO parentComponent, int level, int maxLevel)
 	{
 	    NodeList nodeChildren = node.getChildNodes();
 	    
@@ -82,11 +79,16 @@ public class AprosService {
             	}
             	else if (type.equals(EXPRESSION))
             	{
-            		
+            		// skip?
             	}
             	
             	InputParameterDTO inputParam = new InputParameterDTO();
-            	//inputParam.setComponent(parentComponent);
+            	
+            	if (parentComponent != null)
+            	{
+            		inputParam.setComponent(parentComponent);
+            	}
+            	
             	inputParam.setName(name);
             	inputParam.setDefaultvalue(value);
             	inputParam.getInputid();
@@ -97,11 +99,14 @@ public class AprosService {
                 ComponentDTO component = new ComponentDTO();
                 String compName = childNode.getAttributes().getNamedItem(MODULE_NAME).getNodeValue();
                 component.setName(compName);
-                component.setComponentid(newId);
-                newId++;
+                //component.setComponentid(newId);
+                //newId++;
                 listNewComponents.add(component);
 
-                handleNode(childNode, parentComponent, level + 1);
+                if (level <= maxLevel)
+                {
+                	handleNode(childNode, component, level + 1, maxLevel);
+                }
             }
         }
 	}

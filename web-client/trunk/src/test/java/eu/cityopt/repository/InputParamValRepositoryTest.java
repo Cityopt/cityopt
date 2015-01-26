@@ -23,11 +23,6 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.model.InputParamVal;
-import eu.cityopt.model.InputParameter;
-import eu.cityopt.model.Project;
-import eu.cityopt.model.Scenario;
-import eu.cityopt.model.Type;
-import eu.cityopt.model.Unit;
 import eu.cityopt.repository.InputParamValRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioRepository;

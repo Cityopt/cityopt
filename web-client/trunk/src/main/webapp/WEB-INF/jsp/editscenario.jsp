@@ -43,7 +43,7 @@
 								<td></td>
 								<td></td>
 								<td></td>
-								<td><input type="submit" value="Run scenario" style="width:120px"></td>
+								<td><a href="runscenario.html"><button type="button" style="width:120px">Run scenario</button></a></td>
 							</tr>
 							<tr>						
 								<td>Description:</td>
@@ -99,12 +99,6 @@
 									   	</tr>
 										</c:forEach>
 									</table>
-								</td>
-								<td>
-									<b>Parameters selection</b><br>
-									<input type="radio" >All parameters<br>	
-									<input type="radio">Completed parameters<br>	
-									<input type="radio">Empty parameters	
 								</td>
 							</tr>
 						</table>

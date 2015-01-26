@@ -4,7 +4,6 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
-import eu.cityopt.model.Component;
 
 //@Data
 //@DomainClass("eu.cityopt.model.Project")

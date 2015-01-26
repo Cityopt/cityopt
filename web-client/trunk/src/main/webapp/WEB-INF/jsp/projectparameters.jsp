@@ -95,7 +95,7 @@
 														<th>Edit</th>
 													</tr>
 													
-													<c:forEach items="${inputparameters}" var="inputParam">
+													<c:forEach items="${inputParameters}" var="inputParam">
 													<tr>
 														<td>${inputParam.name}</td>
 												    	<td>${inputParam.inputid}</td>
@@ -109,13 +109,6 @@
 													</c:forEach>
 													
 												</table>
-											</td>
-											<td>
-												<b>Parameters selection</b><br>
-												<input type="radio" >All parameters<br>	
-												<input type="radio">Completed parameters<br>	
-												<input type="radio">Empty parameters<br><br>
-												<input type="button" value="Upload default values">	
 											</td>
 										</tr>
 										<tr>
@@ -148,12 +141,14 @@
 											<td>
 												<table class="tablestyle" width="400">
 													<col style="width:200px">
+													<col style="width:50px">
 													<col style="width:100px">
-													<col style="width:100px">
+													<col style="width:50px">
 													<tr height="20">
 													    <th>Name</th>
 													    <th>Id</th>
 													    <th>Default value</th>
+													    <th>Edit</th>
 													</tr>
 													
 													<c:forEach items="${extParams}" var="extParam">
@@ -161,6 +156,11 @@
 														<td>${extParam.name}</td>
 												    	<td>${extParam.extparamid}</td>
 												    	<td>${extParam.defaultvalue}</td>
+												    	<td>
+															<a href="<c:url value='editextparam.html?extparamid=${extParam.extparamid}'/>">
+																<button align="right" type="button" value="Edit">Edit</button>
+															</a>
+														</td>
 												   	</tr>
 													</c:forEach>
 												</table>

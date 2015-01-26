@@ -47,19 +47,16 @@
 										<col style="width:150px">
 										<col style="width:50px">
 										<col style="width:600px">
-										<col style="width:50px">
 										<tr>						
 											<td>
 												<table class="tablestyle">
 													<col style="width:60px">
 													<col style="width:150px">
 													<col style="width:60px">
-													<col style="width:60px">
 													<tr>
 														<th>Select</th>
 														<th>Component</th>
 														<th>Id</th>
-														<th>Edit</th>
 													</tr>
 										
 													<c:forEach items="${components}" var="component">
@@ -73,11 +70,6 @@
 															<td><a href="<c:url value='outputvariables.html?selectedcompid=${component.componentid}'/>">Select</a></td>
 															<td>${component.name}</td>
 													    	<td>${component.componentid}</td>
-														<td>			
-															<a href="<c:url value='editvariables.html?componentid=${component.componentid}'/>">
-																<button align="right" type="button" value="Edit">Edit</button>
-															</a>
-														</td>
 												   	</tr>
 													</c:forEach>
 												</table>
@@ -89,12 +81,10 @@
 													<col style="width:120px">
 													<col style="width:120px">
 													<col style="width:120px">
-													<col style="width:120px">
 													<tr>
 														<th>Output variable</th>
 														<th>Id</th>
 														<th>Default value</th>
-														<th>Edit</th>
 													</tr>
 								
 													<c:forEach items="${selectedComponent.outputvariables}" var="outputVar">
@@ -102,12 +92,7 @@
 														<td>${outputVar.name}</td>
 												    	<td>${outputVar.inputid}</td>
 												    	<td>${outputVar.defaultvalue}</td>
-														<td>
-															<a href="<c:url value='editoutputvariable.html?outvarid=${outputVar.outvarid}'/>">
-																<button align="right" type="button" value="Edit">Edit</button>
-															</a>
-														</td>
-												   	</tr>
+													</tr>
 													</c:forEach>
 												</table>
 											</td>
