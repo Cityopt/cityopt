@@ -271,7 +271,7 @@ CREATE SEQUENCE InputParameter_inputID_seq INCREMENT 1 START 1
 CREATE TABLE InputParameter ( 
 	inputID integer DEFAULT nextval(('InputParameter_inputID_seq'::text)::regclass) NOT NULL,
 	name varchar(50),
-	unidID integer,
+	unitID integer,
 	componentID integer,
 	defaultValue text
 )
@@ -498,7 +498,8 @@ CREATE TABLE SimulationModel (
 	createdOn timestamp(0),
 	updatedOn timestamp(0),
 	createdBy integer,
-	updatedBy integer
+	updatedBy integer,
+	timeOrigin timestamp(0)
 )
 ;
 
@@ -638,7 +639,7 @@ CREATE INDEX IXFK_InputParameter_Components
 	ON InputParameter (componentID)
 ;
 CREATE INDEX IXFK_InputParameter_Unit
-	ON InputParameter (unidID)
+	ON InputParameter (unitID)
 ;
 CREATE INDEX IXFK_ScenarioDefinition_Scenario
 	ON InputParamVal (scenID)
@@ -1045,7 +1046,7 @@ ALTER TABLE InputParameter ADD CONSTRAINT FK_InputParameter_Components
 ;
 
 ALTER TABLE InputParameter ADD CONSTRAINT FK_InputParameter_Unit 
-	FOREIGN KEY (unidID) REFERENCES Unit (unitID)
+	FOREIGN KEY (unitID) REFERENCES Unit (unitID)
 ;
 
 ALTER TABLE InputParamVal ADD CONSTRAINT FK_ScenarioDefinition_Scenario 
