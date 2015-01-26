@@ -25,15 +25,23 @@ import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.model.Unit;
+import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.AppUserServiceImpl;
 import eu.cityopt.service.AprosService;
+import eu.cityopt.service.ComponentService;
 import eu.cityopt.service.ComponentServiceImpl;
 import eu.cityopt.service.EntityNotFoundException;
+import eu.cityopt.service.ExtParamService;
 import eu.cityopt.service.ExtParamServiceImpl;
+import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.InputParameterServiceImpl;
+import eu.cityopt.service.MetricService;
 import eu.cityopt.service.MetricServiceImpl;
+import eu.cityopt.service.ProjectService;
 import eu.cityopt.service.ProjectServiceImpl;
+import eu.cityopt.service.ScenarioService;
 import eu.cityopt.service.ScenarioServiceImpl;
+import eu.cityopt.service.UnitService;
 import eu.cityopt.service.UnitServiceImpl;
 
 @Controller
@@ -41,28 +49,28 @@ import eu.cityopt.service.UnitServiceImpl;
 public class ProjectController {
 	
 	@Autowired
-	ProjectServiceImpl projectService; 
+	ProjectService projectService; 
 	
 	@Autowired
-	ScenarioServiceImpl scenarioService;
+	ScenarioService scenarioService;
 	
 	@Autowired
-	AppUserServiceImpl userService;
+	AppUserService userService;
 	
 	@Autowired
-	ComponentServiceImpl componentService;
+	ComponentService componentService;
 	
 	@Autowired
-	InputParameterServiceImpl inputParamService;
+	InputParameterService inputParamService;
 	
 	@Autowired
-	ExtParamServiceImpl extParamService;
+	ExtParamService extParamService;
 	
 	@Autowired
-	MetricServiceImpl metricService;
+	MetricService metricService;
 	
 	@Autowired
-	UnitServiceImpl unitService;
+	UnitService unitService;
 	
 	@RequestMapping(value="createproject", method=RequestMethod.GET)
 	public String getCreateProject(Map<String, Object> model) {
