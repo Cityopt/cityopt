@@ -28,7 +28,7 @@ public class OutputVariable implements java.io.Serializable {
 	private Component component;
 	private String name;
 	private Boolean selected;
-	private Integer typeid;
+	private Integer unitid;
 	private Set<SimulationResult> simulationresults = new HashSet<SimulationResult>(
 			0);
 
@@ -46,7 +46,7 @@ public class OutputVariable implements java.io.Serializable {
 		this.component = component;
 		this.name = name;
 		this.selected = selected;
-		this.typeid = typeid;
+		this.unitid = typeid;
 		this.simulationresults = simulationresults;
 	}
 
@@ -89,13 +89,13 @@ public class OutputVariable implements java.io.Serializable {
 		this.selected = selected;
 	}
 
-	@Column(name = "typeid")
-	public Integer getTypeid() {
-		return this.typeid;
+	@Column(name = "unitid")
+	public Integer getUnitid() {
+		return this.unitid;
 	}
 
-	public void setTypeid(Integer typeid) {
-		this.typeid = typeid;
+	public void setUnitid(Integer unitid) {
+		this.unitid = unitid;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "outputvariable")

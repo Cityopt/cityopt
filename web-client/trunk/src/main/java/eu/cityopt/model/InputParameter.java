@@ -65,7 +65,7 @@ public class InputParameter implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
-	@JoinColumn(name = "unidid")
+	@JoinColumn(name = "unitid")
 	public Unit getUnit() {
 		return this.unit;
 	}

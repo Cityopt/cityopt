@@ -270,7 +270,7 @@ CREATE SEQUENCE InputParameter_inputID_seq INCREMENT 1 START 1
 
 CREATE TABLE InputParameter ( 
 	inputID integer DEFAULT nextval(('InputParameter_inputID_seq'::text)::regclass) NOT NULL,
-	name varchar(50),
+	name varchar(100),
 	unitID integer,
 	componentID integer,
 	defaultValue text
@@ -498,8 +498,7 @@ CREATE TABLE SimulationModel (
 	createdOn timestamp(0),
 	updatedOn timestamp(0),
 	createdBy integer,
-	updatedBy integer,
-	timeOrigin timestamp(0)
+	updatedBy integer
 )
 ;
 
