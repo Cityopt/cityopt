@@ -10,17 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.reflect.TypeToken;
 
-import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.model.Component;
-import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.InputParameter;
-import eu.cityopt.model.Scenario;
 import eu.cityopt.model.Unit;
 import eu.cityopt.repository.ComponentRepository;
-import eu.cityopt.repository.ExtParamRepository;
 import eu.cityopt.repository.InputParameterRepository;
 import eu.cityopt.repository.UnitRepository;
 

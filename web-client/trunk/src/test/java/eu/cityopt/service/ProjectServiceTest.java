@@ -67,61 +67,6 @@ public class ProjectServiceTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test	
-	public void CreateProjectWithSimulationModel() throws IOException, EntityNotFoundException {
-		
-		ProjectDTO project_2 = new ProjectDTO();
-		project_2.setName("Project 2");
-		project_2.setLocation("Graz");		
-		
-		File tmpModel = File.createTempFile("simModel",".txt");
-		FileUtils.writeStringToFile(tmpModel, "Hello File");		 
-		
-		byte[] tmpModelarr = getFileBytes(tmpModel);
-		
-		SimulationModelDTO model = new SimulationModelDTO();
-		model.setModelblob(tmpModelarr);
-		model.setSimulator("APROS");
-		model.setDescription("My second model");				
-		
-		project_2.setSimulationmodel(model);
-		
-		projectService.save(project_2);
-		
-		ProjectDTO fproject = projectService.findByID(project_2.getPrjid());
-		SimulationModelDTO modact = fproject.getSimulationmodel();
-		String mydesc = modact.getDescription();
-		
-		assertEquals("My second model", modact.getDescription());
-	}
 	
-	
-	
-	public static byte[] getFileBytes(File file) throws IOException {
-	    ByteArrayOutputStream ous = null;
-	    InputStream ios = null;
-	    try {
-	        byte[] buffer = new byte[4096];
-	        ous = new ByteArrayOutputStream();
-	        ios = new FileInputStream(file);
-	        int read = 0;
-	        while ((read = ios.read(buffer)) != -1)
-	            ous.write(buffer, 0, read);
-	    } finally {
-	        try {
-	            if (ous != null)
-	                ous.close();
-	        } catch (IOException e) {
-	            // swallow, since not that important
-	        }
-	        try {
-	            if (ios != null)
-	                ios.close();
-	        } catch (IOException e) {
-	            // swallow, since not that important
-	        }
-	    }
-	    return ous.toByteArray();
-	}
 
 }

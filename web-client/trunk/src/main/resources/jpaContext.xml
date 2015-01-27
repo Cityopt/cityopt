@@ -55,4 +55,6 @@
 	<property name="password" value="admin"></property>	
 </bean>
 
+<!-- <bean id="CustomQueryRepository" class="eu.cityopt.repository.CustomQueryRepository"></bean>
+-->
 </beans>

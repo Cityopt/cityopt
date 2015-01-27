@@ -9,7 +9,7 @@ public class InputParamValDTO {
 
 	@Getter @Setter private Integer scendefinitionid;
 	@Getter @Setter private InputParameterDTO inputparameter;
-//	@Getter @Setter private Scenario scenario;
+//	@Getter @Setter private ScenarioDTO scenario;
 	@Getter @Setter private String value;
 	@Getter @Setter private Date createdon;
 	@Getter @Setter private Date updatedon;

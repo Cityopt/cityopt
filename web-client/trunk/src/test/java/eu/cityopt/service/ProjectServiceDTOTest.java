@@ -2,7 +2,14 @@ package eu.cityopt.service;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.function.Predicate;
@@ -10,6 +17,7 @@ import java.util.function.Predicate;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +41,7 @@ import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ProjectScenariosDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.SimulationModelDTO;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -153,7 +162,13 @@ public class ProjectServiceDTOTest {
 	@Test
 	public void getProjectScenariosDTO() {	
 		//Scenarios are directly loaded with the projectScenarioDTO object
-		ProjectScenariosDTO item = projectService.findAllWithScenarios().get(0);		
+//		ProjectScenariosDTO item = projectService.findAllWithScenarios().get(0);
+		
+		List<ProjectScenariosDTO> itms = projectService.findAllWithScenarios();
+		ProjectScenariosDTO item = itms.stream().
+				filter(p -> p.getPrjid() == 1).findFirst().get();
+		
+		
 		Assert.notNull(item);
 		Set<ScenarioDTO> scenarios = item.getScenarios();
 		Assert.notNull(scenarios);
@@ -218,4 +233,74 @@ public class ProjectServiceDTOTest {
 		//assertTrue(scenarios.contains(newScen)); //does not work - probably because equals/hashcode are not implemented	
 	}
 	
+	@Test	
+	public void CreateProjectWithSimulationModel() throws IOException, EntityNotFoundException {
+		
+		ProjectDTO project_2 = new ProjectDTO();
+		project_2.setName("Project 2");
+		project_2.setLocation("Graz");		
+		
+		File tmpModel = File.createTempFile("simModel",".txt");
+		FileUtils.writeStringToFile(tmpModel, "Hello File");		 
+		
+		byte[] tmpModelarr = getFileBytes(tmpModel);
+		
+		SimulationModelDTO model = new SimulationModelDTO();
+		model.setModelblob(tmpModelarr);
+		model.setSimulator("APROS");
+		model.setDescription("My second model");				
+		
+		project_2.setSimulationmodel(model);
+		
+		projectService.save(project_2);
+		
+		ProjectDTO fproject = projectService.findByID(project_2.getPrjid());
+		SimulationModelDTO modact = fproject.getSimulationmodel();
+		String mydesc = modact.getDescription();
+		
+		assertEquals("My second model", modact.getDescription());
+	}
+	
+	@Test
+	public void getProjectSimulationmodel() throws EntityNotFoundException{
+		ProjectDTO item = projectService.findByID(1);
+		Assert.notNull(item);
+		
+		SimulationModelDTO model = item.getSimulationmodel();
+		Assert.notNull(model);
+		
+		byte[] tmpModelarr = model.getModelblob();	
+		String content = new String(tmpModelarr, StandardCharsets.UTF_8);
+		assertEquals("this is a test file for dbunit blob data.",content);
+		assertEquals(model.getDescription(),"model with Base64");
+		assertEquals(model.getSimulator(),"APROS");
+	}
+	
+	
+	public static byte[] getFileBytes(File file) throws IOException {
+	    ByteArrayOutputStream ous = null;
+	    InputStream ios = null;
+	    try {
+	        byte[] buffer = new byte[4096];
+	        ous = new ByteArrayOutputStream();
+	        ios = new FileInputStream(file);
+	        int read = 0;
+	        while ((read = ios.read(buffer)) != -1)
+	            ous.write(buffer, 0, read);
+	    } finally {
+	        try {
+	            if (ous != null)
+	                ous.close();
+	        } catch (IOException e) {
+	            // swallow, since not that important
+	        }
+	        try {
+	            if (ios != null)
+	                ios.close();
+	        } catch (IOException e) {
+	            // swallow, since not that important
+	        }
+	    }
+	    return ous.toByteArray();
+	}
 }
