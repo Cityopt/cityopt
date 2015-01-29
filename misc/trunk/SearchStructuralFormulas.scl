@@ -20,17 +20,25 @@ data Node = Node
     [Node] // Children
     [Property] // Properties
     Boolean // Is instance of a user component
+    String // Type name
 
 deriving instance Show Node
 
 @private
-isInterestingNode (Node _ _ [] [] _) = False
+isInterestingNode (Node _ _ [] [] _ _) = False
 isInterestingNode _ = True
 
 @private
 solverName v = fromMaybe "#" mdo
     av <- possibleActiveVariable v
     possiblePropertyValue av "solverModuleName"
+
+// Need to use mdo because >>= does not allow side effects.
+@private
+typeName :: Variable -> <ReadGraph> Maybe String
+typeName v = mdo
+    typ <- possiblePropertyValue v "Type"
+    possibleNameOf typ
 
 searchFormulas :: <ReadGraph> Node
 searchFormulas = toNode ((variable $ uriOf currentModel)
@@ -46,7 +54,8 @@ searchFormulas = toNode ((variable $ uriOf currentModel)
             [] -> mapMaybe possibleExpressionOf props
             _ -> map valueOf $ filter isStructuralProperty props
         isUC = isUserComponent (possiblePropertyValue v "Type")
-      in Node (name v) (solverName v) cs ps isUC
+        typ = typeName v `orElse` ""
+      in Node (name v) (solverName v) cs ps isUC typ
     possibleExpressionOf prop = mdo
         exp <- possiblePropertyValue prop "expression"
         return $ ExpressionProperty (name prop) exp
@@ -66,9 +75,9 @@ searchFormulas = toNode ((variable $ uriOf currentModel)
 
 printNodeAsXml node = loop node
   where
-    loop (Node name moduleName cs ps isUC) = do
+    loop (Node name moduleName cs ps isUC typ) = do
         print ("<node name=\"" + name + "\" moduleName=\"" + moduleName
-               + "\" isUC=\"" + show isUC + "\">")
+               + "\" isUC=\"" + show isUC + "\" type=\"" + typ + "\">")
         for ps $ \prop -> match prop with
             ConstantProperty name value ->
                 print ("<property type=\"constant\" name=\"" + name
