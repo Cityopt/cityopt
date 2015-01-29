@@ -40,6 +40,7 @@ public class AprosRunnerTest {
     private final static String propsName = "/apros/test.properties";
     private static Properties props;
     private static Path dataDir;
+    private static Path profileDir;
     private Namespace ns;
     
     @BeforeClass
@@ -50,7 +51,7 @@ public class AprosRunnerTest {
             props.load(str);
         }
         dataDir = Paths.get(purl.toURI()).getParent();
-        AprosRunner.profileDir = dataDir.resolve(
+        profileDir = dataDir.resolve(
                 props.getProperty("profile_dir"));
     }
     
@@ -101,7 +102,7 @@ public class AprosRunnerTest {
         Path modelDir = dataDir.resolve(props.getProperty("model_dir"));
         
         return new AprosRunner(
-                props.getProperty("profile"), ns, ucs, modelDir,
+                profileDir, props.getProperty("profile"), ns, ucs, modelDir,
                 props.getProperty("result_file"));
     }
     

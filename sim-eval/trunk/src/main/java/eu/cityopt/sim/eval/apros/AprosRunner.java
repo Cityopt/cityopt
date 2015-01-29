@@ -48,7 +48,6 @@ import org.w3c.dom.NodeList;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationRunner;
-import eu.cityopt.sim.eval.SimulationRunnerFactory;
 import eu.cityopt.sim.eval.Type;
 
 /**
@@ -56,11 +55,9 @@ import eu.cityopt.sim.eval.Type;
  * @author ttekth
  */
 public class AprosRunner implements SimulationRunner {
-    /** Directory containing apros profiles (as subdirectories). */
-    public static Path profileDir = Paths.get(".");
     /** Prefix for temporary directories. */
     public static String tmpPrefix = "cityopt_apros";
-    /** Number of cores to parallilise for. */
+    /** Number of cores to parallelise for. */
     public static int cores = 2;
     
     final Namespace nameSpace;
@@ -137,7 +134,7 @@ public class AprosRunner implements SimulationRunner {
 
     /**
      * Constructor.  Eventually everyone should be using
-     * {@link SimulationRunnerFactory} instead of constructing AprosRunners
+     * {@link SimulationManagers} instead of constructing AprosRunners
      * directly.
      * @param profile names a subdirectory of {@link #profileDir} containing
      *   the Apros profile to use.
@@ -162,7 +159,7 @@ public class AprosRunner implements SimulationRunner {
      *   possibly because of malformed uc_props.  
      */
     public AprosRunner(
-            String profile, Namespace ns,
+            Path profileDir, String profile, Namespace ns,
             Document uc_props, Path modelDir, String... resultFiles)
                     throws TransformerException {
         this.profile = profile;
