@@ -138,10 +138,10 @@ public class Evaluator {
             if (uri.getScheme().equalsIgnoreCase("jar")) {
                 JarURLConnection jarUrl = (JarURLConnection) url.openConnection();
                 Path jarPath = Paths.get(jarUrl.getJarFileURL().toURI());
-                libraryPath = jarPath.resolve(jarUrl.getEntryName()).getParent().toString();
+                libraryPath = jarPath.resolve(jarUrl.getEntryName()).getParent().getParent().toString();
             } else {
-                libraryPath = Paths.get(url.toURI()).resolve(
-                        "../../../../../src/main/resources/Lib").normalize().toString();
+                libraryPath = Paths.get(url.toURI()).getParent().resolve(
+                        "../../../../src/main/resources/Lib").normalize().toString();
             }
             String oldLibraryPath = System.getProperty(PYTHON_PATH); 
             if (oldLibraryPath != null) {
