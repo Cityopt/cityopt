@@ -29,7 +29,7 @@ import eu.cityopt.repository.ScenarioRepository;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:/test-context.xml"})
+@ContextConfiguration(locations={"classpath:/jpaContext.xml", "classpath:/test-context.xml"})
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class,
