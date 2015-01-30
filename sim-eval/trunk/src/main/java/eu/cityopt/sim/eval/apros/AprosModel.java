@@ -2,9 +2,13 @@ package eu.cityopt.sim.eval.apros;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -20,8 +24,7 @@ import eu.cityopt.sim.eval.SimulatorConfigurationException;
 
 public class AprosModel implements SimulationModel {
     private static String USER_COMPONENT_PROPERTIES_FILENAME = "nodes.xml";
-    //TODO: support result file name configuration
-    private static String CITYOPT_CONFIGURATION_FILENAME = "cityopt.properties";
+    private static String MODEL_CONFIGURATION_FILENAME = "cityopt.properties";
 
     TempDir modelDir;
     String[] resultFiles;
@@ -46,24 +49,19 @@ public class AprosModel implements SimulationModel {
                 ZipInputStream zis = new ZipInputStream(bis)) {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
-                Path target = dir.resolve(entry.getName());
+                String name = entry.getName();
+                Path target = dir.resolve(name);
                 if (entry.isDirectory()) {
                     Files.createDirectories(target);
-                } else if (entry.getName().equalsIgnoreCase(USER_COMPONENT_PROPERTIES_FILENAME)) {
+                } else if (name.equalsIgnoreCase(USER_COMPONENT_PROPERTIES_FILENAME)) {
                     if (ucs != null) {
                         throw new SimulatorConfigurationException(
                                 "Model package contains multiple "
                                 + USER_COMPONENT_PROPERTIES_FILENAME + " files");
                     }
-                    try {
-                        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                        DocumentBuilder db = dbf.newDocumentBuilder();
-                        ucs = db.parse(new UncloseableInputStream(zis));
-                    } catch (ParserConfigurationException | SAXException e) {
-                        throw new SimulatorConfigurationException(
-                                "Failed to read user component properties from "
-                                + USER_COMPONENT_PROPERTIES_FILENAME, e);
-                    }
+                    ucs = loadUserComponentProperties(zis);
+                } else if (name.equalsIgnoreCase(MODEL_CONFIGURATION_FILENAME)) {
+                    loadModelConfiguration(new UncloseableInputStream(zis));
                 } else {
                     Files.createDirectories(target.getParent());
                     Files.copy(new UncloseableInputStream(zis),
@@ -72,6 +70,37 @@ public class AprosModel implements SimulationModel {
             }
         }
         return ucs;
+    }
+
+    private Document loadUserComponentProperties(ZipInputStream zis)
+            throws IOException, SimulatorConfigurationException {
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            return db.parse(new UncloseableInputStream(zis));
+        } catch (ParserConfigurationException | SAXException e) {
+            throw new SimulatorConfigurationException(
+                    "Failed to read user component properties from "
+                    + USER_COMPONENT_PROPERTIES_FILENAME, e);
+        }
+    }
+
+    private void loadModelConfiguration(InputStream inputStream)
+            throws IOException, SimulatorConfigurationException {
+        Properties properties = new Properties();
+        properties.load(inputStream);
+        for (String key : properties.stringPropertyNames()) {
+            String value = properties.getProperty(key);
+            switch (key) {
+            case "resultFiles":
+                this.resultFiles =
+                    value.split(Pattern.quote(System.getProperty("path.separator")));
+                break;
+            default:
+                throw new SimulatorConfigurationException(
+                        "Unknown property " + key + " in " + MODEL_CONFIGURATION_FILENAME);
+            }
+        }
     }
 
     @Override
