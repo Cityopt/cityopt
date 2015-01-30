@@ -76,63 +76,6 @@ public class AprosRunner implements SimulationRunner {
     private byte[] orphanSets;
 
     /**
-     * Map input parameters to globally unique SCL identifiers.
-     * @return an unmodifiable map component |-&gt; parameter |-&gt; SCL name
-     */
-    public Map<String, Map<String, String>> getInputNames() {
-        return Collections.unmodifiableMap(inputNames);
-    }
-    
-    private static synchronized XPath getXPath() {
-        return XPathFactory.newInstance().newXPath();
-    }
-
-    @Override
-    public AprosJob start(SimulationInput input) throws IOException {
-        if (!input.isComplete()) {
-            throw new IllegalArgumentException("Incomplete input");
-        }
-        Experiment xpt = server.createExperiment(new HashMap<>());
-        MemoryDirectory
-            mdir = new MemoryDirectory(modelDir.files(),
-                                       new HashMap<>(modelDir.directories())),
-            cdir = new MemoryDirectory();
-        mdir.addDirectory("cityopt", cdir);
-        cdir.addFile(setup_scl);
-        Application launcher = new ProfileApplication(profile, "Launcher.exe");
-        String[] args = makeScript(mdir, cdir, input);
-        FileSelector res_sel = new FileSelector(resultFiles);
-        JobConfiguration conf = new JobConfiguration(launcher, args,
-                                                     mdir, res_sel);
-        AprosJob ajob = new AprosJob(this, input, xpt, conf);
-        Files.createDirectories(Paths.get("C:/DATA/cityopt/foo"));
-        mdir.writeTo(Paths.get("C:/DATA/cityopt/foo"));
-        xpt.start();
-        return ajob;
-    }
-    
-    private String[] makeScript(MemoryDirectory mdir, MemoryDirectory cdir,
-                                SimulationInput input) {
-        ByteArrayOutputStream inp_ba = new ByteArrayOutputStream();
-        try (PrintStream inp = new PrintStream(inp_ba)) {
-            for (Map.Entry<String, Map<String, String>>
-                     ckv : inputNames.entrySet()) {
-                for (Map.Entry<String, String>
-                         pkv : ckv.getValue().entrySet()) {
-                    inp.printf("%s = %s%n", pkv.getValue(),
-                               input.get(ckv.getKey(), pkv.getKey()));
-                }
-            }            
-        }
-        cdir.addFile("inputs.scl", new MemoryFile(inp_ba.toByteArray()));
-        //TODO stub
-        /* XXX Bug: there needs to be at least one argument.
-           Wonkiness in the simulation server or client library.
-           No harm if there are more arguments than SCL main takes. */
-        return new String[] {"sequence.scl", "0"};
-    }
-
-    /**
      * Constructor.  Eventually everyone should be using
      * {@link SimulationManagers} instead of constructing AprosRunners
      * directly.
@@ -193,6 +136,84 @@ public class AprosRunner implements SimulationRunner {
         }
     }
 
+    @Override
+    public AprosJob start(SimulationInput input) throws IOException {
+        if (!input.isComplete()) {
+            throw new IllegalArgumentException("Incomplete input");
+        }
+        Experiment xpt = server.createExperiment(new HashMap<>());
+        MemoryDirectory
+            mdir = new MemoryDirectory(modelDir.files(),
+                                       new HashMap<>(modelDir.directories())),
+            cdir = new MemoryDirectory();
+        mdir.addDirectory("cityopt", cdir);
+        cdir.addFile(setup_scl);
+        Application launcher = new ProfileApplication(profile, "Launcher.exe");
+        String[] args = makeScript(mdir, cdir, input);
+        FileSelector res_sel = new FileSelector(resultFiles);
+        JobConfiguration conf = new JobConfiguration(launcher, args,
+                                                     mdir, res_sel);
+        AprosJob ajob = new AprosJob(this, input, xpt, conf);
+        Files.createDirectories(Paths.get("C:/DATA/cityopt/foo"));
+        mdir.writeTo(Paths.get("C:/DATA/cityopt/foo"));
+        xpt.start();
+        return ajob;
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (!tmp.isClosed()) {
+            server.dispose();
+            tmp.close();
+        }
+    }
+
+    private static final Pattern re1 = Pattern.compile("^(z+)_");
+    private static final Pattern re2 = Pattern.compile("^([^a-z])");
+
+    public String sanitize(String name) {
+        String foo = re1.matcher(name).replaceAll("$1z_");
+        return re2.matcher(foo).replaceAll("z_$1");
+    }
+
+    /**
+     * Map input parameters to globally unique SCL identifiers.
+     * @return an unmodifiable map component |-&gt; parameter |-&gt; SCL name
+     */
+    public Map<String, Map<String, String>> getInputNames() {
+        return Collections.unmodifiableMap(inputNames);
+    }
+    
+    public static Transformer getTransformer()
+            throws TransformerConfigurationException {
+        return a62scl.newTransformer();
+    }
+
+    private static synchronized XPath getXPath() {
+        return XPathFactory.newInstance().newXPath();
+    }
+
+    private String[] makeScript(MemoryDirectory mdir, MemoryDirectory cdir,
+                                SimulationInput input) {
+        ByteArrayOutputStream inp_ba = new ByteArrayOutputStream();
+        try (PrintStream inp = new PrintStream(inp_ba)) {
+            for (Map.Entry<String, Map<String, String>>
+                     ckv : inputNames.entrySet()) {
+                for (Map.Entry<String, String>
+                         pkv : ckv.getValue().entrySet()) {
+                    inp.printf("%s = %s%n", pkv.getValue(),
+                               input.get(ckv.getKey(), pkv.getKey()));
+                }
+            }            
+        }
+        cdir.addFile("inputs.scl", new MemoryFile(inp_ba.toByteArray()));
+        //TODO stub
+        /* XXX Bug: there needs to be at least one argument.
+           Wonkiness in the simulation server or client library.
+           No harm if there are more arguments than SCL main takes. */
+        return new String[] {"sequence.scl", "0"};
+    }
+
     private static Templates loadXSL() {
         try (InputStream xslt = AprosRunner.class.getResourceAsStream(
                 "xslt/a62scl.xsl")) {
@@ -203,11 +224,6 @@ public class AprosRunner implements SimulationRunner {
         }
     }
     
-    public static Transformer getTransformer()
-            throws TransformerConfigurationException {
-        return a62scl.newTransformer();
-    } 
-
     private void sanitizeUCS() {
         class Replacer {
             Pattern p;
@@ -348,23 +364,6 @@ public class AprosRunner implements SimulationRunner {
             setup.write(orphanSets);
             for (String s: end)
                 setup.println(s);
-        }
-    }
-
-    private static final Pattern
-        re1 = Pattern.compile("^(z+)_"),
-        re2 = Pattern.compile("^([^a-z])"); 
-    
-    public String sanitize(String name) {
-        String foo = re1.matcher(name).replaceAll("$1z_");
-        return re2.matcher(foo).replaceAll("z_$1");
-    }
-
-    @Override
-    public void close() throws IOException {
-        if (!tmp.isClosed()) {
-            server.dispose();
-            tmp.close();
         }
     }
 }
