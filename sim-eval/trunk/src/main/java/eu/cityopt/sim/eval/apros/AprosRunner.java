@@ -154,8 +154,6 @@ public class AprosRunner implements SimulationRunner {
         JobConfiguration conf = new JobConfiguration(launcher, args,
                                                      mdir, res_sel);
         AprosJob ajob = new AprosJob(this, input, xpt, conf);
-        Files.createDirectories(Paths.get("C:/DATA/cityopt/foo"));
-        mdir.writeTo(Paths.get("C:/DATA/cityopt/foo"));
         xpt.start();
         return ajob;
     }
