@@ -67,7 +67,7 @@ public class MetricVal implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "scenmetricd", nullable = false)
+	@JoinColumn(name = "scenmetricid", nullable = false)
 	public ScenarioMetrics getScenariometrics() {
 		return this.scenariometrics;
 	}
@@ -77,7 +77,7 @@ public class MetricVal implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "tseriedid")
+	@JoinColumn(name = "tseriesid")
 	public TimeSeries getTimeseries() {
 		return this.timeseries;
 	}
