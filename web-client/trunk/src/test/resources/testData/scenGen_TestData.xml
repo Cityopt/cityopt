@@ -33,6 +33,9 @@
   <scenario scenid="1" prjid="2" name="testscenario"/>
   <inputparamval scendefinitionid="1" scenid="1" inputid="1" value="3"/>
 
-  <metric prjid="1" name="symmetric" expression="C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>
+  <extparam prjid="2" defaultvalue="100" name="d" unitid="1"/>
+
+  <metric prjid="1" name="dummy" unitid="1" expression="C01.typ"/>
+  <metric prjid="2" name="symmetric" unitid="1" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>
 
 </dataset>
