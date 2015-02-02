@@ -26,7 +26,7 @@ import eu.cityopt.repository.InputParameterRepository;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:/jpaContext.xml", "classpath:/test-context.xml"})
+@ContextConfiguration(locations={"classpath:jpaContext.xml", "classpath:test-context.xml"})
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class,

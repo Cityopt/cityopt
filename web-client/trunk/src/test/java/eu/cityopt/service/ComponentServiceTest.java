@@ -42,7 +42,7 @@ public class ComponentServiceTest {
 	}
 
 	@Test
-	@Rollback(false)
+//	@Rollback(false)
 	public void test() throws EntityNotFoundException {
 		ComponentDTO com = componentService.findByID(1);
 //		UnitDTO u = iparam.getUnit();

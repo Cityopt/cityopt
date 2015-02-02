@@ -1,6 +1,5 @@
 package eu.cityopt.controller;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,23 +25,15 @@ import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.service.AppUserService;
-import eu.cityopt.service.AppUserServiceImpl;
 import eu.cityopt.service.AprosService;
 import eu.cityopt.service.ComponentService;
-import eu.cityopt.service.ComponentServiceImpl;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ExtParamService;
-import eu.cityopt.service.ExtParamServiceImpl;
 import eu.cityopt.service.InputParameterService;
-import eu.cityopt.service.InputParameterServiceImpl;
 import eu.cityopt.service.MetricService;
-import eu.cityopt.service.MetricServiceImpl;
 import eu.cityopt.service.ProjectService;
-import eu.cityopt.service.ProjectServiceImpl;
 import eu.cityopt.service.ScenarioService;
-import eu.cityopt.service.ScenarioServiceImpl;
 import eu.cityopt.service.UnitService;
-import eu.cityopt.service.UnitServiceImpl;
 import eu.cityopt.sim.eval.apros.AprosRunner;
 
 @Controller

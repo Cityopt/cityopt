@@ -28,7 +28,7 @@ import eu.cityopt.DTO.UnitDTO;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
-@DatabaseSetup("classpath:/testData/SampleTestcase-SC1.xml")
+@DatabaseSetup("classpath:/testData/inputParameter_TestData.xml")
 public class InputParamServiceTest {
 	@Autowired
 	InputParameterService inputParamService;	
