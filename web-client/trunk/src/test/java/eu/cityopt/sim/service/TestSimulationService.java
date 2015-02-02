@@ -3,7 +3,8 @@ package eu.cityopt.sim.service;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Future;
 
 import javax.sql.DataSource;
@@ -35,7 +36,6 @@ import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.SimulationModelRepository;
 import eu.cityopt.repository.SimulationResultRepository;
 import eu.cityopt.sim.eval.SimulationOutput;
-import eu.cityopt.sim.eval.apros.AprosManager;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -77,8 +77,6 @@ public class TestSimulationService {
 
     @Test
     public void testSimulation() throws Exception {
-        // TODO: read the path from an appropriate configuration file
-        AprosManager.register(Paths.get("C:/users/tteruh/cityopt/git/ss64/profiles"));
         int scenid = scenarioRepository.findByName("testscenario").get(0).getScenid();
         
         Future<SimulationOutput> job = simulationService.startSimulation(scenid);
@@ -90,9 +88,20 @@ public class TestSimulationService {
         scenarioRepository.flush();
         IDatabaseConnection dbConnection = new DatabaseConnection(
                 DataSourceUtils.getConnection(dataSource));
-        String[] depTableNames =
-                TablesDependencyHelper.getAllDependentTables(dbConnection, "scenario");
-        IDataSet depDataset = dbConnection.createDataSet(depTableNames);
+        String[] tableNames = copyIfNotEqual(
+                TablesDependencyHelper.getAllDependentTables(dbConnection, "scenario"),
+                "simulationmodel");
+        IDataSet depDataset = dbConnection.createDataSet(tableNames);
         FlatXmlDataSet.write(depDataset, new FileOutputStream("testSimulation_result.xml"));
+    }
+
+    private String[] copyIfNotEqual(String[] in, String toRemove) {
+        List<String> out = new ArrayList<String>();
+        for (String s : in) {
+            if (!s.equalsIgnoreCase(toRemove)) {
+                out.add(s);
+            }
+        }
+        return out.toArray(new String[out.size()]);
     }
 }
