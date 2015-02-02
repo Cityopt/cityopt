@@ -23,6 +23,10 @@ public interface TimeSeriesI {
     /** Degree of interpolation: 0 for step function, 1 for piecewise linear. */
     public int getDegree();
 
+    /** Externally provided identifier, if available. */
+    Integer getTimeSeriesId();
+    void setTimeSeriesId(Integer value);
+
     /**
      * Interpolate the time series values at the given time points.
      * @param t time points in increasing order

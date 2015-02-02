@@ -95,6 +95,11 @@ public enum Type {
         public int getInterpolationDegree() {
             return 0;
         }
+
+        @Override
+        public boolean isTimeSeriesType() {
+            return true;
+        }
     },
 
     /** Time series treated as a piecewise linear function with values of type double. */
@@ -120,6 +125,11 @@ public enum Type {
         @Override
         public int getInterpolationDegree() {
             return 1;
+        }
+
+        @Override
+        public boolean isTimeSeriesType() {
+            return true;
         }
     },
 
@@ -231,6 +241,15 @@ public enum Type {
      */
     public int getInterpolationDegree() {
         throw new IllegalArgumentException(name + " is not a time series type.");
+    }
+
+    /**
+     * Whether this is a time series type. Time series instances must be
+     * constructed by calling {@link Evaluator#makeTS(Type, double[], double[])},
+     * whereas for other types you can call {@link Type#parse(String)}.
+     */
+    public boolean isTimeSeriesType() {
+        return false;
     }
 
     /** The human-readable name of the type. */

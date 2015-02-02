@@ -21,6 +21,7 @@ import javax.script.ScriptException;
  * @author Hannu Rummukainen
  */
 public class SimulationInput implements EvaluationContext {
+    private ExternalParameters externalParameters;
     private BindingLayer bindingLayer;
 
     /**
@@ -29,6 +30,7 @@ public class SimulationInput implements EvaluationContext {
      *  of constraints, metrics and objectives
      */
     public SimulationInput(ExternalParameters externalParameters) {
+        this.externalParameters = externalParameters;
         final Namespace namespace = externalParameters.getNamespace(); 
         this.bindingLayer = new BindingLayer(
                 namespace, externalParameters.getBindingLayer(),
@@ -65,6 +67,10 @@ public class SimulationInput implements EvaluationContext {
 
     public Namespace getNamespace() {
         return bindingLayer.getNamespace();
+    }
+
+    public ExternalParameters getExternalParameters() {
+        return externalParameters;
     }
 
     /** Gets the value of a named input parameter. */

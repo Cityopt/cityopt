@@ -15,7 +15,7 @@ public class SimulatorManagers {
         = new HashMap<String, SimulatorManager>();
 
     /** Returns the known simulator names. */
-    public static Set<String> foo() {
+    public static Set<String> getSimulatorNames() {
         return Collections.unmodifiableSet(simulatorManagers.keySet());
     }
 

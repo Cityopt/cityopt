@@ -12,84 +12,14 @@ import org.python.core.PyObject;
 /**
  * Time series representation for expression evaluation in Python.
  * In Java code, please use the TimeSeriesI interface.
- * <p>
- * Suppose ts and t2 are TimeSeries objects accessible in expressions, for
- * example a named external parameter or an output variable. Then the following
- * expressions to access the time series are supported (TODO):</p>
- * <p>
- *  <code> ts.datetimes </code><br>
- *  - List of datetime objects specifying the defined time points.
- *    See the documentation of the datetime module in the Python standard library.
- * <p>
- *  <code> ts.times </code><br>
- *  - Array of doubles specifying the defined time points as the number of
- *    seconds since 1 January 1970.  Equivalent to ts.datetimes.
- * <p>
- *  <code> ts.values </code><br>
- *  - Array of doubles containing the time series values at the defined points. 
- * <p>
- *  <code> ts.at(times) </code><br>
- *  <code> ts.at(datetimes) </code><br>
- *  - Returns an array of double with interpolated time series values at the
- *    given time points.
- * <p>
- *  <code> ts.min </code><br>
- *  <code> min(ts) </code><br>
- *  - The minimum value of the time series.  (Infimum if the time series is
- *    not continuous.)
- * <p>
- *  <code> ts.max </code><br>
- *  <code> max(ts) </code><br>
- *  - The maximum value of the time series.  (Supremum if the time series is
- *    not continuous.)
- * <p>
- *  <code> ts.mean </code><br>
- *  <code> mean(ts) </code><br>
- *  - The mean of the time series as a continuous function, using interpolation
- *    between defined points.
- * <p>
- *  <code> ts.stdev </code><br>
- *  <code> stdev(ts) </code><br>
- *  - Standard deviation of the time series as a continuous function, using
- *    interpolation between defined points.
- * <p>
- *  <code> ts.var </code><br>
- *  <code> var(ts) </code><br>
- *  - Variance of the time series as a continuous function, using interpolation
- *    between defined points.
- * <p>
- *  <code> 2 * ts </code><br>
- *  - Scalar multiplication of the values.
- * <p>
- *  <code> ts + 1 </code><br>
- *  - Addition of a constant offset to the values.
- * <p>
- *  <code> ts + t2 </code><br>
- *  - Addition of two time series, considered as piecewise functions extending
- *    from the first data point to the last data point, and zero elsewhere.
- *    The result uses linear interpolation if either of the terms does.
- * <p>
- *  <code> ts * t2 </code><br>
- *  - Pointwise multiplication of two time series, evaluated at the points
- *    where either of the two time series is defined, using interpolation
- *    to fill missing values.
- *    The result uses linear interpolation if either of the factors does.
- * <p>
- *  <code> abs(ts) </code><br>
- *  - Absolute values of the time series.  Zeroes are retained at the
- *    appropriate time points by using interpolation.
- * <p>
- *  <code> integrate(ts, a, b[, scale]) </code><br>
- *  - Integral from a to b, with the time unit 'scale' (default 1 second).
- *    a and b can be timestamps or datetime objects.
- * <p>
- *  <code> ts.iter() </code><br>
- *  - Iterator over (time, value) pairs.
  *
+ * @see CITYOPT Planning Tool Expression Language documentation for the
+ *   supported Python operations.
  * @author Hannu Rummukainen
  */
 public class TimeSeries implements TimeSeriesI {
     private final PiecewiseFunction fun;
+    private Integer externalId;
 
     private PyObject datetimes;
 
@@ -187,6 +117,16 @@ public class TimeSeries implements TimeSeriesI {
     @Override
     public int getDegree() {
         return fun.degree;
+    }
+
+    @Override
+    public Integer getTimeSeriesId() {
+        return externalId;
+    }
+
+    @Override
+    public void setTimeSeriesId(Integer value) {
+        externalId = value;
     }
 
     @Override

@@ -34,6 +34,11 @@ public class ExternalParameters implements EvaluationContext {
         return bindingLayer.put(null, externalName, value);
     }
 
+    /** Gets the value of a named external parameter that is a time series. */
+    public TimeSeriesI getTS(String externalName) {
+        return (TimeSeriesI) bindingLayer.get(null, externalName);
+    }
+
     /**
      * Gets the value of a named external parameter as a formatted string.
      * Not useful for time series.
@@ -49,6 +54,11 @@ public class ExternalParameters implements EvaluationContext {
      */
     public Object putString(String externalName, String value) throws ParseException {
         return bindingLayer.putString(null, externalName, value);
+    }
+
+    /** Return whether all external parameters have been set. */
+    public boolean isComplete() {
+        return bindingLayer.isComplete();
     }
 
     @Override

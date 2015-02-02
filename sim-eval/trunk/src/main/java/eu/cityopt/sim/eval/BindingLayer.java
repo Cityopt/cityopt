@@ -167,7 +167,12 @@ class BindingLayer {
     /** Gets a value from this layer, formatted as a String. */
     String getString(String componentName, String name) {
         Type type = validate(componentName, name);
-        return type.format(localBindings.get(componentName).get(name));
+        Object value = localBindings.get(componentName).get(name);
+        if (value == null) {
+            throw new IllegalArgumentException("No value available for "
+                    + formatReference(componentName, name));
+        }
+        return type.format(value);
     }
 
     /**
