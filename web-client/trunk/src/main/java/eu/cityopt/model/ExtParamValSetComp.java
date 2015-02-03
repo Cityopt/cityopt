@@ -40,7 +40,7 @@ public class ExtParamValSetComp implements java.io.Serializable {
 		this.extparamvalset = extparamvalset;
 	}
 
-	@SequenceGenerator(name="extparamvalsetcomp_extparamvalsetcompid_seq",sequenceName="extparamvalsetcomp_extparamvalsetcompid_seq") 
+	@SequenceGenerator(name="extparamvalsetcomp_extparamvalsetcompid_seq",sequenceName="extparamvalsetcomp_id_seq") 
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="extparamvalsetcomp_extparamvalsetcompid_seq")
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
