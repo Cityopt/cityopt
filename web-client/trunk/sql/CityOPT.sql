@@ -317,9 +317,9 @@ CREATE SEQUENCE MetricVal_metricValID_seq INCREMENT 1 START 1
 CREATE TABLE MetricVal ( 
 	metricValID bigint DEFAULT nextval(('MetricVal_metricValID_seq'::text)::regclass) NOT NULL,
 	metID integer NOT NULL,
-	scenMetricD integer NOT NULL,
+	scenMetricID integer NOT NULL,
 	value text,
-	tSeriedID integer
+	tSeriesID integer
 )
 ;
 
@@ -436,7 +436,9 @@ CREATE TABLE Scenario (
 	updatedOn timestamp(0),
 	createdBy integer,
 	updatedBy integer,
-	scenGenID integer
+	scenGenID integer,
+	simEnd timestamp(0),
+	simStart timestamp(0)
 )
 ;
 
@@ -506,7 +508,8 @@ CREATE TABLE SimulationModel (
 	createdOn timestamp(0),
 	updatedOn timestamp(0),
 	createdBy integer,
-	updatedBy integer
+	updatedBy integer,
+	timeOrigin timestamp(0)
 )
 ;
 
@@ -664,10 +667,10 @@ CREATE INDEX IXFK_MetricVal_Metric
 	ON MetricVal (metID)
 ;
 CREATE INDEX IXFK_MetricVal_TimeSeries
-	ON MetricVal (tSeriedID)
+	ON MetricVal (tSeriesID)
 ;
 CREATE INDEX IXFK_MetricVal_ScenarioMetrics
-	ON MetricVal (scenMetricD)
+	ON MetricVal (scenMetricID)
 ;
 CREATE INDEX IXFK_ModelParameters_ScenarioGenerator
 	ON ModelParameter (scenGenID)
@@ -1075,11 +1078,11 @@ ALTER TABLE MetricVal ADD CONSTRAINT FK_MetricVal_Metric
 ;
 
 ALTER TABLE MetricVal ADD CONSTRAINT FK_MetricVal_TimeSeries 
-	FOREIGN KEY (tSeriedID) REFERENCES TimeSeries (tSeriesID)
+	FOREIGN KEY (tSeriesID) REFERENCES TimeSeries (tSeriesID)
 ;
 
 ALTER TABLE MetricVal ADD CONSTRAINT FK_MetricVal_ScenarioMetrics 
-	FOREIGN KEY (scenMetricD) REFERENCES ScenarioMetrics (scenMetricID)
+	FOREIGN KEY (scenMetricID) REFERENCES ScenarioMetrics (scenMetricID)
 ;
 
 ALTER TABLE ModelParameter ADD CONSTRAINT FK_ModelParameters_ScenarioGenerator 
