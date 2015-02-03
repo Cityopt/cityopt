@@ -4,62 +4,62 @@
 
 <project prjid="1" name="Sample Project" />
 
-<component componentid="1" prjid="1" name="Solar thermal panels" />
-<component componentid="2" prjid="1" name="Storage Vertical tank with heat structure" />
-<component componentid="3" prjid="1" name="Gas boiler" />
+<component componentid="1" prjid="1" name="Solar_thermal_panels" />
+<component componentid="2" prjid="1" name="Storage_Vertical_tank_with_heat_structure" />
+<component componentid="3" prjid="1" name="Gas_boiler" />
 <component componentid="4" prjid="1" name="Building" />
+<!--  -->
+<inputparameter inputid="1" componentid="1" unitid="1" name="collector_area"  />
+<inputparameter inputid="2" componentid="1" unitid="2" name="Heat_loss_coefficient" /> <!-- at (tm-ta) =0 -->
+<inputparameter inputid="3" componentid="1" unitid="7" name="Temperature_dependence_of_the_heat_losses" />
+<inputparameter inputid="4" componentid="1" name="zero_loss_coefficient_for_total_or_global_radiation_at_normal_incidence" />
 
-<inputparameter inputid="1" componentid="1" unitid="1" name="A : collector area (m2)"  />
-<inputparameter inputid="2" componentid="1" unitid="2" name="c1 : Heat loss coefficient at (tm-ta) =0 (W/m2K)" />
-<inputparameter inputid="3" componentid="1" unitid="7" name="c2 : Temperature dependence of the heat losses (W/m2K2)" />
-<inputparameter inputid="4" componentid="1" name="n0 : zero loss coefficient for total or global radiation at normal incidence" />
+<inputparameter inputid="5" componentid="2" unitid="3" name="Height_of_tank"  />
+<inputparameter inputid="6" componentid="2" unitid="1" name="Cross_sectional_free_area_of_tank" />
+<inputparameter inputid="7" componentid="2" unitid="3" name="Elevation_of_tank_bottom_from_reference_level" />
+<inputparameter inputid="8" componentid="2" unitid="4" name="Thickness_of_the_first_layer" />
 
-<inputparameter inputid="5" componentid="2" unitid="3" name="Height of tank (m)"  />
-<inputparameter inputid="6" componentid="2" unitid="1" name="Cross-sectional free area of tank (m2)" />
-<inputparameter inputid="7" componentid="2" unitid="3" name="Elevation of tank bottom from reference level (m)" />
-<inputparameter inputid="8" componentid="2" unitid="4" name="Thickness of the first layer (mm)" />
+<inputparameter inputid="9" componentid="3" unitid="5" name="Lower_heating_value"  />
+<inputparameter inputid="10" componentid="3" unitid="6" name="Maximal_Power" />
+<inputparameter inputid="11" componentid="3" unitid="6" name="Nominal_Power" />
+<inputparameter inputid="12" componentid="3" name="Standby_efficiency" />
+<inputparameter inputid="13" componentid="3" name="Standby_power_share_of_nominal_power" />
 
-<inputparameter inputid="9" componentid="3" unitid="5" name="Lower heating value (MJ/kg) "  />
-<inputparameter inputid="10" componentid="3" unitid="6" name="Maximal Power (kW)" />
-<inputparameter inputid="11" componentid="3" unitid="6" name="Nominal Power (kW)" />
-<inputparameter inputid="12" componentid="3" name="Standby efficiency" />
-<inputparameter inputid="13" componentid="3" name="Standby power share of nominal power" />
+<inputparameter inputid="14" componentid="4" unitid="6" name="Energy_demand_profile"  />
 
-<inputparameter inputid="14" componentid="4" unitid="6" name="Energy demand profile (kW)"  />
-
-<extparam extparamid="1" prjid="1" unitid="8" name="Specific Heat Water" defaultvalue="0" />
-<extparam extparamid="2" prjid="1" unitid="9" name="Cost of the N. Gas" defaultvalue="0" />
-<extparam extparamid="3" prjid="1" unitid="10" name="Emissions N. Gas" defaultvalue="0" />
+<extparam extparamid="1" prjid="1" unitid="8" name="Specific_Heat_Water" defaultvalue="0" />
+<extparam extparamid="2" prjid="1" unitid="9" name="Cost_of_the_N_Gas" defaultvalue="0" />
+<extparam extparamid="3" prjid="1" unitid="10" name="Emissions_N_Gas" defaultvalue="0" />
 
 <extparamval extparamvalid="1" extparamid="1" value="4.18" />
 <extparamval extparamvalid="2" extparamid="2" value="30" />
 <extparamval extparamvalid="3" extparamid="3" value="0.1" />
 
-<metric metid="1" prjid="1" unitid="11" name="Solar thermal panels" expression="Energy Supply = Sum(P_out:heating power)" />
-<metric metid="2" prjid="1" unitid="12" name="Storage Vertical tank with heat structure" expression="Power Supply = Specific_Heat_Water*Liquid_Volume_Output:Liquid_Temperature" />
-<metric metid="3" prjid="1" unitid="6" name="Storage Vertical tank with heat structure" expression="Energy Supply=Sum(Specific_Heat_Water*Liquid_Volume_Output:Liquid_Temperature)" />
-<metric metid="4" prjid="1" unitid="12" name="Gas boiler" expression="Energy Supply = Sum(Heating power)" />
-<metric metid="5" prjid="1" unitid="13" name="Gas boiler" expression="CO2 Emissions = Sum(Emissions_N.Gas*Heating_Power)" />
-<metric metid="6" prjid="1" unitid="14" name="Gas boiler" expression="Cost = Sum(Cost_of_N.Gas*Heating Power)" />
+<metric metid="1" prjid="1" unitid="11" name="Energy_Supply" expression="Sum(heating power)" />
+<metric metid="2" prjid="1" unitid="6" name="Power_Supply" expression="Specific_Heat_Water*Liquid_Volume_Output:Liquid_Temperature" />
+<metric metid="3" prjid="1" unitid="12" name="Energy_Supply" expression="Sum(Specific_Heat_Water*Liquid_Volume_Output:Liquid_Temperature)" />
+<metric metid="4" prjid="1" unitid="12" name="Energy_Supply" expression="Sum(Heating power)" />
+<metric metid="5" prjid="1" unitid="13" name="CO2_Emissions" expression="Sum(Emissions_N_Gas*Heating_Power)" />
+<metric metid="6" prjid="1" unitid="14" name="Cost" expression="Sum(Cost_of_the_N_Gas*Heating_Power)" />
 
-<outputvariable outvarid="1" componentid="1" unitid="6" name="P_out : heating power (KW)"/>
-<outputvariable outvarid="2" componentid="2" unitid="15" name="Liquid volume (m3)"/>
-<outputvariable outvarid="3" componentid="2" unitid="16" name="Liquid temperature  (°C)"/>
-<outputvariable outvarid="4" componentid="3" unitid="6" name="Heating power (kW)"/>
+<outputvariable outvarid="1" componentid="1" unitid="6" name="heating_power"/>
+<outputvariable outvarid="2" componentid="2" unitid="15" name="Liquid_Volume_Output"/>
+<outputvariable outvarid="3" componentid="2" unitid="16" name="Liquid_Temperature"/>
+<outputvariable outvarid="4" componentid="3" unitid="6" name="Heating_Power"/>
 
 <!-- input parameter constraints -->
-<searchconstraint scid="1" prjid="1" unitid="1" expression="A : collector area (m2)" lowerbound="0.1" upperbound="250" />
-<searchconstraint scid="2" prjid="1" unitid="3" expression="Height of tank (m)" lowerbound="1" upperbound="4" />
-<searchconstraint scid="3" prjid="1" unitid="1" expression="Cross-sectional free area of tank (m2)" lowerbound="0.3" upperbound="1.2" />
+<searchconstraint scid="1" prjid="1" unitid="1" expression="collector_area" lowerbound="0.1" upperbound="250" />
+<searchconstraint scid="2" prjid="1" unitid="3" expression="Height_of_tank" lowerbound="1" upperbound="4" />
+<searchconstraint scid="3" prjid="1" unitid="1" expression="Cross_sectional_free_area_of_tank" lowerbound="0.3" upperbound="1.2" />
 <!-- output parameter constraints -->
-<searchconstraint scid="4" prjid="1" unitid="1" expression="P_out : heating power (KW)" lowerbound="0" upperbound="50" />
-<searchconstraint scid="5" prjid="1" unitid="16" expression="Liquid temperature  (°C)" lowerbound="10" upperbound="90" />
-<searchconstraint scid="6" prjid="1" unitid="1" expression="Heating power (kW)" lowerbound="10" upperbound="100" />
+<searchconstraint scid="4" prjid="1" unitid="1" expression="heating_power" lowerbound="0" upperbound="50" />
+<searchconstraint scid="5" prjid="1" unitid="16" expression="Liquid_Temperature" lowerbound="10" upperbound="90" />
+<searchconstraint scid="6" prjid="1" unitid="1" expression="heating_power" lowerbound="10" upperbound="100" />
 <!-- metric value constraints -->
-<searchconstraint scid="7" prjid="1" unitid="12" expression="Energy Suply STO (kWh/a)" lowerbound="100" upperbound="500" />
+<searchconstraint scid="7" prjid="1" unitid="12" expression="Energy_Supply" lowerbound="100" upperbound="500" />
 
 
-<objectivefunction obtfunctionid="1" prjid="1" typeid="1" expression="CO2 Emissions + Cost" ismaximise="false" />
+<objectivefunction obtfunctionid="1" prjid="1" typeid="1" expression="CO2_Emissions + Cost" ismaximise="false" />
 
 
 </dataset>
