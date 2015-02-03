@@ -21,13 +21,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import eu.cityopt.model.Component;
 import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.ExtParamVal;
-import eu.cityopt.model.ExtParamValScenMetric;
+import eu.cityopt.model.ExtParamValSet;
+import eu.cityopt.model.ExtParamValSetComp;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.Metric;
@@ -40,7 +40,8 @@ import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.repository.ExtParamValRepository;
-import eu.cityopt.repository.ExtParamValScenMetricRepository;
+import eu.cityopt.repository.ExtParamValSetCompRepository;
+import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.MetricValRepository;
 import eu.cityopt.repository.ScenarioMetricsRepository;
 import eu.cityopt.repository.ScenarioRepository;
@@ -129,7 +130,10 @@ public class SimulationService {
     ExtParamValRepository extParamValRepository;
 
     @Autowired
-    ExtParamValScenMetricRepository extParamValScenMetricRepository;
+    ExtParamValSetRepository extParamValSetRepository;
+
+    @Autowired
+    ExtParamValSetCompRepository extParamValSetCompRepository;
 
     @Autowired
     TimeSeriesRepository timeSeriesRepository;
@@ -340,6 +344,8 @@ public class SimulationService {
             ExternalParameters simExternals, ScenarioMetrics newScenarioMetrics) {
         Project project = scenario.getProject();
         Namespace namespace = simExternals.getNamespace();
+
+        ExtParamValSet extParamValSet = new ExtParamValSet();
         for (ExtParam extParam : project.getExtparams()) {
             String extName = extParam.getName();
             Type simType = namespace.externals.get(extName);
@@ -354,18 +360,23 @@ public class SimulationService {
                 } else {
                     extParamVal.setValue(simExternals.getString(extName));
                 }
-                ExtParamValScenMetric extParamValScenMetric = new ExtParamValScenMetric();
+                ExtParamValSetComp extParamValSetComp = new ExtParamValSetComp();
 
-                extParamValScenMetric.setScenariometrics(newScenarioMetrics);
-                newScenarioMetrics.getExtparamvalscenmetrics().add(extParamValScenMetric);
+                extParamValSetComp.setExtparamval(extParamVal);
+                extParamVal.getExtparamvalsetcomps().add(extParamValSetComp);
 
-                extParamValScenMetric.setExtparamval(extParamVal);
-                extParamVal.getExtparamvalscenmetrics().add(extParamValScenMetric);
+                extParamValSetComp.setExtparamvalset(extParamValSet);
+                extParamValSet.getExtparamvalsetcomps().add(extParamValSetComp);
 
                 extParamValRepository.save(extParamVal);
-                extParamValScenMetricRepository.save(extParamValScenMetric);
+                extParamValSetCompRepository.save(extParamValSetComp);
             }
         }
+
+        newScenarioMetrics.setExtparamvalset(extParamValSet);
+        extParamValSet.getScenariometricses().add(newScenarioMetrics);
+
+        extParamValSetRepository.save(extParamValSet);
     }
 
     public eu.cityopt.model.Type findType(Type simType) {
