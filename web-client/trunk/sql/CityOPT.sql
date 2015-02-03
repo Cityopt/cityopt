@@ -253,26 +253,6 @@ CREATE TABLE ExtParamVal (
 )
 ;
 
-CREATE SEQUENCE ExtParamValScenGen_id_seq INCREMENT 1 START 1
-;
-
-CREATE TABLE ExtParamValScenGen ( 
-	id integer DEFAULT nextval(('ExtParamValScenGen_id_seq'::text)::regclass) NOT NULL,
-	extParamValID integer,
-	scenGenID integer
-)
-;
-
-CREATE SEQUENCE ExtParamValScenMetric_id_seq INCREMENT 1 START 1
-;
-
-CREATE TABLE ExtParamValScenMetric ( 
-	id integer DEFAULT nextval(('ExtParamValScenMetric_id_seq'::text)::regclass) NOT NULL,
-	scenMetricID integer,
-	extParamValID integer
-)
-;
-
 CREATE SEQUENCE ExtParamValSet_extParamValSetID_seq INCREMENT 1 START 1
 ;
 
@@ -650,18 +630,6 @@ CREATE INDEX IXFK_ExtParamVal_ExtParam
 CREATE INDEX IXFK_ExtParamVal_TimeSeries
 	ON ExtParamVal (tSeriesID)
 ;
-CREATE INDEX IXFK_extParamValScenGen_ScenarioGenerator
-	ON ExtParamValScenGen (scenGenID)
-;
-CREATE INDEX IXFK_ExtParamValScenGen_ExtParamVal
-	ON ExtParamValScenGen (extParamValID)
-;
-CREATE INDEX IXFK_extParamValScenMetric_ScenarioMetrics
-	ON ExtParamValScenMetric (scenMetricID)
-;
-CREATE INDEX IXFK_extParamValScenMetric_ExtParamVal
-	ON ExtParamValScenMetric (extParamValID)
-;
 CREATE INDEX IXFK_extParamValSetComp_ExtParamValSet
 	ON extParamValSetComp (extParamValSetID)
 ;
@@ -884,16 +852,6 @@ ALTER TABLE ExtParamVal ADD CONSTRAINT PK_ExtParamVal
 ;
 
 
-ALTER TABLE ExtParamValScenGen ADD CONSTRAINT PK_extParamValScenGen 
-	PRIMARY KEY (id)
-;
-
-
-ALTER TABLE ExtParamValScenMetric ADD CONSTRAINT PK_extParamValScenMetric 
-	PRIMARY KEY (id)
-;
-
-
 ALTER TABLE ExtParamValSet ADD CONSTRAINT PK_ExtParamValSet 
 	PRIMARY KEY (extParamValSetID)
 ;
@@ -1078,22 +1036,6 @@ ALTER TABLE ExtParamVal ADD CONSTRAINT FK_ExtParamVal_ExtParam
 
 ALTER TABLE ExtParamVal ADD CONSTRAINT FK_ExtParamVal_TimeSeries 
 	FOREIGN KEY (tSeriesID) REFERENCES TimeSeries (tSeriesID)
-;
-
-ALTER TABLE ExtParamValScenGen ADD CONSTRAINT FK_extParamValScenGen_ScenarioGenerator 
-	FOREIGN KEY (scenGenID) REFERENCES ScenarioGenerator (scenGenID)
-;
-
-ALTER TABLE ExtParamValScenGen ADD CONSTRAINT FK_ExtParamValScenGen_ExtParamVal 
-	FOREIGN KEY (extParamValID) REFERENCES ExtParamVal (extParamValID)
-;
-
-ALTER TABLE ExtParamValScenMetric ADD CONSTRAINT FK_extParamValScenMetric_ScenarioMetrics 
-	FOREIGN KEY (scenMetricID) REFERENCES ScenarioMetrics (scenMetricID)
-;
-
-ALTER TABLE ExtParamValScenMetric ADD CONSTRAINT FK_extParamValScenMetric_ExtParamVal 
-	FOREIGN KEY (extParamValID) REFERENCES ExtParamVal (extParamValID)
 ;
 
 ALTER TABLE extParamValSetComp ADD CONSTRAINT FK_extParamValSetComp_ExtParamValSet 
