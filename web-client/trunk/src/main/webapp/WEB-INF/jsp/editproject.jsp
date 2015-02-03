@@ -68,9 +68,8 @@
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2" align="Right">
-						<td><input type="button" id="upload" value="Upload"/></td>
-					</td>
+					<td></td>
+					<td align="Right"><input type="button" id="upload" value="Upload"/></td>
 				</tr>
 				<tr>
 					<td colspan="2">

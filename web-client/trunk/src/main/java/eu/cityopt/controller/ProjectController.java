@@ -1,12 +1,16 @@
 package eu.cityopt.controller;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.TransformerException;
 
+import org.hibernate.loader.plan.build.internal.returns.CollectionAttributeFetchImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
+import eu.cityopt.DTO.ComponentInputParamDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
@@ -24,16 +29,24 @@ import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.UnitDTO;
+import eu.cityopt.model.InputParamVal;
+import eu.cityopt.model.Project;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.AprosService;
+import eu.cityopt.service.ComponentInputParamDTOServiceImpl;
 import eu.cityopt.service.ComponentService;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ExtParamService;
+import eu.cityopt.service.InputParamValService;
+import eu.cityopt.service.InputParamValServiceImpl;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.MetricService;
 import eu.cityopt.service.ProjectService;
 import eu.cityopt.service.ScenarioService;
 import eu.cityopt.service.UnitService;
+import eu.cityopt.sim.eval.EvaluationException;
+import eu.cityopt.sim.eval.Evaluator;
+import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.apros.AprosRunner;
 
 @Controller
@@ -51,10 +64,16 @@ public class ProjectController {
 	
 	@Autowired
 	ComponentService componentService;
+
+	@Autowired
+	ComponentInputParamDTOServiceImpl componentInputParamService;
 	
 	@Autowired
 	InputParameterService inputParamService;
-	
+
+	@Autowired
+	InputParamValServiceImpl inputParamValService;
+
 	@Autowired
 	ExtParamService extParamService;
 	
@@ -369,7 +388,6 @@ public class ProjectController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
@@ -384,14 +402,14 @@ public class ProjectController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			model.put("selectedcompid", selectedCompId);
+			//model.put("selectedcompid", selectedCompId);
 			model.put("selectedComponent",  selectedComponent);
 		}
 
 		model.put("project", project);
 
-		Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
-		model.put("inputParamVals", inputParamVals);
+		List<ComponentInputParamDTO> inputParamVals = componentInputParamService.findAllByPrjAndScenId(project.getPrjid(), scenario.getScenid());
+		model.put("componentInputParamVals", inputParamVals);
 		
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
@@ -1140,7 +1158,7 @@ public class ProjectController {
 		MetricDTO metric = new MetricDTO();
 		metric.setName(metricForm.getName());
 		metric.setExpression(metricForm.getExpression());
-		metricService.save(metric);
+		metric = metricService.save(metric);
 		metricService.setProject(metric.getMetid(), project.getPrjid());
 		
 		try {
@@ -1371,9 +1389,43 @@ public class ProjectController {
 	@RequestMapping(value="runscenario", method=RequestMethod.GET)
 	public String getRunScenario(Map<String, Object> model)
 	{
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
 		try {
-			AprosRunner aprosRunner = new AprosRunner(null, null, null, null, null);
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		List<ComponentDTO> components = componentService.findAll();
+		Set<String> componentNames = new HashSet<String>();
+		
+		for (int i = 0; i < components.size(); i++)
+		{
+			componentNames.add(components.get(i).getName());
+		}
+		
+		Evaluator evaluator = null;
+		try {
+			evaluator = new Evaluator();
+		} catch (EvaluationException e1) {
+			e1.printStackTrace();
+		} catch (ScriptException e1) {
+			e1.printStackTrace();
+		}
+
+		Namespace ns = new Namespace(evaluator, componentNames, false);
+		AprosRunner aprosRunner = null;
+		
+		try {
+			aprosRunner = new AprosRunner(null, null, null, null, null);
 		} catch (TransformerException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			aprosRunner.close();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		

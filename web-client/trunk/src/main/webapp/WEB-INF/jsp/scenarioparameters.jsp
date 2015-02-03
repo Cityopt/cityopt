@@ -3,7 +3,7 @@
 <%--@elvariable id="selectedComponent" type="com.cityopt.DTO.ComponentDTO"--%>
 <%--@elvariable id="inputParamVal" type="com.cityopt.DTO.InputParamValDTO"--%>
 <%--@elvariable id="extParam" type="com.cityopt.DTO.ExtParamDTO"--%>
-<%--@elvariable id="selectedcompid" type="int"--%>
+<%--@elvariable id="componentInputParamVal" type="com.cityopt.DTO.ComponentInputParamDTO"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -65,10 +65,10 @@
 													</tr>
 													
 													<c:forEach items="${components}" var="component">
-													<c:if test="${selectedcompid == component.componentid}">
+													<c:if test="${selectedComponent.componentid == component.componentid}">
 														<tr style="background-color: rgb(140, 200, 200)">
 													</c:if>
-													<c:if test="${selectedcompid != component.componentid}">
+													<c:if test="${selectedComponent.componentid != component.componentid}">
 														<tr>
 													</c:if>
 														<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
@@ -85,23 +85,18 @@
 													<col style="width:60px">
 													<col style="width:60px">
 													<col style="width:60px">
-													<col style="width:60px">
-													<col style="width:60px">
 													<tr>
 														<th>Input parameter</th>
 														<th>Id</th>
 														<th>Value</th>
-														<th>Default value</th>
-														<th>Unit</th>
 														<th>Edit</th>
 													</tr>
 													
-													<c:forEach items="${inputParamVals}" var="inputParamVal">
+													<c:forEach items="${componentInputParamVals}" var="componentInputParamVal">
 													<tr>
-														<td></td>
-												    	<td></td>
-												    	<td>${inputParamVal.value}</td>
-												    	<td></td>
+														<td>${componentInputParamVal.inputparametername}</td>
+												    	<td>${componentInputParamVal.inputid}</td>
+												    	<td>${componentInputParamVal.value}</td>
 														<td>
 															<a href="<c:url value='editinputparameter.html?inputparameterid=${inputParam.inputid}'/>">
 																<button align="right" type="button" value="Edit">Edit</button>
