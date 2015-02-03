@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Future;
+import java.util.concurrent.Callable;
 
 import javax.sql.DataSource;
 
@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
+import eu.cityopt.model.Scenario;
 import eu.cityopt.model.SimulationModel;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.SimulationModelRepository;
@@ -55,9 +56,6 @@ public class TestSimulationService {
     SimulationModelRepository simulationModelRepository;
 
     @Autowired
-    SimulationResultRepository simulationResultRepository;
-
-    @Autowired
     ScenarioRepository scenarioRepository;
 
     @Autowired
@@ -77,10 +75,9 @@ public class TestSimulationService {
 
     @Test
     public void testSimulation() throws Exception {
-        int scenid = scenarioRepository.findByName("testscenario").get(0).getScenid();
-        
-        Future<SimulationOutput> job = simulationService.startSimulation(scenid);
-        job.get();
+        Scenario scenario = scenarioRepository.findByName("testscenario").get(0);
+        Callable<SimulationOutput> job = simulationService.makeSimulationJob(scenario);
+        job.call();
     }
 
     @After

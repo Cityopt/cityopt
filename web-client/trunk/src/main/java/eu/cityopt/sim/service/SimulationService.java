@@ -3,6 +3,7 @@ package eu.cityopt.sim.service;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -15,7 +16,13 @@ import java.util.concurrent.FutureTask;
 import javax.script.ScriptException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import eu.cityopt.model.Component;
 import eu.cityopt.model.ExtParam;
@@ -63,7 +70,7 @@ import eu.cityopt.sim.eval.Type;
 @Service
 public class SimulationService {
     class SimulationJob implements Callable<SimulationOutput> {
-        Scenario scenario;
+        int scenId;
 
         SimulationInput input;
         List<MetricExpression> metricExpressions;
@@ -74,7 +81,7 @@ public class SimulationService {
         SimulationJob(SimulatorManager manager, byte[] modelZipBytes, SimulationInput input,
                 Scenario scenario)
                         throws IOException, SimulatorConfigurationException, ScriptException {
-            this.scenario = scenario;
+            this.scenId = scenario.getScenid();
             this.input = input;
             this.model = manager.parseModel(modelZipBytes);
             this.metricExpressions = loadMetricExpressions(
@@ -91,14 +98,7 @@ public class SimulationService {
             try {
                 Future<SimulationOutput> job = runner.start(input);
                 SimulationOutput output = job.get();
-
-                saveSimulationResults(scenario, output);
-
-                if (output instanceof SimulationResults) {
-                    SimulationResults results = (SimulationResults) output;
-                    MetricValues metricValues = new MetricValues(results, metricExpressions);
-                    saveMetricValues(scenario, metricValues);
-                }
+                finishSimulation(scenId, output, metricExpressions);
                 return output;
             } finally {
                 try {
@@ -140,22 +140,56 @@ public class SimulationService {
     @Autowired
     TypeRepository typeRepository;
 
-    //@Autowired
-    //private TaskExecutor taskExecutor;
+    @Autowired
+    private TaskExecutor taskExecutor;
+
+    @Autowired
+    private PlatformTransactionManager txManager;
 
     private Evaluator evaluator;
 
-    private SimulationService() throws EvaluationException, ScriptException {
+    protected SimulationService() throws EvaluationException, ScriptException {
         evaluator = new Evaluator();
     }
 
-    public Future<SimulationOutput> startSimulation(int scenid)
+    @Transactional
+    public Future<SimulationOutput> startSimulation(int scenId)
             throws ParseException, IOException, SimulatorConfigurationException,
             InterruptedException, ExecutionException, ScriptException {
-        return startSimulation(scenarioRepository.findOne(scenid));
+        Scenario scenario = scenarioRepository.findOne(scenId);
+        Callable<SimulationOutput> job = makeSimulationJob(scenario);
+        FutureTask<SimulationOutput> futureTask = new FutureTask<SimulationOutput>(job);
+        taskExecutor.execute(futureTask);
+        return futureTask;
     }
 
-    public Future<SimulationOutput> startSimulation(Scenario scenario)
+    private void finishSimulation(int scenId, SimulationOutput output,
+            Collection<MetricExpression> metricExpressions) throws Exception {
+        TransactionTemplate txTemplate = new TransactionTemplate(txManager);
+        Exception e = txTemplate.execute(
+                (TransactionStatus status) -> {
+                    try {
+                        Scenario scenario = scenarioRepository.findOne(scenId);
+                        if (scenario != null) {
+                            saveSimulationResults(scenario, output);
+                    
+                            if (output instanceof SimulationResults) {
+                                SimulationResults results = (SimulationResults) output;
+                                MetricValues metricValues = new MetricValues(results, metricExpressions);
+                                saveMetricValues(scenario, metricValues);
+                            }
+                        }
+                        return null;
+                    } catch (Exception ee) {
+                        return ee;
+                    }
+                });
+        if (e != null) {
+            throw e;
+        }
+    }
+
+    public Callable<SimulationOutput> makeSimulationJob(Scenario scenario)
             throws ParseException, IOException, SimulatorConfigurationException,
             InterruptedException, ExecutionException, ScriptException {
         Project project = scenario.getProject();
@@ -170,12 +204,7 @@ public class SimulationService {
                     "Unknown simulator " + simulatorName);
         }
         byte[] modelZipBytes = project.getSimulationmodel().getModelblob();
-        FutureTask<SimulationOutput> futureTask = new FutureTask<SimulationOutput>(
-                new SimulationJob(manager, modelZipBytes, input, scenario));
-        //FIXME: won't work in test, appears to end up in different database transaction
-        //taskExecutor.execute(futureTask);
-        futureTask.run();
-        return futureTask;
+        return new SimulationJob(manager, modelZipBytes, input, scenario);
     }
 
     public ExternalParameters loadExternalParameters(Scenario scenario, Namespace namespace)
