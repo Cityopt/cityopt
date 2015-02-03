@@ -28,9 +28,7 @@ public class ExtParamVal implements java.io.Serializable {
 	private TimeSeries timeseries;
 	private ExtParam extparam;
 	private String value;
-	private Set<ExtParamValScenMetric> extparamvalscenmetrics = new HashSet<ExtParamValScenMetric>(
-			0);
-	private Set<ExtParamValScenGen> extparamvalscengens = new HashSet<ExtParamValScenGen>(
+	private Set<ExtParamValSetComp> extparamvalsetcomps = new HashSet<ExtParamValSetComp>(
 			0);
 
 	public ExtParamVal() {
@@ -40,16 +38,14 @@ public class ExtParamVal implements java.io.Serializable {
 		this.extparamvalid = extparamvalid;
 	}
 
-	public ExtParamVal(int extparamvalid, TimeSeries timeseries,
-			ExtParam extparam, String value,
-			Set<ExtParamValScenMetric> extparamvalscenmetrics,
-			Set<ExtParamValScenGen> extparamvalscengens) {
+	public ExtParamVal(int extparamvalid, ExtParam extparam,
+			TimeSeries timeseries, String value,
+			Set<ExtParamValSetComp> extparamvalsetcomps) {
 		this.extparamvalid = extparamvalid;
-		this.timeseries = timeseries;
 		this.extparam = extparam;
+		this.timeseries = timeseries;
 		this.value = value;
-		this.extparamvalscenmetrics = extparamvalscenmetrics;
-		this.extparamvalscengens = extparamvalscengens;
+		this.extparamvalsetcomps = extparamvalsetcomps;
 	}
 
 	@SequenceGenerator(name="extparamval_extparamvalid_seq",sequenceName="extparamval_extparamvalid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="extparamval_extparamvalid_seq")
@@ -93,23 +89,13 @@ public class ExtParamVal implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "extparamval")
-	public Set<ExtParamValScenMetric> getExtparamvalscenmetrics() {
-		return this.extparamvalscenmetrics;
+	public Set<ExtParamValSetComp> getExtparamvalsetcomps() {
+		return this.extparamvalsetcomps;
 	}
 
-	public void setExtparamvalscenmetrics(
-			Set<ExtParamValScenMetric> extparamvalscenmetrics) {
-		this.extparamvalscenmetrics = extparamvalscenmetrics;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "extparamval")
-	public Set<ExtParamValScenGen> getExtparamvalscengens() {
-		return this.extparamvalscengens;
-	}
-
-	public void setExtparamvalscengens(
-			Set<ExtParamValScenGen> extparamvalscengens) {
-		this.extparamvalscengens = extparamvalscengens;
+	public void setExtparamvalsetcomps(
+			Set<ExtParamValSetComp> extparamvalsetcomps) {
+		this.extparamvalsetcomps = extparamvalsetcomps;
 	}
 
 }
