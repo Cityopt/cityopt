@@ -11,7 +11,6 @@
 		
 
 <context:annotation-config/>
-<context:property-placeholder/>
 
 <context:component-scan base-package="com.pluralsight.repository, com.pluralsight.service, eu.cityopt.repository, eu.cityopt.service, eu.cityopt.sim.service"/>
 <jpa:repositories base-package="com.pluralsight.repository,eu.cityopt.repository"/>

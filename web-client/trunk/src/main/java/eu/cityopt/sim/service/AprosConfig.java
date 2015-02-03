@@ -8,8 +8,10 @@ import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 import eu.cityopt.sim.eval.apros.AprosManager;
 
@@ -17,7 +19,7 @@ import eu.cityopt.sim.eval.apros.AprosManager;
  * Configuration of Apros simulation server in CityOPT.
  * @author Hannu Rummukainen
  */
-@Component
+@Configuration
 @PropertySource("classpath:/application.properties")
 public class AprosConfig implements InitializingBean {
     /**
@@ -29,6 +31,11 @@ public class AprosConfig implements InitializingBean {
 
     @Value("${APROS_PROFILE_CHECK:true}")
     private boolean checkProfile;
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+       return new PropertySourcesPlaceholderConfigurer();
+    }
 
     @Override
     public void afterPropertiesSet() throws IOException {
