@@ -2,7 +2,7 @@
 
 <dataset>
 
-  <simulationmodel modelid="1" description="plumbing test model" modelblob="" simulator="Apros-N3D-5.13.06-64bit"/>
+  <simulationmodel modelid="1" description="plumbing test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit"/>
 
   <project prjid="1" name="Project 1" location="dummy" modelid="1"/>
   <project prjid="2" name="Project 2" location="Helsinki" modelid="1"/>
