@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
@@ -68,6 +69,17 @@ import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
 
+/**
+ * Runs simulations based on project and scenario data, and saves the results.
+ * This is essentially a bridge between the sim-eval and web-client packages,
+ * translating between the JPA entities used in web-client and the Java objects
+ * used in sim-eval.
+ * <p>
+ * We use an injected TaskExecutor to perform computations and store results in
+ * the background. The actual simulations are run in separate processes.
+ * 
+ * @author Hannu Rummukainen
+ */
 @Service
 public class SimulationService {
     class SimulationJob implements Callable<SimulationOutput> {
@@ -79,6 +91,9 @@ public class SimulationService {
         SimulationModel model;
         SimulationRunner runner;
 
+        volatile boolean cancelled;
+        volatile Future<SimulationOutput> activeJob;
+
         SimulationJob(SimulatorManager manager, byte[] modelZipBytes, SimulationInput input,
                 Scenario scenario)
                         throws IOException, SimulatorConfigurationException, ScriptException {
@@ -87,27 +102,62 @@ public class SimulationService {
             this.model = manager.parseModel(modelZipBytes);
             this.metricExpressions = loadMetricExpressions(
                     scenario.getProject(), input.getNamespace());
+            boolean ok = false;
             try {
                 this.runner = manager.makeRunner(model, input.getNamespace());
-            } catch (Throwable t) {
-                model.close();
+                ok = true;
+            } finally {
+                if (!ok) model.close();
             }
         }
 
         @Override
         public SimulationOutput call() throws Exception {
             try {
+                if (cancelled) {
+                    return null;
+                }
                 Future<SimulationOutput> job = runner.start(input);
+
+                // Write to activeJob happens-before read from cancelled.
+                activeJob = job;
+                if (cancelled) {
+                    job.cancel(true);
+                    return null;
+                }
+
+                // Wait for completion or cancellation.
                 SimulationOutput output = job.get();
+
+                // Write to activeJob happens-before read from cancelled.
+                activeJob = null;
+                if (cancelled) {
+                    return null;
+                }
+
                 finishSimulation(scenId, output, metricExpressions);
                 return output;
             } finally {
+                activeJobs.remove(scenId, this);
                 try {
                     runner.close();
                 } finally {
                     model.close();
                 }
             }
+        }
+
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            if (!cancelled) {
+                // Write to cancelled happens-before read from activeJob.
+                cancelled = true;
+                Future<SimulationOutput> job = activeJob;
+                if (job != null) {
+                    job.cancel(mayInterruptIfRunning);
+                }
+                return true;
+            }
+            return false;
         }
     }
 
@@ -152,19 +202,66 @@ public class SimulationService {
 
     private Evaluator evaluator;
 
+    private ConcurrentHashMap<Integer, SimulationJob> activeJobs
+        = new ConcurrentHashMap<Integer, SimulationJob>();
+
     protected SimulationService() throws EvaluationException, ScriptException {
         evaluator = new Evaluator();
     }
 
+    /**
+     * Starts a simulation run for a scenario. Reads the input parameter values
+     * from the scenario data, and also reads the current metric expressions and
+     * the default values of external parameters. Then the simulation is run
+     * asynchronously, and the output variable values, metric values and the
+     * used external parameter values will be automatically stored when the
+     * simulation has completed.
+     *
+     * @param scenId
+     *            scenario identifier. If there is already an ongoing simulation
+     *            for the scenario, the old simulation is cancelled a new one is
+     *            started.
+     * @return a Future that can be used to e.g. check for run completion, if
+     *         necessary.
+     */
     @Transactional
     public Future<SimulationOutput> startSimulation(int scenId)
             throws ParseException, IOException, SimulatorConfigurationException,
             InterruptedException, ExecutionException, ScriptException {
         Scenario scenario = scenarioRepository.findOne(scenId);
-        Callable<SimulationOutput> job = makeSimulationJob(scenario);
-        FutureTask<SimulationOutput> futureTask = new FutureTask<SimulationOutput>(job);
+        SimulationJob job = makeSimulationJob(scenario);
+        FutureTask<SimulationOutput> futureTask = new FutureTask<SimulationOutput>(job) {
+            public boolean cancel(boolean mayInterruptIfRunning) {
+                boolean cancelled = job.cancel(mayInterruptIfRunning);
+                super.cancel(mayInterruptIfRunning);
+                return cancelled;
+            }
+        };
         taskExecutor.execute(futureTask);
         return futureTask;
+    }
+
+    /**
+     * Returns set of scenarios for which a simulation is currently running.
+     * The result is a snapshot of the situation at the time the method is called.
+     * @return set of scenario ids
+     */
+    public Set<Integer> getRunningScenarios() {
+        return new HashSet<Integer>(activeJobs.keySet());
+    }
+
+    /**
+     * Cancels an ongoing simulation.
+     * @param scenId scenario id
+     * @return true if the simulation was cancelled.  Returns false if there is
+     *  no simulation to cancel, or the simulation has already completed, or
+     *  the cancellation fails for some other reason.
+     */
+    public void cancelSimulation(int scenId) {
+        SimulationJob oldJob = activeJobs.remove(scenId);
+        if (oldJob != null) {
+            oldJob.cancel(true);
+        }
     }
 
     private void finishSimulation(int scenId, SimulationOutput output,
@@ -193,7 +290,7 @@ public class SimulationService {
         }
     }
 
-    public Callable<SimulationOutput> makeSimulationJob(Scenario scenario)
+    public SimulationJob makeSimulationJob(Scenario scenario)
             throws ParseException, IOException, SimulatorConfigurationException,
             InterruptedException, ExecutionException, ScriptException {
         Project project = scenario.getProject();
@@ -208,7 +305,12 @@ public class SimulationService {
                     "Unknown simulator " + simulatorName);
         }
         byte[] modelZipBytes = project.getSimulationmodel().getModelblob();
-        return new SimulationJob(manager, modelZipBytes, input, scenario);
+        SimulationJob newJob = new SimulationJob(manager, modelZipBytes, input, scenario);
+        SimulationJob oldJob = activeJobs.put(scenario.getScenid(), newJob);
+        if (oldJob != null) {
+            oldJob.cancel(true);
+        }
+        return newJob;
     }
 
     public ExternalParameters loadExternalParameters(Scenario scenario, Namespace namespace)
@@ -344,6 +446,7 @@ public class SimulationService {
             ExternalParameters simExternals, ScenarioMetrics newScenarioMetrics) {
         Project project = scenario.getProject();
         Namespace namespace = simExternals.getNamespace();
+        List<Runnable> idUpdates = new ArrayList<Runnable>();
 
         ExtParamValSet extParamValSet = new ExtParamValSet();
         for (ExtParam extParam : project.getExtparams()) {
@@ -354,7 +457,8 @@ public class SimulationService {
                 extParamVal.setExtparam(extParam);
                 if (simType.isTimeSeriesType()) {
                     eu.cityopt.model.Type type = findType(simType);
-                    TimeSeries timeSeries = saveTimeSeries(simExternals.getTS(extName), type);
+                    TimeSeries timeSeries = saveTimeSeries(simExternals.getTS(extName), type,
+                            idUpdates);
                     extParamVal.setTimeseries(timeSeries);
                     timeSeries.getExtparamvals().add(extParamVal);
                 } else {
@@ -377,6 +481,11 @@ public class SimulationService {
         extParamValSet.getScenariometricses().add(newScenarioMetrics);
 
         extParamValSetRepository.save(extParamValSet);
+
+        timeSeriesRepository.flush();
+        for (Runnable update : idUpdates) {
+            update.run();
+        }
     }
 
     public eu.cityopt.model.Type findType(Type simType) {
@@ -388,7 +497,8 @@ public class SimulationService {
         return null;
     }
 
-    public TimeSeries saveTimeSeries(TimeSeriesI simTS, eu.cityopt.model.Type type) {
+    public TimeSeries saveTimeSeries(TimeSeriesI simTS, eu.cityopt.model.Type type,
+            List<Runnable> idUpdateList) {
         if (simTS.getTimeSeriesId() != null) {
             TimeSeries timeSeries = timeSeriesRepository.findOne(simTS.getTimeSeriesId());
             if (timeSeries != null) {
@@ -414,7 +524,8 @@ public class SimulationService {
         }
         timeSeriesValRepository.save(timeSeries.getTimeseriesvals());
         timeSeriesRepository.save(timeSeries);
-        //TODO should flush at some point so that the id gets set
+        // Copy the database row id once it is available.
+        idUpdateList.add(() -> simTS.setTimeSeriesId(timeSeries.getTseriesid()));
         return timeSeries;
     }
 
