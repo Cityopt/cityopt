@@ -28,7 +28,7 @@ import org.simantics.simulation.scheduling.status.JobFinished;
 import org.simantics.simulation.scheduling.status.StatusLoggingUtils;
 import org.simantics.simulation.scheduling.status.StatusWaitingUtils;
 
-import eu.cityopt.sim.eval.apros.TempDir;
+import eu.cityopt.sim.eval.util.TempDir;
 
 /**
  * This class controls all aspects of the application's execution
