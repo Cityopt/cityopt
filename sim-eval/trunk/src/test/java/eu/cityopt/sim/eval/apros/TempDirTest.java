@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import eu.cityopt.sim.eval.apros.TempDir;
+import eu.cityopt.sim.eval.util.TempDir;
 
 public class TempDirTest {
 

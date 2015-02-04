@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,6 +48,7 @@ import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.Type;
+import eu.cityopt.sim.eval.util.TempDir;
 
 /**
  * A factory of {@link AprosJob}s for one model.

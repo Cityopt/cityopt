@@ -1,11 +1,14 @@
-package eu.cityopt.sim.eval.apros;
+package eu.cityopt.sim.eval.util;
 
 import java.io.FilterInputStream;
 import java.io.InputStream;
 
-/** Helper class to wrap ZipInputStream so that libraries won't close it. */
+/**
+ * Helper class to wrap an InputStream so that it cannot be closed via the
+ * wrapper.
+ */
 public class UncloseableInputStream extends FilterInputStream {
-    UncloseableInputStream(InputStream in) {
+    public UncloseableInputStream(InputStream in) {
         super(in);
     }
 

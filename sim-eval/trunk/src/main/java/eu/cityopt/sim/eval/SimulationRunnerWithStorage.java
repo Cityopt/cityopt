@@ -3,6 +3,9 @@ package eu.cityopt.sim.eval;
 import java.io.IOException;
 import java.util.concurrent.Future;
 
+import eu.cityopt.sim.eval.util.FutureTransform;
+import eu.cityopt.sim.eval.util.ImmediateFuture;
+
 /**
  * SimulationRunner that prefers to use SimulationStorage when possible,
  * and only runs new simulations when there is no stored simulation data

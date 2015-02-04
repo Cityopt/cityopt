@@ -1,4 +1,4 @@
-package eu.cityopt.sim.eval;
+package eu.cityopt.sim.eval.util;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeoutException;
 public class ImmediateFuture<T> implements Future<T> {
     private T result;
 
-    ImmediateFuture(T result) {
+    public ImmediateFuture(T result) {
         this.result = result;
     }
 

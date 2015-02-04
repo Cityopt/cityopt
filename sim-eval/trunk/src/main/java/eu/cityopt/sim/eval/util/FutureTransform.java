@@ -1,4 +1,4 @@
-package eu.cityopt.sim.eval;
+package eu.cityopt.sim.eval.util;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -18,7 +18,7 @@ public abstract class FutureTransform<T, U> implements Future<U> {
     private U transformResult;
     private Exception transformException;
 
-    FutureTransform(Future<T> input) {
+    public FutureTransform(Future<T> input) {
         this.input = input;
     }
 

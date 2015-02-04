@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -21,6 +20,8 @@ import org.xml.sax.SAXException;
 
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulatorConfigurationException;
+import eu.cityopt.sim.eval.util.TempDir;
+import eu.cityopt.sim.eval.util.UncloseableInputStream;
 
 public class AprosModel implements SimulationModel {
     private static String USER_COMPONENT_PROPERTIES_FILENAME = "nodes.xml";
