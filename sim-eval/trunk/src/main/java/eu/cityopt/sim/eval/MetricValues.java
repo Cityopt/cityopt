@@ -58,6 +58,11 @@ public class MetricValues implements EvaluationContext {
     }
 
     @Override
+    public EvaluationSetup getEvaluationSetup() {
+        return bindingLayer.getNamespace();
+    }
+
+    @Override
     public BindingLayer getBindingLayer() {
         return bindingLayer;
     }

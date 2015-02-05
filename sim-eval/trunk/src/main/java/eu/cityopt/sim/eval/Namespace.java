@@ -1,5 +1,6 @@
 package eu.cityopt.sim.eval;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,9 +39,7 @@ import java.util.Map;
  *
  * @author Hannu Rummukainen
  */
-public class Namespace {
-    /** The expression evaluator to use. */
-    public final Evaluator evaluator;
+public class Namespace extends EvaluationSetup {
 
     /** Container for component-specific namespace data. */
     public static class Component {
@@ -94,31 +93,32 @@ public class Namespace {
      */
     public Map<String, Type> decisions;
 
+    /** Constructs an empty namespace. */
+    public Namespace(Evaluator ev, Instant timeOrigin) {
+        this(ev, timeOrigin, Collections.emptySet(), false);
+    }
+
     /**
      * Constructs a namespace containing just the named empty components.
      * The component names should be unique.
      */
-    public Namespace(Evaluator evaluator, Collection<String> componentNames) {
-        this(evaluator, componentNames, false);
-    }
-    
-    /** Constructs an empty namespace.
-     */
-    public Namespace(Evaluator ev) {
-        this(ev, Collections.emptySet());
+    public Namespace(Evaluator evaluator, Instant timeOrigin,
+            Collection<String> componentNames) {
+        this(evaluator, timeOrigin, componentNames, false);
     }
 
     /**
      * Constructs an empty namespace, given a list of component names.
      * @param evaluator the expression evaluator with which the constructed
      *   Namespace is to be used 
+     * @param timeOrigin origin of simulation time
      * @param componentNames collection of unique component names
      * @param useDecisions whether to initialize the decisions fields.
      *   Should be set true for scenario generation optimization.
      */
-    public Namespace(Evaluator evaluator, Collection<String> componentNames,
-            boolean useDecisions) {
-        this.evaluator = evaluator;
+    public Namespace(Evaluator evaluator, Instant timeOrigin,
+            Collection<String> componentNames, boolean useDecisions) {
+        super(evaluator, timeOrigin);
         this.components = new HashMap<>();
         for (String componentName : componentNames) {
             components.put(componentName, new Component(useDecisions));
@@ -128,16 +128,6 @@ public class Namespace {
         this.decisions = useDecisions ? new HashMap<>() : null;
     }
 
-    public Namespace(Evaluator evaluator, Map<String, Component> components,
-            Map<String, Type> externals, Map<String, Type> metrics,
-            Map<String, Type> decisions) {
-        this.evaluator = evaluator;
-        this.components = components;
-        this.externals = externals;
-        this.metrics = metrics;
-        this.decisions = decisions;
-    }
-    
     public boolean usesDecisions() {
         return decisions != null;
     }

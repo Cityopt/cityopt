@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -68,7 +69,7 @@ public class AprosRunnerTest {
             pvalue = props.getProperty("ip_value"),
             pocomp = props.getProperty("op_comp"),
             poname = props.getProperty("op_name");
-        ns = new Namespace(new Evaluator());
+        ns = new Namespace(new Evaluator(), Instant.ofEpochMilli(0));
         Type type = ptype != null ? Type.getByName(ptype) : null;
         boolean has_ip = false;
         if (picomp != null) {

@@ -126,6 +126,11 @@ public class SimulationInput implements EvaluationContext {
     }
 
     @Override
+    public EvaluationSetup getEvaluationSetup() {
+        return bindingLayer.getNamespace();
+    }
+
+    @Override
     public Bindings toBindings() throws ScriptException {
         return bindingLayer.toBindings();
     }

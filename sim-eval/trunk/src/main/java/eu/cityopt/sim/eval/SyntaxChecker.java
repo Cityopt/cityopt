@@ -52,7 +52,7 @@ public class SyntaxChecker {
         "datetime", "timedelta",
         // from the cityopt module
         "DAY_S", "HOUR_S", "INFINITY", "MINUTE_S", "TimeSeries",
-        "integrate", "mean", "stdev", "totimestamp", "var",
+        "integrate", "mean", "stdev", "todatetime", "tosimtime", "var",
         // module names
         "__builtin__", "math", "cmath", "cityopt", "itertools" 
     };
@@ -119,11 +119,11 @@ public class SyntaxChecker {
         }
 
         _checkExpressionSyntax = (PyObject) evaluator.eval(
-                "cityopt.syntax.checkExpressionSyntax");
+                "cityopt.syntax.checkExpressionSyntax", namespace);
 
         @SuppressWarnings("unchecked")
-        List<String> keywordList = 
-                (List<String>) evaluator.eval("cityopt.syntax.kwlist");
+        List<String> keywordList =  (List<String>) evaluator.eval(
+                "cityopt.syntax.kwlist", namespace);
         reservedKeywords = prepareReservedNames(keywordList);
     }
 

@@ -39,7 +39,7 @@ public class TimeSeries implements TimeSeriesI {
      * @param degree
      *            0 for piecewise constant, 1 for piecewise linear interpolation.
      * @param times
-     *            the defined time points, seconds since 1 January 1970 UTC.
+     *            the defined time points, seconds from simulation time origin.
      *            Must be in ascending order (but non-consecutive vertical
      *            segments are allowed in linear interpolation). Outside the
      *            closed interval from the first to the last time point, values
@@ -55,7 +55,7 @@ public class TimeSeries implements TimeSeriesI {
 
     /** Constructor for use from Python code */
     public TimeSeries(int degree, PyObject datetimes, double[] values) {
-        double[] times = Evaluator.getActiveEvaluator().convertToTimestamps(datetimes);
+        double[] times = Evaluator.getActiveEvaluator().convertToSimtimes(datetimes);
         this.fun = PiecewiseFunction.make(degree, times, values);
     }
 
@@ -80,7 +80,7 @@ public class TimeSeries implements TimeSeriesI {
             try {
                 pair.time = first.asDouble();
             } catch (PyException e) {
-                pair.time = evaluator.convertToTimestamp(first);
+                pair.time = evaluator.convertToSimtime(first);
             }
             pair.value = second.asDouble();
             pairs.add(pair);
@@ -139,7 +139,7 @@ public class TimeSeries implements TimeSeriesI {
     }
 
     public double[] at(PyObject datetimes) {
-        return at(Evaluator.getActiveEvaluator().convertToTimestamps(datetimes));
+        return at(Evaluator.getActiveEvaluator().convertToSimtimes(datetimes));
     }
 
     @Override
@@ -150,7 +150,7 @@ public class TimeSeries implements TimeSeriesI {
     public Object getDatetimes() throws Throwable {
         if (datetimes == null) {
             datetimes = Evaluator.getActiveEvaluator()
-                    .convertTimestampsToDatetimes(getTimes());
+                    .convertSimtimesToDatetimes(getTimes());
         }
         return datetimes;
     }
@@ -209,8 +209,8 @@ public class TimeSeries implements TimeSeriesI {
 
     public TimeSeries slice(PyObject t0, PyObject t1) {
         Evaluator evaluator = Evaluator.getActiveEvaluator();
-        return slice(evaluator.convertToTimestamp(t0),
-                evaluator.convertToTimestamp(t1));
+        return slice(evaluator.convertToSimtime(t0),
+                evaluator.convertToSimtime(t1));
     }
 
     /** Returns a brief human-readable overview of the time series. */

@@ -80,6 +80,11 @@ public class SimulationResults extends SimulationOutput implements
     }
 
     @Override
+    public EvaluationSetup getEvaluationSetup() {
+        return bindingLayer.getNamespace();
+    }
+
+    @Override
     public String toString() {
         return bindingLayer.toString();
     }

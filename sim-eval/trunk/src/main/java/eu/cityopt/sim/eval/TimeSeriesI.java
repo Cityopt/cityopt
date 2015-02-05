@@ -12,7 +12,7 @@ package eu.cityopt.sim.eval;
 public interface TimeSeriesI {
     /**
      * The time points where the time series is explicitly defined. Specified as
-     * seconds since 1 January 1970 UTC. Must be in ascending order (but
+     * seconds from simulation time origin. Must be in ascending order (but
      * vertical segments are allowed in linear interpolation).
      */
     public double[] getTimes();

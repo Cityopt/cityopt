@@ -3,6 +3,7 @@ package eu.cityopt.sim.eval;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,7 +25,8 @@ public class TestEval {
     @BeforeClass
     public static void setup() throws Exception {
         evaluator = new Evaluator();
-        ns = new Namespace(evaluator, Arrays.asList(new String[] { "C1", "C2" }), true);
+        ns = new Namespace(evaluator, Instant.ofEpochMilli(1),
+                Arrays.asList(new String[] { "C1", "C2" }), true);
         ns.externals.put("a", Type.TIMESERIES_LINEAR);
         ns.externals.put("b", Type.TIMESERIES_LINEAR);
         ns.externals.put("li", Type.LIST_OF_INTEGER);
@@ -187,7 +189,8 @@ public class TestEval {
         CompiledScript script = evaluator.getCompiler().compile("dir(C1)");
         @SuppressWarnings("unchecked")
         ArrayList<String> names = new ArrayList<String>(
-                (List<String>)evaluator.eval(script, input.toBindings()));
+                (List<String>)evaluator.eval(
+                        script, input.toBindings(), input.getEvaluationSetup()));
         Collections.sort(names);
         String[] good = {"x5", "x6", "x7", "x8"};
         assertArrayEquals(good, names.toArray());

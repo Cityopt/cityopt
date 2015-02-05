@@ -54,14 +54,17 @@ public class Evaluator {
             "del pow\n" +
             "from cityopt import *\n";
 
-    /** Points to Evaluator instance when a thread is running Python code. */
-    private static ThreadLocal<Evaluator> activeEvaluator =
-            new ThreadLocal<Evaluator>();
+    /**
+     * When the Jython interpreter calls back to Java code, context data is
+     * passed behind the back of the Jython interpreter in thread-local storage.
+     */
+    private static ThreadLocal<EvaluationSetup> activeSetup =
+            new ThreadLocal<EvaluationSetup>();
 
     private ScriptEngine engine;
-    private PyObject _convertTimestampsToDatetimes;
-    private PyObject _convertToTimestamps;
-    private PyObject _convertToTimestamp;
+    private PyObject _convertSimtimesToDatetimes;
+    private PyObject _convertToSimtimes;
+    private PyObject _convertToSimtime;
     private PyObject _izip;
 
     public Evaluator() throws EvaluationException, ScriptException {
@@ -89,12 +92,12 @@ public class Evaluator {
         }
         engine.eval(PYTHON_IMPORTS);
 
-        _convertTimestampsToDatetimes = (PyObject) engine.eval(
-                "cityopt._convertTimestampsToDatetimes");
-        _convertToTimestamps = (PyObject) engine.eval(
-                "cityopt._convertToTimestamps");
-        _convertToTimestamp = (PyObject) engine.eval(
-                "cityopt._convertToTimestamp");
+        _convertSimtimesToDatetimes = (PyObject) engine.eval(
+                "cityopt._convertSimtimesToDatetimes");
+        _convertToSimtimes = (PyObject) engine.eval(
+                "cityopt._convertToSimtimes");
+        _convertToSimtime = (PyObject) engine.eval(
+                "cityopt._convertToSimtime");
         _izip = (PyObject) engine.eval("itertools.izip");
         // TODO: engine.setContext
     }
@@ -164,7 +167,7 @@ public class Evaluator {
      *            points. Must be Type.TIMESERIES_STEP or
      *            Type.TIMESERIES_LINEAR.
      * @param times
-     *            the defined time points, seconds since 1 January 1970 UTC.
+     *            the defined time points, seconds from simulation time origin.
      *            Must be in ascending order (but non-consecutive vertical
      *            segments are allowed in linear interpolation). Outside the
      *            closed interval from the first to the last time point, values
@@ -185,7 +188,7 @@ public class Evaluator {
      * @throws IllegalStateException if no Python code is being run.
      */
     static Evaluator getActiveEvaluator() {
-        Evaluator evaluator = activeEvaluator.get();
+        Evaluator evaluator = activeSetup.get().evaluator;
         if (evaluator == null) {
             throw new IllegalStateException("Expected to be called from Python " +
                     "code, but there is no active Evaluator in this thread.");
@@ -194,16 +197,24 @@ public class Evaluator {
     }
 
     /**
+     * For internal use only - this is public for technical reasons.
+     * Returns the time origin of the project when running Python code.
+     */
+    public static double getActiveTimeOrigin() {
+        return activeSetup.get().originTimestamp;
+    }
+
+    /**
      * Evaluates a script.
      * @return result of the script
      */
-    Object eval(String code) throws ScriptException {
-        activeEvaluator.set(this);
+    Object eval(String code, EvaluationSetup setup) throws ScriptException {
+        activeSetup.set(setup);
         Object value;
         try {
             value = engine.eval(code);
         } finally {
-            activeEvaluator.set(null);
+            activeSetup.set(null);
         }
         return value;
     }
@@ -213,13 +224,14 @@ public class Evaluator {
      * Python support code and then calls CompiledScript.eval.
      * @return result of the script
      */
-    Object eval(CompiledScript script, Bindings bindings) throws ScriptException {
-        activeEvaluator.set(this);
+    Object eval(CompiledScript script, Bindings bindings, EvaluationSetup setup)
+            throws ScriptException {
+        activeSetup.set(setup);
         Object value;
         try {
             value = script.eval(bindings);
         } finally {
-            activeEvaluator.set(null);
+            activeSetup.set(null);
         }
         return value;
     }
@@ -304,18 +316,18 @@ public class Evaluator {
         }
     }
 
-    PyObject convertTimestampsToDatetimes(double[] times) {
-        return _convertTimestampsToDatetimes.__call__(
+    PyObject convertSimtimesToDatetimes(double[] times) {
+        return _convertSimtimesToDatetimes.__call__(
                 Py.javas2pys(new Object[] { times }));
     }
 
-    double[] convertToTimestamps(PyObject arg) {
-        PyObject result = _convertToTimestamps.__call__(arg);
+    double[] convertToSimtimes(PyObject arg) {
+        PyObject result = _convertToSimtimes.__call__(arg);
         return (double[]) result.__tojava__(double[].class);
     }
 
-    double convertToTimestamp(PyObject arg) {
-        return _convertToTimestamp.__call__(arg).asDouble();
+    double convertToSimtime(PyObject arg) {
+        return _convertToSimtime.__call__(arg).asDouble();
     }
 
     PyObject izip(double[] times, double[] values) {

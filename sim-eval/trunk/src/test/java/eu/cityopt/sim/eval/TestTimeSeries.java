@@ -3,6 +3,7 @@ package eu.cityopt.sim.eval;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -42,13 +43,16 @@ public class TestTimeSeries {
     }
 
     void testTimeSeriesExpressions(Type timeSeriesType) throws Exception {
-        Namespace ns = new Namespace(evaluator, Arrays.asList(new String[0]));
+        double timeOrigin = 100000; 
+        Namespace ns = new Namespace(evaluator,
+                Instant.ofEpochMilli((long)(timeOrigin * 1000)),
+                Arrays.asList(new String[0]));
         boolean step = (timeSeriesType.getInterpolationDegree() == 0);
         ns.externals.put("a", timeSeriesType);
         ns.externals.put("b", timeSeriesType);
 
         ZonedDateTime zdt = ZonedDateTime.of(2014, 1, 1,  12, 0, 0,  0, ZoneId.systemDefault());
-        double t0 = zdt.toEpochSecond();
+        double t0 = zdt.toEpochSecond() - timeOrigin;
         double sec = 1;
         double day = 24 * 60 * 60 * sec;
         ExternalParameters ep = new ExternalParameters(ns);
@@ -218,8 +222,8 @@ public class TestTimeSeries {
 
         // Time series constructors
         assertEquals(2, eval("len(TimeSeries(0, [0.0, 1.0], [2.0, 4.0]).values)", ep), delta);
-        assertEquals(29, eval("sum(TimeSeries(0, [datetime.fromtimestamp(9), "
-                            + "datetime.fromtimestamp(20)], [2.0, 4.0]).times)", ep), delta);
+        assertEquals(29, eval("sum(TimeSeries(0, [todatetime(9), "
+                + "todatetime(20)], [2.0, 4.0]).times)", ep), delta);
         String constructor = step ? "step" : "linear";
         assertEquals(2, eval("len(TimeSeries." + constructor
                             + "((t, 2*t) for t in [1, 2]).values)", ep), delta);

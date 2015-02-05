@@ -6,6 +6,12 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -30,6 +36,7 @@ public class AprosModel implements SimulationModel {
     TempDir modelDir;
     String[] resultFiles;
     final Document uc_props;
+    Instant timeOrigin;
 
     AprosModel(byte[] modelData) throws IOException, SimulatorConfigurationException {
         modelDir = new TempDir("sim");
@@ -97,11 +104,24 @@ public class AprosModel implements SimulationModel {
                 this.resultFiles =
                     value.split(Pattern.quote(System.getProperty("path.separator")));
                 break;
+            case "timeOrigin":
+                this.timeOrigin = parseDateTime(value).toInstant();
+                break;
             default:
                 throw new SimulatorConfigurationException(
                         "Unknown property " + key + " in " + MODEL_CONFIGURATION_FILENAME);
             }
         }
+    }
+
+    private static ZonedDateTime parseDateTime(String dateString) {
+        try {
+            return ZonedDateTime.parse(dateString);
+        } catch (DateTimeParseException e) {}
+        try {
+            return LocalDateTime.parse(dateString).atZone(ZoneId.systemDefault());
+        } catch (DateTimeParseException e) {}
+        return LocalDate.parse(dateString).atStartOfDay(ZoneId.systemDefault());
     }
 
     @Override
@@ -110,5 +130,10 @@ public class AprosModel implements SimulationModel {
             modelDir.close();
             modelDir = null;
         }
+    }
+
+    @Override
+    public Instant getTimeOrigin() {
+        return timeOrigin;
     }
 }

@@ -103,6 +103,11 @@ public class DecisionValues implements EvaluationContext {
     }
 
     @Override
+    public EvaluationSetup getEvaluationSetup() {
+        return bindingLayer.getNamespace();
+    }
+
+    @Override
     public boolean equals(Object other) {
         if (!(other instanceof DecisionValues)) {
             return false;

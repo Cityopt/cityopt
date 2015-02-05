@@ -18,5 +18,7 @@ public interface EvaluationContext {
      */
     Bindings toBindings() throws ScriptException;
 
+    EvaluationSetup getEvaluationSetup();
+
     BindingLayer getBindingLayer();
 }

@@ -21,7 +21,7 @@ public class DoubleExpression {
 
     public double evaluate(EvaluationContext context) throws ScriptException,
             InvalidValueException {
-        Object o = evaluator.eval(script, context.toBindings());
+        Object o = evaluator.eval(script, context.toBindings(), context.getEvaluationSetup());
         double value;
         if (o instanceof Number) {
             value = ((Number) o).doubleValue();
