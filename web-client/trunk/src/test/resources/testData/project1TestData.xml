@@ -41,10 +41,10 @@
 <extparamvalsetcomp extparamvalsetid="1" extparamvalid="2"/>
 <extparamvalsetcomp extparamvalsetid="1" extparamvalid="3"/>
 
-<metric metid="1" prjid="1" unitid="11" name="Energy_Supply" expression="integrate(heating power, 0, INFINITY)" />
+<metric metid="1" prjid="1" unitid="11" name="Energy_Supply" expression="integrate(heating_power, 0, INFINITY)" />
 <metric metid="2" prjid="1" unitid="6" name="Power_Supply" expression="Specific_Heat_Water*Liquid_Volume_Output:Liquid_Temperature" />
 <metric metid="3" prjid="1" unitid="12" name="Energy_Supply" expression="integrate(Specific_Heat_Water*Liquid_Volume_Output:Liquid_Temperature, 0, INFINITY)" />
-<metric metid="4" prjid="1" unitid="12" name="Energy_Supply" expression="integrate(Heating power, 0, INFINITY)" />
+<metric metid="4" prjid="1" unitid="12" name="Energy_Supply" expression="integrate(Heating_power, 0, INFINITY)" />
 <metric metid="5" prjid="1" unitid="13" name="CO2_Emissions" expression="integrate(Emissions_N_Gas*Heating_Power, 0, INFINITY)" />
 <metric metid="6" prjid="1" unitid="14" name="Cost" expression="integrate(Cost_of_the_N_Gas*Heating_Power, 0, INFINITY)" />
 

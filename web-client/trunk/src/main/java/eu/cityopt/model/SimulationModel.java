@@ -35,6 +35,7 @@ public class SimulationModel implements java.io.Serializable {
 	private Date updatedon;
 	private Integer createdby;
 	private Integer updatedby;
+	private Date timeorigin;
 	private Set<Project> projects = new HashSet<Project>(0);
 
 	public SimulationModel() {
@@ -47,7 +48,7 @@ public class SimulationModel implements java.io.Serializable {
 	public SimulationModel(int modelid, byte[] modelblob, byte[] imageblob,
 			String description, String simulator, Date createdon,
 			Date updatedon, Integer createdby, Integer updatedby,
-			Set<Project> projects) {
+			Date timeorigin, Set<Project> projects) {
 		this.modelid = modelid;
 		this.modelblob = modelblob;
 		this.imageblob = imageblob;
@@ -57,6 +58,7 @@ public class SimulationModel implements java.io.Serializable {
 		this.updatedon = updatedon;
 		this.createdby = createdby;
 		this.updatedby = updatedby;
+		this.timeorigin = timeorigin;
 		this.projects = projects;
 	}
 
@@ -143,6 +145,16 @@ public class SimulationModel implements java.io.Serializable {
 
 	public void setUpdatedby(Integer updatedby) {
 		this.updatedby = updatedby;
+	}
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "timeorigin", length = 22)
+	public Date getTimeorigin() {
+		return this.timeorigin;
+	}
+
+	public void setTimeorigin(Date timeorigin) {
+		this.timeorigin = timeorigin;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "simulationmodel",cascade=CascadeType.PERSIST)

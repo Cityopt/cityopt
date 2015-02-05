@@ -35,6 +35,8 @@ public class OptimizationSet implements java.io.Serializable {
 	private Date updatedon;
 	private Integer createdby;
 	private Integer updatedby;
+	private Set<OptSetScenarios> optsetscenarioses = new HashSet<OptSetScenarios>(
+			0);
 	private Set<OptSearchConst> optsearchconsts = new HashSet<OptSearchConst>(0);
 
 	public OptimizationSet() {
@@ -47,6 +49,7 @@ public class OptimizationSet implements java.io.Serializable {
 	public OptimizationSet(int optid, ObjectiveFunction objectivefunction,
 			Scenario scenario, Integer prjid, Date createdon, Date updatedon,
 			Integer createdby, Integer updatedby,
+			Set<OptSetScenarios> optsetscenarioses,
 			Set<OptSearchConst> optsearchconsts) {
 		this.optid = optid;
 		this.objectivefunction = objectivefunction;
@@ -56,6 +59,7 @@ public class OptimizationSet implements java.io.Serializable {
 		this.updatedon = updatedon;
 		this.createdby = createdby;
 		this.updatedby = updatedby;
+		this.optsetscenarioses = optsetscenarioses;
 		this.optsearchconsts = optsearchconsts;
 	}
 
@@ -135,6 +139,15 @@ public class OptimizationSet implements java.io.Serializable {
 
 	public void setUpdatedby(Integer updatedby) {
 		this.updatedby = updatedby;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "optimizationset")
+	public Set<OptSetScenarios> getOptsetscenarioses() {
+		return this.optsetscenarioses;
+	}
+
+	public void setOptsetscenarioses(Set<OptSetScenarios> optsetscenarioses) {
+		this.optsetscenarioses = optsetscenarioses;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "optimizationset")

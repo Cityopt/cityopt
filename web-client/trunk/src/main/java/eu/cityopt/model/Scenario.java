@@ -39,12 +39,16 @@ public class Scenario implements java.io.Serializable {
 	private Date updatedon;
 	private Integer createdby;
 	private Integer updatedby;
+	private Date simend;
+	private Date simstart;
 	private Set<ScenarioMetrics> scenariometricses = new HashSet<ScenarioMetrics>(
 			0);
 	private Set<InputParamVal> inputparamvals = new HashSet<InputParamVal>(0);
 	private Set<OptimizationSet> optimizationsets = new HashSet<OptimizationSet>(
 			0);
 	private Set<SimulationResult> simulationresults = new HashSet<SimulationResult>(
+			0);
+	private Set<OptSetScenarios> optsetscenarioses = new HashSet<OptSetScenarios>(
 			0);
 
 	public Scenario() {
@@ -59,11 +63,12 @@ public class Scenario implements java.io.Serializable {
 	public Scenario(int scenid, Project project,
 			ScenarioGenerator scenariogenerator, String name,
 			String description, Date createdon, Date updatedon,
-			Integer createdby, Integer updatedby,
+			Integer createdby, Integer updatedby, Date simend, Date simstart,
 			Set<ScenarioMetrics> scenariometricses,
 			Set<InputParamVal> inputparamvals,
 			Set<OptimizationSet> optimizationsets,
-			Set<SimulationResult> simulationresults) {
+			Set<SimulationResult> simulationresults,
+			Set<OptSetScenarios> optsetscenarioses) {
 		this.scenid = scenid;
 		this.project = project;
 		this.scenariogenerator = scenariogenerator;
@@ -73,10 +78,13 @@ public class Scenario implements java.io.Serializable {
 		this.updatedon = updatedon;
 		this.createdby = createdby;
 		this.updatedby = updatedby;
+		this.simend = simend;
+		this.simstart = simstart;
 		this.scenariometricses = scenariometricses;
 		this.inputparamvals = inputparamvals;
 		this.optimizationsets = optimizationsets;
 		this.simulationresults = simulationresults;
+		this.optsetscenarioses = optsetscenarioses;
 	}
 
 	@SequenceGenerator(name="scenario_scenid_seq",sequenceName="scenario_scenid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="scenario_scenid_seq")
@@ -165,6 +173,26 @@ public class Scenario implements java.io.Serializable {
 	public void setUpdatedby(Integer updatedby) {
 		this.updatedby = updatedby;
 	}
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "simend", length = 22)
+	public Date getSimend() {
+		return this.simend;
+	}
+
+	public void setSimend(Date simend) {
+		this.simend = simend;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "simstart", length = 22)
+	public Date getSimstart() {
+		return this.simstart;
+	}
+
+	public void setSimstart(Date simstart) {
+		this.simstart = simstart;
+	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
 	public Set<ScenarioMetrics> getScenariometricses() {
@@ -202,4 +230,12 @@ public class Scenario implements java.io.Serializable {
 		this.simulationresults = simulationresults;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
+	public Set<OptSetScenarios> getOptsetscenarioses() {
+		return this.optsetscenarioses;
+	}
+
+	public void setOptsetscenarioses(Set<OptSetScenarios> optsetscenarioses) {
+		this.optsetscenarioses = optsetscenarioses;
+	}
 }

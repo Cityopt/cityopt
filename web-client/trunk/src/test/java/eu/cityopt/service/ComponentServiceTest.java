@@ -50,7 +50,7 @@ public class ComponentServiceTest {
 ////		int uid = iparam.getUnitID();
 //		int cid = iparam.getComponentID();
 		
-		assertEquals(com.getName(), "Solar thermal panels");
+		assertEquals(com.getName(), "Solar_thermal_panels");
 //		assertEquals(c.getName(), "myComponent");
 //		assertTrue(uid == 1);
 //		assertTrue(cid == 1);
