@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dataset>
+
+  <simulationmodel modelid="1" description="Apros test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit"/>
+
+  <project prjid="1" name="Project 1" location="Helsinki" modelid="1"/>
+
+  <type typeid="1" name="Double"/>
+  <type typeid="2" name="Integer"/>
+  <type typeid="3" name="String"/>
+  <type typeid="4" name="TimeSeries/step"/>
+  <type typeid="5" name="TimeSeries/linear"/>
+  <type typeid="6" name="List of Double"/>
+  <type typeid="7" name="List of Integer"/>
+
+  <unit unitid="1" typeid="1" name="Unit/Double"/>
+  <unit unitid="2" typeid="2" name="Unit/Integer"/>
+  <unit unitid="3" typeid="3" name="Unit/String"/>
+  <unit unitid="4" typeid="4" name="Unit/TimeSeries/step"/>
+  <unit unitid="5" typeid="5" name="Unit/TimeSeries/linear"/>
+  <unit unitid="6" typeid="6" name="Unit/List of Double"/>
+  <unit unitid="7" typeid="7" name="Unit/List of Integer"/>
+
+  <component componentid="1" prjid="1" name="SAMPLE_DISTRICT"/>
+  <component componentid="2" prjid="1" name="PV_TOTAL_ENERGY"/>
+  <component componentid="3" prjid="1" name="HEATING_LOAD"/>
+  <component componentid="4" prjid="1" name="CHP_ELECT_PROD"/>
+  <component componentid="5" prjid="1" name="ETH_NETWORK"/>
+  <component componentid="6" prjid="1" name="CHP_BOIL_TH_OUT"/>
+  <component componentid="7" prjid="1" name="FUEL_CONSUMPTION"/>
+
+  <inputparameter inputid="1" componentid="1" name="CHP_electrical_power_rating" unitid="1" defaultvalue="2400.0"/>
+  <inputparameter inputid="2" componentid="1" name="Burner_efficiency" unitid="1" defaultvalue="0.7"/>
+  <inputparameter inputid="3" componentid="1" name="Share_of_roof_area_occupied_by_PVpanels" unitid="1" defaultvalue="10.0"/>
+  <inputparameter inputid="4" componentid="1" name="CHP_thermal_power_rating" unitid="1" defaultvalue="4000.0"/>
+  <inputparameter inputid="5" componentid="1" name="Insulation_layer_factor" unitid="1" defaultvalue="1.0"/>
+  <inputparameter inputid="6" componentid="1" name="Burner_nominal_power" unitid="1" defaultvalue="17000.0"/>
+  <inputparameter inputid="7" componentid="1" name="Share_of_roof_area_occupied_by_THcollectors" unitid="1" defaultvalue="0.0"/>
+  <inputparameter inputid="8" componentid="1" name="Heat_storage_nominal_charge_or_discharge_capacity" unitid="1" defaultvalue="40.0"/>
+  <inputparameter inputid="9" componentid="1" name="Heat_storage_tank_height" unitid="1" defaultvalue="15.0"/>
+
+  <outputvariable outvarid="1" componentid="2" name="MULTIPLYER_OUTPUT" unitid="5"/>
+  <outputvariable outvarid="2" componentid="3" name="MULTIPLYER_OUTPUT" unitid="5"/>
+  <outputvariable outvarid="3" componentid="4" name="MULTIPLYER_OUTPUT" unitid="5"/>
+  <outputvariable outvarid="4" componentid="5" name="MULTIPLYER_OUTPUT" unitid="5"/>
+  <outputvariable outvarid="5" componentid="6" name="MULTIPLYER_OUTPUT" unitid="5"/>
+  <outputvariable outvarid="6" componentid="7" name="MULTIPLYER_OUTPUT" unitid="5"/>
+
+  <scenario scenid="1" prjid="1" name="testscenario"/>
+  <inputparamval scendefinitionid="1" scenid="1" inputid="1" value="2400.0"/>
+  <inputparamval scendefinitionid="2" scenid="1" inputid="2" value="0.7"/>
+  <inputparamval scendefinitionid="3" scenid="1" inputid="3" value="10.0"/>
+  <inputparamval scendefinitionid="4" scenid="1" inputid="4" value="4000.0"/>
+  <inputparamval scendefinitionid="5" scenid="1" inputid="5" value="1.0"/>
+  <inputparamval scendefinitionid="6" scenid="1" inputid="6" value="17000.0"/>
+  <inputparamval scendefinitionid="7" scenid="1" inputid="7" value="0.0"/>
+  <inputparamval scendefinitionid="8" scenid="1" inputid="8" value="40.0"/>
+  <inputparamval scendefinitionid="9" scenid="1" inputid="9" value="15.0"/>
+
+  <timeseries tseriesid="1" typeid="5"/>
+  <timeseriesval tseriesid="1" tseriesvalid="1" time="1970-01-01 00:00:00" value="100.0"/>
+  <timeseriesval tseriesid="1" tseriesvalid="2" time="2050-01-01 00:00:00" value="100.0"/>
+
+  <extparam prjid="1" defaultvalue="dummy" defaultTimeSeries="1" name="fuel_cost" unitid="5"/>
+  <extparam prjid="1" defaultvalue="100" name="x" unitid="1"/>
+
+  <metric prjid="1" name="fuelconsumption" unitid="1" expression="integrate(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
+  <metric prjid="1" name="fuelcost" unitid="1" expression="integrate(fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
+
+</dataset>
