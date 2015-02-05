@@ -95,7 +95,7 @@ public class ExtParam implements java.io.Serializable {
 		this.project = project;
 	}
 
-	@Column(name = "defaultvalue", nullable = false, length = 50)
+	@Column(name = "defaultvalue", length = 50)
 	public String getDefaultvalue() {
 		return this.defaultvalue;
 	}

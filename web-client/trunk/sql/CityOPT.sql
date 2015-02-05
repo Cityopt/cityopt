@@ -237,7 +237,7 @@ CREATE TABLE ExtParam (
 	prjID integer,
 	defaultTimeSeries integer,
 	unitID integer,
-	defaultValue varchar(50) NOT NULL,
+	defaultValue varchar(50),
 	name varchar(50)
 )
 ;
