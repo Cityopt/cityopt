@@ -2,6 +2,7 @@ package eu.cityopt.sim.service;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -160,6 +161,8 @@ public class SimulationService {
             return false;
         }
     }
+
+    private static final Instant DEFAULT_TIME_ORIGIN = Instant.ofEpochMilli(0);
 
     @Autowired
     private ScenarioRepository scenarioRepository;
@@ -320,7 +323,8 @@ public class SimulationService {
             Type extType = namespace.externals.get(extParam.getName());
             Object simValue;
             if (extType.isTimeSeriesType()) {
-                simValue = loadTimeSeries(extParam.getTimeseries(), extType, namespace.evaluator);
+                simValue = loadTimeSeries(extParam.getTimeseries(), extType,
+                        namespace.evaluator, namespace.timeOrigin);
             } else {
                 simValue = extType.parse(extParam.getDefaultvalue());
             }
@@ -330,7 +334,7 @@ public class SimulationService {
     }
 
     public TimeSeriesI loadTimeSeries(TimeSeries timeseries, 
-            Type timeSeriesType, Evaluator evaluator) {
+            Type timeSeriesType, Evaluator evaluator, Instant timeOrigin) {
         List<TimeSeriesVal> timeSeriesVals =
                 new ArrayList<TimeSeriesVal>(timeseries.getTimeseriesvals());
         timeSeriesVals.sort((e1, e2) -> e1.getTime().compareTo(e2.getTime()));
@@ -339,8 +343,7 @@ public class SimulationService {
         double[] values = new double[n];
         for (int i = 0; i < n; ++i) {
             TimeSeriesVal tsVal = timeSeriesVals.get(i);
-            long timeMillis = tsVal.getTime().toInstant().toEpochMilli();
-            times[i] = (double) timeMillis / 1000.0;
+            times[i] = toSimTime(tsVal.getTime(), timeOrigin);
             values[i] = Double.valueOf(tsVal.getValue());
         }
         return evaluator.makeTS(timeSeriesType, times, values);
@@ -377,6 +380,7 @@ public class SimulationService {
         //TODO where to save output.getMessages()
         if (simOutput instanceof SimulationResults) {
             SimulationResults simResults = (SimulationResults) simOutput;
+            Instant timeOrigin = simResults.getNamespace().timeOrigin;
             Set<SimulationResult> newResults = new HashSet<SimulationResult>(); 
             for (Component component : scenario.getProject().getComponents()) {
                 String componentName = component.getName();
@@ -389,7 +393,7 @@ public class SimulationService {
                             SimulationResult newResult = new SimulationResult();
                             newResult.setOutputvariable(outputVariable);
                             newResult.setScenario(scenario);
-                            newResult.setTime(new Date((long) (times[i] / 1000.0 + 0.5)));
+                            newResult.setTime(toDate(times[i], timeOrigin));
                             newResult.setValue(Double.toString(values[i]));
                             newResults.add(newResult);
                         }
@@ -457,8 +461,9 @@ public class SimulationService {
                 extParamVal.setExtparam(extParam);
                 if (simType.isTimeSeriesType()) {
                     eu.cityopt.model.Type type = findType(simType);
-                    TimeSeries timeSeries = saveTimeSeries(simExternals.getTS(extName), type,
-                            idUpdates);
+                    TimeSeries timeSeries = saveTimeSeries(
+                            simExternals.getTS(extName), type,
+                            namespace.timeOrigin, idUpdates);
                     extParamVal.setTimeseries(timeSeries);
                     timeSeries.getExtparamvals().add(extParamVal);
                 } else {
@@ -499,7 +504,7 @@ public class SimulationService {
     }
 
     public TimeSeries saveTimeSeries(TimeSeriesI simTS, eu.cityopt.model.Type type,
-            List<Runnable> idUpdateList) {
+            Instant timeOrigin, List<Runnable> idUpdateList) {
         if (simTS.getTimeSeriesId() != null) {
             TimeSeries timeSeries = timeSeriesRepository.findOne(simTS.getTimeSeriesId());
             if (timeSeries != null) {
@@ -516,8 +521,7 @@ public class SimulationService {
         for (int i = 0; i < n; ++i) {
             TimeSeriesVal timeSeriesVal = new TimeSeriesVal();
 
-            long timeMillis = (long)(times[i] * 1000 + 0.5);
-            timeSeriesVal.setTime(new Date(timeMillis));
+            timeSeriesVal.setTime(toDate(times[i], timeOrigin));
             timeSeriesVal.setValue(Double.toString(values[i]));
 
             timeSeriesVal.setTimeseries(timeSeries);
@@ -531,7 +535,10 @@ public class SimulationService {
     }
 
     public Namespace makeProjectNamespace(Project project) throws ParseException {
-        Namespace namespace = new Namespace(evaluator);
+        Date timeOriginDate = project.getSimulationmodel().getTimeorigin();
+        Instant timeOrigin = (timeOriginDate != null)
+                ? timeOriginDate.toInstant() : DEFAULT_TIME_ORIGIN;
+        Namespace namespace = new Namespace(evaluator, timeOrigin);
         for (ExtParam mExternal : project.getExtparams()) {
             Type extType = null;
             if (mExternal.getTimeseries() != null) {
@@ -561,5 +568,14 @@ public class SimulationService {
             namespace.metrics.put(mMetric.getName(), metricType);
         }
         return namespace;
+    }
+
+    public double toSimTime(Date t, Instant timeOrigin) {
+        long millis = t.toInstant().toEpochMilli() - timeOrigin.toEpochMilli();
+        return millis / 1000.0;
+    }
+
+    public Date toDate(double simtime, Instant timeOrigin) {
+        return new Date(timeOrigin.toEpochMilli() + (long) (simtime * 1000 + 0.5));
     }
 }

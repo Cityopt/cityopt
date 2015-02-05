@@ -1,12 +1,16 @@
 package eu.cityopt.sim.service;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -59,6 +63,15 @@ public class TestSimulationService {
 
     @Autowired
     DataSource dataSource;
+
+    @Test
+    public void testTimeConversion() {
+        Instant timeOrigin = Instant.ofEpochMilli(123456);
+        SimulationService s = simulationService;
+        assertEquals(new Date(124456), s.toDate(1, timeOrigin));
+        assertEquals(2.0, s.toSimTime(new Date(125456), timeOrigin), 0.0);
+        assertEquals(999, s.toSimTime(s.toDate(999, timeOrigin), timeOrigin), 0.0);
+    }
 
     @Test
     @DatabaseSetup("classpath:/testData/plumbing_scenario.xml")
