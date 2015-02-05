@@ -19,9 +19,9 @@
 		<td><%@ include file="mainmenu.inc"%></td>
 		<td width="50"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:400px;width:500px;overflow:auto">
+			<div style="overflow:scroll;height:400px;width:800px;overflow:auto">
 			<h2>Project metrics</h2>
-			<table class="tablestyle" width="400" border="1">
+			<table class="tablestyle" width="800" border="1">
 			
 			<tr height="20">
 			    <th>Name</th>
@@ -58,14 +58,14 @@
 			
 			<br>
 			
-			<table width="400">
+			<table width="800">
 			
 			<tr>
 				<td align="left">
 					<input align="left" type="submit" value="Upload the metrics"/>
 				</td>
 				<td align="right">
-					<a href="createmetric.html"><button type="button">Create</button></a>
+					<a href="createmetric.html"><button type="button">Create metric</button></a>
 			    </td>
 			</tr>
 			      

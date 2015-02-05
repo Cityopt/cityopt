@@ -43,10 +43,15 @@
 						<table>
 							<tr>
 								<td>
-									<table width="850">
+									<table width="550">
 										<col style="width:150px">
 										<col style="width:50px">
-										<col style="width:600px">
+										<col style="width:350px">
+										<tr>
+											<td><b>Components</b></td>
+											<td></td>
+											<td><b>Output variables</b></td>
+										</tr>
 										<tr>						
 											<td>
 												<table class="tablestyle">
@@ -78,20 +83,18 @@
 											</td>
 											<td valign="top">
 												<table class="tablestyle">
-													<col style="width:120px">
-													<col style="width:120px">
-													<col style="width:120px">
+													<col style="width:250px">
+													<col style="width:100px">
 													<tr>
 														<th>Output variable</th>
 														<th>Id</th>
-														<th>Default value</th>
+														
 													</tr>
 								
 													<c:forEach items="${selectedComponent.outputvariables}" var="outputVar">
 													<tr>
 														<td>${outputVar.name}</td>
-												    	<td>${outputVar.inputid}</td>
-												    	<td>${outputVar.defaultvalue}</td>
+												    	<td>${outputVar.outvarid}</td>
 													</tr>
 													</c:forEach>
 												</table>

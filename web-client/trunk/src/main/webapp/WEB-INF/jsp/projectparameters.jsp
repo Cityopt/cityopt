@@ -25,7 +25,7 @@
 		</td>
 		<td width="30"></td>
 		<td>
-			<div style="overflow:scroll;height:600px;width:850px;overflow:auto">
+			<div style="overflow:scroll;height:600px;width:900px;overflow:auto">
 			<table>
 				<col style="width:30px">
 				<col style="width:750px">	
@@ -41,17 +41,24 @@
 						<table>
 							<tr>
 								<td>
-									<table width="750">
-										<col style="width:150px">
+									<table width="850">
+										<col style="width:200px">
 										<col style="width:50px">
-										<col style="width:400px">
-										<col style="width:150px">
+										<col style="width:500px">
+										<tr>
+											<td>
+												<b>Components</b>
+											</td>
+											<td></td>
+											<td>
+												<b>Input parameters</b>
+											</td>
+										</tr>
 										<tr>						
 											<td valign="top">
-												<p>Components</p>
 												<table class="tablestyle">
 													<col style="width:80px">
-													<col style="width:150px">
+													<col style="width:180px">
 													<col style="width:80px">
 													<col style="width:50px">
 													<tr>
@@ -82,11 +89,10 @@
 											</td>
 											<td></td>
 											<td valign="top">
-												<p>Input parameters</p>
 												<table class="tablestyle">
 													<col style="width:150px">
 													<col style="width:60px">
-													<col style="width:100px">
+													<col style="width:150px">
 													<col style="width:60px">
 													<tr>
 														<th>Input parameter</th>

@@ -52,7 +52,7 @@
 				<tr>
 					<td></td>
 					<td align="right"><input style="width:100px" type="submit" value="Update"/>
-					<a href="scenariovariables.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<a href="editproject.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
 				</tr>
 			</table>
 			

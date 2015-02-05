@@ -23,15 +23,16 @@
 		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:600px;overflow:auto">
 			<h2>Open scenario</h2>
-			<table class="tablestyle" width="400" border="1">
-			
+			<table class="tablestyle" width="600" border="1">
+				<col style="width:200px">	
+				<col style="width:50px">
+				<col style="width:300px">
+				<col style="width:50px">
+																									
 				<tr height="20">
 				    <th>Name</th>
 				    <th>Id</th>
 				    <th>Description</th>
-				    <th>Creation date</th>
-				    <th>Setting</th>
-				    <th>Run</th>
 				    <th>Open</th>
 				</tr>
 								
@@ -40,9 +41,6 @@
 					<td>${scenario.name}</td>
 			    	<td>${scenario.scenid}</td>
 					<td>${scenario.description}</td>			
-					<td></td>
-					<td></td>
-					<td></td>
 					<td>
 						<a href="<c:url value='openscenario.html?scenarioid=${scenario.scenid}'/>">
 							<button align="right" type="button" value="Open">Open</button>

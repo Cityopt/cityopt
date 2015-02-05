@@ -1060,7 +1060,7 @@ public class ProjectController {
 
 		model.put("project", project);
 
-		return "scenariovariables";
+		return "editproject";
 	}
 
 	@RequestMapping(value="metricdefinition",method=RequestMethod.GET)
@@ -1121,10 +1121,10 @@ public class ProjectController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		model.put("project", project);
+	
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 		model.put("metrics", metrics);
 
@@ -1162,12 +1162,15 @@ public class ProjectController {
 		metricService.setProject(metric.getMetid(), project.getPrjid());
 		
 		try {
-			model.put("project", projectService.findByID(project.getPrjid()));
+			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		model.put("project", project);
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+
 		return "metricdefinition";
 	}
 
