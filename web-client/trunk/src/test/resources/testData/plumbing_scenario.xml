@@ -2,10 +2,10 @@
 
 <dataset>
 
-  <simulationmodel modelid="1" description="plumbing test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit"/>
+  <simulationmodel modelid="1" description="Plumbing test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="2015-01-01 00:00:00"/>
 
   <project prjid="1" name="Project 1" location="dummy" modelid="1"/>
-  <project prjid="2" name="Project 2" location="Helsinki" modelid="1"/>
+  <project prjid="2" name="Plumbing test project" location="Helsinki" modelid="1"/>
 
   <type typeid="1" name="Double"/>
   <type typeid="2" name="Integer"/>

@@ -2,9 +2,9 @@
 
 <dataset>
 
-  <simulationmodel modelid="1" description="Apros test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit"/>
+  <simulationmodel modelid="1" description="Apros test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="2015-01-01 00:00:00"/>
 
-  <project prjid="1" name="Project 1" location="Helsinki" modelid="1"/>
+  <project prjid="1" name="Apros test project" location="Helsinki" modelid="1"/>
 
   <type typeid="1" name="Double"/>
   <type typeid="2" name="Integer"/>

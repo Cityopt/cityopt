@@ -3,10 +3,15 @@ package eu.cityopt.sim.service;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
+import javax.script.ScriptException;
 import javax.sql.DataSource;
 
 import org.apache.commons.io.IOUtils;
@@ -15,8 +20,6 @@ import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.database.search.TablesDependencyHelper;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +38,8 @@ import eu.cityopt.model.Scenario;
 import eu.cityopt.model.SimulationModel;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.SimulationModelRepository;
-import eu.cityopt.repository.SimulationResultRepository;
 import eu.cityopt.sim.eval.SimulationOutput;
+import eu.cityopt.sim.eval.SimulatorConfigurationException;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -44,11 +47,7 @@ import eu.cityopt.sim.eval.SimulationOutput;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionDbUnitTestExecutionListener.class })
-@DatabaseSetup("classpath:/testData/scenGen_TestData.xml")
 public class TestSimulationService {
-    private static final String modelDescription = "plumbing test model";
-    private static final String modelPath = "/testData/plumbing.zip";
-
     @Autowired
     SimulationService simulationService;
 
@@ -61,27 +60,50 @@ public class TestSimulationService {
     @Autowired
     DataSource dataSource;
 
-    @Before
-    public void loadModel() throws IOException {
+    @Test
+    @DatabaseSetup("classpath:/testData/plumbing_scenario.xml")
+    public void testPlumbing() throws Exception {
+        loadModel("Plumbing test model", "/testData/plumbing.zip");
+        runSimulation();
+        dumpTables("plumbing");
+    }
+
+    @Test
+    @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
+    public void testModel() throws Exception {
+        loadModel("Apros test model", "/testData/testmodel.zip");
+        runSimulation();
+        dumpTables("testmodel");
+    }
+
+    public void testParallelRuns() throws Exception {
+        loadModel("Plumbing test model", "/testData/plumbing.zip");
+        runSimulation();
+        dumpTables("plumbing");
+    }
+
+    public void loadModel(String modelName, String modelResource) throws IOException {
         // The simulation test model is not included in the XML test data.
         // Load it from a separate zip file.
         SimulationModel model = 
-                simulationModelRepository.findByDescription(modelDescription).get(0);
-        try (InputStream is = this.getClass().getResource(modelPath).openStream()) {
+                simulationModelRepository.findByDescription(modelName).get(0);
+        try (InputStream is = this.getClass().getResource(modelResource).openStream()) {
             model.setModelblob(IOUtils.toByteArray(is));
         }
         simulationModelRepository.saveAndFlush(model);
     }
 
-    @Test
-    public void testSimulation() throws Exception {
+    private void runSimulation() throws ParseException, IOException,
+            SimulatorConfigurationException, InterruptedException,
+            ExecutionException, ScriptException, Exception {
         Scenario scenario = scenarioRepository.findByName("testscenario").get(0);
         Callable<SimulationOutput> job = simulationService.makeSimulationJob(scenario);
         job.call();
     }
 
-    @After
-    public void dumpTables() throws Exception {
+    public void dumpTables(String caseName) throws Exception {
+        Path outputPath = Paths.get(System.getProperty("java.io.tmpdir"))
+                .resolve(caseName + "_result.xml");
         scenarioRepository.flush();
         IDatabaseConnection dbConnection = new DatabaseConnection(
                 DataSourceUtils.getConnection(dataSource));
@@ -89,7 +111,7 @@ public class TestSimulationService {
                 TablesDependencyHelper.getAllDependentTables(dbConnection, "scenario"),
                 "simulationmodel");
         IDataSet depDataset = dbConnection.createDataSet(tableNames);
-        FlatXmlDataSet.write(depDataset, new FileOutputStream("testSimulation_result.xml"));
+        FlatXmlDataSet.write(depDataset, new FileOutputStream(outputPath.toFile()));
     }
 
     private String[] copyIfNotEqual(String[] in, String toRemove) {
