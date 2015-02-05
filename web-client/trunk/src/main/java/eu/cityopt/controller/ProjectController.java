@@ -1414,7 +1414,7 @@ public class ProjectController {
 			e1.printStackTrace();
 		}
 
-		Namespace ns = new Namespace(evaluator, componentNames, false);
+		Namespace ns = null;//new Namespace(evaluator, componentNames, false);
 		AprosRunner aprosRunner = null;
 		
 		try {
