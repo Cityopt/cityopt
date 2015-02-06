@@ -2,26 +2,35 @@ package eu.cityopt.service;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.reflect.TypeToken;
+
+import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.model.ExtParamVal;
 import eu.cityopt.repository.ExtParamValRepository;
 
 @Service("ExtParamValService")
 public class ExtParamValServiceImpl implements ExtParamValService {
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	@Autowired
 	private ExtParamValRepository extParamValRepository;
 	
-	public List<ExtParamVal> findAll() {
-		return extParamValRepository.findAll();
+	public List<ExtParamValDTO> findAll() {
+		return modelMapper.map(extParamValRepository.findAll(), 
+				new TypeToken<List<ExtParamValDTO>>() {}.getType());
 	}
 
 	@Transactional
-	public ExtParamVal save(ExtParamVal u) {
-		return extParamValRepository.save(u);
+	public ExtParamValDTO save(ExtParamValDTO u) {
+		ExtParamVal eparam = modelMapper.map(u, ExtParamVal.class);
+		eparam = extParamValRepository.save(eparam);
+		return modelMapper.map(eparam, ExtParamValDTO.class);
 	}
 
 	@Transactional
@@ -35,7 +44,7 @@ public class ExtParamValServiceImpl implements ExtParamValService {
 	}
 	
 	@Transactional
-	public ExtParamVal update(ExtParamVal toUpdate) throws EntityNotFoundException {
+	public ExtParamValDTO update(ExtParamValDTO toUpdate) throws EntityNotFoundException {
 		
 		if(extParamValRepository.findOne(toUpdate.getExtparamvalid()) == null) {
 			throw new EntityNotFoundException();
@@ -44,8 +53,14 @@ public class ExtParamValServiceImpl implements ExtParamValService {
 		return save(toUpdate);
 	}
 	
-	public ExtParamVal findByID(int id) {
-		return extParamValRepository.findOne(id);
+	public ExtParamValDTO findByID(int id) throws EntityNotFoundException {
+		ExtParamVal eparam = extParamValRepository.findOne(id);
+		
+		if(eparam == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return modelMapper.map(eparam, ExtParamValDTO.class);
 	}
 	
 }
