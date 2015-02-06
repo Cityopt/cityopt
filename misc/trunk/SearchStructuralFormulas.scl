@@ -93,15 +93,16 @@ printNodeAsXml node = do
     loop node
   where
     loop (Node name moduleName lbl cs ps isUC typ) = do
-        print ("<node name=\"" + name + "\" moduleName=\"" + moduleName
-               + "\" label=\"" + toXml lbl  + "\" isUC=\"" + show isUC
-               + "\" type=\"" + typ + "\">")
+        print ("<node" + attr "name" name + attr "moduleName" moduleName
+               + attr "label" lbl + attr "isUC" (show isUC)
+               + attr "type" typ + ">")
         for ps $ \prop -> match prop with
             ConstantProperty name value ->
-                print ("<property type=\"constant\" name=\"" + name
-                       + "\" value=\"" + value + "\"/>")
+                print ("<property type=\"constant\"" + attr "name" name
+                       + attr "value" value + "/>")
             ExpressionProperty name value ->
-                print ("<property type=\"expression\" name=\"" + name
-                       + "\" value=\"" + value + "\"/>")    
+                print ("<property type=\"expression\"" + attr "name" name
+                       + attr "value" value + "/>")    
         for cs loop
         print ("</node>")
+    attr name value = " " + name + "=\"" + toXml value + "\""
