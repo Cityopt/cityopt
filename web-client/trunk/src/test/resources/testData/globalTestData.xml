@@ -2,7 +2,13 @@
 
 <dataset>
 
-<type typeid="1" name="float"/>
+<type typeid="1" name="Double"/>
+<type typeid="2" name="Integer"/>
+<type typeid="3" name="String"/>
+<type typeid="4" name="TimeSeries/step"/>
+<type typeid="5" name="TimeSeries/linear"/>
+<type typeid="6" name="List of Double"/>
+<type typeid="7" name="List of Integer"/>
 
 <unit unitid="1" typeid="1" name="m2" />
 <unit unitid="2" typeid="1" name="W/m2K" />
@@ -20,5 +26,9 @@
 <unit unitid="14" typeid="1" name="€" />
 <unit unitid="15" typeid="1" name="m3" />
 <unit unitid="16" typeid="1" name="°C" />
+<unit unitid="17" typeid="1" name="unknown" />
+
+  <unit unitid="18" typeid="4" name="Unit/TimeSeries/step"/>
+  <unit unitid="19" typeid="5" name="Unit/TimeSeries/linear"/>
 
 </dataset>

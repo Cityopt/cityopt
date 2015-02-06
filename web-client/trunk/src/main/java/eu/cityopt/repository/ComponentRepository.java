@@ -13,4 +13,8 @@ import eu.cityopt.model.Component;
 public interface ComponentRepository extends JpaRepository<Component, Integer> {
 	@Query("select c from Component c where Lower(c.name) like CONCAT('%',Lower(:name),'%')")
 	List<Component> findByName(@Param("name") String name);
+	
+	@Query("select c from Component c where prjid = :prjid")
+	List<Component> findByProject(@Param("prjid") int prjid);
+	
 }

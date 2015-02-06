@@ -18,9 +18,9 @@
 <component name="testcomponent 7" prjid="1" componentid="7"/>
 <component name="testcomponent 8" prjid="1" componentid="8"/>
 <component name="testcomponent 9" prjid="1" componentid="9"/>
-<component name="testcomponent 10" prjid="1" componentid="10"/>
-<component name="testcomponent 11" prjid="1" componentid="11"/>
-<component name="testcomponent 12" prjid="1" componentid="12"/>
+<component name="testcomponent 10" prjid="2" componentid="10"/>
+<component name="testcomponent 11" prjid="2" componentid="11"/>
+<component name="testcomponent 12" prjid="2" componentid="12"/>
 
 <type typeid="1" name="myType"/>
 <unit unitid="1" name="myUnit" typeid="1"/>

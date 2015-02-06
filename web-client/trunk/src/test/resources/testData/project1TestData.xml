@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <dataset>
+<simulationmodel modelid="1" description="Apros test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit"/>
 
-<project prjid="1" name="Sample Project" />
+<project prjid="1" location="Helsinki" name="Sample Project" modelid="1" />
 
 <component componentid="1" prjid="1" name="Solar_thermal_panels" />
 <component componentid="2" prjid="1" name="Storage_Vertical_tank_with_heat_structure" />
 <component componentid="3" prjid="1" name="Gas_boiler" />
-<component componentid="4" prjid="1" name="Building" />
+<!--<component componentid="4" prjid="1" name="Building" />-->
 <!--  -->
 <inputparameter inputid="1" componentid="1" unitid="1" name="collector_area"  />
 <inputparameter inputid="2" componentid="1" unitid="2" name="Heat_loss_coefficient" /> <!-- at (tm-ta) =0 -->
 <inputparameter inputid="3" componentid="1" unitid="7" name="Temperature_dependence_of_the_heat_losses" />
-<inputparameter inputid="4" componentid="1" name="zero_loss_coefficient_for_total_or_global_radiation_at_normal_incidence" />
+<inputparameter inputid="4" componentid="1" unitid="17" name="zero_loss_coefficient_for_total_or_global_radiation_at_normal_incidence" />
 
 <inputparameter inputid="5" componentid="2" unitid="3" name="Height_of_tank"  />
 <inputparameter inputid="6" componentid="2" unitid="1" name="Cross_sectional_free_area_of_tank" />
@@ -22,14 +23,14 @@
 <inputparameter inputid="9" componentid="3" unitid="5" name="Lower_heating_value"  />
 <inputparameter inputid="10" componentid="3" unitid="6" name="Maximal_Power" />
 <inputparameter inputid="11" componentid="3" unitid="6" name="Nominal_Power" />
-<inputparameter inputid="12" componentid="3" name="Standby_efficiency" />
-<inputparameter inputid="13" componentid="3" name="Standby_power_share_of_nominal_power" />
+<inputparameter inputid="12" componentid="3" unitid="17" name="Standby_efficiency" />
+<inputparameter inputid="13" componentid="3" unitid="17" name="Standby_power_share_of_nominal_power" />
 
-<inputparameter inputid="14" componentid="4" unitid="6" name="Energy_demand_profile"  />
+<!--<inputparameter inputid="14" componentid="4" unitid="6" name="Energy_demand_profile"  />-->
 
-<extparam extparamid="1" prjid="1" unitid="8" name="Specific_Heat_Water" defaultvalue="0" />
-<extparam extparamid="2" prjid="1" unitid="9" name="Cost_of_the_N_Gas" defaultvalue="0" />
-<extparam extparamid="3" prjid="1" unitid="10" name="Emissions_N_Gas" defaultvalue="0" />
+<extparam extparamid="1" prjid="1" unitid="8" name="Specific_Heat_Water" defaultvalue="4" />
+<extparam extparamid="2" prjid="1" unitid="9" name="Cost_of_the_N_Gas" defaultvalue="3" />
+<extparam extparamid="3" prjid="1" unitid="10" name="Emissions_N_Gas" defaultvalue="2" />
 
 <extparamval extparamvalid="1" extparamid="1" value="4.18" />
 <extparamval extparamvalid="2" extparamid="2" value="30" />
@@ -42,16 +43,16 @@
 <extparamvalsetcomp extparamvalsetid="1" extparamvalid="3"/>
 
 <metric metid="1" prjid="1" unitid="11" name="Energy_Supply" expression="integrate(heating_power, 0, INFINITY)" />
-<metric metid="2" prjid="1" unitid="6" name="Power_Supply" expression="Specific_Heat_Water*Liquid_Volume_Output:Liquid_Temperature" />
-<metric metid="3" prjid="1" unitid="12" name="Energy_Supply" expression="integrate(Specific_Heat_Water*Liquid_Volume_Output:Liquid_Temperature, 0, INFINITY)" />
-<metric metid="4" prjid="1" unitid="12" name="Energy_Supply" expression="integrate(Heating_power, 0, INFINITY)" />
+<metric metid="2" prjid="1" unitid="18" name="Power_Supply" expression="Specific_Heat_Water*Liquid_Volume_Output/Liquid_Temperature" />
+<metric metid="3" prjid="1" unitid="12" name="Energy_Supply" expression="integrate(Specific_Heat_Water*Liquid_Volume_Output/Liquid_Temperature, 0, INFINITY)" />
+<metric metid="4" prjid="1" unitid="12" name="Energy_Supply" expression="integrate(Heating_Power, 0, INFINITY)" />
 <metric metid="5" prjid="1" unitid="13" name="CO2_Emissions" expression="integrate(Emissions_N_Gas*Heating_Power, 0, INFINITY)" />
 <metric metid="6" prjid="1" unitid="14" name="Cost" expression="integrate(Cost_of_the_N_Gas*Heating_Power, 0, INFINITY)" />
 
-<outputvariable outvarid="1" componentid="1" unitid="6" name="heating_power"/>
-<outputvariable outvarid="2" componentid="2" unitid="15" name="Liquid_Volume_Output"/>
-<outputvariable outvarid="3" componentid="2" unitid="16" name="Liquid_Temperature"/>
-<outputvariable outvarid="4" componentid="3" unitid="6" name="Heating_Power"/>
+<outputvariable outvarid="1" componentid="1" unitid="18" name="heating_power"/>
+<outputvariable outvarid="2" componentid="2" unitid="18" name="Liquid_Volume_Output"/>
+<outputvariable outvarid="3" componentid="2" unitid="18" name="Liquid_Temperature"/>
+<outputvariable outvarid="4" componentid="3" unitid="18" name="Heating_Power"/>
 
 <!-- input parameter constraints -->
 <searchconstraint scid="1" prjid="1" unitid="1" expression="collector_area" lowerbound="0.1" upperbound="250" />

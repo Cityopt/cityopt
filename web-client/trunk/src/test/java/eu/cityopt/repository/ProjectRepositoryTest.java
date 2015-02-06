@@ -3,7 +3,11 @@ package eu.cityopt.repository;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import java.util.Iterator;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -24,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
+import eu.cityopt.model.Component;
 import eu.cityopt.model.Project;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.UserGroupProjectRepository;
@@ -43,6 +48,12 @@ public class ProjectRepositoryTest {
 	
 	@Autowired 
 	UserGroupProjectRepository userGroupProjectRepository;
+	
+	@Autowired 
+	ComponentRepository componentRepository;
+	
+	@PersistenceContext
+	EntityManager em;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -130,8 +141,17 @@ public class ProjectRepositoryTest {
 	{		
 		List<Project> projects = projectRepository.findByName("Project 3");
 		
+		//delete projects components to be able to delete project if no cascadetype is set
+		for(Iterator<Project> p = projects.iterator(); p.hasNext();){
+			Project item = p.next();
+			
+			List<Component> comp = item.getComponents();
+			
+			componentRepository.delete(comp);
+		}
+		
 		projectRepository.delete(projects);
-				
+		
 		assertEquals(0, projectRepository.findByName("Project 3").size());	
 	}	
 
