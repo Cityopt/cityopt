@@ -1,3 +1,4 @@
+import "String"
 import "Simantics/DB"
 import "Simantics/Variables"
 import "Apros/Variables"
@@ -17,6 +18,7 @@ deriving instance Show Property
 data Node = Node
     String // Simantics name (unique between siblings)
     String // Apros name (unique globally)
+    String // Label (descriptive, not unique, may have spaces etc.)
     [Node] // Children
     [Property] // Properties
     Boolean // Is instance of a user component
@@ -25,7 +27,7 @@ data Node = Node
 deriving instance Show Node
 
 @private
-isInterestingNode (Node _ _ [] [] _ _) = False
+isInterestingNode (Node _ _ _ [] [] _ _) = False
 isInterestingNode _ = True
 
 @private
@@ -40,11 +42,16 @@ typeName v = mdo
     typ <- possiblePropertyValue v "Type"
     possibleNameOf typ
 
+@private
+labelOf :: Variable -> <ReadGraph> Maybe String
+labelOf v = possiblePropertyValue v "HasLabel"
+
 searchFormulas :: <ReadGraph> Node
 searchFormulas = toNode ((variable $ uriOf currentModel)
                          `child` "Configuration")
   where
     toNode v = let
+        lbl = labelOf v `orElse` ""
         cs = filter isInterestingNode 
              $ map toNode 
              $ filter (\c -> name c != "__CONTAINER__") 
@@ -55,7 +62,7 @@ searchFormulas = toNode ((variable $ uriOf currentModel)
             _ -> map valueOf $ filter isStructuralProperty props
         isUC = isUserComponent (possiblePropertyValue v "Type")
         typ = typeName v `orElse` ""
-      in Node (name v) (solverName v) cs ps isUC typ
+      in Node (name v) (solverName v) lbl cs ps isUC typ
     possibleExpressionOf prop = mdo
         exp <- possiblePropertyValue prop "expression"
         return $ ExpressionProperty (name prop) exp
@@ -72,12 +79,23 @@ searchFormulas = toNode ((variable $ uriOf currentModel)
             Nothing -> False
             Just l -> elem "http://www.simantics.org/Structural-1.2/Property" l
 
-
-printNodeAsXml node = loop node
+toXml :: String -> String
+toXml = replace [("&", "&amp;"), ("<", "&lt;"), (">", "&gt;"),
+                 ("\"", "&quot;"), ("'", "&apos;")]
   where
-    loop (Node name moduleName cs ps isUC typ) = do
+    replace [] str = str
+    replace lst str = replace (tail lst) $ let
+        (f, t) = lst ! 0
+      in replaceAll f t str 
+
+printNodeAsXml node = do
+    print "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>"
+    loop node
+  where
+    loop (Node name moduleName lbl cs ps isUC typ) = do
         print ("<node name=\"" + name + "\" moduleName=\"" + moduleName
-               + "\" isUC=\"" + show isUC + "\" type=\"" + typ + "\">")
+               + "\" label=\"" + toXml lbl  + "\" isUC=\"" + show isUC
+               + "\" type=\"" + typ + "\">")
         for ps $ \prop -> match prop with
             ConstantProperty name value ->
                 print ("<property type=\"constant\" name=\"" + name
