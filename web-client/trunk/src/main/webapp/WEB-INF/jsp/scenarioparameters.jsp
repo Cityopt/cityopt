@@ -19,12 +19,11 @@
 
 <body>
 <table cellspacing="0" cellpadding="0">
-	<col style="width:100px">
-	<col style="width:800px">
 	<tr>
 		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
+		<td style="width: 30px"></td>
 		<td>
 			<div style="overflow:scroll;height:600px;width:800px;overflow:auto">
 			<table>

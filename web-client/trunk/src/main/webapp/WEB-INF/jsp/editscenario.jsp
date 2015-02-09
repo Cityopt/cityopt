@@ -13,14 +13,11 @@
 </head>
 <body>
 <table cellspacing="0" cellpadding="0">
-	<col style="width:100px">
-	<col style="width:30px">
-	<col style="width:800px">
 	<tr>
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td></td>
+		<td style="width: 30px"></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:600px;width:800px;overflow:auto">
 			<form:form method="post" action="editscenario.html?action=update" modelAttribute="scenario">
