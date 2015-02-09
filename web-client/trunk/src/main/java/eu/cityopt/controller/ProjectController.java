@@ -1,6 +1,7 @@
 package eu.cityopt.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ComponentInputParamDTO;
 import eu.cityopt.DTO.ExtParamDTO;
+import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
@@ -37,6 +39,7 @@ import eu.cityopt.service.ComponentInputParamDTOServiceImpl;
 import eu.cityopt.service.ComponentService;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ExtParamService;
+import eu.cityopt.service.ExtParamValServiceImpl;
 import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParamValServiceImpl;
 import eu.cityopt.service.InputParameterService;
@@ -76,7 +79,10 @@ public class ProjectController {
 
 	@Autowired
 	ExtParamService extParamService;
-	
+
+	@Autowired
+	ExtParamValServiceImpl extParamValService;
+
 	@Autowired
 	MetricService metricService;
 	
@@ -290,7 +296,7 @@ public class ProjectController {
 		}
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
-		if (scenario != null)
+		if (scenario != null && scenario.getScenid() > 0)
 		{
 			model.put("scenario", scenario);
 			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
@@ -351,10 +357,8 @@ public class ProjectController {
 			try {
 				tempScenario = scenarioService.findByID(Integer.parseInt(scenarioid));
 			} catch (NumberFormatException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			} catch (EntityNotFoundException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			
@@ -363,7 +367,6 @@ public class ProjectController {
 				try {
 					scenarioService.delete(tempScenario.getScenid());
 				} catch (EntityNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -392,14 +395,14 @@ public class ProjectController {
 		}
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		ComponentDTO selectedComponent = null;
+		int nSelectedCompId = 0;
 		
 		if (selectedCompId != null)
 		{
-			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			nSelectedCompId = Integer.parseInt(selectedCompId);
 			try {
 				selectedComponent = componentService.findByID(nSelectedCompId);
 			} catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			//model.put("selectedcompid", selectedCompId);
@@ -409,7 +412,17 @@ public class ProjectController {
 		model.put("project", project);
 
 		List<ComponentInputParamDTO> inputParamVals = componentInputParamService.findAllByPrjAndScenId(project.getPrjid(), scenario.getScenid());
-		model.put("componentInputParamVals", inputParamVals);
+		List<ComponentInputParamDTO> componentInputParamVals = new ArrayList<ComponentInputParamDTO>();
+		
+ 		for (int i = 0; i < inputParamVals.size(); i++)
+		{
+			if (inputParamVals.get(i).getComponentid() == nSelectedCompId)
+			{
+				componentInputParamVals.add(inputParamVals.get(i));
+			}
+		}
+		
+		model.put("componentInputParamVals", componentInputParamVals);
 		
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
@@ -431,11 +444,10 @@ public class ProjectController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		model.put("project", project);
-		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+		Set<ExtParamValDTO> extParams = null;//projectService...getExtParams(project.getPrjid());
 		model.put("extParams", extParams);
 		
 		return "scenariovariables";
@@ -481,7 +493,6 @@ public class ProjectController {
 		try {
 			user = userService.findByID(nUserId);
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		UserForm userForm = new UserForm();
@@ -499,10 +510,8 @@ public class ProjectController {
 		try {
 			user = (AppUserDTO) userService.findByID(Integer.parseInt(userId));
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -548,6 +557,9 @@ public class ProjectController {
 	@RequestMapping(value="viewchart",method=RequestMethod.GET)
 	public String getViewChart(Model model){
 	
+		List<ComponentDTO> components = componentService.findAll();
+		model.addAttribute("components", components);
+
 		return "viewchart";
 	}
 	
@@ -854,7 +866,6 @@ public class ProjectController {
 		try {
 			updatedInputParam = inputParamService.findByID(nInputParamId);
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		updatedInputParam.setName(inputParam.getName());
@@ -872,6 +883,59 @@ public class ProjectController {
 		model.put("project", project);
 		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
 		model.put("extParams", extParams);
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+
+		return "projectparameters";
+	}
+
+	@RequestMapping(value="editinputparamvalue", method=RequestMethod.GET)
+	public String getEditInputParamVal(Model model, @RequestParam(value="inputparamvalid", required=true) String inputid) {
+		int nInputId = Integer.parseInt(inputid);
+		ComponentInputParamDTO inputParamVal = null;
+
+		try {
+			inputParamVal = null;//componentInputParamService. inputParamValService.findByID(nInputId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		model.addAttribute("inputParamVal", inputParamVal);
+		
+		return "editinputparamvalue";
+	}
+
+	@RequestMapping(value="editinputparamvalue", method=RequestMethod.POST)
+	public String getEditInputParamValPost(InputParamValDTO inputParamVal, Map<String, Object> model,
+		@RequestParam(value="inputparamvalid", required=true) String inputParamValId){
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		int nInputParamValId = Integer.parseInt(inputParamValId);
+		InputParamValDTO updatedInputParamVal = null;
+		
+		try {
+			updatedInputParamVal = inputParamValService.findByID(nInputParamValId);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		updatedInputParamVal.setValue(inputParamVal.getValue());
+		//UnitDTO unit = unitService.save(new UnitDTO());
+		inputParamValService.save(updatedInputParamVal);
+				
+		model.put("selectedcompid", updatedInputParamVal.getInputparameter().getComponent().getComponentid());
+
+		try {
+			model.put("selectedComponent", inputParamValService.findByID(updatedInputParamVal.getInputparameter().getComponent().getComponentid()));
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		model.put("project", project);
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
 
@@ -899,7 +963,6 @@ public class ProjectController {
 		try {
 			component = componentService.findByID(nSelectedCompId);
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -1063,6 +1126,68 @@ public class ProjectController {
 		return "editproject";
 	}
 
+	@RequestMapping(value="editextparamvalue", method=RequestMethod.GET)
+	public String getEditExtParamVal(Map<String, Object> model,
+		@RequestParam(value="extparamvalid", required=true) String extparamvalid) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		model.put("project", project);
+
+		int nExtParamValId = Integer.parseInt(extparamvalid);
+		ExtParamValDTO extParamVal = null;
+
+		try {
+			extParamVal = extParamValService.findByID(nExtParamValId);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		model.put("extParamVal", extParamVal);
+
+		return "editextparamvalue";
+	}
+
+	@RequestMapping(value="editextparamvalue", method=RequestMethod.POST)
+	public String getEditExtParamValPost(ExtParamValDTO extParamVal, Map<String, Object> model,
+		@RequestParam(value="extparamvalid", required=true) String extParamValId){
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+
+		int nExtParamValId = Integer.parseInt(extParamValId);
+		ExtParamValDTO updatedExtParamVal = null;
+
+		try {
+			updatedExtParamVal = extParamValService.findByID(nExtParamValId);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		updatedExtParamVal.setValue(extParamVal.getValue());
+		extParamValService.save(updatedExtParamVal);
+
+		model.put("project", project);
+
+		return "editproject";
+	}
+
 	@RequestMapping(value="metricdefinition",method=RequestMethod.GET)
 	public String getMetricDefinition(Map<String, Object> model,
 		@RequestParam(value="metricid", required=false) String metricid,
@@ -1072,13 +1197,12 @@ public class ProjectController {
 		
 		if (project == null)
 		{
-			return "createproject";
+			return "error";
 		}
 
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e2) {
-			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
 
@@ -1181,7 +1305,6 @@ public class ProjectController {
 		try {
 			metric = metricService.findByID(nMetricId);
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		model.addAttribute("metric", metric);
@@ -1196,7 +1319,6 @@ public class ProjectController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -1210,7 +1332,6 @@ public class ProjectController {
 		try {
 			oldMetric = metricService.findByID(nMetricId);
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		oldMetric.setName(metric.getName());
@@ -1393,6 +1514,11 @@ public class ProjectController {
 	public String getRunScenario(Map<String, Object> model)
 	{
 		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
 		
 		try {
 			project = projectService.findByID(project.getPrjid());
@@ -1401,40 +1527,17 @@ public class ProjectController {
 		}
 
 		List<ComponentDTO> components = componentService.findAll();
-		Set<String> componentNames = new HashSet<String>();
-		
-		for (int i = 0; i < components.size(); i++)
-		{
-			componentNames.add(components.get(i).getName());
-		}
-		
-		Evaluator evaluator = null;
-		try {
-			evaluator = new Evaluator();
-		} catch (EvaluationException e1) {
-			e1.printStackTrace();
-		} catch (ScriptException e1) {
-			e1.printStackTrace();
-		}
+		model.put("components", components);
 
-		Namespace ns = null;//new Namespace(evaluator, componentNames, false);
-		AprosRunner aprosRunner = null;
-		
-		try {
-			aprosRunner = new AprosRunner(null, null, null, null, null);
-		} catch (TransformerException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			aprosRunner.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
 		return "viewchart";
 	}	
 
+	@RequestMapping(value="geneticalgorithm", method=RequestMethod.GET)
+	public String getGeneticAlgorithm(Map<String, Object> model)
+	{
+		return "geneticalgorithm";
+	}	
+	
 	@RequestMapping(value="error", method=RequestMethod.GET)
 	public String getError(Map<String, Object> model)
 	{

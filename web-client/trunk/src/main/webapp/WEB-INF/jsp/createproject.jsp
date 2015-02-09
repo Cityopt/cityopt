@@ -51,7 +51,7 @@
 				</tr>
 				<tr>
 					<td colspan="2" align="Right">
-						<input type="button" id="uploadDiagram" value="Upload diagram"/>
+						<input type="button" id="uploadDiagram" value="Upload diagram" style="width:120px"/>
 					</td>
 				</tr>
 				<tr>
@@ -63,7 +63,7 @@
 							<tr>
 								<td></td>
 								<td></td>
-								<td align="right"><input type="submit" value="Create a project" style="width:150px"></td>
+								<td align="right"><input type="submit" value="Create a project" style="width:120px"></td>
 							</tr>
 						</table>
 					</td>

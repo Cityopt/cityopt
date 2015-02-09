@@ -21,16 +21,20 @@
 
 		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
+			<div style="overflow:scroll;height:500px;width:600px;overflow:auto">
 			<h2>Open project</h2>
-			<table class="tablestyle" width="400" border="1">
-			
+			<table class="tablestyle" width="600" border="1">
+				<col style="width:150px">	
+				<col style="width:50px">	
+				<col style="width:100px">	
+				<col style="width:250px">	
+				<col style="width:50px">	
+				
 			<tr height="20">
 			    <th>Name</th>
 			    <th>Id</th>
 			    <th>Location</th>
 			    <th>Description</th>
-			    <th>Apros version</th>
 			    <th>Open</th>
 			</tr>
 			
@@ -40,7 +44,6 @@
 			    	<td>${project.prjid}</td>
 					<td>${project.location}</td>			
 					<td>${project.description}</td>			
-					<td></td>
 					
 					<td>
 						<a href="<c:url value='editproject.html?prjid=${project.prjid}'/>">

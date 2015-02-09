@@ -53,7 +53,7 @@
 						    	<td>${extParam.defaultvalue}</td>
 						    	<td>${extParam.defaultvalue}</td>
 						    	<td>
-									<a href="<c:url value='editextparam.html?extparamid=${extParam.extparamid}'/>">
+									<a href="<c:url value='editextparamvalue.html?extparamvalid=${extParam.extparamid}'/>">
 										<button align="right" type="button" value="Edit">Edit</button>
 									</a>
 								</td>

@@ -22,7 +22,7 @@
 		</td>
 		<td></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:500px;width:800px;overflow:auto">
+			<div style="overflow:scroll;height:600px;width:800px;overflow:auto">
 			<form:form method="post" action="editscenario.html?action=update" modelAttribute="scenario">
 			<table>
 				<tr>
@@ -66,6 +66,10 @@
 								<td><a href="scenariovariables.html"><button type="button" style="width:150px">Set</button></a></td>
 							</tr>
 							<tr height="10"></tr>
+							<tr>
+								<td><b>Components</b></td>
+								<td><b>Input parameter values</b></td>
+							</tr>
 							<tr>						
 								<td valign="top">
 									<table class="tablestyle" border="1">

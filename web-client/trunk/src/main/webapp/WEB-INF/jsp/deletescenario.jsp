@@ -19,13 +19,13 @@
 		</td>
 		<td width="30"></td>
 		<td valign="top">	
-			<div style="overflow:scroll;height:400px;width:500px;overflow:auto">
+			<div style="overflow:scroll;height:400px;width:600px;overflow:auto">
 			<form:form method="post" action="deletescenario.html">
 			<h2>Delete scenario</h2>
-			<table class="tablestyle" width="400" border="1">
-				<col style="width:150px">
+			<table class="tablestyle" width="600" border="1">
+				<col style="width:200px">	
 				<col style="width:50px">
-				<col style="width:150px">
+				<col style="width:300px">
 				<col style="width:50px">
 				<tr height="20">
 				    <th>Name</th>

@@ -1,18 +1,11 @@
 <table class="menustyle" height=600 align="left">
 <tr>
-	<td>
+	<td valign="top">
 		<b>Main menu</b>
 	</td>
 </tr>
-<tr>
-	<td>
-		<a href="usermanagement.html">User management</a>
-	</td>
-</tr>
 <tr height=10>
-	<td>
-		<!--<img src="assets/img/line.png">-->
-	</td>
+	<td></td>
 </tr>
 <tr>
 	<td><b>Project</b></td>
@@ -45,6 +38,18 @@
 		<a href="deleteproject.html">Delete project</a>
 	</td>
 </tr>
+<% if (request.getSession().getAttribute("project") != null) { %>
+<tr>
+	<td>
+		<a href="metricdefinition.html">Metrics</a>
+	</td></tr>
+<% } else { %>
+<tr>
+	<td>
+		Metrics
+	</td>
+</tr>
+<% } %>
 <tr height=10>
 	<td>
 		
@@ -115,21 +120,17 @@
 		
 	</td>
 </tr>
-<tr>
-	<td>
-		<a href="metricdefinition.html">Metric definition</a>
-	</td></tr>
 <tr height=10>
 	<td>
 		
 	</td>
 </tr>
 <tr>
-	<td><b>Optimization set</b></td>
+	<td><b>Optimization</b></td>
 </tr>
 <tr>
 	<td>
-		<a href="databaseoptimization.html">Database optimization</a>
+		<a href="databaseoptimization.html">Create optimization set</a>
 	</td></tr>
 <tr>
 	<td>
@@ -162,5 +163,19 @@
 <tr>
 	<td>
 		<a href="viewtable.html">Table</a>
-	</td></tr>
+	</td>
+</tr>
+<tr height=10>
+	<td>
+		
+	</td>
+</tr>
+<tr>
+	<td><b>Users</b></td>
+</tr>
+<tr>
+	<td>
+		<a href="usermanagement.html">User management</a>
+	</td>
+</tr>
 </table>

@@ -31,86 +31,85 @@
 				<col style="width:30px">
 				<col style="width:750px">	
 				<tr>
-					<td colspan="2" height="80">
+					<td></td>
+					<td height="80">
 						<h2>Scenario parameters</h2>
 					</td>
 				</tr>
 				<tr>
-					<td>
-					</td>
+					<td></td>
 					<td>
 						<table>
+							<col style="width:250px">
+							<col style="width:50px">
+							<col style="width:300px">	
 							<tr>
 								<td>
-									<b>Components parameters</b>
+									<b>Components</b>
+								</td>
+								<td></td>
+								<td>
+									<b>Input parameter values</b>
 								</td>
 							</tr>
 							<tr>
-								<td>
-									<table width="750">
+								<td valign="top">
+									<table class="tablestyle">
+										<col style="width:80px">
 										<col style="width:150px">
-										<col style="width:50px">
-										<col style="width:400px">
-										<col style="width:150px">
-										<tr>						
-											<td>
-												<table class="tablestyle">
-													<col style="width:80px">
-													<col style="width:150px">
-													<col style="width:80px">
-													<tr>
-														<th>Select</th>
-														<th>Components</th>
-														<th>Id</th>
-													</tr>
-													
-													<c:forEach items="${components}" var="component">
-													<c:if test="${selectedComponent.componentid == component.componentid}">
-														<tr style="background-color: rgb(140, 200, 200)">
-													</c:if>
-													<c:if test="${selectedComponent.componentid != component.componentid}">
-														<tr>
-													</c:if>
-														<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
-														<td>${component.name}</td>
-												    	<td>${component.componentid}</td>
-												   	</tr>
-													</c:forEach>
-												</table>
-											</td>
-											<td></td>
-											<td valign="top">
-												<table class="tablestyle">
-													<col style="width:150px">
-													<col style="width:60px">
-													<col style="width:60px">
-													<col style="width:60px">
-													<tr>
-														<th>Input parameter</th>
-														<th>Id</th>
-														<th>Value</th>
-														<th>Edit</th>
-													</tr>
-													
-													<c:forEach items="${componentInputParamVals}" var="componentInputParamVal">
-													<tr>
-														<td>${componentInputParamVal.inputparametername}</td>
-												    	<td>${componentInputParamVal.inputid}</td>
-												    	<td>${componentInputParamVal.value}</td>
-														<td>
-															<a href="<c:url value='editinputparameter.html?inputparameterid=${inputParam.inputid}'/>">
-																<button align="right" type="button" value="Edit">Edit</button>
-															</a>
-														</td>
-												   	</tr>
-													</c:forEach>
-												</table>
-											</td>
+										<col style="width:80px">
+										<tr>
+											<th>Select</th>
+											<th>Components</th>
+											<th>Id</th>
 										</tr>
+										
+										<c:forEach items="${components}" var="component">
+										<c:if test="${selectedComponent.componentid == component.componentid}">
+											<tr style="background-color: rgb(140, 200, 200)">
+										</c:if>
+										<c:if test="${selectedComponent.componentid != component.componentid}">
+											<tr>
+										</c:if>
+											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+											<td>${component.name}</td>
+									    	<td>${component.componentid}</td>
+									   	</tr>
+										</c:forEach>
+									</table>
+								</td>
+								<td></td>
+								<td valign="top">
+									<table class="tablestyle">
+										<col style="width:150px">
+										<col style="width:60px">
+										<col style="width:60px">
+										<col style="width:60px">
+										<tr>
+											<th>Input parameter</th>
+											<th>Id</th>
+											<th>Value</th>
+											<th>Edit</th>
+										</tr>
+										
+										<c:forEach items="${componentInputParamVals}" var="componentInputParamVal">
+										<tr>
+											<td>${componentInputParamVal.inputparametername}</td>
+									    	<td>${componentInputParamVal.inputid}</td>
+									    	<td>${componentInputParamVal.value}</td>
+											<td>
+												<a href="<c:url value='editinputparamvalue.html?inputparamvalid=${componentInputParamVal.inputid}'/>">
+													<button align="right" type="button" value="Edit">Edit</button>
+												</a>
+											</td>
+									   	</tr>
+										</c:forEach>
 									</table>
 								</td>
 							</tr>
 							<tr>
+								<td></td>
+								<td></td>
 								<td align="right">
 									<a href="editscenario.html"><button type="button">Close</button></a>
 							    </td>
