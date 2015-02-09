@@ -1,5 +1,7 @@
 package eu.cityopt.service;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -12,12 +14,14 @@ import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
+import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ProjectScenariosDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.ExtParam;
+import eu.cityopt.model.ExtParamVal;
 import eu.cityopt.model.Metric;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
@@ -128,6 +132,17 @@ public class ProjectServiceImpl implements ProjectService{
 		Project item = projectRepository.findOne(prjid);
 		Set<ExtParam> extParams = item.getExtparams(); 
 		return modelMapper.map(extParams, new TypeToken<Set<ExtParamDTO>>() {}.getType());
+	}
+	
+	public Set<ExtParamValDTO> getExtParamVals(int prjid) {
+		Project item = projectRepository.findOne(prjid);
+		Set<ExtParam> extParams = item.getExtparams(); 
+		Set<ExtParamVal> extParamVals = new HashSet<ExtParamVal>();
+		for(Iterator<ExtParam> i = extParams.iterator(); i.hasNext();){
+			ExtParam ep = i.next();
+			extParamVals.addAll(ep.getExtparamvals());
+		}
+		return modelMapper.map(extParamVals, new TypeToken<Set<ExtParamValDTO>>() {}.getType());
 	}
 	
 	public Set<MetricDTO> getMetrics(int prjid) {

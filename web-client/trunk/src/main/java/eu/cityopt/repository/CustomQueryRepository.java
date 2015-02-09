@@ -51,4 +51,33 @@ public class CustomQueryRepository {
 		
 		return components;
 	}
+
+	public List<ComponentInputParamDTO> findComponentsWithInputParamsByCompId(
+			int componentId) {
+		String sql = "SELECT inputparameter.componentid,"
+				+ " component.\"name\" componentName,"
+				+ " inputparameter.inputid,"
+				+ " inputparameter.\"name\" inputParameterName,"
+				+ " inputparameter.defaultvalue,"
+				+ " inputparamval.scendefinitionid,"
+				+ " inputparamval.\"value\","
+				+ " inputparamval.scenid scenarioID,"
+				+ " component.prjid"
+				+ " FROM inputparameter"
+				+ " INNER JOIN component ON component.componentid=inputparameter.componentid"
+				+ " LEFT JOIN"
+				+ " (SELECT *"
+				+ " FROM inputparamval"
+				+ " ) inputparamval ON inputparameter.inputid=inputparamval.inputid"
+				+ "	WHERE component.componentId=?";
+		
+//		String [] args = new String[] {String.valueOf(prjid), String.valueOf(scenid) };
+//		Integer [] argsi = new Integer [] {prjid, scenid };
+		Object [] argso = new Object [] { componentId };
+		
+		List<ComponentInputParamDTO> components = template.query(sql, argso,
+				new BeanPropertyRowMapper<ComponentInputParamDTO>(ComponentInputParamDTO.class));
+		
+		return components;
+	}
 }

@@ -19,4 +19,9 @@ public class ComponentInputParamDTOServiceImpl implements ComponentInputParamDTO
 		return cqRepository.findComponentsWithInputParams(prjid, scenid);
 	}
 	
+	@Override
+	public List<ComponentInputParamDTO> findAllByComponentId(int componentId) {
+		return cqRepository.findComponentsWithInputParamsByCompId(componentId);
+	}
+	
 }

@@ -9,4 +9,5 @@ public interface ComponentInputParamDTOService {
 
 	List<ComponentInputParamDTO> findAllByPrjAndScenId(int prjid, int scenid);
 	
+	List<ComponentInputParamDTO> findAllByComponentId(int componentId);
 }
