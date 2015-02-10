@@ -136,4 +136,9 @@ public class AprosModel implements SimulationModel {
     public Instant getTimeOrigin() {
         return timeOrigin;
     }
+
+    @Override
+    public Document getAprosUserComponentStructure() {
+        return uc_props;
+    }
 }
