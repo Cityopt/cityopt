@@ -30,7 +30,7 @@ import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.eval.util.UncloseableInputStream;
 
 public class AprosModel implements SimulationModel {
-    private static String USER_COMPONENT_PROPERTIES_FILENAME = "nodes.xml";
+    private static String USER_COMPONENT_PROPERTIES_FILENAME = "uc_props.xml";
     private static String MODEL_CONFIGURATION_FILENAME = "cityopt.properties";
 
     TempDir modelDir;
