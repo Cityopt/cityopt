@@ -53,7 +53,7 @@ in the Java properties text format.  The cityopt.properties file may define
 the following properties:
 
 - resultFiles is a semicolon-separated list of output file patterns,
-  for example: "resultFiles = *.dat;*.out".  It defines which files
+  for example: "resultFiles = *.dat;myfile.out".  It defines which files
   the Apros model outputs, and which are then read back to the CityOPT
   database.  It is recommended that the patterns exclude any model input
   files contained in the zip.  If the resultFiles property is not defined,
