@@ -32,7 +32,7 @@
 						<table>
 							<tr>
 								<td>Project name:</td>
-								<td><form:input type="text" path="name"/></td>
+								<td><form:input type="text" path="name" style="width:200px"/></td>
 								<td></td>
 								<td><input type="submit" value="Update scenario" style="width:120px"></td>
 							</tr>
@@ -44,7 +44,7 @@
 							</tr>
 							<tr>						
 								<td>Description:</td>
-								<td><form:textarea type="text" rows="3" path="description"/></td>
+								<td><form:textarea type="text" rows="3" path="description" style="width:200px"/></td>
 								<td></td>
 								<td><input type="submit" value="Abort run scenario" style="width:120px"></td>
 							</tr>
@@ -56,11 +56,11 @@
 							</tr>
 							<tr>						
 								<td>Input parameters:</td>
-								<td><a href="scenarioparameters.html"><button type="button" style="width:150px">Set</button></a></td>
+								<td><a href="scenarioparameters.html"><button type="button" style="width:100px">Set</button></a></td>
 							</tr>
 							<tr>						
 								<td>External parameters:</td>
-								<td><a href="scenariovariables.html"><button type="button" style="width:150px">Set</button></a></td>
+								<td><a href="scenariovariables.html"><button type="button" style="width:100px">Set</button></a></td>
 							</tr>
 							<tr height="10"></tr>
 							<tr>

@@ -145,7 +145,7 @@
 									<table width="100%">
 										<tr>
 											<td>
-												<table class="tablestyle" width="400">
+												<table class="tablestyle" width="750">
 													<col style="width:200px">
 													<col style="width:50px">
 													<col style="width:100px">

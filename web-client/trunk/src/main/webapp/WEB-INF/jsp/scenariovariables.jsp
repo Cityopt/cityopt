@@ -1,4 +1,5 @@
 <%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
+<%--@elvariable id="extParamVal" type="com.cityopt.DTO.ExtParamValDTO"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -46,12 +47,12 @@
 							    <th>Edit</th>
 							</tr>
 							
-							<c:forEach items="${extParams}" var="extParam">
+							<c:forEach items="${extParamVals}" var="extParamVal">
 							<tr>
-								<td>${extParam.name}</td>
-						    	<td>${extParam.extparamid}</td>
-						    	<td>${extParam.defaultvalue}</td>
-						    	<td>${extParam.defaultvalue}</td>
+								<td>${extParamVal.extparam.name}</td>
+						    	<td>${extParamVal.extparamvalid}</td>
+						    	<td>${extParamVal.value}</td>
+						    	<td>${extParamVal.extparam.defaultvalue}</td>
 						    	<td>
 									<a href="<c:url value='editextparamvalue.html?extparamvalid=${extParam.extparamid}'/>">
 										<button align="right" type="button" value="Edit">Edit</button>

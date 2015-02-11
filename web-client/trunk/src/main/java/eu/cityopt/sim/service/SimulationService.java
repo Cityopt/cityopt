@@ -273,6 +273,7 @@ public class SimulationService {
         Exception e = txTemplate.execute(
                 (TransactionStatus status) -> {
                     try {
+                        System.err.println("starting save transaction");
                         Scenario scenario = scenarioRepository.findOne(scenId);
                         if (scenario != null) {
                             saveSimulationResults(scenario, output);
@@ -283,12 +284,15 @@ public class SimulationService {
                                 saveMetricValues(scenario, metricValues);
                             }
                         }
+                        System.err.println("saved ok");
                         return null;
                     } catch (Exception ee) {
                         return ee;
                     }
                 });
+        System.err.println("executed save transaction");
         if (e != null) {
+        	e.printStackTrace();
             throw e;
         }
     }

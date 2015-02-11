@@ -18,7 +18,7 @@
 <body>
 <table cellspacing="0" cellpadding="0">
 	<tr>
-		<td width="100" valign="top">
+		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width="30"></td>

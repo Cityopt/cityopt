@@ -25,19 +25,19 @@
 						<table>
 							<tr>
 								<td>Project name:</td>
-								<td><form:input type="text" path="name"/></td>
+								<td><form:input type="text" path="name" style="width:250px"/></td>
 							</tr>
 							<tr>						
 								<td>Location:</td>
-								<td><form:input type="text" path="location"/></td>
+								<td><form:input type="text" path="location" style="width:250px"/></td>
 							</tr>
 							<tr>						
 								<td>Design target:</td>
-								<td><form:input type="text" path="designtarget"/></td>
+								<td><form:input type="text" path="designtarget" style="width:250px"/></td>
 							</tr>
 							<tr>						
 								<td>Description:</td>
-								<td><form:textarea type="text" rows="3" path="description"></form:textarea></td>
+								<td><form:textarea type="text" rows="3" path="description" style="width:250px"></form:textarea></td>
 							</tr>
 							<tr>						
 								<td>Energy model:</td>
@@ -69,7 +69,7 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td align="Right"><input type="button" id="upload" value="Upload"/></td>
+					<td align="Right"><input type="button" id="upload" value="Upload" style="width:120px"/></td>
 				</tr>
 				<tr>
 					<td colspan="2">
@@ -79,17 +79,12 @@
 							<col style="width:600px">
 							<tr>
 								<td>Input parameters</td>
-								<td><a href="projectparameters.html"><button type="button" style="width:150px">Set</button></a></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>Output variables</td>
-								<td><a href="outputvariables.html"><button type="button" style="width:150px">Set</button></a></td>
+								<td><a href="projectparameters.html"><button type="button" style="width:120px">Set</button></a></td>
 								<td align="right"><a href="closeproject.html"><button type="button" style="width:120px">Close project</button></a></td>
 							</tr>
 							<tr>
-								<td>GIS Coordinates</td>
-								<td><a href="coordinates.html"><button type="button" style="width:150px">Set</button></a></td>
+								<td>Output variables</td>
+								<td><a href="outputvariables.html"><button type="button" style="width:120px">Set</button></a></td>
 								<td align="right"><form:input type="submit" path="" value="Save project" style="width:120px"/></td>
 							</tr>
 						</table>

@@ -1,11 +1,13 @@
 package eu.cityopt.controller;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +52,9 @@ import eu.cityopt.service.UnitService;
 import eu.cityopt.sim.eval.EvaluationException;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.SimulatorConfigurationException;
 import eu.cityopt.sim.eval.apros.AprosRunner;
+import eu.cityopt.sim.service.SimulationService;
 
 @Controller
 @SessionAttributes({"project", "scenario"})
@@ -88,6 +92,9 @@ public class ProjectController {
 	
 	@Autowired
 	UnitService unitService;
+	
+	@Autowired
+	SimulationService simService;
 	
 	@RequestMapping(value="createproject", method=RequestMethod.GET)
 	public String getCreateProject(Map<String, Object> model) {
@@ -447,8 +454,8 @@ public class ProjectController {
 			e.printStackTrace();
 		}
 		model.put("project", project);
-		Set<ExtParamValDTO> extParams = null;//projectService...getExtParams(project.getPrjid());
-		model.put("extParams", extParams);
+		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
+		model.put("extParamVals", extParamVals);
 		
 		return "scenariovariables";
 	}
@@ -890,12 +897,12 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="editinputparamvalue", method=RequestMethod.GET)
-	public String getEditInputParamVal(Model model, @RequestParam(value="inputparamvalid", required=true) String inputid) {
-		int nInputId = Integer.parseInt(inputid);
+	public String getEditInputParamVal(Model model, @RequestParam(value="componentid", required=true) String componentid) {
+		int nComponentId = Integer.parseInt(componentid);
 		ComponentInputParamDTO inputParamVal = null;
 
 		try {
-			inputParamVal = null;//componentInputParamService. inputParamValService.findByID(nInputId);
+			inputParamVal = null;//componentInputParamService.findAllByComponentId(nComponentId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1525,7 +1532,28 @@ public class ProjectController {
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
-
+		
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		
+		if (scenario != null && scenario.getScenid() > 0)
+		{
+			try {
+				simService.startSimulation(scenario.getScenid());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (SimulatorConfigurationException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			} catch (ScriptException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		List<ComponentDTO> components = componentService.findAll();
 		model.put("components", components);
 
