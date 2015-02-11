@@ -34,14 +34,6 @@ DROP TABLE IF EXISTS ExtParamVal CASCADE
 ;
 DROP SEQUENCE IF EXISTS ExtParamVal_extParamValID_seq
 ;
-DROP TABLE IF EXISTS ExtParamValScenGen CASCADE
-;
-DROP SEQUENCE IF EXISTS ExtParamValScenGen_id_seq
-;
-DROP TABLE IF EXISTS ExtParamValScenMetric CASCADE
-;
-DROP SEQUENCE IF EXISTS ExtParamValScenMetric_id_seq
-;
 DROP TABLE IF EXISTS ExtParamValSet CASCADE
 ;
 DROP SEQUENCE IF EXISTS ExtParamValSet_extParamValSetID_seq
@@ -202,6 +194,7 @@ CREATE TABLE Component (
 	componentID integer DEFAULT nextval(('Component_componentID_seq'::text)::regclass) NOT NULL,
 	prjID integer NOT NULL,
 	name varchar(50) NOT NULL,
+	alias varchar(50),
 	geometryBlob geometry
 )
 ;
@@ -225,7 +218,8 @@ CREATE TABLE DecisionVariable (
 	expression text,
 	lowerBound double precision,
 	upperBound double precision,
-	typeID integer
+	typeID integer,
+	componentID integer
 )
 ;
 
@@ -277,6 +271,7 @@ CREATE SEQUENCE InputParameter_inputID_seq INCREMENT 1 START 1
 CREATE TABLE InputParameter ( 
 	inputID integer DEFAULT nextval(('InputParameter_inputID_seq'::text)::regclass) NOT NULL,
 	name varchar(100),
+	alias varchar(50),
 	unitID integer,
 	componentID integer,
 	defaultValue text
@@ -342,7 +337,8 @@ CREATE TABLE ObjectiveFunction (
 	prjID integer,
 	typeID integer,
 	expression text,
-	isMaximise boolean
+	isMaximise boolean,
+	executedAt timestamp(0)
 )
 ;
 
@@ -400,6 +396,7 @@ CREATE SEQUENCE OutputVariable_outVarID_seq INCREMENT 1 START 1
 CREATE TABLE OutputVariable ( 
 	outVarID integer DEFAULT nextval(('OutputVariable_outVarID_seq'::text)::regclass) NOT NULL,
 	name varchar(50),
+	alias varchar(50),
 	selected boolean,
 	unitID integer,
 	componentID integer
@@ -437,8 +434,10 @@ CREATE TABLE Scenario (
 	createdBy integer,
 	updatedBy integer,
 	scenGenID integer,
-	simEnd timestamp(0),
-	simStart timestamp(0)
+	runStart timestamp(0),
+	runEnd timestamp(0),
+	status varchar(50),
+	log text
 )
 ;
 
@@ -449,7 +448,9 @@ CREATE TABLE ScenarioGenerator (
 	scenGenID integer DEFAULT nextval(('ScenarioGenerator_scenGenID_seq'::text)::regclass) NOT NULL,
 	prjID integer,
 	algorithmID integer,
-	extParamValSetID integer
+	extParamValSetID integer,
+	status varchar(50),
+	log text
 )
 ;
 
@@ -505,6 +506,7 @@ CREATE TABLE SimulationModel (
 	imageBlob bytea,
 	description text,
 	simulator text,
+	simulatorVersion varchar(50),
 	createdOn timestamp(0),
 	updatedOn timestamp(0),
 	createdBy integer,
@@ -520,8 +522,7 @@ CREATE TABLE SimulationResult (
 	scenResID integer DEFAULT nextval(('SimulationResult_scenResID_seq'::text)::regclass) NOT NULL,
 	scenID integer,
 	outVarID integer,
-	time timestamp(0),
-	value text
+	tSeriesID integer
 )
 ;
 
@@ -615,6 +616,9 @@ CREATE INDEX IXFK_DecisionVariables_ScenarioGenerator
 CREATE INDEX IXFK_DecisionVariable_Type
 	ON DecisionVariable (typeID)
 ;
+CREATE INDEX IXFK_DecisionVariable_Component
+	ON DecisionVariable (componentID)
+;
 CREATE INDEX IXFK_ExtParam_Unit
 	ON ExtParam (unitID)
 ;
@@ -656,6 +660,9 @@ CREATE INDEX IXFK_ScenarioDefinition_InputParameter
 ;
 ALTER TABLE InputParamVal
 	ADD CONSTRAINT UQ_ScenarioDefinition_scenID UNIQUE (scenID, inputID)
+;
+CREATE INDEX IXFK_InputParamVal_DataReliability
+	ON InputParamVal (dataRelID)
 ;
 CREATE INDEX IXFK_Metric_Project
 	ON Metric (prjID)
@@ -779,6 +786,9 @@ CREATE INDEX IXFK_SimulationResults_Scenario
 ;
 CREATE INDEX IXFK_SimulationResults_OutputVariables
 	ON SimulationResult (outVarID)
+;
+CREATE INDEX IXFK_SimulationResult_TimeSeries
+	ON SimulationResult (tSeriesID)
 ;
 CREATE INDEX IXFK_TimeSeries_Type
 	ON TimeSeries (typeID)
@@ -1021,6 +1031,10 @@ ALTER TABLE DecisionVariable ADD CONSTRAINT FK_DecisionVariable_Type
 	FOREIGN KEY (typeID) REFERENCES Type (typeID)
 ;
 
+ALTER TABLE DecisionVariable ADD CONSTRAINT FK_DecisionVariable_Component 
+	FOREIGN KEY (componentID) REFERENCES Component (componentID)
+;
+
 ALTER TABLE ExtParam ADD CONSTRAINT FK_ExtParam_Unit 
 	FOREIGN KEY (unitID) REFERENCES Unit (unitID)
 ;
@@ -1063,6 +1077,10 @@ ALTER TABLE InputParamVal ADD CONSTRAINT FK_ScenarioDefinition_Scenario
 
 ALTER TABLE InputParamVal ADD CONSTRAINT FK_ScenarioDefinition_InputParameter 
 	FOREIGN KEY (inputID) REFERENCES InputParameter (inputID)
+;
+
+ALTER TABLE InputParamVal ADD CONSTRAINT FK_InputParamVal_DataReliability 
+	FOREIGN KEY (dataRelID) REFERENCES DataReliability (dataRelID)
 ;
 
 ALTER TABLE Metric ADD CONSTRAINT FK_Metric_Project 
@@ -1199,6 +1217,10 @@ ALTER TABLE SimulationResult ADD CONSTRAINT FK_SimulationResults_Scenario
 
 ALTER TABLE SimulationResult ADD CONSTRAINT FK_SimulationResults_OutputVariables 
 	FOREIGN KEY (outVarID) REFERENCES OutputVariable (outVarID)
+;
+
+ALTER TABLE SimulationResult ADD CONSTRAINT FK_SimulationResult_TimeSeries 
+	FOREIGN KEY (tSeriesID) REFERENCES TimeSeries (tSeriesID)
 ;
 
 ALTER TABLE TimeSeries ADD CONSTRAINT FK_TimeSeries_Type 
