@@ -93,6 +93,10 @@ Currently we use the `Apros-Combustion-5.13.06-64bit` profile.
 You also need a valid Apros license which is activated using the VTT license
 key manager.
 
+The Apros simulation server expects to find gzip.exe on the system path.  If
+you don't have it already (e.g. from cygwin), then please install gzip from
+[http://gnuwin32.sourceforge.net/packages/gzip.htm]
+
 
 Build process
 -------------
@@ -142,3 +146,4 @@ To Be Defined
 [http://www.enterprisedb.com/products-services-training/pgdownload]: http://www.enterprisedb.com/products-services-training/pgdownload
 [http://postgis.net/windows_downloads]: http://postgis.net/windows_downloads
 [Apache Maven]: http://maven.apache.org
+[http://gnuwin32.sourceforge.net/packages/gzip.htm]: http://gnuwin32.sourceforge.net/packages/gzip.htm
