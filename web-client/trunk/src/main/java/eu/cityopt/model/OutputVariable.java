@@ -26,7 +26,9 @@ public class OutputVariable implements java.io.Serializable {
 
 	private int outvarid;
 	private Component component;
+	private Unit unit;
 	private String name;
+	private String alias;
 	private Boolean selected;
 	private Integer unitid;
 	private Set<SimulationResult> simulationresults = new HashSet<SimulationResult>(
@@ -39,12 +41,14 @@ public class OutputVariable implements java.io.Serializable {
 		this.outvarid = outvarid;
 	}
 
-	public OutputVariable(int outvarid, Component component, String name,
-			Boolean selected, Integer typeid,
+	public OutputVariable(int outvarid, Component component, Unit unit, String name,
+			String alias, Boolean selected, Integer typeid,
 			Set<SimulationResult> simulationresults) {
 		this.outvarid = outvarid;
 		this.component = component;
+		this.unit = unit;
 		this.name = name;
+		this.alias = alias;
 		this.selected = selected;
 		this.unitid = typeid;
 		this.simulationresults = simulationresults;
@@ -70,16 +74,35 @@ public class OutputVariable implements java.io.Serializable {
 	public void setComponent(Component component) {
 		this.component = component;
 	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "unitid")
+	public Unit getUnit() {
+		return this.unit;
+	}
+
+	public void setUnit(Unit unit) {
+		this.unit = unit;
+	}
 
 	@Column(name = "name", length = 50)
 	public String getName() {
 		return this.name;
 	}
-
+	
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	@Column(name = "alias", length = 50)
+	public String getAlias() {
+		return this.alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+	
 	@Column(name = "selected")
 	public Boolean getSelected() {
 		return this.selected;

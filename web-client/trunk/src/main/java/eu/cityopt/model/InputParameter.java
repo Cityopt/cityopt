@@ -29,6 +29,7 @@ public class InputParameter implements java.io.Serializable {
 	private Unit unit;
 	private Component component;
 	private String name;
+	private String alias;
 	private String defaultvalue;
 	private Set<ModelParameter> modelparameters = new HashSet<ModelParameter>(0);
 	private Set<InputParamVal> inputparamvals = new HashSet<InputParamVal>(0);
@@ -41,13 +42,14 @@ public class InputParameter implements java.io.Serializable {
 	}
 
 	public InputParameter(int inputid, Unit unit, Component component,
-			String name, String defaultvalue,
+			String name, String alias, String defaultvalue,
 			Set<ModelParameter> modelparameters,
 			Set<InputParamVal> inputparamvals) {
 		this.inputid = inputid;
 		this.unit = unit;
 		this.component = component;
 		this.name = name;
+		this.alias = alias;
 		this.defaultvalue = defaultvalue;
 		this.modelparameters = modelparameters;
 		this.inputparamvals = inputparamvals;
@@ -93,6 +95,15 @@ public class InputParameter implements java.io.Serializable {
 		this.name = name;
 	}
 
+	@Column(name = "alias", length = 50)
+	public String getAlias() {
+		return this.alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+	
 	@Column(name = "defaultvalue")
 	public String getDefaultvalue() {
 		return this.defaultvalue;

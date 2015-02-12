@@ -39,8 +39,10 @@ public class Scenario implements java.io.Serializable {
 	private Date updatedon;
 	private Integer createdby;
 	private Integer updatedby;
-	private Date simend;
-	private Date simstart;
+	private Date runend;
+	private Date runstart;
+	private String status;
+	private String log;
 	private Set<ScenarioMetrics> scenariometricses = new HashSet<ScenarioMetrics>(
 			0);
 	private Set<InputParamVal> inputparamvals = new HashSet<InputParamVal>(0);
@@ -63,7 +65,8 @@ public class Scenario implements java.io.Serializable {
 	public Scenario(int scenid, Project project,
 			ScenarioGenerator scenariogenerator, String name,
 			String description, Date createdon, Date updatedon,
-			Integer createdby, Integer updatedby, Date simend, Date simstart,
+			Integer createdby, Integer updatedby, Date runend, Date runstart,
+			String status, String log,
 			Set<ScenarioMetrics> scenariometricses,
 			Set<InputParamVal> inputparamvals,
 			Set<OptimizationSet> optimizationsets,
@@ -78,8 +81,10 @@ public class Scenario implements java.io.Serializable {
 		this.updatedon = updatedon;
 		this.createdby = createdby;
 		this.updatedby = updatedby;
-		this.simend = simend;
-		this.simstart = simstart;
+		this.runend = runend;
+		this.runstart = runstart;
+		this.status = status;
+		this.log = log;
 		this.scenariometricses = scenariometricses;
 		this.inputparamvals = inputparamvals;
 		this.optimizationsets = optimizationsets;
@@ -175,24 +180,43 @@ public class Scenario implements java.io.Serializable {
 	}
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "simend", length = 22)
-	public Date getSimend() {
-		return this.simend;
+	@Column(name = "runstart", length = 22)
+	public Date getRunstart() {
+		return this.runstart;
 	}
 
-	public void setSimend(Date simend) {
-		this.simend = simend;
+	public void setRunstart(Date runstart) {
+		this.runstart = runstart;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "simstart", length = 22)
-	public Date getSimstart() {
-		return this.simstart;
+	@Column(name = "runend", length = 22)
+	public Date getRunend() {
+		return this.runend;
 	}
 
-	public void setSimstart(Date simstart) {
-		this.simstart = simstart;
+	public void setRunend(Date runend) {
+		this.runend = runend;
 	}
+	
+	@Column(name = "status", length = 50)
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@Column(name = "log")
+	public String getLog() {
+		return this.log;
+	}
+
+	public void setLog(String log) {
+		this.log = log;
+	}
+
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
 	public Set<ScenarioMetrics> getScenariometricses() {

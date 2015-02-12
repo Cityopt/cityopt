@@ -31,6 +31,7 @@ public class SimulationModel implements java.io.Serializable {
 	private byte[] imageblob;
 	private String description;
 	private String simulator;
+	private String simulatorversion;
 	private Date createdon;
 	private Date updatedon;
 	private Integer createdby;
@@ -46,7 +47,7 @@ public class SimulationModel implements java.io.Serializable {
 	}
 
 	public SimulationModel(int modelid, byte[] modelblob, byte[] imageblob,
-			String description, String simulator, Date createdon,
+			String description, String simulator, String simulatorversion, Date createdon,
 			Date updatedon, Integer createdby, Integer updatedby,
 			Date timeorigin, Set<Project> projects) {
 		this.modelid = modelid;
@@ -54,6 +55,7 @@ public class SimulationModel implements java.io.Serializable {
 		this.imageblob = imageblob;
 		this.description = description;
 		this.simulator = simulator;
+		this.simulatorversion = simulatorversion;
 		this.createdon = createdon;
 		this.updatedon = updatedon;
 		this.createdby = createdby;
@@ -109,6 +111,15 @@ public class SimulationModel implements java.io.Serializable {
 		this.simulator = simulator;
 	}
 
+	@Column(name = "simulatorversion", length = 50)
+	public String getSimulatorversion() {
+		return this.simulatorversion;
+	}
+
+	public void setSimulatorversion(String simulatorversion) {
+		this.simulatorversion = simulatorversion;
+	}
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "createdon", length = 22)
 	public Date getCreatedon() {

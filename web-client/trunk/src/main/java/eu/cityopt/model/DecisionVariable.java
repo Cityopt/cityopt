@@ -21,6 +21,7 @@ import javax.persistence.Table;
 public class DecisionVariable implements java.io.Serializable {
 
 	private int decisionvarid;
+	private Component component;
 	private Type type;
 	private ScenarioGenerator scenariogenerator;
 	private String name;
@@ -37,10 +38,11 @@ public class DecisionVariable implements java.io.Serializable {
 		this.scenariogenerator = scenariogenerator;
 	}
 
-	public DecisionVariable(int decisionvarid, Type type,
+	public DecisionVariable(int decisionvarid, Component component, Type type, 
 			ScenarioGenerator scenariogenerator, String name,
 			String expression, Double lowerbound, Double upperbound) {
 		this.decisionvarid = decisionvarid;
+		this.component = component;
 		this.type = type;
 		this.scenariogenerator = scenariogenerator;
 		this.name = name;
@@ -59,6 +61,16 @@ public class DecisionVariable implements java.io.Serializable {
 
 	public void setDecisionvarid(int decisionvarid) {
 		this.decisionvarid = decisionvarid;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "componentid")
+	public Component getComponent() {
+		return this.component;
+	}
+
+	public void setComponent(Component component) {
+		this.component = component;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

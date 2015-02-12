@@ -31,6 +31,7 @@ public class Component implements java.io.Serializable {
 	private int componentid;
 	private Project project;
 	private String name;
+	private String alias;
 	private Serializable geometryblob;
 	private Set<InputParameter> inputparameters = new HashSet<InputParameter>(0);
 	private Set<OutputVariable> outputvariables = new HashSet<OutputVariable>(0);
@@ -45,11 +46,12 @@ public class Component implements java.io.Serializable {
 	}
 
 	public Component(int componentid, Project project, String name,
-			Serializable geometryblob, Set<InputParameter> inputparameters,
+			String alias, Serializable geometryblob, Set<InputParameter> inputparameters,
 			Set<OutputVariable> outputvariables) {
 		this.componentid = componentid;
 		this.project = project;
 		this.name = name;
+		this.alias = alias;
 		this.geometryblob = geometryblob;
 		this.inputparameters = inputparameters;
 		this.outputvariables = outputvariables;
@@ -85,6 +87,15 @@ public class Component implements java.io.Serializable {
 		this.name = name;
 	}
 
+	@Column(name = "alias", length = 50)
+	public String getAlias() {
+		return this.alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+	
 	@Column(name = "geometryblob")
 	public Serializable getGeometryblob() {
 		return this.geometryblob;
