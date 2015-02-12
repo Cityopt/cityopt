@@ -88,4 +88,5 @@ A typical sequence.scl will
 - Run the simulation for the desired time in seconds (wait)
 - Close IO_SETs
 
-The Apros model must write the output by IO_SET, without using EXT_NAMES.
+The Apros model must write the output by IO_SET, without using
+EXT_NAMES.
