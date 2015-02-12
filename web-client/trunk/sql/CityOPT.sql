@@ -752,9 +752,6 @@ CREATE INDEX IXFK_ScenarioGenerator_Algorithm
 CREATE INDEX IXFK_ScenarioGenerator_ExtParamValSet
 	ON ScenarioGenerator (extParamValSetID)
 ;
-ALTER TABLE ScenarioMetrics
-	ADD CONSTRAINT UQ_ScenarioMetrics_scenID UNIQUE (scenID)
-;
 CREATE INDEX IXFK_ScenarioMetrics_Scenario
 	ON ScenarioMetrics (scenID)
 ;
