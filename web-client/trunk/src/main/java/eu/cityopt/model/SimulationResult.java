@@ -27,8 +27,7 @@ public class SimulationResult implements java.io.Serializable {
 	private int scenresid;
 	private OutputVariable outputvariable;
 	private Scenario scenario;
-	private Date time;
-	private String value;
+	private TimeSeries timeseries;
 
 	public SimulationResult() {
 	}
@@ -38,12 +37,11 @@ public class SimulationResult implements java.io.Serializable {
 	}
 
 	public SimulationResult(int scenresid, OutputVariable outputvariable,
-			Scenario scenario, Date time, String value) {
+			Scenario scenario, TimeSeries timeseries) {
 		this.scenresid = scenresid;
 		this.outputvariable = outputvariable;
 		this.scenario = scenario;
-		this.time = time;
-		this.value = value;
+		this.timeseries = timeseries;
 	}
 
 	@SequenceGenerator(name="simulationresult_scenresid_seq",sequenceName="simulationresult_scenresid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="simulationresult_scenresid_seq")
@@ -77,23 +75,13 @@ public class SimulationResult implements java.io.Serializable {
 		this.scenario = scenario;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "time", length = 22)
-	public Date getTime() {
-		return this.time;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tseriesid")
+	public TimeSeries getTimeseries() {
+		return this.timeseries;
 	}
 
-	public void setTime(Date time) {
-		this.time = time;
+	public void setTimeseries(TimeSeries timeseries) {
+		this.timeseries = timeseries;
 	}
-
-	@Column(name = "value")
-	public String getValue() {
-		return this.value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
 }
