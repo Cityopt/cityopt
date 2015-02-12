@@ -561,7 +561,7 @@ public class SimulationService {
                 nsComponent.inputs.put(mInput.getName(), inputType);
             }
             for (OutputVariable mOutput : mComponent.getOutputvariables()) {
-                String typeName = unitRepository.findOne(mOutput.getUnitid()).getType().getName();
+                String typeName = mOutput.getUnit().getType().getName();
                 Type outputType = Type.getByName(typeName);
                 nsComponent.outputs.put(mOutput.getName(), outputType);
             }
