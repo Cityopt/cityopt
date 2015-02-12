@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -381,32 +382,51 @@ public class SimulationService {
     }
 
     public void saveSimulationResults(Scenario scenario, SimulationOutput simOutput) {
-        //TODO where to save output.getMessages()
+        //TODO setRunStart, setRunEnd, setStatus at the beginning
+        scenario.setLog(simOutput.getMessages());
         if (simOutput instanceof SimulationResults) {
+            scenario.setStatus("SUCCESS");
             SimulationResults simResults = (SimulationResults) simOutput;
-            Instant timeOrigin = simResults.getNamespace().timeOrigin;
+            Namespace namespace = simResults.getNamespace();
             Set<SimulationResult> newResults = new HashSet<SimulationResult>(); 
+            List<Runnable> idUpdates = new ArrayList<Runnable>();
             for (Component component : scenario.getProject().getComponents()) {
                 String componentName = component.getName();
                 for (OutputVariable outputVariable : component.getOutputvariables()) {
-                    TimeSeriesI simTS = simResults.getTS(componentName, outputVariable.getName());
+                    String outputName = outputVariable.getName();
+                    TimeSeriesI simTS = simResults.getTS(componentName, outputName);
                     if (simTS != null) {
-                        double[] times = simTS.getTimes();
-                        double[] values = simTS.getValues();
-                        for (int i = 0; i < times.length; ++i) {
-                            SimulationResult newResult = new SimulationResult();
-                            newResult.setOutputvariable(outputVariable);
-                            newResult.setScenario(scenario);
-                            newResult.setTime(toDate(times[i], timeOrigin));
-                            newResult.setValue(Double.toString(values[i]));
-                            newResults.add(newResult);
-                        }
+                        Type simType = namespace.components.get(componentName)
+                                    .outputs.get(outputName);
+                        eu.cityopt.model.Type type = findType(simType);
+                        TimeSeries timeSeries =
+                                saveTimeSeries(simTS, type, namespace.timeOrigin, idUpdates);
+                        SimulationResult simulationResult = new SimulationResult();
+
+                        simulationResult.setScenario(scenario);
+                        newResults.add(simulationResult);
+
+                        simulationResult.setTimeseries(timeSeries);
+
+                        simulationResult.setOutputvariable(outputVariable);
+                        Set<SimulationResult> results = new HashSet<SimulationResult>();
+                        results.add(simulationResult);
+                        outputVariable.setSimulationresults(results);
+
+                        simulationResultRepository.save(simulationResult);
                     }
                 }
             }
             scenario.setSimulationresults(newResults);
             simulationResultRepository.save(newResults);
             scenarioRepository.save(scenario);
+
+            timeSeriesRepository.flush();
+            for (Runnable update : idUpdates) {
+                update.run();
+            }
+        } else {
+            scenario.setStatus("FAILED");
         }
     }
 
