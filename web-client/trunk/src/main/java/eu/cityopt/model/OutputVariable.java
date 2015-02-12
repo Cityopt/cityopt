@@ -112,15 +112,6 @@ public class OutputVariable implements java.io.Serializable {
 		this.selected = selected;
 	}
 
-	@Column(name = "unitid")
-	public Integer getUnitid() {
-		return this.unitid;
-	}
-
-	public void setUnitid(Integer unitid) {
-		this.unitid = unitid;
-	}
-
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "outputvariable")
 	public Set<SimulationResult> getSimulationresults() {
 		return this.simulationresults;
