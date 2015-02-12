@@ -365,7 +365,8 @@ CREATE TABLE OptimizationSet (
 	updatedOn timestamp(0),
 	createdBy integer,
 	updatedBy integer,
-	scenID integer
+	scenID integer,
+	extParamValSetID integer
 )
 ;
 
@@ -702,6 +703,9 @@ CREATE INDEX IXFK_OptimizationSet_ObjectiveFunction
 ;
 CREATE INDEX IXFK_OptimizationSet_Scenario
 	ON OptimizationSet (scenID)
+;
+CREATE INDEX IXFK_OptimizationSet_ExtParamValSet
+	ON OptimizationSet (extParamValSetID)
 ;
 CREATE INDEX IXFK_OptSearchConst_SearchConstraint
 	ON OptSearchConst (scID)
@@ -1129,6 +1133,10 @@ ALTER TABLE OptimizationSet ADD CONSTRAINT FK_OptimizationSet_ObjectiveFunction
 
 ALTER TABLE OptimizationSet ADD CONSTRAINT FK_OptimizationSet_Scenario 
 	FOREIGN KEY (scenID) REFERENCES Scenario (scenID)
+;
+
+ALTER TABLE OptimizationSet ADD CONSTRAINT FK_OptimizationSet_ExtParamValSet 
+	FOREIGN KEY (extParamValSetID) REFERENCES ExtParamValSet (extParamValSetID)
 ;
 
 ALTER TABLE OptSearchConst ADD CONSTRAINT FK_OptSearchConst_SearchConstraint 
