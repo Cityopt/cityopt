@@ -167,7 +167,8 @@ public class SyntaxChecker {
 
         List<MetricExpression> metricList = new ArrayList<MetricExpression>();
         for (Map.Entry<String, Type> me : namespace.metrics.entrySet()) {
-            metricList.add(new MetricExpression(0, me.getKey(), "1", evaluator));
+            String expression = placeholders.get(me.getValue()).toString();
+            metricList.add(new MetricExpression(0, me.getKey(), expression, evaluator));
         }
         try {
             MetricValues metrics = new MetricValues(results, metricList);

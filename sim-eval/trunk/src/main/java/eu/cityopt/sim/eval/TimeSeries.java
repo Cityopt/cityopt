@@ -216,9 +216,8 @@ public class TimeSeries implements TimeSeriesI {
     /** Returns a brief human-readable overview of the time series. */
     @Override
     public String toString() {
-        return String.format(Locale.ROOT,
-                "{ degree = %d, length = %d, mean = %g, stdev = %g }",
-                getDegree(), fun.vv.length, getMean(), getStdev());
+        return "TimeSeries(" + getDegree() + ", " + Arrays.toString(getTimes())
+                    + ", " + Arrays.toString(getValues()) + ")";
     }
 
     public String __str__() {

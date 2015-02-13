@@ -43,6 +43,7 @@ public class TestEval {
         ns.metrics.put("m1", Type.DOUBLE);
         ns.metrics.put("m2", Type.DOUBLE);
         ns.metrics.put("m3", Type.DOUBLE);
+        ns.metrics.put("m4", Type.TIMESERIES_LINEAR);
 
         ns.decisions.put("d", Type.DOUBLE);
         ns.decisions.put("i", Type.INTEGER);
@@ -97,17 +98,20 @@ public class TestEval {
 
     @Test
     public void evaluateMockSimulation() throws Exception {
-        ConstraintExpression[] constraints = {
-                new ConstraintExpression(1,
+        Constraint[] constraints = {
+                new Constraint(1,
                         "C2.x9 * (C1.x5 - C1.x6) + 0.02 * C1.x6 - 0.025 * C1.x5",
                         Double.NEGATIVE_INFINITY, 0.0, evaluator),
-                new ConstraintExpression(2,
+                new Constraint(2,
                         "C2.x9 * (C1.x8 - C1.x7) + 0.02 * C1.x7 - 0.015 * C1.x8",
-                        Double.NEGATIVE_INFINITY, 0.0, evaluator) };
+                        Double.NEGATIVE_INFINITY, 0.0, evaluator),
+                new Constraint(3,
+                        "C2.x4", -10000, 10000, evaluator) };
         MetricExpression[] metrics = {
                 new MetricExpression(1, "m1", "-9 * C1.x5 - 15 * C1.x8", evaluator),
                 new MetricExpression(2, "m2", "10 * (C1.x6 + C1.x7)", evaluator),
-                new MetricExpression(3, "m3", "6 * C1.x1.values[0] + 16 * mean(C1.x2)", evaluator)
+                new MetricExpression(3, "m3", "6 * C1.x1.values[0] + 16 * mean(C1.x2)", evaluator),
+                new MetricExpression(4, "m4", "C2.x3 + C1.x1", evaluator)
         };
         ObjectiveExpression[] objectives = { new ObjectiveExpression(
                 1, "m1 + m2", false, evaluator) };
@@ -157,9 +161,11 @@ public class TestEval {
         }
         System.out.println("Feasible: " + cs.feasible);
 
+        String[] metricValues = new String[metrics.length];
         for (int i = 0; i < metrics.length; ++i) {
-            System.out.println("Metric " + metrics[i].getMetricName()
-                    + ": " + mv.metricValues[i]);
+            String n = metrics[i].getMetricName();
+            metricValues[i] = mv.get(n).toString();
+            System.out.println("Metric " + n + ": " + metricValues[i]);
         }
 
         for (int i = 0; i < objectives.length; ++i) {
@@ -169,18 +175,19 @@ public class TestEval {
         }
 
         final double delta = 1.0e-12;
-        assertArrayEquals(new double[] { 0.0, 5.0 }, cs.infeasibilities, delta);
-        assertArrayEquals(new double[] { -69.0, 50.0, 0.0 }, mv.metricValues, delta);
+        assertArrayEquals(new double[] { 0.0, 5.0, 0.0 }, cs.infeasibilities, delta);
+        assertArrayEquals(new String[] { "-69.0", "50.0", "0.0", "TimeSeries(1, [0.0], [-1.0])" },
+                metricValues);
         assertArrayEquals(new double[] { -19.0 }, os.objectiveValues, delta);
     }
 
     @Test(expected=ScriptException.class)
     public void accessNonexistentComponentMember() throws Exception {
-        ConstraintExpression invalidConstraint = new ConstraintExpression(1,
+        Constraint invalidConstraint = new Constraint(1,
                 "C2.x9 * (C1.x5 - C1.x9) + 0.02 * C1.x6 - 0.025 * C1.x5",
                 Double.NEGATIVE_INFINITY, 0.0, evaluator);
 
-        double value = invalidConstraint.evaluate(input);
+        double value = invalidConstraint.infeasibility(input);
         System.out.println("infeasibility = " + value);
     }
 
@@ -227,7 +234,7 @@ public class TestEval {
 
     private double eval(String expression, EvaluationContext context)
             throws ScriptException, InvalidValueException {
-        return new DoubleExpression(expression, evaluator).evaluate(context);
+        return new Expression(expression, evaluator).evaluateDouble(context);
     }
 
     @Test

@@ -16,25 +16,18 @@ public class MetricValues implements EvaluationContext {
     private SimulationResults results;
     private BindingLayer bindingLayer;
 
-    /** Metric values, in the same order as the constructor arguments. */
-    public final double[] metricValues;
-
     public MetricValues(SimulationResults results,
             Collection<MetricExpression> metrics) throws ScriptException,
             InvalidValueException {
         this.results = results;
-        this.metricValues = new double[metrics.size()];
         final Namespace namespace = results.getNamespace();
         this.bindingLayer = new BindingLayer(namespace,
                 results.getBindingLayer(),
                 name -> (name == null) ? namespace.metrics : null,
                 "metric");
-        int i = 0;
         for (MetricExpression metric : metrics) {
-            double value = metric.evaluate(results);
+            Object value = metric.evaluate(results);
             bindingLayer.put(null, metric.getMetricName(), value);
-            metricValues[i] = value;
-            ++i;
         }
     }
 
@@ -43,8 +36,8 @@ public class MetricValues implements EvaluationContext {
     }
 
     /** Gets the value of a named metric. */
-    public double get(String metricName) {
-        return (Double) bindingLayer.get(null, metricName);
+    public Object get(String metricName) {
+        return bindingLayer.get(null, metricName);
     }
 
     /** Gets the value of a named metric as a formatted string. */

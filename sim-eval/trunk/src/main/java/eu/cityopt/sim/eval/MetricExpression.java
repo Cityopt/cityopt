@@ -11,7 +11,7 @@ import javax.script.ScriptException;
  *
  * @author Hannu Rummukainen
  */
-public class MetricExpression extends DoubleExpression {
+public class MetricExpression extends Expression {
     private final int metricId;
     private final String metricName;
 

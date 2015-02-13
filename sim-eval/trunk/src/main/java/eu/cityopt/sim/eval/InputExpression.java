@@ -9,7 +9,7 @@ import javax.script.ScriptException;
  * 
  * @author Hannu Rummukainen
  */
-public class InputExpression extends DoubleExpression {
+public class InputExpression extends Expression {
     private final String componentName;
     private final String inputName;
 

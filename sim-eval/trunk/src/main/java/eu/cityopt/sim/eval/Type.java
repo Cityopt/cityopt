@@ -17,24 +17,6 @@ import com.fasterxml.jackson.databind.ObjectWriter;
  * @author Hannu Rummukainen
  */
 public enum Type {
-    /** Double precision floating point */
-    DOUBLE("Double") {
-        @Override
-        public Double parse(String value) {
-            return Double.parseDouble(value);
-        }
-
-        @Override
-        public boolean isInstance(Object value) {
-            return value instanceof Double;
-        }
-
-        @Override
-        public String format(Object value) {
-            return Double.toString((Double) value);
-        }
-    },
-
     /** 32-bit signed integer */
     INTEGER("Integer") {
         @Override
@@ -43,13 +25,33 @@ public enum Type {
         }
 
         @Override
-        public boolean isInstance(Object value) {
-            return value instanceof Integer;
+        public boolean isCompatible(Object value) {
+            return (value instanceof Integer
+                    || value instanceof Short
+                    || value instanceof Byte);
         }
 
         @Override
         public String format(Object value) {
             return Integer.toString((Integer) value);
+        }
+    },
+
+    /** Double precision floating point */
+    DOUBLE("Double") {
+        @Override
+        public Double parse(String value) {
+            return Double.parseDouble(value);
+        }
+
+        @Override
+        public boolean isCompatible(Object value) {
+            return (value instanceof Number);
+        }
+
+        @Override
+        public String format(Object value) {
+            return Double.toString((Double) value);
         }
     },
 
@@ -61,8 +63,8 @@ public enum Type {
         }
 
         @Override
-        public boolean isInstance(Object value) {
-            return value instanceof String;
+        public boolean isCompatible(Object value) {
+            return (value instanceof String);
         }
 
         @Override
@@ -80,7 +82,7 @@ public enum Type {
         }
 
         @Override
-        public boolean isInstance(Object value) {
+        public boolean isCompatible(Object value) {
             return (value instanceof TimeSeriesI)
                     && ((TimeSeriesI) value).getDegree() == 0;
         }
@@ -111,9 +113,8 @@ public enum Type {
         }
 
         @Override
-        public boolean isInstance(Object value) {
-            return (value instanceof TimeSeriesI)
-                    && ((TimeSeriesI) value).getDegree() == 1;
+        public boolean isCompatible(Object value) {
+            return (value instanceof TimeSeriesI);
         }
 
         @Override
@@ -150,12 +151,12 @@ public enum Type {
 
         @SuppressWarnings("rawtypes")
         @Override
-        public boolean isInstance(Object value) {
+        public boolean isCompatible(Object value) {
             if ( ! (value instanceof List)) {
                 return false;
             } else {
                 for (Object element : (List) value) {
-                    if ( ! (element instanceof Integer)) {
+                    if ( ! INTEGER.isCompatible(element)) {
                         return false;
                     }
                 }
@@ -192,12 +193,12 @@ public enum Type {
 
         @SuppressWarnings("rawtypes")
         @Override
-        public boolean isInstance(Object value) {
+        public boolean isCompatible(Object value) {
             if ( ! (value instanceof List)) {
                 return false;
             } else {
                 for (Object element : (List) value) {
-                    if ( ! (element instanceof Double)) {
+                    if ( ! (DOUBLE.isCompatible(element))) {
                         return false;
                     }
                 }
@@ -226,8 +227,13 @@ public enum Type {
      */
     abstract public Object parse(String value) throws ParseException;
 
-    /** Determines whether the given object is of this particular type. */
-    abstract public boolean isInstance(Object value);
+    /**
+     * Returns whether the value if of a type that can be assigned to this type,
+     * allowing for numerical conversions to types with larger range.  Floating
+     * point values cannot be assigned to INTEGER.  All numerical values can be
+     * assigned to DOUBLE.
+     */
+    abstract public boolean isCompatible(Object value);
 
     /**
      * Formats an object of this type into its string representation.
@@ -291,10 +297,23 @@ public enum Type {
             throw new ParseException(e.getMessage(), 0);
         }
         for (Type type : values()) {
-            if (type.isInstance(object)) {
+            if (type.isCompatible(object)) {
                 return type;
             }
         }
         throw new ParseException("Unsupported literal: " + value, 0);
+    }
+
+    /**
+     * Converts the object to one of the supported types if appropriate.
+     * Basically normalizes numerical types to Integer or Double.
+     */
+    public static Object normalize(Object o) {
+        if (o instanceof Float || o instanceof Double) {
+            return ((Number) o).doubleValue();
+        } else if (o instanceof Number) {
+            return ((Number) o).intValue();
+        }
+        return o;
     }
 }

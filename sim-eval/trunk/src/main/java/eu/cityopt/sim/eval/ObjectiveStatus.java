@@ -29,10 +29,9 @@ public class ObjectiveStatus implements PartiallyComparable<ObjectiveStatus> {
             ObjectiveExpression singleObjective) throws ScriptException,
             InvalidValueException {
         this.namespace = context.getResults().getNamespace();
-        double value = singleObjective.evaluate(context);
+        double value = singleObjective.evaluateDouble(context);
         this.objectiveValues = new double[] { value };
-        this.asMinGoalValues = new double[] { singleObjective
-                .flipSignIfMax(value) };
+        this.asMinGoalValues = new double[] { singleObjective.flipSignIfMax(value) };
     }
 
     public ObjectiveStatus(MetricValues context,
@@ -43,7 +42,7 @@ public class ObjectiveStatus implements PartiallyComparable<ObjectiveStatus> {
         this.asMinGoalValues = new double[objectives.size()];
         int i = 0;
         for (ObjectiveExpression objective : objectives) {
-            double value = objective.evaluate(context);
+            double value = objective.evaluateDouble(context);
             this.objectiveValues[i] = value;
             this.asMinGoalValues[i] = objective.flipSignIfMax(value);
             ++i;

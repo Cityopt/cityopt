@@ -188,7 +188,7 @@ class BindingLayer {
      */
     Object put(String componentName, String name, Object value) {
         Type type = validate(componentName, name);
-        if (!type.isInstance(value)) {
+        if (!type.isCompatible(value)) {
             throw new IllegalArgumentException("Invalid value for "
                     + formatReference(componentName, name) + ": " + value);
         }

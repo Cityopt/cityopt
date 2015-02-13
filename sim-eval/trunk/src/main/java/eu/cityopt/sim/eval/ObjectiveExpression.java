@@ -8,7 +8,7 @@ import javax.script.ScriptException;
  *
  * @author Hannu Rummukainen
  */
-public class ObjectiveExpression extends DoubleExpression {
+public class ObjectiveExpression extends Expression {
     private int objectiveId;
     private boolean maximize;
 
@@ -29,7 +29,7 @@ public class ObjectiveExpression extends DoubleExpression {
 
     public double evaluateAsMinGoal(EvaluationContext context)
             throws ScriptException, InvalidValueException {
-        return flipSignIfMax(evaluate(context));
+        return flipSignIfMax(evaluateDouble(context));
     }
 
     public double flipSignIfMax(double value) {

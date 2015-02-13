@@ -253,7 +253,7 @@ public class TestTimeSeries {
 
     private double eval(String expression, EvaluationContext context)
             throws ScriptException, InvalidValueException {
-        return new DoubleExpression(expression, evaluator).evaluate(context);
+        return new Expression(expression, evaluator).evaluateDouble(context);
     }
 
     /** Generate subsequences of a time series for testing. */

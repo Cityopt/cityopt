@@ -110,7 +110,7 @@ public class SimulationInput implements EvaluationContext {
             DecisionValues decisions, Collection<InputExpression> inputExpressions)
                     throws ScriptException, InvalidValueException {
         for (InputExpression expression : inputExpressions) {
-            double value = expression.evaluate(decisions);
+            Object value = expression.evaluate(decisions);
             put(expression.getComponentName(), expression.getInputName(), value);
         }
     }

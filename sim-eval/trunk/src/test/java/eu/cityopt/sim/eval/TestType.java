@@ -18,8 +18,8 @@ public class TestType {
         assertEquals(Arrays.asList(), Type.LIST_OF_INTEGER.parse("[]"));
         assertEquals("[ ]", Type.LIST_OF_INTEGER.format(Arrays.asList()));
         assertEquals(Arrays.asList(1, 2, 3), Type.LIST_OF_INTEGER.parse("[1.0, 2.0, 3.0]"));
-        assertTrue(Type.LIST_OF_INTEGER.isInstance(Type.LIST_OF_INTEGER.parse("[1, 2, 3]")));
-        assertTrue(Type.LIST_OF_INTEGER.isInstance(Type.LIST_OF_INTEGER.parse("[1.0, 2.0, 3.0]")));
+        assertTrue(Type.LIST_OF_INTEGER.isCompatible(Type.LIST_OF_INTEGER.parse("[1, 2, 3]")));
+        assertTrue(Type.LIST_OF_INTEGER.isCompatible(Type.LIST_OF_INTEGER.parse("[1.0, 2.0, 3.0]")));
         assertTrue(((List<Integer>)Type.LIST_OF_INTEGER.parse("[1.0, 2.0, 3.0]")).get(0)
                 instanceof Integer);
     }
@@ -42,8 +42,8 @@ public class TestType {
         assertEquals(Arrays.asList(), Type.LIST_OF_DOUBLE.parse("[]"));
         assertEquals("[ ]", Type.LIST_OF_DOUBLE.format(Arrays.asList()));
         assertEquals(Arrays.asList(1.0, 2.0, 3.0), Type.LIST_OF_DOUBLE.parse("[1.0, 2.0, 3.0]"));
-        assertTrue(Type.LIST_OF_DOUBLE.isInstance(Type.LIST_OF_DOUBLE.parse("[1, 2, 3]")));
-        assertTrue(Type.LIST_OF_DOUBLE.isInstance(Type.LIST_OF_DOUBLE.parse("[1.0, 2.0, 3.0]")));
+        assertTrue(Type.LIST_OF_DOUBLE.isCompatible(Type.LIST_OF_DOUBLE.parse("[1, 2, 3]")));
+        assertTrue(Type.LIST_OF_DOUBLE.isCompatible(Type.LIST_OF_DOUBLE.parse("[1.0, 2.0, 3.0]")));
         assertTrue(((List<Double>)Type.LIST_OF_DOUBLE.parse("[1, 2, 3]")).get(0)
                 instanceof Double);
     }
@@ -69,11 +69,11 @@ public class TestType {
 
     @Test(expected=ParseException.class)
     public void getTypeFromValue_Object() throws Exception {
-        Type.getFromValue("{ \"id\" : 1 }");
+        System.out.println(Type.getFromValue("{ \"id\" : 1 }"));
     }
 
     @Test(expected=ParseException.class)
     public void getTypeFromValue_UnquotedName() throws Exception {
-        Type.getFromValue("argh");
+        System.out.println(Type.getFromValue("argh"));
     }
 }

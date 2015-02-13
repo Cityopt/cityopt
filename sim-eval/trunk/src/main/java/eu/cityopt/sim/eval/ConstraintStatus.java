@@ -28,7 +28,7 @@ public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
     public final double[] infeasibilities;
 
     public ConstraintStatus(SimulationInput input,
-            Collection<ConstraintExpression> constraints, boolean ignoreErrors)
+            Collection<Constraint> constraints, boolean ignoreErrors)
             throws ScriptException, InvalidValueException {
         this.infeasibilities = computeInfeasibilities(input, constraints,
                 ignoreErrors);
@@ -36,7 +36,7 @@ public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
     }
 
     public ConstraintStatus(MetricValues values,
-            Collection<ConstraintExpression> constraints)
+            Collection<Constraint> constraints)
             throws ScriptException, InvalidValueException {
         this.infeasibilities = computeInfeasibilities(values, constraints,
                 false);
@@ -61,13 +61,13 @@ public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
     }
 
     static private double[] computeInfeasibilities(EvaluationContext context,
-            Collection<ConstraintExpression> constraints, boolean ignoreErrors)
+            Collection<Constraint> constraints, boolean ignoreErrors)
             throws ScriptException, InvalidValueException {
         double[] infeasibilities = new double[constraints.size()];
         int i = 0;
-        for (ConstraintExpression constraint : constraints) {
+        for (Constraint constraint : constraints) {
             try {
-                infeasibilities[i] = constraint.evaluate(context);
+                infeasibilities[i] = constraint.infeasibility(context);
             } catch (ScriptException | InvalidValueException e) {
                 if (ignoreErrors) {
                     infeasibilities[i] = Double.NaN;
