@@ -1,15 +1,21 @@
 package eu.cityopt.repository;
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import eu.cityopt.DTO.ComponentInputParamDTO;
+import eu.cityopt.model.TimeSeriesVal;
 
 @Repository
 public class CustomQueryRepository {	
@@ -79,5 +85,40 @@ public class CustomQueryRepository {
 				new BeanPropertyRowMapper<ComponentInputParamDTO>(ComponentInputParamDTO.class));
 		
 		return components;
+	}
+	
+
+ 
+	public boolean insertTimeSeriesBatch(final List<TimeSeriesVal> tsvalues){
+		try { 
+			insertBatch(tsvalues); 
+			return true;
+		} catch (Exception e) { 
+			System.out.println(e.getMessage()); 
+			return false;
+		} 
+	}
+	
+	//insert batch
+	private void insertBatch(final List<TimeSeriesVal> tsvalues){
+	 
+		String sql = "INSERT INTO TIMESERIESVAL"
+				+ "(TIME, VALUE, TSERIESID) VALUES"
+				+ "(?,?,?)";
+		template.batchUpdate(sql, new BatchPreparedStatementSetter() {
+		
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				TimeSeriesVal value = tsvalues.get(i);
+				ps.setTimestamp(1, new java.sql.Timestamp(value.getTime().getTime()));
+				ps.setString(2, value.getValue());
+				ps.setInt(3, value.getTimeseries().getTseriesid());
+			}
+ 
+			@Override
+			public int getBatchSize() {
+				return tsvalues.size();
+			}
+		});
 	}
 }
