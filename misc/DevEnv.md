@@ -28,7 +28,12 @@ Help > Eclipse Marketplace...
 
 Project Lombok from [http://projectlombok.org/download.html]
 
-- Run downloaded JAR, select Eclipse installation folder
+- Open a console window (with administrator privileges if Eclipse is installed 
+in a restricted directory like C:\Program Files). Change directory to your local 
+maven repository, where maven should have downloaded the lombok java archive:
+e.g. C:\Users\Michael\.m2\repository\org\projectlombok\lombok\1.14.8
+Run the lombok.jar using "java -jar lombok-1.14.8.jar", select Eclipse 
+installation folder and restart Eclipse.
 
 Alternatives: Instead of Eclipse Luna, Eclipse Kepler can also be used, but it
 requires Java 8 patches.  If starting from non-EE Eclipse, you'll need to
