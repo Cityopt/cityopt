@@ -44,7 +44,8 @@ public class TimeSeriesVal implements java.io.Serializable {
 		this.time = time;
 	}
 
-	@SequenceGenerator(name="timeseriesval_tseriesvalid_seq",sequenceName="timeseriesval_tseriesvalid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="timeseriesval_tseriesvalid_seq")
+	@SequenceGenerator(name="timeseriesval_tseriesvalid_seq",sequenceName="timeseriesval_tseriesvalid_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="timeseriesval_tseriesvalid_seq")
 	@Id
 	@Column(name = "tseriesvalid", unique = true, nullable = false)
 	public int getTseriesvalid() {

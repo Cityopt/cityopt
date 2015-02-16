@@ -67,7 +67,7 @@ public class ScenarioMetrics implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "scenid", unique = true)
+	@JoinColumn(name = "scenid")
 	public Scenario getScenario() {
 		return this.scenario;
 	}

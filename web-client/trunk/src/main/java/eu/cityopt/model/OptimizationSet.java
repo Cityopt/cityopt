@@ -28,6 +28,7 @@ import javax.persistence.TemporalType;
 public class OptimizationSet implements java.io.Serializable {
 
 	private int optid;
+	private ExtParamValSet extparamvalset;
 	private ObjectiveFunction objectivefunction;
 	private Scenario scenario;
 	private Integer prjid;
@@ -46,12 +47,13 @@ public class OptimizationSet implements java.io.Serializable {
 		this.optid = optid;
 	}
 
-	public OptimizationSet(int optid, ObjectiveFunction objectivefunction,
-			Scenario scenario, Integer prjid, Date createdon, Date updatedon,
-			Integer createdby, Integer updatedby,
-			Set<OptSetScenarios> optsetscenarioses,
+	public OptimizationSet(int optid, ExtParamValSet extparamvalset, 
+			ObjectiveFunction objectivefunction, Scenario scenario,
+			Integer prjid, Date createdon, Date updatedon, Integer createdby,
+			Integer updatedby, Set<OptSetScenarios> optsetscenarioses,
 			Set<OptSearchConst> optsearchconsts) {
 		this.optid = optid;
+		this.extparamvalset = extparamvalset;
 		this.objectivefunction = objectivefunction;
 		this.scenario = scenario;
 		this.prjid = prjid;
@@ -72,6 +74,16 @@ public class OptimizationSet implements java.io.Serializable {
 
 	public void setOptid(int optid) {
 		this.optid = optid;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "extparamvalsetid")
+	public ExtParamValSet getExtparamvalset() {
+		return this.extparamvalset;
+	}
+
+	public void setExtparamvalset(ExtParamValSet extparamvalset) {
+		this.extparamvalset = extparamvalset;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
