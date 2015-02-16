@@ -25,13 +25,13 @@ public class AlgoParamServiceImpl implements AlgoParamService{
 	}
 	
 	@Transactional
-	public void delete(int id) throws EntityNotFoundException {
+	public void delete(AlgoParam u) throws EntityNotFoundException {
 		
-		if(algoParamRepository.findOne(id) == null) {
+		if(algoParamRepository.findOne(u.getAparamsid()) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		algoParamRepository.delete(id);
+		algoParamRepository.delete(u);
 	}
 	
 	@Transactional
@@ -44,7 +44,7 @@ public class AlgoParamServiceImpl implements AlgoParamService{
 		return save(toUpdate);
 	}
 	
-	public AlgoParam findByID(int id) {
+	public AlgoParam findByID(Integer id) {
 		return algoParamRepository.findOne(id);
 	}
 	

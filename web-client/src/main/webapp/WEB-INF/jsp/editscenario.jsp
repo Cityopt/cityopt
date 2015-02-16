@@ -1,9 +1,5 @@
-<%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
-<%--@elvariable id="scenario" type="eu.cityopt.DTO.ScenarioDTO"--%>
-<%--@elvariable id="component" type="com.cityopt.DTO.ComponentDTO"--%>
-<%--@elvariable id="inputParamVal" type="com.cityopt.DTO.InputParamValDTO"--%>
+<%--@elvariable id="scenario" type="eu.cityopt.model.Scenario"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -17,9 +13,8 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td style="width: 30px"></td>
-		<td valign="top">
-			<div style="overflow:scroll;height:600px;width:800px;overflow:auto">
+		<td>
+			<div style="overflow:scroll;height:500px;width:1000px;overflow:auto">
 			<form:form method="post" action="editscenario.html?action=update" modelAttribute="scenario">
 			<table>
 				<tr>
@@ -32,74 +27,70 @@
 						<table>
 							<tr>
 								<td>Project name:</td>
-								<td><form:input type="text" path="name" style="width:200px"/></td>
+								<td><form:input type="text" path="name"/></td>
 								<td></td>
-								<td><input type="submit" value="Update scenario" style="width:120px"></td>
+								<td><input type="submit" value="Edit scenario"></td>
 							</tr>
 							<tr>						
+								<td>Id:</td>
+								<td><form:input type="text" path="scenid"/></td>
 								<td></td>
-								<td></td>
-								<td></td>
-								<td><a href="runscenario.html"><button type="button" style="width:120px">Run scenario</button></a></td>
+								<td><input type="submit" value="Run scenario"></td>
 							</tr>
 							<tr>						
 								<td>Description:</td>
-								<td><form:textarea type="text" rows="3" path="description" style="width:200px"/></td>
+								<td><form:textarea type="text" rows="3" path="description"/></textarea></td>
 								<td></td>
-								<td><input type="submit" value="Abort run scenario" style="width:120px"></td>
+								<td><input type="submit" value="Abort run scenario"></td>
 							</tr>
 							<tr>						
 								<td></td>
 								<td></td>
 								<td></td>
-								<td><input type="submit" value="Clone scenario" style="width:120px"></td>
-							</tr>
-							<tr>						
-								<td>Input parameters:</td>
-								<td><a href="scenarioparameters.html"><button type="button" style="width:100px">Set</button></a></td>
+								<td><input type="submit" value="Clone scenario"></td>
 							</tr>
 							<tr>						
 								<td>External parameters:</td>
-								<td><a href="scenariovariables.html"><button type="button" style="width:100px">Set</button></a></td>
-							</tr>
-							<tr height="10"></tr>
-							<tr>
-								<td><b>Components</b></td>
-								<td><b>Input parameter values</b></td>
+								<td><input type="submit" value="Ok"></td>
 							</tr>
 							<tr>						
-								<td valign="top">
+								<td>Set the input parameters:</td>
+								<td><input type="submit" value="Ok"></td>
+							</tr>
+							<tr>						
+								<td>
 									<table class="tablestyle" border="1">
 										<col style="width:150px">
-										<col style="width:50px">
 										<tr>
-											<th>Component</th>
-											<th>Id</th>
+											<th>Components</th>
 										</tr>
-
-										<c:forEach items="${components}" var="component">
 										<tr>
-											<td>${component.name}</td>
-									    	<td>${component.componentid}</td>
-									   	</tr>
-										</c:forEach>
+											<td>x</td>
+										</tr>
 									</table>
 								</td>
-								<td valign="top">
+								<td>
 									<table class="tablestyle" border="1">
 										<col style="width:150px">
-										<col style="width:50px">
+										<col style="width:150px">
+										<col style="width:150px">
 										<tr>
-											<th>Parameter name</th>
+											<th>Parameters</th>
 											<th>Value</th>
+											<th>Units</th>
 										</tr>
-										<c:forEach items="${inputParamVals}" var="inputParamVal">
 										<tr>
-											<td>${inputParamVal.inputparameter.name}</td>
-									    	<td>${inputParamVal.value}</td>
-									   	</tr>
-										</c:forEach>
+											<td>x</td>
+											<td>x</td>
+											<td>x</td>
+										</tr>
 									</table>
+								</td>
+								<td>
+									<b>Parameters selection</b><br>
+									<input type="radio" >All parameters<br>	
+									<input type="radio">Completed parameters<br>	
+									<input type="radio">Empty parameters	
 								</td>
 							</tr>
 						</table>

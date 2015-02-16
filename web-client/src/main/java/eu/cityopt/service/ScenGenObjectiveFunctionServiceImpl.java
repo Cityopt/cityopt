@@ -25,13 +25,13 @@ public class ScenGenObjectiveFunctionServiceImpl implements ScenGenObjectiveFunc
 	}
 
 	@Transactional
-	public void delete(int id) throws EntityNotFoundException {
+	public void delete(ScenGenObjectiveFunction u) throws EntityNotFoundException {
 		
-		if(scenGenObjectiveFunctionRepository.findOne(id) == null) {
+		if(scenGenObjectiveFunctionRepository.findOne(u.getSgobfunctionid()) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		scenGenObjectiveFunctionRepository.delete(id);
+		scenGenObjectiveFunctionRepository.delete(u);
 	}
 	
 	@Transactional
@@ -44,7 +44,7 @@ public class ScenGenObjectiveFunctionServiceImpl implements ScenGenObjectiveFunc
 		return save(toUpdate);
 	}
 	
-	public ScenGenObjectiveFunction findByID(int id) {
+	public ScenGenObjectiveFunction findByID(Integer id) {
 		return scenGenObjectiveFunctionRepository.findOne(id);
 	}
 	

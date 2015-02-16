@@ -11,15 +11,7 @@ import eu.cityopt.model.Project;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project,Integer>{
-	@Query("select distinct p from Project p where Lower(p.name) like CONCAT('%',Lower(:prjName),'%')")
+	@Query("select p from Project p where Lower(p.name) like CONCAT('%',Lower(:prjName),'%')")
 	List<Project> findByName(@Param("prjName") String prjname);
-	
-//	@Query("select distinct  p from Project p LEFT JOIN FETCH p.components comps where p.id = :prjID")
-//	public Project findOne(@Param("prjID") Integer prjID);
-//	
-//	@Query("select distinct p from Project p LEFT JOIN FETCH p.components comps")	
-//	public List<Project> findAll();
-	
-	@Query("select distinct p from Project p LEFT JOIN FETCH p.scenarios scens")    
-    public List<Project> findAllWithScenarios();
+
 }

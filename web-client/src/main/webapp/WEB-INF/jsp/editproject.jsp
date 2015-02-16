@@ -1,4 +1,4 @@
-<%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
+<%--@elvariable id="projectForm" type="com.cityopt.controller.ProjectForm"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -14,10 +14,9 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width=30></td>
-		<td valign="top">
+		<td>
 			<div style="overflow:scroll;height:500px;width:1000px;overflow:auto">
-			<form:form method="post" action="editproject.html?action=save" modelAttribute="project" 
-				enctype="multipart/form-data">
+			<form:form method="post" action="editproject.html?action=save" modelAttribute="projectForm">
 			<table style="width:900px">
 				<tr><td><h2>Edit project</h2></td></tr>
 				<tr>
@@ -25,41 +24,31 @@
 						<table>
 							<tr>
 								<td>Project name:</td>
-								<td><form:input type="text" path="name" style="width:250px"/></td>
+								<td><form:input type="text" path="projectName"/></td>
 							</tr>
 							<tr>						
 								<td>Location:</td>
-								<td><form:input type="text" path="location" style="width:250px"/></td>
+								<td><form:input type="text" path="location"/></td>
 							</tr>
 							<tr>						
-								<td>Design target:</td>
-								<td><form:input type="text" path="designtarget" style="width:250px"/></td>
+								<td>Project creator:</td>
+								<td><form:input type="text" path="projectCreator"/></td>
+							</tr>
+							<tr>						
+								<td>Date:</td>
+								<td><form:input type="text" path="date"/></td>
 							</tr>
 							<tr>						
 								<td>Description:</td>
-								<td><form:textarea type="text" rows="3" path="description" style="width:250px"></form:textarea></td>
+								<td><form:textarea type="text" rows="3" path="description"></form:textarea></td>
 							</tr>
 							<tr>						
 								<td>Energy model:</td>
-								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
-							</tr>
-							<tr>
-								<td>
-									Parameter level:
-								</td>
-								<td>
-							 		<select name="parameterLevel">
-									  	<option value="1">1</option>
-									  	<option value="2">2</option>
-									  	<option value="3">3</option>
-									  	<option value="4">4</option>
-									</select>
-								</td> 
+								<td><form:input type="text" path="energyModel"/></td>
 							</tr>
 							<tr>						
 								<td></td>
-								<td><a href="uploaddiagram.html"><button type="button">Upload</button></a>
-								<!--<form:input type="submit" path="" value="Upload" style="width:120px"/>--></td>
+								<td><input type="button" id="upload" value="Upload"/></td>
 							</tr>
 						</table>
 					</td>
@@ -68,8 +57,9 @@
 					</td>
 				</tr>
 				<tr>
-					<td></td>
-					<td align="Right"><input type="button" id="upload" value="Upload" style="width:120px"/></td>
+					<td colspan="2" align="Right">
+						<input type="button" id="uploadDiagram" value="Upload diagram"/>
+					</td>
 				</tr>
 				<tr>
 					<td colspan="2">
@@ -79,13 +69,18 @@
 							<col style="width:600px">
 							<tr>
 								<td>Input parameters</td>
-								<td><a href="projectparameters.html"><button type="button" style="width:120px">Set</button></a></td>
-								<td align="right"><a href="closeproject.html"><button type="button" style="width:120px">Close project</button></a></td>
+								<td><input type="button" value="Set" style="width:150px"></td>
+								<td></td>
 							</tr>
 							<tr>
 								<td>Output variables</td>
-								<td><a href="outputvariables.html"><button type="button" style="width:120px">Set</button></a></td>
-								<td align="right"><form:input type="submit" path="" value="Save project" style="width:120px"/></td>
+								<td><input type="button" value="Set" style="width:150px"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>GIS Coordinates</td>
+								<td><input type="button" value="Set" style="width:150px"></td>
+								<td align="right"><form:input type="submit" path="" value="Save project" style="width:150px"/></td>
 							</tr>
 						</table>
 					</td>

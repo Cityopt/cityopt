@@ -4,64 +4,43 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.common.reflect.TypeToken;
-
-import eu.cityopt.DTO.ScenarioDTO;
-import eu.cityopt.DTO.SimulationModelDTO;
-import eu.cityopt.model.Project;
-import eu.cityopt.model.Scenario;
 import eu.cityopt.model.SimulationModel;
 import eu.cityopt.repository.SimulationModelRepository;
 
-@Service("SimulationModelService")
-public class SimulationModelServiceImpl implements SimulationModelService {
+	@Service("SimulationModelService")
+	public class SimulationModelServiceImpl implements SimulationModelService{
 
-	@Autowired
-	private ModelMapper modelMapper;
-	
 	@Autowired
 	private SimulationModelRepository simulationModelRepository;
 	
-	public List<SimulationModelDTO> findAll() {
-		
-		return modelMapper.map(simulationModelRepository.findAll(), 
-			new TypeToken<List<SimulationModelDTO>>() {}.getType());
+	public List<SimulationModel> findAll() {
+		return simulationModelRepository.findAll();
 	}
 	
-	public SimulationModelDTO findByID(int id) throws EntityNotFoundException {
-		SimulationModel sim = simulationModelRepository.findOne(id);
-		if(sim == null) 
-			throw new EntityNotFoundException();
-		
-		return modelMapper.map(sim, SimulationModelDTO.class);
+	public SimulationModel findByID(Integer id) {
+		return simulationModelRepository.findOne(id);
 	}
 	
 	@Transactional
-	public SimulationModelDTO save(SimulationModel model) {
-		
-		SimulationModel sim = modelMapper.map(model, SimulationModel.class);
-		sim = simulationModelRepository.save(sim);
-		SimulationModelDTO simRet = modelMapper.map(sim, SimulationModelDTO.class);
-		return simRet;
-		
+	public SimulationModel save(SimulationModel model) {
+		return simulationModelRepository.save(model);
 	}
 	
 	@Transactional
-	public void delete(int id) throws EntityNotFoundException {
+	public void delete(SimulationModel u) throws EntityNotFoundException {
 		
-		if(simulationModelRepository.findOne(id) == null) {
+		if(simulationModelRepository.findOne(u.getModelid()) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		simulationModelRepository.delete(id);
+		simulationModelRepository.delete(u);
 	}
 	
 	@Transactional
-	public SimulationModelDTO update(SimulationModel toUpdate) throws EntityNotFoundException {
+	public SimulationModel update(SimulationModel toUpdate) throws EntityNotFoundException {
 		
 		if(simulationModelRepository.findOne(toUpdate.getModelid()) == null) {
 			throw new EntityNotFoundException();
@@ -70,9 +49,9 @@ public class SimulationModelServiceImpl implements SimulationModelService {
 		return save(toUpdate);
 	}
 	
-//	@Transactional
-//	public void deleteAll() {
-//		simulationModelRepository.deleteAll();
-//	}
+	@Transactional
+	public void deleteAll() {
+		simulationModelRepository.deleteAll();
+	}
 
 }

@@ -25,13 +25,13 @@ public class TypeServiceImpl implements TypeService {
 	}
 
 	@Transactional
-	public void delete(int id) throws EntityNotFoundException {
+	public void delete(Type u) throws EntityNotFoundException {
 		
-		if(typeRepository.findOne(id) == null) {
+		if(typeRepository.findOne(u.getTypeid()) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		typeRepository.delete(id);
+		typeRepository.delete(u);
 	}
 	
 	@Transactional
@@ -44,7 +44,7 @@ public class TypeServiceImpl implements TypeService {
 		return save(toUpdate);
 	}
 	
-	public Type findByID(int id) {
+	public Type findByID(Integer id) {
 		return typeRepository.findOne(id);
 	}
 	

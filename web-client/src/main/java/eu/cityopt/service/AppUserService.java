@@ -2,11 +2,14 @@ package eu.cityopt.service;
 
 import java.util.List;
 
-import eu.cityopt.DTO.AppUserDTO;
+import eu.cityopt.model.AppUser;
 
-public interface AppUserService extends CityOptService<AppUserDTO>{
-	AppUserDTO save(AppUserDTO u);
+public interface AppUserService extends CityOptService<AppUser>{
+
+	void deleteAll();
+
+	List<AppUser> findByUserName(String name);
 	
-	AppUserDTO update(AppUserDTO toUpdate)  throws EntityNotFoundException;
-	
+	AppUser authenticateUser(String name, String password);
+
 }

@@ -25,13 +25,13 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 	}
 
 	@Transactional
-	public void delete(int id) throws EntityNotFoundException {
+	public void delete(OptimizationSet u) throws EntityNotFoundException {
 		
-		if(optimizationSetRepository.findOne(id) == null) {
+		if(optimizationSetRepository.findOne(u.getOptid()) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		optimizationSetRepository.delete(id);
+		optimizationSetRepository.delete(u);
 	}
 	
 	@Transactional
@@ -44,7 +44,7 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 		return save(toUpdate);
 	}
 	
-	public OptimizationSet findByID(int id) {
+	public OptimizationSet findByID(Integer id) {
 		return optimizationSetRepository.findOne(id);
 	}
 	

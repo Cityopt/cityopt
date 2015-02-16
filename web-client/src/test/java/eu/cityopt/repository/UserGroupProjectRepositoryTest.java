@@ -35,7 +35,7 @@ import eu.cityopt.repository.UserGroupRepository;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:/jpaContext.xml", "classpath:/test-context.xml"})
+@ContextConfiguration(locations = { "classpath:/test-context.xml" })
 @Transactional
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,

@@ -25,13 +25,13 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 	}
 
 	@Transactional
-	public void delete(int id) throws EntityNotFoundException {
+	public void delete(ScenarioGenerator u) throws EntityNotFoundException {
 		
-		if(scenarioGeneratorRepository.findOne(id) == null) {
+		if(scenarioGeneratorRepository.findOne(u.getScengenid()) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		scenarioGeneratorRepository.delete(id);
+		scenarioGeneratorRepository.delete(u);
 	}
 	
 	@Transactional
@@ -44,7 +44,7 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 		return save(toUpdate);
 	}
 	
-	public ScenarioGenerator findByID(int id) {
+	public ScenarioGenerator findByID(Integer id) {
 		return scenarioGeneratorRepository.findOne(id);
 	}
 	

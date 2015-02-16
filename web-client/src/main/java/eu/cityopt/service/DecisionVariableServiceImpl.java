@@ -25,13 +25,13 @@ public class DecisionVariableServiceImpl implements DecisionVariableService {
 	}
 
 	@Transactional
-	public void delete(int id) throws EntityNotFoundException {
+	public void delete(DecisionVariable u) throws EntityNotFoundException {
 		
-		if(decisionVariableRepository.findOne(id) == null) {
+		if(decisionVariableRepository.findOne(u.getDecisionvarid()) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		decisionVariableRepository.delete(id);
+		decisionVariableRepository.delete(u);
 	}
 	
 	@Transactional
@@ -44,7 +44,7 @@ public class DecisionVariableServiceImpl implements DecisionVariableService {
 		return save(toUpdate);
 	}
 	
-	public DecisionVariable findByID(int id) {
+	public DecisionVariable findByID(Integer id) {
 		return decisionVariableRepository.findOne(id);
 	}
 	

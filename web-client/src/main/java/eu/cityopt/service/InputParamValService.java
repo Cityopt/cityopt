@@ -1,11 +1,7 @@
 package eu.cityopt.service;
 
-import eu.cityopt.DTO.InputParamValDTO;
+import eu.cityopt.model.InputParamVal;
 
-public interface InputParamValService extends CityOptService<InputParamValDTO> {
+public interface InputParamValService extends CityOptService<InputParamVal> {
 
-	public InputParamValDTO save(InputParamValDTO u);		
-
-	public InputParamValDTO update(InputParamValDTO toUpdate)  throws EntityNotFoundException;
-	
 }

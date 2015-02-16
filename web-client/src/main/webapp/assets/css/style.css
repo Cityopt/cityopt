@@ -215,14 +215,6 @@ blockquote {
     background-color: rgb(220, 250, 220);
 }
 
-.frametable td {
-	vertical-align: top;
-}
-
-.selectedRowStyle tr {
-    background-color: rgb(170, 180, 190);
-}
-
 .sidebarboxtop {
 	background: url('images/mt.gif') left top no-repeat;
 	padding: 10px 15px 11px 15px;

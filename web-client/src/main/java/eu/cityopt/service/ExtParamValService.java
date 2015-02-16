@@ -1,11 +1,7 @@
 package eu.cityopt.service;
 
-import eu.cityopt.DTO.ExtParamValDTO;
+import eu.cityopt.model.ExtParamVal;
 
-public interface ExtParamValService extends CityOptService<ExtParamValDTO> {
+public interface ExtParamValService extends CityOptService<ExtParamVal> {
 
-	public ExtParamValDTO save(ExtParamValDTO u);	
-
-	ExtParamValDTO update(ExtParamValDTO toUpdate) throws EntityNotFoundException;
-	
 }

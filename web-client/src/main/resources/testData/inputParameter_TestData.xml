@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dataset>
+
+<type typeid="1" name="myType"/>
+<unit unitid="1" name="myUnit" typeid="1"/>
+<inputparameter inputid="1" name="InputParameter 1" unidid="1"/>
+
+<project prjid="1" name="Project 1" location="Vienna"/>
+
+<scenario scenid="1" name="test" description="this is a test" createdon="2014-12-02" updatedon="2014-12-01" prjid="1"/>
+
+<inputparamval scenid="1" inputid="1" createdon="2014-12-02" value="my value"/>
+
+
+</dataset>

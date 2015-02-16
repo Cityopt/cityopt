@@ -2,49 +2,40 @@ package eu.cityopt.service;
 
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.reflect.TypeToken;
-
-import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.model.Unit;
 import eu.cityopt.repository.UnitRepository;
 
 @Service("UnitService")
 public class UnitServiceImpl implements UnitService {
-	@Autowired
-	private ModelMapper modelMapper;
 	
 	@Autowired
 	private UnitRepository unitRepository;
 	
-	public List<UnitDTO> findAll() {
-		return modelMapper.map(unitRepository.findAll(), 
-				new TypeToken<List<UnitDTO>>() {}.getType());
+	public List<Unit> findAll() {
+		return unitRepository.findAll();
 	}
 
 	@Transactional
-	public UnitDTO save(UnitDTO u) {
-		Unit unit = modelMapper.map(u, Unit.class);
-		unit = unitRepository.save(unit);
-		return modelMapper.map(unit, UnitDTO.class);
+	public Unit save(Unit u) {
+		return unitRepository.save(u);
 	}
 
 	@Transactional
-	public void delete(int id) throws EntityNotFoundException {
+	public void delete(Unit u) throws EntityNotFoundException {
 		
-		if(unitRepository.findOne(id) == null) {
+		if(unitRepository.findOne(u.getUnitid()) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		unitRepository.delete(id);
+		unitRepository.delete(u);
 	}
 	
 	@Transactional
-	public UnitDTO update(UnitDTO toUpdate) throws EntityNotFoundException {
+	public Unit update(Unit toUpdate) throws EntityNotFoundException {
 		
 		if(unitRepository.findOne(toUpdate.getUnitid()) == null) {
 			throw new EntityNotFoundException();
@@ -53,13 +44,8 @@ public class UnitServiceImpl implements UnitService {
 		return save(toUpdate);
 	}
 	
-	public UnitDTO findByID(int id) throws EntityNotFoundException {
-		
-		if(unitRepository.findOne(id) == null) {
-			throw new EntityNotFoundException();
-		}
-		
-		return modelMapper.map(unitRepository.findOne(id), UnitDTO.class);
+	public Unit findByID(Integer id) {
+		return unitRepository.findOne(id);
 	}
 	
 }
