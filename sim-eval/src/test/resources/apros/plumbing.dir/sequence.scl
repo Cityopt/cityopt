@@ -1,0 +1,11 @@
+import "file:cityopt/setup.scl" as CO
+
+main :: <Proc> ()
+main = runApros mdo
+    loadIC "plumbing.snp.gz"
+    CO.setup
+    acl "modi is01 io_file_name results.dat"
+    acl "io open is01"
+    setTime 0
+    wait 60.0
+    acl "io close is01"

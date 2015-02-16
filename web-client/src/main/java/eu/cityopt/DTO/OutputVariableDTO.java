@@ -1,0 +1,16 @@
+package eu.cityopt.DTO;
+
+import lombok.Getter;
+import lombok.Setter;
+
+public class OutputVariableDTO {
+
+	@Getter @Setter private int outvarid;
+//	@Getter @Setter private Component component;
+	@Getter @Setter private String name;
+	@Getter @Setter private Boolean selected;
+	@Getter @Setter private Integer typeid;
+//	@Getter @Setter private Set<SimulationResult> simulationresults = new HashSet<SimulationResult>(
+//			0);
+
+}

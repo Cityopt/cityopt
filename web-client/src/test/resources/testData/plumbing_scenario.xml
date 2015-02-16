@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dataset>
+
+  <simulationmodel modelid="1" description="Plumbing test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="2015-01-01 00:00:00"/>
+
+  <project prjid="1" name="Project 1" location="dummy" modelid="1"/>
+  <project prjid="2" name="Plumbing test project" location="Helsinki" modelid="1"/>
+
+  <type typeid="1" name="Double"/>
+  <type typeid="2" name="Integer"/>
+  <type typeid="3" name="String"/>
+  <type typeid="4" name="TimeSeries/step"/>
+  <type typeid="5" name="TimeSeries/linear"/>
+  <type typeid="6" name="List of Double"/>
+  <type typeid="7" name="List of Integer"/>
+
+  <unit unitid="1" typeid="1" name="Unit/Double"/>
+  <unit unitid="2" typeid="2" name="Unit/Integer"/>
+  <unit unitid="3" typeid="3" name="Unit/String"/>
+  <unit unitid="4" typeid="4" name="Unit/TimeSeries/step"/>
+  <unit unitid="5" typeid="5" name="Unit/TimeSeries/linear"/>
+  <unit unitid="6" typeid="6" name="Unit/List of Double"/>
+  <unit unitid="7" typeid="7" name="Unit/List of Integer"/>
+
+  <component componentid="0" prjid="1" name="dummy"/>
+  <component componentid="1" prjid="2" name="C01"/>
+  <component componentid="2" prjid="2" name="PIP01"/>
+  <inputparameter inputid="1" name="typ" unitid="2" componentid="1" defaultvalue="2"/>
+  <outputvariable outvarid="1" name="PI12_MIX_MASS_FLOW" unitid="5" componentid="2"/>
+
+  <scenario scenid="0" prjid="2" name="dummy"/>
+  <scenario scenid="1" prjid="2" name="testscenario"/>
+  <inputparamval scendefinitionid="1" scenid="1" inputid="1" value="3"/>
+
+  <extparam prjid="2" defaultvalue="100" name="d" unitid="1"/>
+
+  <metric prjid="1" name="dummy" unitid="1" expression="C01.typ"/>
+  <metric prjid="2" name="symmetric" unitid="1" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>
+
+</dataset>

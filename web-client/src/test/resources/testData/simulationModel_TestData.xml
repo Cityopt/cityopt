@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<dataset>
+
+<simulationmodel modelblob="./src/test/resources/testData/blobTest.txt" simulator="APROS" description="My first model"/>
+
+<simulationmodel modelblob="dGhpcyBpcyBhIHRlc3QgZmlsZSBmb3IgZGJ1bml0IGJsb2IgZGF0YS4=" simulator="APROS" description="model with Base64"/>
+
+
+
+</dataset>
