@@ -14,4 +14,7 @@ public interface SimulationResultRepository extends JpaRepository<SimulationResu
 //	@Query("select s from SimulationResult s where s.scenario.scenid = :scenId and"
 //			+ " s.outputvariable.outvarid = :outId order by s.time asc")
 //	List<SimulationResult> findByScenAndOutvar(@Param("scenId") int scenId, @Param("outId") int outId);
+	@Query("select s from SimulationResult s where s.scenario.scenid = :scenId and"
+	+ " s.outputvariable.outvarid = :outId")
+	SimulationResult findByScenAndOutvar(@Param("scenId") int scenId, @Param("outId") int outId);
 }
