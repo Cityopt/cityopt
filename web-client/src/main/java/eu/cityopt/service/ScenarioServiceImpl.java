@@ -101,7 +101,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 		return result;
 	}
 	
-	public List<SimulationResultDTO> getSimulationResults(int scenId) {
+	public Set<SimulationResultDTO> getSimulationResults(int scenId) {
 		Scenario scen = scenarioRepository.findOne(scenId);
 		Set<SimulationResult> simRes = scen.getSimulationresults();
 		return modelMapper.map(simRes, new TypeToken<Set<SimulationResultDTO>>() {}.getType());
