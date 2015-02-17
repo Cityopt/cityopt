@@ -31,7 +31,9 @@
 		<map>
 			<entry key="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
 			<!-- <entry key="hibernate.hbm2ddl.auto" value=""/>-->
-			<entry key="hibernate.format_sql" value="true"/>			
+			<entry key="hibernate.format_sql" value="true"/>	
+			<entry key="hibernate.jdbc.batch_size" value="50"/>					
+			<entry key="hibernate.order_inserts" value="true"/>
 		</map>
 	</property>
 </bean>
