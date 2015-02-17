@@ -6,6 +6,9 @@ import java.util.Set;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
+import eu.cityopt.model.Component;
+import eu.cityopt.model.InputParameter;
+import eu.cityopt.model.OutputVariable;
 
 public interface ComponentService extends CityOptService<ComponentDTO>{
 	ComponentDTO save(ComponentDTO u, int prjid);
