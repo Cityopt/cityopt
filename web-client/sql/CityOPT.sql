@@ -365,6 +365,7 @@ CREATE TABLE OptimizationSet (
 	updatedOn timestamp(0),
 	createdBy integer,
 	updatedBy integer,
+	optStart timestamp(0),
 	scenID integer,
 	extParamValSetID integer
 )
@@ -508,6 +509,7 @@ CREATE TABLE SimulationModel (
 	description text,
 	simulator text,
 	simulatorVersion varchar(50),
+	configuration text,
 	createdOn timestamp(0),
 	updatedOn timestamp(0),
 	createdBy integer,
