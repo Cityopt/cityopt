@@ -12,6 +12,7 @@ public class ComponentDTO {
 //	@Getter @Setter private ProjectDTO project;
 //	@Getter @Setter private int prjid;
 	@Getter @Setter private String name;
+	@Getter @Setter private String alias;
 	@Getter @Setter private Serializable geometryblob;
 //	@Getter @Setter private Set<InputParameter> inputparameters = new HashSet<InputParameter>(0);
 	@Getter @Setter private Set<OutputVariableDTO> outputvariables = new HashSet<OutputVariableDTO>(0);
