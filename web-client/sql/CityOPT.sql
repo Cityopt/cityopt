@@ -509,7 +509,6 @@ CREATE TABLE SimulationModel (
 	description text,
 	simulator text,
 	simulatorVersion varchar(50),
-	configuration text,
 	createdOn timestamp(0),
 	updatedOn timestamp(0),
 	createdBy integer,
