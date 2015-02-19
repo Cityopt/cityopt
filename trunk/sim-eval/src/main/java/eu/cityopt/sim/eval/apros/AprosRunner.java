@@ -55,7 +55,10 @@ import eu.cityopt.sim.eval.util.TempDir;
  * @author ttekth
  */
 public class AprosRunner implements SimulationRunner {
-    /** Dummy component not present in the Apros model */
+    /**
+     * Dummy component not present in the Apros model.
+     * The inputs of this component appear as variables in setup.scl.
+     */
     public static String dummyComponent = "CITYOPT";
     /** Prefix for temporary directories. */
     public static String tmpPrefix = "cityopt_apros";
@@ -72,6 +75,8 @@ public class AprosRunner implements SimulationRunner {
     private final String profile;
     final String[] resultFiles;
     final Path setup_scl;
+    /* Unique SCL names for input parmeters.  Built by makeInputNames.
+       Maps component |-> parameter |-> name. */
     private Map<String, Map<String, String>> inputNames = new HashMap<>();
     /* A sequence of SCL set commands for input parameters
        not found in uc_structure. */
@@ -224,6 +229,10 @@ public class AprosRunner implements SimulationRunner {
         }
     }
     
+    /**
+     * Sanitize all property names.
+     * Also replace original names with sanitized ones in expressions.
+     */
     private void sanitizeUCS() {
         class Replacer {
             Pattern p;
@@ -295,6 +304,10 @@ public class AprosRunner implements SimulationRunner {
         }
     }
 
+    /**
+     * Modify the user component structure to reference inputNames.
+     * Add inputs left over to orphanSets.
+     */
     private void patchUCS() {
         XPath xp = getXPath();
         Map<QName, Object> vars = new HashMap<>();
@@ -309,6 +322,8 @@ public class AprosRunner implements SimulationRunner {
                 xp_value = xp.compile("./property[@name = $param]/@value");
             for (Map.Entry<String, Map<String, String>>
                      ckv : inputNames.entrySet()) {
+                if (ckv.getKey().equals(dummyComponent))
+                    continue;
                 vars.put(qn_comp, ckv.getKey());
                 NodeList nodes = (NodeList)xp_comp.evaluate(
                         uc_structure, XPathConstants.NODESET);
@@ -364,6 +379,14 @@ public class AprosRunner implements SimulationRunner {
             setup.write(orphanSets);
             for (String s: end)
                 setup.println(s);
+            Map<String, String> dummy = inputNames.get(dummyComponent);
+            if (dummy != null) {
+                setup.println();
+                for (Map.Entry<String, String> kv : dummy.entrySet()) {
+                    setup.printf("%s = In.%s%n",
+                                 sanitize(kv.getKey()), kv.getValue());
+                }
+            }
         }
     }
 }
