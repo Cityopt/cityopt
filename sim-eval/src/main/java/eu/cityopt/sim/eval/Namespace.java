@@ -40,6 +40,26 @@ import java.util.Map;
  * @author Hannu Rummukainen
  */
 public class Namespace extends EvaluationSetup {
+    /**
+     * Name of virtual component for simulator configuration parameters.
+     * The component only exists inside the CityOPT software, and it is
+     * not connected to the actual simulation model.
+     */
+    public static final String CONFIG_COMPONENT = "CITYOPT";
+
+    /**
+     * Name of input parameter in the virtual configuration component:
+     * Simulation start time in seconds. Relative to the simulation time origin.
+     * The input parameter must be of type DOUBLE.
+     */
+    public static final String CONFIG_SIMULATION_START = "SIMULATION_START";
+
+    /**
+     * Name of input parameter in the virtual configuration component:
+     * Simulation length in seconds of simulated time.
+     * The input parameter must be of type DOUBLE.
+     */
+    public static final String CONFIG_SIMULATION_LENGTH = "SIMULATION_LENGTH";
 
     /** Container for component-specific namespace data. */
     public static class Component {
