@@ -31,8 +31,8 @@ Project Lombok from [http://projectlombok.org/download.html]
 - Open a console window (with administrator privileges if Eclipse is installed 
 in a restricted directory like C:\Program Files). Change directory to your local 
 maven repository, where maven should have downloaded the lombok java archive:
-e.g. C:\Users\Michael\.m2\repository\org\projectlombok\lombok\1.14.8
-Run the lombok.jar using "java -jar lombok-1.14.8.jar", select Eclipse 
+e.g. `C:\Users\Michael\\.m2\repository\org\projectlombok\lombok\1.14.8`.
+Run the lombok.jar using `java -jar lombok-1.14.8.jar`, select Eclipse 
 installation folder and restart Eclipse.
 
 Alternatives: Instead of Eclipse Luna, Eclipse Kepler can also be used, but it
@@ -43,26 +43,27 @@ install the Maven plugin m2e and its Java 8 patches.
 Version control
 ---------------
 
-The Subversion repository is managed by VTT.  The repository root URL is
-https://www.simulationsite.net/svn/cityopt
+The Subversion repository is managed by VTT.  The repository trunk URL is
+https://www.simulationsite.net/svn/cityopt/trunk
 
-Currently the repository is separated into multiple projects, which
-should be checked out separately and imported as Eclipse projects:
+The repository contains the following Eclipse projects:
 
 - web-client - user interface and database access.
-  Trunk URL: https://www.simulationsite.net/svn/cityopt/web-client/trunk
 
 - sim-eval - generic simulation layer, evaluation of expressions.
-  Trunk URL: https://www.simulationsite.net/svn/cityopt/sim-eval/trunk
 
 - opt-ga - genetic algorithm based optimization.
-  Trunk URL: https://www.simulationsite.net/svn/cityopt/opt-ga/trunk
 
-- experiment-client/cityopt-target - Apros simulation server client library.
-  Trunk URL: https://www.simulationsite.net/svn/cityopt/experiment-client/trunk/cityopt-target
+- cityopt-target - Apros simulation server client library.
 
-- misc - miscellaneous; currently an Apros script required in CityOPT.
-  Trunk URL: https://www.simulationsite.net/svn/cityopt/misc/trunk
+- sim-runner - simple command line interface for the Apros simulation server
+  client library for manual testing.  Not needed for the CityOPT Planning
+  Tool.
+
+- misc - miscellaneous; e.g. an Apros script required in CityOPT.
+
+In addition, the top-level Maven build file pom.xml is directly in the trunk
+folder.
 
 To access the Subversion repository from Windows Explorer, download
 TortoiseSVN from [http://www.tortoisesvn.net]
@@ -109,9 +110,10 @@ Build process
 The project is built using [Apache Maven], which is included in Eclipse
 for Java EE developers.
 
-In brief: build dependencies are declared in the pom.xml files in each
-project, from which the Eclipse Maven plugin constructs the Eclipse project
-files.
+In brief: build dependencies are declared in the pom.xml files in each project
+subfolder, and common dependencies are declared in the pom.xml file in the
+top-level folder.  The Eclipse Maven plugin constructs the Eclipse project
+files from the Maven pom.xml files.
 
 At times you will need to select Maven > Update project from the project
 context menu in the Eclipse Package Explorer window.  Other than that, Eclipse
