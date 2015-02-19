@@ -789,6 +789,9 @@ CREATE INDEX IXFK_SimulationResults_Scenario
 CREATE INDEX IXFK_SimulationResults_OutputVariables
 	ON SimulationResult (outVarID)
 ;
+ALTER TABLE SimulationResult
+	ADD CONSTRAINT UQ_SimulationResult_scenID UNIQUE (scenID, outVarID)
+;
 CREATE INDEX IXFK_SimulationResult_TimeSeries
 	ON SimulationResult (tSeriesID)
 ;
