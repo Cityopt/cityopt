@@ -55,6 +55,8 @@ import eu.cityopt.sim.eval.util.TempDir;
  * @author ttekth
  */
 public class AprosRunner implements SimulationRunner {
+    /** Dummy component not present in the Apros model */
+    public static String dummyComponent = "CITYOPT";
     /** Prefix for temporary directories. */
     public static String tmpPrefix = "cityopt_apros";
     /** Number of cores to parallelise for. */
