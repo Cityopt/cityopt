@@ -1,7 +1,7 @@
 package eu.cityopt.sim.eval;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * SimulationStorage implementation using a local hash table.
@@ -9,10 +9,10 @@ import java.util.Map;
  * @author Hannu Rummukainen
  */
 public class HashSimulationStorage implements SimulationStorage {
-    private Map<SimulationInput, SimulationOutput> inputOutputCache;
+    private ConcurrentMap<SimulationInput, SimulationOutput> inputOutputCache;
 
     public HashSimulationStorage() {
-        this.inputOutputCache = new HashMap<SimulationInput, SimulationOutput>();
+        this.inputOutputCache = new ConcurrentHashMap<SimulationInput, SimulationOutput>();
     }
 
     @Override
