@@ -55,11 +55,6 @@ import eu.cityopt.sim.eval.util.TempDir;
  * @author ttekth
  */
 public class AprosRunner implements SimulationRunner {
-    /**
-     * Dummy component not present in the Apros model.
-     * The inputs of this component appear as variables in setup.scl.
-     */
-    public static String dummyComponent = "CITYOPT";
     /** Prefix for temporary directories. */
     public static String tmpPrefix = "cityopt_apros";
     /** Number of cores to parallelise for. */
@@ -322,7 +317,7 @@ public class AprosRunner implements SimulationRunner {
                 xp_value = xp.compile("./property[@name = $param]/@value");
             for (Map.Entry<String, Map<String, String>>
                      ckv : inputNames.entrySet()) {
-                if (ckv.getKey().equals(dummyComponent))
+                if (ckv.getKey().equals(Namespace.CONFIG_COMPONENT))
                     continue;
                 vars.put(qn_comp, ckv.getKey());
                 NodeList nodes = (NodeList)xp_comp.evaluate(
@@ -379,7 +374,8 @@ public class AprosRunner implements SimulationRunner {
             setup.write(orphanSets);
             for (String s: end)
                 setup.println(s);
-            Map<String, String> dummy = inputNames.get(dummyComponent);
+            Map<String, String> dummy = inputNames.get(
+                    Namespace.CONFIG_COMPONENT);
             if (dummy != null) {
                 setup.println();
                 for (Map.Entry<String, String> kv : dummy.entrySet()) {
