@@ -15,8 +15,6 @@ import javax.xml.transform.TransformerException;
 
 import org.hibernate.loader.plan.build.internal.returns.CollectionAttributeFetchImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,7 +47,6 @@ import eu.cityopt.service.InputParamValServiceImpl;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.MetricService;
 import eu.cityopt.service.ProjectService;
-import eu.cityopt.service.ProjectServiceTestThread;
 import eu.cityopt.service.ScenarioService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.sim.eval.EvaluationException;
@@ -62,13 +59,7 @@ import eu.cityopt.sim.service.SimulationService;
 @Controller
 @SessionAttributes({"project", "scenario"})
 public class ProjectController {
-
-    @Autowired
-    ProjectServiceTestThread testRunnable;
-
-    @Autowired
-    TaskExecutor taskExecutor;
-
+	
 	@Autowired
 	ProjectService projectService; 
 	
@@ -117,11 +108,7 @@ public class ProjectController {
 	{
 		List<ProjectDTO> projects = projectService.findAll();
 		model.put("projects", projects);
-
-		// INITIATE THREAD TEST
-                testRunnable.setName("Testing " + System.currentTimeMillis());
-                taskExecutor.execute(testRunnable);
-
+	
 		return "openproject";
 	}	
 
