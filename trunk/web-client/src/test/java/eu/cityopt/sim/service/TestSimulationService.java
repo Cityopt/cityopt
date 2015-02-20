@@ -65,15 +65,6 @@ public class TestSimulationService {
     DataSource dataSource;
 
     @Test
-    public void testTimeConversion() {
-        Instant timeOrigin = Instant.ofEpochMilli(123456);
-        SimulationService s = simulationService;
-        assertEquals(new Date(124456), s.toDate(1, timeOrigin));
-        assertEquals(2.0, s.toSimTime(new Date(125456), timeOrigin), 0.0);
-        assertEquals(999, s.toSimTime(s.toDate(999, timeOrigin), timeOrigin), 0.0);
-    }
-
-    @Test
     @DatabaseSetup("classpath:/testData/plumbing_scenario.xml")
     public void testPlumbing() throws Exception {
         loadModel("Plumbing test model", "/testData/plumbing.zip");

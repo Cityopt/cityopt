@@ -92,13 +92,10 @@ public class Evaluator {
         }
         engine.eval(PYTHON_IMPORTS);
 
-        _convertSimtimesToDatetimes = (PyObject) engine.eval(
-                "cityopt._convertSimtimesToDatetimes");
-        _convertToSimtimes = (PyObject) engine.eval(
-                "cityopt._convertToSimtimes");
-        _convertToSimtime = (PyObject) engine.eval(
-                "cityopt._convertToSimtime");
-        _izip = (PyObject) engine.eval("itertools.izip");
+        _convertSimtimesToDatetimes = getPyObject("cityopt._convertSimtimesToDatetimes");
+        _convertToSimtimes = getPyObject("cityopt._convertToSimtimes");
+        _convertToSimtime = getPyObject("cityopt._convertToSimtime");
+        _izip = getPyObject("itertools.izip");
         // TODO: engine.setContext
     }
 
@@ -204,11 +201,18 @@ public class Evaluator {
         return activeSetup.get().originTimestamp;
     }
 
+    PyObject getPyObject(String name) throws ScriptException {
+        return (PyObject) engine.eval(name);
+    }
+
     /**
      * Evaluates a script.
      * @return result of the script
      */
     Object eval(String code, EvaluationSetup setup) throws ScriptException {
+        if (setup.evaluator != this) {
+            throw new IllegalStateException("Evaluator mismatch");
+        }
         activeSetup.set(setup);
         Object value;
         try {
@@ -226,6 +230,9 @@ public class Evaluator {
      */
     Object eval(CompiledScript script, Bindings bindings, EvaluationSetup setup)
             throws ScriptException {
+        if (setup.evaluator != this) {
+            throw new IllegalStateException("Evaluator mismatch");
+        }
         activeSetup.set(setup);
         Object value;
         try {

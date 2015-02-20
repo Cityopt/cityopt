@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -70,6 +69,7 @@ import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
+import eu.cityopt.sim.eval.util.TimeUtils;
 
 /**
  * Runs simulations based on project and scenario data, and saves the results.
@@ -331,7 +331,7 @@ public class SimulationService {
                 simValue = loadTimeSeries(extParam.getTimeseries(), extType,
                         namespace.evaluator, namespace.timeOrigin);
             } else {
-                simValue = extType.parse(extParam.getDefaultvalue());
+                simValue = extType.parse(extParam.getDefaultvalue(), namespace);
             }
             simExternals.put(extParam.getName(), simValue);
         }
@@ -348,7 +348,7 @@ public class SimulationService {
         double[] values = new double[n];
         for (int i = 0; i < n; ++i) {
             TimeSeriesVal tsVal = timeSeriesVals.get(i);
-            times[i] = toSimTime(tsVal.getTime(), timeOrigin);
+            times[i] = TimeUtils.toSimTime(tsVal.getTime(), timeOrigin);
             values[i] = Double.valueOf(tsVal.getValue());
         }
         return evaluator.makeTS(timeSeriesType, times, values);
@@ -545,7 +545,7 @@ public class SimulationService {
         for (int i = 0; i < n; ++i) {
             TimeSeriesVal timeSeriesVal = new TimeSeriesVal();
 
-            timeSeriesVal.setTime(toDate(times[i], timeOrigin));
+            timeSeriesVal.setTime(TimeUtils.toDate(times[i], timeOrigin));
             timeSeriesVal.setValue(Double.toString(values[i]));
 
             timeSeriesVal.setTimeseries(timeSeries);
@@ -569,7 +569,8 @@ public class SimulationService {
                 String typeName = mExternal.getTimeseries().getType().getName();
                 extType = Type.getByName(typeName);
             } else {
-                extType = Type.getFromValue(mExternal.getDefaultvalue());
+                String typeName = mExternal.getUnit().getType().getName();
+                extType = Type.getByName(typeName);
             }
             namespace.externals.put(mExternal.getName(), extType);
         }
@@ -592,14 +593,5 @@ public class SimulationService {
             namespace.metrics.put(mMetric.getName(), metricType);
         }
         return namespace;
-    }
-
-    public double toSimTime(Date t, Instant timeOrigin) {
-        long millis = t.toInstant().toEpochMilli() - timeOrigin.toEpochMilli();
-        return millis / 1000.0;
-    }
-
-    public Date toDate(double simtime, Instant timeOrigin) {
-        return new Date(timeOrigin.toEpochMilli() + (long) (simtime * 1000 + 0.5));
     }
 }

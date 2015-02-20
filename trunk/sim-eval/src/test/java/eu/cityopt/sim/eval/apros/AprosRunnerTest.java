@@ -97,12 +97,12 @@ public class AprosRunnerTest {
         SimulationInput in = new SimulationInput(dumb);
         if (t1 != null) {
             in.put(dummy_comp, Namespace.CONFIG_SIMULATION_END,
-                   Type.DOUBLE.parse(t1));
+                   Type.DOUBLE.parse(t1, ns));
             in.put(dummy_comp, Namespace.CONFIG_SIMULATION_START,
-                   t0 != null ? Type.DOUBLE.parse(t0) : 0.0);
+                   t0 != null ? Type.DOUBLE.parse(t0, ns) : 0.0);
         }
         if (has_ip && pvalue != null) {
-            in.put(picomp, piname, type.parse(pvalue));
+            in.put(picomp, piname, type.parse(pvalue, ns));
         }
         return in;
     }

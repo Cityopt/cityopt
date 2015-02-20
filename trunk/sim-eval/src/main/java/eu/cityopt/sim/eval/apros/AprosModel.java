@@ -27,6 +27,7 @@ import org.xml.sax.SAXException;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulatorConfigurationException;
 import eu.cityopt.sim.eval.util.TempDir;
+import eu.cityopt.sim.eval.util.TimeUtils;
 import eu.cityopt.sim.eval.util.UncloseableInputStream;
 
 public class AprosModel implements SimulationModel {
@@ -105,23 +106,13 @@ public class AprosModel implements SimulationModel {
                     value.split(Pattern.quote(System.getProperty("path.separator")));
                 break;
             case "timeOrigin":
-                this.timeOrigin = parseDateTime(value).toInstant();
+                this.timeOrigin = TimeUtils.parseISO8601(value);
                 break;
             default:
                 throw new SimulatorConfigurationException(
                         "Unknown property " + key + " in " + MODEL_CONFIGURATION_FILENAME);
             }
         }
-    }
-
-    private static ZonedDateTime parseDateTime(String dateString) {
-        try {
-            return ZonedDateTime.parse(dateString);
-        } catch (DateTimeParseException e) {}
-        try {
-            return LocalDateTime.parse(dateString).atZone(ZoneId.systemDefault());
-        } catch (DateTimeParseException e) {}
-        return LocalDate.parse(dateString).atStartOfDay(ZoneId.systemDefault());
     }
 
     @Override

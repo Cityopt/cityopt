@@ -172,7 +172,7 @@ class BindingLayer {
             throw new IllegalArgumentException("No value available for "
                     + formatReference(componentName, name));
         }
-        return type.format(value);
+        return type.format(value, namespace);
     }
 
     /**
@@ -213,7 +213,7 @@ class BindingLayer {
     Object putString(String componentName, String name, String value)
             throws ParseException {
         Type type = validate(componentName, name);
-        Object object = type.parse(value);
+        Object object = type.parse(value, namespace);
         mergedBindings = null;
         evaluationBindings = null;
         return localBindings.get(componentName).put(name, object);

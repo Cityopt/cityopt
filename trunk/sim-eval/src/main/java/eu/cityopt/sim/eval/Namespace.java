@@ -50,14 +50,14 @@ public class Namespace extends EvaluationSetup {
     /**
      * Name of input parameter in the virtual configuration component:
      * Simulation start time in seconds. Relative to the simulation time origin.
-     * The input parameter must be of type DOUBLE.
+     * The input parameter must be of type TIMESTAMP.
      */
     public static final String CONFIG_SIMULATION_START = "simulation_start";
 
     /**
      * Name of input parameter in the virtual configuration component:
      * Simulation end time in seconds. Relative to the simulation time origin.
-     * The input parameter must be of type DOUBLE.
+     * The input parameter must be of type TIMESTAMP.
      */
     public static final String CONFIG_SIMULATION_END = "simulation_end";
 
