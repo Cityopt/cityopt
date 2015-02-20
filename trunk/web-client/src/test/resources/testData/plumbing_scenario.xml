@@ -33,16 +33,16 @@
   <component componentid="3" prjid="2" name="CITYOPT"/>
 
   <inputparameter inputid="1" name="typ" unitid="2" componentid="1" defaultvalue="2"/>
-  <inputparameter inputid="2" componentid="8" name="simulation_start" unitid="4" defaulvalue="2015-01-01T00:00:00"/>
-  <inputparameter inputid="3" componentid="8" name="simulation_end" unitid="4" defaulvalue="2015-01-01T00:00:00"/>
+  <inputparameter inputid="2" componentid="3" name="simulation_start" unitid="4" defaulvalue="2015-01-01T00:00:00"/>
+  <inputparameter inputid="3" componentid="3" name="simulation_end" unitid="4" defaulvalue="2015-01-01T00:00:00"/>
 
   <outputvariable outvarid="1" name="PI12_MIX_MASS_FLOW" unitid="6" componentid="2"/>
 
   <scenario scenid="0" prjid="2" name="dummy"/>
   <scenario scenid="1" prjid="2" name="testscenario"/>
   <inputparamval scendefinitionid="1" scenid="1" inputid="1" value="3"/>
-  <inputparamval scendefinitionid="1" scenid="1" inputid="2" value="2015-01-01T00:00:00"/>
-  <inputparamval scendefinitionid="1" scenid="1" inputid="3" value="2015-01-01T00:01:00"/>
+  <inputparamval scendefinitionid="2" scenid="1" inputid="2" value="2015-01-01T00:00:00"/>
+  <inputparamval scendefinitionid="3" scenid="1" inputid="3" value="2015-01-01T00:01:00"/>
 
   <extparam prjid="2" defaultvalue="100" name="d" unitid="1"/>
 
