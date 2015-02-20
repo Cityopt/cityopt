@@ -77,8 +77,8 @@ public class AprosRunnerTest {
         boolean has_ip = false;
         if (t1 != null) {
             Namespace.Component dummy = ns.getOrNew(dummy_comp);
-            dummy.inputs.put("start_time", Type.DOUBLE);
-            dummy.inputs.put("end_time", Type.DOUBLE);
+            dummy.inputs.put(Namespace.CONFIG_SIMULATION_START, Type.DOUBLE);
+            dummy.inputs.put(Namespace.CONFIG_SIMULATION_END, Type.DOUBLE);
         }
         if (picomp != null) {
             Namespace.Component comp = ns.getOrNew(picomp);
@@ -96,8 +96,9 @@ public class AprosRunnerTest {
         ExternalParameters dumb = new ExternalParameters(ns);
         SimulationInput in = new SimulationInput(dumb);
         if (t1 != null) {
-            in.put(dummy_comp, "end_time", Type.DOUBLE.parse(t1));
-            in.put(dummy_comp, "start_time",
+            in.put(dummy_comp, Namespace.CONFIG_SIMULATION_END,
+                   Type.DOUBLE.parse(t1));
+            in.put(dummy_comp, Namespace.CONFIG_SIMULATION_START,
                    t0 != null ? Type.DOUBLE.parse(t0) : 0.0);
         }
         if (has_ip && pvalue != null) {
