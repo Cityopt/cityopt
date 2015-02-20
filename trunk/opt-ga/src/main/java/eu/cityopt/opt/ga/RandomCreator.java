@@ -2,10 +2,10 @@ package eu.cityopt.opt.ga;
 
 import org.opt4j.core.problem.Creator;
 
-public class RandomCreator implements Creator<MyGenotype> {
+public class RandomCreator implements Creator<MixedGenotype> {
 
     @Override
-    public MyGenotype create() {
+    public MixedGenotype create() {
         // TODO Auto-generated method stub
         return null;
     }
