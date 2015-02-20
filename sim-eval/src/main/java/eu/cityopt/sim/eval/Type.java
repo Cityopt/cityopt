@@ -2,12 +2,17 @@ package eu.cityopt.sim.eval;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+
+import eu.cityopt.sim.eval.util.TimeUtils;
 
 /**
  * Indicates the type of a named value.
@@ -20,7 +25,7 @@ public enum Type {
     /** 32-bit signed integer */
     INTEGER("Integer") {
         @Override
-        public Integer parse(String value) {
+        public Integer parse(String value, EvaluationSetup setup) {
             return Integer.parseInt(value);
         }
 
@@ -32,7 +37,7 @@ public enum Type {
         }
 
         @Override
-        public String format(Object value) {
+        public String format(Object value, EvaluationSetup setup) {
             return Integer.toString((Integer) value);
         }
     },
@@ -40,7 +45,7 @@ public enum Type {
     /** Double precision floating point */
     DOUBLE("Double") {
         @Override
-        public Double parse(String value) {
+        public Double parse(String value, EvaluationSetup setup) {
             return Double.parseDouble(value);
         }
 
@@ -50,7 +55,7 @@ public enum Type {
         }
 
         @Override
-        public String format(Object value) {
+        public String format(Object value, EvaluationSetup setup) {
             return Double.toString((Double) value);
         }
     },
@@ -58,7 +63,7 @@ public enum Type {
     /** Unicode string */
     STRING("String") {
         @Override
-        public String parse(String value) {
+        public String parse(String value, EvaluationSetup setup) {
             return value;
         }
 
@@ -68,15 +73,42 @@ public enum Type {
         }
 
         @Override
-        public String format(Object value) {
+        public String format(Object value, EvaluationSetup setup) {
             return (String) value;
+        }
+    },
+
+    /**
+     * Time stamp in ISO-8601 format.
+     * The actual value object is a Double in simulation time.  
+     */
+    TIMESTAMP("Timestamp") {
+        @Override
+        public Double parse(String value, EvaluationSetup setup) {
+            try {
+                return Double.valueOf(value);
+            } catch (NumberFormatException e) {
+                Instant i = TimeUtils.parseISO8601(value);
+                return TimeUtils.toSimTime(i, setup.timeOrigin);
+            }
+        }
+
+        @Override
+        public boolean isCompatible(Object value) {
+            return (value instanceof Number);
+        }
+
+        @Override
+        public String format(Object value, EvaluationSetup setup) {
+            Instant i = TimeUtils.toInstant((Double) value, setup.timeOrigin);
+            return TimeUtils.formatISO8601(i);
         }
     },
 
     /** Time series treated as a step function with values of type double. */
     TIMESERIES_STEP("TimeSeries/Step") {
         @Override
-        public TimeSeries parse(String value) {
+        public TimeSeries parse(String value, EvaluationSetup setup) {
             throw new UnsupportedOperationException(
                     "Cannot parse a time series");
         }
@@ -88,7 +120,7 @@ public enum Type {
         }
 
         @Override
-        public String format(Object value) {
+        public String format(Object value, EvaluationSetup setup) {
             throw new UnsupportedOperationException(
                     "Cannot store a time series as a string");
         }
@@ -107,7 +139,7 @@ public enum Type {
     /** Time series treated as a piecewise linear function with values of type double. */
     TIMESERIES_LINEAR("TimeSeries/Linear") {
         @Override
-        public TimeSeries parse(String value) {
+        public TimeSeries parse(String value, EvaluationSetup setup) {
             throw new UnsupportedOperationException(
                     "Cannot parse a time series");
         }
@@ -118,7 +150,7 @@ public enum Type {
         }
 
         @Override
-        public String format(Object value) {
+        public String format(Object value, EvaluationSetup setup) {
             throw new UnsupportedOperationException(
                     "Cannot store a time series as a string");
         }
@@ -134,9 +166,13 @@ public enum Type {
         }
     },
 
+    /**
+     * List of integers. Represented by List<Integer> in Java. The text
+     * representation is a bracketed comma-separated list of integers.
+     */
     LIST_OF_INTEGER("List of Integer") {
         @Override
-        public List<Integer> parse(String value) throws ParseException {
+        public List<Integer> parse(String value, EvaluationSetup setup) throws ParseException {
             try {
                 int[] array = objectMapper.readValue(value, int[].class);
                 List<Integer> list = new ArrayList<Integer>(array.length);
@@ -166,7 +202,7 @@ public enum Type {
 
         @SuppressWarnings("rawtypes")
         @Override
-        public String format(Object value) {
+        public String format(Object value, EvaluationSetup setup) {
             try {
                 return objectWriter.writeValueAsString((List) value);
             } catch (JsonProcessingException e) {
@@ -176,9 +212,14 @@ public enum Type {
         }
     },
 
+    /**
+     * List of double precision floating point numbers. Represented by
+     * List<Double> in Java. The text representation is a bracketed
+     * comma-separated list of decimal numbers.
+     */
     LIST_OF_DOUBLE("List of Double") {
         @Override
-        public List<Double> parse(String value) throws ParseException {
+        public List<Double> parse(String value, EvaluationSetup setup) throws ParseException {
             try {
                 double[] array = objectMapper.readValue(value, double[].class);
                 List<Double> list = new ArrayList<Double>(array.length);
@@ -208,12 +249,80 @@ public enum Type {
 
         @SuppressWarnings("rawtypes")
         @Override
-        public String format(Object value) {
+        public String format(Object value, EvaluationSetup setup) {
             try {
                 return objectWriter.writeValueAsString((List) value);
             } catch (JsonProcessingException e) {
                 throw new ClassCastException(
                         "Not a formattable list of doubles: " + value);
+            }
+        }
+    },
+
+    /**
+     * List of time stamps. Represented by List<Double> in Java. The text
+     * representation is a bracketed comma-separated list of quoted
+     * ISO-8601 strings.
+     */
+    LIST_OF_TIMESTAMP("List of Timestamp") {
+        @Override
+        public List<Double> parse(String value, EvaluationSetup setup) throws ParseException {
+            try {
+                Object[] array = objectMapper.readValue(value, Object[].class);
+                List<Double> list = new ArrayList<Double>(array.length);
+                for (Object o : array) {
+                    if (o instanceof Number) {
+                        list.add(((Number) o).doubleValue());
+                    } else if (o instanceof String) {
+                        Instant i = TimeUtils.parseISO8601((String) o);
+                        list.add(TimeUtils.toSimTime(i, setup.timeOrigin));
+                    } else {
+                        throw new ParseException("Not a valid timestamp: " + o, 0);
+                    }
+                }
+                return list;
+            } catch (IOException | DateTimeParseException e) {
+                throw new ParseException(e.getMessage(), 0);
+            }
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public boolean isCompatible(Object value) {
+            if ( ! (value instanceof List)) {
+                return false;
+            } else {
+                for (Object element : (List) value) {
+                    if ( ! TIMESTAMP.isCompatible(element)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public String format(Object value, EvaluationSetup setup) {
+            if (! (value instanceof List)) {
+                throw new ClassCastException(
+                        "Not a formattable list of doubles: " + value);
+            } else {
+                StringBuilder sb = new StringBuilder();
+                sb.append('[');
+                boolean delimit = false;
+                for (Object element : (List) value) {
+                    if (delimit) {
+                        sb.append(", ");
+                    } else {
+                        delimit = true;
+                    }
+                    sb.append('"');
+                    sb.append(TIMESTAMP.format(element, setup));
+                    sb.append('"');
+                }
+                sb.append(']');
+                return sb.toString();
             }
         }
     };
@@ -225,7 +334,7 @@ public enum Type {
      * Constructs an object of this type, given a string representation of a value.
      * @throws ParseException if the string cannot be parsed as the correct type
      */
-    abstract public Object parse(String value) throws ParseException;
+    abstract public Object parse(String value, EvaluationSetup setup) throws ParseException;
 
     /**
      * Returns whether the value if of a type that can be assigned to this type,
@@ -239,7 +348,7 @@ public enum Type {
      * Formats an object of this type into its string representation.
      * @throws ClassCastException if the object is of some other type 
      */
-    abstract public String format(Object value);
+    abstract public String format(Object value, EvaluationSetup setup);
 
     /**
      * Returns the degree of time series interpolation.
@@ -280,28 +389,6 @@ public enum Type {
             }
         }
         throw new IllegalArgumentException("Unknown type \"" + name + "\"");
-    }
-
-    /**
-     * Determines the type of a literal value.
-     *
-     * @param value a string representing an object of one of the defined types
-     * @return 
-     * @throws ParseException if the 
-     */
-    public static Type getFromValue(String value) throws ParseException {
-        Object object;
-        try {
-            object = objectMapper.readValue(value, Object.class);
-        } catch (IOException e) {
-            throw new ParseException(e.getMessage(), 0);
-        }
-        for (Type type : values()) {
-            if (type.isCompatible(object)) {
-                return type;
-            }
-        }
-        throw new ParseException("Unsupported literal: " + value, 0);
     }
 
     /**

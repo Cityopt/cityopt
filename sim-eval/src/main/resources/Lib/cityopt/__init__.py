@@ -3,6 +3,7 @@ from math import sqrt
 from datetime import datetime
 from array import array
 from eu.cityopt.sim.eval import TimeSeries, Evaluator
+from eu.cityopt.sim.eval.util import TimeUtils
 
 __all__ = ['TimeSeries', 'todatetime', 'tosimtime', 'integrate',
            'mean', 'stdev', 'var', 'min', 'max',
@@ -34,14 +35,16 @@ def todatetime(arg):
 
 # Similar to datetime.timestamp() in Python 3.3
 def tosimtime(arg):
-    if isinstance(arg, datetime):
-        return _total_seconds(arg - _epoch) - _timeOrigin()
-    return array('d', (_total_seconds(d - _epoch) - _timeOrigin()
-                       for d in arg))
+    try:
+        return _convertToSimtime(arg)
+    except:
+        return array('d', (_convertToSimtime(a) for a in arg))
 
 def _convertToSimtime(arg):
     if isinstance(arg, datetime):
         return _total_seconds(arg - _epoch) - _timeOrigin()
+    elif isinstance(arg, str):
+        return TimeUtils.parseISO8601(arg).toEpochMilli()*0.001 - _timeOrigin()
     return float(arg)
 
 def _convertToSimtimes(arg):

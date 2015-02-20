@@ -118,12 +118,12 @@ public class SyntaxChecker {
             this.environmentsAreComplete = false;
         }
 
-        _checkExpressionSyntax = (PyObject) evaluator.eval(
-                "cityopt.syntax.checkExpressionSyntax", namespace);
+        _checkExpressionSyntax = (PyObject) evaluator.getPyObject(
+                "cityopt.syntax.checkExpressionSyntax");
 
         @SuppressWarnings("unchecked")
-        List<String> keywordList =  (List<String>) evaluator.eval(
-                "cityopt.syntax.kwlist", namespace);
+        List<String> keywordList = (List<String>) evaluator.getPyObject(
+                "cityopt.syntax.kwlist");
         reservedKeywords = prepareReservedNames(keywordList);
     }
 
@@ -193,6 +193,9 @@ public class SyntaxChecker {
             case STRING:
                 p = "";
                 break;
+            case TIMESTAMP:
+                p = Double.valueOf(1.0);
+                break;
             case TIMESERIES_LINEAR:
             case TIMESERIES_STEP:
                 p = evaluator.makeTS(type, new double[] { 0.0 }, new double[] { 1.0 });
@@ -201,6 +204,9 @@ public class SyntaxChecker {
                 p = Arrays.asList(1);
                 break;
             case LIST_OF_DOUBLE:
+                p = Arrays.asList(1.0);
+                break;
+            case LIST_OF_TIMESTAMP:
                 p = Arrays.asList(1.0);
                 break;
             default:
