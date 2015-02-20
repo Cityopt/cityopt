@@ -56,10 +56,10 @@ public class Namespace extends EvaluationSetup {
 
     /**
      * Name of input parameter in the virtual configuration component:
-     * Simulation length in seconds of simulated time.
+     * Simulation end time in seconds. Relative to the simulation time origin.
      * The input parameter must be of type DOUBLE.
      */
-    public static final String CONFIG_SIMULATION_LENGTH = "SIMULATION_LENGTH";
+    public static final String CONFIG_SIMULATION_END = "SIMULATION_END";
 
     /** Container for component-specific namespace data. */
     public static class Component {
