@@ -6,6 +6,6 @@ main = runApros mdo
     CO.setup
     acl "modi is01 io_file_name results.dat"
     acl "io open is01"
-    setTime CO.start_time
-    waitTo CO.end_time
+    setTime CO.simulation_start
+    waitTo CO.simulation_end
     acl "io close is01"
