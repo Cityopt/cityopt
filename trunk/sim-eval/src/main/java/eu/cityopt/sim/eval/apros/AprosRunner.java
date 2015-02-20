@@ -47,6 +47,7 @@ import org.w3c.dom.NodeList;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationRunner;
+import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.eval.util.TempDir;
 
@@ -78,9 +79,10 @@ public class AprosRunner implements SimulationRunner {
     private byte[] orphanSets;
 
     /**
-     * Constructor.  Eventually everyone should be using
-     * {@link SimulationManagers} instead of constructing AprosRunners
-     * directly.
+     * Constructor.  This should only be called by
+     * {@link AprosManager#makeRunner}, which everyone else should use
+     * to create AprosRunners.
+     * 
      * @param profile names a subdirectory of {@link #profileDir} containing
      *   the Apros profile to use.
      * @param ns a {@link Namespace} defining the inputs and outputs
@@ -101,12 +103,12 @@ public class AprosRunner implements SimulationRunner {
      *   as Apros <code>IO_SET</code> data and searched for the outputs
      *   in ns.  Unknown outputs in the files are ignored.
      * @throws TransformerException if setup.scl cannot be generated,
-     *   possibly because of malformed uc_props.  
+     *   possibly because of malformed uc_props.
+     * @see eu.cityopt.sim.eval.SimulatorManagers#get
      */
-    public AprosRunner(
-            Path profileDir, String profile, Namespace ns,
-            Document uc_props, Path modelDir, String... resultFiles)
-                    throws TransformerException {
+    AprosRunner(Path profileDir, String profile, Namespace ns,
+                Document uc_props, Path modelDir, String... resultFiles)
+            throws TransformerException {
         this.profile = profile;
         nameSpace = ns;
         this.modelDir = new LocalDirectory(modelDir);
