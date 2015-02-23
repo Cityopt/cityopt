@@ -37,8 +37,19 @@ public class AprosConfig implements InitializingBean {
        return new PropertySourcesPlaceholderConfigurer();
     }
 
+    // Allow overriding application.properties via system environment variables.
+    // In Tomcat system environment variables can be set in $CATALINA_BASE/setenv.bat
+    private void readSystemEnvironment() {
+        String p = System.getenv("APROS_PROFILE_PATH");
+        if (p != null) profilePath = p;
+
+        String c = System.getenv("APROS_PROFILE_CHECK");
+        if (c != null) checkProfile = Boolean.valueOf(c);
+    }
+
     @Override
     public void afterPropertiesSet() throws IOException {
+        readSystemEnvironment();
         if (profilePath != null) {
             String[] dirNames = profilePath.split(
                     Pattern.quote(System.getProperty("path.separator"))); 
