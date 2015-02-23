@@ -9,9 +9,8 @@ import org.opt4j.core.genotype.DoubleBounds;
 import org.opt4j.core.genotype.DoubleMapGenotype;
 import org.opt4j.core.genotype.IntegerBounds;
 import org.opt4j.core.genotype.IntegerMapGenotype;
-import org.opt4j.core.genotype.MapGenotype;
 
-import eu.cityopt.sim.eval.DecisionDomain;
+import eu.cityopt.sim.eval.NumericInterval;
 import eu.cityopt.sim.eval.Type;
 
 /**
@@ -32,7 +31,7 @@ public class MixedGenotype<Key> extends CompositeGenotype<Type, Genotype> {
      * @param domains a list of domains in the same order as keys
      */
     public MixedGenotype(List<Key> keys,
-                         List<DecisionDomain<?>> domains) {
+                         List<NumericInterval<?>> domains) {
         super();
         List<Key> realKeys = new ArrayList<>();
         List<Double> realLB = new ArrayList<>();
@@ -42,7 +41,7 @@ public class MixedGenotype<Key> extends CompositeGenotype<Type, Genotype> {
         List<Integer> intUB = new ArrayList<>();
         try {
             for (int i = 0; i != keys.size(); ++i) {
-                DecisionDomain<?> dom = domains.get(i);
+                NumericInterval<?> dom = domains.get(i);
                 switch (dom.getValueType()) {
                 case DOUBLE:
                     realKeys.add(keys.get(i));
