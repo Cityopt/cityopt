@@ -15,7 +15,7 @@
 <context:annotation-config/>
 
 <context:component-scan base-package="com.pluralsight.repository, com.pluralsight.service, eu.cityopt.repository, eu.cityopt.service, eu.cityopt.sim.service"/>
-<jpa:repositories base-package="com.pluralsight.repository,eu.cityopt.repository"/>
+<jpa:repositories base-package="com.pluralsight.repository,eu.cityopt.repository" />
 
 <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
@@ -38,19 +38,10 @@
 	</property>
 </bean>
 
+<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
 <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 	<property name="entityManagerFactory" ref="entityManagerFactory"/>
 </bean>
-
-<!--<bean id="JTransfo" class="org.jtransfo.JTransfoImpl">
-</bean>
-<bean class="org.jtransfo.ListTypeConverter">
-	<constructor-arg value="scenarioDTOList" />
-	<constructor-arg value="eu.cityopt.DTO.ScenarioDTO" />
-</bean>-->
-<bean id="ModelMapper" class="org.modelmapper.ModelMapper"></bean>
-
-<tx:annotation-driven transaction-manager="transactionManager"/>
 
 <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 	<property name="driverClassName" value="org.postgresql.Driver"></property>	
@@ -59,8 +50,15 @@
 	<property name="password" value="cit.opt#"></property>	
 </bean>
 
+<task:annotation-driven executor="myExecutor"/>
 <task:executor id="myExecutor"/>
+<task:executor id="myExecutor"  pool-size="5"/>
 
-<!-- <bean id="CustomQueryRepository" class="eu.cityopt.repository.CustomQueryRepository"></bean>
--->
+
+<bean id="ProjectServiceTestThreadRunnable" class="eu.cityopt.service.ProjectServiceTestThreadRunnable"/>
+
+<bean id="ModelMapper" class="org.modelmapper.ModelMapper"></bean>
+
+<bean id="initBean" class="eu.cityopt.config.Initialization"/>
+
 </beans>
