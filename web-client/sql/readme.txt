@@ -1,3 +1,12 @@
+Database Server: 
+		In postgresql.conf add the following lines and rebott the postgres service
+		
+		log_timezone='UTC'
+		timezone='UTC'
+
+		Check the settings via show timezone in query window;
+
+
 Execute as superuser (once):
 
 User:
