@@ -25,7 +25,7 @@ public class SimulatorManagers {
     }
 
     /** Registers a new SimulatorManager instance. */
-    public static void register(String profile, SimulatorManager manager) {
-        simulatorManagers.put(profile, manager);
+    public static void register(String simulatorName, SimulatorManager manager) {
+        simulatorManagers.put(simulatorName, manager);
     }
 }

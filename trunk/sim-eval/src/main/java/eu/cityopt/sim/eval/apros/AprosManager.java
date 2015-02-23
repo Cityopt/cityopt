@@ -47,9 +47,14 @@ public class AprosManager implements SimulatorManager {
     }
 
     @Override
+    public String getSimulatorName() {
+        return profileName;
+    }
+
+    @Override
     public SimulationModel parseModel(byte[] modelData)
             throws IOException, SimulatorConfigurationException {
-        return new AprosModel(modelData);
+        return new AprosModel(modelData, this);
     }
 
     @Override

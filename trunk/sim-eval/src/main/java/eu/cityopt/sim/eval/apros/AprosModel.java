@@ -26,6 +26,7 @@ import org.xml.sax.SAXException;
 
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulatorConfigurationException;
+import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.eval.util.TimeUtils;
 import eu.cityopt.sim.eval.util.UncloseableInputStream;
@@ -34,12 +35,15 @@ public class AprosModel implements SimulationModel {
     private static String USER_COMPONENT_PROPERTIES_FILENAME = "uc_props.xml";
     private static String MODEL_CONFIGURATION_FILENAME = "cityopt.properties";
 
+    AprosManager manager;
     TempDir modelDir;
     String[] resultFiles;
     final Document uc_props;
     Instant timeOrigin;
 
-    AprosModel(byte[] modelData) throws IOException, SimulatorConfigurationException {
+    AprosModel(byte[] modelData, AprosManager manager)
+            throws IOException, SimulatorConfigurationException {
+        this.manager = manager; 
         modelDir = new TempDir("sim");
         resultFiles = new String[] { "results.dat" };
         try {
@@ -121,6 +125,11 @@ public class AprosModel implements SimulationModel {
             modelDir.close();
             modelDir = null;
         }
+    }
+
+    @Override
+    public SimulatorManager getSimulatorManager() {
+        return manager;
     }
 
     @Override
