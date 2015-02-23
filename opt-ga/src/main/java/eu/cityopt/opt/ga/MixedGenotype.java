@@ -7,12 +7,9 @@ import java.util.List;
 import org.opt4j.core.Genotype;
 import org.opt4j.core.common.random.Rand;
 import org.opt4j.core.genotype.CompositeGenotype;
-import org.opt4j.core.genotype.DoubleBounds;
 import org.opt4j.core.genotype.DoubleMapGenotype;
-import org.opt4j.core.genotype.IntegerBounds;
 import org.opt4j.core.genotype.IntegerMapGenotype;
 
-import eu.cityopt.sim.eval.NumericInterval;
 import eu.cityopt.sim.eval.Type;
 
 /**
