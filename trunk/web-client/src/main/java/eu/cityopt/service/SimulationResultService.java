@@ -8,4 +8,6 @@ import eu.cityopt.model.SimulationResult;
 
 public interface SimulationResultService extends CityOptService<SimulationResultDTO> {
 	List<TimeSeriesValDTO> getTimeSeriesValsOrderedByTime(int scenResId) throws EntityNotFoundException;
+	
+	SimulationResultDTO findByOutVarIdScenId(int outVarId, int scenarioID) throws EntityNotFoundException;
 }

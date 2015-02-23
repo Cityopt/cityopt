@@ -85,4 +85,16 @@ public class SimulationResultServiceImpl implements SimulationResultService {
 		return modelMapper.map(tsValues, new TypeToken<List<TimeSeriesValDTO>>(){}.getType());
 	}
 	
+	
+	
+	@Override
+	public SimulationResultDTO findByOutVarIdScenId(int outVarId, int scenarioID) throws EntityNotFoundException {
+		SimulationResult simRes = simulationResultRepository.findByScenAndOutvar(scenarioID, outVarId);
+		if(simRes == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return modelMapper.map(simRes, SimulationResultDTO.class);
+	}
+	
 }
