@@ -12,6 +12,9 @@ import org.w3c.dom.Document;
  * @author Hannu Rummukainen
  */
 public interface SimulationModel extends Closeable {
+    /** Returns the associated SimulatorManager instance. */
+    SimulatorManager getSimulatorManager();
+
     /** Returns origin of simulation time, or null if not known. */
     Instant getTimeOrigin();
 

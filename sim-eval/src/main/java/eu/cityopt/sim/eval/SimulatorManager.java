@@ -9,6 +9,8 @@ import java.io.IOException;
  * @author Hannu Rummukainen
  */
 public interface SimulatorManager {
+    String getSimulatorName();
+
     SimulationModel parseModel(byte[] modelData)
             throws IOException, SimulatorConfigurationException;
 
