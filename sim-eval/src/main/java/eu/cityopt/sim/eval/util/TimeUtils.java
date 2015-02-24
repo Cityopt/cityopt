@@ -14,6 +14,8 @@ import java.util.Date;
  * @author Hannu Rummukainen
  */
 public class TimeUtils {
+    static final ZoneId DEFAULT_ZONE = ZoneId.of("UTC");
+
     /**
      * Parses an ISO-8601 timestamp.
      * If the time zone is omitted, UTC is assumed.
@@ -25,9 +27,9 @@ public class TimeUtils {
             return ZonedDateTime.parse(dateString).toInstant();
         } catch (DateTimeParseException e) {}
         try {
-            return LocalDateTime.parse(dateString).atZone(ZoneId.of("UTC")).toInstant();
+            return LocalDateTime.parse(dateString).atZone(DEFAULT_ZONE).toInstant();
         } catch (DateTimeParseException e) {}
-        return LocalDate.parse(dateString).atStartOfDay(ZoneId.systemDefault()).toInstant();
+        return LocalDate.parse(dateString).atStartOfDay(DEFAULT_ZONE).toInstant();
     }
 
     /**
