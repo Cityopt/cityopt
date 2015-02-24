@@ -1,14 +1,20 @@
 package eu.cityopt.sim.eval;
 
 /**
- * Repeatable simulation failure with specific input data. This class should not
- * be used if the failure is temporary, e.g. due to insufficient disk space; in
- * such cases an Exception is preferred.
+ * Simulation failure with specific input data.
  * 
  * @author Hannu Rummukainen
  */
 public class SimulationFailure extends SimulationOutput {
-    public SimulationFailure(SimulationInput input, String messages) {
+    /**
+     * Whether the failure is repeatable with the same input data. 
+     * Otherwise the failure is temporary, e.g. due to insufficient disk space,
+     * and another attempt may succeed.
+     */
+    final boolean permanent;
+
+    public SimulationFailure(SimulationInput input, boolean permanent, String messages) {
         super(input, messages);
+        this.permanent = permanent;
     }
 }
