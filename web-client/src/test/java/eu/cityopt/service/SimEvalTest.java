@@ -17,10 +17,12 @@ import java.util.TimeZone;
 import java.util.concurrent.Future;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -91,11 +93,13 @@ public class SimEvalTest {
 	@Autowired
 	TimeSeriesRepository timeSeriesRepository;
 	
-	@Before
-	public void setUp() throws Exception {
-	}
+//	@BeforeClass
+//	public static void setUp() throws Exception {
+//		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+//	}
 
 	@Test
+//	@Rollback(false)
 	public void simEval2() throws Exception{
 		Project project = projectRepository.findOne(1);
 		Scenario scen = project.getScenarios().iterator().next();
@@ -109,7 +113,6 @@ public class SimEvalTest {
 
         SimulationResults output = new SimulationResults(input, null);
         assertTrue(output instanceof SimulationResults);
-        
         
 
         //for each component -> get outputvars and their simulationresults:
@@ -140,11 +143,8 @@ public class SimEvalTest {
         		//construct times/values as double arrays
         		TimeSeriesVal[] tsValuesa= tsValues.toArray(new TimeSeriesVal[0]);
         		for(int is = 0; is < tsValues.size(); is++){
-            		TimeSeriesVal singleRes = tsValuesa[is];            	    
-            	    cal.setTime(singleRes.getTime());
-            	    //make sure it is UTC (maybe not necessary)
-            	    cal.setTimeZone(TimeZone.getTimeZone("UTC"));            	    
-            		timesd[is] = cal.getTimeInMillis();
+            		TimeSeriesVal singleRes = tsValuesa[is];  
+            		timesd[is] = singleRes.getTime().getTime();
             		valsd[is] = Double.parseDouble(singleRes.getValue().replace(',', '.'));
             	}
 
