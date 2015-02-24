@@ -21,9 +21,10 @@ import eu.cityopt.sim.eval.SimulationResults;
 
 /**
  * The Cityopt evaluator for Opt4J.
- * Constraints are implemented as follows:
+ * Constraints are handled as follows:
  * <ul>
- * <li>All constraint infeasibilities are added to the returned Objectives.
+ * <li>All constraint infeasibilities are added to the returned
+ * {@link Objectives}.
  * <li>A priori constraints are those that can be evaluated before simulation.
  * The rest are a posteriori constraints.
  * <li>If any a priori constraint is infeasible, no simulation is performed.
@@ -36,7 +37,7 @@ import eu.cityopt.sim.eval.SimulationResults;
  * </ul>
  * Opt4J interprets null values as infinitely bad, so hopefully this
  * implements constraint domination in Opt4J genetic algorithms.
- * A more straightforward approach would be to extend {@link Objectives} to
+ * A more straightforward approach would be to extend Objectives to
  * include constraints and override {@link Objectives#dominates(Objectives)},
  * but that appears unsupported by Opt4J. 
  * @author ttekth
