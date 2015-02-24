@@ -5,12 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.oxm.xstream.XStreamMarshaller;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.accept.ContentNegotiationStrategy;
 import org.springframework.web.accept.HeaderContentNegotiationStrategy;
@@ -31,9 +36,9 @@ import org.springframework.web.servlet.view.xml.MarshallingView;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan({"com.pluralsight","eu.cityopt"}) 
+@ComponentScan({"eu.cityopt.controller"}) 
 public class appConfig extends WebMvcConfigurerAdapter {
-
+	
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(localeChangeInterceptor());
 	}
