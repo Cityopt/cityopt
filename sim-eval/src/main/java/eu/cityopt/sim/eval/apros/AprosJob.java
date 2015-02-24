@@ -105,7 +105,7 @@ public class AprosJob implements Future<SimulationOutput> {
                 output = res;
             } else {
                 output = new SimulationFailure(
-                        input, st.toString() + "\n" + ostr.toString());
+                        input, false, st.toString() + "\n" + ostr.toString());
             }
             Experiment x = job.getExperiment();
             job = null;
