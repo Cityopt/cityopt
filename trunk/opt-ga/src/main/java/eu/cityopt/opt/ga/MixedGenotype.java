@@ -15,15 +15,15 @@ import eu.cityopt.sim.eval.Type;
 /**
  * A genotype with named decision variables of mixed type.
  * Currently only real and integer variables are supported.
- * The variables will be grouped by type.  Otherwise the order will be
- * maintained, which may affect crossovers.  Variables of different types
- * are independent.
+ * Variables are grouped by type and each type is represented by an
+ * implementation of MapGenotype<Key, ?>.  Variables of different types are
+ * independent in crossovers.
  * @author ttekth
  *
  * @param <Key> the type of variable names
  */
-//XXX Unfortunately MapGenotype is not a Genotype in Opt4J!
-public class MixedGenotype<Key> extends CompositeGenotype<Type, Genotype> {
+public class MixedGenotype<Key>
+extends CompositeGenotype<Type, Genotype> {
     public DoubleMapGenotype<Key> getReal() {
         return get(Type.DOUBLE);
     }
