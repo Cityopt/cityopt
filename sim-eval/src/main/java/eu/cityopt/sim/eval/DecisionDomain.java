@@ -5,7 +5,7 @@ package eu.cityopt.sim.eval;
 public class DecisionDomain {
     final private Type valueType;
 
-    public DecisionDomain(Type type) {
+    protected DecisionDomain(Type type) {
         valueType = type;
     }
 
