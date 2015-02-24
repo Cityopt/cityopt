@@ -1,6 +1,7 @@
 package eu.cityopt.opt.ga;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import eu.cityopt.sim.eval.Constraint;
@@ -21,7 +22,7 @@ public class OptimisationProblem {
     public Map<String, Map<String, DecisionDomain>>
         decisionVars;
     public Collection<InputExpression> inputExprs;
-    public Collection<Constraint> constraints;
+    public List<Constraint> constraints;
     public Collection<MetricExpression> metrics;
-    public Collection<ObjectiveExpression> objs;
+    public List<ObjectiveExpression> objs;
 }

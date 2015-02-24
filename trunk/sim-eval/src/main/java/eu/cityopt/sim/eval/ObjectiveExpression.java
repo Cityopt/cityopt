@@ -23,6 +23,16 @@ public class ObjectiveExpression extends Expression {
         return objectiveId;
     }
 
+    /**
+     * Return a symbolic name for the objective.
+     * Unfortunately objectives only have numeric ids, so this has to
+     * be generated.  These names must be distinct from each other
+     * and Constraint names.
+     */
+    public String getName() {
+        return "obj" + objectiveId;
+    }
+
     public boolean isMaximize() {
         return maximize;
     }

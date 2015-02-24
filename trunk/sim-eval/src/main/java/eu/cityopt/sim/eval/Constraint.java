@@ -30,6 +30,16 @@ public class Constraint {
     public int getConstraintId() {
         return constraintId;
     }
+    
+    /**
+     * Return a symbolic name for the constraint.
+     * Unfortunately constraints only have numeric ids, so this has to
+     * be generated.  These names must be distinct from each other and
+     * ObjectiveExpression names.
+     */
+    public String getName() {
+        return "con" + constraintId;
+    }
 
     /**
      * Computes the infeasibility of the constraint, i.e. by how much it is
