@@ -221,11 +221,27 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         scenario.setLog(simOutput.getMessages());
         scenario.setRunstart(Date.from(simOutput.runStart));
         scenario.setRunend(Date.from(simOutput.runEnd));
+
         for (ScenarioMetrics scenarioMetrics : scenario.getScenariometricses()) {
             metricValRepository.delete(scenarioMetrics.getMetricvals());
         }
         scenarioMetricsRepository.delete(scenario.getScenariometricses());
         scenario.getScenariometricses().clear();
+        //TODO batch removal of simulation results and related time series
+        for (Component component : scenario.getProject().getComponents()) {
+            for (OutputVariable outputVariable : component.getOutputvariables()) {
+                SimulationResult oldResult =
+                        simulationResultRepository.findByScenAndOutvar(
+                                scenario.getScenid(), outputVariable.getOutvarid());
+                if (oldResult != null) {
+                    outputVariable.getSimulationresults().remove(oldResult);
+                    simulationResultRepository.delete(oldResult);
+                    log.debug("Deleting old simulationResult " + oldResult);
+                }
+            }
+        }
+        simulationResultRepository.flush();
+
         if (simOutput instanceof SimulationResults) {
             scenario.setStatus(SimulationService.STATUS_SUCCESS);
             SimulationResults simResults = (SimulationResults) simOutput;
@@ -245,18 +261,17 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                                 eu.cityopt.model.Type type = findType(simType);
                                 TimeSeries timeSeries =
                                         saveTimeSeries(simTS, type, namespace.timeOrigin, idUpdates);
+
                                 SimulationResult simulationResult = new SimulationResult();
-        
+
                                 simulationResult.setScenario(scenario);
                                 newResults.add(simulationResult);
-        
+
                                 simulationResult.setTimeseries(timeSeries);
-        
+
                                 simulationResult.setOutputvariable(outputVariable);
-                                Set<SimulationResult> results = new HashSet<SimulationResult>();
-                                results.add(simulationResult);
-                                outputVariable.setSimulationresults(results);
-        
+                                outputVariable.getSimulationresults().add(simulationResult);
+
                                 simulationResultRepository.save(simulationResult);
                             }
                         }
