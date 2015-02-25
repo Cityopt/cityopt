@@ -1,5 +1,7 @@
 package eu.cityopt.sim.eval;
 
+import java.time.Instant;
+
 /**
  * Represents simulation output for specific input data.
  * 
@@ -10,8 +12,10 @@ package eu.cityopt.sim.eval;
  * @author Hannu Rummukainen
  */
 public class SimulationOutput {
-    private SimulationInput input;
-    private String messages;
+    private final SimulationInput input;
+    public final String messages;
+    public Instant runStart;
+    public Instant runEnd;
 
     protected SimulationOutput(SimulationInput input, String messages) {
         this.input = input;
