@@ -47,7 +47,6 @@ import org.w3c.dom.NodeList;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationRunner;
-import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.eval.util.TempDir;
 
