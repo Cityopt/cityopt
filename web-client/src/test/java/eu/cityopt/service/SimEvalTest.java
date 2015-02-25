@@ -105,8 +105,8 @@ public class SimEvalTest {
 		Scenario scen = project.getScenarios().iterator().next();
 		
 		Namespace ns = simulationService.makeProjectNamespace(project);
-		SimulationInput input = simulationService.loadSimulationInput(scen, ns);
-		ExternalParameters externalParameters = simulationService.loadExternalParameters(scen, ns);
+                ExternalParameters externalParameters = simulationService.loadExternalParametersFromDefaults(scen, ns);
+		SimulationInput input = simulationService.loadSimulationInput(scen, externalParameters);
         
 		
         List<MetricExpression> metrics = simulationService.loadMetricExpressions(project, ns);

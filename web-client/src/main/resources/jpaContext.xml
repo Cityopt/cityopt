@@ -51,8 +51,9 @@
 </bean>
 
 <task:annotation-driven executor="myExecutor" proxy-target-class="true"/>
-<task:executor id="myExecutor"/>
 <task:executor id="myExecutor"  pool-size="5"/>
+
+<bean id="dbSimulationStorage" class="eu.cityopt.sim.service.DbSimulationStorage" scope="prototype"/>
 
 <!--
 <bean id="ProjectServiceTestThreadRunnable" class="eu.cityopt.service.ProjectServiceTestThreadRunnable"/>
