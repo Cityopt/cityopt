@@ -94,6 +94,7 @@ public class SimulationService {
                 if (cancelled) {
                     return null;
                 }
+                Instant runStart = Instant.now();
                 Future<SimulationOutput> job = runner.start(input);
 
                 // Write to activeJob happens-before read from cancelled.
@@ -105,6 +106,8 @@ public class SimulationService {
 
                 // Wait for completion or cancellation.
                 SimulationOutput output = job.get();
+                output.runStart = runStart;
+                output.runEnd = Instant.now();
 
                 // Write to activeJob happens-before read from cancelled.
                 activeJob = null;
@@ -215,11 +218,12 @@ public class SimulationService {
      *  no simulation to cancel, or the simulation has already completed, or
      *  the cancellation fails for some other reason.
      */
-    public void cancelSimulation(int scenId) {
+    public boolean cancelSimulation(int scenId) {
         SimulationJob oldJob = activeJobs.remove(scenId);
         if (oldJob != null) {
-            oldJob.cancel(true);
+            return oldJob.cancel(true);
         }
+        return false;
     }
 
     SimulationJob makeSimulationJob(Scenario scenario)
