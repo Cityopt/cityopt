@@ -26,6 +26,11 @@ public class HashSimulationStorage implements SimulationStorage {
     }
 
     @Override
+    public void put(SimulationOutput output, String scenarioName, String scenarioDescription) {
+        put(output);
+    }
+
+    @Override
     public void updateMetricValues(MetricValues metricValues) {
         // Not supported
     }

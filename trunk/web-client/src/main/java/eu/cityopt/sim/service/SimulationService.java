@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -18,52 +17,36 @@ import java.util.concurrent.FutureTask;
 import javax.script.ScriptException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import eu.cityopt.model.Component;
 import eu.cityopt.model.ExtParam;
-import eu.cityopt.model.ExtParamVal;
-import eu.cityopt.model.ExtParamValSet;
-import eu.cityopt.model.ExtParamValSetComp;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.Metric;
-import eu.cityopt.model.MetricVal;
 import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
-import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesVal;
-import eu.cityopt.repository.ExtParamValRepository;
-import eu.cityopt.repository.ExtParamValSetCompRepository;
-import eu.cityopt.repository.ExtParamValSetRepository;
-import eu.cityopt.repository.MetricValRepository;
-import eu.cityopt.repository.ScenarioMetricsRepository;
 import eu.cityopt.repository.ScenarioRepository;
-import eu.cityopt.repository.SimulationResultRepository;
-import eu.cityopt.repository.TimeSeriesRepository;
-import eu.cityopt.repository.TimeSeriesValRepository;
-import eu.cityopt.repository.TypeRepository;
-import eu.cityopt.repository.UnitRepository;
 import eu.cityopt.sim.eval.EvaluationException;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
-import eu.cityopt.sim.eval.InvalidValueException;
 import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.SimulationFailure;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
+import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.SimulatorConfigurationException;
 import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.SimulatorManagers;
@@ -85,32 +68,24 @@ import eu.cityopt.sim.eval.util.TimeUtils;
 @Service
 public class SimulationService {
     class SimulationJob implements Callable<SimulationOutput> {
-        int scenId;
-
-        SimulationInput input;
-        List<MetricExpression> metricExpressions;
-
-        SimulationModel model;
-        SimulationRunner runner;
+        private final int scenId;
+        private final SimulationInput input;
+        private final List<MetricExpression> metricExpressions;
+        private final SimulationModel model;
+        private final SimulationRunner runner;
+        private final SimulationStorage storage;
 
         volatile boolean cancelled;
         volatile Future<SimulationOutput> activeJob;
 
-        SimulationJob(SimulatorManager manager, byte[] modelZipBytes, SimulationInput input,
-                Scenario scenario)
-                        throws IOException, SimulatorConfigurationException, ScriptException {
-            this.scenId = scenario.getScenid();
+        SimulationJob(int scenId, SimulationInput input, List<MetricExpression> metricExpressions,
+                SimulationModel model, SimulationRunner runner, SimulationStorage storage) {
+            this.scenId = scenId;
             this.input = input;
-            this.model = manager.parseModel(modelZipBytes);
-            this.metricExpressions = loadMetricExpressions(
-                    scenario.getProject(), input.getNamespace());
-            boolean ok = false;
-            try {
-                this.runner = manager.makeRunner(model, input.getNamespace());
-                ok = true;
-            } finally {
-                if (!ok) model.close();
-            }
+            this.metricExpressions = metricExpressions;
+            this.model = model;
+            this.runner = runner;
+            this.storage = storage;
         }
 
         @Override
@@ -137,7 +112,12 @@ public class SimulationService {
                     return null;
                 }
 
-                finishSimulation(scenId, output, metricExpressions);
+                storage.put(output);
+                if (output instanceof SimulationResults) {
+                    SimulationResults results = (SimulationResults) output;
+                    MetricValues metricValues = new MetricValues(results, metricExpressions);
+                    storage.updateMetricValues(metricValues);
+                }
                 return output;
             } finally {
                 activeJobs.remove(scenId, this);
@@ -165,44 +145,18 @@ public class SimulationService {
 
     private static final Instant DEFAULT_TIME_ORIGIN = Instant.ofEpochMilli(0);
 
+    public static final String STATUS_SUCCESS = "SUCCESS";
+    public static final String STATUS_MODEL_FAILURE = "MODEL_FAILURE";
+    public static final String STATUS_SIMULATOR_FAILURE = "SIMULATOR_FAILURE";
+
     @Autowired
     private ScenarioRepository scenarioRepository;
 
     @Autowired
-    private UnitRepository unitRepository;
-
-    @Autowired
-    SimulationResultRepository simulationResultRepository;
-
-    @Autowired
-    MetricValRepository metricValRepository;
-
-    @Autowired
-    ScenarioMetricsRepository scenarioMetricsRepository;
-
-    @Autowired
-    ExtParamValRepository extParamValRepository;
-
-    @Autowired
-    ExtParamValSetRepository extParamValSetRepository;
-
-    @Autowired
-    ExtParamValSetCompRepository extParamValSetCompRepository;
-
-    @Autowired
-    TimeSeriesRepository timeSeriesRepository;
-
-    @Autowired
-    TimeSeriesValRepository timeSeriesValRepository;
-
-    @Autowired
-    TypeRepository typeRepository;
+    private ApplicationContext applicationContext;
 
     @Autowired
     private TaskExecutor taskExecutor;
-
-    @Autowired
-    private PlatformTransactionManager txManager;
 
     private Evaluator evaluator;
 
@@ -268,43 +222,14 @@ public class SimulationService {
         }
     }
 
-    private void finishSimulation(int scenId, SimulationOutput output,
-            Collection<MetricExpression> metricExpressions) throws Exception {
-        TransactionTemplate txTemplate = new TransactionTemplate(txManager);
-        Exception e = txTemplate.execute(
-                (TransactionStatus status) -> {
-                    try {
-                        System.err.println("starting save transaction");
-                        Scenario scenario = scenarioRepository.findOne(scenId);
-                        if (scenario != null) {
-                            saveSimulationResults(scenario, output);
-                    
-                            if (output instanceof SimulationResults) {
-                                SimulationResults results = (SimulationResults) output;
-                                MetricValues metricValues = new MetricValues(results, metricExpressions);
-                                saveMetricValues(scenario, metricValues);
-                            }
-                        }
-                        System.err.println("saved ok");
-                        return null;
-                    } catch (Exception ee) {
-                        return ee;
-                    }
-                });
-        System.err.println("executed save transaction");
-        if (e != null) {
-        	e.printStackTrace();
-            throw e;
-        }
-    }
-
-    public SimulationJob makeSimulationJob(Scenario scenario)
+    SimulationJob makeSimulationJob(Scenario scenario)
             throws ParseException, IOException, SimulatorConfigurationException,
             InterruptedException, ExecutionException, ScriptException {
         Project project = scenario.getProject();
         Namespace namespace = makeProjectNamespace(project);
 
-        SimulationInput input = loadSimulationInput(scenario, namespace);
+        ExternalParameters externals = loadExternalParametersFromDefaults(scenario, namespace);
+        SimulationInput input = loadSimulationInput(scenario, externals);
 
         String simulatorName = project.getSimulationmodel().getSimulator();
         SimulatorManager manager = SimulatorManagers.get(simulatorName);
@@ -313,16 +238,29 @@ public class SimulationService {
                     "Unknown simulator " + simulatorName);
         }
         byte[] modelZipBytes = project.getSimulationmodel().getModelblob();
-        SimulationJob newJob = new SimulationJob(manager, modelZipBytes, input, scenario);
-        SimulationJob oldJob = activeJobs.put(scenario.getScenid(), newJob);
-        if (oldJob != null) {
-            oldJob.cancel(true);
+        SimulationModel model = manager.parseModel(modelZipBytes);
+        List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
+        SimulationRunner runner = null;
+        try {
+            runner = manager.makeRunner(model, input.getNamespace());
+            DbSimulationStorageI storage =
+                    (DbSimulationStorageI) applicationContext.getBean("dbSimulationStorage");
+            storage.initialize(project.getPrjid(), externals, null, null);
+            SimulationJob newJob = new SimulationJob(
+                    scenario.getScenid(), input, metricExpressions, model, runner, storage);
+            SimulationJob oldJob = activeJobs.put(scenario.getScenid(), newJob);
+            if (oldJob != null) {
+                oldJob.cancel(true);
+            }
+            return newJob;
+        } finally {
+            if (runner == null) model.close();
         }
-        return newJob;
     }
 
-    public ExternalParameters loadExternalParameters(Scenario scenario, Namespace namespace)
-            throws ParseException {
+    /** Loads the default values of external parameters. */
+    public ExternalParameters loadExternalParametersFromDefaults(
+            Scenario scenario, Namespace namespace) throws ParseException {
         ExternalParameters simExternals = new ExternalParameters(namespace);
         for (ExtParam extParam : scenario.getProject().getExtparams()) {
             Type extType = namespace.externals.get(extParam.getName());
@@ -338,6 +276,7 @@ public class SimulationService {
         return simExternals;
     }
 
+    /** Loads the data of a time series. */
     public TimeSeriesI loadTimeSeries(TimeSeries timeseries, 
             Type timeSeriesType, Evaluator evaluator, Instant timeOrigin) {
         List<TimeSeriesVal> timeSeriesVals =
@@ -351,25 +290,58 @@ public class SimulationService {
             times[i] = TimeUtils.toSimTime(tsVal.getTime(), timeOrigin);
             values[i] = Double.valueOf(tsVal.getValue());
         }
-        return evaluator.makeTS(timeSeriesType, times, values);
+        TimeSeriesI ts = evaluator.makeTS(timeSeriesType, times, values);
+        ts.setTimeSeriesId(timeseries.getTseriesid());
+        return ts;
     }
 
-    public SimulationInput loadSimulationInput(Scenario scenario, Namespace namespace) 
+    /** Loads the simulation input parameter values of a scenario. */
+    public SimulationInput loadSimulationInput(Scenario scenario, ExternalParameters simExternals) 
             throws ParseException {
-        ExternalParameters simExternals = loadExternalParameters(scenario, namespace);
-
         SimulationInput simInput = new SimulationInput(simExternals);
         for (InputParamVal mValue : scenario.getInputparamvals()) {
             InputParameter mInput = mValue.getInputparameter();
             String componentName = mInput.getComponent().getName();
             simInput.putString(componentName, mInput.getName(), mValue.getValue());
         }
-
+        simInput.setScenarioId(scenario.getScenid());
         return simInput;
     }
 
-    //TODO loadSimulationOutput, loadMetricValues
+    /** Loads the simulation result data of a scenario. */
+    public SimulationOutput loadSimulationOutput(Scenario scenario, SimulationInput simInput)
+            throws ParseException {
+        if (scenario.getStatus() == STATUS_SUCCESS) {
+            Namespace namespace = simInput.getNamespace();
+            SimulationResults simResults = new SimulationResults(simInput, scenario.getLog());
+            for (SimulationResult mResult : scenario.getSimulationresults()) {
+                OutputVariable mOutput = mResult.getOutputvariable();
+                String componentName = mOutput.getComponent().getName();
+                Namespace.Component nsComponent = namespace.components.get(componentName);
+                if (nsComponent != null) {
+                    Type outputType = nsComponent.outputs.get(mOutput.getName());
+                    if (outputType != null) {
+                        Object simValue = loadTimeSeries(mResult.getTimeseries(), outputType,
+                                namespace.evaluator, namespace.timeOrigin);
+                        simResults.put(componentName, mOutput.getName(), simValue);
+                    }
+                }
+            }
+            if (simResults.isComplete()) {
+                return simResults;
+            } else {
+                return new SimulationFailure(simInput, false,
+                        "Could not find simulation results for all output variables in database.");
+            }
+        } else {
+            boolean permanent = (scenario.getStatus() == STATUS_MODEL_FAILURE);
+            return new SimulationFailure(simInput, permanent, scenario.getLog());
+        }
+    }
 
+    //TODO loadMetricValues
+
+    /** Loads the metric expressions of a project. */
     public List<MetricExpression> loadMetricExpressions(Project project, Namespace namespace)
             throws ScriptException {
         List<MetricExpression> metricExpressions = new ArrayList<MetricExpression>();
@@ -381,183 +353,11 @@ public class SimulationService {
         return metricExpressions;
     }
 
-    public void saveSimulationResults(Scenario scenario, SimulationOutput simOutput) {
-        //TODO setRunStart, setRunEnd, setStatus at the beginning
-        scenario.setLog(simOutput.getMessages());
-        if (simOutput instanceof SimulationResults) {
-            scenario.setStatus("SUCCESS");
-            SimulationResults simResults = (SimulationResults) simOutput;
-            Namespace namespace = simResults.getNamespace();
-            Set<SimulationResult> newResults = new HashSet<SimulationResult>(); 
-            List<Runnable> idUpdates = new ArrayList<Runnable>();
-            for (Component component : scenario.getProject().getComponents()) {
-                String componentName = component.getName();
-                for (OutputVariable outputVariable : component.getOutputvariables()) {
-                    String outputName = outputVariable.getName();
-                    TimeSeriesI simTS = simResults.getTS(componentName, outputName);
-                    if (simTS != null) {
-                        Type simType = namespace.components.get(componentName)
-                                    .outputs.get(outputName);
-                        eu.cityopt.model.Type type = findType(simType);
-                        TimeSeries timeSeries =
-                                saveTimeSeries(simTS, type, namespace.timeOrigin, idUpdates);
-                        SimulationResult simulationResult = new SimulationResult();
-
-                        simulationResult.setScenario(scenario);
-                        newResults.add(simulationResult);
-
-                        simulationResult.setTimeseries(timeSeries);
-
-                        simulationResult.setOutputvariable(outputVariable);
-                        Set<SimulationResult> results = new HashSet<SimulationResult>();
-                        results.add(simulationResult);
-                        outputVariable.setSimulationresults(results);
-
-                        simulationResultRepository.save(simulationResult);
-                    }
-                }
-            }
-            scenario.setSimulationresults(newResults);
-            simulationResultRepository.save(newResults);
-            scenarioRepository.save(scenario);
-
-            timeSeriesRepository.flush();
-            for (Runnable update : idUpdates) {
-                update.run();
-            }
-        } else {
-            scenario.setStatus("FAILED");
-        }
-    }
-
-    public void saveMetricValues(Scenario scenario, SimulationResults simResults)
-            throws ScriptException, InvalidValueException {
-        List<MetricExpression> metricExpressions =
-                loadMetricExpressions(scenario.getProject(), simResults.getNamespace());
-        MetricValues metricValues = new MetricValues(simResults, metricExpressions);
-        saveMetricValues(scenario, metricValues);
-    }
-
-    public void saveMetricValues(Scenario scenario, MetricValues metricValues) {
-        ScenarioMetrics scenarioMetrics = new ScenarioMetrics();
-
-        ExternalParameters simExternals =
-                metricValues.getResults().getInput().getExternalParameters();
-        saveExternalParameterValues(scenario, simExternals, scenarioMetrics);
-
-        for (Metric metric : scenario.getProject().getMetrics()) {
-            String value = null;
-            try {
-                value = metricValues.getString(metric.getName());
-            } catch (IllegalArgumentException e) {
-                // Ignore missing values
-            }
-            if (value != null) {
-                MetricVal metricVal = new MetricVal();
-                metricVal.setMetric(metric);
-                metricVal.setValue(value);
-    
-                metricVal.setScenariometrics(scenarioMetrics);
-                scenarioMetrics.getMetricvals().add(metricVal);
-            }
-        }
-
-        scenarioMetrics.setScenario(scenario);
-        scenario.getScenariometricses().add(scenarioMetrics);
-
-        scenarioRepository.save(scenario);
-        scenarioMetricsRepository.save(scenarioMetrics);
-        metricValRepository.save(scenarioMetrics.getMetricvals());
-    }
-
-    public void saveExternalParameterValues(Scenario scenario,
-            ExternalParameters simExternals, ScenarioMetrics newScenarioMetrics) {
-        Project project = scenario.getProject();
-        Namespace namespace = simExternals.getNamespace();
-        List<Runnable> idUpdates = new ArrayList<Runnable>();
-
-        ExtParamValSet extParamValSet = new ExtParamValSet();
-        for (ExtParam extParam : project.getExtparams()) {
-            String extName = extParam.getName();
-            Type simType = namespace.externals.get(extName);
-            if (simType != null) {
-                ExtParamVal extParamVal = new ExtParamVal();
-                extParamVal.setExtparam(extParam);
-                if (simType.isTimeSeriesType()) {
-                    eu.cityopt.model.Type type = findType(simType);
-                    TimeSeries timeSeries = saveTimeSeries(
-                            simExternals.getTS(extName), type,
-                            namespace.timeOrigin, idUpdates);
-                    extParamVal.setTimeseries(timeSeries);
-                    timeSeries.getExtparamvals().add(extParamVal);
-                } else {
-                    extParamVal.setValue(simExternals.getString(extName));
-                }
-                ExtParamValSetComp extParamValSetComp = new ExtParamValSetComp();
-
-                extParamValSetComp.setExtparamval(extParamVal);
-                extParamVal.getExtparamvalsetcomps().add(extParamValSetComp);
-
-                extParamValSetComp.setExtparamvalset(extParamValSet);
-                extParamValSet.getExtparamvalsetcomps().add(extParamValSetComp);
-
-                extParamValRepository.save(extParamVal);
-                extParamValSetCompRepository.save(extParamValSetComp);
-                extParamValSetRepository.save(extParamValSet);
-            }
-        }
-
-        newScenarioMetrics.setExtparamvalset(extParamValSet);
-        extParamValSet.getScenariometricses().add(newScenarioMetrics);
-
-        extParamValSetRepository.save(extParamValSet);
-
-        timeSeriesRepository.flush();
-        for (Runnable update : idUpdates) {
-            update.run();
-        }
-    }
-
-    public eu.cityopt.model.Type findType(Type simType) {
-        for (eu.cityopt.model.Type type : typeRepository.findAll()) {
-            if (type.getName().equalsIgnoreCase(simType.name)) {
-                return type;
-            }
-        }
-        return null;
-    }
-
-    public TimeSeries saveTimeSeries(TimeSeriesI simTS, eu.cityopt.model.Type type,
-            Instant timeOrigin, List<Runnable> idUpdateList) {
-        if (simTS.getTimeSeriesId() != null) {
-            TimeSeries timeSeries = timeSeriesRepository.findOne(simTS.getTimeSeriesId());
-            if (timeSeries != null) {
-                //TODO: should we check if the time series has changed?
-                return timeSeries;
-            }
-            simTS.setTimeSeriesId(null);
-        }
-        TimeSeries timeSeries = new TimeSeries();
-        timeSeries.setType(type);
-        double[] times = simTS.getTimes();
-        double[] values = simTS.getValues();
-        int n = times.length;
-        for (int i = 0; i < n; ++i) {
-            TimeSeriesVal timeSeriesVal = new TimeSeriesVal();
-
-            timeSeriesVal.setTime(TimeUtils.toDate(times[i], timeOrigin));
-            timeSeriesVal.setValue(Double.toString(values[i]));
-
-            timeSeriesVal.setTimeseries(timeSeries);
-            timeSeries.getTimeseriesvals().add(timeSeriesVal);
-        }
-        timeSeriesValRepository.save(timeSeries.getTimeseriesvals());
-        timeSeriesRepository.save(timeSeries);
-        // Copy the database row id once it is available.
-        idUpdateList.add(() -> simTS.setTimeSeriesId(timeSeries.getTseriesid()));
-        return timeSeries;
-    }
-
+    /**
+     * Loads the names and types of named objects in a project: external parameters,
+     * input parameters, output variables and metrics.  The actual values are
+     * scenario specific, and they are ignored here.
+     */
     public Namespace makeProjectNamespace(Project project) throws ParseException {
         Date timeOriginDate = project.getSimulationmodel().getTimeorigin();
         Instant timeOrigin = (timeOriginDate != null)

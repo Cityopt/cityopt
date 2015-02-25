@@ -11,7 +11,7 @@ public class SimulationFailure extends SimulationOutput {
      * Otherwise the failure is temporary, e.g. due to insufficient disk space,
      * and another attempt may succeed.
      */
-    final boolean permanent;
+    public final boolean permanent;
 
     public SimulationFailure(SimulationInput input, boolean permanent, String messages) {
         super(input, messages);

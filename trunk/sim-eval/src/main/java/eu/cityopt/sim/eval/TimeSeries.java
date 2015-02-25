@@ -19,7 +19,7 @@ import org.python.core.PyObject;
  */
 public class TimeSeries implements TimeSeriesI {
     private final PiecewiseFunction fun;
-    private Integer externalId;
+    private volatile Integer externalId;
 
     private PyObject datetimes;
 

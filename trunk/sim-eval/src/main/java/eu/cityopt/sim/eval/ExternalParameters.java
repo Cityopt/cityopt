@@ -12,6 +12,7 @@ import javax.script.ScriptException;
  */
 public class ExternalParameters implements EvaluationContext {
     private BindingLayer bindingLayer;
+    private volatile Integer externalId;
 
     public ExternalParameters(final Namespace namespace) {
         this.bindingLayer = new BindingLayer(
@@ -59,6 +60,15 @@ public class ExternalParameters implements EvaluationContext {
     /** Return whether all external parameters have been set. */
     public boolean isComplete() {
         return bindingLayer.isComplete();
+    }
+
+    /** Externally provided identifier, or null. */
+    public Integer getExternalId() {
+        return externalId;
+    }
+
+    public void setExternalId(Integer value) {
+        externalId = value;
     }
 
     @Override

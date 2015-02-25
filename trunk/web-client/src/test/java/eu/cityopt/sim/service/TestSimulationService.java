@@ -1,16 +1,12 @@
 package eu.cityopt.sim.service;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -78,12 +74,6 @@ public class TestSimulationService {
         loadModel("Apros test model", "/testData/testmodel.zip");
         runSimulation();
         dumpTables("testmodel");
-    }
-
-    public void testParallelRuns() throws Exception {
-        loadModel("Plumbing test model", "/testData/plumbing.zip");
-        runSimulation();
-        dumpTables("plumbing");
     }
 
     public void loadModel(String modelName, String modelResource) throws IOException {

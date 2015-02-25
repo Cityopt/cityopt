@@ -12,7 +12,8 @@ import javax.script.ScriptException;
  * feasibility or metric values for previously run simulations.
  *
  * The hashCode and equals methods consider the equality of all input parameter
- * values, so that the class can be used as a map key.
+ * values, so that the class can be used as a map key.  The methods ignore any
+ * stored external id, as well as the referenced external parameter values.
  *
  * Implements the EvalutionContext interface, providing access to both external
  * parameters and the defined simulation inputs.  This makes it possible for
@@ -23,6 +24,7 @@ import javax.script.ScriptException;
 public class SimulationInput implements EvaluationContext {
     private ExternalParameters externalParameters;
     private BindingLayer bindingLayer;
+    private volatile Integer externalId;
 
     /**
      * Constructs an empty SimulationInput.
@@ -118,6 +120,15 @@ public class SimulationInput implements EvaluationContext {
     /** Returns whether all input parameters have a value. */
     public boolean isComplete() {
         return bindingLayer.isComplete();
+    }
+
+    /** Externally provided identifier, or null. */
+    public Integer getScenarioId() {
+        return externalId;
+    }
+
+    public void setScenarioId(Integer value) {
+        externalId = value;
     }
 
     @Override
