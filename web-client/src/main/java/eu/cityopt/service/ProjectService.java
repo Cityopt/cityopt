@@ -19,10 +19,6 @@ import eu.cityopt.repository.ProjectRepository;
 public interface ProjectService extends CityOptService<ProjectDTO> {
 
 	ProjectDTO save(ProjectDTO projectDTO);
-	
-	ProjectRepository getProjectRepository();
-
-	void setProjectRepository(ProjectRepository projectRepository);
 
 	List<ProjectScenariosDTO> findAllWithScenarios();
 

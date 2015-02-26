@@ -15,6 +15,7 @@ public class ScenGenOptConstraintServiceImpl implements ScenGenOptConstraintServ
 	@Autowired
 	private ScenGenOptConstraintRepository scenGenOptConstraintRepository;
 	
+	@Transactional(readOnly=true)
 	public List<ScenGenOptConstraint> findAll() {
 		return scenGenOptConstraintRepository.findAll();
 	}
@@ -44,6 +45,7 @@ public class ScenGenOptConstraintServiceImpl implements ScenGenOptConstraintServ
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly=true)
 	public ScenGenOptConstraint findByID(int id) {
 		return scenGenOptConstraintRepository.findOne(id);
 	}

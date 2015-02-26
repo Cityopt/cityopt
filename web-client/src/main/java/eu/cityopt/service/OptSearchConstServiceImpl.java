@@ -15,6 +15,7 @@ public class OptSearchConstServiceImpl implements OptSearchConstService {
 	@Autowired
 	private OptSearchConstRepository optSearchConstRepository;
 	
+	@Transactional(readOnly=true)
 	public List<OptSearchConst> findAll() {
 		return optSearchConstRepository.findAll();
 	}
@@ -44,6 +45,7 @@ public class OptSearchConstServiceImpl implements OptSearchConstService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly=true)
 	public OptSearchConst findByID(int id) {
 		return optSearchConstRepository.findOne(id);
 	}

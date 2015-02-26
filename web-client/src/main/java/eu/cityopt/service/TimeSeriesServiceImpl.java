@@ -10,11 +10,13 @@ import eu.cityopt.model.TimeSeries;
 import eu.cityopt.repository.TimeSeriesRepository;
 
 @Service("TimeSeriesService")
+@Transactional
 public class TimeSeriesServiceImpl implements TimeSeriesService {
 	
 	@Autowired
 	private TimeSeriesRepository timeSeriesRepository;
 	
+	@Transactional(readOnly=true)
 	public List<TimeSeries> findAll() {
 		return timeSeriesRepository.findAll();
 	}
@@ -44,6 +46,7 @@ public class TimeSeriesServiceImpl implements TimeSeriesService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly=true)
 	public TimeSeries findByID(int id) {
 		return timeSeriesRepository.findOne(id);
 	}

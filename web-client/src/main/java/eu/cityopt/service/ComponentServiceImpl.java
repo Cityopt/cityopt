@@ -33,11 +33,13 @@ public class ComponentServiceImpl implements ComponentService {
 	@Autowired
 	private ProjectRepository projectRepository;
 	
+	@Transactional(readOnly = true)
 	public List<ComponentDTO> findAll() {
 		return modelMapper.map(componentRepository.findAll(), 
 				new TypeToken<List<ComponentDTO>>() {}.getType());
 	}
 
+	@Transactional(readOnly = true)
 	public List<ComponentDTO> findByName(String name) {
 		List<Component> components = componentRepository.findByName(name);
 		List<ComponentDTO> result 
@@ -74,6 +76,7 @@ public class ComponentServiceImpl implements ComponentService {
 		return save(toUpdate, prjid);
 	}
 	
+	@Transactional(readOnly = true)
 	public ComponentDTO findByID(int id) throws EntityNotFoundException {
 		if(componentRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -82,6 +85,7 @@ public class ComponentServiceImpl implements ComponentService {
 		return  modelMapper.map(componentRepository.findOne(id), ComponentDTO.class);
 	}
 	
+	@Transactional(readOnly = true)
 	public Set<InputParameterDTO> getInputParameters(int componentId)
 	{
 		Component comp = componentRepository.findOne(componentId);
@@ -89,6 +93,7 @@ public class ComponentServiceImpl implements ComponentService {
 		return modelMapper.map(inputParamVals, new TypeToken<Set<InputParameterDTO>>() {}.getType());
 	}
 	
+	@Transactional(readOnly = true)
 	public Set<OutputVariableDTO> getOutputVariables(int componentId)
 	{
 		Component comp = componentRepository.findOne(componentId);

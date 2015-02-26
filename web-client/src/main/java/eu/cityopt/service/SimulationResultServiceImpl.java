@@ -17,6 +17,7 @@ import eu.cityopt.repository.SimulationResultRepository;
 import eu.cityopt.repository.TimeSeriesValRepository;
 
 @Service("SimulationResultService")
+@Transactional
 public class SimulationResultServiceImpl implements SimulationResultService {
 	
 	@Autowired
@@ -28,6 +29,7 @@ public class SimulationResultServiceImpl implements SimulationResultService {
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@Transactional(readOnly=true)
 	public List<SimulationResultDTO> findAll() {
 		return modelMapper.map(simulationResultRepository.findAll(),
 				new TypeToken<List<SimulationResultDTO>>() {}.getType());
@@ -58,6 +60,7 @@ public class SimulationResultServiceImpl implements SimulationResultService {
 //		return save(toUpdate);
 //	}
 	
+	@Transactional(readOnly=true)
 	public SimulationResultDTO findByID(int id) throws EntityNotFoundException {
 		SimulationResult simRes = simulationResultRepository.findOne(id);
 		if(simRes == null) {
@@ -68,6 +71,7 @@ public class SimulationResultServiceImpl implements SimulationResultService {
 	}
 
 	@Override
+	@Transactional(readOnly=true)
 	public List<TimeSeriesValDTO> getTimeSeriesValsOrderedByTime(int scenResId) throws EntityNotFoundException {
 		SimulationResult simRes = simulationResultRepository.findOne(scenResId);
 		
@@ -88,6 +92,7 @@ public class SimulationResultServiceImpl implements SimulationResultService {
 	
 	
 	@Override
+	@Transactional(readOnly=true)
 	public SimulationResultDTO findByOutVarIdScenId(int outVarId, int scenarioID) throws EntityNotFoundException {
 		SimulationResult simRes = simulationResultRepository.findByScenAndOutvar(scenarioID, outVarId);
 		if(simRes == null) {

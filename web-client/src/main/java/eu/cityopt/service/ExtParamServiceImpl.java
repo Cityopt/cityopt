@@ -33,11 +33,13 @@ public class ExtParamServiceImpl implements ExtParamService {
 	@Autowired
 	private ProjectRepository projectRepository;
 	
+	@Transactional(readOnly = true)
 	public List<ExtParamDTO> findAll() {
 		return modelMapper.map(extParamRepository.findAll(), 
 				new TypeToken<List<ExtParamDTO>>() {}.getType());
 	}
 	
+	@Transactional(readOnly = true)
 	public List<ExtParamDTO> findByName(String name) {
 		List<ExtParam> extparams = extParamRepository.findByName(name);
 		List<ExtParamDTO> result 
@@ -74,6 +76,7 @@ public class ExtParamServiceImpl implements ExtParamService {
 		return save(toUpdate, prjid);
 	}
 	
+	@Transactional(readOnly = true)
 	public ExtParamDTO findByID(int id) throws EntityNotFoundException {
 		
 		if(extParamRepository.findOne(id) == null) {
@@ -83,6 +86,7 @@ public class ExtParamServiceImpl implements ExtParamService {
 		return modelMapper.map(extParamRepository.findOne(id), ExtParamDTO.class);		
 	}
 	
+	@Transactional(readOnly = true)
 	public Set<ExtParamValDTO> getExtParamVals(int id){
 		ExtParam eparam = extParamRepository.findOne(id);
 		Set<ExtParamVal> inputParamVals = eparam.getExtparamvals();

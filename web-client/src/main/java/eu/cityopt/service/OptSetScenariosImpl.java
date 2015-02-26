@@ -3,11 +3,14 @@ package eu.cityopt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.model.OptSetScenarios;
 import eu.cityopt.repository.OptSetScenariosRepository;
 
+@Service
+@Transactional
 public class OptSetScenariosImpl implements OptSetScenariosService {
 	
 	@Autowired

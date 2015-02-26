@@ -10,6 +10,7 @@ import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.repository.ScenarioMetricsRepository;
 
 @Service("ScenarioMetricsService")
+@Transactional
 public class ScenarioMetricsServiceImpl implements ScenarioMetricsService {
 	
 	@Autowired

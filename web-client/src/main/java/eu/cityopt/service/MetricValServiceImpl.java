@@ -5,6 +5,7 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.reflect.TypeToken;
 
@@ -14,6 +15,7 @@ import eu.cityopt.repository.MetricRepository;
 import eu.cityopt.repository.MetricValRepository;
 
 @Service("MetricValService")
+@Transactional
 public class MetricValServiceImpl implements MetricValService {
 	@Autowired
 	private ModelMapper modelMapper;
@@ -25,6 +27,7 @@ public class MetricValServiceImpl implements MetricValService {
 	private MetricValRepository metricValRepository;
 	
 	@Override
+	@Transactional(readOnly=true)
 	public List<MetricValDTO> findAll() {
 		return modelMapper.map(metricValRepository.findAll(), 
 				new TypeToken<List<MetricValDTO>>() {}.getType());
@@ -59,6 +62,7 @@ public class MetricValServiceImpl implements MetricValService {
 	}
 
 	@Override
+	@Transactional(readOnly=true)
 	public MetricValDTO findByID(int id) throws EntityNotFoundException {
 		if(metricRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();

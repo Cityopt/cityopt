@@ -15,10 +15,12 @@ public class SearchConstraintServiceImpl implements SearchConstraintService {
 	@Autowired
 	private SearchConstraintRepository searchConstraintRepository;
 	
+	@Transactional(readOnly=true)
 	public List<SearchConstraint> findAll() {
 		return searchConstraintRepository.findAll();
 	}
 	
+	@Transactional(readOnly=true)
 	public SearchConstraint findByID(int id) {
 		return searchConstraintRepository.findOne(id);
 	}

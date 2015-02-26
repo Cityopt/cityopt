@@ -15,6 +15,7 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 	@Autowired
 	private OptimizationSetRepository optimizationSetRepository;
 	
+	@Transactional(readOnly=true)
 	public List<OptimizationSet> findAll() {
 		return optimizationSetRepository.findAll();
 	}
@@ -44,6 +45,7 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly=true)
 	public OptimizationSet findByID(int id) {
 		return optimizationSetRepository.findOne(id);
 	}

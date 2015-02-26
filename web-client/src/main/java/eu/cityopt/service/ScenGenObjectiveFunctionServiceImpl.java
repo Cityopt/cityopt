@@ -15,6 +15,7 @@ public class ScenGenObjectiveFunctionServiceImpl implements ScenGenObjectiveFunc
 	@Autowired
 	private ScenGenObjectiveFunctionRepository scenGenObjectiveFunctionRepository;
 	
+	@Transactional(readOnly=true)
 	public List<ScenGenObjectiveFunction> findAll() {
 		return scenGenObjectiveFunctionRepository.findAll();
 	}
@@ -44,6 +45,7 @@ public class ScenGenObjectiveFunctionServiceImpl implements ScenGenObjectiveFunc
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly=true)
 	public ScenGenObjectiveFunction findByID(int id) {
 		return scenGenObjectiveFunctionRepository.findOne(id);
 	}

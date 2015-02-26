@@ -21,6 +21,7 @@ public class AppUserServiceImpl implements AppUserService {
 	@Autowired
 	private AppUserRepository appuserRepository;
 	
+	@Transactional(readOnly = true)
 	public List<AppUserDTO> findAll() {
 		return modelMapper.map(appuserRepository.findAll(), 
 				new TypeToken<List<AppUserDTO>>() {}.getType());
@@ -58,6 +59,7 @@ public class AppUserServiceImpl implements AppUserService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly = true)
 	public AppUserDTO findByID(int id) throws EntityNotFoundException {
 		if(appuserRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();

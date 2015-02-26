@@ -14,6 +14,7 @@ import eu.cityopt.model.Unit;
 import eu.cityopt.repository.UnitRepository;
 
 @Service("UnitService")
+@Transactional
 public class UnitServiceImpl implements UnitService {
 	@Autowired
 	private ModelMapper modelMapper;
@@ -21,6 +22,7 @@ public class UnitServiceImpl implements UnitService {
 	@Autowired
 	private UnitRepository unitRepository;
 	
+	@Transactional(readOnly=true)
 	public List<UnitDTO> findAll() {
 		return modelMapper.map(unitRepository.findAll(), 
 				new TypeToken<List<UnitDTO>>() {}.getType());
@@ -53,6 +55,7 @@ public class UnitServiceImpl implements UnitService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly=true)
 	public UnitDTO findByID(int id) throws EntityNotFoundException {
 		
 		if(unitRepository.findOne(id) == null) {

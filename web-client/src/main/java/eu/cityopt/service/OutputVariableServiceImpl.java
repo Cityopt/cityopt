@@ -27,6 +27,7 @@ public class OutputVariableServiceImpl implements OutputVariableService {
 	@Autowired 
 	private ModelMapper modelMapper;
 	
+	@Transactional(readOnly=true)
 	public List<OutputVariableDTO> findAll() {
 		return modelMapper.map(outputVariableRepository.findAll(), 
 				new TypeToken<List<OutputVariableDTO>>() {}.getType());
@@ -59,6 +60,7 @@ public class OutputVariableServiceImpl implements OutputVariableService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly=true)
 	public OutputVariableDTO findByID(int id) throws EntityNotFoundException {
 		OutputVariable outVarModel = outputVariableRepository.findOne(id);
 		if(outputVariableRepository.findOne(id) == null) {
@@ -69,6 +71,7 @@ public class OutputVariableServiceImpl implements OutputVariableService {
 	}
 
 	@Override
+	@Transactional(readOnly=true)
 	public Set<SimulationResultDTO> getSimulationResults(int id) throws EntityNotFoundException {
 		
 		OutputVariable outVar = outputVariableRepository.findOne(id);

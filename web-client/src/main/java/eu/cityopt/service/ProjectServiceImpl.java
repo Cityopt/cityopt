@@ -39,15 +39,8 @@ public class ProjectServiceImpl implements ProjectService{
 //		modelMapper = new ModelMapper();
 //		modelMapper.addMappings(new ScenarioMap());
 	}
-	
-	public ProjectRepository getProjectRepository() {
-		return projectRepository;
-	}
 
-	public void setProjectRepository(ProjectRepository projectRepository) {
-		this.projectRepository = projectRepository;
-	}
-
+	@Transactional(readOnly = true)
 	public List<ProjectDTO> findAll() {
 		List<Project> projects = projectRepository.findAll();
 		List<ProjectDTO> result 
@@ -55,6 +48,7 @@ public class ProjectServiceImpl implements ProjectService{
 		return result;
 	}
 	
+	@Transactional(readOnly = true)
 	public List<ProjectScenariosDTO> findAllWithScenarios() {
 		List<Project> projects = projectRepository.findAllWithScenarios();
 		List<ProjectScenariosDTO> result 
@@ -62,6 +56,7 @@ public class ProjectServiceImpl implements ProjectService{
 		return result;
 	}
 	
+	@Transactional(readOnly = true)
 	public List<ProjectDTO> findByName(String name) {
 		List<Project> projects = projectRepository.findByName(name);
 		List<ProjectDTO> result 
@@ -101,12 +96,14 @@ public class ProjectServiceImpl implements ProjectService{
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly = true)
 	public ProjectDTO findByID(int id) {
 		Project item = projectRepository.findOne(id);
 		ProjectDTO itemDTO = modelMapper.map(item, ProjectDTO.class);
 		return itemDTO;
 	}
 	
+	@Transactional(readOnly = true)
 	public Set<ScenarioDTO> getScenarios(int prjid) {
 		Project item = projectRepository.findOne(prjid);
 		Set<Scenario> scenarios = item.getScenarios(); 
@@ -122,18 +119,21 @@ public class ProjectServiceImpl implements ProjectService{
 		projectRepository.saveAndFlush(item);
 	}
 	
+	@Transactional(readOnly = true)
 	public List<ComponentDTO> getComponents(int prjid) {
 		Project item = projectRepository.findOne(prjid);
 		List<Component> components = item.getComponents(); 
 		return modelMapper.map(components, new TypeToken<List<ComponentDTO>>() {}.getType());
 	}
 	
+	@Transactional(readOnly = true)
 	public Set<ExtParamDTO> getExtParams(int prjid) {
 		Project item = projectRepository.findOne(prjid);
 		Set<ExtParam> extParams = item.getExtparams(); 
 		return modelMapper.map(extParams, new TypeToken<Set<ExtParamDTO>>() {}.getType());
 	}
 	
+	@Transactional(readOnly = true)
 	public Set<ExtParamValDTO> getExtParamVals(int prjid) {
 		Project item = projectRepository.findOne(prjid);
 		Set<ExtParam> extParams = item.getExtparams(); 
@@ -145,6 +145,7 @@ public class ProjectServiceImpl implements ProjectService{
 		return modelMapper.map(extParamVals, new TypeToken<Set<ExtParamValDTO>>() {}.getType());
 	}
 	
+	@Transactional(readOnly = true)
 	public Set<MetricDTO> getMetrics(int prjid) {
 		Project item = projectRepository.findOne(prjid);
 		Set<Metric> metrics = item.getMetrics(); 
