@@ -26,6 +26,7 @@ public class MetricServiceImpl implements MetricService {
 	@Autowired
 	private ProjectRepository projectRepository;
 	
+	@Transactional(readOnly = true)
 	public List<MetricDTO> findAll() {
 		return modelMapper.map(metricRepository.findAll(), 
 				new TypeToken<List<MetricDTO>>() {}.getType());
@@ -58,6 +59,7 @@ public class MetricServiceImpl implements MetricService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly = true)
 	public MetricDTO findByID(int id) throws EntityNotFoundException {
 		
 		if(metricRepository.findOne(id) == null) {
@@ -67,6 +69,7 @@ public class MetricServiceImpl implements MetricService {
 		return modelMapper.map(metricRepository.findOne(id), MetricDTO.class);
 	}
 	
+	@Transactional
 	public void setProject(int metId, int prjid){
 		Metric met = metricRepository.findOne(metId);
 		Project p = projectRepository.findOne(prjid);

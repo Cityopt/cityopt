@@ -15,6 +15,7 @@ public class ModelParameterServiceImpl implements ModelParameterService {
 	@Autowired
 	private ModelParameterRepository modelParameterRepository;
 	
+	@Transactional(readOnly=true)
 	public List<ModelParameter> findAll() {
 		return modelParameterRepository.findAll();
 	}
@@ -44,6 +45,7 @@ public class ModelParameterServiceImpl implements ModelParameterService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly=true)
 	public ModelParameter findByID(int id) {
 		return modelParameterRepository.findOne(id);
 	}

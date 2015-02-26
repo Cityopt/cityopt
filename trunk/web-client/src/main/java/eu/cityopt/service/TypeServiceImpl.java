@@ -15,6 +15,7 @@ public class TypeServiceImpl implements TypeService {
 	@Autowired
 	private TypeRepository typeRepository;
 	
+	@Transactional(readOnly=true)
 	public List<Type> findAll() {
 		return typeRepository.findAll();
 	}
@@ -44,6 +45,7 @@ public class TypeServiceImpl implements TypeService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly=true)
 	public Type findByID(int id) {
 		return typeRepository.findOne(id);
 	}

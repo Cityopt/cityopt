@@ -39,6 +39,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 	@PersistenceContext
     private EntityManager em;
 	
+	@Transactional(readOnly=true)
 	public List<ScenarioDTO> findAll(){
 		return modelMapper.map(scenarioRepository.findAll(), 
 				new TypeToken<List<ScenarioDTO>>() {}.getType());
@@ -74,6 +75,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 		return save(toUpdate, prjid);
 	}
 
+	@Transactional(readOnly=true)
 	public ScenarioDTO findByID(int id) throws EntityNotFoundException {
 		Scenario scen = scenarioRepository.findOne(id);
 		if(scen == null) 
@@ -82,18 +84,21 @@ public class ScenarioServiceImpl implements ScenarioService {
 		return modelMapper.map(scen, ScenarioDTO.class);
 	}
 	
+	@Transactional(readOnly=true)
 	public Set<InputParamValDTO> getInputParamVals(int scenId)	{
 		Scenario scen = scenarioRepository.findOne(scenId);
 		Set<InputParamVal> inputParamVals = scen.getInputparamvals();
 		return modelMapper.map(inputParamVals, new TypeToken<Set<InputParamValDTO>>() {}.getType());
 	}
 
+	@Transactional(readOnly=true)
 	public Set<ScenarioMetricsDTO> getScenarioMetrics(int scenId)	{
 		Scenario scen = scenarioRepository.findOne(scenId);
 		Set<ScenarioMetrics> scenarioMetrics = scen.getScenariometricses();
 		return modelMapper.map(scenarioMetrics, new TypeToken<Set<ScenarioMetricsDTO>>() {}.getType());
 	}
 	
+	@Transactional(readOnly=true)
 	public List<ScenarioDTO> findByName(String name) {
 		List<Scenario> scenarios = scenarioRepository.findByName(name);
 		List<ScenarioDTO> result 
@@ -101,6 +106,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 		return result;
 	}
 	
+	@Transactional(readOnly=true)
 	public Set<SimulationResultDTO> getSimulationResults(int scenId) {
 		Scenario scen = scenarioRepository.findOne(scenId);
 		Set<SimulationResult> simRes = scen.getSimulationresults();

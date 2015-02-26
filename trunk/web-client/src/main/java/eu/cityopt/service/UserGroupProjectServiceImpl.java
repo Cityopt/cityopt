@@ -15,6 +15,7 @@ public class UserGroupProjectServiceImpl implements UserGroupProjectService {
 	@Autowired
 	private UserGroupProjectRepository userGroupProjectRepository;
 	
+	@Transactional(readOnly=true)
 	public List<UserGroupProject> findAll() {
 		return userGroupProjectRepository.findAll();
 	}
@@ -44,6 +45,7 @@ public class UserGroupProjectServiceImpl implements UserGroupProjectService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly=true)
 	public UserGroupProject findByID(int id) {
 		return userGroupProjectRepository.findOne(id);
 	}

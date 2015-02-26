@@ -15,6 +15,7 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 	@Autowired
 	private ScenarioGeneratorRepository scenarioGeneratorRepository;
 	
+	@Transactional(readOnly=true)
 	public List<ScenarioGenerator> findAll() {
 		return scenarioGeneratorRepository.findAll();
 	}
@@ -44,6 +45,7 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly=true)
 	public ScenarioGenerator findByID(int id) {
 		return scenarioGeneratorRepository.findOne(id);
 	}

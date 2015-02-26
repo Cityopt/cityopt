@@ -10,6 +10,7 @@ import eu.cityopt.model.DataReliability;
 import eu.cityopt.repository.DataReliabilityRepository;
 
 @Service("DataReliabilityService")
+@Transactional
 public class DataReliabilityServiceImpl implements DataReliabilityService {
 	
 	@Autowired

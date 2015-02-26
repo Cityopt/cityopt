@@ -25,6 +25,7 @@ public class InputParamValServiceImpl implements InputParamValService {
 	@Autowired
 	private InputParamValRepository inputParamValRepository;
 	
+	@Transactional(readOnly = true)
 	public List<InputParamValDTO> findAll() {
 		return modelMapper.map(inputParamValRepository.findAll(), 
 				new TypeToken<List<InputParamValDTO>>() {}.getType());
@@ -57,6 +58,7 @@ public class InputParamValServiceImpl implements InputParamValService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly = true)
 	public InputParamValDTO findByID(int id) throws EntityNotFoundException {
 		
 		InputParamVal iparVal = inputParamValRepository.findOne(id);

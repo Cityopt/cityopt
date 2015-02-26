@@ -15,6 +15,7 @@ public class ObjectiveFunctionServiceImpl implements ObjectiveFunctionService {
 	@Autowired
 	private ObjectiveFunctionRepository objectiveFunctionRepository;
 	
+	@Transactional(readOnly=true)
 	public List<ObjectiveFunction> findAll() {
 		return objectiveFunctionRepository.findAll();
 	}
@@ -44,6 +45,7 @@ public class ObjectiveFunctionServiceImpl implements ObjectiveFunctionService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly=true)
 	public ObjectiveFunction findByID(int id) {
 		return objectiveFunctionRepository.findOne(id);
 	}

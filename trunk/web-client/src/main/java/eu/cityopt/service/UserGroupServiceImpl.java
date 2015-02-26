@@ -2,10 +2,9 @@ package eu.cityopt.service;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.model.UserGroup;
 import eu.cityopt.repository.UserGroupRepository;
@@ -16,14 +15,17 @@ public class UserGroupServiceImpl implements UserGroupService {
 	@Autowired
 	private UserGroupRepository userGroupRepository;
 	
+	@Transactional(readOnly=true)
 	public List<UserGroup> findAll() {
 		return userGroupRepository.findAll();
 	}
 	
+	@Transactional(readOnly=true)
 	public UserGroup findByID(int id) {
 		return userGroupRepository.findOne(id);
 	}
 	
+	@Transactional(readOnly=true)
 	public List<UserGroup> findByGroupName(String userGroupName) {
 		return userGroupRepository.findByGroupName(userGroupName);
 	}

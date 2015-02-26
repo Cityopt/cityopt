@@ -15,6 +15,7 @@ public class OptConstraintServiceImpl implements OptConstraintService {
 	@Autowired
 	private OptConstraintRepository optConstraintRepository;
 	
+	@Transactional(readOnly=true)
 	public List<OptConstraint> findAll() {
 		return optConstraintRepository.findAll();
 	}
@@ -44,6 +45,7 @@ public class OptConstraintServiceImpl implements OptConstraintService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly=true)
 	public OptConstraint findByID(int id) {
 		return optConstraintRepository.findOne(id);
 	}

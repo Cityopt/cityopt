@@ -10,6 +10,7 @@ import eu.cityopt.model.DecisionVariable;
 import eu.cityopt.repository.DecisionVariableRepository;
 
 @Service("DecisionVariableService")
+@Transactional
 public class DecisionVariableServiceImpl implements DecisionVariableService {
 	
 	@Autowired

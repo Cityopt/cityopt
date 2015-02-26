@@ -34,11 +34,13 @@ public class InputParameterServiceImpl implements InputParameterService {
 	@Autowired
 	private ComponentRepository componentRepository;
 	
+	@Transactional(readOnly = true)
 	public List<InputParameterDTO> findAll() {
 		return modelMapper.map(inputParameterRepository.findAll(), 
 				new TypeToken<List<InputParameterDTO>>() {}.getType());
 	}
 	
+	@Transactional(readOnly = true)
 	public List<InputParameterDTO> findByName(String name) {
 		List<InputParameter> iparams = inputParameterRepository.findByName(name);
 		List<InputParameterDTO> result 
@@ -78,6 +80,7 @@ public class InputParameterServiceImpl implements InputParameterService {
 		return save(toUpdate, componentId, unitId);
 	}
 	
+	@Transactional(readOnly = true)
 	public InputParameterDTO findByID(int id) throws EntityNotFoundException {
 		
 		if(inputParameterRepository.findOne(id) == null) {
@@ -87,6 +90,7 @@ public class InputParameterServiceImpl implements InputParameterService {
 		return modelMapper.map(inputParameterRepository.findOne(id), InputParameterDTO.class);
 	}
 	
+	@Transactional(readOnly = true)
 	public Set<InputParamValDTO> getInputParamVals(int id){
 		InputParameter iparam = inputParameterRepository.findOne(id);
 		Set<InputParamVal> inputParamVals = iparam.getInputparamvals();

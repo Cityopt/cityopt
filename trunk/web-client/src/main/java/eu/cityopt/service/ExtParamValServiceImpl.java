@@ -21,6 +21,7 @@ public class ExtParamValServiceImpl implements ExtParamValService {
 	@Autowired
 	private ExtParamValRepository extParamValRepository;
 	
+	@Transactional(readOnly=true)
 	public List<ExtParamValDTO> findAll() {
 		return modelMapper.map(extParamValRepository.findAll(), 
 				new TypeToken<List<ExtParamValDTO>>() {}.getType());
@@ -53,6 +54,7 @@ public class ExtParamValServiceImpl implements ExtParamValService {
 		return save(toUpdate);
 	}
 	
+	@Transactional(readOnly = true)
 	public ExtParamValDTO findByID(int id) throws EntityNotFoundException {
 		ExtParamVal eparam = extParamValRepository.findOne(id);
 		
