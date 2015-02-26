@@ -54,16 +54,6 @@
     <td>x</td>
     <td> <input type="radio"/> </td>
 </tr>
-
-<% //for(int i=0; i<l.size();i++) {%>
-<!--    <tr>
-        <td> <%//out.print(b.get(i).getIsbn());%> </td>
-        <td> <%//out.print(b.get(i).getTitle());%> </td>
-        <td> <%//out.print(b.get(i).getAuthor());%> </td>
-        <td> <%//out.print(b.get(i).getPrice());%> </td>
-        <td> <!-- <input type="radio" name="project" value="<%//Integer.toString(i);%>"/>--> </td>
-    <!-- </tr>-->
-<% //} %>
 </table>
 
 <table width="600">

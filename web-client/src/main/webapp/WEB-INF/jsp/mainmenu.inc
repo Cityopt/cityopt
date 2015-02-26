@@ -38,18 +38,6 @@
 		<a href="deleteproject.html">Delete project</a>
 	</td>
 </tr>
-<% if (request.getSession().getAttribute("project") != null) { %>
-<tr>
-	<td>
-		<a href="metricdefinition.html">Metrics</a>
-	</td></tr>
-<% } else { %>
-<tr>
-	<td>
-		Metrics
-	</td>
-</tr>
-<% } %>
 <tr height=10>
 	<td>
 		
@@ -120,6 +108,18 @@
 		
 	</td>
 </tr>
+<% if (request.getSession().getAttribute("project") != null) { %>
+<tr>
+	<td>
+		<a href="metricdefinition.html">Metrics</a>
+	</td></tr>
+<% } else { %>
+<tr>
+	<td>
+		Metrics
+	</td>
+</tr>
+<% } %>
 <tr height=10>
 	<td>
 		

@@ -44,7 +44,7 @@
 						<td></td>
 				    	<td>
 							<a href="<c:url value='deleteproject.html?prjid=${project.prjid}'/>">
-								<button align="right"  type="button" value="Delete">Delete</button>
+								<button type="button" value="Delete">Delete</button>
 							</a>
 						</td>
 				   	</tr>

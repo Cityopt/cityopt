@@ -11,7 +11,7 @@ import lombok.Setter;
 public class SimulationResultDTO {
 
 	@Getter @Setter private int scenresid;
-//	@Getter @Setter private OutputVariableDTO outputvariable;
-//	@Getter @Setter private ScenarioDTO scenario;
+	@Getter @Setter private OutputVariableDTO outputvariable;
+	@Getter @Setter private ScenarioDTO scenario;
 	@Getter @Setter private TimeSeriesDTO timeseries;
 }
