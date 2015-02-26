@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -144,6 +145,7 @@ public class AprosRunner implements SimulationRunner {
         if (!input.isComplete()) {
             throw new IllegalArgumentException("Incomplete input");
         }
+        Instant runStart = Instant.now();
         Experiment xpt = server.createExperiment(new HashMap<>());
         MemoryDirectory
             mdir = new MemoryDirectory(modelDir.files(),
@@ -156,7 +158,7 @@ public class AprosRunner implements SimulationRunner {
         FileSelector res_sel = new FileSelector(resultFiles);
         JobConfiguration conf = new JobConfiguration(launcher, args,
                                                      mdir, res_sel);
-        AprosJob ajob = new AprosJob(this, input, xpt, conf);
+        AprosJob ajob = new AprosJob(this, input, xpt, conf, runStart);
         xpt.start();
         return ajob;
     }

@@ -219,8 +219,8 @@ public class DbSimulationStorage implements DbSimulationStorageI {
 
     void saveSimulationOutput(Scenario scenario, SimulationOutput simOutput) {
         scenario.setLog(simOutput.getMessages());
-        scenario.setRunstart(Date.from(simOutput.runStart));
-        scenario.setRunend(Date.from(simOutput.runEnd));
+        scenario.setRunstart((simOutput.runStart != null) ? Date.from(simOutput.runStart) : null);
+        scenario.setRunend((simOutput.runEnd != null) ? Date.from(simOutput.runEnd) : null);
 
         for (ScenarioMetrics scenarioMetrics : scenario.getScenariometricses()) {
             metricValRepository.delete(scenarioMetrics.getMetricvals());
