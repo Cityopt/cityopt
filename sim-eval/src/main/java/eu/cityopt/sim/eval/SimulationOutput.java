@@ -13,8 +13,11 @@ import java.time.Instant;
  */
 public class SimulationOutput {
     private final SimulationInput input;
+    /** Human-readable messages from simulator, or null. */
     public final String messages;
+    /** Simulation run start time, or null. */
     public Instant runStart;
+    /** Simulation run end time, or null. */
     public Instant runEnd;
 
     protected SimulationOutput(SimulationInput input, String messages) {

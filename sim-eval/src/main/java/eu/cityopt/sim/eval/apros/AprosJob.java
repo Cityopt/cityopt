@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
@@ -41,6 +42,7 @@ import eu.cityopt.sim.eval.Type;
 public class AprosJob implements Future<SimulationOutput> {
     private final AprosRunner runner;
     private final SimulationInput input;
+    private final Instant runStart;
     final JobConfiguration conf;
     private Job job;
     private boolean cancelled = false;
@@ -48,9 +50,10 @@ public class AprosJob implements Future<SimulationOutput> {
     private ByteArrayOutputStream ostr = new ByteArrayOutputStream();
     
     AprosJob(AprosRunner runner, SimulationInput input,
-             Experiment xpt, JobConfiguration conf) {
+             Experiment xpt, JobConfiguration conf, Instant runStart) {
         this.runner = runner;
         this.input = input;
+        this.runStart = runStart;
         this.conf = conf;
         job = xpt.createJob("job", conf);
         StatusLoggingUtils.redirectJobLog(job, ostr);
@@ -111,6 +114,9 @@ public class AprosJob implements Future<SimulationOutput> {
             job = null;
             x.dispose();
             ostr.reset();
+            output.runStart = runStart;
+            // TODO The end time is incorrect if no one calls get() right away... 
+            output.runEnd = Instant.now();
         }
         return output;
     }

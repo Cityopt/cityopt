@@ -94,7 +94,6 @@ public class SimulationService {
                 if (cancelled) {
                     return null;
                 }
-                Instant runStart = Instant.now();
                 Future<SimulationOutput> job = runner.start(input);
 
                 // Write to activeJob happens-before read from cancelled.
@@ -106,8 +105,6 @@ public class SimulationService {
 
                 // Wait for completion or cancellation.
                 SimulationOutput output = job.get();
-                output.runStart = runStart;
-                output.runEnd = Instant.now();
 
                 // Write to activeJob happens-before read from cancelled.
                 activeJob = null;
@@ -315,6 +312,7 @@ public class SimulationService {
     /** Loads the simulation result data of a scenario. */
     public SimulationOutput loadSimulationOutput(Scenario scenario, SimulationInput simInput)
             throws ParseException {
+        SimulationOutput simOutput = null;
         if (scenario.getStatus() == STATUS_SUCCESS) {
             Namespace namespace = simInput.getNamespace();
             SimulationResults simResults = new SimulationResults(simInput, scenario.getLog());
@@ -332,15 +330,23 @@ public class SimulationService {
                 }
             }
             if (simResults.isComplete()) {
-                return simResults;
+                simOutput = simResults;
             } else {
+                // Note: The run start and end times are left null.
                 return new SimulationFailure(simInput, false,
                         "Could not find simulation results for all output variables in database.");
             }
         } else {
             boolean permanent = (scenario.getStatus() == STATUS_MODEL_FAILURE);
-            return new SimulationFailure(simInput, permanent, scenario.getLog());
+            simOutput = new SimulationFailure(simInput, permanent, scenario.getLog());
         }
+        if (scenario.getRunstart() != null) {
+            simOutput.runStart = scenario.getRunstart().toInstant(); 
+        }
+        if (scenario.getRunend() != null) {
+            simOutput.runEnd = scenario.getRunend().toInstant();
+        }
+        return simOutput;
     }
 
     //TODO loadMetricValues
