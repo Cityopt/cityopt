@@ -21,9 +21,18 @@ public class NumericInterval<T extends Number> extends DecisionDomain {
         return upperBound;
     }
     
+    /**
+     * As a convenience nulls are permitted here to denote absent bounds.
+     * They are converted to appropriate infinities.
+     * @param lb lower bound
+     * @param ub upper bound
+     * @return the interval
+     */
     public static NumericInterval<Double> makeRealInterval(
-            double lb, double ub) {
-        return new NumericInterval<Double>(Type.DOUBLE, lb, ub);
+            Double lb, Double ub) {
+        return new NumericInterval<Double>(
+                Type.DOUBLE, (lb != null ? lb : Double.NEGATIVE_INFINITY),
+                ub != null ? ub : Double.POSITIVE_INFINITY);
     }
     
     public static NumericInterval<Integer> makeIntInterval(int lb, int ub) {

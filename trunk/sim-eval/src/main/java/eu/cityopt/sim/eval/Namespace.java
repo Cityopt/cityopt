@@ -118,6 +118,11 @@ public class Namespace extends EvaluationSetup {
         this(ev, timeOrigin, Collections.emptySet(), false);
     }
 
+    /** Constructs an empty namespace. */
+    public Namespace(Evaluator ev, Instant timeOrigin, boolean useDecisions) {
+        this(ev, timeOrigin, Collections.emptySet(), useDecisions);
+    }
+
     /**
      * Constructs a namespace containing just the named empty components.
      * The component names should be unique.
@@ -161,5 +166,29 @@ public class Namespace extends EvaluationSetup {
     public Component getOrNew(String name) {
         return components.computeIfAbsent(
                 name, n -> new Component(usesDecisions()));
+    }
+    
+    /**
+     * Return the type of an input parameter.
+     * @param comp component name
+     * @param var parameter name
+     * @return the {@link Type} or null if no such input
+     */
+    public Type getInputType(String comp, String var) {
+        Component c = components.get(comp);
+        return c != null ? c.inputs.get(var) : null;
+    }
+
+    /**
+     * Return the type of a decision variable.
+     * @param comp component name, null for top-level
+     * @param var variable name
+     * @return the {@link Type} or null if no such variable
+     */
+    public Type getDecisionType(String comp, String var) {
+        if (comp == null)
+            return decisions.get(var);
+        Component c = components.get(comp);
+        return c != null ? c.decisions.get(var) : null;
     }
 }

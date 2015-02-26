@@ -21,7 +21,7 @@ public class InputExpression extends Expression {
      * @param source the expression specifying the input variable value
      * @param evaluator to be used when computing the value
      */
-    InputExpression(String componentName, String inputName,
+    public InputExpression(String componentName, String inputName,
             String source, Evaluator evaluator) throws ScriptException {
         super(source, evaluator);
         this.componentName = componentName;
@@ -38,7 +38,7 @@ public class InputExpression extends Expression {
      * @param inputName name of the input variable
      * @param evaluator to be used when computing the value
      */
-    InputExpression(String componentName, String inputName,
+    public InputExpression(String componentName, String inputName,
             Evaluator evaluator) throws ScriptException {
         this(componentName, inputName, componentName + "." + inputName,
                 evaluator);
