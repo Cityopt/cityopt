@@ -33,26 +33,10 @@
 							<tr>
 								<td>Project name:</td>
 								<td><form:input type="text" path="name" style="width:200px"/></td>
-								<td></td>
-								<td><input type="submit" value="Update scenario" style="width:120px"></td>
-							</tr>
-							<tr>						
-								<td></td>
-								<td></td>
-								<td></td>
-								<td><a href="runscenario.html"><button type="button" style="width:120px">Run scenario</button></a></td>
 							</tr>
 							<tr>						
 								<td>Description:</td>
 								<td><form:textarea type="text" rows="3" path="description" style="width:200px"/></td>
-								<td></td>
-								<td><input type="submit" value="Abort run scenario" style="width:120px"></td>
-							</tr>
-							<tr>						
-								<td></td>
-								<td></td>
-								<td></td>
-								<td><input type="submit" value="Clone scenario" style="width:120px"></td>
 							</tr>
 							<tr>						
 								<td>Input parameters:</td>
@@ -102,6 +86,14 @@
 									</table>
 								</td>
 							</tr>
+						</table>
+					</td>
+					<td valign="top">
+						<table>
+							<tr><td><input type="submit" value="Update scenario" style="width:120px"></td></tr>
+							<tr><td><a href="runscenario.html"><button type="button" style="width:120px">Run scenario</button></a></td></tr>
+							<tr><td><input type="submit" value="Abort run scenario" style="width:120px"></td></tr>
+							<tr><td><input type="submit" value="Clone scenario" style="width:120px"></td></tr>
 						</table>
 					</td>
 				</tr>

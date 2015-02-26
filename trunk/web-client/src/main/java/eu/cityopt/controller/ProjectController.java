@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;import java.util.List;
+import java.util.HashSet;import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -14,6 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.TransformerException;
 
 import org.hibernate.loader.plan.build.internal.returns.CollectionAttributeFetchImpl;
+import org.jfree.data.time.Hour;
+import org.jfree.data.time.Minute;
+import org.jfree.data.time.Month;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.ui.RefineryUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,8 +37,12 @@ import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
+import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.SimulationResultDTO;
+import eu.cityopt.DTO.TimeSeriesDTO;
+import eu.cityopt.DTO.TimeSeriesValDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.Project;
@@ -46,8 +57,13 @@ import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParamValServiceImpl;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.MetricService;
+import eu.cityopt.service.OutputVariableService;
+import eu.cityopt.service.OutputVariableServiceImpl;
 import eu.cityopt.service.ProjectService;
 import eu.cityopt.service.ScenarioService;
+import eu.cityopt.service.ScenarioServiceImpl;
+import eu.cityopt.service.SimulationResultService;
+import eu.cityopt.service.TimeSeriesServiceImpl;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.sim.eval.EvaluationException;
 import eu.cityopt.sim.eval.Evaluator;
@@ -55,16 +71,18 @@ import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulatorConfigurationException;
 import eu.cityopt.sim.eval.apros.AprosRunner;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.web.TimeSeriesVisualization;
+import eu.cityopt.web.UserSession;
 
 @Controller
-@SessionAttributes({"project", "scenario"})
+@SessionAttributes({"project", "scenario", "usersession"})
 public class ProjectController {
 	
 	@Autowired
 	ProjectService projectService; 
 	
 	@Autowired
-	ScenarioService scenarioService;
+	ScenarioServiceImpl scenarioService;
 	
 	@Autowired
 	AppUserService userService;
@@ -95,6 +113,15 @@ public class ProjectController {
 	
 	@Autowired
 	SimulationService simService;
+
+	@Autowired
+	SimulationResultService simResultService;
+
+	@Autowired
+	TimeSeriesServiceImpl timeSeriesService;
+
+	@Autowired
+	OutputVariableServiceImpl outputVarService;
 	
 	@RequestMapping(value="createproject", method=RequestMethod.GET)
 	public String getCreateProject(Map<String, Object> model) {
@@ -559,15 +586,6 @@ public class ProjectController {
 		model.addAttribute("users", users);
 
 		return "usermanagement";
-	}
-	
-	@RequestMapping(value="viewchart",method=RequestMethod.GET)
-	public String getViewChart(Model model){
-	
-		List<ComponentDTO> components = componentService.findAll();
-		model.addAttribute("components", components);
-
-		return "viewchart";
 	}
 	
 	@RequestMapping(value="viewtable",method=RequestMethod.GET)
@@ -1559,6 +1577,132 @@ public class ProjectController {
 
 		return "viewchart";
 	}	
+
+	@RequestMapping(value="viewchart", method=RequestMethod.GET)
+	public String getViewChart(Map<String, Object> model, 
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
+		@RequestParam(value="outputvarid", required=false) String outputvarid,
+		@RequestParam(value="extparamid", required=false) String extparamid) {
+
+		UserSession userSession = (UserSession) model.get("usersession");
+		
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		List<ComponentDTO> components = componentService.findAll();
+		model.put("components", components);
+
+		if (selectedCompId != null && !selectedCompId.isEmpty())
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
+			if (nSelectedCompId > 0)
+			{
+				userSession.setComponentId(nSelectedCompId);
+				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				model.put("outputVars", outputVars);
+			}
+			model.put("selectedcompid", nSelectedCompId);
+		}
+		
+		if (outputvarid != null)
+		{
+			userSession.addOutputVarId(Integer.parseInt(outputvarid));
+		}
+		
+		model.put("usersession", userSession);
+		
+		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
+		model.put("extParamVals", extParamVals);
+		
+		return "viewchart";
+	}
+
+	@RequestMapping(value="drawchart",method=RequestMethod.GET)
+	public String getDrawChart(Map<String, Object> model,
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+
+		UserSession userSession = (UserSession) model.get("usersession");
+
+		if (userSession == null)
+		{
+			return "error";
+		}
+
+		if (selectedCompId != null && !selectedCompId.isEmpty())
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
+			if (nSelectedCompId > 0)
+			{
+				userSession.setComponentId(nSelectedCompId);
+				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				model.put("outputVars", outputVars);
+			}
+			model.put("selectedcompid", nSelectedCompId);
+		}
+		
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		
+		Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
+	    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
+		
+		while(iterator.hasNext()) {
+			int outputVarId = iterator.next(); 
+	    
+			try {
+				OutputVariableDTO outputVar = outputVarService.findByID(outputVarId);
+				SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, scenario.getScenid());
+					
+				List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getScenresid());
+				TimeSeries timeSeries = new TimeSeries(outputVar.getName());
+
+				for (int i = 0; i < timeSeriesVals.size(); i++)
+				{
+					TimeSeriesValDTO timeSeriesVal = timeSeriesVals.get(i);
+					timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(timeSeriesVal.getValue()));
+				}
+				
+				timeSeriesCollection.addSeries(timeSeries);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+	    }
+		
+		if (timeSeriesCollection.getSeriesCount() > 0)
+		{
+			TimeSeriesVisualization demo = new TimeSeriesVisualization("Time Series Demo", timeSeriesCollection, "Time", "");
+			demo.pack();
+			RefineryUtilities.centerFrameOnScreen(demo);
+			demo.setVisible(true);
+		}
+		
+		model.put("usersession", userSession);
+		
+		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
+		model.put("extParamVals", extParamVals);
+		
+		List<ComponentDTO> components = componentService.findAll();
+		model.put("components", components);
+
+		return "viewchart";
+	}
 
 	@RequestMapping(value="geneticalgorithm", method=RequestMethod.GET)
 	public String getGeneticAlgorithm(Map<String, Object> model)

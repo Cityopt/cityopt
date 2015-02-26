@@ -16,7 +16,6 @@ pageEncoding="UTF-8"%>
 <div id="login-error"> 
  
 ${error}</div><form action="../../j_spring_security_check" method="post" >
-</div> 
  
 <div align="center"> 
 <table>
