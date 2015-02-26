@@ -1,0 +1,26 @@
+kind,component,variable,type,value,lower,upper,expression
+ext,,fuel_cost,Double,1,,,
+ext,,x,Double,100,,,
+in,CITYOPT,simulation_end,Timestamp,2015-01-08T00:00:00Z,,,
+in,CITYOPT,simulation_start,Timestamp,2015-01-01T00:00:00Z,,,
+in,SAMPLE_DISTRICT,Burner_efficiency,Double,0.7,,,
+in,SAMPLE_DISTRICT,Burner_nominal_power,Double,17000,,,
+in,SAMPLE_DISTRICT,CHP_electrical_power_rating,Double,2400,,,
+in,SAMPLE_DISTRICT,CHP_thermal_power_rating,Double,4000,,,
+in,SAMPLE_DISTRICT,Heat_storage_nominal_charge_or_discharge_capacity,Double,40,,,
+in,SAMPLE_DISTRICT,Heat_storage_tank_height,Double,15,,,
+in,SAMPLE_DISTRICT,Insulation_layer_factor,Double,1,,,
+in,SAMPLE_DISTRICT,Share_of_roof_area_occupied_by_PVpanels,Double,,,,panels
+in,SAMPLE_DISTRICT,Share_of_roof_area_occupied_by_THcollectors,Double,,,,collectors
+out,CHP_BOIL_TH_OUT,MULTIPLYER_OUTPUT,TimeSeries/linear,,,,
+out,CHP_ELECT_PROD,MULTIPLYER_OUTPUT,TimeSeries/linear,,,,
+out,ETH_NETWORK,MULTIPLYER_OUTPUT,TimeSeries/linear,,,,
+out,FUEL_CONSUMPTION,MULTIPLYER_OUTPUT,TimeSeries/linear,,,,
+out,HEATING_LOAD,MULTIPLYER_OUTPUT,TimeSeries/linear,,,,
+out,PV_TOTAL_ENERGY,MULTIPLYER_OUTPUT,TimeSeries/linear,,,,
+met,,fuelconsumption,Double,,,,"integrate(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"
+met,,fuelcost,Double,,,,"integrate(fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"
+dv,,panels,Double,,0,20,
+dv,,collectors,Double,,0,20,
+con,,,,,,20,panels + collectors
+obj,,,min,,,,fuelconsumption
