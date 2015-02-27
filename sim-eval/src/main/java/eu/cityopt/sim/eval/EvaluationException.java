@@ -5,6 +5,7 @@ package eu.cityopt.sim.eval;
  * 
  * @author Hannu Rummukainen
  */
+@Deprecated
 @SuppressWarnings("serial")
 public class EvaluationException extends Exception {
     public EvaluationException(String message) {
