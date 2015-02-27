@@ -5,8 +5,10 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,6 +18,7 @@ import java.util.concurrent.FutureTask;
 
 import javax.script.ScriptException;
 
+import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.task.TaskExecutor;
@@ -24,6 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.model.Component;
 import eu.cityopt.model.ExtParam;
+import eu.cityopt.model.ExtParamVal;
+import eu.cityopt.model.ExtParamValSet;
+import eu.cityopt.model.ExtParamValSetComp;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.Metric;
@@ -33,10 +39,13 @@ import eu.cityopt.model.Scenario;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesVal;
+import eu.cityopt.repository.ExtParamValSetRepository;
+import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.sim.eval.EvaluationException;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
+import eu.cityopt.sim.eval.InvalidValueException;
 import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.Namespace;
@@ -149,14 +158,12 @@ public class SimulationService {
     public static final String STATUS_MODEL_FAILURE = "MODEL_FAILURE";
     public static final String STATUS_SIMULATOR_FAILURE = "SIMULATOR_FAILURE";
 
-    @Autowired
-    private ScenarioRepository scenarioRepository;
+    @Autowired private ProjectRepository projectRepository;
+    @Autowired private ScenarioRepository scenarioRepository;
+    @Autowired private ExtParamValSetRepository extParamValSetRepository;
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Autowired
-    private TaskExecutor taskExecutor;
+    @Autowired private ApplicationContext applicationContext;
+    @Autowired private TaskExecutor taskExecutor;
 
     private Evaluator evaluator;
 
@@ -223,13 +230,86 @@ public class SimulationService {
         return false;
     }
 
+    /** Results from {@link SimulationService#updateMetrics(int, Integer)} */
+    public static class MetricUpdateStatus {
+        /** Set of scenarios for which new metric values were computed. */
+        public Set<Integer> updated = new HashSet<Integer>();
+
+        /**
+         * Set of scenarios with no or incomplete results (or input), and thus
+         * no metric values.
+         */
+        public Set<Integer> ignored = new HashSet<Integer>();
+
+        /** Map from Scenario id to Exception encountered in metric update */
+        public Map<Integer, Exception> failures = new HashMap<Integer, Exception>();
+
+        /** Brief human-readable description. */
+        public String toString() {
+            return updated.size() + " scenarios updated, "
+                    + ignored.size() + " scenarios had no results, "
+                    + failures.size() + " scenarios failed.";
+            
+        }
+    }
+
+    /**
+     * Updates scenario metrics using specific external parameter values.
+     * Creates new ScenarioMetrics rows for all scenarios in a project.
+     * 
+     * @param projectId project identifier
+     * @param extParamValSetId external parameter value set identifier,
+     *    or null, in which case default values of the external parameters
+     *    will be used.
+     * @throws ParseException if external parameter values are invalid
+     * @throws ScriptException if metric expressions are badly invalid
+     * @return scenario specific results
+     */
+    @Transactional
+    public MetricUpdateStatus updateMetrics(int projectId, Integer extParamValSetId)
+            throws ParseException, ScriptException {
+        Project project = projectRepository.findOne(projectId);
+        Namespace namespace = makeProjectNamespace(project);
+        ExternalParameters externals = loadExternalParameters(project, extParamValSetId, namespace);
+        DbSimulationStorageI storage =
+                (DbSimulationStorageI) applicationContext.getBean("dbSimulationStorage");
+        storage.initialize(projectId, externals, null, null);
+        List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
+        MetricUpdateStatus status = new MetricUpdateStatus();
+        //TODO: first remove all metric values associated with the external parameter value set
+        for (Scenario scenario : project.getScenarios()) {
+            try {
+                SimulationInput input = loadSimulationInput(scenario, externals);
+                if (input.isComplete()) {
+                    SimulationOutput output = loadSimulationOutput(scenario, input);
+                    if (output instanceof SimulationResults) {
+                        SimulationResults results = (SimulationResults) output;
+                        MetricValues metricValues = new MetricValues(results, metricExpressions);
+                        storage.updateMetricValues(metricValues);
+                        status.updated.add(scenario.getScenid());
+                    } else {
+                        status.ignored.add(scenario.getScenid());
+                    }
+                } else {
+                    status.ignored.add(scenario.getScenid());
+                }
+            } catch (ParseException | ScriptException | InvalidValueException e) {
+                Log.warn("Failed to update metrics of scenario " + scenario.getScenid()
+                        + ": " + e.getMessage());
+                status.failures.put(scenario.getScenid(), e);
+            }
+        }
+        Log.info("Updated scenario metrics for project " + projectId + ": " + status);
+        return status;
+    }
+
     SimulationJob makeSimulationJob(Scenario scenario)
             throws ParseException, IOException, SimulatorConfigurationException,
             InterruptedException, ExecutionException, ScriptException {
         Project project = scenario.getProject();
         Namespace namespace = makeProjectNamespace(project);
 
-        ExternalParameters externals = loadExternalParametersFromDefaults(scenario, namespace);
+        ExternalParameters externals = loadExternalParametersFromDefaults(project, namespace);
         SimulationInput input = loadSimulationInput(scenario, externals);
 
         String simulatorName = project.getSimulationmodel().getSimulator();
@@ -259,11 +339,30 @@ public class SimulationService {
         }
     }
 
-    /** Loads the default values of external parameters. */
+    /**
+     * Loads external parameters from either an external parameter value set, or
+     * the project-specific default values.
+     * @param project
+     * @param extParamValSetId either an identifer of an external parameter value
+     *    set, or null, in which case the default values are read.
+     * @param namespace the project namespace
+     */
+    public ExternalParameters loadExternalParameters(
+            Project project, Integer extParamValSetId, Namespace namespace)
+                throws ParseException {
+        if (extParamValSetId != null) {
+            ExtParamValSet extParamValSet = extParamValSetRepository.findOne(extParamValSetId);
+            return loadExternalParametersFromSet(extParamValSet, namespace);
+        } else {
+            return loadExternalParametersFromDefaults(project, namespace);
+        }
+    }
+
+    /** Loads the project-specific default values of external parameters. */
     public ExternalParameters loadExternalParametersFromDefaults(
-            Scenario scenario, Namespace namespace) throws ParseException {
+            Project project, Namespace namespace) throws ParseException {
         ExternalParameters simExternals = new ExternalParameters(namespace);
-        for (ExtParam extParam : scenario.getProject().getExtparams()) {
+        for (ExtParam extParam : project.getExtparams()) {
             Type extType = namespace.externals.get(extParam.getName());
             Object simValue;
             if (extType.isTimeSeriesType()) {
@@ -273,6 +372,26 @@ public class SimulationService {
                 simValue = extType.parse(extParam.getDefaultvalue(), namespace);
             }
             simExternals.put(extParam.getName(), simValue);
+        }
+        return simExternals;
+    }
+
+    /** Loads an external parameter value set. */
+    public ExternalParameters loadExternalParametersFromSet(
+            ExtParamValSet extParamValSet, Namespace namespace) throws ParseException {
+        ExternalParameters simExternals = new ExternalParameters(namespace);
+        for (ExtParamValSetComp extParamValSetComp : extParamValSet.getExtparamvalsetcomps()) {
+            ExtParamVal extParamVal = extParamValSetComp.getExtparamval(); 
+            String extName = extParamVal.getExtparam().getName();
+            Type extType = namespace.externals.get(extName);
+            Object simValue;
+            if (extType.isTimeSeriesType()) {
+                simValue = loadTimeSeries(extParamVal.getTimeseries(), extType,
+                        namespace.evaluator, namespace.timeOrigin);
+            } else {
+                simValue = extType.parse(extParamVal.getValue(), namespace);
+            }
+            simExternals.put(extName, simValue);
         }
         return simExternals;
     }
@@ -368,7 +487,7 @@ public class SimulationService {
      * input parameters, output variables and metrics.  The actual values are
      * scenario specific, and they are ignored here.
      */
-    public Namespace makeProjectNamespace(Project project) throws ParseException {
+    public Namespace makeProjectNamespace(Project project) {
         Date timeOriginDate = project.getSimulationmodel().getTimeorigin();
         Instant timeOrigin = (timeOriginDate != null)
                 ? timeOriginDate.toInstant() : DEFAULT_TIME_ORIGIN;
