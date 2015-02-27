@@ -4,11 +4,15 @@ package eu.cityopt.sim.eval;
  * The domain of a real or integer decision variable.
  * @author ttekth
  */
-public class NumericInterval<T extends Number> extends DecisionDomain {
+public class NumericInterval<T extends Number & Comparable<T>>
+extends DecisionDomain {
     private T lowerBound, upperBound;    
     
     private NumericInterval(Type vt, T lb, T ub) {
         super(vt);
+        if (lb.compareTo(ub) > 0)
+            throw new IllegalArgumentException(String.format(
+                    "Interval lower bound %s > upper bound %s", lb, ub));
         lowerBound = lb;
         upperBound = ub;
     }
@@ -27,6 +31,7 @@ public class NumericInterval<T extends Number> extends DecisionDomain {
      * @param lb lower bound
      * @param ub upper bound
      * @return the interval
+     * @throws IllegalArgumentException if lb > ub
      */
     public static NumericInterval<Double> makeRealInterval(
             Double lb, Double ub) {
@@ -35,6 +40,13 @@ public class NumericInterval<T extends Number> extends DecisionDomain {
                 ub != null ? ub : Double.POSITIVE_INFINITY);
     }
     
+    /**
+     * Integer intervals must always be bounded.
+     * @param lb lower bound
+     * @param ub upper bound
+     * @return the interval
+     * @throws IllegalArgumentException if lb > ub
+     */
     public static NumericInterval<Integer> makeIntInterval(int lb, int ub) {
         return new NumericInterval<Integer>(Type.INTEGER, lb, ub);
     }
