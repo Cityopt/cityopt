@@ -109,7 +109,7 @@ public class TestSimulationService {
     private void updateMetrics() throws ParseException, ScriptException {
         Project project = scenarioRepository.findByName("testscenario").get(0).getProject();
         SimulationService.MetricUpdateStatus status =
-                simulationService.updateMetrics(project.getPrjid(), null);
+                simulationService.updateMetricValues(project.getPrjid(), null);
         System.out.println(status);
     }
 
