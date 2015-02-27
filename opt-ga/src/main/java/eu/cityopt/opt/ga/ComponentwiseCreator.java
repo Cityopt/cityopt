@@ -28,7 +28,7 @@ implements Creator<ComponentwiseGenotype> {
             List<String> names = new ArrayList<>(dvs.keySet());
             Collections.sort(names);
             creators.put(kv.getKey(), new MixedCreator<String>(rand, names,
-                    Lists.transform(names, name -> dvs.get(names))));
+                    Lists.transform(names, name -> dvs.get(name))));
         }
     }
 
