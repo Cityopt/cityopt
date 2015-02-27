@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.DecisionDomain;
@@ -25,6 +26,7 @@ import eu.cityopt.sim.eval.SimulatorConfigurationException;
  * 
  * @author ttekth
  */
+@Singleton
 public class OptimisationProblem {
     public SimulationRunner runner;
     public SimulationInput inputConst;

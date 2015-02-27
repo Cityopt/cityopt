@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.time.Instant;
 
+import javax.inject.Singleton;
+
 import org.opt4j.core.start.Constant;
 
 import com.google.inject.Inject;
@@ -15,6 +17,7 @@ import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulatorConfigurationException;
 import eu.cityopt.sim.eval.SimulatorManager;
 
+@Singleton
 public class ProblemFromFiles extends OptimisationProblem {
     private static SimulationModel readModel(
             SimulatorManager simulator, Path file)
