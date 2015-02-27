@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.script.ScriptException;
@@ -16,7 +15,7 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import eu.cityopt.sim.eval.Constraint;
-import eu.cityopt.sim.eval.EvaluationException;
+import eu.cityopt.sim.eval.DecisionDomain;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.InputExpression;
@@ -24,7 +23,6 @@ import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.NumericInterval;
 import eu.cityopt.sim.eval.ObjectiveExpression;
-import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.Type;
 
 /**
@@ -76,7 +74,7 @@ public class CSVReaders {
             .withHeader().withNullString("");
     
     public static Namespace readNamespace(Instant timeOrigin, Path file)
-            throws IOException, EvaluationException, ScriptException {
+            throws IOException {
         Namespace ns = new Namespace(new Evaluator(), timeOrigin, true);
         try (Reader rd = Files.newBufferedReader(file)) {
             for (CSVRecord r : fmt.parse(rd)) {
@@ -111,18 +109,9 @@ public class CSVReaders {
         return ns;
     }
     
-    public static OptimisationProblem readProblem(Namespace ns, Path file)
-            throws IOException, EvaluationException, ParseException,
-                   ScriptException {
-        OptimisationProblem p = new OptimisationProblem();
-        ExternalParameters ext = new ExternalParameters(ns);
-        p.inputConst = new SimulationInput(ext);
-        p.decisionVars = new HashMap<>();
-        p.inputExprs = new ArrayList<>();
-        p.constraints = new ArrayList<>();
-        p.metrics = new ArrayList<>();
-        p.objs = new ArrayList<>();
-        
+    public static void readProblemFile(OptimisationProblem p, Path file)
+            throws IOException {
+        Namespace ns = p.inputConst.getNamespace();
         try (Reader rd = Files.newBufferedReader(file)) {
             CSVParser parser = fmt.parse(rd);
             for (CSVRecord r : parser) {
@@ -132,113 +121,134 @@ public class CSVReaders {
         } catch (IllegalArgumentException e) {
             throw new IOException("Error parsing CSV", e);
         }
-        return p;
     }
-
+    
     private static void readRecord(
             Kind kind, long recordNumber, CSVRecord r, Namespace ns,
-            OptimisationProblem p)
-                    throws ParseException, EvaluationException,
-                           ScriptException {
+            OptimisationProblem p) throws IOException {
         ExternalParameters ext = p.inputConst.getExternalParameters();
         String comp, var, value, expr;
         Type t;
-        switch (kind) {
-        case EXT:
-            var = r.get(Cols.var);
-            t = ns.externals.get(var);
-            if (t == null)
-                throw new IllegalArgumentException(
-                        "Unknown external parameter " + var);
-            if (t.isTimeSeriesType())
-                break; // Not supported
-            ext.putString(var, r.get(Cols.value));
-            break;
-        case IN:
-            comp = r.get(Cols.comp);
-            var = r.get(Cols.var);
-            value = r.get(Cols.value);
-            expr = r.get(Cols.expr);
-            if (ns.getInputType(comp, var) == null)
-                throw new IllegalArgumentException(String.format(
-                        "Unknown input %s.%s", comp, var));
-            if (!(value == null ^ expr == null))
-                throw new IllegalArgumentException(String.format(
-                        "Either value or expr (not both) must be present"
-                        + " on input %s,%s", comp, var));
-            if (value != null) {
-                p.inputConst.putString(comp, var, value);
-            } else {
-                p.inputExprs.add(new InputExpression(
-                        comp, var, expr, ns.evaluator));
-            }
-            break;
-        case DV:
-            comp = r.get(Cols.comp);
-            var = r.get(Cols.var);
-            t = ns.getDecisionType(comp, var);
-            if (t == null)
-                throw new IllegalArgumentException(String.format(
-                        "Unknown decision variable %s.%s", comp, var));
-            switch (t) {
-            case DOUBLE:
-            case INTEGER:
-                String
-                    lbs = r.get(Cols.lb),
-                    ubs = r.get(Cols.ub);
-                Object
-                    lb = (lbs == null ? null : t.parse(lbs, ns)),
-                    ub = (ubs == null ? null : t.parse(ubs, ns));
-                p.decisionVars.computeIfAbsent(comp, k -> new HashMap<>())
-                        .put(var, t == Type.DOUBLE
-                                  ? NumericInterval.makeRealInterval(
-                                          (Double)lb, (Double)ub)
-                                  : NumericInterval.makeIntInterval(
-                                          (Integer)lb, (Integer)ub));
+        try {
+            switch (kind) {
+            case EXT:
+                var = r.get(Cols.var);
+                t = ns.externals.get(var);
+                if (t == null)
+                    throw new IOException(
+                            "Unknown external parameter " + var);
+                if (t.isTimeSeriesType())
+                    break; // Not supported
+                ext.putString(var, r.get(Cols.value));
+                break;
+            case IN:
+                comp = r.get(Cols.comp);
+                var = r.get(Cols.var);
+                value = r.get(Cols.value);
+                expr = r.get(Cols.expr);
+                if (ns.getInputType(comp, var) == null)
+                    throw new IOException(String.format(
+                            "Unknown input %s.%s", comp, var));
+                if (!(value == null ^ expr == null))
+                    throw new IOException(String.format(
+                            "Either value or expr (not both) must be present"
+                                    + " on input %s,%s", comp, var));
+                if (value != null) {
+                    p.inputConst.putString(comp, var, value);
+                } else {
+                    p.inputExprs.add(new InputExpression(
+                            comp, var, expr, ns.evaluator));
+                }
+                break;
+            case DV:
+                comp = r.get(Cols.comp);
+                var = r.get(Cols.var);
+                t = ns.getDecisionType(comp, var);
+                if (t == null)
+                    throw new IOException(String.format(
+                            "Unknown decision variable %s.%s", comp, var));
+                switch (t) {
+                case DOUBLE:
+                case INTEGER:
+                    try {
+                        String
+                            lbs = r.get(Cols.lb),
+                            ubs = r.get(Cols.ub);
+                        Object
+                            lb = (lbs == null ? null : t.parse(lbs, ns)),
+                            ub = (ubs == null ? null : t.parse(ubs, ns));
+                        DecisionDomain
+                            dom = (t == Type.DOUBLE
+                                   ? NumericInterval.makeRealInterval(
+                                           (Double)lb, (Double)ub)
+                                   : NumericInterval.makeIntInterval(
+                                           (Integer)lb, (Integer)ub));
+                        p.decisionVars.computeIfAbsent(
+                                comp, k -> new HashMap<>()).put(var, dom);
+                    } catch (IllegalArgumentException e) {
+                        throw new IOException(
+                                String.format(
+                                        "Error in decision variable %s.%s",
+                                        comp, var),
+                                e);
+                    }
+                    break;
+                default:
+                    throw new IOException(
+                            "Unsupported decision variable type " + t);
+                }
+                break;
+            case CON:
+                expr = r.get(Cols.expr);
+                if (expr == null)
+                    throw new IOException("Missing expression");
+                else {
+                    String
+                        lbs = r.get(Cols.lb),
+                        ubs = r.get(Cols.ub);
+                    double
+                        lb = (lbs != null ? Double.valueOf(lbs)
+                                          : Double.NEGATIVE_INFINITY),
+                        ub = (ubs != null ? Double.valueOf(ubs)
+                                          : Double.POSITIVE_INFINITY);
+                    int id = (int)recordNumber;
+                    try {
+                        p.constraints.add(new Constraint(
+                                (int)recordNumber, expr, lb, ub,
+                                ns.evaluator));
+                    } catch (IllegalArgumentException e) {
+                        throw new IOException(
+                                "Error in constraint " + id,
+                                e);
+                    }
+                }
+                break;
+            case MET:
+                var = r.get(Cols.var);
+                expr = r.get(Cols.expr);
+                if (expr == null)
+                    throw new IllegalArgumentException("Missing expression");
+                p.metrics.add(new MetricExpression(
+                        (int)recordNumber, var, expr, ns.evaluator));
+                break;
+            case OBJ:
+                String type = r.get(Cols.type);
+                Boolean is_max = isMaximize(type);
+                expr = r.get(Cols.expr);
+                if (expr == null)
+                    throw new IOException("Missing objective expression");
+                if (is_max == null)
+                    throw new IOException(
+                            "Invalid objective type " + type);
+                p.objs.add(new ObjectiveExpression(
+                        (int)recordNumber, expr, is_max, ns.evaluator));
                 break;
             default:
-                throw new IllegalArgumentException(
-                        "Unsupported decision variable type " + t);
             }
-            break;
-        case CON:
-            expr = r.get(Cols.expr);
-            if (expr == null)
-                throw new IllegalArgumentException("Missing expression");
-            else {
-                String
-                    lbs = r.get(Cols.lb),
-                    ubs = r.get(Cols.ub);
-                double
-                    lb = (lbs != null ? Double.valueOf(lbs)
-                                      : Double.NEGATIVE_INFINITY),
-                    ub = (ubs != null ? Double.valueOf(ubs)
-                                      : Double.POSITIVE_INFINITY);
-                p.constraints.add(new Constraint(
-                        (int)recordNumber, expr, lb, ub, ns.evaluator));
-            }
-            break;
-        case MET:
-            var = r.get(Cols.var);
-            expr = r.get(Cols.expr);
-            if (expr == null)
-                throw new IllegalArgumentException("Missing expression");
-            p.metrics.add(new MetricExpression(
-                    (int)recordNumber, var, expr, ns.evaluator));
-            break;
-        case OBJ:
-            String type = r.get(Cols.type);
-            Boolean is_max = isMaximize(type);
-            expr = r.get(Cols.expr);
-            if (expr == null)
-                throw new IllegalArgumentException("Missing expression");
-            if (is_max == null)
-                throw new IllegalArgumentException(
-                        "Invalid objective type " + type);
-            p.objs.add(new ObjectiveExpression(
-                    (int)recordNumber, expr, is_max, ns.evaluator));
-            break;
-        default:
+        } catch (ParseException | ScriptException e) {
+            throw new IOException(String.format(
+                    "Error reading %s from record %s", kind, recordNumber),
+                    e);
         }
     }
 }
