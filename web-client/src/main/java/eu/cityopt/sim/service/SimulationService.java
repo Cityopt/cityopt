@@ -230,7 +230,7 @@ public class SimulationService {
         return false;
     }
 
-    /** Results from {@link SimulationService#updateMetrics(int, Integer)} */
+    /** Results from {@link SimulationService#updateMetricValues(int, Integer)} */
     public static class MetricUpdateStatus {
         /** Set of scenarios for which new metric values were computed. */
         public Set<Integer> updated = new HashSet<Integer>();
@@ -266,7 +266,7 @@ public class SimulationService {
      * @return scenario specific results
      */
     @Transactional
-    public MetricUpdateStatus updateMetrics(int projectId, Integer extParamValSetId)
+    public MetricUpdateStatus updateMetricValues(int projectId, Integer extParamValSetId)
             throws ParseException, ScriptException {
         Project project = projectRepository.findOne(projectId);
         Namespace namespace = makeProjectNamespace(project);
