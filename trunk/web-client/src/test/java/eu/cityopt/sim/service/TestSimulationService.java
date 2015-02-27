@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
+import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.SimulationModel;
 import eu.cityopt.repository.ScenarioRepository;
@@ -69,10 +70,20 @@ public class TestSimulationService {
     }
 
     @Test
+    @DatabaseSetup("classpath:/testData/plumbing_scenario.xml")
+    public void testPlumbingAndUpdateMetrics() throws Exception {
+        loadModel("Plumbing test model", "/testData/plumbing.zip");
+        runSimulation();
+        updateMetrics();
+        dumpTables("plumbing");
+    }
+
+    @Test
     @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
     public void testModel() throws Exception {
         loadModel("Apros test model", "/testData/testmodel.zip");
         runSimulation();
+        //updateMetrics();
         dumpTables("testmodel");
     }
 
@@ -93,6 +104,13 @@ public class TestSimulationService {
         Scenario scenario = scenarioRepository.findByName("testscenario").get(0);
         Callable<SimulationOutput> job = simulationService.makeSimulationJob(scenario);
         job.call();
+    }
+
+    private void updateMetrics() throws ParseException, ScriptException {
+        Project project = scenarioRepository.findByName("testscenario").get(0).getProject();
+        SimulationService.MetricUpdateStatus status =
+                simulationService.updateMetrics(project.getPrjid(), null);
+        System.out.println(status);
     }
 
     public void dumpTables(String caseName) throws Exception {
