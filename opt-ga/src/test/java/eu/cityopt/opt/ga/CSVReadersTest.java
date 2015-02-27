@@ -50,7 +50,8 @@ public class CSVReadersTest {
         Instant t0 = Instant.parse(props.getProperty("time_origin"));
         Path prob_file = dataDir.resolve(props.getProperty("problem_file"));
         Namespace ns = CSVReaders.readNamespace(t0, prob_file);
-        OptimisationProblem p = CSVReaders.readProblem(ns, prob_file);
+        OptimisationProblem p = new OptimisationProblem(null, ns);
+        CSVReaders.readProblemFile(p, prob_file);
         assertEquals(1, p.constraints.size());
         assertEquals(2, p.decisionVars.values().stream()
                 .mapToInt(m -> m.size()).sum());
