@@ -1,13 +1,17 @@
 package eu.cityopt.opt.ga;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.script.ScriptException;
 
 import org.opt4j.core.Objective.Sign;
 import org.opt4j.core.Objectives;
+import org.opt4j.core.optimizer.Optimizer;
+import org.opt4j.core.optimizer.OptimizerStateListener;
 import org.opt4j.core.problem.Evaluator;
 
 import eu.cityopt.sim.eval.ConstraintStatus;
@@ -18,6 +22,8 @@ import eu.cityopt.sim.eval.ObjectiveStatus;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
+import eu.cityopt.sim.eval.SimulationRunner;
+import eu.cityopt.sim.eval.SimulatorConfigurationException;
 
 /**
  * The Cityopt evaluator for Opt4J.
@@ -43,12 +49,17 @@ import eu.cityopt.sim.eval.SimulationResults;
  * @author ttekth
  *
  */
-public class CityoptEvaluator implements Evaluator<SimulationInput> {
+@Singleton
+public class CityoptEvaluator
+implements Evaluator<SimulationInput>, OptimizerStateListener, Closeable {
     private OptimisationProblem problem;
+    private SimulationRunner runner;
     
     @Inject
-    public CityoptEvaluator(OptimisationProblem problem) {
+    public CityoptEvaluator(OptimisationProblem problem)
+                    throws IOException, SimulatorConfigurationException {
         this.problem = problem;
+        runner = problem.makeRunner();
     }
 
     @Override
@@ -59,7 +70,10 @@ public class CityoptEvaluator implements Evaluator<SimulationInput> {
             if (!prior.mayBeFeasible()) {
                 return infeasibleObj(prior); 
             }
-            SimulationOutput out = problem.runner.start(phenotype).get();
+            if (runner == null) {
+                throw new RuntimeException("Closed evaluator called.");
+            }
+            SimulationOutput out = runner.start(phenotype).get();
             if (!(out instanceof SimulationResults)) {
                 throw new RuntimeException("Simulation failure");
             }
@@ -101,5 +115,26 @@ public class CityoptEvaluator implements Evaluator<SimulationInput> {
             obj.add(o.getName(), o.isMaximize() ? Sign.MAX : Sign.MIN, null);
         }
         return obj;
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (runner != null) {
+            try {
+                runner.close();
+            } finally {
+                runner = null;
+            }
+        }
+    }
+
+    @Override
+    public void optimizationStarted(Optimizer optimizer) {}
+
+    @Override
+    public void optimizationStopped(Optimizer optimizer) {
+        try {
+            close();
+        } catch (IOException e) {}
     }
 }

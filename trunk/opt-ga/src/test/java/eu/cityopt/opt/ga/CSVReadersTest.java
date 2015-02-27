@@ -59,6 +59,6 @@ public class CSVReadersTest {
         assertEquals(2, p.inputExprs.size());
         assertEquals(2, p.metrics.size());
         assertEquals(1, p.objs.size());
-        assertNull(p.runner);
+        assertNull(p.model);
     }
 }
