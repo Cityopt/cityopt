@@ -67,36 +67,40 @@ public class Evaluator {
     private PyObject _convertToSimtime;
     private PyObject _izip;
 
-    public Evaluator() throws EvaluationException, ScriptException {
+    public Evaluator() {
         doInitialSetup();
 
         ScriptEngineManager manager = new ScriptEngineManager();
         this.engine = manager.getEngineByName(ENGINE_NAME);
         if (engine == null) {
-            throw new EvaluationException("Cannot find scripting engine \""
+            throw new RuntimeException("Cannot find scripting engine \""
                     + ENGINE_NAME + "\"");
         }
         if (!(engine instanceof Compilable)) {
-            throw new EvaluationException("Scripting engine \"" + ENGINE_NAME
+            throw new RuntimeException("Scripting engine \"" + ENGINE_NAME
                     + "\" has no compiler");
         }
         if (!(engine instanceof Invocable)) {
-            throw new EvaluationException("Scripting engine \"" + ENGINE_NAME
+            throw new RuntimeException("Scripting engine \"" + ENGINE_NAME
                     + "\" has no Invocable interface");
         }
         String threading = (String) engine.getFactory().getParameter(
                 "THREADING");
         if (threading == null) {
-            throw new EvaluationException("Scripting engine \"" + ENGINE_NAME
+            throw new RuntimeException("Scripting engine \"" + ENGINE_NAME
                     + "\" is not multi-threaded");
         }
-        engine.eval(PYTHON_IMPORTS);
-
-        _convertSimtimesToDatetimes = getPyObject("cityopt._convertSimtimesToDatetimes");
-        _convertToSimtimes = getPyObject("cityopt._convertToSimtimes");
-        _convertToSimtime = getPyObject("cityopt._convertToSimtime");
-        _izip = getPyObject("itertools.izip");
-        // TODO: engine.setContext
+        try {
+            engine.eval(PYTHON_IMPORTS);
+    
+            _convertSimtimesToDatetimes = getPyObject("cityopt._convertSimtimesToDatetimes");
+            _convertToSimtimes = getPyObject("cityopt._convertToSimtimes");
+            _convertToSimtime = getPyObject("cityopt._convertToSimtime");
+            _izip = getPyObject("itertools.izip");
+            // TODO: engine.setContext
+        } catch (ScriptException e) {
+            throw new RuntimeException("Failed to initialize Python environment", e);
+        }
     }
 
     private static void doInitialSetup() {
