@@ -13,15 +13,19 @@ public class Constraint {
     private double lowerBound;
     private double upperBound;
 
+    /**
+     * Construct a new constraint.
+     * @throws IllegalArgumentException if lowerBound > upperBound  
+     */
     public Constraint(int constraintId, String source,
             double lowerBound, double upperBound, Evaluator evaluator)
-            throws ScriptException, EvaluationException {
+            throws ScriptException {
         this.constraintId = constraintId;
         this.expression = new Expression(source, evaluator);
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
         if (lowerBound > upperBound) {
-            throw new EvaluationException("Lower bound " + lowerBound
+            throw new IllegalArgumentException("Lower bound " + lowerBound
                     + " exceeds upper bound " + upperBound + " of constraint "
                     + source);
         }
