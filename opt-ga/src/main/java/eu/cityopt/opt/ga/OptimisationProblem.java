@@ -28,7 +28,7 @@ import eu.cityopt.sim.eval.SimulatorConfigurationException;
  */
 @Singleton
 public class OptimisationProblem {
-    public SimulationRunner runner;
+    public SimulationModel model;
     public SimulationInput inputConst;
     public Map<String, Map<String, DecisionDomain>>
         decisionVars = new HashMap<>();
@@ -38,12 +38,18 @@ public class OptimisationProblem {
     public List<ObjectiveExpression> objs= new ArrayList<>();
     
     @Inject
-    public OptimisationProblem(SimulationModel model, Namespace ns)
-            throws IOException, SimulatorConfigurationException {
+    public OptimisationProblem(SimulationModel model, Namespace ns) {
+        this.model = model;
         ExternalParameters ext = new ExternalParameters(ns);
         inputConst = new SimulationInput(ext);
-        if (model != null) {
-            runner = model.getSimulatorManager().makeRunner(model, ns);
-        }
+    }
+    
+    public Namespace getNamespace() {
+        return inputConst.getNamespace();
+    }
+
+    public SimulationRunner makeRunner()
+            throws IOException, SimulatorConfigurationException {
+        return model.getSimulatorManager().makeRunner(model, getNamespace());
     }
 }
