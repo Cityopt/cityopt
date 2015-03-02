@@ -23,6 +23,7 @@ import javax.script.SimpleBindings;
 import org.python.core.Py;
 import org.python.core.PyList;
 import org.python.core.PyObject;
+import org.python.core.PyString;
 
 /**
  * Evaluation engine of the expression language. The expression language is
@@ -210,21 +211,19 @@ public class Evaluator {
     }
 
     /**
-     * Evaluates a script.
+     * Evaluates a script in the default top-level environment.
      * @return result of the script
      */
-    Object eval(String code, EvaluationSetup setup) throws ScriptException {
+    public Object eval(String code, EvaluationSetup setup) throws ScriptException {
         if (setup.evaluator != this) {
             throw new IllegalStateException("Evaluator mismatch");
         }
-        activeSetup.set(setup);
-        Object value;
         try {
-            value = engine.eval(code);
+            activeSetup.set(setup);
+            return engine.eval(code);
         } finally {
             activeSetup.set(null);
         }
-        return value;
     }
 
     /**
@@ -237,14 +236,12 @@ public class Evaluator {
         if (setup.evaluator != this) {
             throw new IllegalStateException("Evaluator mismatch");
         }
-        activeSetup.set(setup);
-        Object value;
         try {
-            value = script.eval(bindings);
+            activeSetup.set(setup);
+            return script.eval(bindings);
         } finally {
             activeSetup.set(null);
         }
-        return value;
     }
 
     /**
@@ -327,21 +324,41 @@ public class Evaluator {
         }
     }
 
+    /** Call to cityopt._convertSimtimesToDatetimes for Java called from Jython */
     PyObject convertSimtimesToDatetimes(double[] times) {
         return _convertSimtimesToDatetimes.__call__(
                 Py.javas2pys(new Object[] { times }));
     }
 
+    /** Call to cityopt._convertToSimtimes for Java called from Jython */
     double[] convertToSimtimes(PyObject arg) {
         PyObject result = _convertToSimtimes.__call__(arg);
         return (double[]) result.__tojava__(double[].class);
     }
 
+    /** Call to cityopt._convertToSimTime for Java called from Jython */
     double convertToSimtime(PyObject arg) {
         return _convertToSimtime.__call__(arg).asDouble();
     }
 
+    /** Call to itertools.izip for Java called from Jython */
     PyObject izip(double[] times, double[] values) {
         return _izip.__call__(Py.javas2pys(new Object[] { times, values }));
+    }
+
+    /** Converts a double to an equivalent Python expression. */
+    String toExpression(double value) {
+        if (Double.isInfinite(value)) {
+            return (value < 0) ? "float('-inf')" : "float('inf')";
+        } else if (Double.isNaN(value)) {
+            return "float('nan')";
+        } else {
+            return Double.toString(value);
+        }
+    }
+
+    /** Converts a string to an equivalent Python expression. */
+    String toExpression(String value) {
+        return new PyString(value).__repr__().asString();
     }
 }

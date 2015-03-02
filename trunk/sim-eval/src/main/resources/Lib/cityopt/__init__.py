@@ -43,7 +43,7 @@ def tosimtime(arg):
 def _convertToSimtime(arg):
     if isinstance(arg, datetime):
         return _total_seconds(arg - _epoch) - _timeOrigin()
-    elif isinstance(arg, str):
+    elif isinstance(arg, str) or isinstance(arg, unicode):
         return TimeUtils.parseISO8601(arg).toEpochMilli()*0.001 - _timeOrigin()
     return float(arg)
 
