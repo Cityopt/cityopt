@@ -42,10 +42,10 @@
 <extparamvalsetcomp extparamvalsetid="1" extparamvalid="2"/>
 <extparamvalsetcomp extparamvalsetid="1" extparamvalid="3"/>
 
-<metric metid="1" prjid="1" unitid="11" name="Energy_Supply" expression="integrate(Solar_thermal_panels.heating_power, 0, INFINITY)" />
+<metric metid="1" prjid="1" unitid="11" name="Energy_Supply1" expression="integrate(Solar_thermal_panels.heating_power, 0, INFINITY)" />
 <metric metid="2" prjid="1" unitid="18" name="Power_Supply" expression="Specific_Heat_Water*Storage_Vertical_tank_with_heat_structure.Liquid_Volume_Output/Storage_Vertical_tank_with_heat_structure.Liquid_Temperature" />
-<metric metid="3" prjid="1" unitid="12" name="Energy_Supply" expression="integrate(Specific_Heat_Water*Storage_Vertical_tank_with_heat_structure.Liquid_Volume_Output/Storage_Vertical_tank_with_heat_structure.Liquid_Temperature, 0, INFINITY)" />
-<metric metid="4" prjid="1" unitid="12" name="Energy_Supply" expression="integrate(Gas_boiler.Heating_Power, 0, INFINITY)" />
+<metric metid="3" prjid="1" unitid="12" name="Energy_Supply2" expression="integrate(Specific_Heat_Water*Storage_Vertical_tank_with_heat_structure.Liquid_Volume_Output/Storage_Vertical_tank_with_heat_structure.Liquid_Temperature, 0, INFINITY)" />
+<metric metid="4" prjid="1" unitid="12" name="Energy_Supply3" expression="integrate(Gas_boiler.Heating_Power, 0, INFINITY)" />
 <metric metid="5" prjid="1" unitid="13" name="CO2_Emissions" expression="integrate(Emissions_N_Gas*Gas_boiler.Heating_Power, 0, INFINITY)" />
 <metric metid="6" prjid="1" unitid="14" name="Cost" expression="integrate(Cost_of_the_N_Gas*Gas_boiler.Heating_Power, 0, INFINITY)" />
 
@@ -63,7 +63,7 @@
 <searchconstraint scid="5" prjid="1" unitid="16" expression="Liquid_Temperature" lowerbound="10" upperbound="90" />
 <searchconstraint scid="6" prjid="1" unitid="1" expression="heating_power" lowerbound="10" upperbound="100" />
 <!-- metric value constraints -->
-<searchconstraint scid="7" prjid="1" unitid="12" expression="Energy_Supply" lowerbound="100" upperbound="500" />
+<searchconstraint scid="7" prjid="1" unitid="12" expression="Energy_Supply3" lowerbound="100" upperbound="500" />
 
 
 <objectivefunction obtfunctionid="1" prjid="1" typeid="1" expression="CO2_Emissions + Cost" ismaximise="false" />

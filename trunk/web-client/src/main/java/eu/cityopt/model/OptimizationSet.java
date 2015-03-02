@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -153,7 +154,7 @@ public class OptimizationSet implements java.io.Serializable {
 		this.updatedby = updatedby;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "optimizationset")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "optimizationset", cascade=CascadeType.REMOVE)
 	public Set<OptSetScenarios> getOptsetscenarioses() {
 		return this.optsetscenarioses;
 	}
@@ -162,7 +163,7 @@ public class OptimizationSet implements java.io.Serializable {
 		this.optsetscenarioses = optsetscenarioses;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "optimizationset")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "optimizationset", cascade=CascadeType.REMOVE)
 	public Set<OptSearchConst> getOptsearchconsts() {
 		return this.optsearchconsts;
 	}

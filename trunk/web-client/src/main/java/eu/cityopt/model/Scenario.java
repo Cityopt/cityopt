@@ -92,7 +92,8 @@ public class Scenario implements java.io.Serializable {
 		this.optsetscenarioses = optsetscenarioses;
 	}
 
-	@SequenceGenerator(name="scenario_scenid_seq",sequenceName="scenario_scenid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="scenario_scenid_seq")
+	@SequenceGenerator(name="scenario_scenid_seq",sequenceName="scenario_scenid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="scenario_scenid_seq")
 	@Id
 	@Column(name = "scenid", unique = true, nullable = false)
 	public int getScenid() {
@@ -218,7 +219,7 @@ public class Scenario implements java.io.Serializable {
 	}
 
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade=CascadeType.REMOVE)
 	public Set<ScenarioMetrics> getScenariometricses() {
 		return this.scenariometricses;
 	}
@@ -227,7 +228,7 @@ public class Scenario implements java.io.Serializable {
 		this.scenariometricses = scenariometricses;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade=CascadeType.REMOVE)
 	public Set<InputParamVal> getInputparamvals() {
 		return this.inputparamvals;
 	}
@@ -236,7 +237,7 @@ public class Scenario implements java.io.Serializable {
 		this.inputparamvals = inputparamvals;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade=CascadeType.REMOVE)
 	public Set<OptimizationSet> getOptimizationsets() {
 		return this.optimizationsets;
 	}
@@ -245,7 +246,7 @@ public class Scenario implements java.io.Serializable {
 		this.optimizationsets = optimizationsets;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade=CascadeType.REMOVE)
 	public Set<SimulationResult> getSimulationresults() {
 		return this.simulationresults;
 	}
@@ -254,7 +255,7 @@ public class Scenario implements java.io.Serializable {
 		this.simulationresults = simulationresults;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade=CascadeType.REMOVE)
 	public Set<OptSetScenarios> getOptsetscenarioses() {
 		return this.optsetscenarioses;
 	}

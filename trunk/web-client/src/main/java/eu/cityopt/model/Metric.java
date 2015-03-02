@@ -5,6 +5,7 @@ package eu.cityopt.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -48,7 +49,8 @@ public class Metric implements java.io.Serializable {
 		this.metricvals = metricvals;
 	}
 
-	@SequenceGenerator(name="metric_metid_seq",sequenceName="metric_metid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="metric_metid_seq")
+	@SequenceGenerator(name="metric_metid_seq",sequenceName="metric_metid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="metric_metid_seq")
 	@Id
 	@Column(name = "metid", unique = true, nullable = false)
 	public int getMetid() {
@@ -97,7 +99,7 @@ public class Metric implements java.io.Serializable {
 		this.expression = expression;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "metric")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "metric", cascade=CascadeType.REMOVE)
 	public Set<MetricVal> getMetricvals() {
 		return this.metricvals;
 	}

@@ -5,6 +5,7 @@ package eu.cityopt.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -48,7 +49,8 @@ public class ExtParamVal implements java.io.Serializable {
 		this.extparamvalsetcomps = extparamvalsetcomps;
 	}
 
-	@SequenceGenerator(name="extparamval_extparamvalid_seq",sequenceName="extparamval_extparamvalid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="extparamval_extparamvalid_seq")
+	@SequenceGenerator(name="extparamval_extparamvalid_seq",sequenceName="extparamval_extparamvalid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="extparamval_extparamvalid_seq")
 	@Id
 	@Column(name = "extparamvalid", unique = true, nullable = false)
 	public int getExtparamvalid() {
@@ -59,7 +61,7 @@ public class ExtParamVal implements java.io.Serializable {
 		this.extparamvalid = extparamvalid;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.REMOVE)
 	@JoinColumn(name = "tseriesid")
 	public TimeSeries getTimeseries() {
 		return this.timeseries;
@@ -88,7 +90,7 @@ public class ExtParamVal implements java.io.Serializable {
 		this.value = value;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "extparamval")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "extparamval", cascade=CascadeType.REMOVE)
 	public Set<ExtParamValSetComp> getExtparamvalsetcomps() {
 		return this.extparamvalsetcomps;
 	}

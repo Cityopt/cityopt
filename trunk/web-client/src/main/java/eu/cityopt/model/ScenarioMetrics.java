@@ -5,6 +5,7 @@ package eu.cityopt.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -76,7 +77,7 @@ public class ScenarioMetrics implements java.io.Serializable {
 		this.scenario = scenario;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariometrics")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariometrics", cascade=CascadeType.REMOVE)
 	public Set<MetricVal> getMetricvals() {
 		return this.metricvals;
 	}

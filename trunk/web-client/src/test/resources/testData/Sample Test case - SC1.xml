@@ -42,7 +42,7 @@
 <metricval metricvalid="6" metid="6" scenmetricid="1" value="569399.35" />
 
 
-<optimizationset optid="1" prjid="1" optfunctionid="1" scenid="1" />
+<optimizationset optid="1" prjid="1" optfunctionid="1" scenid="1" extparamvalsetid="1" />
 
 <!-- pk not set -->
 <optsetscenarios optid="1" scenid="1" value="571297.35" />

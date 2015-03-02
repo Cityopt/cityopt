@@ -113,7 +113,7 @@ public class InputParameter implements java.io.Serializable {
 		this.defaultvalue = defaultvalue;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter", cascade=CascadeType.REMOVE)
 	public Set<ModelParameter> getModelparameters() {
 		return this.modelparameters;
 	}
@@ -122,7 +122,7 @@ public class InputParameter implements java.io.Serializable {
 		this.modelparameters = modelparameters;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter", cascade=CascadeType.REMOVE)
 	public Set<InputParamVal> getInputparamvals() {
 		return this.inputparamvals;
 	}

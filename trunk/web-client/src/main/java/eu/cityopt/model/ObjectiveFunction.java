@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -59,7 +60,8 @@ public class ObjectiveFunction implements java.io.Serializable {
 		this.scengenobjectivefunctions = scengenobjectivefunctions;
 	}
 
-	@SequenceGenerator(name="objectivefunction_obtfunctionid_seq",sequenceName="objectivefunction_obtfunctionid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="objectivefunction_obtfunctionid_seq")
+	@SequenceGenerator(name="objectivefunction_obtfunctionid_seq",sequenceName="objectivefunction_obtfunctionid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="objectivefunction_obtfunctionid_seq")
 	@Id
 	@Column(name = "obtfunctionid", unique = true, nullable = false)
 	public int getObtfunctionid() {
@@ -118,7 +120,7 @@ public class ObjectiveFunction implements java.io.Serializable {
 		this.executedat = executedat;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "objectivefunction")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "objectivefunction", cascade=CascadeType.REMOVE)
 	public Set<OptimizationSet> getOptimizationsets() {
 		return this.optimizationsets;
 	}
@@ -127,7 +129,7 @@ public class ObjectiveFunction implements java.io.Serializable {
 		this.optimizationsets = optimizationsets;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "objectivefunction")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "objectivefunction", cascade=CascadeType.REMOVE)
 	public Set<ScenGenObjectiveFunction> getScengenobjectivefunctions() {
 		return this.scengenobjectivefunctions;
 	}

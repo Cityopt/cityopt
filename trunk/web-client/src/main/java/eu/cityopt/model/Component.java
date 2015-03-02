@@ -57,7 +57,8 @@ public class Component implements java.io.Serializable {
 		this.outputvariables = outputvariables;
 	}
 
-	@SequenceGenerator(name="component_componentid_seq",sequenceName="component_componentid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="component_componentid_seq")
+	@SequenceGenerator(name="component_componentid_seq",sequenceName="component_componentid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="component_componentid_seq")
 	@Id
 	@Column(name = "componentid", unique = true, nullable = false)
 	public int getComponentid() {
@@ -105,7 +106,7 @@ public class Component implements java.io.Serializable {
 		this.geometryblob = geometryblob;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component", cascade=CascadeType.REMOVE)
 	public Set<InputParameter> getInputparameters() {
 		return this.inputparameters;
 	}
@@ -114,7 +115,7 @@ public class Component implements java.io.Serializable {
 		this.inputparameters = inputparameters;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component", cascade=CascadeType.REMOVE)
 	public Set<OutputVariable> getOutputvariables() {
 		return this.outputvariables;
 	}

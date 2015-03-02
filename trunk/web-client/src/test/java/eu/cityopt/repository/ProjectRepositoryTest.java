@@ -40,7 +40,6 @@ import eu.cityopt.repository.UserGroupProjectRepository;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
-@DatabaseSetup("classpath:/testData/scenario_TestData.xml")
 public class ProjectRepositoryTest {
 
 	@Autowired
@@ -77,7 +76,7 @@ public class ProjectRepositoryTest {
 	
 	
 	@Test	
-	@Rollback(true)
+	@DatabaseSetup("classpath:/testData/scenario_TestData.xml")
 	public void CreateProject()
 	{	
 		Project project = new Project();
@@ -92,7 +91,7 @@ public class ProjectRepositoryTest {
 	}
 	
 	@Test
-	@Rollback(true)
+	@DatabaseSetup("classpath:/testData/scenario_TestData.xml")
 	public void UpdateProject()
 	{	
 		String location;
@@ -106,7 +105,7 @@ public class ProjectRepositoryTest {
 	}	
 	
 	@Test
-	@Rollback(true)
+	@DatabaseSetup("classpath:/testData/scenario_TestData.xml")
 	public void getProjectDescription()
 	{	
 		String location;
@@ -116,6 +115,7 @@ public class ProjectRepositoryTest {
 	}	
 		
 	@Test
+	@DatabaseSetup("classpath:/testData/scenario_TestData.xml")
 	public void findAll() {
 	
 		List<Project> projects = projectRepository.findAll();
@@ -123,6 +123,7 @@ public class ProjectRepositoryTest {
 	}
 	
 	@Test
+	@DatabaseSetup("classpath:/testData/scenario_TestData.xml")
 	public void findByName() {
 	
 		List<Project> projects = projectRepository.findByName("Project 1");
@@ -136,23 +137,24 @@ public class ProjectRepositoryTest {
 	}
 	
 	@Test
-	@Rollback(true)
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
+	"classpath:/testData/Sample Test case - SC1.xml"})
 	public void DeleteProject()
 	{		
-		List<Project> projects = projectRepository.findByName("Project 3");
+		List<Project> projects = projectRepository.findByName("Project");
 		
 		//delete projects components to be able to delete project if no cascadetype is set
-		for(Iterator<Project> p = projects.iterator(); p.hasNext();){
-			Project item = p.next();
-			
-			List<Component> comp = item.getComponents();
-			
-			componentRepository.delete(comp);
-		}
+//		for(Iterator<Project> p = projects.iterator(); p.hasNext();){
+//			Project item = p.next();
+//			
+//			List<Component> comp = item.getComponents();
+//			
+//			componentRepository.delete(comp);
+//		}
 		
 		projectRepository.delete(projects);
 		
-		assertEquals(0, projectRepository.findByName("Project 3").size());	
+		assertEquals(0, projectRepository.findByName("Project").size());	
 	}	
 
 }
