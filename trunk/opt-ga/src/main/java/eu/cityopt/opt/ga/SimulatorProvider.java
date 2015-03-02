@@ -34,9 +34,9 @@ public class SimulatorProvider implements Provider<SimulatorManager> {
      */
     @Inject
     public SimulatorProvider(
-            @Constant(value = "aprosDir", namespace = SimulatorProvider.class)
+            @Constant(value="aprosDir", namespace=SimulatorProvider.class)
             String aprosDir,
-            @Constant(value = "simulator", namespace = SimulatorProvider.class)
+            @Constant(value="simulator", namespace=SimulatorProvider.class)
             String simulator) throws IOException {
         AprosManager.register(Paths.get(aprosDir));
         simulatorName = simulator;

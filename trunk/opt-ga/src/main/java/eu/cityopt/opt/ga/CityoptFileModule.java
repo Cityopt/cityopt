@@ -16,25 +16,25 @@ import eu.cityopt.sim.eval.SimulatorManager;
 public class CityoptFileModule extends Opt4JModule {
     @Info("Directory containing Apros profiles")
     @File
-    @Constant(value = "aprosDir", namespace = SimulatorProvider.class)
+    @Constant(value="aprosDir", namespace=SimulatorProvider.class)
     private String aprosDir = "c:/apros/profiles";
 
     @Info("Simulator name and version")
-    @Constant(value = "simulator", namespace = SimulatorProvider.class)
+    @Constant(value="simulator", namespace=SimulatorProvider.class)
     private String simulator = "Apros-Combustion-5.13.06-64bit";
     
     @Info("Time origin.  If empty read from the zip file.")
-    @Constant(value = "timeOrigin", namespace = ProblemFromFiles.class)
+    @Constant(value="timeOrigin", namespace=ProblemFromFiles.class)
     private String timeOrigin = "2015-01-01T00:00:00Z";
     
     @Info("The zip file containing the model")
     @File(".zip")
-    @Constant(value = "modelFile", namespace = ProblemFromFiles.class)
+    @Constant(value="modelFile", namespace=ProblemFromFiles.class)
     private String modelFile = "";
     
     @Info("The optimisation problem definition file")
     @File(".csv")
-    @Constant(value = "problemFile", namespace = ProblemFromFiles.class)
+    @Constant(value="problemFile", namespace=ProblemFromFiles.class)
     private String problemFile = "";
     
     @Override
