@@ -20,6 +20,7 @@ import org.jfree.data.time.Minute;
 import org.jfree.data.time.Month;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -1687,10 +1688,7 @@ public class ProjectController {
 		
 		if (timeSeriesCollection.getSeriesCount() > 0)
 		{
-			TimeSeriesVisualization demo = new TimeSeriesVisualization("Time Series Demo", timeSeriesCollection, "Time", "");
-			demo.pack();
-			RefineryUtilities.centerFrameOnScreen(demo);
-			demo.setVisible(true);
+			TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName() + " time series", timeSeriesCollection, "Time", "");
 		}
 		
 		model.put("usersession", userSession);
