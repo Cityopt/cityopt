@@ -5,8 +5,6 @@
 	<name>Cityopt simulation runner</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 	<build>
 		<plugins>
@@ -49,12 +47,6 @@
 			<groupId>org.simantics</groupId>
 			<artifactId>simulation.scheduling</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>eu.cityopt</groupId>
