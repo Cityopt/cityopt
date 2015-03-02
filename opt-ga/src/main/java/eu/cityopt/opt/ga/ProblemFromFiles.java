@@ -29,11 +29,11 @@ public class ProblemFromFiles extends OptimisationProblem {
     @Inject
     public ProblemFromFiles(
             SimulatorManager simulator,
-            @Constant(value = "timeOrigin", namespace = ProblemFromFiles.class)
+            @Constant(value="timeOrigin", namespace=ProblemFromFiles.class)
             String timeOrigin,
-            @Constant(value = "modelFile", namespace = ProblemFromFiles.class)
+            @Constant(value="modelFile", namespace=ProblemFromFiles.class)
             String modelFile,
-            @Constant(value = "problemFile", namespace = ProblemFromFiles.class)
+            @Constant(value="problemFile", namespace=ProblemFromFiles.class)
             String problemFile)
             throws IOException, SimulatorConfigurationException,
                    ParseException {
