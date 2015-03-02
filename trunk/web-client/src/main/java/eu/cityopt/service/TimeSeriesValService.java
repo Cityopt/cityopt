@@ -1,7 +1,12 @@
 package eu.cityopt.service;
 
-import eu.cityopt.model.TimeSeriesVal;
+import java.util.List;
 
-public interface TimeSeriesValService extends CityOptService<TimeSeriesVal> {
+import eu.cityopt.DTO.TimeSeriesValDTO;
+
+public interface TimeSeriesValService extends CityOptService<TimeSeriesValDTO> {
+
+	List<TimeSeriesValDTO> findByTimeSeriesIdOrderedByTime(int timeSeriesId)
+			throws EntityNotFoundException;
 
 }
