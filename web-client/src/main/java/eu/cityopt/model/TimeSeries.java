@@ -5,6 +5,7 @@ package eu.cityopt.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -70,7 +71,7 @@ public class TimeSeries implements java.io.Serializable {
 		this.type = type;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries", cascade=CascadeType.REMOVE)
 	public Set<TimeSeriesVal> getTimeseriesvals() {
 		return this.timeseriesvals;
 	}

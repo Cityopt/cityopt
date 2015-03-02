@@ -36,7 +36,8 @@ public class OptSearchConst implements java.io.Serializable {
 		this.searchconstraint = searchconstraint;
 	}
 
-	@SequenceGenerator(name="optsearchconst_optsearchconstid_seq",sequenceName="optsearchconst_optsearchconstid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="optsearchconst_optsearchconstid_seq")
+	@SequenceGenerator(name="optsearchconst_optsearchconstid_seq",sequenceName="optsearchconst_optsearchconstid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="optsearchconst_optsearchconstid_seq")
 	@Id
 	@Column(name = "optsearchconstid", unique = true, nullable = false)
 	public Integer getOptsearchconstid() {

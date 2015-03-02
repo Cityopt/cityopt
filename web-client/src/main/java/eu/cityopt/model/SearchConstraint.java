@@ -5,6 +5,7 @@ package eu.cityopt.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -109,7 +110,7 @@ public class SearchConstraint implements java.io.Serializable {
 		this.upperbound = upperbound;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "searchconstraint")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "searchconstraint", cascade=CascadeType.REMOVE)
 	public Set<OptSearchConst> getOptsearchconsts() {
 		return this.optsearchconsts;
 	}

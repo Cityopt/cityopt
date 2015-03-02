@@ -4,6 +4,7 @@ package eu.cityopt.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -44,7 +45,8 @@ public class SimulationResult implements java.io.Serializable {
 		this.timeseries = timeseries;
 	}
 
-	@SequenceGenerator(name="simulationresult_scenresid_seq",sequenceName="simulationresult_scenresid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="simulationresult_scenresid_seq")
+	@SequenceGenerator(name="simulationresult_scenresid_seq",sequenceName="simulationresult_scenresid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="simulationresult_scenresid_seq")
 	@Id
 	@Column(name = "scenresid", unique = true, nullable = false)
 	public int getScenresid() {
@@ -75,7 +77,7 @@ public class SimulationResult implements java.io.Serializable {
 		this.scenario = scenario;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.REMOVE)
 	@JoinColumn(name = "tseriesid")
 	public TimeSeries getTimeseries() {
 		return this.timeseries;

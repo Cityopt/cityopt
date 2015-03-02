@@ -2,6 +2,7 @@ package eu.cityopt.model;
 
 // Generated 13.11.2014 15:13:00 by Hibernate Tools 4.0.0
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -45,7 +46,8 @@ public class MetricVal implements java.io.Serializable {
 		this.value = value;
 	}
 
-	@SequenceGenerator(name="metricval_metricvalid_seq",sequenceName="metricval_metricvalid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="metricval_metricvalid_seq")
+	@SequenceGenerator(name="metricval_metricvalid_seq",sequenceName="metricval_metricvalid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="metricval_metricvalid_seq")
 	@Id
 	@Column(name = "metricvalid", unique = true, nullable = false)
 	public long getMetricvalid() {
@@ -76,7 +78,7 @@ public class MetricVal implements java.io.Serializable {
 		this.scenariometrics = scenariometrics;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.REMOVE)
 	@JoinColumn(name = "tseriesid")
 	public TimeSeries getTimeseries() {
 		return this.timeseries;
