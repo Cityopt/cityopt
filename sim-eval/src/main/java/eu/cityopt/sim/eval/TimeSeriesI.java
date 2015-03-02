@@ -61,4 +61,7 @@ public interface TimeSeriesI {
      * Returns a function representation of the time series.
      */
     public PiecewiseFunction internalFunction();
+
+    /** Returns an expression evaluating to the time series. */
+    public String __repr__();
 }
