@@ -1,7 +1,5 @@
 package eu.cityopt.repository;
 
-import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -13,6 +11,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.DTO.ComponentInputParamDTO;
 import eu.cityopt.model.TimeSeriesVal;
@@ -30,6 +29,7 @@ public class CustomQueryRepository {
 		template = new JdbcTemplate(dataSource);
 	}
 	
+	@Transactional(readOnly=true)
 	public List<ComponentInputParamDTO> findComponentsWithInputParams(int prjid, int scenid){
 		String sql = "SELECT inputparameter.componentid,"
 				+ " component.\"name\" componentName,"
@@ -58,6 +58,7 @@ public class CustomQueryRepository {
 		return components;
 	}
 
+	@Transactional(readOnly=true)
 	public List<ComponentInputParamDTO> findComponentsWithInputParamsByCompId(
 			int componentId) {
 		String sql = "SELECT inputparameter.componentid,"
@@ -88,7 +89,7 @@ public class CustomQueryRepository {
 	}
 	
 
- 
+	@Transactional
 	public boolean insertTimeSeriesBatch(final List<TimeSeriesVal> tsvalues){
 		try { 
 			insertBatch(tsvalues); 
