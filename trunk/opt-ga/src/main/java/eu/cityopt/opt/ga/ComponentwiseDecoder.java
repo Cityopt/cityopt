@@ -36,7 +36,7 @@ implements Decoder<ComponentwiseGenotype, SimulationInput> {
         SimulationInput inp = new SimulationInput(problem.inputConst);
         try {
             inp.putExpressionValues(dv, problem.inputExprs);
-        } catch (ScriptException | InvalidValueException e) {
+        } catch (ScriptException e) {
             throw new RuntimeException(
                     "Input expression evaluation failed", e);
         }

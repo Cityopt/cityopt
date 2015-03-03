@@ -38,7 +38,7 @@ public class ObjectiveExpression extends Expression {
     }
 
     public double evaluateAsMinGoal(EvaluationContext context)
-            throws ScriptException, InvalidValueException {
+            throws ScriptException {
         return flipSignIfMax(evaluateDouble(context));
     }
 

@@ -251,8 +251,7 @@ public class TestTimeSeries {
                                 +(0.5*ta[0]+0.5*ta[1])+"))", ep), delta);
     }
 
-    private double eval(String expression, EvaluationContext context)
-            throws ScriptException, InvalidValueException {
+    private double eval(String expression, EvaluationContext context) throws ScriptException {
         return new Expression(expression, evaluator).evaluateDouble(context);
     }
 

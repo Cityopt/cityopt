@@ -49,10 +49,9 @@ public class Constraint {
      * Computes the infeasibility of the constraint, i.e. by how much it is
      * violated. 0.0 means that the constraint is satisfied, positive values
      * that it is unsatisfied.
-     * @throws InvalidValueException 
+     * @throws ScriptException 
      */
-    public double infeasibility(EvaluationContext context)
-            throws ScriptException, InvalidValueException {
+    public double infeasibility(EvaluationContext context) throws ScriptException {
         Object value = expression.evaluate(context);
         if (value instanceof Number) {
             double d = ((Number) value).doubleValue();

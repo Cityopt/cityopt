@@ -46,7 +46,6 @@ import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
-import eu.cityopt.sim.eval.InvalidValueException;
 import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.Namespace;
@@ -290,7 +289,7 @@ public class SimulationService {
                 } else {
                     status.ignored.add(scenario.getScenid());
                 }
-            } catch (ParseException | ScriptException | InvalidValueException e) {
+            } catch (ParseException | ScriptException e) {
                 Log.warn("Failed to update metrics of scenario " + scenario.getScenid()
                         + ": " + e.getMessage());
                 status.failures.put(scenario.getScenid(), e);

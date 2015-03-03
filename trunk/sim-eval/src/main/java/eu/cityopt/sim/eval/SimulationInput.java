@@ -53,8 +53,7 @@ public class SimulationInput implements EvaluationContext {
      * @see #putExpressionValues(DecisionValues, Collection)
      */
     public SimulationInput(DecisionValues decisions,
-            Collection<InputExpression> inputExpressions)
-                    throws ScriptException, InvalidValueException {
+            Collection<InputExpression> inputExpressions) throws ScriptException {
         this(decisions.getExternalParameters());
         putExpressionValues(decisions, inputExpressions);
     }
@@ -110,7 +109,7 @@ public class SimulationInput implements EvaluationContext {
      */
     public void putExpressionValues(
             DecisionValues decisions, Collection<InputExpression> inputExpressions)
-                    throws ScriptException, InvalidValueException {
+                    throws ScriptException {
         for (InputExpression expression : inputExpressions) {
             Object value = expression.evaluate(decisions);
             put(expression.getComponentName(), expression.getInputName(), value);

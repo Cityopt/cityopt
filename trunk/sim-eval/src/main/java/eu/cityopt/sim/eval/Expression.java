@@ -21,26 +21,32 @@ public class Expression {
 
     /**
      * Evaluates the expression in the given context.
-     * Coerces the result to one of the types specified in Type.
      */
     public Object evaluate(EvaluationContext context) throws ScriptException {
-        Object o = evaluator.eval(script, context.toBindings(), context.getEvaluationSetup());
-        return Type.normalize(o);
+        return evaluator.eval(script, context.toBindings(), context.getEvaluationSetup());
+    }
+
+    /**
+     * Evaluates the expression and converts the result to the given Type.
+     * @return a value object of a compatible value type.
+     * @throws ScriptException if evaluation fails
+     * @throws InvalidValueException if the result cannot be converted
+     */
+    public Object evaluateAs(Type type, EvaluationContext context) throws ScriptException {
+        Object result = evaluator.eval(script, context.toBindings(), context.getEvaluationSetup());
+        try {
+            return type.fromScriptResult(result, context.getEvaluationSetup());
+        } catch (InvalidValueException e) {
+            throw new InvalidValueException(type, result, source);
+        }
     }
 
     /**
      * Evaluates the expression and converts the result to a double.
-     * @throws InvalidValueException if the result is of an incompatible type
+     * @throws ScriptException if evaluation fails
+     * @throws InvalidValueException if the result cannot be converted
      */
-    public double evaluateDouble(EvaluationContext context) throws ScriptException,
-            InvalidValueException {
-        Object o = evaluator.eval(script, context.toBindings(), context.getEvaluationSetup());
-        double value;
-        if (o instanceof Number) {
-            value = ((Number) o).doubleValue();
-        } else {
-            throw new InvalidValueException(o, source);
-        }
-        return value;
+    public double evaluateDouble(EvaluationContext context) throws ScriptException {
+        return (Double) evaluateAs(Type.DOUBLE, context);
     }
 }
