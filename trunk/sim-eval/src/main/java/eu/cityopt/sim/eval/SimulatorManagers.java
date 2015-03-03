@@ -19,9 +19,18 @@ public class SimulatorManagers {
         return Collections.unmodifiableSet(simulatorManagers.keySet());
     }
 
-    /** Returns a SimulatorManager instance for access to a named simulator. */
-    public static SimulatorManager get(String simulatorName) {
-        return simulatorManagers.get(simulatorName);
+    /**
+     * Returns a SimulatorManager instance for access to a named simulator.
+     * @throws SimulatorConfigurationException if the name is unknown
+     */
+    public static SimulatorManager get(String simulatorName)
+            throws SimulatorConfigurationException {
+        SimulatorManager manager = simulatorManagers.get(simulatorName);
+        if (manager == null) {
+            throw new SimulatorConfigurationException(
+                    "Unknown simulator " + simulatorName);
+        }
+        return manager;
     }
 
     /** Registers a new SimulatorManager instance. */

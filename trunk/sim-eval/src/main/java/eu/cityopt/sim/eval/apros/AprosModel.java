@@ -1,6 +1,5 @@
 package eu.cityopt.sim.eval.apros;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -36,13 +35,13 @@ public class AprosModel implements SimulationModel {
     final Document uc_props;
     Instant timeOrigin;
 
-    AprosModel(byte[] modelData, AprosManager manager)
+    AprosModel(InputStream inputStream, AprosManager manager)
             throws IOException, SimulatorConfigurationException {
         this.manager = manager; 
         modelDir = new TempDir("sim");
         resultFiles = new String[] { "results.dat" };
         try {
-            uc_props = extractModelFiles(modelData, modelDir.getPath());
+            uc_props = extractModelFiles(inputStream, modelDir.getPath());
         } catch (Throwable t) {
             modelDir.close();
             modelDir = null;
@@ -50,11 +49,10 @@ public class AprosModel implements SimulationModel {
         }
     }
 
-    Document extractModelFiles(byte[] modelZipBytes, Path dir)
+    Document extractModelFiles(InputStream inputStream, Path dir)
             throws IOException, SimulatorConfigurationException {
         Document ucs = null;
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(modelZipBytes);
-                ZipInputStream zis = new ZipInputStream(bis)) {
+        try (ZipInputStream zis = new ZipInputStream(inputStream)) {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
                 String name = entry.getName();

@@ -1,6 +1,8 @@
 package eu.cityopt.sim.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -42,7 +44,6 @@ import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioRepository;
-import eu.cityopt.sim.eval.EvaluationException;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.InvalidValueException;
@@ -165,14 +166,10 @@ public class SimulationService {
     @Autowired private ApplicationContext applicationContext;
     @Autowired private TaskExecutor taskExecutor;
 
-    private Evaluator evaluator;
+    private Evaluator evaluator = new Evaluator();
 
     private ConcurrentHashMap<Integer, SimulationJob> activeJobs
         = new ConcurrentHashMap<Integer, SimulationJob>();
-
-    protected SimulationService() throws EvaluationException, ScriptException {
-        evaluator = new Evaluator();
-    }
 
     /**
      * Starts a simulation run for a scenario. Reads the input parameter values
@@ -312,18 +309,11 @@ public class SimulationService {
         ExternalParameters externals = loadExternalParametersFromDefaults(project, namespace);
         SimulationInput input = loadSimulationInput(scenario, externals);
 
-        String simulatorName = project.getSimulationmodel().getSimulator();
-        SimulatorManager manager = SimulatorManagers.get(simulatorName);
-        if (manager == null) {
-            throw new SimulatorConfigurationException(
-                    "Unknown simulator " + simulatorName);
-        }
-        byte[] modelZipBytes = project.getSimulationmodel().getModelblob();
-        SimulationModel model = manager.parseModel(modelZipBytes);
+        SimulationModel model = loadSimulationModel(project);
         List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
         SimulationRunner runner = null;
         try {
-            runner = manager.makeRunner(model, input.getNamespace());
+            runner = model.getSimulatorManager().makeRunner(model, input.getNamespace());
             DbSimulationStorageI storage =
                     (DbSimulationStorageI) applicationContext.getBean("dbSimulationStorage");
             storage.initialize(project.getPrjid(), externals, null, null);
@@ -336,6 +326,17 @@ public class SimulationService {
             return newJob;
         } finally {
             if (runner == null) model.close();
+        }
+    }
+
+    /** Loads the simulation model from a project. */
+    public SimulationModel loadSimulationModel(Project project)
+            throws SimulatorConfigurationException, IOException {
+        String simulatorName = project.getSimulationmodel().getSimulator();
+        SimulatorManager manager = SimulatorManagers.get(simulatorName);
+        byte[] modelZipBytes = project.getSimulationmodel().getModelblob();
+        try (InputStream inputStream = new ByteArrayInputStream(modelZipBytes)) {
+            return manager.parseModel(inputStream);
         }
     }
 
