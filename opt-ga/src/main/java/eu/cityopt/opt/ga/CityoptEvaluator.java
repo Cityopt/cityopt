@@ -92,7 +92,7 @@ implements Evaluator<SimulationInput>, OptimizerStateListener, Closeable {
                         ost.objectiveValues[i]);
             }
             return obj;
-        } catch (ScriptException | InvalidValueException e) {
+        } catch (ScriptException e) {
             throw new RuntimeException("Evaluation error", e);
         } catch (InterruptedException | ExecutionException | IOException e) {
             throw new RuntimeException("Execution error", e);

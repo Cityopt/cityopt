@@ -232,8 +232,7 @@ public class TestEval {
         assertEquals(4, eval("max([2], [4], [1], [3], key=lambda a: a[0])[0]", input), 0.0);
     }
 
-    private double eval(String expression, EvaluationContext context)
-            throws ScriptException, InvalidValueException {
+    private double eval(String expression, EvaluationContext context) throws ScriptException {
         return new Expression(expression, evaluator).evaluateDouble(context);
     }
 

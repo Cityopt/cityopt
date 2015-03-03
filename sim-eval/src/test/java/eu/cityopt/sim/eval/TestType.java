@@ -159,15 +159,15 @@ public class TestType {
     }
 
     public void testExpression(Type type, Object value, String... expressions) throws Exception {
-        assertEquals(expressions[0], type.toExpression(value, es));
+        assertEquals(expressions[0], type.toConstantExpression(value, es));
         for (String expression : expressions) {
-            assertEquals(value, type.evalExpression(expression, es));
+            assertEquals(value, type.evalConstantExpression(expression, es));
         }
     }
 
     public void testTSExpression(Type type, TimeSeriesI value, String expression) throws Exception {
-        assertEquals(expression, type.toExpression(value, es));
-        TimeSeriesI value2 = (TimeSeriesI) type.evalExpression(expression, es);
+        assertEquals(expression, type.toConstantExpression(value, es));
+        TimeSeriesI value2 = (TimeSeriesI) type.evalConstantExpression(expression, es);
         final double delta = 1.0e-12;
         assertEquals(value.getDegree(), value2.getDegree());
         assertArrayEquals(value.getTimes(), value2.getTimes(), delta);

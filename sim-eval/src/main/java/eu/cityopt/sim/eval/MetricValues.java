@@ -21,8 +21,7 @@ public class MetricValues implements EvaluationContext {
      * Creates an empty instance, which has to be filled in manually
      * by calling put.
      */
-    public MetricValues(SimulationResults results)
-                    throws ScriptException, InvalidValueException {
+    public MetricValues(SimulationResults results) throws ScriptException {
         this(results, null);
     }
 
@@ -30,8 +29,7 @@ public class MetricValues implements EvaluationContext {
      * Evaluates metric values using the given collection of metric expressions.
      */
     public MetricValues(SimulationResults results,
-            Collection<MetricExpression> metrics)
-                    throws ScriptException, InvalidValueException {
+            Collection<MetricExpression> metrics) throws ScriptException {
         this.results = results;
         final Namespace namespace = results.getNamespace();
         this.bindingLayer = new BindingLayer(namespace,

@@ -68,12 +68,12 @@ public enum Type {
 
         @Override
         public String format(Object value, EvaluationSetup setup) {
-            return Integer.toString((Integer) value);
+            return Integer.toString(((Number) value).intValue());
         }
 
         @Override
-        public String toExpression(Object value, EvaluationSetup setup) {
-            return Integer.toString((Integer) value);
+        public String toConstantExpression(Object value, EvaluationSetup setup) {
+            return Integer.toString(((Number) value).intValue());
         }
 
         @Override
@@ -82,7 +82,7 @@ public enum Type {
             if (value instanceof Number) {
                 return ((Number) value).intValue();
             } else {
-                throw new ScriptException("Cannot convert to " + name);
+                throw new InvalidValueException(this, value);
             }
         }
     },
@@ -106,12 +106,12 @@ public enum Type {
 
         @Override
         public String format(Object value, EvaluationSetup setup) {
-            return Double.toString((Double) value);
+            return Double.toString(((Number) value).doubleValue());
         }
 
         @Override
-        public String toExpression(Object value, EvaluationSetup setup) {
-            return setup.evaluator.toExpression((Double) value);
+        public String toConstantExpression(Object value, EvaluationSetup setup) {
+            return setup.evaluator.toExpression(((Number) value).doubleValue());
         }
 
         @Override
@@ -120,7 +120,7 @@ public enum Type {
             if (value instanceof Number) {
                 return ((Number) value).doubleValue();
             } else {
-                throw new ScriptException("Cannot convert to " + name);
+                throw new InvalidValueException(this, value);
             }
         }
     },
@@ -148,13 +148,8 @@ public enum Type {
         }
 
         @Override
-        public String toExpression(Object value, EvaluationSetup setup) {
+        public String toConstantExpression(Object value, EvaluationSetup setup) {
             return setup.evaluator.toExpression((String) value);
-        }
-
-        @Override
-        public Object fromScriptResult(Object value, EvaluationSetup setup) {
-            return value.toString();
         }
     },
 
@@ -198,13 +193,14 @@ public enum Type {
 
         @Override
         public String format(Object value, EvaluationSetup setup) {
-            Instant i = TimeUtils.toInstant((Double) value, setup.timeOrigin);
+            Instant i = TimeUtils.toInstant(
+                    ((Number) value).doubleValue(), setup.timeOrigin);
             return TimeUtils.formatISO8601(i);
         }
 
         @Override
-        public String toExpression(Object value, EvaluationSetup setup) {
-            return setup.evaluator.toExpression((Double) value);
+        public String toConstantExpression(Object value, EvaluationSetup setup) {
+            return setup.evaluator.toExpression(((Number) value).doubleValue());
         }
 
         @Override
@@ -221,10 +217,10 @@ public enum Type {
                 try {
                     t = TimeUtils.parseISO8601((String) value);
                 } catch (DateTimeParseException e) {
-                    throw new ScriptException(e);
+                    throw new InvalidValueException(this, value);
                 }
             } else {
-                throw new ScriptException("Not a valid " + name + ": " + value);
+                throw new InvalidValueException(this, value);
             }
             return TimeUtils.toSimTime(t, setup.timeOrigin);
         }
@@ -256,7 +252,7 @@ public enum Type {
         }
 
         @Override
-        public String toExpression(Object value, EvaluationSetup setup) {
+        public String toConstantExpression(Object value, EvaluationSetup setup) {
             return ((TimeSeriesI) value).__repr__();
         }
 
@@ -296,7 +292,7 @@ public enum Type {
         }
 
         @Override
-        public String toExpression(Object value, EvaluationSetup setup) {
+        public String toConstantExpression(Object value, EvaluationSetup setup) {
             return ((TimeSeriesI) value).__repr__();
         }
 
@@ -313,10 +309,10 @@ public enum Type {
 
     /**
      * List of integers.
-     * <br>Compatible value types: List<Integer>.
+     * <br>Compatible value types: List<Integer>, List<Short>, List<Byte>.
      * <br>User text representation: a bracketed comma-separated list of
      * decimal integers.
-     * <br>Python type: list of int. 
+     * <br>Python type: list of int.
      */
     LIST_OF_INTEGER("List of Integer") {
         @Override
@@ -335,30 +331,32 @@ public enum Type {
 
         @Override
         public boolean isCompatible(Object value) {
-            return Type.<Integer>isCompatibleList(value, INTEGER::isCompatible);
+            return isCompatibleList(value, INTEGER::isCompatible);
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public String format(Object value, EvaluationSetup setup) {
-            return bracketedList((List<Integer>) value,
-                    i -> INTEGER.format(i, setup));
+            return bracketedList(value, i -> INTEGER.format(i, setup));
         }
 
-        @SuppressWarnings("unchecked")
         @Override
-        public String toExpression(Object value, EvaluationSetup setup) {
-            return bracketedList((List<Integer>) value,
-                    i -> INTEGER.toExpression(i, setup));
+        public String toConstantExpression(Object value, EvaluationSetup setup) {
+            return bracketedList(value, i -> INTEGER.toConstantExpression(i, setup));
+        }
+
+        @Override
+        public Object fromScriptResult(Object value, EvaluationSetup setup)
+                throws ScriptException {
+            return fromScriptResultList(value, INTEGER, setup);
         }
     },
 
     /**
      * List of double precision floating point numbers.
-     * <br>Compatible value types: List<Double>.
+     * <br>Compatible value types: List<Double>, List<? extends Number>.
      * <br>User text representation: a bracketed comma-separated list of
      * decimal numbers.
-     * <br>Python type: list of float or other numerical types.
+     * <br>Python type: list of float or int.
      */
     LIST_OF_DOUBLE("List of Double") {
         @Override
@@ -377,32 +375,35 @@ public enum Type {
 
         @Override
         public boolean isCompatible(Object value) {
-            return Type.<Double>isCompatibleList(value, DOUBLE::isCompatible);
+            return isCompatibleList(value, DOUBLE::isCompatible);
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public String format(Object value, EvaluationSetup setup) {
-            return bracketedList((List<Double>) value, 
-                    d -> DOUBLE.format(d, setup));
+            return bracketedList(value, d -> DOUBLE.format(d, setup));
         }
 
-        @SuppressWarnings("unchecked")
         @Override
-        public String toExpression(Object value, EvaluationSetup setup) {
-            return bracketedList((List<Double>) value,
-                    d -> DOUBLE.toExpression(d, setup));
+        public String toConstantExpression(Object value, EvaluationSetup setup) {
+            return bracketedList(value, d -> DOUBLE.toConstantExpression(d, setup));
+        }
+
+        @Override
+        public Object fromScriptResult(Object value, EvaluationSetup setup)
+                throws ScriptException {
+            return fromScriptResultList(value, DOUBLE, setup);
         }
     },
 
     /**
      * List of time stamps.
-     * <br>Compatible value types: List<Double>. The values are in simulation
-     * time, i.e. seconds from the time origin of the simulation model.
+     * <br>Compatible value types: List<Double>, List<? extends Number>.
+     * The values are in simulation time, i.e. seconds from the time origin
+     * of the simulation model.
      * <br>User text representation: a bracketed comma-separated list of quoted
      * ISO-8601 time stamps, or decimal numbers representing simulation time.
-     * <br>Python type: list of float, or other numerical types, or 
-     * ISO-8601 formatted strings, or datetime objects.
+     * <br>Python type: list of float or int.  Lists that include ISO-8601
+     * formatted strings or datetime objects are convertible to value objects.
      */
     LIST_OF_TIMESTAMP("List of Timestamp") {
         @Override
@@ -430,20 +431,16 @@ public enum Type {
 
         @Override
         public boolean isCompatible(Object value) {
-            return Type.<Double>isCompatibleList(value, TIMESTAMP::isCompatible);
+            return isCompatibleList(value, TIMESTAMP::isCompatible);
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public String format(Object value, EvaluationSetup setup) {
-            return bracketedList((List<Double>) value,
-                    t -> "\"" + TIMESTAMP.format(t, setup) + "\"");
+            return bracketedList(value, t -> "\"" + TIMESTAMP.format(t, setup) + "\"");
         }
 
-        @SuppressWarnings("unchecked")
-        public String toExpression(Object value, EvaluationSetup setup) {
-            return bracketedList((List<Double>) value,
-                    t -> TIMESTAMP.toExpression(t,  setup));
+        public String toConstantExpression(Object value, EvaluationSetup setup) {
+            return bracketedList(value, t -> TIMESTAMP.toConstantExpression(t,  setup));
         }
 
         @Override
@@ -474,13 +471,13 @@ public enum Type {
      * Converts a value object to a Python code representation.
      * @throws ClassCastException if the object of an incompatible type
      */
-    abstract public String toExpression(Object value, EvaluationSetup setup);
+    abstract public String toConstantExpression(Object value, EvaluationSetup setup);
 
     /** 
      * Constructs a value object by evaluating the Python code representation.
      * @throws ScriptException if evaluation or conversion to value object fails 
      */
-    public Object evalExpression(String expression, EvaluationSetup setup)
+    public Object evalConstantExpression(String expression, EvaluationSetup setup)
             throws ScriptException {
         return fromScriptResult(setup.evaluator.eval(expression, setup), setup);
     }
@@ -494,7 +491,7 @@ public enum Type {
         if (isCompatible(value)) {
             return value;
         } else {
-            throw new ScriptException("Cannot convert to " + name());
+            throw new InvalidValueException(this, value);
         }
     }
 
@@ -539,21 +536,8 @@ public enum Type {
         throw new IllegalArgumentException("Unknown type \"" + name + "\"");
     }
 
-    /**
-     * Converts the object to one of the supported types if appropriate.
-     * Basically normalizes numerical types to Integer or Double.
-     */
-    public static Object normalize(Object o) {
-        if (o instanceof Float || o instanceof Double) {
-            return ((Number) o).doubleValue();
-        } else if (o instanceof Number) {
-            return ((Number) o).intValue();
-        }
-        return o;
-    }
-
     @SuppressWarnings("rawtypes")
-    protected static <T> boolean isCompatibleList(
+    protected static boolean isCompatibleList(
             Object value, Predicate<Object> checkElement) {
         if ( ! (value instanceof List)) {
             return false;
@@ -567,11 +551,13 @@ public enum Type {
         }
     }
 
-    protected <T> String bracketedList(List<T> list, Function<T, String> formatElement) {
+    @SuppressWarnings("rawtypes")
+    protected static String bracketedList(
+            Object list, Function<Object, String> formatElement) {
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         boolean delimit = false;
-        for (T element : list) {
+        for (Object element : (List) list) {
             if (delimit) {
                 sb.append(", ");
             } else {
@@ -584,14 +570,14 @@ public enum Type {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    protected <T> List<T> fromScriptResultList(
+    protected List fromScriptResultList(
             Object value, Type elementType, EvaluationSetup setup) throws ScriptException {
         if ( ! (value instanceof List)) {
-            throw new ScriptException("Not a " + name + ": value");
+            throw new InvalidValueException(this, value);
         } else {
-            List<T> result = new ArrayList<T>();
+            List result = new ArrayList();
             for (Object element : (List) value) {
-                result.add((T) elementType.fromScriptResult(element, setup));
+                result.add(elementType.fromScriptResult(element, setup));
             }
             return result;
         }

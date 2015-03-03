@@ -26,8 +26,7 @@ public class ObjectiveStatus implements PartiallyComparable<ObjectiveStatus> {
     public final double[] asMinGoalValues;
 
     public ObjectiveStatus(MetricValues context,
-            ObjectiveExpression singleObjective) throws ScriptException,
-            InvalidValueException {
+            ObjectiveExpression singleObjective) throws ScriptException {
         this.namespace = context.getResults().getNamespace();
         double value = singleObjective.evaluateDouble(context);
         this.objectiveValues = new double[] { value };
@@ -35,8 +34,7 @@ public class ObjectiveStatus implements PartiallyComparable<ObjectiveStatus> {
     }
 
     public ObjectiveStatus(MetricValues context,
-            Collection<ObjectiveExpression> objectives) throws ScriptException,
-            InvalidValueException {
+            Collection<ObjectiveExpression> objectives) throws ScriptException {
         this.namespace = context.getResults().getNamespace();
         this.objectiveValues = new double[objectives.size()];
         this.asMinGoalValues = new double[objectives.size()];

@@ -167,14 +167,15 @@ public class SyntaxChecker {
 
         List<MetricExpression> metricList = new ArrayList<MetricExpression>();
         for (Map.Entry<String, Type> me : namespace.metrics.entrySet()) {
-            String expression = placeholders.get(me.getValue()).toString();
+            Type type = me.getValue();
+            String expression = type.toConstantExpression(placeholders.get(type), namespace);
             metricList.add(new MetricExpression(0, me.getKey(), expression, evaluator));
         }
         try {
             MetricValues metrics = new MetricValues(results, metricList);
             environmentWithMetrics.putAll(metrics.toBindings());
         } catch (InvalidValueException e) {
-            // Should not happen since the expressions are simply "1"
+            // Should not happen since the expressions are simply "1" or similar
             throw new RuntimeException(e);
         }
     }
