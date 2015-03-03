@@ -27,6 +27,10 @@ public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
      */
     public final double[] infeasibilities;
 
+    /**
+     * Evaluates pre-simulation constraint status with external parameters
+     * and input parameters defined.
+     */
     public ConstraintStatus(SimulationInput input,
             Collection<Constraint> constraints, boolean ignoreErrors)
             throws ScriptException {
@@ -35,6 +39,10 @@ public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
         this.feasible = computeFeasibility(infeasibilities);
     }
 
+    /**
+     * Evaluates post-simulation constraint status with external parameters,
+     * input parameters, output variables and metrics defined.
+     */
     public ConstraintStatus(MetricValues values,
             Collection<Constraint> constraints) throws ScriptException {
         this.infeasibilities = computeInfeasibilities(values, constraints,
@@ -43,6 +51,17 @@ public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
         if (feasible == null) {
             throw new IllegalStateException();
         }
+    }
+
+    /**
+     * Evaluates pre- or post-simulation constraint status with decision
+     * values defined, in addition to other named values.
+     */
+    public ConstraintStatus(ConstraintContext values,
+            Collection<Constraint> constraints, boolean ignoreErrors)
+            throws ScriptException {
+        this.infeasibilities = computeInfeasibilities(values, constraints, ignoreErrors);
+        this.feasible = computeFeasibility(infeasibilities);
     }
 
     public boolean mayBeFeasible() {

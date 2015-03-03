@@ -60,8 +60,17 @@ class BindingLayer {
      * To begin with, the binding value objects are shared as well.
      */
     BindingLayer(BindingLayer other) {
+        this(other, other.parent);
+    }
+
+    /**
+     * Constructs this BindingLayer as a copy of the given other layer,
+     * but uses another layer as the parent.  To begin with, the binding
+     * value objects are shared with the other layer.
+     */
+    BindingLayer(BindingLayer other, BindingLayer newParent) {
         this.namespace = other.namespace;
-        this.parent = other.parent;
+        this.parent = newParent;
         this.componentNamespaces = other.componentNamespaces;
         this.kindOfObject = other.kindOfObject;
         this.localBindings = new HashMap<String, Bindings>();
