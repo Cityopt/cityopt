@@ -29,10 +29,10 @@
 <timeseries tseriesid="4" typeid="5" />
 <timeseries tseriesid="5" typeid="5" />
 
-<simulationresult scenresid="1" scenid="1" outvarid="1" tseriesid="2"/>
-<simulationresult scenresid="2" scenid="1" outvarid="2" tseriesid="3"/>
-<simulationresult scenresid="3" scenid="1" outvarid="3" tseriesid="4"/>
-<simulationresult scenresid="4" scenid="1" outvarid="4" tseriesid="5"/>
+<simulationresult simresid="1" scenid="1" outvarid="1" tseriesid="2"/>
+<simulationresult simresid="2" scenid="1" outvarid="2" tseriesid="3"/>
+<simulationresult simresid="3" scenid="1" outvarid="3" tseriesid="4"/>
+<simulationresult simresid="4" scenid="1" outvarid="4" tseriesid="5"/>
 
 <metricval metricvalid="2" metid="2" scenmetricid="1" value="" tseriesid="1" /> <!-- time series -->
 <metricval metricvalid="1" metid="1" scenmetricid="1" value="65984.28" />
