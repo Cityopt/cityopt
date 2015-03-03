@@ -22,8 +22,8 @@ import javax.script.ScriptException;
  * @author Hannu Rummukainen
  */
 public class SimulationInput implements EvaluationContext {
-    private ExternalParameters externalParameters;
-    private BindingLayer bindingLayer;
+    private final ExternalParameters externalParameters;
+    private final BindingLayer bindingLayer;
     private volatile Integer externalId;
 
     /**
@@ -63,6 +63,7 @@ public class SimulationInput implements EvaluationContext {
      * the previous SimulationInput has been passed to SimulationRunner.start
      */
     public SimulationInput(SimulationInput other) {
+        this.externalParameters = other.getExternalParameters();
         this.bindingLayer = new BindingLayer(other.bindingLayer);
     }
 
