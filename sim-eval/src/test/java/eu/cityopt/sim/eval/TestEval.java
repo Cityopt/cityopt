@@ -53,10 +53,12 @@ public class TestEval {
     }
 
     ExternalParameters externalParameters;
-    SimulationInput input;
+    SimulationInput basicInput;
+    DecisionValues decisionValues;
+    SimulationInput derivedInput;
 
     @Before
-    public void setupInput() {
+    public void setupInput() throws ScriptException {
         double[] ta = new double[] { 0.0 };
         double[] va = new double[] { -1.0 };
         externalParameters = new ExternalParameters(ns);
@@ -64,21 +66,19 @@ public class TestEval {
         externalParameters.put("b", evaluator.makeTS(Type.TIMESERIES_LINEAR, ta, va));
         externalParameters.put("li", Arrays.asList(1, 2, 3));
         externalParameters.put("ld", Arrays.asList(4.0, 5.0, 6.0));
-        input = new SimulationInput(externalParameters);
-        input.put("C1", "x5", 1.0);
-        input.put("C1", "x6", 2.0);
-        input.put("C1", "x7", 3.0);
-        input.put("C1", "x8", 4.0);
-        input.put("C2", "x9", 5.0);
-    }
+        basicInput = new SimulationInput(externalParameters);
+        basicInput.put("C1", "x5", 1.0);
+        basicInput.put("C1", "x6", 2.0);
+        basicInput.put("C1", "x7", 3.0);
+        basicInput.put("C1", "x8", 4.0);
+        basicInput.put("C2", "x9", 5.0);
 
-    @Test
-    public void derivedInput() throws Exception {
-        DecisionValues dv = new DecisionValues(externalParameters);
-        dv.put(null, "i", 1);
-        dv.put(null, "d", 2.0);
-        dv.put("C1",  "x8",  4.0);
-        dv.put("C2", "x9", 5.0);
+        decisionValues = new DecisionValues(externalParameters);
+        decisionValues.put(null, "i", 1);
+        decisionValues.put(null, "d", 2.0);
+        decisionValues.put("C1",  "x8",  4.0);
+        decisionValues.put("C2", "x9", 5.0);
+
         InputExpression[] inputExpressions = {
                 new InputExpression("C1", "x5", "-a.values[0]", evaluator),
                 new InputExpression("C1", "x6", "d", evaluator),
@@ -86,18 +86,34 @@ public class TestEval {
                 new InputExpression("C1", "x8", "C1.x8", evaluator),
                 new InputExpression("C2", "x9", "C2.x9", evaluator)
         };
-        SimulationInput derivedInput = new SimulationInput(dv, Arrays.asList(inputExpressions));
+        derivedInput = new SimulationInput(decisionValues, Arrays.asList(inputExpressions));
+    }
+
+    @Test
+    public void derivedInput() throws Exception {
         assertEquals(1.0, derivedInput.get("C1", "x5"));
         assertEquals(2.0, derivedInput.get("C1", "x6"));
         assertEquals(3.0, derivedInput.get("C1", "x7"));
         assertEquals(4.0, derivedInput.get("C1", "x8"));
         assertEquals(5.0, derivedInput.get("C2", "x9"));
-        assertEquals(input, derivedInput);
-        assertEquals(input.hashCode(), derivedInput.hashCode());
+        assertEquals(basicInput, derivedInput);
+        assertEquals(basicInput.hashCode(), derivedInput.hashCode());
     }
 
     @Test
-    public void evaluateMockSimulation() throws Exception {
+    public void evaluateMockSimulation_NoDecisionVariables() throws Exception {
+        evaluateMockSimulation(basicInput, false);
+    }
+
+    @Test
+    public void evaluateMockSimulation_WithDecisionVariables() throws Exception {
+        evaluateMockSimulation(derivedInput, true);
+    }
+
+    public void evaluateMockSimulation(
+            SimulationInput input, boolean withDecisions) throws Exception {
+        System.out.println("--- withDecisions=" + withDecisions + " ---");
+        final double delta = 1.0e-12;
         Constraint[] constraints = {
                 new Constraint(1,
                         "C2.x9 * (C1.x5 - C1.x6) + 0.02 * C1.x6 - 0.025 * C1.x5",
@@ -115,6 +131,13 @@ public class TestEval {
         };
         ObjectiveExpression[] objectives = { new ObjectiveExpression(
                 1, "m1 + m2", false, evaluator) };
+
+        ConstraintContext precc = null;
+        if (withDecisions) {
+            precc = new ConstraintContext(decisionValues, derivedInput);
+            assertEquals(6.0, eval("C1.x5 + C1.x8 + i", precc), delta);
+            assertEquals(12.0, eval("C1.x6 * d * C1.x7", precc), delta);
+        }
 
         SimulationRunner actualRunner = new SimulationRunner() {
             @Override
@@ -140,10 +163,16 @@ public class TestEval {
         assertTrue(output instanceof SimulationResults);
         SimulationResults results = (SimulationResults)output;
         MetricValues mv = new MetricValues(results, Arrays.asList(metrics));
-        ConstraintStatus cs = new ConstraintStatus(mv,
-                Arrays.asList(constraints));
-        ObjectiveStatus os = new ObjectiveStatus(mv,
-                Arrays.asList(objectives));
+
+        ConstraintStatus cs = new ConstraintStatus(mv, Arrays.asList(constraints));
+        if (withDecisions) {
+            ConstraintContext postcc = new ConstraintContext(precc, mv);
+            ConstraintStatus cs2 = new ConstraintStatus(
+                    postcc, Arrays.asList(constraints), false);
+            assertArrayEquals(new double[] { 0.0, 5.0, 0.0 }, cs2.infeasibilities, delta);
+        }
+
+        ObjectiveStatus os = new ObjectiveStatus(mv, Arrays.asList(objectives));
 
         for (Map.Entry<String, Namespace.Component> entry : ns.components.entrySet()) {
             String componentName = entry.getKey().toString();
@@ -174,7 +203,6 @@ public class TestEval {
                     + os.objectiveValues[i]);
         }
 
-        final double delta = 1.0e-12;
         assertArrayEquals(new double[] { 0.0, 5.0, 0.0 }, cs.infeasibilities, delta);
         assertArrayEquals(new String[] { "-69.0", "50.0", "0.0", "TimeSeries(1, [0.0], [-1.0])" },
                 metricValues);
@@ -187,7 +215,7 @@ public class TestEval {
                 "C2.x9 * (C1.x5 - C1.x9) + 0.02 * C1.x6 - 0.025 * C1.x5",
                 Double.NEGATIVE_INFINITY, 0.0, evaluator);
 
-        double value = invalidConstraint.infeasibility(input);
+        double value = invalidConstraint.infeasibility(basicInput);
         System.out.println("infeasibility = " + value);
     }
 
@@ -197,7 +225,7 @@ public class TestEval {
         @SuppressWarnings("unchecked")
         ArrayList<String> names = new ArrayList<String>(
                 (List<String>)evaluator.eval(
-                        script, input.toBindings(), input.getEvaluationSetup()));
+                        script, basicInput.toBindings(), basicInput.getEvaluationSetup()));
         Collections.sort(names);
         String[] good = {"x5", "x6", "x7", "x8"};
         assertArrayEquals(good, names.toArray());
@@ -205,31 +233,31 @@ public class TestEval {
 
     @Test
     public void listAccess() throws Exception {
-        assertEquals(1, eval("li[0]", input), 0.0);
-        assertEquals(2, eval("li[1]", input), 0.0);
-        assertEquals(3, eval("li[2]", input), 0.0);
-        assertEquals(3, eval("len(li)", input), 0.0);
+        assertEquals(1, eval("li[0]", basicInput), 0.0);
+        assertEquals(2, eval("li[1]", basicInput), 0.0);
+        assertEquals(3, eval("li[2]", basicInput), 0.0);
+        assertEquals(3, eval("len(li)", basicInput), 0.0);
 
-        assertEquals(4, eval("ld[0]", input), 0.0);
-        assertEquals(5, eval("ld[1]", input), 0.0);
-        assertEquals(6, eval("ld[2]", input), 0.0);
-        assertEquals(3, eval("len(ld)", input), 0.0);
+        assertEquals(4, eval("ld[0]", basicInput), 0.0);
+        assertEquals(5, eval("ld[1]", basicInput), 0.0);
+        assertEquals(6, eval("ld[2]", basicInput), 0.0);
+        assertEquals(3, eval("len(ld)", basicInput), 0.0);
     }
 
     /** Test our global Python functions with non-timeseries data. */
     @Test
     public void globalPythonFunctions() throws Exception {
-        assertEquals(3, eval("mean([2, 4])", input), 0.0);
-        assertEquals(2, eval("var([2, 4])", input), 0.0);
-        assertEquals(Math.sqrt(2.0), eval("stdev([2, 4])", input), 0.0);
-        assertEquals(2, eval("min([2, 4])", input), 0.0);
-        assertEquals(4, eval("max([2, 4])", input), 0.0);
+        assertEquals(3, eval("mean([2, 4])", basicInput), 0.0);
+        assertEquals(2, eval("var([2, 4])", basicInput), 0.0);
+        assertEquals(Math.sqrt(2.0), eval("stdev([2, 4])", basicInput), 0.0);
+        assertEquals(2, eval("min([2, 4])", basicInput), 0.0);
+        assertEquals(4, eval("max([2, 4])", basicInput), 0.0);
 
-        assertEquals(1, eval("min(2, 4, 1, 3)", input), 0.0);
-        assertEquals(4, eval("max(2, 4, 1, 3)", input), 0.0);
+        assertEquals(1, eval("min(2, 4, 1, 3)", basicInput), 0.0);
+        assertEquals(4, eval("max(2, 4, 1, 3)", basicInput), 0.0);
 
-        assertEquals(1, eval("min([2], [4], [1], [3], key=lambda a: a[0])[0]", input), 0.0);
-        assertEquals(4, eval("max([2], [4], [1], [3], key=lambda a: a[0])[0]", input), 0.0);
+        assertEquals(1, eval("min([2], [4], [1], [3], key=lambda a: a[0])[0]", basicInput), 0.0);
+        assertEquals(4, eval("max([2], [4], [1], [3], key=lambda a: a[0])[0]", basicInput), 0.0);
     }
 
     private double eval(String expression, EvaluationContext context) throws ScriptException {
