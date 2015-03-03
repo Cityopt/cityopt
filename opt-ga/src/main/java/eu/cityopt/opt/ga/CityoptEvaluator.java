@@ -14,12 +14,11 @@ import org.opt4j.core.optimizer.Optimizer;
 import org.opt4j.core.optimizer.OptimizerStateListener;
 import org.opt4j.core.problem.Evaluator;
 
+import eu.cityopt.sim.eval.ConstraintContext;
 import eu.cityopt.sim.eval.ConstraintStatus;
-import eu.cityopt.sim.eval.InvalidValueException;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.ObjectiveExpression;
 import eu.cityopt.sim.eval.ObjectiveStatus;
-import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
@@ -51,7 +50,7 @@ import eu.cityopt.sim.eval.SimulatorConfigurationException;
  */
 @Singleton
 public class CityoptEvaluator
-implements Evaluator<SimulationInput>, OptimizerStateListener, Closeable {
+implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     private OptimisationProblem problem;
     private SimulationRunner runner;
     
@@ -63,24 +62,27 @@ implements Evaluator<SimulationInput>, OptimizerStateListener, Closeable {
     }
 
     @Override
-    public Objectives evaluate(SimulationInput phenotype) {
+    public Objectives evaluate(CityoptPhenotype pt) {
         try {
+            ConstraintContext coco = new ConstraintContext(
+                    pt.decisions, pt.input);
             ConstraintStatus prior = new ConstraintStatus(
-                    phenotype, problem.constraints, true);
+                    coco, problem.constraints, true);
             if (!prior.mayBeFeasible()) {
                 return infeasibleObj(prior); 
             }
             if (runner == null) {
                 throw new RuntimeException("Closed evaluator called.");
             }
-            SimulationOutput out = runner.start(phenotype).get();
+            SimulationOutput out = runner.start(pt.input).get();
             if (!(out instanceof SimulationResults)) {
                 throw new RuntimeException("Simulation failure");
             }
             MetricValues mv = new MetricValues(
                     (SimulationResults)out, problem.metrics);
             ConstraintStatus post = new ConstraintStatus(
-                    mv, problem.constraints);
+                    new ConstraintContext(coco, mv),
+                    problem.constraints, false);
             if (!post.mayBeFeasible()) {
                 return infeasibleObj(post);
             }

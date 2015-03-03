@@ -7,12 +7,11 @@ import org.opt4j.core.genotype.MapGenotype;
 import org.opt4j.core.problem.Decoder;
 
 import eu.cityopt.sim.eval.DecisionValues;
-import eu.cityopt.sim.eval.InvalidValueException;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.Type;
 
 public class ComponentwiseDecoder
-implements Decoder<ComponentwiseGenotype, SimulationInput> {
+implements Decoder<ComponentwiseGenotype, CityoptPhenotype> {
     private final OptimisationProblem problem;
     
     @Inject
@@ -21,7 +20,7 @@ implements Decoder<ComponentwiseGenotype, SimulationInput> {
     }
     
     @Override
-    public SimulationInput decode(ComponentwiseGenotype genotype) {
+    public CityoptPhenotype decode(ComponentwiseGenotype genotype) {
         DecisionValues dv = new DecisionValues(
                 problem.inputConst.getExternalParameters());
         for (String comp : genotype.keySet()) {
@@ -40,6 +39,6 @@ implements Decoder<ComponentwiseGenotype, SimulationInput> {
             throw new RuntimeException(
                     "Input expression evaluation failed", e);
         }
-        return inp;
+        return new CityoptPhenotype(dv, inp);
     }
 }
