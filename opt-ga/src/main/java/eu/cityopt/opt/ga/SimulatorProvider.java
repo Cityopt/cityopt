@@ -7,7 +7,9 @@ import org.opt4j.core.start.Constant;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.ProvisionException;
 
+import eu.cityopt.sim.eval.SimulatorConfigurationException;
 import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.apros.AprosManager;
@@ -21,7 +23,11 @@ public class SimulatorProvider implements Provider<SimulatorManager> {
 
     @Override
     public SimulatorManager get() {
-        return SimulatorManagers.get(simulatorName);
+        try {
+            return SimulatorManagers.get(simulatorName);
+        } catch (SimulatorConfigurationException e) {
+            throw new ProvisionException(e.getMessage());
+        }
     }
 
     /**

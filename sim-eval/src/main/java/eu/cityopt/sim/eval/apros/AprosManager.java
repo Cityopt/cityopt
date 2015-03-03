@@ -1,6 +1,7 @@
 package eu.cityopt.sim.eval.apros;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,9 +53,9 @@ public class AprosManager implements SimulatorManager {
     }
 
     @Override
-    public SimulationModel parseModel(byte[] modelData)
+    public SimulationModel parseModel(InputStream inputStream)
             throws IOException, SimulatorConfigurationException {
-        return new AprosModel(modelData, this);
+        return new AprosModel(inputStream, this);
     }
 
     @Override

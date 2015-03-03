@@ -1,7 +1,8 @@
 package eu.cityopt.opt.ga;
 
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
@@ -22,8 +23,9 @@ public class ProblemFromFiles extends OptimisationProblem {
     private static SimulationModel readModel(
             SimulatorManager simulator, Path file)
             throws IOException, SimulatorConfigurationException {
-        byte[] modelData = Files.readAllBytes(file);
-        return simulator.parseModel(modelData);
+        try (InputStream stream = new FileInputStream(file.toFile())) {
+            return simulator.parseModel(stream);
+        }
     }
     
     @Inject
