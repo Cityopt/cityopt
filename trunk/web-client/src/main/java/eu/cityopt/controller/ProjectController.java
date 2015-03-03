@@ -1671,7 +1671,7 @@ public class ProjectController {
 				OutputVariableDTO outputVar = outputVarService.findByID(outputVarId);
 				SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, scenario.getScenid());
 					
-				List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getScenresid());
+				List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
 				TimeSeries timeSeries = new TimeSeries(outputVar.getName());
 
 				for (int i = 0; i < timeSeriesVals.size(); i++)
