@@ -37,8 +37,7 @@ public class ProblemFromFiles extends OptimisationProblem {
             String modelFile,
             @Constant(value="problemFile", namespace=ProblemFromFiles.class)
             String problemFile)
-            throws IOException, SimulatorConfigurationException,
-                   ParseException {
+            throws IOException, SimulatorConfigurationException {
         this(readModel(simulator, Paths.get(modelFile)),
              Paths.get(problemFile),
              timeOrigin.isEmpty() ? null : Instant.parse(timeOrigin));
