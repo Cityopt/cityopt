@@ -71,7 +71,7 @@ public class TimeSeries implements java.io.Serializable {
 		this.type = type;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries", cascade=CascadeType.REMOVE)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries")
 	public Set<TimeSeriesVal> getTimeseriesvals() {
 		return this.timeseriesvals;
 	}

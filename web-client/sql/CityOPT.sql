@@ -400,6 +400,7 @@ CREATE TABLE OptimizationSet
 	updatedOn timestamp,
 	createdBy integer,
 	updatedBy integer,
+	optStart timestamp,
 	scenID integer,
 	extParamValSetID integer
 )
@@ -1303,7 +1304,7 @@ ALTER TABLE TimeSeries ADD CONSTRAINT FK_TimeSeries_Type
 ;
 
 ALTER TABLE TimeSeriesVal ADD CONSTRAINT FK_TimeSeriesVal_TimeSeries
-	FOREIGN KEY (tSeriesID) REFERENCES TimeSeries (tSeriesID) ON DELETE No Action ON UPDATE No Action
+	FOREIGN KEY (tSeriesID) REFERENCES TimeSeries (tSeriesID) ON DELETE Cascade ON UPDATE No Action
 ;
 
 ALTER TABLE Unit ADD CONSTRAINT FK_Unit_Type
