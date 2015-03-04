@@ -37,6 +37,11 @@ public class OptimisationProblem {
     public Collection<MetricExpression> metrics = new ArrayList<>();
     public List<ObjectiveExpression> objs= new ArrayList<>();
     
+    /**
+     * Construct an empty problem.
+     * The model and namespace will be initialised, everything else is
+     * left empty.
+     */
     @Inject
     public OptimisationProblem(SimulationModel model, Namespace ns) {
         this.model = model;
@@ -46,6 +51,10 @@ public class OptimisationProblem {
     
     public Namespace getNamespace() {
         return inputConst.getNamespace();
+    }
+    
+    public ExternalParameters getExternalParameters() {
+        return inputConst.getExternalParameters();
     }
 
     public SimulationRunner makeRunner()

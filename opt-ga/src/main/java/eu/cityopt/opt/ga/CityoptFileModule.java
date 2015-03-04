@@ -1,5 +1,9 @@
 package eu.cityopt.opt.ga;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Instant;
+
 import org.opt4j.core.config.Icons;
 import org.opt4j.core.config.annotations.File;
 import org.opt4j.core.config.annotations.Icon;
@@ -8,6 +12,9 @@ import org.opt4j.core.config.annotations.Parent;
 import org.opt4j.core.start.Constant;
 import org.opt4j.core.start.Opt4JModule;
 
+import com.google.inject.name.Names;
+
+import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulatorManager;
 
 @Parent(CityoptModule.class)
@@ -24,24 +31,32 @@ public class CityoptFileModule extends Opt4JModule {
     private String simulator = "Apros-Combustion-5.13.06-64bit";
     
     @Info("Time origin.  If empty read from the zip file.")
-    @Constant(value="timeOrigin", namespace=ProblemFromFiles.class)
+    @Constant(value="timeOrigin", namespace=CityoptFileModule.class)
     private String timeOrigin = "2015-01-01T00:00:00Z";
     
     @Info("The zip file containing the model")
     @File(".zip")
-    @Constant(value="modelFile", namespace=ProblemFromFiles.class)
+    @Constant(value="modelFile", namespace=CityoptFileModule.class)
     private String modelFile = "";
     
     @Info("The optimisation problem definition file")
     @File(".csv")
-    @Constant(value="problemFile", namespace=ProblemFromFiles.class)
+    @Constant(value="problemFile", namespace=CityoptFileModule.class)
     private String problemFile = "";
-    
+
     @Override
     public void config() {
         install(new CityoptModule());
+        install(new JacksonCsvModule());
         bind(SimulatorManager.class).toProvider(SimulatorProvider.class);
-        bind(OptimisationProblem.class).to(ProblemFromFiles.class);
+        bind(SimulationModel.class).toProvider(ModelBlobLoader.class);
+        bind(OptimisationProblem.class).toProvider(ProblemFromBinder.class);
+        bind(Path.class).annotatedWith(Names.named("model")).toInstance(
+                Paths.get(modelFile));
+        bind(Path.class).annotatedWith(Names.named("problem")).toInstance(
+                Paths.get(problemFile));
+        bind(Instant.class).annotatedWith(Names.named("timeOrigin"))
+                .toInstance(Instant.parse(timeOrigin));
     }
 
     public String getAprosDir() {

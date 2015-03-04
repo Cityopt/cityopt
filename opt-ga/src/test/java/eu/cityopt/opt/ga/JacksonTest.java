@@ -14,6 +14,7 @@ import java.util.Properties;
 import javax.inject.Singleton;
 
 import org.junit.*;
+import org.opt4j.core.start.Opt4JTask;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +24,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.name.Names;
 
@@ -36,21 +38,17 @@ public class JacksonTest {
     
     public static class TestModule extends AbstractModule {
         Instant t0 = Instant.parse(props.getProperty("time_origin"));
-        SimulationModel model = null;
+        Path mfile = dataDir.resolve(props.getProperty("model_file"));
+        Path pfile = dataDir.resolve(props.getProperty("problem_file"));
        
-        @Provides
-        @Singleton
-        public Namespace getNamespace(JacksonBinder binder) {
-            return binder.makeNamespace(t0);
-        }
-        
-        @Provides
-        public SimulationModel getModel() {return model;}
-
         @Override
         protected void configure() {
-            bind(Path.class).annotatedWith(Names.named("problem")).toInstance(
-                    dataDir.resolve(props.getProperty("problem_file")));
+            bind(Instant.class).annotatedWith(Names.named("timeOrigin"))
+                    .toInstance(t0);
+            bind(Path.class).annotatedWith(Names.named("model"))
+                    .toInstance(mfile);
+            bind(Path.class).annotatedWith(Names.named("problem"))
+                    .toInstance(pfile);
         }
     }
    
@@ -74,6 +72,8 @@ public class JacksonTest {
     }
     
     public void checkProblem(OptimisationProblem p) {
+        assertTrue(p.inputConst.getExternalParameters().isComplete());
+        assertFalse(p.inputConst.isComplete());
         assertEquals(1, p.constraints.size());
         assertEquals(2, p.decisionVars.values().stream()
                 .mapToInt(m -> m.size()).sum());
@@ -86,17 +86,18 @@ public class JacksonTest {
     @Test
     public void testReadCSV() throws Exception {
         TestModule tm = new TestModule();
-        Injector csv_inj = Guice.createInjector(
-                new JacksonCsvModule(), tm);
+        JacksonCsvModule jm = new JacksonCsvModule();
+        Injector csv_inj = Guice.createInjector(jm, tm);
         JacksonBinder binder = csv_inj.getInstance(JacksonBinder.class);
         ObjectMapper json = new ObjectMapper();
         json.enable(SerializationFeature.INDENT_OUTPUT);
         json.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
         json.writeValue(System.out, binder);
-        ObjectWriter wtr = csv_inj.getInstance(ObjectWriter.class);
+        ObjectWriter wtr = csv_inj.getInstance(
+                Key.get(ObjectWriter.class, Names.named("problem")));
         wtr.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
                 .writeValue(System.out, binder);
-        Namespace ns = tm.getNamespace(binder);
+        Namespace ns = binder.makeNamespace(tm.t0);
         OptimisationProblem p = new OptimisationProblem(null, ns);
         binder.addToProblem(p);
         checkProblem(p);
@@ -107,9 +108,20 @@ public class JacksonTest {
     @Ignore
     public void testInjectProblem() throws Exception {
         TestModule tm = new TestModule();
-        Injector csv_inj = Guice.createInjector(
-                new JacksonCsvModule(), tm);
-        OptimisationProblem p = csv_inj.getInstance(OptimisationProblem.class);
-        checkProblem(p);
+        CityoptFileModule cfm = new CityoptFileModule();
+        cfm.setModelFile(tm.mfile.toString());
+        cfm.setProblemFile(tm.pfile.toString());
+        cfm.setTimeOrigin(tm.t0.toString());
+        Opt4JTask task = new Opt4JTask(false);
+        try {
+            // Not tm!
+            task.init(cfm);
+            task.open();
+            OptimisationProblem p = task.getInstance(OptimisationProblem.class);
+            checkProblem(p);
+            assertNotNull(p.model);
+        } finally {
+            task.close();
+        }
     }
 }
