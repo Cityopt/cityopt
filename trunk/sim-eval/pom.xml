@@ -5,8 +5,7 @@
   <artifactId>sim-eval</artifactId>
   <packaging>jar</packaging>
 
-  <name>sim-eval</name>
-  <url>http://maven.apache.org</url>
+  <name>Cityopt simulation and evaluation library</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
