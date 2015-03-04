@@ -63,6 +63,7 @@ public class JacksonCsvModule extends AbstractModule {
     }
     
     @Provides
+    @Named("problem")
     public static ObjectWriter getWriter(CsvMapper mapper) {
         /* Automatic schema creation does not appear to work for polymorphic
          * data.
@@ -76,5 +77,5 @@ public class JacksonCsvModule extends AbstractModule {
     }
     
     @Override
-    protected void configure() {}
+    protected void configure() { }
 }
