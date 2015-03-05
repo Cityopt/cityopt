@@ -102,7 +102,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
                 storage.put(out);
             }
             if (!(out instanceof SimulationResults)) {
-                throw new RuntimeException("Simulation failure");
+                return infeasibleObj(prior);
             }
             MetricValues mv = new MetricValues(
                     (SimulationResults)out, problem.metrics);
