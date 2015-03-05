@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.DecisionDomain;
 import eu.cityopt.sim.eval.ExternalParameters;
@@ -26,7 +23,6 @@ import eu.cityopt.sim.eval.SimulatorConfigurationException;
  * 
  * @author ttekth
  */
-@Singleton
 public class OptimisationProblem {
     public SimulationModel model;
     public SimulationInput inputConst;
@@ -42,7 +38,6 @@ public class OptimisationProblem {
      * The model and namespace will be initialised, everything else is
      * left empty.
      */
-    @Inject
     public OptimisationProblem(SimulationModel model, Namespace ns) {
         this.model = model;
         ExternalParameters ext = new ExternalParameters(ns);

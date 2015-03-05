@@ -28,8 +28,9 @@ import eu.cityopt.sim.eval.Type;
 /**
  * Static methods for reading CSV files.
  * @author ttekth
- *
+ * @deprecated Use {@link JacksonBinder} and {@link JacksonCsvModule} instead.
  */
+@Deprecated
 public class CSVReaders {
     /** Column names expected in various CSV files. */
     public class Cols {

@@ -21,6 +21,7 @@ import com.google.common.collect.Lists;
 
 import eu.cityopt.sim.eval.Namespace;
 
+@Deprecated
 public class CSVReadersTest {
     private final static String propsName = "/test.properties";
     private static Properties props;
