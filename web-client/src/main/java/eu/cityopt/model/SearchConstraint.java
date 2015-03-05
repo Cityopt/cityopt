@@ -2,10 +2,8 @@ package eu.cityopt.model;
 
 // Generated 13.11.2014 15:13:00 by Hibernate Tools 4.0.0
 
-import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -26,13 +23,12 @@ import javax.persistence.Table;
 public class SearchConstraint implements java.io.Serializable {
 
 	private int scid;
-	private Unit unit;
 	private Project project;
+	private Unit unit;
 	private String expression;
 	private Double lowerbound;
 	private Double upperbound;
-	private Set<OptSearchConst> optsearchconsts = new HashSet<OptSearchConst>(0);
-
+	
 	public SearchConstraint() {
 	}
 
@@ -49,7 +45,6 @@ public class SearchConstraint implements java.io.Serializable {
 		this.expression = expression;
 		this.lowerbound = lowerbound;
 		this.upperbound = upperbound;
-		this.optsearchconsts = optsearchconsts;
 	}
 
 	@SequenceGenerator(name="searchconstraint_scid_seq",sequenceName="searchconstraint_scid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="searchconstraint_scid_seq")
@@ -108,15 +103,6 @@ public class SearchConstraint implements java.io.Serializable {
 
 	public void setUpperbound(Double upperbound) {
 		this.upperbound = upperbound;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "searchconstraint", cascade=CascadeType.REMOVE)
-	public Set<OptSearchConst> getOptsearchconsts() {
-		return this.optsearchconsts;
-	}
-
-	public void setOptsearchconsts(Set<OptSearchConst> optsearchconsts) {
-		this.optsearchconsts = optsearchconsts;
 	}
 
 }

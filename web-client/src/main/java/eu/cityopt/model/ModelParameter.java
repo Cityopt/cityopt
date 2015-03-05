@@ -26,6 +26,7 @@ public class ModelParameter implements java.io.Serializable {
 	private InputParameter inputparameter;
 	private ScenarioGenerator scenariogenerator;
 	private String expression;
+	private String value;
 
 	public ModelParameter() {
 	}
@@ -38,11 +39,12 @@ public class ModelParameter implements java.io.Serializable {
 	}
 
 	public ModelParameter(int modelparamid, InputParameter inputparameter,
-			ScenarioGenerator scenariogenerator, String value) {
+			ScenarioGenerator scenariogenerator, String expression, String value) {
 		this.modelparamid = modelparamid;
 		this.inputparameter = inputparameter;
 		this.scenariogenerator = scenariogenerator;
-		this.expression = value;
+		this.expression = expression;
+		this.value = value;
 	}
 
 	@SequenceGenerator(name="modelparameter_modelparamid_seq",sequenceName="modelparameter_modelparamid_seq") 
@@ -86,4 +88,12 @@ public class ModelParameter implements java.io.Serializable {
 		this.expression = expression;
 	}
 
+	@Column(name = "value")
+	public String getValue() {
+		return this.value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
 }
