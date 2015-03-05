@@ -176,9 +176,11 @@
 													</tr>
 													<tr height="20"></tr>
 													<tr>
-														<td></td>
+														<td>
+															<a href="viewchart.html?action=removeall"><button type="button">Remove selections</button></a>
+														</td>
 														<td align="right">
-															<a href="drawchart.html"><button type="button">Draw chart</button></a>
+															<a href="viewchart.html?action=openwindow"><button type="button">Open chart window</button></a>
 														</td>
 													</tr>
 												</table>
@@ -189,6 +191,7 @@
 							</tr>
 							<tr height="50">
 								<td>
+									<img src="chart.png">
 								</td>
 							</tr>
 						</table>

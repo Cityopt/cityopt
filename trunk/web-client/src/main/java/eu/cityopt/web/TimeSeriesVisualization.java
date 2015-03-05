@@ -3,6 +3,8 @@ package eu.cityopt.web;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import javax.swing.JFrame;
@@ -10,6 +12,7 @@ import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.plot.XYPlot;
@@ -31,52 +34,25 @@ public class TimeSeriesVisualization {
 * @param title the frame title.
 */
 
-	public TimeSeriesVisualization (String title) {
-			
-		/*TimeSeries s1 = new TimeSeries("L&G European Index Trust");//, Month.class);
-		s1.add(new Month(2, 2001), 181.8);
-		s1.add(new Month(3, 2001), 167.3);
-		s1.add(new Month(4, 2001), 153.8);
-		s1.add(new Month(5, 2001), 167.6);
-		
-		TimeSeries s2 = new TimeSeries("L&G UK Index Trust");//, Month.class);
-		s2.add(new Month(2, 2001), 129.6);
-		s2.add(new Month(3, 2001), 123.2);
-		s2.add(new Month(4, 2001), 117.2);
-		s2.add(new Month(5, 2001), 124.1);
-	
-		TimeSeriesCollection dataset = new TimeSeriesCollection();
-		dataset.addSeries(s1);
-		dataset.addSeries(s2);
-		//dataset.setDomainIsPointsInTime(true);
-
-		//XYDataset dataset = null;
-	
-		JFreeChart chart = createChart(dataset);
-		ChartPanel chartPanel = new ChartPanel(chart);
-		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
-		chartPanel.setMouseZoomable(true, false);
-		setContentPane(chartPanel);*/
-	}
-
-	public TimeSeriesVisualization (String title, TimeSeries timeSeries) {
-		
-		TimeSeriesCollection dataset = new TimeSeriesCollection();
-		dataset.addSeries(timeSeries);
-		//dataset.setDomainIsPointsInTime(true);
-		//XYDataset dataset = null;
-	
-		JFreeChart chart = createChart(dataset, title, "Time", timeSeries.getDescription());
-		ChartPanel chartPanel = new ChartPanel(chart);
-		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
-		chartPanel.setMouseZoomable(true, false);
-	}
-	
-	public TimeSeriesVisualization (String title, TimeSeriesCollection timeSeriesCollection, String xAxisLabel, String yAxisLabel) {
+	public TimeSeriesVisualization (String title, TimeSeriesCollection timeSeriesCollection, 
+		String xAxisLabel, String yAxisLabel) {
 		JFreeChart chart = createChart(timeSeriesCollection, title, xAxisLabel, yAxisLabel);
 		ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
 		chartPanel.setMouseZoomable(true, false);
+
+		/*if (bSaveAsImage)
+		{
+			File file = new File("testchart.png");
+			
+			try {
+				file.createNewFile();
+				ChartUtilities.saveChartAsPNG(file, chart, 500, 270);
+				//ChartUtilities.saveChartAsPNG(file, chart, 500, 270);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}*/
 		
 		JFrame f = new JFrame(title);
         f.setTitle(title);
@@ -105,7 +81,7 @@ public class TimeSeriesVisualization {
 	*
 	* @return A chart.
 	*/
-	private static JFreeChart createChart(XYDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
+	public static JFreeChart createChart(XYDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
 		JFreeChart chart = ChartFactory.createTimeSeriesChart(
 				title, 
 				xAxisLabel,

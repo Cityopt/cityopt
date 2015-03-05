@@ -20,7 +20,32 @@ public class UserSession {
 	{
 		selectedChartOutputVarIds.add(new Integer(id));
 	}
-	
+
+	public void removeOutputVarId(int id)
+	{
+		selectedChartOutputVarIds.remove(new Integer(id));
+	}
+
+	public void addExtVarId(int id)
+	{
+		selectedChartExtVarIds.add(new Integer(id));
+	}
+
+	public void removeExtVarId(int id)
+	{
+		selectedChartExtVarIds.remove(new Integer(id));
+	}
+
+	public void removeAllExtVarIds()
+	{
+		selectedChartExtVarIds.clear();
+	}
+
+	public void removeAllOutputVarIds()
+	{
+		selectedChartOutputVarIds.clear();
+	}
+
 	public void setSelectedChartOutputVarIds(HashSet<Integer> selectedChartOutputVarIds) {
 		this.selectedChartOutputVarIds = selectedChartOutputVarIds;
 	}
