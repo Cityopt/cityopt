@@ -52,8 +52,6 @@ public class Project implements java.io.Serializable {
 			0);
 	private List<Component> components = new ArrayList<Component>();
 	private Set<OptConstraint> optconstraints = new HashSet<OptConstraint>(0);
-	private Set<SearchConstraint> searchconstraints = new HashSet<SearchConstraint>(
-			0);
 	private Set<Metric> metrics = new HashSet<Metric>(0);
 	private Set<UserGroupProject> usergroupprojects = new HashSet<UserGroupProject>(
 			0);
@@ -73,7 +71,7 @@ public class Project implements java.io.Serializable {
 			Integer updatedby, Set<ObjectiveFunction> objectivefunctions,
 			Set<Scenario> scenarios, Set<ScenarioGenerator> scenariogenerators,
 			List<Component> components, Set<OptConstraint> optconstraints,
-			Set<SearchConstraint> searchconstraints, Set<Metric> metrics,
+			Set<Metric> metrics,
 			Set<UserGroupProject> usergroupprojects, Set<ExtParam> extparams) {
 		this.prjid = prjid;
 		this.simulationmodel = simulationmodel;
@@ -91,7 +89,6 @@ public class Project implements java.io.Serializable {
 		this.scenariogenerators = scenariogenerators;
 		this.components = components;
 		this.optconstraints = optconstraints;
-		this.searchconstraints = searchconstraints;
 		this.metrics = metrics;
 		this.usergroupprojects = usergroupprojects;
 		this.extparams = extparams;
@@ -247,15 +244,6 @@ public class Project implements java.io.Serializable {
 
 	public void setOptconstraints(Set<OptConstraint> optconstraints) {
 		this.optconstraints = optconstraints;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade=CascadeType.REMOVE)
-	public Set<SearchConstraint> getSearchconstraints() {
-		return this.searchconstraints;
-	}
-
-	public void setSearchconstraints(Set<SearchConstraint> searchconstraints) {
-		this.searchconstraints = searchconstraints;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade=CascadeType.REMOVE)

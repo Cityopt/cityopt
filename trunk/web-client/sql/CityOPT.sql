@@ -505,17 +505,6 @@ CREATE TABLE ScenGenOptConstraint
 )
 ;
 
-CREATE TABLE SearchConstraint
-(
-	scID integer NOT NULL DEFAULT nextval(('searchconstraint_scid_seq'::text)::regclass),
-	prjID integer,
-	unitID integer,
-	expression text,
-	lowerBound double precision,
-	upperBound double precision
-)
-;
-
 CREATE TABLE SimulationModel
 (
 	modelID integer NOT NULL DEFAULT nextval(('simulationmodel_modelid_seq'::text)::regclass),
@@ -670,9 +659,6 @@ CREATE SEQUENCE scengenobjectivefunction_sgobfunctionid_seq INCREMENT 1 START 1
 ;
 
 CREATE SEQUENCE scengenoptconstraint_sgoptconstraintid_seq INCREMENT 1 START 1
-;
-
-CREATE SEQUENCE searchconstraint_scid_seq INCREMENT 1 START 1
 ;
 
 CREATE SEQUENCE simulationmodel_modelid_seq INCREMENT 1 START 1
@@ -901,9 +887,6 @@ ALTER TABLE OptimizationSet ADD CONSTRAINT PK_OptimizationSet
 	PRIMARY KEY (optID)
 ;
 
-ALTER TABLE OptSearchConst ADD CONSTRAINT UQ_OptSearchConst_optID UNIQUE (optID)
-;
-
 CREATE INDEX IXFK_OptSearchConst_OptConstraint ON OptSearchConst (optConstID ASC)
 ;
 
@@ -1004,16 +987,6 @@ CREATE INDEX IXFK_ScenGenOptConstraint_OptConstraint ON ScenGenOptConstraint (op
 ;
 
 CREATE INDEX IXFK_ScenGenOptConstraint_ScenarioGenerator ON ScenGenOptConstraint (scenGenID ASC)
-;
-
-CREATE INDEX IXFK_SearchConstraint_Project ON SearchConstraint (prjID ASC)
-;
-
-CREATE INDEX IXFK_SearchConstraint_Unit ON SearchConstraint (unitID ASC)
-;
-
-ALTER TABLE SearchConstraint ADD CONSTRAINT PK_Constraint
-	PRIMARY KEY (scID)
 ;
 
 ALTER TABLE SimulationModel ADD CONSTRAINT PK_SimulationModel
@@ -1288,14 +1261,6 @@ ALTER TABLE ScenGenOptConstraint ADD CONSTRAINT FK_ScenGenOptConstraint_OptConst
 
 ALTER TABLE ScenGenOptConstraint ADD CONSTRAINT FK_ScenGenOptConstraint_ScenarioGenerator
 	FOREIGN KEY (scenGenID) REFERENCES ScenarioGenerator (scenGenID) ON DELETE No Action ON UPDATE No Action
-;
-
-ALTER TABLE SearchConstraint ADD CONSTRAINT FK_SearchConstraint_Project
-	FOREIGN KEY (prjID) REFERENCES Project (prjID) ON DELETE No Action ON UPDATE No Action
-;
-
-ALTER TABLE SearchConstraint ADD CONSTRAINT FK_SearchConstraint_Unit
-	FOREIGN KEY (unitID) REFERENCES Unit (unitID) ON DELETE No Action ON UPDATE No Action
 ;
 
 ALTER TABLE SimulationResult ADD CONSTRAINT FK_SimulationResult_TimeSeries
