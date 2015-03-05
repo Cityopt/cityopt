@@ -221,8 +221,9 @@ public class JacksonBinder {
                                         : Double.NEGATIVE_INFINITY),
                     ub = (upper != null ? Double.valueOf(upper)
                                         : Double.POSITIVE_INFINITY);
+                String id = "con" + prob.constraints.size();
                 prob.constraints.add(new Constraint(
-                        prob.constraints.size(), expression, lb, ub,
+                        id, expression, lb, ub,
                         prob.getNamespace().evaluator));
             }
         }
@@ -244,8 +245,9 @@ public class JacksonBinder {
             if (is_max == null)
                 throw new IllegalArgumentException(
                         "Invalid objective type " + type);
+            String id = "obj" + prob.objs.size(); 
             prob.objs.add(new ObjectiveExpression(
-                    prob.objs.size(), expression, is_max,
+                    id, expression, is_max,
                     prob.getNamespace().evaluator));
 
         }

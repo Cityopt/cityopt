@@ -9,28 +9,19 @@ import javax.script.ScriptException;
  * @author Hannu Rummukainen
  */
 public class ObjectiveExpression extends Expression {
-    private int objectiveId;
+    private final String name;
     private boolean maximize;
 
-    public ObjectiveExpression(int objectiveId, String source,
+    public ObjectiveExpression(String objectiveName, String source,
             boolean maximize, Evaluator evaluator) throws ScriptException {
         super(source, evaluator);
-        this.objectiveId = objectiveId;
+        this.name = objectiveName;
         this.maximize = maximize;
     }
 
-    public int getObjectiveId() {
-        return objectiveId;
-    }
-
-    /**
-     * Return a symbolic name for the objective.
-     * Unfortunately objectives only have numeric ids, so this has to
-     * be generated.  These names must be distinct from each other
-     * and Constraint names.
-     */
+    /** Returns a symbolic name for the objective function. */
     public String getName() {
-        return "obj" + objectiveId;
+        return name;
     }
 
     public boolean isMaximize() {

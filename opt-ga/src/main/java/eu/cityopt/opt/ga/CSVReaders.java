@@ -211,14 +211,13 @@ public class CSVReaders {
                                           : Double.NEGATIVE_INFINITY),
                         ub = (ubs != null ? Double.valueOf(ubs)
                                           : Double.POSITIVE_INFINITY);
-                    int id = (int)recordNumber;
+                    String id = "con" + recordNumber;
                     try {
                         p.constraints.add(new Constraint(
-                                (int)recordNumber, expr, lb, ub,
-                                ns.evaluator));
+                                id, expr, lb, ub, ns.evaluator));
                     } catch (IllegalArgumentException e) {
                         throw new IOException(
-                                "Error in constraint " + id,
+                                "Error in constraint " + recordNumber,
                                 e);
                     }
                 }
@@ -240,8 +239,9 @@ public class CSVReaders {
                 if (is_max == null)
                     throw new IOException(
                             "Invalid objective type " + type);
+                String id = "obj" + recordNumber; 
                 p.objs.add(new ObjectiveExpression(
-                        (int)recordNumber, expr, is_max, ns.evaluator));
+                        id, expr, is_max, ns.evaluator));
                 break;
             default:
             }

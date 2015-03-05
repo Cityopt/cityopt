@@ -8,7 +8,7 @@ import javax.script.ScriptException;
  * @author Hannu Rummukainen
  */
 public class Constraint {
-    private int constraintId;
+    private String name;
     private Expression expression;
     private double lowerBound;
     private double upperBound;
@@ -17,10 +17,10 @@ public class Constraint {
      * Construct a new constraint.
      * @throws IllegalArgumentException if lowerBound > upperBound  
      */
-    public Constraint(int constraintId, String source,
+    public Constraint(String constraintName, String source,
             double lowerBound, double upperBound, Evaluator evaluator)
             throws ScriptException {
-        this.constraintId = constraintId;
+        this.name = constraintName;
         this.expression = new Expression(source, evaluator);
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
@@ -31,18 +31,9 @@ public class Constraint {
         }
     }
 
-    public int getConstraintId() {
-        return constraintId;
-    }
-    
-    /**
-     * Return a symbolic name for the constraint.
-     * Unfortunately constraints only have numeric ids, so this has to
-     * be generated.  These names must be distinct from each other and
-     * ObjectiveExpression names.
-     */
+    /** Returns a symbolic name for the constraint. */
     public String getName() {
-        return "con" + constraintId;
+        return name;
     }
 
     /**
