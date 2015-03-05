@@ -46,9 +46,13 @@ public class ConstraintContext implements EvaluationContext {
             ConstraintContext preconstraintContext,
             MetricValues metricValues) {
         SimulationResults results = metricValues.getResults();
-        if (preconstraintContext.metricValues != null
-                || results.getInput() != preconstraintContext.input) {
-            throw new IllegalArgumentException();
+        if (preconstraintContext.metricValues != null) {
+            //TODO Why not just replace them?
+            throw new IllegalArgumentException(
+                    "preconstraintContext already has metric values.");
+        }
+        if (!results.getInput().equals(preconstraintContext.input)) {
+            throw new IllegalArgumentException("Input mismatch");
         }
         BindingLayer newResultLayer = new BindingLayer(
                 results.getBindingLayer(), preconstraintContext.bindingLayer);
