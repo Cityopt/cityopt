@@ -274,11 +274,10 @@ CREATE TABLE DecisionVariable
 	decisionVarID integer NOT NULL DEFAULT nextval(('decisionvariable_decisionvarid_seq'::text)::regclass),
 	scenGenID integer NOT NULL,
 	name varchar(50)	,
-	expression text,
-	lowerBound double precision,
-	upperBound double precision,
+	lowerBound text,
+	upperBound text,
 	typeID integer,
-	componentID integer
+	inputID integer
 )
 ;
 
@@ -366,7 +365,8 @@ CREATE TABLE ModelParameter
 	modelParamID integer NOT NULL DEFAULT nextval(('modelparameter_modelparamid_seq'::text)::regclass),
 	scenGenID integer NOT NULL,
 	inputID integer NOT NULL,
-	expression text
+	expression text,
+	value text
 )
 ;
 
@@ -375,6 +375,7 @@ CREATE TABLE ObjectiveFunction
 	obtFunctionID integer NOT NULL DEFAULT nextval(('objectivefunction_obtfunctionid_seq'::text)::regclass),
 	prjID integer,
 	typeID integer,
+	name varchar(50)	,
 	expression text,
 	isMaximise boolean,
 	executedAt timestamp
@@ -385,9 +386,10 @@ CREATE TABLE OptConstraint
 (
 	optConstID integer NOT NULL DEFAULT nextval(('optconstraint_optconstid_seq'::text)::regclass),
 	prjID integer,
+	name varchar(50)	,
 	expression text,
-	lowerBound double precision,
-	upperBound double precision
+	lowerBound text,
+	upperBound text
 )
 ;
 
@@ -410,7 +412,7 @@ CREATE TABLE OptSearchConst
 (
 	optSearchConstID integer NOT NULL DEFAULT nextval(('optsearchconst_optsearchconstid_seq'::text)::regclass),
 	optID integer NOT NULL,
-	scID integer NOT NULL
+	optConstID integer
 )
 ;
 
@@ -745,7 +747,7 @@ ALTER TABLE DataReliability ADD CONSTRAINT PK_DataQuality
 	PRIMARY KEY (dataRelID)
 ;
 
-CREATE INDEX IXFK_DecisionVariable_Component ON DecisionVariable (componentID ASC)
+CREATE INDEX IXFK_DecisionVariable_InputParameter ON DecisionVariable (inputID ASC)
 ;
 
 CREATE INDEX IXFK_DecisionVariable_Type ON DecisionVariable (typeID ASC)
@@ -873,11 +875,17 @@ ALTER TABLE ObjectiveFunction ADD CONSTRAINT PK_OptimizationFunction
 	PRIMARY KEY (obtFunctionID)
 ;
 
+ALTER TABLE ObjectiveFunction ADD CONSTRAINT IXUQ_ObjectiveFunction_Name UNIQUE (prjID,name)
+;
+
 CREATE INDEX IXFK_OptConstraints_Project ON OptConstraint (prjID ASC)
 ;
 
 ALTER TABLE OptConstraint ADD CONSTRAINT PK_OptConstraints
 	PRIMARY KEY (optConstID)
+;
+
+ALTER TABLE OptConstraint ADD CONSTRAINT IXUQ_OptConstraints_Name UNIQUE (prjID,name)
 ;
 
 CREATE INDEX IXFK_OptimizationSet_ExtParamValSet ON OptimizationSet (extParamValSetID ASC)
@@ -893,13 +901,13 @@ ALTER TABLE OptimizationSet ADD CONSTRAINT PK_OptimizationSet
 	PRIMARY KEY (optID)
 ;
 
-ALTER TABLE OptSearchConst ADD CONSTRAINT UQ_OptSearchConst_optID UNIQUE (optID,scID)
+ALTER TABLE OptSearchConst ADD CONSTRAINT UQ_OptSearchConst_optID UNIQUE (optID)
+;
+
+CREATE INDEX IXFK_OptSearchConst_OptConstraint ON OptSearchConst (optConstID ASC)
 ;
 
 CREATE INDEX IXFK_OptSearchConst_OptimizationSet ON OptSearchConst (optID ASC)
-;
-
-CREATE INDEX IXFK_OptSearchConst_SearchConstraint ON OptSearchConst (scID ASC)
 ;
 
 ALTER TABLE OptSearchConst ADD CONSTRAINT PK_OptSearchConstraints
@@ -1025,6 +1033,9 @@ ALTER TABLE SimulationResult ADD CONSTRAINT PK_ScenarioResult
 	PRIMARY KEY (simResID)
 ;
 
+ALTER TABLE SimulationResult ADD CONSTRAINT UQ_SimulationResult_scenID UNIQUE (scenID,outVarID)
+;
+
 CREATE INDEX IXFK_TimeSeries_Type ON TimeSeries (typeID ASC)
 ;
 
@@ -1095,16 +1106,16 @@ ALTER TABLE Component ADD CONSTRAINT FK_Components_Project
 	FOREIGN KEY (prjID) REFERENCES Project (prjID) ON DELETE No Action ON UPDATE No Action
 ;
 
-ALTER TABLE DecisionVariable ADD CONSTRAINT FK_DecisionVariable_Component
-	FOREIGN KEY (componentID) REFERENCES Component (componentID) ON DELETE No Action ON UPDATE No Action
-;
-
 ALTER TABLE DecisionVariable ADD CONSTRAINT FK_DecisionVariable_Type
 	FOREIGN KEY (typeID) REFERENCES Type (typeID) ON DELETE No Action ON UPDATE No Action
 ;
 
 ALTER TABLE DecisionVariable ADD CONSTRAINT FK_DecisionVariables_ScenarioGenerator
 	FOREIGN KEY (scenGenID) REFERENCES ScenarioGenerator (scenGenID) ON DELETE No Action ON UPDATE No Action
+;
+
+ALTER TABLE DecisionVariable ADD CONSTRAINT FK_DecisionVariable_InputParameter
+	FOREIGN KEY (inputID) REFERENCES InputParameter (inputID) ON DELETE No Action ON UPDATE No Action
 ;
 
 ALTER TABLE ExtParam ADD CONSTRAINT FK_ExtParam_Project
@@ -1211,8 +1222,8 @@ ALTER TABLE OptSearchConst ADD CONSTRAINT FK_OptSearchConst_OptimizationSet
 	FOREIGN KEY (optID) REFERENCES OptimizationSet (optID) ON DELETE No Action ON UPDATE No Action
 ;
 
-ALTER TABLE OptSearchConst ADD CONSTRAINT FK_OptSearchConst_SearchConstraint
-	FOREIGN KEY (scID) REFERENCES SearchConstraint (scID) ON DELETE No Action ON UPDATE No Action
+ALTER TABLE OptSearchConst ADD CONSTRAINT FK_OptSearchConst_OptConstraint
+	FOREIGN KEY (optConstID) REFERENCES OptConstraint (optConstID) ON DELETE No Action ON UPDATE No Action
 ;
 
 ALTER TABLE OptSetScenarios ADD CONSTRAINT FK_optID_02

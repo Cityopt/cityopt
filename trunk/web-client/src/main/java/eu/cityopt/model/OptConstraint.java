@@ -26,11 +26,13 @@ public class OptConstraint implements java.io.Serializable {
 
 	private int optconstid;
 	private Project project;
+	private String name;
 	private String expression;
-	private Double lowerbound;
-	private Double upperbound;
+	private String lowerbound;
+	private String upperbound;
 	private Set<ScenGenOptConstraint> scengenoptconstraints = new HashSet<ScenGenOptConstraint>(
 			0);
+	private Set<OptSearchConst> optsearchconsts = new HashSet<OptSearchConst>(0);
 
 	public OptConstraint() {
 	}
@@ -39,15 +41,18 @@ public class OptConstraint implements java.io.Serializable {
 		this.optconstid = optconstid;
 	}
 
-	public OptConstraint(int optconstid, Project project, String expression,
-			Double lowerbound, Double upperbound,
-			Set<ScenGenOptConstraint> scengenoptconstraints) {
+	public OptConstraint(int optconstid, Project project, String name,
+			String expression, String lowerbound, String upperbound,
+			Set<ScenGenOptConstraint> scengenoptconstraints,
+			Set<OptSearchConst> optsearchconsts) {
 		this.optconstid = optconstid;
 		this.project = project;
+		this.name = name;
 		this.expression = expression;
 		this.lowerbound = lowerbound;
 		this.upperbound = upperbound;
 		this.scengenoptconstraints = scengenoptconstraints;
+		this.optsearchconsts = optsearchconsts;
 	}
 
 	@SequenceGenerator(name="optconstraint_optconstid_seq",sequenceName="optconstraint_optconstid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="optconstraint_optconstid_seq")
@@ -71,6 +76,15 @@ public class OptConstraint implements java.io.Serializable {
 		this.project = project;
 	}
 
+	@Column(name = "name", length = 50)
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	@Column(name = "expression")
 	public String getExpression() {
 		return this.expression;
@@ -80,21 +94,21 @@ public class OptConstraint implements java.io.Serializable {
 		this.expression = expression;
 	}
 
-	@Column(name = "lowerbound", precision = 17, scale = 17)
-	public Double getLowerbound() {
+	@Column(name = "lowerbound")
+	public String getLowerbound() {
 		return this.lowerbound;
 	}
 
-	public void setLowerbound(Double lowerbound) {
+	public void setLowerbound(String lowerbound) {
 		this.lowerbound = lowerbound;
 	}
 
-	@Column(name = "upperbound", precision = 17, scale = 17)
-	public Double getUpperbound() {
+	@Column(name = "upperbound")
+	public String getUpperbound() {
 		return this.upperbound;
 	}
 
-	public void setUpperbound(Double upperbound) {
+	public void setUpperbound(String upperbound) {
 		this.upperbound = upperbound;
 	}
 
@@ -106,6 +120,15 @@ public class OptConstraint implements java.io.Serializable {
 	public void setScengenoptconstraints(
 			Set<ScenGenOptConstraint> scengenoptconstraints) {
 		this.scengenoptconstraints = scengenoptconstraints;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "optconstraint")
+	public Set<OptSearchConst> getOptsearchconsts() {
+		return this.optsearchconsts;
+	}
+
+	public void setOptsearchconsts(Set<OptSearchConst> optsearchconsts) {
+		this.optsearchconsts = optsearchconsts;
 	}
 
 }

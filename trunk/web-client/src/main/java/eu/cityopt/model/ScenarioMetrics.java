@@ -46,7 +46,8 @@ public class ScenarioMetrics implements java.io.Serializable {
 		this.metricvals = metricvals;
 	}
 
-	@SequenceGenerator(name="scenariometrics_scenmetricid_seq",sequenceName="scenariometrics_scenmetricid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="scenariometrics_scenmetricid_seq")
+	@SequenceGenerator(name="scenariometrics_scenmetricid_seq",sequenceName="scenariometrics_scenmetricid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="scenariometrics_scenmetricid_seq")
 	@Id
 	@Column(name = "scenmetricid", unique = true, nullable = false)
 	public int getScenmetricid() {

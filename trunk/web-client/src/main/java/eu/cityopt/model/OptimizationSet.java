@@ -37,6 +37,7 @@ public class OptimizationSet implements java.io.Serializable {
 	private Date updatedon;
 	private Integer createdby;
 	private Integer updatedby;
+	private Date optstart;
 	private Set<OptSetScenarios> optsetscenarioses = new HashSet<OptSetScenarios>(
 			0);
 	private Set<OptSearchConst> optsearchconsts = new HashSet<OptSearchConst>(0);
@@ -48,10 +49,11 @@ public class OptimizationSet implements java.io.Serializable {
 		this.optid = optid;
 	}
 
-	public OptimizationSet(int optid, ExtParamValSet extparamvalset, 
+	public OptimizationSet(int optid, ExtParamValSet extparamvalset,
 			ObjectiveFunction objectivefunction, Scenario scenario,
 			Integer prjid, Date createdon, Date updatedon, Integer createdby,
-			Integer updatedby, Set<OptSetScenarios> optsetscenarioses,
+			Integer updatedby, Date optstart,
+			Set<OptSetScenarios> optsetscenarioses,
 			Set<OptSearchConst> optsearchconsts) {
 		this.optid = optid;
 		this.extparamvalset = extparamvalset;
@@ -62,6 +64,7 @@ public class OptimizationSet implements java.io.Serializable {
 		this.updatedon = updatedon;
 		this.createdby = createdby;
 		this.updatedby = updatedby;
+		this.optstart = optstart;
 		this.optsetscenarioses = optsetscenarioses;
 		this.optsearchconsts = optsearchconsts;
 	}
@@ -152,6 +155,16 @@ public class OptimizationSet implements java.io.Serializable {
 
 	public void setUpdatedby(Integer updatedby) {
 		this.updatedby = updatedby;
+	}
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "optstart", length = 29)
+	public Date getOptstart() {
+		return this.optstart;
+	}
+
+	public void setOptstart(Date optstart) {
+		this.optstart = optstart;
 	}
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "optimizationset", cascade=CascadeType.REMOVE)

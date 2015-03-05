@@ -31,6 +31,7 @@ public class ObjectiveFunction implements java.io.Serializable {
 	private int obtfunctionid;
 	private Type type;
 	private Project project;
+	private String name;
 	private String expression;
 	private Boolean ismaximise;
 	private Date executedat;
@@ -46,13 +47,14 @@ public class ObjectiveFunction implements java.io.Serializable {
 		this.obtfunctionid = obtfunctionid;
 	}
 
-	public ObjectiveFunction(int obtfunctionid, Type type, Project project,
-			String expression, Boolean ismaximise, Date executedat,
-			Set<OptimizationSet> optimizationsets,
+	public ObjectiveFunction(int obtfunctionid, Project project, Type type,
+			String name, String expression, Boolean ismaximise,
+			Date executedat, Set<OptimizationSet> optimizationsets,
 			Set<ScenGenObjectiveFunction> scengenobjectivefunctions) {
 		this.obtfunctionid = obtfunctionid;
-		this.type = type;
 		this.project = project;
+		this.type = type;
+		this.name = name;
 		this.expression = expression;
 		this.ismaximise = ismaximise;
 		this.executedat = executedat;
@@ -82,6 +84,15 @@ public class ObjectiveFunction implements java.io.Serializable {
 		this.type = type;
 	}
 
+	@Column(name = "name", length = 50)
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "prjid")
 	public Project getProject() {

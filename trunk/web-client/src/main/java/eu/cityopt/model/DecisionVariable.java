@@ -21,13 +21,12 @@ import javax.persistence.Table;
 public class DecisionVariable implements java.io.Serializable {
 
 	private int decisionvarid;
-	private Component component;
-	private Type type;
+	private InputParameter inputparameter;
 	private ScenarioGenerator scenariogenerator;
+	private Type type;
 	private String name;
-	private String expression;
-	private Double lowerbound;
-	private Double upperbound;
+	private String lowerbound;
+	private String upperbound;
 
 	public DecisionVariable() {
 	}
@@ -38,15 +37,14 @@ public class DecisionVariable implements java.io.Serializable {
 		this.scenariogenerator = scenariogenerator;
 	}
 
-	public DecisionVariable(int decisionvarid, Component component, Type type, 
-			ScenarioGenerator scenariogenerator, String name,
-			String expression, Double lowerbound, Double upperbound) {
+	public DecisionVariable(int decisionvarid, InputParameter inputparameter,
+			ScenarioGenerator scenariogenerator, Type type, String name,
+			String lowerbound, String upperbound) {
 		this.decisionvarid = decisionvarid;
-		this.component = component;
-		this.type = type;
+		this.inputparameter = inputparameter;
 		this.scenariogenerator = scenariogenerator;
+		this.type = type;
 		this.name = name;
-		this.expression = expression;
 		this.lowerbound = lowerbound;
 		this.upperbound = upperbound;
 	}
@@ -64,23 +62,13 @@ public class DecisionVariable implements java.io.Serializable {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "componentid")
-	public Component getComponent() {
-		return this.component;
+	@JoinColumn(name = "inputid")
+	public InputParameter getInputparameter() {
+		return this.inputparameter;
 	}
 
-	public void setComponent(Component component) {
-		this.component = component;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "typeid")
-	public Type getType() {
-		return this.type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
+	public void setInputparameter(InputParameter inputparameter) {
+		this.inputparameter = inputparameter;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -92,6 +80,16 @@ public class DecisionVariable implements java.io.Serializable {
 	public void setScenariogenerator(ScenarioGenerator scenariogenerator) {
 		this.scenariogenerator = scenariogenerator;
 	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "typeid")
+	public Type getType() {
+		return this.type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
 
 	@Column(name = "name", length = 50)
 	public String getName() {
@@ -102,30 +100,21 @@ public class DecisionVariable implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "expression")
-	public String getExpression() {
-		return this.expression;
-	}
-
-	public void setExpression(String expression) {
-		this.expression = expression;
-	}
-
-	@Column(name = "lowerbound", precision = 17, scale = 17)
-	public Double getLowerbound() {
+	@Column(name = "lowerbound")
+	public String getLowerbound() {
 		return this.lowerbound;
 	}
 
-	public void setLowerbound(Double lowerbound) {
+	public void setLowerbound(String lowerbound) {
 		this.lowerbound = lowerbound;
 	}
 
-	@Column(name = "upperbound", precision = 17, scale = 17)
-	public Double getUpperbound() {
+	@Column(name = "upperbound")
+	public String getUpperbound() {
 		return this.upperbound;
 	}
 
-	public void setUpperbound(Double upperbound) {
+	public void setUpperbound(String upperbound) {
 		this.upperbound = upperbound;
 	}
 
