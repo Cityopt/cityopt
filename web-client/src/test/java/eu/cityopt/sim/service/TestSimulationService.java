@@ -8,8 +8,9 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 
 import javax.script.ScriptException;
 import javax.sql.DataSource;
@@ -33,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.google.common.util.concurrent.MoreExecutors;
 
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
@@ -102,8 +104,10 @@ public class TestSimulationService {
             SimulatorConfigurationException, InterruptedException,
             ExecutionException, ScriptException, Exception {
         Scenario scenario = scenarioRepository.findByName("testscenario").get(0);
-        Callable<SimulationOutput> job = simulationService.makeSimulationJob(scenario);
-        job.call();
+        Executor directExecutor = MoreExecutors.directExecutor();
+        Future<SimulationOutput> job = simulationService.startSimulation(
+                scenario.getScenid(), directExecutor);
+        job.get();
     }
 
     private void updateMetrics() throws ParseException, ScriptException {

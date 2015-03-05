@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
 import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
@@ -68,6 +69,7 @@ public class AprosRunner implements SimulationRunner {
     //TODO: Maybe share some stuff if there are multiple AprosRunners?
     private final TempDir tmp;
     private final Server server;
+    private final Executor executor;
     private final String profile;
     final String[] resultFiles;
     final Path setup_scl;
@@ -83,8 +85,10 @@ public class AprosRunner implements SimulationRunner {
      * {@link AprosManager#makeRunner}, which everyone else should use
      * to create AprosRunners.
      * 
-     * @param profile names a subdirectory of {@link #profileDir} containing
+     * @param profileDir directory containing Apros profiles
+     * @param profile names a subdirectory of profileDir containing
      *   the Apros profile to use.
+     * @param executor executes input and output tasks
      * @param ns a {@link Namespace} defining the inputs and outputs
      *   (everything else in ns is ignored).
      * @param uc_props the XML document describing the user component structure
@@ -106,10 +110,11 @@ public class AprosRunner implements SimulationRunner {
      *   possibly because of malformed uc_props.
      * @see eu.cityopt.sim.eval.SimulatorManagers#get
      */
-    AprosRunner(Path profileDir, String profile, Namespace ns,
+    AprosRunner(Path profileDir, String profile, Executor executor, Namespace ns,
                 Document uc_props, Path modelDir, String... resultFiles)
             throws TransformerException {
         this.profile = profile;
+        this.executor = executor;
         nameSpace = ns;
         this.modelDir = new LocalDirectory(modelDir);
         this.resultFiles = resultFiles;
@@ -158,7 +163,7 @@ public class AprosRunner implements SimulationRunner {
         FileSelector res_sel = new FileSelector(resultFiles);
         JobConfiguration conf = new JobConfiguration(launcher, args,
                                                      mdir, res_sel);
-        AprosJob ajob = new AprosJob(this, input, xpt, conf, runStart);
+        AprosJob ajob = new AprosJob(executor, input, xpt, conf, runStart);
         xpt.start();
         return ajob;
     }

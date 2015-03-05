@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -117,7 +118,9 @@ public class AprosRunnerTest {
         Path modelDir = dataDir.resolve(props.getProperty("model_dir"));
         
         return new AprosRunner(
-                profileDir, props.getProperty("profile"), ns, ucs, modelDir,
+                profileDir, props.getProperty("profile"),
+                Executors.newSingleThreadExecutor(),
+                ns, ucs, modelDir,
                 props.getProperty("result_file"));
     }
     

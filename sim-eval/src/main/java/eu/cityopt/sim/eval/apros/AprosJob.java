@@ -8,21 +8,18 @@ import java.io.InputStreamReader;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import org.simantics.simulation.scheduling.Experiment;
 import org.simantics.simulation.scheduling.Job;
 import org.simantics.simulation.scheduling.JobConfiguration;
 import org.simantics.simulation.scheduling.files.IFile;
+import org.simantics.simulation.scheduling.listening.StateListener;
 import org.simantics.simulation.scheduling.status.JobFinished;
-import org.simantics.simulation.scheduling.status.JobRunning;
+import org.simantics.simulation.scheduling.status.JobStatus;
 import org.simantics.simulation.scheduling.status.JobSucceeded;
 import org.simantics.simulation.scheduling.status.StatusLoggingUtils;
-import org.simantics.simulation.scheduling.status.StatusWaitingUtils;
 
 import com.google.common.primitives.Doubles;
 
@@ -39,58 +36,54 @@ import eu.cityopt.sim.eval.Type;
  * @author ttekth
  *
  */
-public class AprosJob implements Future<SimulationOutput> {
-    private final AprosRunner runner;
+public class AprosJob extends CompletableFuture<SimulationOutput>
+        implements StateListener<JobStatus> {
+    private final Executor executor;
     private final SimulationInput input;
     private final Instant runStart;
     final JobConfiguration conf;
     private Job job;
-    private boolean cancelled = false;
-    private SimulationOutput output = null;
     private ByteArrayOutputStream ostr = new ByteArrayOutputStream();
-    
-    AprosJob(AprosRunner runner, SimulationInput input,
-             Experiment xpt, JobConfiguration conf, Instant runStart) {
-        this.runner = runner;
+    private volatile Instant runEnd;
+
+    AprosJob(Executor executor, SimulationInput input,
+            Experiment xpt, JobConfiguration conf, Instant runStart) {
+        this.executor = executor;
         this.input = input;
         this.runStart = runStart;
         this.conf = conf;
         job = xpt.createJob("job", conf);
         StatusLoggingUtils.redirectJobLog(job, ostr);
+        job.status().addListener(this);
     }
 
     @Override
     public synchronized boolean cancel(boolean mayInterruptIfRunning) {
-        if (cancelled)
+        if (isCancelled())
             return true;
         if (isDone() || !mayInterruptIfRunning)
             return false;
+        if ( ! super.cancel(mayInterruptIfRunning))
+            return false;
         Experiment x = job.getExperiment();
         job = null;
-        cancelled = true;
         x.dispose();
         ostr.reset();
         return true;
     }
 
     @Override
-    public boolean isCancelled() {
-        return cancelled;
+    public synchronized void stateChanged(JobStatus newState) {
+        if (job != null && newState instanceof JobFinished && runEnd == null) {
+            JobFinished st = (JobFinished) newState;
+            runEnd = Instant.now();
+            executor.execute(() -> completeJob(st));
+        }
     }
-
-    @Override
-    public boolean isDone() {
-        return job == null || !(job.status().get() instanceof JobRunning);
-    }
-
-    @Override
-    public synchronized SimulationOutput get() throws InterruptedException,
-            ExecutionException {
-        JobFinished st;
-        if (cancelled)
-            throw new CancellationException();
-        if (job != null) {
-            st = StatusWaitingUtils.waitFor(job);
+    
+    public synchronized void completeJob(JobFinished st) {
+        try {
+            SimulationOutput output;
             if (st instanceof JobSucceeded) {
                 SimulationResults
                     res = new SimulationResults(input, ostr.toString());
@@ -101,7 +94,7 @@ public class AprosJob implements Future<SimulationOutput> {
                         readResultFile(f, res);        
                     }
                 } catch (IOException e) {
-                    throw new ExecutionException(
+                    throw new IOException(
                             "Result retrieval failed", e);
                 }
                 //TODO Check that all outputs were found.
@@ -115,10 +108,11 @@ public class AprosJob implements Future<SimulationOutput> {
             x.dispose();
             ostr.reset();
             output.runStart = runStart;
-            // TODO The end time is incorrect if no one calls get() right away... 
-            output.runEnd = Instant.now();
+            output.runEnd = runEnd;
+            complete(output);
+        } catch (Throwable t) {
+            completeExceptionally(t);
         }
-        return output;
     }
 
     private static String[] readAndSplit(BufferedReader rd)
@@ -190,12 +184,4 @@ public class AprosJob implements Future<SimulationOutput> {
             }
         }
     }
-
-    @Override
-    public SimulationOutput get(long timeout, TimeUnit unit)
-            throws InterruptedException, ExecutionException, TimeoutException {
-        //TODO Add this once implemented in the library.
-        throw new UnsupportedOperationException("Timed wait not supported.");
-    }
-
 }

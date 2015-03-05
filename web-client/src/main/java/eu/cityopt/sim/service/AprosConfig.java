@@ -4,15 +4,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.ExecutorService;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
+import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.apros.AprosManager;
 
 /**
@@ -21,7 +25,7 @@ import eu.cityopt.sim.eval.apros.AprosManager;
  */
 @Configuration
 @PropertySource("classpath:/application.properties")
-public class AprosConfig implements InitializingBean {
+public class AprosConfig implements InitializingBean, DisposableBean {
     /**
      * Apros profile directory names delimited by system path separator
      * (semicolon on Windows).
@@ -31,6 +35,9 @@ public class AprosConfig implements InitializingBean {
 
     @Value("${APROS_PROFILE_CHECK:true}")
     private boolean checkProfile;
+
+    @Autowired
+    ExecutorService executor;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -58,7 +65,7 @@ public class AprosConfig implements InitializingBean {
                 Path dirPath = Paths.get(dirName);
                 if (Files.isDirectory(dirPath)) {
                     try {
-                        AprosManager.register(dirPath);
+                        AprosManager.register(dirPath, executor);
                         valid = true;
                     } catch (IOException e) {
                         if (checkProfile) {
@@ -76,5 +83,10 @@ public class AprosConfig implements InitializingBean {
                 throw new IOException("Invalid Apros profile path: " + profilePath);
             }
         }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        SimulatorManagers.shutdown();
     }
 }

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.Executor;
 
 import javax.xml.transform.TransformerException;
 
@@ -25,26 +26,29 @@ public class AprosManager implements SimulatorManager {
 
     Path profileDir;
     String profileName;
+    Executor executor;
 
     /**
      * Registers the Apros profiles found in a directory as known simulator
-     * names.
+     * names.  The SimulatorManager instances will use the given Executor
+     * for concurrency.
      */
-    public static void register(Path profileDir) throws IOException {
+    public static void register(Path profileDir, Executor executor) throws IOException {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(profileDir, PROFILE_GLOB)) {
             for (Path entry : stream) {
                 if (Files.isDirectory(entry)) {
                     String profileName = entry.getFileName().toString();
                     SimulatorManagers.register(profileName,
-                            new AprosManager(profileDir, profileName));
+                            new AprosManager(profileDir, profileName, executor));
                 }
             }
         }
     }
 
-    AprosManager(Path profileDir, String profileName) {
+    AprosManager(Path profileDir, String profileName, Executor executor) {
         this.profileDir = profileDir;
         this.profileName = profileName;
+        this.executor = executor;
     }
 
     @Override
@@ -63,11 +67,16 @@ public class AprosManager implements SimulatorManager {
             throws IOException, SimulatorConfigurationException {
         AprosModel aprosModel = (AprosModel) model;
         try {
-            return new AprosRunner(profileDir, profileName, namespace, aprosModel.uc_props,
-                    aprosModel.modelDir.getPath(), aprosModel.resultFiles);
+            return new AprosRunner(profileDir, profileName, executor,
+                    namespace, aprosModel.uc_props, aprosModel.modelDir.getPath(),
+                    aprosModel.resultFiles);
         } catch (TransformerException e) {
             throw new SimulatorConfigurationException(
                     "Failed to process user component properties", e);
         }
+    }
+
+    @Override
+    public void close() throws IOException {
     }
 }

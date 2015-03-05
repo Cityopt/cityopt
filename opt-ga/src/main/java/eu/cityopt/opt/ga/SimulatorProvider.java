@@ -2,6 +2,7 @@ package eu.cityopt.opt.ga;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.concurrent.Executors;
 
 import org.opt4j.core.start.Constant;
 
@@ -40,7 +41,7 @@ public class SimulatorProvider implements Provider<SimulatorManager> {
             @Constant(value="simulator", namespace=SimulatorProvider.class)
             String simulator)
                     throws IOException, SimulatorConfigurationException {
-        AprosManager.register(Paths.get(aprosDir));
+        AprosManager.register(Paths.get(aprosDir), Executors.newCachedThreadPool());
         manager = SimulatorManagers.get(simulator);
     }
 }

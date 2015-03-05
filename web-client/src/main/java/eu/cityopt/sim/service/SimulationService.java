@@ -12,18 +12,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import javax.script.ScriptException;
 
-import org.jfree.util.Log;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +43,6 @@ import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioRepository;
-import eu.cityopt.repository.TimeSeriesRepository;
 import eu.cityopt.repository.TimeSeriesValRepository;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
@@ -57,7 +55,6 @@ import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
-import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.SimulatorConfigurationException;
 import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.SimulatorManagers;
@@ -71,94 +68,20 @@ import eu.cityopt.sim.eval.util.TimeUtils;
  * translating between the JPA entities used in web-client and the Java objects
  * used in sim-eval.
  * <p>
- * We use an injected TaskExecutor to perform computations and store results in
+ * We use an injected ExecutorService to perform computations and store results in
  * the background. The actual simulations are run in separate processes.
  * 
  * @author Hannu Rummukainen
  */
 @Service
 public class SimulationService {
-    class SimulationJob implements Callable<SimulationOutput> {
-        private final int scenId;
-        private final SimulationInput input;
-        private final List<MetricExpression> metricExpressions;
-        private final SimulationModel model;
-        private final SimulationRunner runner;
-        private final SimulationStorage storage;
-
-        volatile boolean cancelled;
-        volatile Future<SimulationOutput> activeJob;
-
-        SimulationJob(int scenId, SimulationInput input, List<MetricExpression> metricExpressions,
-                SimulationModel model, SimulationRunner runner, SimulationStorage storage) {
-            this.scenId = scenId;
-            this.input = input;
-            this.metricExpressions = metricExpressions;
-            this.model = model;
-            this.runner = runner;
-            this.storage = storage;
-        }
-
-        @Override
-        public SimulationOutput call() throws Exception {
-            try {
-                if (cancelled) {
-                    return null;
-                }
-                Future<SimulationOutput> job = runner.start(input);
-
-                // Write to activeJob happens-before read from cancelled.
-                activeJob = job;
-                if (cancelled) {
-                    job.cancel(true);
-                    return null;
-                }
-
-                // Wait for completion or cancellation.
-                SimulationOutput output = job.get();
-
-                // Write to activeJob happens-before read from cancelled.
-                activeJob = null;
-                if (cancelled) {
-                    return null;
-                }
-
-                storage.put(output);
-                if (output instanceof SimulationResults) {
-                    SimulationResults results = (SimulationResults) output;
-                    MetricValues metricValues = new MetricValues(results, metricExpressions);
-                    storage.updateMetricValues(metricValues);
-                }
-                return output;
-            } finally {
-                activeJobs.remove(scenId, this);
-                try {
-                    runner.close();
-                } finally {
-                    model.close();
-                }
-            }
-        }
-
-        public boolean cancel(boolean mayInterruptIfRunning) {
-            if (!cancelled) {
-                // Write to cancelled happens-before read from activeJob.
-                cancelled = true;
-                Future<SimulationOutput> job = activeJob;
-                if (job != null) {
-                    job.cancel(mayInterruptIfRunning);
-                }
-                return true;
-            }
-            return false;
-        }
-    }
-
     private static final Instant DEFAULT_TIME_ORIGIN = Instant.ofEpochMilli(0);
 
     public static final String STATUS_SUCCESS = "SUCCESS";
     public static final String STATUS_MODEL_FAILURE = "MODEL_FAILURE";
     public static final String STATUS_SIMULATOR_FAILURE = "SIMULATOR_FAILURE";
+
+    private static Logger log = Logger.getLogger(SimulationService.class); 
 
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ScenarioRepository scenarioRepository;
@@ -166,12 +89,16 @@ public class SimulationService {
     @Autowired private TimeSeriesValRepository timeSeriesValRepository;
 
     @Autowired private ApplicationContext applicationContext;
-    @Autowired private TaskExecutor taskExecutor;
+    @Autowired private ExecutorService executorService;
 
     private Evaluator evaluator = new Evaluator();
 
-    private ConcurrentHashMap<Integer, SimulationJob> activeJobs
-        = new ConcurrentHashMap<Integer, SimulationJob>();
+    private ConcurrentHashMap<Integer, Future<SimulationOutput>>
+        activeJobs = new ConcurrentHashMap<>();
+
+    public Evaluator getEvaluator() {
+        return evaluator;
+    }
 
     /**
      * Starts a simulation run for a scenario. Reads the input parameter values
@@ -190,19 +117,67 @@ public class SimulationService {
      */
     @Transactional
     public Future<SimulationOutput> startSimulation(int scenId)
-            throws ParseException, IOException, SimulatorConfigurationException,
-            InterruptedException, ExecutionException, ScriptException {
+            throws ParseException, IOException, SimulatorConfigurationException, ScriptException {
+        return startSimulation(scenId, executorService);
+    }
+
+    Future<SimulationOutput> startSimulation(int scenId, Executor executor)
+            throws ParseException, IOException, SimulatorConfigurationException, ScriptException {
         Scenario scenario = scenarioRepository.findOne(scenId);
-        SimulationJob job = makeSimulationJob(scenario);
-        FutureTask<SimulationOutput> futureTask = new FutureTask<SimulationOutput>(job) {
-            public boolean cancel(boolean mayInterruptIfRunning) {
-                boolean cancelled = job.cancel(mayInterruptIfRunning);
-                super.cancel(mayInterruptIfRunning);
-                return cancelled;
+        Project project = scenario.getProject();
+        Namespace namespace = makeProjectNamespace(project);
+
+        ExternalParameters externals = loadExternalParametersFromDefaults(project, namespace);
+        SimulationInput input = loadSimulationInput(scenario, externals);
+
+        DbSimulationStorageI storage =
+                (DbSimulationStorageI) applicationContext.getBean("dbSimulationStorage");
+        storage.initialize(project.getPrjid(), externals, null, null);
+
+        SimulationModel model = loadSimulationModel(project);
+        List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
+        boolean started = false;
+        try {
+            SimulationRunner runner = model.getSimulatorManager().makeRunner(model, input.getNamespace());
+            CompletableFuture<SimulationOutput> newJob = runner.start(input);
+            started = true;
+            Future<SimulationOutput> oldJob = activeJobs.put(scenId, newJob);
+            newJob.whenCompleteAsync( // Store output & metric values
+                    (output, throwable) -> {
+                        if (output != null) {
+                            storage.put(output);
+                            if (output instanceof SimulationResults) {
+                                SimulationResults results = (SimulationResults) output;
+                                try {
+                                    MetricValues metricValues = 
+                                            new MetricValues(results, metricExpressions);
+                                    storage.updateMetricValues(metricValues);
+                                } catch (ScriptException e) {
+                                    log.warn("Failed to compute metric values: " + e.getMessage());
+                                }
+                            }
+                        }
+                    }, executor)
+                .whenCompleteAsync( // Clean up
+                    (output, throwable) -> {
+                        activeJobs.remove(scenId, newJob);
+                        try {
+                            try {
+                                runner.close();
+                            } finally {
+                                model.close();
+                            }
+                        } catch (IOException e) {
+                            log.warn("Failed to clean up simulation run: " + e.getMessage());
+                        }
+                    }, executor);
+            if (oldJob != null) {
+                oldJob.cancel(true);
             }
-        };
-        taskExecutor.execute(futureTask);
-        return futureTask;
+            return newJob;
+        } finally {
+            if (!started) model.close();
+        }
     }
 
     /**
@@ -222,7 +197,7 @@ public class SimulationService {
      *  the cancellation fails for some other reason.
      */
     public boolean cancelSimulation(int scenId) {
-        SimulationJob oldJob = activeJobs.remove(scenId);
+        Future<SimulationOutput> oldJob = activeJobs.remove(scenId);
         if (oldJob != null) {
             return oldJob.cancel(true);
         }
@@ -293,42 +268,13 @@ public class SimulationService {
                     status.ignored.add(scenario.getScenid());
                 }
             } catch (ParseException | ScriptException e) {
-                Log.warn("Failed to update metrics of scenario " + scenario.getScenid()
+                log.warn("Failed to update metrics of scenario " + scenario.getScenid()
                         + ": " + e.getMessage());
                 status.failures.put(scenario.getScenid(), e);
             }
         }
-        Log.info("Updated scenario metrics for project " + projectId + ": " + status);
+        log.info("Updated scenario metrics for project " + projectId + ": " + status);
         return status;
-    }
-
-    SimulationJob makeSimulationJob(Scenario scenario)
-            throws ParseException, IOException, SimulatorConfigurationException,
-            InterruptedException, ExecutionException, ScriptException {
-        Project project = scenario.getProject();
-        Namespace namespace = makeProjectNamespace(project);
-
-        ExternalParameters externals = loadExternalParametersFromDefaults(project, namespace);
-        SimulationInput input = loadSimulationInput(scenario, externals);
-
-        SimulationModel model = loadSimulationModel(project);
-        List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
-        SimulationRunner runner = null;
-        try {
-            runner = model.getSimulatorManager().makeRunner(model, input.getNamespace());
-            DbSimulationStorageI storage =
-                    (DbSimulationStorageI) applicationContext.getBean("dbSimulationStorage");
-            storage.initialize(project.getPrjid(), externals, null, null);
-            SimulationJob newJob = new SimulationJob(
-                    scenario.getScenid(), input, metricExpressions, model, runner, storage);
-            SimulationJob oldJob = activeJobs.put(scenario.getScenid(), newJob);
-            if (oldJob != null) {
-                oldJob.cancel(true);
-            }
-            return newJob;
-        } finally {
-            if (runner == null) model.close();
-        }
     }
 
     /** Loads the simulation model from a project. */
