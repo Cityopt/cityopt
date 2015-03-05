@@ -28,7 +28,7 @@
 <unit unitid="16" typeid="1" name="°C" />
 <unit unitid="17" typeid="1" name="unknown" />
 
-  <unit unitid="18" typeid="4" name="Unit/TimeSeries/step"/>
-  <unit unitid="19" typeid="5" name="Unit/TimeSeries/linear"/>
+<unit unitid="18" typeid="4" name="Unit/TimeSeries/step"/>
+<unit unitid="19" typeid="5" name="Unit/TimeSeries/linear"/>
 
 </dataset>

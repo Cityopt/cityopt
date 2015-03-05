@@ -30,9 +30,8 @@ public class Unit implements java.io.Serializable {
 	private Type type;
 	private String name;
 	private Set<ExtParam> extparams = new HashSet<ExtParam>(0);
-	private Set<SearchConstraint> searchconstraints = new HashSet<SearchConstraint>(
-			0);
 	private Set<InputParameter> inputparameters = new HashSet<InputParameter>(0);
+	private Set<OutputVariable> outputvariables = new HashSet<OutputVariable>(0);
 	private Set<Metric> metrics = new HashSet<Metric>(0);
 
 	public Unit() {
@@ -43,13 +42,11 @@ public class Unit implements java.io.Serializable {
 	}
 
 	public Unit(int unitid, Type type, String name, Set<ExtParam> extparams,
-			Set<SearchConstraint> searchconstraints,
 			Set<InputParameter> inputparameters, Set<Metric> metrics) {
 		this.unitid = unitid;
 		this.type = type;
 		this.name = name;
 		this.extparams = extparams;
-		this.searchconstraints = searchconstraints;
 		this.inputparameters = inputparameters;
 		this.metrics = metrics;
 	}
@@ -91,15 +88,6 @@ public class Unit implements java.io.Serializable {
 
 	public void setExtparams(Set<ExtParam> extparams) {
 		this.extparams = extparams;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "unit")
-	public Set<SearchConstraint> getSearchconstraints() {
-		return this.searchconstraints;
-	}
-
-	public void setSearchconstraints(Set<SearchConstraint> searchconstraints) {
-		this.searchconstraints = searchconstraints;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "unit")
