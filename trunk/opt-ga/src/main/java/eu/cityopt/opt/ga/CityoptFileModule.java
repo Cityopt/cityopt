@@ -14,7 +14,9 @@ import org.opt4j.core.start.Opt4JModule;
 
 import com.google.inject.name.Names;
 
+import eu.cityopt.sim.eval.HashSimulationStorage;
 import eu.cityopt.sim.eval.SimulationModel;
+import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.SimulatorManager;
 
 @Parent(CityoptModule.class)
@@ -57,6 +59,8 @@ public class CityoptFileModule extends Opt4JModule {
                 Paths.get(problemFile));
         bind(Instant.class).annotatedWith(Names.named("timeOrigin"))
                 .toInstance(Instant.parse(timeOrigin));
+        bind(SimulationStorage.class).to(HashSimulationStorage.class)
+                .in(SINGLETON);
     }
 
     public String getAprosDir() {

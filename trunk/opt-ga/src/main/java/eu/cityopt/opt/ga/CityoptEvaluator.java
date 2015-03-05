@@ -4,7 +4,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.script.ScriptException;
 
@@ -14,14 +13,18 @@ import org.opt4j.core.optimizer.Optimizer;
 import org.opt4j.core.optimizer.OptimizerStateListener;
 import org.opt4j.core.problem.Evaluator;
 
+import com.google.inject.Inject;
+
 import eu.cityopt.sim.eval.ConstraintContext;
 import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.ObjectiveExpression;
 import eu.cityopt.sim.eval.ObjectiveStatus;
+import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
+import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.SimulatorConfigurationException;
 
 /**
@@ -53,12 +56,31 @@ public class CityoptEvaluator
 implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     private OptimisationProblem problem;
     private SimulationRunner runner;
+    private SimulationStorage storage = new SimulationStorage() {        
+        @Override
+        public void updateMetricValues(MetricValues metricValues) {}
+        
+        @Override
+        public void put(SimulationOutput output, String scenarioName,
+                        String scenarioDescription) {}
+        
+        @Override
+        public void put(SimulationOutput output) {}
+        
+        @Override
+        public SimulationOutput get(SimulationInput input) {return null;}
+    };
     
     @Inject
     public CityoptEvaluator(OptimisationProblem problem)
                     throws IOException, SimulatorConfigurationException {
         this.problem = problem;
         runner = problem.makeRunner();
+    }
+    
+    @Inject(optional=true)
+    public void setStorage(SimulationStorage storage) {
+        this.storage = storage;
     }
 
     @Override
@@ -74,12 +96,17 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
             if (runner == null) {
                 throw new RuntimeException("Closed evaluator called.");
             }
-            SimulationOutput out = runner.start(pt.input).get();
+            SimulationOutput out = storage.get(pt.input);
+            if (out == null) {
+                out = runner.start(pt.input).get();
+                storage.put(out);
+            }
             if (!(out instanceof SimulationResults)) {
                 throw new RuntimeException("Simulation failure");
             }
             MetricValues mv = new MetricValues(
                     (SimulationResults)out, problem.metrics);
+            storage.updateMetricValues(mv);
             ConstraintStatus post = new ConstraintStatus(
                     new ConstraintContext(coco, mv),
                     problem.constraints, false);
