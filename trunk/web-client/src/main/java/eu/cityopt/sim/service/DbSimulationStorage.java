@@ -57,6 +57,13 @@ import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.eval.util.TimeUtils;
 
+/**
+ * SimulationStorage implementation on top of the data access layer.
+ * In other words, the class methods read and write simulation inputs
+ * and outputs from the database.
+ *
+ * @author Hannu Rummukainen
+ */
 public class DbSimulationStorage implements DbSimulationStorageI {
     private static Logger log = Logger.getLogger(DbSimulationStorage.class); 
 
@@ -65,7 +72,8 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     private Integer userId;
     private Integer scenGenId;
 
-    private boolean cachePopulated = false;
+    private volatile boolean cachePopulated = false;
+    private Object cacheFillMutex = new Object();
     private ConcurrentMap<SimulationInput, SimulationOutput> cache
         = new ConcurrentHashMap<SimulationInput, SimulationOutput>();
 
@@ -128,18 +136,28 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     }
 
     private void loadCache() {
-        Project project = getProject();
-        for (Scenario scenario : project.getScenarios()) {
-            try {
-                SimulationInput input = simulationService.loadSimulationInput(scenario, externals);
-                SimulationOutput output = simulationService.loadSimulationOutput(scenario, input);
-                cache.put(input, output);
-            } catch (ParseException e) {
-                log.warn("Cannot load simulation input and output from scenario "
-                        + scenario.getScenid() + ": " + e.getMessage());
+        synchronized (cacheFillMutex) {
+            if ( ! cachePopulated) {
+                Project project = getProject();
+                for (Scenario scenario : project.getScenarios()) {
+                    loadScenarioToCache(scenario);
+                }
+                cachePopulated = true;
             }
         }
-        cachePopulated = true;
+    }
+
+    private void loadScenarioToCache(Scenario scenario) {
+        try {
+            SimulationInput input =
+                    simulationService.loadSimulationInput(scenario, externals);
+            SimulationOutput output = 
+                    simulationService.loadSimulationOutput(scenario, input);
+            cache.put(input, output);
+        } catch (ParseException e) {
+            log.warn("Cannot load simulation input and output from scenario "
+                    + scenario.getScenid() + ": " + e.getMessage());
+        }
     }
 
     private Project getProject() {
@@ -167,7 +185,11 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     }
 
     private ScenarioGenerator getScenarioGenerator() {
-        return scenarioGeneratorRepository.findOne(scenGenId);
+        if (scenGenId != null) {
+            return scenarioGeneratorRepository.findOne(scenGenId);
+        } else {
+            return null;
+        }
     }
 
     Scenario saveSimulationInput(
