@@ -246,19 +246,9 @@ public class DbSimulationStorage implements DbSimulationStorageI {
 
         scenarioMetricsRepository.delete(scenario.getScenariometricses());
         scenario.getScenariometricses().clear();
-        //TODO batch removal of simulation results and related time series
-        for (Component component : scenario.getProject().getComponents()) {
-            for (OutputVariable outputVariable : component.getOutputvariables()) {
-                SimulationResult oldResult =
-                        simulationResultRepository.findByScenAndOutvar(
-                                scenario.getScenid(), outputVariable.getOutvarid());
-                if (oldResult != null) {
-                    outputVariable.getSimulationresults().remove(oldResult);
-                    simulationResultRepository.delete(oldResult);
-                    log.debug("Deleting old simulationResult " + oldResult);
-                }
-            }
-        }
+        List<SimulationResult> oldResults =
+                simulationResultRepository.findByScenId(scenario.getScenid());
+        simulationResultRepository.delete(oldResults);
         simulationResultRepository.flush();
 
         if (simOutput instanceof SimulationResults) {
