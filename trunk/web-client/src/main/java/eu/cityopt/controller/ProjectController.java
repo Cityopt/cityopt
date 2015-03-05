@@ -1564,10 +1564,6 @@ public class ProjectController {
 				e.printStackTrace();
 			} catch (SimulatorConfigurationException e) {
 				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
 			} catch (ScriptException e) {
 				e.printStackTrace();
 			}

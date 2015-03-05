@@ -51,7 +51,12 @@
 </bean>
 
 <task:annotation-driven executor="myExecutor" proxy-target-class="true"/>
-<task:executor id="myExecutor"  pool-size="5"/>
+
+<bean id="myExecutor"
+  class="org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean">
+  <property name="corePoolSize" value="4" />
+  <property name="maxPoolSize" value="256" />
+</bean>
 
 <bean id="dbSimulationStorage" class="eu.cityopt.sim.service.DbSimulationStorage" scope="prototype"/>
 

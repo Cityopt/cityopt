@@ -1,5 +1,6 @@
 package eu.cityopt.sim.eval;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -9,7 +10,7 @@ import java.io.InputStream;
  * @see SimulatorManagers
  * @author Hannu Rummukainen
  */
-public interface SimulatorManager {
+public interface SimulatorManager extends Closeable {
     String getSimulatorName();
 
     SimulationModel parseModel(InputStream modelData)

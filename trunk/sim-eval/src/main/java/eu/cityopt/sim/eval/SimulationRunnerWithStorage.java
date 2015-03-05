@@ -1,10 +1,8 @@
 package eu.cityopt.sim.eval;
 
 import java.io.IOException;
-import java.util.concurrent.Future;
-
-import eu.cityopt.sim.eval.util.FutureTransform;
-import eu.cityopt.sim.eval.util.ImmediateFuture;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 /**
  * SimulationRunner that prefers to use SimulationStorage when possible,
@@ -16,13 +14,15 @@ import eu.cityopt.sim.eval.util.ImmediateFuture;
  * @author Hannu Rummukainen
  */
 public class SimulationRunnerWithStorage implements SimulationRunner {
-    private SimulationRunner runner;
-    private SimulationStorage storage;
+    private final SimulationRunner runner;
+    private final SimulationStorage storage;
+    private final Executor executor;
 
     public SimulationRunnerWithStorage(SimulationRunner runner,
-            SimulationStorage storage) {
+            SimulationStorage storage, Executor executor) {
         this.runner = runner;
         this.storage = storage;
+        this.executor = executor;
     }
 
     /**
@@ -35,21 +35,16 @@ public class SimulationRunnerWithStorage implements SimulationRunner {
      * @throws IOException 
      */
     @Override
-    public Future<SimulationOutput> start(SimulationInput input)
+    public CompletableFuture<SimulationOutput> start(SimulationInput input)
             throws IOException {
-        SimulationOutput output = storage.get(input);
-        if (output != null) {
-            return new ImmediateFuture<SimulationOutput>(output);
+        SimulationOutput oldOutput = storage.get(input);
+        if (oldOutput != null) {
+            return CompletableFuture.completedFuture(oldOutput);
         } else {
-            Future<SimulationOutput> simulation = runner.start(input);
+            CompletableFuture<SimulationOutput> simulation = runner.start(input);
             // Store the output once the simulation is completed.
-            return new FutureTransform<SimulationOutput, SimulationOutput>(
-                    simulation) {
-                public SimulationOutput transform(SimulationOutput output) {
-                    storage.put(output);
-                    return output;
-                }
-            };
+            simulation.thenAcceptAsync(newOutput -> storage.put(newOutput), executor);
+            return simulation;
         }
     }
 

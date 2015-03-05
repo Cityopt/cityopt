@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import javax.script.CompiledScript;
@@ -141,16 +144,17 @@ public class TestEval {
 
         SimulationRunner actualRunner = new SimulationRunner() {
             @Override
-            public Future<SimulationOutput> start(SimulationInput input) {
-                return new SimJob(input);
+            public CompletableFuture<SimulationOutput> start(SimulationInput input) {
+                return CompletableFuture.completedFuture(computeJob(input));
             }
 
             @Override
             public void close() throws IOException {}
         };
         SimulationOutput output;
+        Executor executor = Executors.newSingleThreadExecutor();
         try (SimulationRunner runner = new SimulationRunnerWithStorage(
-                actualRunner, new HashSimulationStorage())) {
+                actualRunner, new HashSimulationStorage(), executor)) {
 
             Future<SimulationOutput> job = runner.start(input);
             output = job.get();
@@ -207,6 +211,27 @@ public class TestEval {
         assertArrayEquals(new String[] { "-69.0", "50.0", "0.0", "TimeSeries(1, [0.0], [-1.0])" },
                 metricValues);
         assertArrayEquals(new double[] { -19.0 }, os.objectiveValues, delta);
+    }
+
+    SimulationOutput computeJob(SimulationInput input) {
+        SimulationResults out = new SimulationResults(input, "");
+        double x5 = (Double) input.get("C1", "x5");
+        double x6 = (Double) input.get("C1", "x6");
+        double x7 = (Double) input.get("C1", "x7");
+        double x8 = (Double) input.get("C1", "x8");
+        double x9 = (Double) input.get("C2", "x9");
+        double x3 = x5 - x6;
+        double x4 = x8 - x7;
+        out.put("C1", "x1", ts((50 * x9 - 0.5) * (x3 + x4)));
+        out.put("C1", "x2", ts((-50 * x9 + 1.5) * (x3 + x4)));
+        out.put("C2", "x3", ts(x3));
+        out.put("C2", "x4", ts(x4));
+        return out;
+    }
+
+    private TimeSeriesI ts(double value) {
+        return evaluator.makeTS( 
+                Type.TIMESERIES_LINEAR, new double[] { 0 }, new double[] { value });
     }
 
     @Test(expected=ScriptException.class)

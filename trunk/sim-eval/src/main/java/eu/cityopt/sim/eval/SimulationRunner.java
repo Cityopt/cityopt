@@ -2,7 +2,7 @@ package eu.cityopt.sim.eval;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Interface for starting new simulation jobs.
@@ -23,6 +23,6 @@ public interface SimulationRunner extends Closeable {
      *         determined, or otherwise fail with an exception.
      * @throws IOException 
      */
-    public Future<SimulationOutput> start(SimulationInput input)
+    public CompletableFuture<SimulationOutput> start(SimulationInput input)
             throws IOException;
 }
