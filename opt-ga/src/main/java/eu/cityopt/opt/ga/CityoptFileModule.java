@@ -4,13 +4,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 
-import org.opt4j.core.config.Icons;
 import org.opt4j.core.config.annotations.File;
-import org.opt4j.core.config.annotations.Icon;
 import org.opt4j.core.config.annotations.Info;
-import org.opt4j.core.config.annotations.Parent;
+import org.opt4j.core.problem.ProblemModule;
 import org.opt4j.core.start.Constant;
-import org.opt4j.core.start.Opt4JModule;
 
 import com.google.inject.name.Names;
 
@@ -19,10 +16,8 @@ import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.SimulatorManager;
 
-@Parent(CityoptModule.class)
 @Info("Read the Cityopt problem from files")
-@Icon(Icons.DISK)
-public class CityoptFileModule extends Opt4JModule {
+public class CityoptFileModule extends ProblemModule {
     @Info("Directory containing Apros profiles")
     @File
     @Constant(value="aprosDir", namespace=SimulatorProvider.class)
