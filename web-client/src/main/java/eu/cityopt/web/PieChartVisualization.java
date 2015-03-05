@@ -1,8 +1,11 @@
 package eu.cityopt.web;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.text.SimpleDateFormat;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
@@ -25,7 +28,7 @@ import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.RefineryUtilities;
 
-public class PieChartVisualization extends ApplicationFrame {
+public class PieChartVisualization {
 /**
 * A demonstration application showing how to create a simple time series
 * chart. This example uses monthly data.
@@ -34,8 +37,6 @@ public class PieChartVisualization extends ApplicationFrame {
 */
 	
 	public PieChartVisualization (String title, TimeSeriesCollection timeSeriesCollection, String xAxisLabel, String yAxisLabel) {
-		super(title);
-		
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		dataset.setValue("Category 1", 40);
 		dataset.setValue("Category 2", 20);
@@ -45,7 +46,25 @@ public class PieChartVisualization extends ApplicationFrame {
 		ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
 		chartPanel.setMouseZoomable(true, false);
-		setContentPane(chartPanel);
+		
+		JFrame f = new JFrame(title);
+        f.setTitle(title);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setLayout(new BorderLayout(0, 5));
+        f.add(chartPanel, BorderLayout.CENTER);
+        chartPanel.setMouseWheelEnabled(true);
+        chartPanel.setHorizontalAxisTrace(true);
+        chartPanel.setVerticalAxisTrace(true);
+
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        //panel.add(createTrace());
+        //panel.add(createDate());
+        //panel.add(createZoom());
+        f.add(panel, BorderLayout.SOUTH);
+        f.pack();
+        f.setLocationRelativeTo(null);
+        f.setDefaultCloseOperation(ApplicationFrame.HIDE_ON_CLOSE);
+        f.setVisible(true);
 	}
 	
 	/**

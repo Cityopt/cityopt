@@ -1,9 +1,14 @@
 package eu.cityopt.controller;
 
+import java.awt.Desktop.Action;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.sql.Time;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.TransformerException;
 
 import org.hibernate.loader.plan.build.internal.returns.CollectionAttributeFetchImpl;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
 import org.jfree.data.time.Hour;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.Month;
@@ -47,25 +54,34 @@ import eu.cityopt.DTO.TimeSeriesValDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.Project;
+import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.service.AppUserService;
+import eu.cityopt.service.AppUserServiceImpl;
 import eu.cityopt.service.AprosService;
 import eu.cityopt.service.ComponentInputParamDTOServiceImpl;
 import eu.cityopt.service.ComponentService;
+import eu.cityopt.service.ComponentServiceImpl;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ExtParamService;
+import eu.cityopt.service.ExtParamServiceImpl;
 import eu.cityopt.service.ExtParamValServiceImpl;
 import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParamValServiceImpl;
 import eu.cityopt.service.InputParameterService;
+import eu.cityopt.service.InputParameterServiceImpl;
 import eu.cityopt.service.MetricService;
+import eu.cityopt.service.MetricServiceImpl;
 import eu.cityopt.service.OutputVariableService;
 import eu.cityopt.service.OutputVariableServiceImpl;
 import eu.cityopt.service.ProjectService;
+import eu.cityopt.service.ProjectServiceImpl;
 import eu.cityopt.service.ScenarioService;
 import eu.cityopt.service.ScenarioServiceImpl;
 import eu.cityopt.service.SimulationResultService;
+import eu.cityopt.service.SimulationResultServiceImpl;
 import eu.cityopt.service.TimeSeriesServiceImpl;
 import eu.cityopt.service.UnitService;
+import eu.cityopt.service.UnitServiceImpl;
 import eu.cityopt.sim.eval.EvaluationException;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.Namespace;
@@ -80,43 +96,43 @@ import eu.cityopt.web.UserSession;
 public class ProjectController {
 	
 	@Autowired
-	ProjectService projectService; 
+	ProjectServiceImpl projectService; 
 	
 	@Autowired
 	ScenarioServiceImpl scenarioService;
 	
 	@Autowired
-	AppUserService userService;
+	AppUserServiceImpl userService;
 	
 	@Autowired
-	ComponentService componentService;
+	ComponentServiceImpl componentService;
 
 	@Autowired
 	ComponentInputParamDTOServiceImpl componentInputParamService;
 	
 	@Autowired
-	InputParameterService inputParamService;
+	InputParameterServiceImpl inputParamService;
 
 	@Autowired
 	InputParamValServiceImpl inputParamValService;
 
 	@Autowired
-	ExtParamService extParamService;
+	ExtParamServiceImpl extParamService;
 
 	@Autowired
 	ExtParamValServiceImpl extParamValService;
 
 	@Autowired
-	MetricService metricService;
+	MetricServiceImpl metricService;
 	
 	@Autowired
-	UnitService unitService;
+	UnitServiceImpl unitService;
 	
 	@Autowired
 	SimulationService simService;
 
 	@Autowired
-	SimulationResultService simResultService;
+	SimulationResultServiceImpl simResultService;
 
 	@Autowired
 	TimeSeriesServiceImpl timeSeriesService;
@@ -148,8 +164,6 @@ public class ProjectController {
 			try {
 				project = projectService.findByID(Integer.parseInt(prjid));
 			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
 			model.put("project", project);
@@ -323,12 +337,7 @@ public class ProjectController {
 		}
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		project = projectService.findByID(project.getPrjid());
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
 		if (scenario != null && scenario.getScenid() > 0)
@@ -356,12 +365,7 @@ public class ProjectController {
 		if (model.containsKey("project") && formScenario != null)
 		{
 			ProjectDTO project = (ProjectDTO) model.get("project");
-			try {
-				project = projectService.findByID(project.getPrjid());
-			} catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			project = projectService.findByID(project.getPrjid());
 			
 			ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 			
@@ -423,11 +427,7 @@ public class ProjectController {
 			return "error";
 		}
 
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e1) {
-			e1.printStackTrace();
-		}
+		project = projectService.findByID(project.getPrjid());
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		ComponentDTO selectedComponent = null;
 		int nSelectedCompId = 0;
@@ -476,11 +476,8 @@ public class ProjectController {
 			return "error";
 		}
 		
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			e.printStackTrace();
-		}
+		project = projectService.findByID(project.getPrjid());
+		
 		model.put("project", project);
 		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
 		model.put("extParamVals", extParamVals);
@@ -589,12 +586,6 @@ public class ProjectController {
 		return "usermanagement";
 	}
 	
-	@RequestMapping(value="viewtable",method=RequestMethod.GET)
-	public String getViewTable(Model model){
-	
-		return "viewtable";
-	}
-	
 	@RequestMapping(value="coordinates",method=RequestMethod.GET)
 	public String getCoordinates(Map<String, Object> model){
 		ProjectDTO project = (ProjectDTO) model.get("project");
@@ -604,12 +595,7 @@ public class ProjectController {
 			return "error";
 		}
 		
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		project = projectService.findByID(project.getPrjid());
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
 		
@@ -670,12 +656,7 @@ public class ProjectController {
 	@RequestMapping(value="runmultiscenario",method=RequestMethod.GET)
 	public String getRunMultiScenario(Map<String, Object> model){
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		project = projectService.findByID(project.getPrjid());
 		
 		if (project == null)
 		{
@@ -698,12 +679,7 @@ public class ProjectController {
 	public String getProjectParameters(Map<String, Object> model, 
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId){
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		project = projectService.findByID(project.getPrjid());
 		
 		if (project == null)
 		{
@@ -795,12 +771,7 @@ public class ProjectController {
 		component.setName(componentForm.getName());
 		componentService.save(component, project.getPrjid());
 		
-		try {
-			model.put("project", projectService.findByID(project.getPrjid()));
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		model.put("project", projectService.findByID(project.getPrjid()));
 		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
 		model.put("extParams", extParams);
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
@@ -848,12 +819,7 @@ public class ProjectController {
 		model.put("selectedcompid", oldComponent.getComponentid());
 		model.put("selectedComponent",  oldComponent);
 
-		try {
-			model.put("project", projectService.findByID(project.getPrjid()));
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		model.put("project", projectService.findByID(project.getPrjid()));
 		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
 		model.put("extParams", extParams);
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
@@ -1043,12 +1009,8 @@ public class ProjectController {
 		{
 			return "error";
 		}
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		project = projectService.findByID(project.getPrjid());
 		model.put("project", project);
 		
 		ExtParamDTO extParam = new ExtParamDTO();
@@ -1066,13 +1028,8 @@ public class ProjectController {
 			return "error";
 		}
 
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		project = projectService.findByID(project.getPrjid());
+		
 		ExtParamDTO newExtParam = new ExtParamDTO();
 		newExtParam.setName(extParam.getName());
 		newExtParam.setDefaultvalue(extParam.getDefaultvalue());
@@ -1097,12 +1054,8 @@ public class ProjectController {
 		{
 			return "error";
 		}
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		
+		project = projectService.findByID(project.getPrjid());
 		model.put("project", project);
 
 		int nExtParamId = Integer.parseInt(extparamid);
@@ -1128,13 +1081,8 @@ public class ProjectController {
 			return "error";
 		}
 
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
+		project = projectService.findByID(project.getPrjid());
+		
 		int nExtParamId = Integer.parseInt(extParamId);
 		ExtParamDTO updatedExtParam = null;
 		try {
@@ -1161,11 +1109,8 @@ public class ProjectController {
 		{
 			return "error";
 		}
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e1) {
-			e1.printStackTrace();
-		}
+		
+		project = projectService.findByID(project.getPrjid());
 		model.put("project", project);
 
 		int nExtParamValId = Integer.parseInt(extparamvalid);
@@ -1191,12 +1136,8 @@ public class ProjectController {
 			return "error";
 		}
 
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e1) {
-			e1.printStackTrace();
-		}
-
+		project = projectService.findByID(project.getPrjid());
+		
 		int nExtParamValId = Integer.parseInt(extParamValId);
 		ExtParamValDTO updatedExtParamVal = null;
 
@@ -1226,12 +1167,8 @@ public class ProjectController {
 			return "error";
 		}
 
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e2) {
-			e2.printStackTrace();
-		}
-
+		project = projectService.findByID(project.getPrjid());
+		
 		if (action != null && metricid != null)
 		{
 			int nMetricId = Integer.parseInt(metricid);
@@ -1268,11 +1205,7 @@ public class ProjectController {
 			}
 		}
 		
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			e.printStackTrace();
-		}
+		project = projectService.findByID(project.getPrjid());
 		model.put("project", project);
 	
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
@@ -1293,12 +1226,7 @@ public class ProjectController {
 	@RequestMapping(value="createmetric", method=RequestMethod.POST)
 	public String getCreateMetricPost(MetricDTO metricForm, Map<String, Object> model){
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		project = projectService.findByID(project.getPrjid());
 		
 		if (project == null)
 		{
@@ -1311,11 +1239,7 @@ public class ProjectController {
 		metric = metricService.save(metric);
 		metricService.setProject(metric.getMetid(), project.getPrjid());
 		
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			e.printStackTrace();
-		}
+		project = projectService.findByID(project.getPrjid());
 		
 		model.put("project", project);
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
@@ -1342,11 +1266,8 @@ public class ProjectController {
 	public String getEditMetricPost(MetricDTO metric, Map<String, Object> model,
 		@RequestParam(value="metricid", required=true) String metricid) {
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e1) {
-			e1.printStackTrace();
-		}
+		
+		project = projectService.findByID(project.getPrjid());
 		
 		if (project == null)
 		{
@@ -1373,12 +1294,7 @@ public class ProjectController {
 	@RequestMapping(value="uploaddiagram", method=RequestMethod.GET)
 	public String getUploadDiagram(HttpServletRequest request, Map<String, Object> model){
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		project = projectService.findByID(project.getPrjid());
 		
 		/*File file ;
 		int maxFileSize = 5000 * 1024;
@@ -1546,11 +1462,7 @@ public class ProjectController {
 			return "error";
 		}
 		
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			e.printStackTrace();
-		}
+		project = projectService.findByID(project.getPrjid());
 		
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
@@ -1572,11 +1484,244 @@ public class ProjectController {
 		List<ComponentDTO> components = componentService.findAll();
 		model.put("components", components);
 
+		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
+		model.put("extParamVals", extParamVals);
+		
 		return "viewchart";
 	}	
 
 	@RequestMapping(value="viewchart", method=RequestMethod.GET)
 	public String getViewChart(Map<String, Object> model, 
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
+		@RequestParam(value="outputvarid", required=false) String outputvarid,
+		@RequestParam(value="extparamid", required=false) String extparamid,
+		@RequestParam(value="action", required=false) String action) {
+
+		UserSession userSession = (UserSession) model.get("usersession");
+		
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		
+		if (project == null || scenario == null)
+		{
+			return "error";
+		}
+		
+		if (action != null)
+		{
+			if (action.equals("removeall"))
+			{
+				userSession.removeAllExtVarIds();
+				userSession.removeAllOutputVarIds();
+			}
+		}
+		List<ComponentDTO> components = componentService.findAll();
+		model.put("components", components);
+
+		if (selectedCompId != null && !selectedCompId.isEmpty())
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
+			if (nSelectedCompId > 0)
+			{
+				userSession.setComponentId(nSelectedCompId);
+				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				model.put("outputVars", outputVars);
+			}
+			model.put("selectedcompid", nSelectedCompId);
+		}
+		
+		if (outputvarid != null && action != null)
+		{
+			if (action.equals("add"))
+			{
+				userSession.addOutputVarId(Integer.parseInt(outputvarid));
+			}
+			else if (action.equals("remove"))
+			{
+				userSession.removeOutputVarId(Integer.parseInt(outputvarid));
+			}
+		}
+		
+		if (extparamid != null && action != null)
+		{
+			if (action.equals("add"))
+			{
+				userSession.addExtVarId(Integer.parseInt(extparamid));
+			}
+			else if (action.equals("remove"))
+			{
+				userSession.removeExtVarId(Integer.parseInt(extparamid));
+			}
+		}
+
+		if (action != null && action.equals("openwindow"))
+		{
+			Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
+		    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
+			
+		    // Get output variable results
+			while(iterator.hasNext()) {
+				int outputVarId = iterator.next(); 
+		    
+				try {
+					OutputVariableDTO outputVar = outputVarService.findByID(outputVarId);
+					SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, scenario.getScenid());
+						
+					List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
+					TimeSeries timeSeries = new TimeSeries(outputVar.getName());
+
+					for (int i = 0; i < timeSeriesVals.size(); i++)
+					{
+						TimeSeriesValDTO timeSeriesVal = timeSeriesVals.get(i);
+						String value = timeSeriesVal.getValue();
+						value = value.replace(",", ".");
+						timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(value));
+					}
+					
+					timeSeriesCollection.addSeries(timeSeries);
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+		    }
+
+			iterator = userSession.getSelectedChartExtVarIds().iterator();
+			   
+			// Get external parameter time series
+			while(iterator.hasNext()) {
+				int extVarId = iterator.next(); 
+		    
+				try {
+					ExtParamValDTO extVarVal = extParamValService.findByID(extVarId);
+					TimeSeriesDTO timeSeriesDTO = extVarVal.getTimeseries();
+					
+					if (timeSeriesDTO != null)
+					{
+						Set<TimeSeriesVal> timeSeriesVals = timeSeriesDTO.getTimeseriesvals();
+						TimeSeries timeSeries = new TimeSeries(extVarVal.getExtparam().getName());
+						Iterator<TimeSeriesVal> timeSeriesIter = timeSeriesVals.iterator();
+						
+						while(timeSeriesIter.hasNext()) {
+							TimeSeriesVal timeSeriesVal = timeSeriesIter.next();
+							timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(timeSeriesVal.getValue()));
+						}
+		
+						timeSeriesCollection.addSeries(timeSeries);
+					}
+					else
+					{
+						TimeSeries timeSeries = new TimeSeries(extVarVal.getExtparam().getName());
+						timeSeries.add(new Minute(new Date()), Double.parseDouble(extVarVal.getValue()));
+						
+						timeSeriesCollection.addSeries(timeSeries);
+					}
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+		    }
+			
+			if (timeSeriesCollection.getSeriesCount() > 0)
+			{
+				TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName() + " time series", timeSeriesCollection, "Time", "");
+			}
+		}
+		
+		model.put("usersession", userSession);
+		
+		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
+		model.put("extParamVals", extParamVals);
+		
+		return "viewchart";
+	}
+
+	@RequestMapping("chart.png")
+	public void renderChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
+		UserSession userSession = (UserSession) model.get("usersession");
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		
+		Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
+	    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
+		
+	    // Get output variable results
+		while(iterator.hasNext()) {
+			int outputVarId = iterator.next(); 
+	    
+			try {
+				OutputVariableDTO outputVar = outputVarService.findByID(outputVarId);
+				SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, scenario.getScenid());
+					
+				List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
+				TimeSeries timeSeries = new TimeSeries(outputVar.getName());
+
+				for (int i = 0; i < timeSeriesVals.size(); i++)
+				{
+					TimeSeriesValDTO timeSeriesVal = timeSeriesVals.get(i);
+					String value = timeSeriesVal.getValue();
+					value = value.replace(",", ".");
+					timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(value));
+				}
+				
+				timeSeriesCollection.addSeries(timeSeries);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+	    }
+
+		iterator = userSession.getSelectedChartExtVarIds().iterator();
+		   
+		// Get external parameter time series
+		while(iterator.hasNext()) {
+			int extVarId = iterator.next(); 
+	    
+			try {
+				ExtParamValDTO extVarVal = extParamValService.findByID(extVarId);
+				TimeSeriesDTO timeSeriesDTO = extVarVal.getTimeseries();
+				
+				if (timeSeriesDTO != null)
+				{
+					Set<TimeSeriesVal> timeSeriesVals = timeSeriesDTO.getTimeseriesvals();
+					TimeSeries timeSeries = new TimeSeries(extVarVal.getExtparam().getName());
+					Iterator<TimeSeriesVal> timeSeriesIter = timeSeriesVals.iterator();
+					
+					while(timeSeriesIter.hasNext()) {
+						TimeSeriesVal timeSeriesVal = timeSeriesIter.next();
+						timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(timeSeriesVal.getValue()));
+					}
+	
+					timeSeriesCollection.addSeries(timeSeries);
+				}
+				else
+				{
+					TimeSeries timeSeries = new TimeSeries(extVarVal.getExtparam().getName());
+					timeSeries.add(new Minute(new Date()), Double.parseDouble(extVarVal.getValue()));
+					
+					timeSeriesCollection.addSeries(timeSeries);
+				}
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+	    }
+		
+		if (timeSeriesCollection.getSeriesCount() > 0)
+		{
+			JFreeChart chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", "Time", "");
+			ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+		}
+		else
+		{
+			//JFreeChart chart = new JFreeChart();
+		}
+	}
+	
+	@RequestMapping(value="viewtable", method=RequestMethod.GET)
+	public String getViewTable(Map<String, Object> model, 
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
 		@RequestParam(value="outputvarid", required=false) String outputvarid,
 		@RequestParam(value="extparamid", required=false) String extparamid) {
@@ -1616,24 +1761,43 @@ public class ProjectController {
 			userSession.addOutputVarId(Integer.parseInt(outputvarid));
 		}
 		
+		if (extparamid != null)
+		{
+			userSession.addExtVarId(Integer.parseInt(extparamid));
+		}
+		
 		model.put("usersession", userSession);
 		
 		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
 		model.put("extParamVals", extParamVals);
 		
-		return "viewchart";
+		return "viewtable";
 	}
-
-	@RequestMapping(value="drawchart",method=RequestMethod.GET)
-	public String getDrawChart(Map<String, Object> model,
-		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+	
+	@RequestMapping(value="writetable", method=RequestMethod.GET)
+	public String getWriteTable(Map<String, Object> model, 
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
+		@RequestParam(value="outputvarid", required=false) String outputvarid,
+		@RequestParam(value="extparamid", required=false) String extparamid) {
 
 		UserSession userSession = (UserSession) model.get("usersession");
-
+		
 		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
 		{
 			return "error";
 		}
+		
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		
+		List<ComponentDTO> components = componentService.findAll();
+		model.put("components", components);
 
 		if (selectedCompId != null && !selectedCompId.isEmpty())
 		{
@@ -1648,18 +1812,11 @@ public class ProjectController {
 			model.put("selectedcompid", nSelectedCompId);
 		}
 		
-		ProjectDTO project = (ProjectDTO) model.get("project");
-		
-		if (project == null)
-		{
-			return "error";
-		}
-
-		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
-		
 		Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
-	    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
+	    List<Double> listOutputVarVals = new ArrayList<Double>();
+	    List<String> listOutputVarTime = new ArrayList<String>();
 		
+	    // Get output variable results
 		while(iterator.hasNext()) {
 			int outputVarId = iterator.next(); 
 	    
@@ -1668,36 +1825,55 @@ public class ProjectController {
 				SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, scenario.getScenid());
 					
 				List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
-				TimeSeries timeSeries = new TimeSeries(outputVar.getName());
-
+				
 				for (int i = 0; i < timeSeriesVals.size(); i++)
 				{
 					TimeSeriesValDTO timeSeriesVal = timeSeriesVals.get(i);
-					timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(timeSeriesVal.getValue()));
+					listOutputVarVals.add(Double.parseDouble(timeSeriesVal.getValue()));
+					listOutputVarTime.add(timeSeriesVal.getTime().toString());
 				}
-				
-				timeSeriesCollection.addSeries(timeSeries);
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
+			break; // TODO
 	    }
-		
-		if (timeSeriesCollection.getSeriesCount() > 0)
-		{
-			TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName() + " time series", timeSeriesCollection, "Time", "");
-		}
+
+		/*iterator = userSession.getSelectedChartExtVarIds().iterator();
+		   
+		// Get external parameter time series
+		while(iterator.hasNext()) {
+			int extVarId = iterator.next(); 
+	    
+			try {
+				ExtParamValDTO extVarVal = extParamValService.findByID(extVarId);
+				TimeSeriesDTO timeSeriesDTO = extVarVal.getTimeseries();
+				
+				if (timeSeriesDTO != null)
+				{
+					Set<TimeSeriesVal> timeSeriesVals = timeSeriesDTO.getTimeseriesvals();
+					TimeSeries timeSeries = new TimeSeries(extVarVal.getExtparam().getName());
+					Iterator<TimeSeriesVal> timeSeriesIter = timeSeriesVals.iterator();
+					
+					while(timeSeriesIter.hasNext()) {
+						TimeSeriesVal timeSeriesVal = timeSeriesIter.next();
+						timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(timeSeriesVal.getValue()));
+					}
+	
+					timeSeriesCollection.addSeries(timeSeries);
+				}
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+	    }*/
 		
 		model.put("usersession", userSession);
 		
 		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
 		model.put("extParamVals", extParamVals);
 		
-		List<ComponentDTO> components = componentService.findAll();
-		model.put("components", components);
-
-		return "viewchart";
+		return "viewtable";
 	}
-
+		
 	@RequestMapping(value="geneticalgorithm", method=RequestMethod.GET)
 	public String getGeneticAlgorithm(Map<String, Object> model)
 	{
