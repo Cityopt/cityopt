@@ -54,6 +54,12 @@
 			<artifactId>jsr305</artifactId>
 			<version>3.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-grapher</artifactId>
+			<version>4.0-beta5</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<parent>
 		<groupId>eu.cityopt</groupId>

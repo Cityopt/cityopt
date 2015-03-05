@@ -2,7 +2,9 @@ package eu.cityopt.opt.ga;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,8 +12,6 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
-import javax.inject.Singleton;
 
 import org.junit.*;
 import org.opt4j.core.start.Opt4JTask;
@@ -25,11 +25,11 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.Provides;
+import com.google.inject.grapher.graphviz.GraphvizGrapher;
+import com.google.inject.grapher.graphviz.GraphvizModule;
 import com.google.inject.name.Names;
 
 import eu.cityopt.sim.eval.Namespace;
-import eu.cityopt.sim.eval.SimulationModel;
 
 public class JacksonTest {
     private final static String propsName = "/test.properties";
@@ -104,17 +104,21 @@ public class JacksonTest {
         assertNull(p.model);
     }
     
-    @Test
-    @Ignore
-    public void testInjectProblem() throws Exception {
+    private CityoptFileModule getCityoptFileModule() {
         TestModule tm = new TestModule();
         CityoptFileModule cfm = new CityoptFileModule();
         cfm.setModelFile(tm.mfile.toString());
         cfm.setProblemFile(tm.pfile.toString());
         cfm.setTimeOrigin(tm.t0.toString());
+        return cfm;
+    }
+    
+    @Test
+    @Ignore("model file likely incorrect")
+    public void testInjectProblem() throws Exception {
+        CityoptFileModule cfm = getCityoptFileModule();
         Opt4JTask task = new Opt4JTask(false);
         try {
-            // Not tm!
             task.init(cfm);
             task.open();
             OptimisationProblem p = task.getInstance(OptimisationProblem.class);
@@ -122,6 +126,23 @@ public class JacksonTest {
             assertNotNull(p.model);
         } finally {
             task.close();
+        }
+    }
+    
+    @Test
+    public void graphCityoptFile() throws IOException {
+        String dotname = props.getProperty("dot_file");
+        if (dotname == null || dotname.isEmpty()) {
+            System.out.println("Dependency graph output skipped.");
+            return;
+        }
+        Injector cf_inj = Guice.createInjector(getCityoptFileModule());
+        Injector gv_inj = Guice.createInjector(new GraphvizModule());
+        GraphvizGrapher g = gv_inj.getInstance(GraphvizGrapher.class);
+        try (PrintWriter out = new PrintWriter(dotname)) {
+            System.out.println("Writing graph to " + dotname);
+            g.setOut(out);
+            g.graph(cf_inj);
         }
     }
 }
