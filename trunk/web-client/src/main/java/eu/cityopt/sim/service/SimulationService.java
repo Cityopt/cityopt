@@ -44,6 +44,8 @@ import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioRepository;
+import eu.cityopt.repository.TimeSeriesRepository;
+import eu.cityopt.repository.TimeSeriesValRepository;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.MetricExpression;
@@ -161,6 +163,7 @@ public class SimulationService {
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ScenarioRepository scenarioRepository;
     @Autowired private ExtParamValSetRepository extParamValSetRepository;
+    @Autowired private TimeSeriesValRepository timeSeriesValRepository;
 
     @Autowired private ApplicationContext applicationContext;
     @Autowired private TaskExecutor taskExecutor;
@@ -400,8 +403,7 @@ public class SimulationService {
     public TimeSeriesI loadTimeSeries(TimeSeries timeseries, 
             Type timeSeriesType, Evaluator evaluator, Instant timeOrigin) {
         List<TimeSeriesVal> timeSeriesVals =
-                new ArrayList<TimeSeriesVal>(timeseries.getTimeseriesvals());
-        timeSeriesVals.sort((e1, e2) -> e1.getTime().compareTo(e2.getTime()));
+                timeSeriesValRepository.findTimeSeriesValOrderedByTime(timeseries.getTseriesid());
         int n = timeSeriesVals.size();
         double[] times = new double[n];
         double[] values = new double[n];

@@ -222,9 +222,6 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         scenario.setRunstart((simOutput.runStart != null) ? Date.from(simOutput.runStart) : null);
         scenario.setRunend((simOutput.runEnd != null) ? Date.from(simOutput.runEnd) : null);
 
-        for (ScenarioMetrics scenarioMetrics : scenario.getScenariometricses()) {
-            metricValRepository.delete(scenarioMetrics.getMetricvals());
-        }
         scenarioMetricsRepository.delete(scenario.getScenariometricses());
         scenario.getScenariometricses().clear();
         //TODO batch removal of simulation results and related time series
