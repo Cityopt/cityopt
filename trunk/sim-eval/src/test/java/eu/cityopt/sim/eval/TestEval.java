@@ -118,13 +118,13 @@ public class TestEval {
         System.out.println("--- withDecisions=" + withDecisions + " ---");
         final double delta = 1.0e-12;
         Constraint[] constraints = {
-                new Constraint(1,
+                new Constraint("con1",
                         "C2.x9 * (C1.x5 - C1.x6) + 0.02 * C1.x6 - 0.025 * C1.x5",
                         Double.NEGATIVE_INFINITY, 0.0, evaluator),
-                new Constraint(2,
+                new Constraint("con2",
                         "C2.x9 * (C1.x8 - C1.x7) + 0.02 * C1.x7 - 0.015 * C1.x8",
                         Double.NEGATIVE_INFINITY, 0.0, evaluator),
-                new Constraint(3,
+                new Constraint("con3",
                         "C2.x4", -10000, 10000, evaluator) };
         MetricExpression[] metrics = {
                 new MetricExpression(1, "m1", "-9 * C1.x5 - 15 * C1.x8", evaluator),
@@ -133,7 +133,7 @@ public class TestEval {
                 new MetricExpression(4, "m4", "C2.x3 + C1.x1", evaluator)
         };
         ObjectiveExpression[] objectives = { new ObjectiveExpression(
-                1, "m1 + m2", false, evaluator) };
+                "obj1", "m1 + m2", false, evaluator) };
 
         ConstraintContext precc = null;
         if (withDecisions) {
@@ -189,7 +189,7 @@ public class TestEval {
         }
         for (int i = 0; i < constraints.length; ++i) {
             System.out.println("Constraint "
-                    + constraints[i].getConstraintId() + ": "
+                    + constraints[i].getName() + ": "
                     + cs.infeasibilities[i]);
         }
         System.out.println("Feasible: " + cs.feasible);
@@ -203,7 +203,7 @@ public class TestEval {
 
         for (int i = 0; i < objectives.length; ++i) {
             System.out.println("Objective "
-                    + objectives[i].getObjectiveId() + ": "
+                    + objectives[i].getName() + ": "
                     + os.objectiveValues[i]);
         }
 
@@ -236,7 +236,7 @@ public class TestEval {
 
     @Test(expected=ScriptException.class)
     public void accessNonexistentComponentMember() throws Exception {
-        Constraint invalidConstraint = new Constraint(1,
+        Constraint invalidConstraint = new Constraint("con1",
                 "C2.x9 * (C1.x5 - C1.x9) + 0.02 * C1.x6 - 0.025 * C1.x5",
                 Double.NEGATIVE_INFINITY, 0.0, evaluator);
 
