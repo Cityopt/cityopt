@@ -16,6 +16,12 @@ import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.SimulatorManager;
 
+/**
+ * Configure {@link CityoptModule} for file-based input.
+ * Installs CityoptModule.  Supports the Opt4J GUI.
+ * @author ttekth
+ *
+ */
 @Info("Read the Cityopt problem from files")
 public class CityoptFileModule extends ProblemModule {
     @Info("Directory containing Apros profiles")

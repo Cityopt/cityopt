@@ -33,8 +33,17 @@ import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.NumericInterval;
 import eu.cityopt.sim.eval.ObjectiveExpression;
+import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.Type;
 
+/**
+ * A Jackson-mapped class for {@link OptimisationProblem} definition.
+ * If you have a {@link SimulationModel}, the time origin (possibly from
+ * the model object) and a JacksonBinder, you can construct an
+ * OptimisationProblem.  JacksonBinder is (de)serialisable with Jackson.
+ * 
+ * @author ttekth
+ */
 @Singleton
 public class JacksonBinder {
     /** Values in the kind column. */
@@ -69,13 +78,11 @@ public class JacksonBinder {
 
         /**
          * Add this item to a {@link Namespace}.
-         * @param ns namespace to modify
          */
         public abstract void addToNamespace(Namespace ns);
         
         /**
          * Add this item to an {@link OptimisationProblem}.
-         * @param prob problem to modify
          */
         public abstract void addToProblem(OptimisationProblem prob)
                 throws ParseException, ScriptException;
@@ -264,6 +271,9 @@ public class JacksonBinder {
     @JsonIgnore
     final private List<Item> items;
     
+    /**
+     * Read from a file.
+     */
     @Inject
     public JacksonBinder(
             @Named("problem") ObjectReader reader,
@@ -281,10 +291,18 @@ public class JacksonBinder {
     @JsonValue
     public List<Item> getItems() {return items;}
 
+    /**
+     * Sort items by kind (in place).
+     */
     public void sort() {
         Collections.sort(items, (x1, x2) -> x1.kind.compareTo(x2.kind));
     }
     
+    /**
+     * Create a {@link Namespace} and populate it with our items.
+     * @param timeOrigin time stamp corresponding to t = 0
+     * @return a new Namespace.
+     */
     public Namespace makeNamespace(
             Instant timeOrigin) {
         Namespace ns = new Namespace(new Evaluator(), timeOrigin, true);
@@ -292,6 +310,14 @@ public class JacksonBinder {
         return ns;
     }
     
+    /**
+     * Add our items to an {@link OptimisationProblem}.
+     * The problem must have been constructed with a {@link Namespace}
+     * containing our items.
+     * 
+     * @param prob the problem to modify
+     * @see #makeNamespace(Instant)
+     */
     public void addToProblem(
             OptimisationProblem prob)
                     throws ParseException, ScriptException {
@@ -299,4 +325,7 @@ public class JacksonBinder {
             item.addToProblem(prob);
         }
     }
+    
+    //TODO OptimisationProblem -> JacksonBinder (serialisation)
+    //TODO time series (in external parameters)
 }

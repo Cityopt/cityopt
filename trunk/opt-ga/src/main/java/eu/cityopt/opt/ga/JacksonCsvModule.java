@@ -19,6 +19,12 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
+/**
+ * Bindings for reading CSV with Jackson.  These configure Jackson-csv
+ * appropriately for our purposes.
+ * @author ttekth
+ *
+ */
 public class JacksonCsvModule extends AbstractModule {
     /**
      * Deserialise empty strings as nulls.
@@ -43,6 +49,13 @@ public class JacksonCsvModule extends AbstractModule {
         }
     }
     
+    /**
+     * Create a mapper.
+     * Different kinds of objects require different fields, hence we
+     * accept and ignore unknown columns.  Empty cells are mapped to
+     * null also when the target is String.
+     * @return
+     */
     @Provides
     @Singleton
     public static CsvMapper getCsvMapper() {
@@ -55,6 +68,13 @@ public class JacksonCsvModule extends AbstractModule {
         return m;
     }
     
+    /**
+     * Create a reader.
+     * A header row is required in the CSV.  Columns are identified by their
+     * names in the header.  Column order is thus irrelevant.
+     * @param mapper
+     * @return
+     */
     @Provides
     @Named("problem")
     public static ObjectReader getReader(CsvMapper mapper) {
@@ -62,6 +82,13 @@ public class JacksonCsvModule extends AbstractModule {
                 .with(CsvSchema.emptySchema().withHeader());
     }
     
+    /**
+     * Create a writer.
+     * This uses a fixed schema: always the same columns in the same order.
+     * This method needs to be modified if new columns are required.
+     * @param mapper
+     * @return
+     */
     @Provides
     @Named("problem")
     public static ObjectWriter getWriter(CsvMapper mapper) {

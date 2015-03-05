@@ -41,7 +41,8 @@ public class SimulatorProvider implements Provider<SimulatorManager> {
             @Constant(value="simulator", namespace=SimulatorProvider.class)
             String simulator)
                     throws IOException, SimulatorConfigurationException {
-        AprosManager.register(Paths.get(aprosDir), Executors.newCachedThreadPool());
+        AprosManager.register(
+                Paths.get(aprosDir), Executors.newCachedThreadPool());
         manager = SimulatorManagers.get(simulator);
     }
 }

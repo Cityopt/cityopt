@@ -18,6 +18,7 @@ import eu.cityopt.sim.eval.SimulatorConfigurationException;
 import eu.cityopt.sim.eval.SimulatorManager;
 
 @Singleton
+@Deprecated
 public class ProblemFromFiles extends OptimisationProblem {
     private static SimulationModel readModel(
             SimulatorManager simulator, Path file)

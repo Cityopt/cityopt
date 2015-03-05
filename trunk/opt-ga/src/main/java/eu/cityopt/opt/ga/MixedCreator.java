@@ -21,6 +21,14 @@ public class MixedCreator<Key> implements Creator<MixedGenotype<Key>> {
     private final Bounds<Double> realBounds;
     private final Bounds<Integer> intBounds;
     
+    /**
+     * Constructor.  The decision variables are separated by type.
+     * Variables of each type are kept in the same order as they appear
+     * in the arguments.
+     * @param rand
+     * @param keys list of decision variable names
+     * @param domains variable domains in the same order as keys
+     */
     public MixedCreator(
             Rand rand,
             List<Key> keys,
