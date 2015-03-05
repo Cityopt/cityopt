@@ -29,6 +29,8 @@ public class ScenarioGenerator implements java.io.Serializable {
 	private Algorithm algorithm;
 	private ExtParamValSet extparamvalset;
 	private Project project;
+	private String status;
+	private String log;
 	private Set<DecisionVariable> decisionvariables = new HashSet<DecisionVariable>(
 			0);
 	private Set<ModelParameter> modelparameters = new HashSet<ModelParameter>(0);
@@ -47,14 +49,18 @@ public class ScenarioGenerator implements java.io.Serializable {
 	}
 
 	public ScenarioGenerator(int scengenid, Algorithm algorithm,
-			Project project, Set<DecisionVariable> decisionvariables,
+			ExtParamValSet extparamvalset, Project project, String status,
+			String log, Set<DecisionVariable> decisionvariables,
 			Set<ModelParameter> modelparameters,
 			Set<ScenGenOptConstraint> scengenoptconstraints,
 			Set<Scenario> scenarios, Set<AlgoParamVal> algoparamvals,
 			Set<ScenGenObjectiveFunction> scengenobjectivefunctions) {
 		this.scengenid = scengenid;
 		this.algorithm = algorithm;
+		this.extparamvalset = extparamvalset;
 		this.project = project;
+		this.status = status;
+		this.log = log;
 		this.decisionvariables = decisionvariables;
 		this.modelparameters = modelparameters;
 		this.scengenoptconstraints = scengenoptconstraints;
@@ -104,6 +110,24 @@ public class ScenarioGenerator implements java.io.Serializable {
 		this.project = project;
 	}
 
+	@Column(name = "status", length = 50)
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@Column(name = "log")
+	public String getLog() {
+		return this.log;
+	}
+
+	public void setLog(String log) {
+		this.log = log;
+	}
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
 	public Set<DecisionVariable> getDecisionvariables() {
 		return this.decisionvariables;
