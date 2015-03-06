@@ -2,7 +2,9 @@ package eu.cityopt.sim.eval;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,11 +42,7 @@ public class SimulatorManagers {
                 ? simulatorManagers.put(simulatorName, manager)
                 : simulatorManagers.remove(simulatorName);
         if (oldManager != null) {
-            try {
-                oldManager.close();
-            } catch (IOException e) {
-                System.err.println("Failed to close SimulatorManager: " + e.getMessage());
-            }
+            tryClose(oldManager);
         }
     }
 
@@ -53,8 +51,20 @@ public class SimulatorManagers {
      * Exceptions are ignored.
      */
     public static void shutdown() {
-        for (String name : simulatorManagers.keySet()) {
-            simulatorManagers.put(name, null);
+        Iterator<Map.Entry<String, SimulatorManager>> it =
+                simulatorManagers.entrySet().iterator();
+        while (it.hasNext()) {
+            tryClose(it.next().getValue());
+            it.remove();
         }
     }
+
+    private static void tryClose(SimulatorManager manager) {
+        try {
+            manager.close();
+        } catch (IOException e) {
+            System.err.println("Failed to close SimulatorManager: " + e.getMessage());
+        }
+    }
+
 }
