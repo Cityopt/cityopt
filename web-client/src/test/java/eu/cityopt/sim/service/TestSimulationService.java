@@ -42,7 +42,7 @@ import eu.cityopt.model.SimulationModel;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.SimulationModelRepository;
 import eu.cityopt.sim.eval.SimulationOutput;
-import eu.cityopt.sim.eval.SimulatorConfigurationException;
+import eu.cityopt.sim.eval.ConfigurationException;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -101,7 +101,7 @@ public class TestSimulationService {
     }
 
     private void runSimulation() throws ParseException, IOException,
-            SimulatorConfigurationException, InterruptedException,
+            ConfigurationException, InterruptedException,
             ExecutionException, ScriptException, Exception {
         Scenario scenario = scenarioRepository.findByName("testscenario").get(0);
         Executor directExecutor = MoreExecutors.directExecutor();

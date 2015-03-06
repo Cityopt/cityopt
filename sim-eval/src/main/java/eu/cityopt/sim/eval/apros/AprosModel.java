@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import eu.cityopt.sim.eval.SimulationModel;
-import eu.cityopt.sim.eval.SimulatorConfigurationException;
+import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.eval.util.TimeUtils;
@@ -36,7 +36,7 @@ public class AprosModel implements SimulationModel {
     Instant timeOrigin;
 
     AprosModel(InputStream inputStream, AprosManager manager)
-            throws IOException, SimulatorConfigurationException {
+            throws IOException, ConfigurationException {
         this.manager = manager; 
         modelDir = new TempDir("sim");
         resultFiles = new String[] { "results.dat" };
@@ -50,7 +50,7 @@ public class AprosModel implements SimulationModel {
     }
 
     Document extractModelFiles(InputStream inputStream, Path dir)
-            throws IOException, SimulatorConfigurationException {
+            throws IOException, ConfigurationException {
         Document ucs = null;
         try (ZipInputStream zis = new ZipInputStream(inputStream)) {
             ZipEntry entry;
@@ -61,7 +61,7 @@ public class AprosModel implements SimulationModel {
                     Files.createDirectories(target);
                 } else if (name.equalsIgnoreCase(USER_COMPONENT_PROPERTIES_FILENAME)) {
                     if (ucs != null) {
-                        throw new SimulatorConfigurationException(
+                        throw new ConfigurationException(
                                 "Model package contains multiple "
                                 + USER_COMPONENT_PROPERTIES_FILENAME + " files");
                     }
@@ -79,20 +79,20 @@ public class AprosModel implements SimulationModel {
     }
 
     private Document loadUserComponentProperties(ZipInputStream zis)
-            throws IOException, SimulatorConfigurationException {
+            throws IOException, ConfigurationException {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             return db.parse(new UncloseableInputStream(zis));
         } catch (ParserConfigurationException | SAXException e) {
-            throw new SimulatorConfigurationException(
+            throw new ConfigurationException(
                     "Failed to read user component properties from "
                     + USER_COMPONENT_PROPERTIES_FILENAME, e);
         }
     }
 
     private void loadModelConfiguration(InputStream inputStream)
-            throws IOException, SimulatorConfigurationException {
+            throws IOException, ConfigurationException {
         Properties properties = new Properties();
         properties.load(inputStream);
         for (String key : properties.stringPropertyNames()) {
@@ -106,7 +106,7 @@ public class AprosModel implements SimulationModel {
                 this.timeOrigin = TimeUtils.parseISO8601(value);
                 break;
             default:
-                throw new SimulatorConfigurationException(
+                throw new ConfigurationException(
                         "Unknown property " + key + " in " + MODEL_CONFIGURATION_FILENAME);
             }
         }

@@ -27,7 +27,7 @@ import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.SimulationStorage;
-import eu.cityopt.sim.eval.SimulatorConfigurationException;
+import eu.cityopt.sim.eval.ConfigurationException;
 
 /**
  * The Cityopt evaluator for Opt4J.
@@ -80,7 +80,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     
     @Inject
     public CityoptEvaluator(OptimisationProblem problem)
-                    throws IOException, SimulatorConfigurationException {
+                    throws IOException, ConfigurationException {
         this.problem = problem;
         runner = problem.makeRunner();
     }

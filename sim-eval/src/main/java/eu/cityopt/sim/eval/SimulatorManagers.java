@@ -22,13 +22,13 @@ public class SimulatorManagers {
 
     /**
      * Returns a SimulatorManager instance for access to a named simulator.
-     * @throws SimulatorConfigurationException if the name is unknown
+     * @throws ConfigurationException if the name is unknown
      */
     public static SimulatorManager get(String simulatorName)
-            throws SimulatorConfigurationException {
+            throws ConfigurationException {
         SimulatorManager manager = simulatorManagers.get(simulatorName);
         if (manager == null) {
-            throw new SimulatorConfigurationException(
+            throw new ConfigurationException(
                     "Unknown simulator " + simulatorName);
         }
         return manager;

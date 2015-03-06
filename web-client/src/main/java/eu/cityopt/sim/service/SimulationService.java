@@ -55,7 +55,7 @@ import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
-import eu.cityopt.sim.eval.SimulatorConfigurationException;
+import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.TimeSeriesI;
@@ -117,12 +117,12 @@ public class SimulationService {
      */
     @Transactional
     public Future<SimulationOutput> startSimulation(int scenId)
-            throws ParseException, IOException, SimulatorConfigurationException, ScriptException {
+            throws ParseException, IOException, ConfigurationException, ScriptException {
         return startSimulation(scenId, executorService);
     }
 
     Future<SimulationOutput> startSimulation(int scenId, Executor executor)
-            throws ParseException, IOException, SimulatorConfigurationException, ScriptException {
+            throws ParseException, IOException, ConfigurationException, ScriptException {
         Scenario scenario = scenarioRepository.findOne(scenId);
         Project project = scenario.getProject();
         Namespace namespace = makeProjectNamespace(project);
@@ -279,7 +279,7 @@ public class SimulationService {
 
     /** Loads the simulation model from a project. */
     public SimulationModel loadSimulationModel(Project project)
-            throws SimulatorConfigurationException, IOException {
+            throws ConfigurationException, IOException {
         String simulatorName = project.getSimulationmodel().getSimulator();
         SimulatorManager manager = SimulatorManagers.get(simulatorName);
         byte[] modelZipBytes = project.getSimulationmodel().getModelblob();

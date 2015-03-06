@@ -85,7 +85,7 @@ import eu.cityopt.service.UnitServiceImpl;
 import eu.cityopt.sim.eval.EvaluationException;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.Namespace;
-import eu.cityopt.sim.eval.SimulatorConfigurationException;
+import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.apros.AprosRunner;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.TimeSeriesVisualization;
@@ -1474,7 +1474,7 @@ public class ProjectController {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
-			} catch (SimulatorConfigurationException e) {
+			} catch (ConfigurationException e) {
 				e.printStackTrace();
 			} catch (ScriptException e) {
 				e.printStackTrace();

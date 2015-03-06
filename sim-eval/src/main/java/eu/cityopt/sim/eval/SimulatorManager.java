@@ -14,8 +14,8 @@ public interface SimulatorManager extends Closeable {
     String getSimulatorName();
 
     SimulationModel parseModel(InputStream modelData)
-            throws IOException, SimulatorConfigurationException;
+            throws IOException, ConfigurationException;
 
     SimulationRunner makeRunner(SimulationModel model, Namespace namespace)
-            throws IOException, SimulatorConfigurationException;
+            throws IOException, ConfigurationException;
 }
