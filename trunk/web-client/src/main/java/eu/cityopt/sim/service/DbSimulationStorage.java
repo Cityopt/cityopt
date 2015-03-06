@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -103,6 +104,14 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     }
 
     //TODO: maybe use entity listener to get updates?
+
+    @Override
+    public Iterator<SimulationOutput> iterator() {
+        if ( ! cachePopulated) {
+            loadCache();
+        }
+        return cache.values().iterator();
+    }
 
     @Override
     public SimulationOutput get(SimulationInput input) {
@@ -308,6 +317,8 @@ public class DbSimulationStorage implements DbSimulationStorageI {
 
     void saveMetricValues(Scenario scenario, MetricValues metricValues) {
         ScenarioMetrics scenarioMetrics = new ScenarioMetrics();
+        // TODO remove/update any existing ScenarioMetrics referring to the same
+        // Scenario and ExtParamValSet
 
         ExternalParameters simExternals =
                 metricValues.getResults().getInput().getExternalParameters();
