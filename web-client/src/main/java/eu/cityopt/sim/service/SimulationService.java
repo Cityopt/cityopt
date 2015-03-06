@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.model.Component;
+import eu.cityopt.model.DecisionVariable;
 import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.ExtParamVal;
 import eu.cityopt.model.ExtParamValSet;
@@ -37,6 +38,7 @@ import eu.cityopt.model.Metric;
 import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
+import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesVal;
@@ -436,10 +438,22 @@ public class SimulationService {
      * scenario specific, and they are ignored here.
      */
     public Namespace makeProjectNamespace(Project project) {
+        return makeProjectNamespace(project, null);
+    }
+
+    /**
+     * Loads the names and types of named objects in a project: external parameters,
+     * input parameters, output variables and metrics.  The actual values are
+     * scenario specific, and they are ignored here.
+     * @param project
+     * @param scenarioGenerator either null for basic use cases, or ScenarioGenerator
+     *    instance from which names and types of decision variables will be loaded 
+     */
+    public Namespace makeProjectNamespace(Project project, ScenarioGenerator scenarioGenerator) {
         Date timeOriginDate = project.getSimulationmodel().getTimeorigin();
         Instant timeOrigin = (timeOriginDate != null)
                 ? timeOriginDate.toInstant() : DEFAULT_TIME_ORIGIN;
-        Namespace namespace = new Namespace(evaluator, timeOrigin);
+        Namespace namespace = new Namespace(evaluator, timeOrigin, (scenarioGenerator != null));
         for (ExtParam mExternal : project.getExtparams()) {
             Type extType = null;
             if (mExternal.getTimeseries() != null) {
@@ -468,6 +482,24 @@ public class SimulationService {
             String typeName = mMetric.getUnit().getType().getName();
             Type metricType = Type.getByName(typeName);
             namespace.metrics.put(mMetric.getName(), metricType);
+        }
+        if (scenarioGenerator != null) {
+            for (DecisionVariable decisionVariable : scenarioGenerator.getDecisionvariables()) {
+                InputParameter inputParameter = decisionVariable.getInputparameter();
+                if (inputParameter != null) {
+                    String typeName = (decisionVariable.getType() != null)
+                            ? decisionVariable.getType().getName()
+                            : inputParameter.getUnit().getType().getName();
+                    Type variableType = Type.getByName(typeName);
+                    Namespace.Component nsComponent =
+                            namespace.components.get(inputParameter.getComponent().getName());
+                    nsComponent.decisions.put(inputParameter.getName(), variableType);
+                } else {
+                    String typeName = decisionVariable.getType().getName();
+                    Type variableType = Type.getByName(typeName);
+                    namespace.decisions.put(decisionVariable.getName(), variableType);
+                }
+            }
         }
         return namespace;
     }

@@ -61,12 +61,22 @@ public class DecisionValues implements EvaluationContext {
         return bindingLayer.get(componentName, decisionName);
     }
 
+    /** Gets the value of a decision variable. */
+    public Object get(DecisionVariable variable) {
+        return get(variable.componentName, variable.name);
+    }
+
     /**
      * Sets the value of a named decision variable.
      * Use null componentName for a top-level decision variable.
      */
     public Object put(String componentName, String decisionName, Object value) {
         return bindingLayer.put(componentName, decisionName, value);
+    }
+
+    /** Sets the value of a decision variable. */
+    public void put(DecisionVariable variable, Object value) {
+        put(variable.componentName, variable.name, value);
     }
 
     /**
