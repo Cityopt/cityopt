@@ -124,12 +124,12 @@ public class OptimisationSupport {
                     evaluationResults.ignored.add(scenario.getScenid());
                 }
             } catch (ParseException | ScriptException e) {
-                log.warn("Failed to update metrics of scenario " + scenario.getScenid()
+                log.warn("Failed to evaluate scenario " + scenario.getScenid()
                         + ": " + e.getMessage());
                 evaluationResults.failures.put(scenario.getScenid(), e);
             }
         }
-        log.info("Updated scenario metrics for project " + project.getPrjid() + ": "
+        log.info("Evaluated scenarios of project " + project.getPrjid() + ": "
                 + evaluationResults);
         return evaluationResults;
     }
