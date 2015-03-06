@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.log4j.Logger;
+import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +58,7 @@ import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.eval.util.TimeUtils;
+import eu.cityopt.sim.opt.OptimisationResults;
 
 /**
  * SimulationStorage implementation on top of the data access layer.
@@ -445,5 +447,17 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         // Copy the database row id once it is available.
         idUpdateList.add(() -> simTS.setTimeSeriesId(timeSeries.getTseriesid()));
         return timeSeries;
+    }
+
+    @Override
+    public void saveScenarioGeneratorStatus(int scenGenId,
+            OptimisationResults results, String messages) {
+        ScenarioGenerator scenarioGenerator = scenarioGeneratorRepository.findOne(scenGenId);
+        if (scenarioGenerator != null) {
+            scenarioGenerator.setStatus(results.toString());
+            scenarioGenerator.setLog(messages);
+        } else {
+            Log.warn("Failed to save status: ScenarioGenerator " + scenGenId + " has been deleted");
+        }
     }
 }

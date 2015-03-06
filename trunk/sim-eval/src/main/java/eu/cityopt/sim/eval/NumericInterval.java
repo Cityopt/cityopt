@@ -50,4 +50,30 @@ extends DecisionDomain {
     public static NumericInterval<Integer> makeIntInterval(int lb, int ub) {
         return new NumericInterval<Integer>(Type.INTEGER, lb, ub);
     }
+
+    /**
+     * Interval of numerical type.  Currently the types INTEGER, DOUBLE
+     * and TIMESTAMP are supported.
+     * @param type type of the decision variable
+     * @param lb lower bound or null for no bound
+     * @param ub upper bound or null for no bound
+     * @return the interval
+     * @throws IllegalArgumentException if type is unsupported or lb > ub 
+     */
+    public static DecisionDomain makeInterval(
+            Type type, Object lb, Object ub) {
+        switch (type) {
+        case INTEGER:
+            //TODO either move this to makeIntInterval or throw error on null bounds?
+            return new NumericInterval<Integer>(type,
+                    (lb != null) ? (Integer) lb : Integer.MIN_VALUE,
+                    (ub != null) ? (Integer) ub : Integer.MAX_VALUE);
+        case DOUBLE:
+        case TIMESTAMP:
+            return new NumericInterval<Double>(type, (Double) lb, (Double) ub);
+        default:
+            throw new IllegalArgumentException(
+                    "Unsupported decision variable type " + type);
+        }
+    }
 }

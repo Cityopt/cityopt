@@ -22,10 +22,11 @@ import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.google.common.util.concurrent.MoreExecutors;
 
-import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
+import eu.cityopt.model.ScenarioGenerator;
+import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.sim.eval.ConfigurationException;
-import eu.cityopt.sim.eval.SimulationOutput;
+import eu.cityopt.sim.opt.OptimisationResults;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,50 +34,26 @@ import eu.cityopt.sim.eval.SimulationOutput;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionDbUnitTestExecutionListener.class })
-public class TestSimulationService extends SimulationTestBase {
-    @Autowired
-    SimulationService simulationService;
+public class TestScenarioGenerationService extends SimulationTestBase {
+    @Autowired ScenarioGenerationService scenarioGenerationService;
+    @Autowired ScenarioGeneratorRepository scenarioGeneratorRepository;
 
     @Test
-    @DatabaseSetup("classpath:/testData/plumbing_scenario.xml")
+    @DatabaseSetup("classpath:/testData/plumbing_scengen.xml")
     public void testPlumbing() throws Exception {
         loadModel("Plumbing test model", "/testData/plumbing.zip");
-        runSimulation();
-        dumpTables("plumbing");
+        runScenarioGeneration();
+        dumpTables("plumbing_scengen");
     }
 
-    @Test
-    @DatabaseSetup("classpath:/testData/plumbing_scenario.xml")
-    public void testPlumbingAndUpdateMetrics() throws Exception {
-        loadModel("Plumbing test model", "/testData/plumbing.zip");
-        runSimulation();
-        updateMetrics();
-        dumpTables("plumbing");
-    }
-
-    @Test
-    @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
-    public void testModel() throws Exception {
-        loadModel("Apros test model", "/testData/testmodel.zip");
-        runSimulation();
-        //updateMetrics();
-        dumpTables("testmodel");
-    }
-
-    private void runSimulation() throws ParseException, IOException,
+    private void runScenarioGeneration() throws ParseException, IOException,
             ConfigurationException, InterruptedException,
             ExecutionException, ScriptException, Exception {
-        Scenario scenario = scenarioRepository.findByName("testscenario").get(0);
+        ScenarioGenerator scenarioGenerator =
+                scenarioGeneratorRepository.findAll().iterator().next();
         Executor directExecutor = MoreExecutors.directExecutor();
-        Future<SimulationOutput> job = simulationService.startSimulation(
-                scenario.getScenid(), directExecutor);
+        Future<OptimisationResults> job = scenarioGenerationService.startOptimisation(
+                scenarioGenerator.getScengenid(), directExecutor);
         job.get();
-    }
-
-    private void updateMetrics() throws ParseException, ScriptException {
-        Project project = scenarioRepository.findByName("testscenario").get(0).getProject();
-        SimulationService.MetricUpdateStatus status =
-                simulationService.updateMetricValues(project.getPrjid(), null);
-        System.out.println(status);
     }
 }

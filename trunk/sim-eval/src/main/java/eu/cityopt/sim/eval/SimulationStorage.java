@@ -53,4 +53,7 @@ public interface SimulationStorage extends Iterable<SimulationOutput> {
 
     /** Updates the metric values of a previously stored successful simulation. */
     public void updateMetricValues(MetricValues metricValues);
+
+    //TODO save metrics & output in the same transaction
+    //TODO save feasibility flag in scenario generation
 }

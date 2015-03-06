@@ -68,6 +68,10 @@ public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
         return feasible == null || feasible == true;
     }
 
+    public boolean isDefinitelyFeasible() {
+        return feasible != null && feasible == true;
+    }
+
     @Override
     public Integer compareTo(ConstraintStatus other) {
         return PartialComparisons.compare(infeasibilities,

@@ -1,0 +1,69 @@
+package eu.cityopt.sim.service;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.apache.commons.io.IOUtils;
+import org.dbunit.database.DatabaseConnection;
+import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.database.search.TablesDependencyHelper;
+import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+
+import eu.cityopt.model.SimulationModel;
+import eu.cityopt.repository.ScenarioRepository;
+import eu.cityopt.repository.SimulationModelRepository;
+
+public class SimulationTestBase {
+    @Autowired
+    SimulationModelRepository simulationModelRepository;
+
+    @Autowired
+    ScenarioRepository scenarioRepository;
+
+    @Autowired
+    DataSource dataSource;
+
+    public void loadModel(String modelName, String modelResource) throws IOException {
+        // The simulation test model is not included in the XML test data.
+        // Load it from a separate zip file.
+        SimulationModel model = 
+                simulationModelRepository.findByDescription(modelName).get(0);
+        try (InputStream is = this.getClass().getResource(modelResource).openStream()) {
+            model.setModelblob(IOUtils.toByteArray(is));
+        }
+        simulationModelRepository.saveAndFlush(model);
+    }
+
+    public void dumpTables(String caseName) throws Exception {
+        Path outputPath = Paths.get(System.getProperty("java.io.tmpdir"))
+                .resolve(caseName + "_result.xml");
+        scenarioRepository.flush();
+        IDatabaseConnection dbConnection = new DatabaseConnection(
+                DataSourceUtils.getConnection(dataSource));
+        String[] tableNames = copyIfNotEqual(
+                TablesDependencyHelper.getAllDependentTables(dbConnection, "scenario"),
+                "simulationmodel");
+        IDataSet depDataset = dbConnection.createDataSet(tableNames);
+        FlatXmlDataSet.write(depDataset, new FileOutputStream(outputPath.toFile()));
+    }
+
+    private String[] copyIfNotEqual(String[] in, String toRemove) {
+        List<String> out = new ArrayList<String>();
+        for (String s : in) {
+            if (!s.equalsIgnoreCase(toRemove)) {
+                out.add(s);
+            }
+        }
+        return out.toArray(new String[out.size()]);
+    }
+}
