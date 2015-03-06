@@ -9,7 +9,7 @@ import org.opt4j.core.start.Constant;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-import eu.cityopt.sim.eval.SimulatorConfigurationException;
+import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.apros.AprosManager;
@@ -31,7 +31,7 @@ public class SimulatorProvider implements Provider<SimulatorManager> {
      * @param aprosDir Apros profile directory to be registered.
      * @param simulator simulator name
      * @throws IOException if registration fails.
-     * @throws SimulatorConfigurationException
+     * @throws ConfigurationException
      *     if the named simulator does not exist.
      */
     @Inject
@@ -40,7 +40,7 @@ public class SimulatorProvider implements Provider<SimulatorManager> {
             String aprosDir,
             @Constant(value="simulator", namespace=SimulatorProvider.class)
             String simulator)
-                    throws IOException, SimulatorConfigurationException {
+                    throws IOException, ConfigurationException {
         AprosManager.register(
                 Paths.get(aprosDir), Executors.newCachedThreadPool());
         manager = SimulatorManagers.get(simulator);

@@ -12,7 +12,7 @@ import javax.xml.transform.TransformerException;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationRunner;
-import eu.cityopt.sim.eval.SimulatorConfigurationException;
+import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.SimulatorManagers;
 
@@ -58,20 +58,20 @@ public class AprosManager implements SimulatorManager {
 
     @Override
     public SimulationModel parseModel(InputStream inputStream)
-            throws IOException, SimulatorConfigurationException {
+            throws IOException, ConfigurationException {
         return new AprosModel(inputStream, this);
     }
 
     @Override
     public SimulationRunner makeRunner(SimulationModel model, Namespace namespace)
-            throws IOException, SimulatorConfigurationException {
+            throws IOException, ConfigurationException {
         AprosModel aprosModel = (AprosModel) model;
         try {
             return new AprosRunner(profileDir, profileName, executor,
                     namespace, aprosModel.uc_props, aprosModel.modelDir.getPath(),
                     aprosModel.resultFiles);
         } catch (TransformerException e) {
-            throw new SimulatorConfigurationException(
+            throw new ConfigurationException(
                     "Failed to process user component properties", e);
         }
     }

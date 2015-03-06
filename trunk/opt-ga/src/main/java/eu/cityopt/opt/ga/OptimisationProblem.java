@@ -17,7 +17,7 @@ import eu.cityopt.sim.eval.ObjectiveExpression;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationRunner;
-import eu.cityopt.sim.eval.SimulatorConfigurationException;
+import eu.cityopt.sim.eval.ConfigurationException;
 
 /** The data for a Cityopt optimisation problem.
  * 
@@ -53,7 +53,7 @@ public class OptimisationProblem {
     }
 
     public SimulationRunner makeRunner()
-            throws IOException, SimulatorConfigurationException {
+            throws IOException, ConfigurationException {
         return model.getSimulatorManager().makeRunner(model, getNamespace());
     }
 }

@@ -14,7 +14,7 @@ import org.opt4j.core.start.Constant;
 import com.google.inject.Inject;
 
 import eu.cityopt.sim.eval.SimulationModel;
-import eu.cityopt.sim.eval.SimulatorConfigurationException;
+import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.SimulatorManager;
 
 @Singleton
@@ -22,7 +22,7 @@ import eu.cityopt.sim.eval.SimulatorManager;
 public class ProblemFromFiles extends OptimisationProblem {
     private static SimulationModel readModel(
             SimulatorManager simulator, Path file)
-            throws IOException, SimulatorConfigurationException {
+            throws IOException, ConfigurationException {
         try (InputStream stream = new FileInputStream(file.toFile())) {
             return simulator.parseModel(stream);
         }
@@ -37,14 +37,14 @@ public class ProblemFromFiles extends OptimisationProblem {
             String modelFile,
             @Constant(value="problemFile", namespace=ProblemFromFiles.class)
             String problemFile)
-            throws IOException, SimulatorConfigurationException {
+            throws IOException, ConfigurationException {
         this(readModel(simulator, Paths.get(modelFile)),
              Paths.get(problemFile),
              timeOrigin.isEmpty() ? null : Instant.parse(timeOrigin));
     }
     
     public ProblemFromFiles(SimulationModel model, Path problemFile, Instant t0)
-            throws IOException, SimulatorConfigurationException {
+            throws IOException, ConfigurationException {
         super(model, CSVReaders.readNamespace(
                 t0 != null ? t0 : model.getTimeOrigin(),
                 problemFile));
