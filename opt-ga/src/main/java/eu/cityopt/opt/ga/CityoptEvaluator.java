@@ -2,6 +2,8 @@ package eu.cityopt.opt.ga;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Singleton;
@@ -69,6 +71,11 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
         
         @Override
         public SimulationOutput get(SimulationInput input) {return null;}
+
+        @Override
+        public Iterator<SimulationOutput> iterator() {
+            return Collections.emptyIterator();
+        }
     };
     
     @Inject

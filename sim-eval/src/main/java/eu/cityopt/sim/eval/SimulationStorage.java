@@ -1,5 +1,6 @@
 package eu.cityopt.sim.eval;
 
+
 /**
  * Access to stored simulation runs for the sim-eval module and scenario
  * generation code. Can be accessed concurrently.
@@ -8,8 +9,7 @@ package eu.cityopt.sim.eval;
  * 
  * @author Hannu Rummukainen
  */
-public interface SimulationStorage {
-
+public interface SimulationStorage extends Iterable<SimulationOutput> {
     /**
      * Finds the simulation output that results with the given input, if
      * available.
