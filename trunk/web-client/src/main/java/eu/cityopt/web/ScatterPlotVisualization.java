@@ -12,6 +12,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
@@ -68,7 +69,7 @@ public class ScatterPlotVisualization {
 	*
 	* @return A chart.
 	*/
-	private static JFreeChart createChart(XYDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
+	public static JFreeChart createChart(XYDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
 		JFreeChart chart = ChartFactory.createScatterPlot(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
 	
 		chart.setBackgroundPaint(Color.white);
@@ -87,8 +88,9 @@ public class ScatterPlotVisualization {
 			renderer.setBaseShapesFilled(true);
 		}
 		
-		DateAxis axis = (DateAxis) plot.getDomainAxis();
-		axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
+		//ValueAxis axis = (ValueAxis) plot.getDomainAxis();
+		//DateAxis axis = (DateAxis) plot.getDomainAxis();
+		//axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
 		return chart;
 	}
 		

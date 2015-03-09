@@ -74,7 +74,7 @@ public class PieChartVisualization {
 	*
 	* @return A chart.
 	*/
-	private static JFreeChart createChart(PieDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
+	public static JFreeChart createChart(PieDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
 		JFreeChart chart = ChartFactory.createPieChart3D(title, dataset, true, true, false);
 	
 		chart.setBackgroundPaint(Color.white);

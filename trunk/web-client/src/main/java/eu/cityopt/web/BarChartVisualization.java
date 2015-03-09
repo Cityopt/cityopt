@@ -12,6 +12,8 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
@@ -76,18 +78,18 @@ public class BarChartVisualization {
 	*
 	* @return A chart.
 	*/
-	private static JFreeChart createChart(CategoryDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
+	public static JFreeChart createChart(CategoryDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
 		JFreeChart chart = ChartFactory.createBarChart3D(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.HORIZONTAL, true, true, false);
 	
 		chart.setBackgroundPaint(Color.white);
-		XYPlot plot = (XYPlot) chart.getPlot();
+		CategoryPlot plot = (CategoryPlot) chart.getPlot();
 		plot.setBackgroundPaint(Color.lightGray);
 		plot.setDomainGridlinePaint(Color.white);
 		plot.setRangeGridlinePaint(Color.white);
 		plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
 		plot.setDomainCrosshairVisible(true);
 		plot.setRangeCrosshairVisible(true);
-		XYItemRenderer r = plot.getRenderer();
+		/*XYItemRenderer r = plot.getRenderer();
 		
 		if (r instanceof XYLineAndShapeRenderer) {
 			XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
@@ -96,7 +98,7 @@ public class BarChartVisualization {
 		}
 		
 		DateAxis axis = (DateAxis) plot.getDomainAxis();
-		axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
+		axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));*/
 		return chart;
 	}
 		
