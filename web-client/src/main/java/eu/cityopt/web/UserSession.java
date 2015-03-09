@@ -5,7 +5,9 @@ import java.util.HashSet;
 public class UserSession {
 	private HashSet<Integer> selectedChartOutputVarIds = new HashSet<Integer>();
 	private HashSet<Integer> selectedChartExtVarIds = new HashSet<Integer>();
+	private HashSet<Integer> selectedChartMetricIds = new HashSet<Integer>();
 	private int nComponentId;
+	private int nChartType;
 	
 	public HashSet<Integer> getSelectedChartOutputVarIds() {
 		return selectedChartOutputVarIds;
@@ -41,6 +43,21 @@ public class UserSession {
 		selectedChartExtVarIds.clear();
 	}
 
+	public void addMetricId(int id)
+	{
+		selectedChartMetricIds.add(new Integer(id));
+	}
+
+	public void removeMetricId(int id)
+	{
+		selectedChartMetricIds.remove(new Integer(id));
+	}
+
+	public void removeAllMetricIds()
+	{
+		selectedChartMetricIds.clear();
+	}
+
 	public void removeAllOutputVarIds()
 	{
 		selectedChartOutputVarIds.clear();
@@ -55,14 +72,27 @@ public class UserSession {
 		return selectedChartExtVarIds.contains(id);
 	}
 
+	public boolean hasMetric(int id)
+	{
+		return selectedChartMetricIds.contains(id);
+	}
+	
 	public HashSet<Integer> getSelectedChartExtVarIds() {
 		return selectedChartExtVarIds;
 	}
-	
+
+	public HashSet<Integer> getSelectedChartMetricIds() {
+		return selectedChartMetricIds;
+	}
+
 	public void setSelectedChartExtVarIds(HashSet<Integer> selectedChartExtVarIds) {
 		this.selectedChartExtVarIds = selectedChartExtVarIds;
 	}
 
+	public void setSelectedChartMetricIds(HashSet<Integer> selectedChartMetricIds) {
+		this.selectedChartMetricIds = selectedChartMetricIds;
+	}
+	
 	public int getComponentId() {
 		return nComponentId;
 	}
@@ -70,5 +100,11 @@ public class UserSession {
 		this.nComponentId = nComponentId;
 	}
 	
+	public int getChartType() {
+		return nChartType;
+	}
 	
+	public void setChartType(int type) {
+		nChartType = type;
+	}
 }

@@ -22,6 +22,7 @@ import javax.xml.transform.TransformerException;
 import org.hibernate.loader.plan.build.internal.returns.CollectionAttributeFetchImpl;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.time.Hour;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.Month;
@@ -88,6 +89,8 @@ import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.apros.AprosRunner;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.web.BarChartVisualization;
+import eu.cityopt.web.ScatterPlotVisualization;
 import eu.cityopt.web.TimeSeriesVisualization;
 import eu.cityopt.web.UserSession;
 
@@ -1495,7 +1498,9 @@ public class ProjectController {
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
 		@RequestParam(value="outputvarid", required=false) String outputvarid,
 		@RequestParam(value="extparamid", required=false) String extparamid,
-		@RequestParam(value="action", required=false) String action) {
+		@RequestParam(value="metricid", required=false) String metricid,
+		@RequestParam(value="action", required=false) String action,
+		@RequestParam(value="charttype", required=false) String charttype) {
 
 		UserSession userSession = (UserSession) model.get("usersession");
 		
@@ -1510,6 +1515,11 @@ public class ProjectController {
 		if (project == null || scenario == null)
 		{
 			return "error";
+		}
+		
+		if (charttype != null)
+		{
+			userSession.setChartType(Integer.parseInt(charttype));
 		}
 		
 		if (action != null)
@@ -1535,6 +1545,12 @@ public class ProjectController {
 			}
 			model.put("selectedcompid", nSelectedCompId);
 		}
+		else if (userSession.getComponentId() > 0)
+		{
+			model.put("selectedcompid", userSession.getComponentId());
+			Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(userSession.getComponentId());
+			model.put("outputVars", outputVars);
+		}
 		
 		if (outputvarid != null && action != null)
 		{
@@ -1557,6 +1573,18 @@ public class ProjectController {
 			else if (action.equals("remove"))
 			{
 				userSession.removeExtVarId(Integer.parseInt(extparamid));
+			}
+		}
+
+		if (metricid != null && action != null)
+		{
+			if (action.equals("add"))
+			{
+				userSession.addMetricId(Integer.parseInt(metricid));
+			}
+			else if (action.equals("remove"))
+			{
+				userSession.removeMetricId(Integer.parseInt(metricid));
 			}
 		}
 
@@ -1624,7 +1652,24 @@ public class ProjectController {
 					e.printStackTrace();
 				}
 		    }
-			
+
+			iterator = userSession.getSelectedChartMetricIds().iterator();
+
+			// Get metric time series
+			while(iterator.hasNext()) {
+				int metricId = iterator.next(); 
+		    
+				try {
+					MetricDTO metric = metricService.findByID(metricId);
+					TimeSeries timeSeries = new TimeSeries(metric.getName());
+					timeSeries.add(new Minute(new Date()), Double.parseDouble(metric.getExpression()));
+					
+					timeSeriesCollection.addSeries(timeSeries);
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+		    }
+
 			if (timeSeriesCollection.getSeriesCount() > 0)
 			{
 				TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName() + " time series", timeSeriesCollection, "Time", "");
@@ -1635,6 +1680,9 @@ public class ProjectController {
 		
 		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
 		model.put("extParamVals", extParamVals);
+		
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
 		
 		return "viewchart";
 	}
@@ -1711,7 +1759,27 @@ public class ProjectController {
 		
 		if (timeSeriesCollection.getSeriesCount() > 0)
 		{
-			JFreeChart chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", "Time", "");
+			JFreeChart chart = null;
+			
+			if (userSession.getChartType() == 0) {
+				chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", "Time", "");
+			} else if (userSession.getChartType() == 1) {
+				chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", "Time", "");
+			} else if (userSession.getChartType() == 2) {
+
+				DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
+				categoryDataset.addValue(1.0, "Row 1", "Column 1");
+				categoryDataset.addValue(5.0, "Row 1", "Column 2");
+				categoryDataset.addValue(3.0, "Row 1", "Column 3");
+				categoryDataset.addValue(2.0, "Row 2", "Column 1");
+				categoryDataset.addValue(3.0, "Row 2", "Column 2");
+				categoryDataset.addValue(2.0, "Row 2", "Column 3");
+						
+				chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "Time", "");
+			} else if (userSession.getChartType() == 3) {
+				//chart = PieChartVisualization.createChart(timeSeriesCollection, "Pie chart", "Time", "");
+			}
+			
 			ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
 		}
 		else
