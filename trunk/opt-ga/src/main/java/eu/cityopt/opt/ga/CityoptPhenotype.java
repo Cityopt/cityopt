@@ -11,4 +11,9 @@ public class CityoptPhenotype {
         this.decisions = decisions;
         this.input = input;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Phenotype(%s)", decisions);
+    }
 }
