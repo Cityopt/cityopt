@@ -2,10 +2,7 @@ package eu.cityopt.service;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Arrays;
 import java.util.List;
-
-import javax.script.ScriptException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,11 +20,6 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.DTO.ComponentInputParamDTO;
-import eu.cityopt.model.Component;
-import eu.cityopt.sim.eval.EvaluationException;
-import eu.cityopt.sim.eval.Evaluator;
-import eu.cityopt.sim.eval.Namespace;
-import eu.cityopt.sim.eval.Type;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
