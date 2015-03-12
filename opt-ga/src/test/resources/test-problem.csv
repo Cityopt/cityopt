@@ -18,7 +18,7 @@ out,ETH_NETWORK,MULTIPLYER_OUTPUT,TimeSeries/linear,,,,
 out,FUEL_CONSUMPTION,MULTIPLYER_OUTPUT,TimeSeries/linear,,,,
 out,HEATING_LOAD,MULTIPLYER_OUTPUT,TimeSeries/linear,,,,
 out,PV_TOTAL_ENERGY,MULTIPLYER_OUTPUT,TimeSeries/linear,,,,
-met,,fuelconsumption,Double,,,,max(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT)
+met,,fuelconsumption,Double,,,,FUEL_CONSUMPTION.MULTIPLYER_OUTPUT.values[-1]
 met,,fuelcost,Double,,,,"integrate(fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"
 dv,,panels,Double,,0,20,
 dv,,collectors,Double,,0,20,
