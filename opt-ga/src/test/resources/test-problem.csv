@@ -1,8 +1,8 @@
 kind,component,variable,type,value,lower,upper,expression
 ext,,fuel_cost,Double,1,,,
 ext,,x,Double,100,,,
-in,CITYOPT,simulation_end,Timestamp,2015-01-02T00:00:00Z,,,
-in,CITYOPT,simulation_start,Timestamp,2015-01-01T00:00:00Z,,,
+in,CITYOPT,simulation_end,Timestamp,2015-06-27T00:00:00Z,,,
+in,CITYOPT,simulation_start,Timestamp,2015-06-20T00:00:00Z,,,
 in,SAMPLE_DISTRICT,Burner_efficiency,Double,0.7,,,
 in,SAMPLE_DISTRICT,Burner_nominal_power,Double,17000,,,
 in,SAMPLE_DISTRICT,CHP_electrical_power_rating,Double,2400,,,
@@ -18,7 +18,7 @@ out,ETH_NETWORK,MULTIPLYER_OUTPUT,TimeSeries/linear,,,,
 out,FUEL_CONSUMPTION,MULTIPLYER_OUTPUT,TimeSeries/linear,,,,
 out,HEATING_LOAD,MULTIPLYER_OUTPUT,TimeSeries/linear,,,,
 out,PV_TOTAL_ENERGY,MULTIPLYER_OUTPUT,TimeSeries/linear,,,,
-met,,fuelconsumption,Double,,,,"integrate(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"
+met,,fuelconsumption,Double,,,,max(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT)
 met,,fuelcost,Double,,,,"integrate(fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"
 dv,,panels,Double,,0,20,
 dv,,collectors,Double,,0,20,
