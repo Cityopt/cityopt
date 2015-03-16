@@ -45,6 +45,15 @@ public class ScenarioMetrics implements java.io.Serializable {
 		this.scenario = scenario;
 		this.metricvals = metricvals;
 	}
+	
+	public ScenarioMetrics clone() {
+		ScenarioMetrics c = new ScenarioMetrics();
+		c.scenmetricid = this.scenmetricid;
+		c.extparamvalset = this.extparamvalset;
+		c.scenario = this.scenario;
+		c.metricvals = this.metricvals;
+		return c;
+	}
 
 	@SequenceGenerator(name="scenariometrics_scenmetricid_seq",sequenceName="scenariometrics_scenmetricid_seq") 
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="scenariometrics_scenmetricid_seq")
@@ -78,7 +87,7 @@ public class ScenarioMetrics implements java.io.Serializable {
 		this.scenario = scenario;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariometrics", cascade=CascadeType.REMOVE)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariometrics", cascade={CascadeType.REMOVE, CascadeType.PERSIST})
 	public Set<MetricVal> getMetricvals() {
 		return this.metricvals;
 	}

@@ -61,7 +61,7 @@ public class Metric implements java.io.Serializable {
 		this.metid = metid;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST})
 	@JoinColumn(name = "unitid")
 	public Unit getUnit() {
 		return this.unit;
@@ -71,7 +71,7 @@ public class Metric implements java.io.Serializable {
 		this.unit = unit;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST})
 	@JoinColumn(name = "prjid")
 	public Project getProject() {
 		return this.project;
@@ -99,7 +99,7 @@ public class Metric implements java.io.Serializable {
 		this.expression = expression;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "metric", cascade=CascadeType.REMOVE)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "metric", cascade={CascadeType.REMOVE, CascadeType.PERSIST})
 	public Set<MetricVal> getMetricvals() {
 		return this.metricvals;
 	}

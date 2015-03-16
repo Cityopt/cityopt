@@ -23,7 +23,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "timeseriesval", schema = "public")
 public class TimeSeriesVal implements java.io.Serializable {
-
+	
 	private int tseriesvalid;
 	private TimeSeries timeseries;
 	private String value;
@@ -44,6 +44,15 @@ public class TimeSeriesVal implements java.io.Serializable {
 		this.time = time;
 	}
 
+	public TimeSeriesVal clone(){
+		TimeSeriesVal t = new TimeSeriesVal();
+		t.tseriesvalid = this.tseriesvalid;
+		t.timeseries = this.timeseries;
+		t.value = this.value;
+		t.time = this.time;
+		return t;
+	}
+	
 	@SequenceGenerator(name="timeseriesval_tseriesvalid_seq",sequenceName="timeseriesval_tseriesvalid_seq")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="timeseriesval_tseriesvalid_seq")
 	@Id

@@ -22,7 +22,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "simulationresult", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"scenid", "outvarid" }))
 public class SimulationResult implements java.io.Serializable {
-
+	
 	private int simresid;
 	private OutputVariable outputvariable;
 	private Scenario scenario;
@@ -41,6 +41,15 @@ public class SimulationResult implements java.io.Serializable {
 		this.outputvariable = outputvariable;
 		this.scenario = scenario;
 		this.timeseries = timeseries;
+	}
+	
+	public SimulationResult clone(){
+		SimulationResult s = new SimulationResult();
+		s.simresid = this.simresid;
+		s.outputvariable = this.outputvariable;
+		s.scenario = this.scenario;
+		s.timeseries = this.timeseries;
+		return s;
 	}
 
 	@SequenceGenerator(name="simulationresult_simresid_seq",sequenceName="simulationresult_simresid_seq") 

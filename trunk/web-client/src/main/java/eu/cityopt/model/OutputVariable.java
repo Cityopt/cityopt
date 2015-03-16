@@ -5,6 +5,7 @@ package eu.cityopt.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -54,7 +55,8 @@ public class OutputVariable implements java.io.Serializable {
 		this.simulationresults = simulationresults;
 	}
 
-	@SequenceGenerator(name="outputvariable_outvarid_seq",sequenceName="outputvariable_outvarid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="outputvariable_outvarid_seq")
+	@SequenceGenerator(name="outputvariable_outvarid_seq",sequenceName="outputvariable_outvarid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="outputvariable_outvarid_seq")
 	@Id
 	@Column(name = "outvarid", unique = true, nullable = false)
 	public int getOutvarid() {
@@ -112,7 +114,7 @@ public class OutputVariable implements java.io.Serializable {
 		this.selected = selected;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "outputvariable")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "outputvariable", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
 	public Set<SimulationResult> getSimulationresults() {
 		return this.simulationresults;
 	}

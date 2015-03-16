@@ -45,6 +45,16 @@ public class MetricVal implements java.io.Serializable {
 		this.timeseries = timeseries;
 		this.value = value;
 	}
+	
+	public MetricVal clone() {
+		MetricVal c = new MetricVal();
+		c.metricvalid = this.metricvalid;
+		c.metric = this.metric;
+		c.scenariometrics = this.scenariometrics;
+		c.timeseries = this.timeseries;
+		c.value = this.value;
+		return c;
+	}
 
 	@SequenceGenerator(name="metricval_metricvalid_seq",sequenceName="metricval_metricvalid_seq") 
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="metricval_metricvalid_seq")
@@ -68,7 +78,7 @@ public class MetricVal implements java.io.Serializable {
 		this.metric = metric;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
 	@JoinColumn(name = "scenmetricid", nullable = false)
 	public ScenarioMetrics getScenariometrics() {
 		return this.scenariometrics;

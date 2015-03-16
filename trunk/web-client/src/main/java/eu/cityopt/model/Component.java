@@ -106,7 +106,7 @@ public class Component implements java.io.Serializable {
 		this.geometryblob = geometryblob;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component", cascade=CascadeType.REMOVE)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
 	public Set<InputParameter> getInputparameters() {
 		return this.inputparameters;
 	}
@@ -115,7 +115,7 @@ public class Component implements java.io.Serializable {
 		this.inputparameters = inputparameters;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component", cascade=CascadeType.REMOVE)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
 	public Set<OutputVariable> getOutputvariables() {
 		return this.outputvariables;
 	}

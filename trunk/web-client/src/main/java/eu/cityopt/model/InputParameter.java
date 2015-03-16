@@ -55,7 +55,8 @@ public class InputParameter implements java.io.Serializable {
 		this.inputparamvals = inputparamvals;
 	}
 
-	@SequenceGenerator(name="inputparameter_inputid_seq",sequenceName="inputparameter_inputid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="inputparameter_inputid_seq")
+	@SequenceGenerator(name="inputparameter_inputid_seq",sequenceName="inputparameter_inputid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="inputparameter_inputid_seq")
 	@Id
 	@Column(name = "inputid", unique = true, nullable = false)
 	public int getInputid() {
@@ -66,7 +67,7 @@ public class InputParameter implements java.io.Serializable {
 		this.inputid = inputid;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST})
 	@JoinColumn(name = "unitid")
 	public Unit getUnit() {
 		return this.unit;
@@ -76,7 +77,7 @@ public class InputParameter implements java.io.Serializable {
 		this.unit = unit;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST})
 	@JoinColumn(name = "componentid")
 	public Component getComponent() {
 		return this.component;
@@ -113,7 +114,7 @@ public class InputParameter implements java.io.Serializable {
 		this.defaultvalue = defaultvalue;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter", cascade=CascadeType.REMOVE)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
 	public Set<ModelParameter> getModelparameters() {
 		return this.modelparameters;
 	}
@@ -122,7 +123,7 @@ public class InputParameter implements java.io.Serializable {
 		this.modelparameters = modelparameters;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter", cascade=CascadeType.REMOVE)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
 	public Set<InputParamVal> getInputparamvals() {
 		return this.inputparamvals;
 	}

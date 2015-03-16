@@ -63,6 +63,20 @@ public class InputParamVal implements java.io.Serializable {
 		this.updatedby = updatedby;
 		this.datarelid = datarelid;
 	}
+	
+	public InputParamVal clone() {
+		InputParamVal c = new InputParamVal();
+		c.scendefinitionid = this.scendefinitionid;
+		c.inputparameter = this.inputparameter;
+		c.scenario = this.scenario;
+		c.value = this.value;
+		c.createdon = this.createdon;
+		c.updatedon = this.updatedon;
+		c.createdby = this.createdby;
+		c.updatedby = this.updatedby;
+		c.datarelid = this.datarelid;
+		return c;
+	}
 
 	@SequenceGenerator(name="inputparamval_scendefinitionid_seq",sequenceName="inputparamval_scendefinitionid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="inputparamval_scendefinitionid_seq")
 	@Id
