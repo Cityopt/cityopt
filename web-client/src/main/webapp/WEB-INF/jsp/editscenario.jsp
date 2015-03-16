@@ -14,12 +14,12 @@
 <body>
 <table cellspacing="0" cellpadding="0">
 	<tr>
-		<td>
+		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td style="width: 30px"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:600px;width:800px;overflow:auto">
+			<div style="overflow:scroll;height:800px;width:1100px;overflow:auto">
 			<form:form method="post" action="editscenario.html?action=update" modelAttribute="scenario">
 			<table>
 				<tr>
@@ -45,6 +45,11 @@
 							<tr>						
 								<td>External parameters:</td>
 								<td><a href="scenariovariables.html"><button type="button" style="width:100px">Set</button></a></td>
+							</tr>
+							<tr>
+								<td>Dynamic simulation period from</td>
+								<td><input type="text" style="width:200px"/>to
+								<input type="text" style="width:200px"/></td>
 							</tr>
 							<tr height="10"></tr>
 							<tr>
