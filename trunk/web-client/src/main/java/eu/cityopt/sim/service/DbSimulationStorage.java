@@ -186,7 +186,8 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         Integer scenId = input.getScenarioId();
         if (scenId != null) {
             Scenario scenario = scenarioRepository.findOne(scenId);
-            if (scenario.getProject().getPrjid() == projectId) {
+            if (scenario != null && scenario.getProject() != null
+                    && scenario.getProject().getPrjid() == projectId) {
                 return scenario;
             }
             log.warn("Scenario " + scenId + " has been removed from the database.");
