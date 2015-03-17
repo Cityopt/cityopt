@@ -4,31 +4,25 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeoutException;
 
-import eu.cityopt.sim.eval.CombinedObjectiveStatus;
+import javax.script.ScriptException;
+
+import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.DecisionDomain;
 import eu.cityopt.sim.eval.DecisionValues;
 import eu.cityopt.sim.eval.DecisionVariable;
 import eu.cityopt.sim.eval.NumericInterval;
-import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationStorage;
-import eu.cityopt.sim.eval.ConfigurationException;
 
 public class GridSearchJob extends AbstractOptimisationJob {
     Instant deadline;
     int rangeSplit;
-    int maxDomainSize;
+    int maxEvaluationsTotal;
     //TODO: implement input-only runs (needs support in SimulationStorage)
     boolean inputOnly;
- 
-    CompletableFuture<List<Solution>> paretoFrontJob =
-            CompletableFuture.completedFuture(new ArrayList<>());
 
     public GridSearchJob(
             OptimisationProblem problem, AlgorithmParameters parameters,
@@ -36,10 +30,11 @@ public class GridSearchJob extends AbstractOptimisationJob {
             Executor executor)
                     throws ConfigurationException, IOException, 
                     ConfigurationException {
-        super(problem, storage, messageSink, executor);
+        super(problem, storage, messageSink, executor,
+                parameters.getInt("max parallel evaluations", 100));
 
         deadline = Instant.now().plus(parameters.getMaxRunTime());
-        maxDomainSize = parameters.getInt("max variable domain size", 1000000);
+        maxEvaluationsTotal = parameters.getInt("max scenarios", 10000);
         rangeSplit = parameters.getInt("continuous range split factor", 2);
         inputOnly = parameters.getBoolean("disable simulation", false);
     }
@@ -140,7 +135,9 @@ public class GridSearchJob extends AbstractOptimisationJob {
     }
 
     @Override
-    public AlgorithmStatus doRun() throws Exception {
+    public AlgorithmStatus doRun()
+            throws InterruptedException, TimeoutException, ConfigurationException,
+            ScriptException, IOException {
         List<DecisionIterator> decisionIterators = new ArrayList<>();
         DecisionValues decisions = new DecisionValues(
                 problem.getExternalParameters());
@@ -150,11 +147,18 @@ public class GridSearchJob extends AbstractOptimisationJob {
             decisions.put(variable, it.reset());
         }
 
-        boolean done = false;
-        int n = decisionIterators.size();
-        while (!done && Instant.now().isBefore(deadline)) {
+        int numberOfEvaluations = 0;
+        while (true) {
+            if (Thread.interrupted()) {
+                throw new InterruptedException();
+            }
+
+            int jobId = getJobId(deadline);
+            queueJob(decisions, jobId);
+            ++numberOfEvaluations;
+
             boolean carry = true;
-            int i = n - 1;
+            int i = decisionIterators.size() - 1;
             while (carry && i >= 0) {
                 DecisionVariable variable = problem.decisionVars.get(i);
                 Object value = decisionIterators.get(i).next();
@@ -166,17 +170,11 @@ public class GridSearchJob extends AbstractOptimisationJob {
                 decisions.put(variable, value);
                 --i;
             }
-            CompletableFuture<Solution> futureSolution = evaluateAsync(decisions);
-            paretoFrontJob = paretoFrontJob.thenCombineAsync(
-                    futureSolution, super::updateParetoFront, executor);
-            done = carry;
+            // At this point carry is set if we have rolled over to the initial solution.
+            if (carry || numberOfEvaluations >= maxEvaluationsTotal) {
+                waitForCompletion(deadline);
+                return AlgorithmStatus.COMPLETED_RESULTS;
+            }
         }
-        return done ? AlgorithmStatus.COMPLETED_RESULTS : AlgorithmStatus.COMPLETED_TIME;
-    }
-
-    @Override
-    protected Collection<Solution> getParetoFront()
-            throws InterruptedException, ExecutionException {
-        return paretoFrontJob.get();
     }
 }
