@@ -44,6 +44,16 @@
 	</td>
 </tr>
 <tr>
+	<td>
+		<a href="importdata.html">Import data</a>
+	</td>
+</tr>
+<tr height=10>
+	<td>
+		
+	</td>
+</tr>
+<tr>
 	<td><b>Scenario</b></td>
 </tr>
 <% if (request.getSession().getAttribute("project") != null) { %>
@@ -171,11 +181,21 @@
 	</td>
 </tr>
 <tr>
-	<td><b>Users</b></td>
+	<td><b>Administration</b></td>
 </tr>
 <tr>
 	<td>
 		<a href="usermanagement.html">User management</a>
+	</td>
+</tr>
+<tr>
+	<td>
+		<a href="units.html">Units definition</a>
+	</td>
+</tr>
+<tr>
+	<td>
+		<a href="paramreliability.html">Parameter reliability</a>
 	</td>
 </tr>
 </table>

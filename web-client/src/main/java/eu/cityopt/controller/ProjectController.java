@@ -468,6 +468,26 @@ public class ProjectController {
 		return "usermanagement";
 	}
 
+	@RequestMapping(value="units", method=RequestMethod.GET)
+	public String getUnits(Model model){
+		List<UnitDTO> units = unitService.findAll();
+		model.addAttribute("units", units);
+	
+		return "units";
+	}
+
+	@RequestMapping(value="paramreliability", method=RequestMethod.GET)
+	public String getParamReliability(Model model){
+	
+		return "paramreliability";
+	}
+
+	@RequestMapping(value="importdata", method=RequestMethod.GET)
+	public String getImportData(Model model){
+	
+		return "importdata";
+	}
+	
 	@RequestMapping(value="createuser",method=RequestMethod.GET)
 	public String getCreateUser(Map<String, Object> model) {
 		UserForm userForm = new UserForm();
