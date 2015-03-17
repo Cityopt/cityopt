@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -83,6 +84,9 @@ public class AprosJob extends CompletableFuture<SimulationOutput>
     
     public synchronized void completeJob(JobFinished st) {
         try {
+            if (isCancelled()) {
+                throw new CancellationException();
+            }
             SimulationOutput output;
             if (st instanceof JobSucceeded) {
                 SimulationResults
