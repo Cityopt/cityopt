@@ -15,7 +15,7 @@ public class GridSearchAlgorithm implements OptimisationAlgorithm {
             OptimisationProblem problem, AlgorithmParameters parameters,
             SimulationStorage storage, OutputStream messageSink,
             Executor executor) throws ConfigurationException, IOException, ConfigurationException {
-        GridSearchJob job = new GridSearchJob(
+        GridSearchOptimiser job = new GridSearchOptimiser(
                 problem, parameters, storage, messageSink, executor);
         executor.execute(job);
         return job.completableFuture;

@@ -22,7 +22,7 @@ public class OptimisationAlgorithms {
     }
 
     /**
-     * Returns a SearchAlgorithm implementation by name.
+     * Returns an OptimisationAlgorithm implementation by name.
      * @throws ConfigurationException if the name is unknown 
      */
     public static OptimisationAlgorithm get(String algorithmName)
@@ -34,7 +34,7 @@ public class OptimisationAlgorithms {
         return algorithm;
     }
 
-    /** Registers a new SearchAlgorithm instance. */
+    /** Registers a new OptimisationAlgorithm instance. */
     public static void register(String algorithmName, OptimisationAlgorithm searchAlgorithm) {
         algorithms.put(algorithmName, searchAlgorithm);
     }
