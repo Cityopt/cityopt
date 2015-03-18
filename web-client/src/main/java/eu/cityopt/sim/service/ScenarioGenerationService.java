@@ -31,6 +31,7 @@ import eu.cityopt.sim.eval.InputExpression;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.NumericInterval;
 import eu.cityopt.sim.eval.SimulationInput;
+import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.AlgorithmParameters;
 import eu.cityopt.sim.opt.OptimisationAlgorithm;
@@ -69,13 +70,12 @@ public class ScenarioGenerationService {
         ExternalParameters externals = simulationService.loadExternalParametersFromSet(
                 scenarioGenerator.getExtparamvalset(), namespace);
 
-        OptimisationProblem problem = new OptimisationProblem();
+        SimulationModel model = simulationService.loadSimulationModel(project);
+        OptimisationProblem problem = new OptimisationProblem(model, externals);
         problem.decisionVars = loadDecisionDomains(scenarioGenerator, namespace);
-        problem.inputConst = new SimulationInput(externals);
         problem.inputExprs = loadInputExpressions(scenarioGenerator, namespace, problem.inputConst);
         problem.metrics = simulationService.loadMetricExpressions(project, namespace);
         problem.constraints = optimisationSupport.loadConstraints(scenarioGenerator, namespace);
-        problem.model = simulationService.loadSimulationModel(project);
         problem.objectives = optimisationSupport.loadObjectives(scenarioGenerator, namespace);
 
         DbSimulationStorageI storage =

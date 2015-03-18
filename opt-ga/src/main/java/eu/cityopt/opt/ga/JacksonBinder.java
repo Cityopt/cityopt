@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.DecisionDomain;
+import eu.cityopt.sim.eval.DecisionVariable;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.InputExpression;
@@ -35,6 +35,7 @@ import eu.cityopt.sim.eval.NumericInterval;
 import eu.cityopt.sim.eval.ObjectiveExpression;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.Type;
+import eu.cityopt.sim.opt.OptimisationProblem;
 
 /**
  * A Jackson-mapped class for {@link OptimisationProblem} definition.
@@ -182,8 +183,7 @@ public class JacksonBinder {
                                (Double)lb, (Double)ub)
                        : NumericInterval.makeIntInterval(
                                (Integer)lb, (Integer)ub));
-                prob.decisionVars.computeIfAbsent(
-                        comp, k -> new HashMap<>()).put(var, dom);
+                prob.decisionVars.add(new DecisionVariable(comp, var, dom));
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -252,8 +252,8 @@ public class JacksonBinder {
             if (is_max == null)
                 throw new IllegalArgumentException(
                         "Invalid objective type " + type);
-            String id = "obj" + prob.objs.size(); 
-            prob.objs.add(new ObjectiveExpression(
+            String id = "obj" + prob.objectives.size(); 
+            prob.objectives.add(new ObjectiveExpression(
                     id, expression, is_max,
                     prob.getNamespace().evaluator));
 

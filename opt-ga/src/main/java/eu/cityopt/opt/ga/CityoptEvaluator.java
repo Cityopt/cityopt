@@ -28,6 +28,7 @@ import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.ConfigurationException;
+import eu.cityopt.sim.opt.OptimisationProblem;
 
 /**
  * The Cityopt evaluator for Opt4J.
@@ -120,10 +121,10 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
             if (!post.mayBeFeasible()) {
                 return infeasibleObj(post);
             }
-            ObjectiveStatus ost = new ObjectiveStatus(mv, problem.objs);
+            ObjectiveStatus ost = new ObjectiveStatus(mv, problem.objectives);
             Objectives obj = toObjectives(post);
-            for (int i = 0; i != problem.objs.size(); ++i) {
-                ObjectiveExpression o = problem.objs.get(i);
+            for (int i = 0; i != problem.objectives.size(); ++i) {
+                ObjectiveExpression o = problem.objectives.get(i);
                 obj.add(o.getName(), o.isMaximize() ? Sign.MAX : Sign.MIN,
                         ost.objectiveValues[i]);
             }
@@ -151,7 +152,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
 
     private Objectives infeasibleObj(ConstraintStatus st) {
         Objectives obj = toObjectives(st);
-        for (ObjectiveExpression o : problem.objs) {
+        for (ObjectiveExpression o : problem.objectives) {
             obj.add(o.getName(), o.isMaximize() ? Sign.MAX : Sign.MIN, null);
         }
         return obj;

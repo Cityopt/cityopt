@@ -13,7 +13,8 @@ import org.opt4j.core.problem.Creator;
 
 import com.google.common.collect.Lists;
 
-import eu.cityopt.sim.eval.DecisionDomain;
+import eu.cityopt.sim.eval.DecisionVariable;
+import eu.cityopt.sim.opt.OptimisationProblem;
 
 public class ComponentwiseCreator
 implements Creator<ComponentwiseGenotype> {
@@ -22,13 +23,17 @@ implements Creator<ComponentwiseGenotype> {
     @Inject
     ComponentwiseCreator(Rand rand, OptimisationProblem problem) {
         creators = new HashMap<>();
-        for (Map.Entry<String, Map<String, DecisionDomain>>
-                 kv : problem.decisionVars.entrySet()) {
-            Map<String, DecisionDomain> dvs = kv.getValue();
-            List<String> names = new ArrayList<>(dvs.keySet());
-            Collections.sort(names);
-            creators.put(kv.getKey(), new MixedCreator<String>(rand, names,
-                    Lists.transform(names, name -> dvs.get(name))));
+        Map<String, List<DecisionVariable>> cdv = new HashMap<>();
+        for (DecisionVariable dv : problem.decisionVars) {
+            cdv.computeIfAbsent(dv.componentName, k -> new ArrayList<>())
+                .add(dv);
+        }
+        for (Map.Entry<String, List<DecisionVariable>> kv : cdv.entrySet()) {
+            List<DecisionVariable> dvs = kv.getValue();
+            Collections.sort(dvs, (d, e) -> d.name.compareTo(e.name));
+            creators.put(kv.getKey(), new MixedCreator<String>(rand,
+                    Lists.transform(dvs, dv -> dv.name),
+                    Lists.transform(dvs, dv -> dv.domain)));
         }
     }
 
