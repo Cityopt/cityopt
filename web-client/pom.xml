@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>web-client</artifactId>
   <packaging>war</packaging>
-  <name>CityOPT Maven Webapp</name>
+   <name>CityOPT Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
@@ -35,7 +35,8 @@
     	<groupId>javax.servlet</groupId>
     	<artifactId>jstl</artifactId>
     	<version>1.2</version>
-    </dependency>
+    </dependency>   
+     
    <!-- had to remove this to unit test the controller -->
    <!-- <dependency>
     	<groupId>javax.servlet</groupId>
@@ -64,7 +65,11 @@
     	<artifactId>jackson-mapper-asl</artifactId>
     	<version>1.9.13</version>
     </dependency>
-    
+    <dependency>
+  <groupId>com.fasterxml.jackson.dataformat</groupId>
+  <artifactId>jackson-dataformat-csv</artifactId>
+  <version>2.4.0</version>
+</dependency>
     <dependency>
 		<groupId>com.fasterxml.jackson.core</groupId>
 		<artifactId>jackson-databind</artifactId>
@@ -170,6 +175,22 @@
   </dependencies>
   <build>
     <finalName>CityOPT</finalName>
+    <plugins>
+	    <plugin>
+	        	<groupId>org.apache.maven.plugins</groupId>
+	        	<artifactId>maven-war-plugin</artifactId>
+	        	<version>2.6</version>        
+	      </plugin> 	      
+        <plugin>
+	          <groupId>org.apache.tomcat.maven</groupId>
+	          <artifactId>tomcat7-maven-plugin</artifactId>
+	          <version>2.2</version>
+	          <configuration>	                
+          			<server>LocalTomcat</server>    
+          			<url>http://127.0.0.1:8080/manager/text</url>      			
+        	</configuration>
+        </plugin>      
+      </plugins>
   </build>
         <parent>
                 <groupId>eu.cityopt</groupId>
