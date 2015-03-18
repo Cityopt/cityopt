@@ -139,8 +139,12 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
         Objectives obj = new Objectives();
         for (int i = 0; i != problem.constraints.size(); ++i) {
             String name = problem.constraints.get(i).getName();
-            double infeas = st.infeasibilities[i]; 
-            obj.add(name, Sign.MIN, Double.isNaN(infeas) ? null : infeas);
+            double infeas = st.infeasibilities[i];
+            if (Double.isNaN(infeas)) {
+                obj.add(name, Sign.MIN, null);
+            } else {
+                obj.add(name, Sign.MIN, infeas);
+            }
         }
         return obj;
     }
