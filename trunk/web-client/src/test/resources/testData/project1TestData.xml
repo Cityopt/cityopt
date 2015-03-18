@@ -57,8 +57,8 @@
 
 <!-- input parameter constraints -->
 <optconstraint optconstid="1" prjid="1" expression="Solar_thermal_panels.collector_area" lowerbound="0.1" upperbound="250" />
-<optconstraint optconstid="2" prjid="1" expression="Storage_Vertical_tank_with_heat_structure.Height_of_tank" lowerbound="1" upperbound="8" />
-<optconstraint optconstid="3" prjid="1" expression="Storage_Vertical_tank_with_heat_structure.Cross_sectional_free_area_of_tank" lowerbound="0.3" upperbound="12" />
+<optconstraint optconstid="2" prjid="1" expression="Storage_Vertical_tank_with_heat_structure.Height_of_tank" lowerbound="1" upperbound="11" />
+<optconstraint optconstid="3" prjid="1" expression="Storage_Vertical_tank_with_heat_structure.Cross_sectional_free_area_of_tank" lowerbound="0.3" upperbound="11" />
 <!-- output parameter constraints -->
 <optconstraint optconstid="4" prjid="1" expression="Solar_thermal_panels.heating_power" lowerbound="0" upperbound="80" />
 <optconstraint optconstid="5" prjid="1" expression="Storage_Vertical_tank_with_heat_structure.Liquid_Temperature" lowerbound="0" upperbound="90" />
