@@ -1,6 +1,8 @@
 package eu.cityopt.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.MetricDTO;
+import eu.cityopt.DTO.MetricValDTO;
 import eu.cityopt.model.Metric;
 import eu.cityopt.model.Project;
 import eu.cityopt.repository.MetricRepository;
@@ -67,6 +70,20 @@ public class MetricServiceImpl implements MetricService {
 		}
 		
 		return modelMapper.map(metricRepository.findOne(id), MetricDTO.class);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Set<MetricValDTO> getMetricVals(int id) throws EntityNotFoundException {
+		Metric m = metricRepository.findOne(id);
+		
+		if(m == null) {
+			throw new EntityNotFoundException();
+		}		
+		
+		//m.getMetricvals() == null ? new HashSet<MetricValDTO>() :
+		return modelMapper.map(m.getMetricvals(), 
+				new TypeToken<Set<MetricValDTO>>() {}.getType());
 	}
 	
 	@Transactional
