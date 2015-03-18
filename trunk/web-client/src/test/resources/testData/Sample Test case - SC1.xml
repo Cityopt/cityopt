@@ -23,11 +23,11 @@
 
 <scenariometrics scenmetricid="1" scenid="1" extparamvalsetid="1"/>
 
-<timeseries tseriesid="1" typeid="5" /> 
-<timeseries tseriesid="2" typeid="5" />
-<timeseries tseriesid="3" typeid="5" />
-<timeseries tseriesid="4" typeid="5" />
-<timeseries tseriesid="5" typeid="5" />
+<timeseries tseriesid="1" typeid="4" /> 
+<timeseries tseriesid="2" typeid="4" />
+<timeseries tseriesid="3" typeid="4" />
+<timeseries tseriesid="4" typeid="4" />
+<timeseries tseriesid="5" typeid="4" />
 
 <simulationresult simresid="1" scenid="1" outvarid="1" tseriesid="2"/>
 <simulationresult simresid="2" scenid="1" outvarid="2" tseriesid="3"/>
@@ -42,19 +42,10 @@
 <metricval metricvalid="6" metid="6" scenmetricid="1" value="569399.35" />
 
 
-<optimizationset optid="1" prjid="1" optfunctionid="1" scenid="1" extparamvalsetid="1" />
-
 <!-- pk not set -->
-<optsetscenarios optid="1" scenid="1" value="571297.35" />
+<!--<optsetscenarios optid="1" scenid="1" value="571297.35" />-->
 
-<!-- pk not set -->
-<optsearchconst optid="1" optconstid="1" />
-<optsearchconst optid="1" optconstid="2" />
-<optsearchconst optid="1" optconstid="3" />
-<optsearchconst optid="1" optconstid="4" />
-<optsearchconst optid="1" optconstid="5" />
-<optsearchconst optid="1" optconstid="6" />
-<optsearchconst optid="1" optconstid="7" />
+
 
 <timeseriesval tseriesvalid="1" tseriesid="1" time="2015-01-01 00:00:00" value="0.00" />
 <timeseriesval tseriesvalid="2" tseriesid="1" time="2015-01-01 01:00:00" value="0.00" />
