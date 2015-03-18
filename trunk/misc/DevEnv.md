@@ -103,6 +103,11 @@ The Apros simulation server expects to find gzip.exe on the system path.  If
 you don't have it already (e.g. from cygwin), then please install gzip from
 [http://gnuwin32.sourceforge.net/packages/gzip.htm]
 
+TomCat configuration
+--------------------
+
+Server.xml: maxPostSize="100000000" in Connector element
+
 
 Build process
 -------------
