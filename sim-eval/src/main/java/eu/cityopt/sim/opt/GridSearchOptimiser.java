@@ -17,14 +17,14 @@ import eu.cityopt.sim.eval.DecisionVariable;
 import eu.cityopt.sim.eval.NumericInterval;
 import eu.cityopt.sim.eval.SimulationStorage;
 
-public class GridSearchJob extends AbstractOptimisationJob {
+public class GridSearchOptimiser extends AbstractOptimiser {
     Instant deadline;
     int rangeSplit;
     int maxEvaluationsTotal;
     //TODO: implement input-only runs (needs support in SimulationStorage)
     boolean inputOnly;
 
-    public GridSearchJob(
+    public GridSearchOptimiser(
             OptimisationProblem problem, AlgorithmParameters parameters,
             SimulationStorage storage, OutputStream messageSink,
             Executor executor)

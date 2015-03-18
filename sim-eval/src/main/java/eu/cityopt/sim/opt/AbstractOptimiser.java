@@ -29,7 +29,7 @@ import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.SimulationStorage;
 
-public abstract class AbstractOptimisationJob implements Runnable {
+public abstract class AbstractOptimiser implements Runnable {
     protected final OptimisationProblem problem;
     protected final SimulationRunner runner;
     protected final SimulationStorage storage;
@@ -53,7 +53,7 @@ public abstract class AbstractOptimisationJob implements Runnable {
      */
     protected volatile boolean problemFeasible;
 
-    public AbstractOptimisationJob(OptimisationProblem problem,
+    public AbstractOptimiser(OptimisationProblem problem,
             SimulationStorage storage, OutputStream messageSink,
             Executor executor, int maxEvaluationsInParallel)
                     throws IOException, ConfigurationException {
