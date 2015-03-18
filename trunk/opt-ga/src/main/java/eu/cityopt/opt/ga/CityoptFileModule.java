@@ -15,6 +15,7 @@ import eu.cityopt.sim.eval.HashSimulationStorage;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.SimulatorManager;
+import eu.cityopt.sim.opt.OptimisationProblem;
 
 /**
  * Configure {@link CityoptModule} for file-based input.

@@ -9,6 +9,7 @@ import org.opt4j.core.problem.Decoder;
 import eu.cityopt.sim.eval.DecisionValues;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.Type;
+import eu.cityopt.sim.opt.OptimisationProblem;
 
 public class ComponentwiseDecoder
 implements Decoder<ComponentwiseGenotype, CityoptPhenotype> {

@@ -29,7 +29,9 @@ import com.google.inject.grapher.graphviz.GraphvizGrapher;
 import com.google.inject.grapher.graphviz.GraphvizModule;
 import com.google.inject.name.Names;
 
+import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.opt.OptimisationProblem;
 
 public class JacksonTest {
     private final static String propsName = "/test.properties";
@@ -75,12 +77,11 @@ public class JacksonTest {
         assertTrue(p.inputConst.getExternalParameters().isComplete());
         assertFalse(p.inputConst.isComplete());
         assertEquals(1, p.constraints.size());
-        assertEquals(2, p.decisionVars.values().stream()
-                .mapToInt(m -> m.size()).sum());
+        assertEquals(2, p.decisionVars.size());
         assertFalse(p.inputConst.isComplete());
         assertEquals(2, p.inputExprs.size());
         assertEquals(2, p.metrics.size());
-        assertEquals(1, p.objs.size());
+        assertEquals(1, p.objectives.size());
     }
 
     @Test
@@ -98,7 +99,8 @@ public class JacksonTest {
         wtr.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
                 .writeValue(System.out, binder);
         Namespace ns = binder.makeNamespace(tm.t0);
-        OptimisationProblem p = new OptimisationProblem(null, ns);
+        OptimisationProblem p = new OptimisationProblem(
+                null, new ExternalParameters(ns));
         binder.addToProblem(p);
         checkProblem(p);
         assertNull(p.model);
