@@ -124,6 +124,15 @@ HOWEVER: Due to technical issues the Apros simulation server client
 library has to be installed manually in the local Maven repository on your
 workstation.  See cityopt-target/README.md for instructions.
 
+TomCat Deployment
+-----------------
+
+The general tomcat deployment details (url) are part of the pom.xml in web-client.
+The required tomcat credentials are stored in maven settings - a sample settings.xml is provided.
+
+Windows:	C:\Users\UserName\.m2\settings.xml
+
+
 
 Running tests
 -------------
