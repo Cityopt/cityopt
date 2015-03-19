@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.time.Hour;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -35,6 +36,7 @@ import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
+import eu.cityopt.DTO.MetricValDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
@@ -53,6 +55,7 @@ import eu.cityopt.service.ExtParamValServiceImpl;
 import eu.cityopt.service.InputParamValServiceImpl;
 import eu.cityopt.service.InputParameterServiceImpl;
 import eu.cityopt.service.MetricServiceImpl;
+import eu.cityopt.service.MetricValServiceImpl;
 import eu.cityopt.service.OutputVariableServiceImpl;
 import eu.cityopt.service.ProjectServiceImpl;
 import eu.cityopt.service.ScenarioServiceImpl;
@@ -99,7 +102,10 @@ public class ProjectController {
 
 	@Autowired
 	MetricServiceImpl metricService;
-	
+
+	@Autowired
+	MetricValServiceImpl metricValService;
+
 	@Autowired
 	UnitServiceImpl unitService;
 	
@@ -1487,6 +1493,7 @@ public class ProjectController {
 
 	@RequestMapping(value="viewchart", method=RequestMethod.GET)
 	public String getViewChart(Map<String, Object> model, 
+		@RequestParam(value="scenarioid", required=false) String scenarioId,
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
 		@RequestParam(value="outputvarid", required=false) String outputvarid,
 		@RequestParam(value="extparamid", required=false) String extparamid,
@@ -1520,8 +1527,28 @@ public class ProjectController {
 			{
 				userSession.removeAllExtVarIds();
 				userSession.removeAllOutputVarIds();
+				userSession.removeAllMetricIds();
+				userSession.removeAllScenarioIds();
 			}
 		}
+
+		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
+		model.put("scenarios", scenarios);
+		
+		if (scenarioId != null && action != null)
+		{
+			int nScenarioId = Integer.parseInt(scenarioId);
+			
+			if (action.equals("add"))
+			{
+				userSession.addScenarioId(nScenarioId);
+			}
+			else if (action.equals("remove"))
+			{
+				userSession.removeScenarioId(nScenarioId);
+			}
+		}
+		
 		List<ComponentDTO> components = componentService.findAll();
 		model.put("components", components);
 
@@ -1676,6 +1703,14 @@ public class ProjectController {
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 		model.put("metrics", metrics);
 		
+		/*try {
+			simService.updateMetricValues(project.getPrjid(), null);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (ScriptException e) {
+			e.printStackTrace();
+		}*/
+		
 		return "viewchart";
 	}
 
@@ -1749,7 +1784,52 @@ public class ProjectController {
 			}
 	    }
 		
-		if (timeSeriesCollection.getSeriesCount() > 0)
+		iterator = userSession.getSelectedChartMetricIds().iterator();
+		   
+		// Get metrics time series (max 2 metrics)
+		if (userSession.getSelectedChartMetricIds().size() == 2)
+		{
+			timeSeriesCollection.removeAllSeries();
+			
+			int metric1Id = iterator.next(); 
+			int metric2Id = iterator.next(); 
+		    
+			try {
+				MetricDTO metric1 = metricService.findByID(metric1Id);
+				MetricDTO metric2 = metricService.findByID(metric2Id);
+				//Set<MetricValDTO> metricVals1 = metricService.getMetricVals(metric1Id);
+				//Set<MetricValDTO> metricVals2 = metricService.getMetricVals(metric2Id);
+				TimeSeries timeSeries = new TimeSeries("Scenario metric values");
+
+				Set<Integer> scenarioIds = userSession.getScenarioIds();
+				Iterator scenIter = scenarioIds.iterator();
+				
+				while (scenIter.hasNext())
+				{
+					Integer scenarioId = (Integer) scenIter.next();
+					int nScenarioId = (int)scenarioId;
+					MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
+					MetricValDTO metricVal2 = metricService.getMetricVals(metric2Id, nScenarioId).get(0);
+					
+					timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
+				}				
+
+				timeSeriesCollection.addSeries(timeSeries);
+			
+				JFreeChart chart = null;
+				
+				if (userSession.getChartType() == 0) {
+					chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", metric1.getName(), metric2.getName());
+				} else if (userSession.getChartType() == 1) {
+					chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", metric1.getName(), metric2.getName());
+				}
+				
+				ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		else if (timeSeriesCollection.getSeriesCount() > 0)
 		{
 			JFreeChart chart = null;
 			

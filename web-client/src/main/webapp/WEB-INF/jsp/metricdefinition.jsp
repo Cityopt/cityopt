@@ -19,43 +19,54 @@
 		<td><%@ include file="mainmenu.inc"%></td>
 		<td width="50"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:400px;width:800px;overflow:auto">
-			<h2>Project metrics</h2>
-			<table class="tablestyle" width="800" border="1">
-			
-			<tr height="20">
-			    <th>Name</th>
-			    <th>Id</th>
-			    <th>Expression</th>
-			    <th>Clone</th>
-			    <th>Edit</th>
-			    <th>Delete</th>
-			</tr>
-			
-			<c:forEach items="${metrics}" var="metric">
+			<div style="overflow:scroll;height:400px;width:1000px;overflow:auto">
+			<table>
 				<tr>
-				<td>${metric.name}</td>
-		    	<td>${metric.metid}</td>
-		    	<td>${metric.expression}</td>
-				<td>
-					<a href="<c:url value='metricdefinition.html?metricid=${metric.metid}&action=clone'/>">
-						<button align="right" type="button" value="Clone">Clone</button>
-					</a>
-				</td>
-				<td>
-					<a href="<c:url value='editmetric.html?metricid=${metric.metid}'/>">
-						<button align="right" type="button" value="Edit">Edit</button>
-					</a>
-				</td>
-				<td>
-					<a href="<c:url value='metricdefinition.html?metricid=${metric.metid}&action=delete'/>" onclick="return confirm('Are you sure you want to delete metric')">
-						<button align="right" type="button" value="Delete">Delete</button>
-					</a>
-				</td>
-		   	</tr>
-			</c:forEach>
+					<td>
+						<h2>Project metrics</h2>
+						<table class="tablestyle" width="800px" border="1">
+							<col style="width: 150px">
+							<col style="width: 100px">
+							<col style="width: 250px">
+							<col style="width: 100px">
+							<col style="width: 100px">
+							<col style="width: 100px">
+							
+							<tr height="20">
+							    <th>Name</th>
+							    <th>Id</th>
+							    <th>Expression</th>
+							    <th>Clone</th>
+							    <th>Edit</th>
+							    <th>Delete</th>
+							</tr>
+							
+							<c:forEach items="${metrics}" var="metric">
+								<tr>
+								<td>${metric.name}</td>
+						    	<td>${metric.metid}</td>
+						    	<td>${metric.expression}</td>
+								<td>
+									<a href="<c:url value='metricdefinition.html?metricid=${metric.metid}&action=clone'/>">
+										<button align="right" type="button" value="Clone">Clone</button>
+									</a>
+								</td>
+								<td>
+									<a href="<c:url value='editmetric.html?metricid=${metric.metid}'/>">
+										<button align="right" type="button" value="Edit">Edit</button>
+									</a>
+								</td>
+								<td>
+									<a href="<c:url value='metricdefinition.html?metricid=${metric.metid}&action=delete'/>" onclick="return confirm('Are you sure you want to delete metric')">
+										<button align="right" type="button" value="Delete">Delete</button>
+									</a>
+								</td>
+						   	</tr>
+							</c:forEach>
+						</table>
+					</td>
+				</tr>
 			</table>
-			
 			<br>
 			
 			<table width="800">
