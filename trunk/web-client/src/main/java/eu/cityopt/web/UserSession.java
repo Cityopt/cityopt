@@ -6,8 +6,29 @@ public class UserSession {
 	private HashSet<Integer> selectedChartOutputVarIds = new HashSet<Integer>();
 	private HashSet<Integer> selectedChartExtVarIds = new HashSet<Integer>();
 	private HashSet<Integer> selectedChartMetricIds = new HashSet<Integer>();
+	private HashSet<Integer> scenarioIds = new HashSet<Integer>();
 	private int nComponentId;
 	private int nChartType;
+
+	public void addScenarioId(int id)
+	{
+		scenarioIds.add(new Integer(id));
+	}
+
+	public void removeScenarioId(int id)
+	{
+		scenarioIds.remove(new Integer(id));
+	}
+
+	public HashSet<Integer> getScenarioIds()
+	{
+		return scenarioIds;
+	}
+
+	public boolean hasScenarioId(int id)
+	{
+		return scenarioIds.contains(id);
+	}
 	
 	public HashSet<Integer> getSelectedChartOutputVarIds() {
 		return selectedChartOutputVarIds;
@@ -56,6 +77,11 @@ public class UserSession {
 	public void removeAllMetricIds()
 	{
 		selectedChartMetricIds.clear();
+	}
+	
+	public void removeAllScenarioIds()
+	{
+		scenarioIds.clear();
 	}
 
 	public void removeAllOutputVarIds()

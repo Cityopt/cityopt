@@ -40,6 +40,42 @@
 						<table>
 							<tr>
 								<td>
+									<b>Scenarios</b>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<table class="tablestyle" width="300">
+										<col style="width:50px">
+										<col style="width:200px">	
+																															
+										<tr height="20">
+										    <th>Select</th>
+										    <th>Name</th>
+										</tr>
+														
+										<c:forEach items="${scenarios}" var="scenario">
+										<tr>
+											<c:choose>
+												<c:when test="${usersession.hasScenarioId(scenario.scenid)}">
+													<tr style="background-color: rgb(140, 200, 200)">
+													<td>Added (<a href="viewchart.html?action=remove&scenarioid=${scenario.scenid}">Remove</a>)</td>
+												</c:when>
+												<c:otherwise>
+													<tr>
+													<td><a href="viewchart.html?action=add&scenarioid=${scenario.scenid}">Add</a></td>
+												</c:otherwise>
+											</c:choose>
+											<td>${scenario.name}</td>
+									   	</tr>
+										</c:forEach>				
+									</table>
+								</td>
+							</tr>
+							<tr height="10">
+							</tr>
+							<tr>
+								<td>
 									<b>Components</b>
 								</td>
 							</tr>
@@ -195,8 +231,15 @@
 										 				</td>
 									 				</tr>
 									 				<tr>	
-									 					<td>
-									 						<a href="viewchart.html?charttype=0">Time series</a>
+														<td>
+									 					<c:choose>
+															<c:when test="${userSession.getChartType() == 0}">
+										 						<b><a href="viewchart.html?charttype=0">Time series</a></b>
+															</c:when>
+															<c:otherwise>
+																<a href="viewchart.html?charttype=0">Time series</a>
+															</c:otherwise>
+														</c:choose>
 								 						</td>
 							 						</tr>
 							 						<tr>
