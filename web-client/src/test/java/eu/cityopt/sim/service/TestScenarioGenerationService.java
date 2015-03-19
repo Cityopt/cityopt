@@ -2,8 +2,9 @@ package eu.cityopt.sim.service;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
 import javax.script.ScriptException;
@@ -20,9 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.google.common.util.concurrent.MoreExecutors;
 
-import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.sim.eval.ConfigurationException;
@@ -51,9 +50,15 @@ public class TestScenarioGenerationService extends SimulationTestBase {
             ExecutionException, ScriptException, Exception {
         ScenarioGenerator scenarioGenerator =
                 scenarioGeneratorRepository.findAll().iterator().next();
-        Executor directExecutor = MoreExecutors.directExecutor();
+        Queue<Runnable> tasks = new ArrayDeque<>();
         Future<OptimisationResults> job = scenarioGenerationService.startOptimisation(
-                scenarioGenerator.getScengenid(), directExecutor);
+                scenarioGenerator.getScengenid(), tasks::add);
+        while (!tasks.isEmpty()) {
+            tasks.poll().run();
+        }
         job.get();
+        while (!tasks.isEmpty()) {
+            tasks.poll().run();
+        }
     }
 }

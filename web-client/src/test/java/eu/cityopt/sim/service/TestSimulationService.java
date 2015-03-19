@@ -2,8 +2,9 @@ package eu.cityopt.sim.service;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
 import javax.script.ScriptException;
@@ -20,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.google.common.util.concurrent.MoreExecutors;
 
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
@@ -51,7 +51,7 @@ public class TestSimulationService extends SimulationTestBase {
         loadModel("Plumbing test model", "/testData/plumbing.zip");
         runSimulation();
         updateMetrics();
-        dumpTables("plumbing");
+        dumpTables("plumbing_metrics");
     }
 
     @Test
@@ -67,10 +67,13 @@ public class TestSimulationService extends SimulationTestBase {
             ConfigurationException, InterruptedException,
             ExecutionException, ScriptException, Exception {
         Scenario scenario = scenarioRepository.findByName("testscenario").get(0);
-        Executor directExecutor = MoreExecutors.directExecutor();
+        Queue<Runnable> tasks = new ArrayDeque<>();
         Future<SimulationOutput> job = simulationService.startSimulation(
-                scenario.getScenid(), directExecutor);
+                scenario.getScenid(), tasks::add);
         job.get();
+        while (!tasks.isEmpty()) {
+            tasks.poll().run();
+        }
     }
 
     private void updateMetrics() throws ParseException, ScriptException {
