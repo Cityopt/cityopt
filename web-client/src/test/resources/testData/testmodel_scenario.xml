@@ -44,8 +44,8 @@
   <inputparameter inputid="7" componentid="1" name="Share_of_roof_area_occupied_by_THcollectors" unitid="1" defaultvalue="0.0"/>
   <inputparameter inputid="8" componentid="1" name="Heat_storage_nominal_charge_or_discharge_capacity" unitid="1" defaultvalue="40.0"/>
   <inputparameter inputid="9" componentid="1" name="Heat_storage_tank_height" unitid="1" defaultvalue="15.0"/>
-  <inputparameter inputid="10" componentid="8" name="simulation_start" unitid="4" defaulvalue="2015-01-01T00:00:00"/>
-  <inputparameter inputid="11" componentid="8" name="simulation_end" unitid="4" defaulvalue="2015-01-01T00:00:00"/>
+  <inputparameter inputid="10" componentid="8" name="simulation_start" unitid="4" defaultvalue="2015-01-01T00:00:00"/>
+  <inputparameter inputid="11" componentid="8" name="simulation_end" unitid="4" defaultvalue="2015-01-01T00:00:00"/>
 
   <outputvariable outvarid="1" componentid="2" name="MULTIPLYER_OUTPUT" unitid="6"/>
   <outputvariable outvarid="2" componentid="3" name="MULTIPLYER_OUTPUT" unitid="6"/>
