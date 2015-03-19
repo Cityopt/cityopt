@@ -220,6 +220,14 @@ public class SimulationService {
         /** Map from Scenario id to Exception encountered in metric update */
         public Map<Integer, Exception> failures = new HashMap<Integer, Exception>();
 
+        /**
+         * Id of ExtParamValSet.  If the corresponding parameter to
+         * updateMetricValues was provided, this is its value.
+         * Otherwise this is the id of a newly generated ExtParamValSet.
+         * However, this can be null if no metrics were updated.
+         */
+        public int extParamValSetId;
+
         /** Brief human-readable description. */
         public String toString() {
             return updated.size() + " scenarios updated, "
@@ -275,6 +283,7 @@ public class SimulationService {
                 status.failures.put(scenario.getScenid(), e);
             }
         }
+        status.extParamValSetId = externals.getExternalId();
         log.info("Updated scenario metrics for project " + projectId + ": " + status);
         return status;
     }
@@ -331,6 +340,7 @@ public class SimulationService {
     public ExternalParameters loadExternalParametersFromSet(
             ExtParamValSet extParamValSet, Namespace namespace) throws ParseException {
         ExternalParameters simExternals = new ExternalParameters(namespace);
+        simExternals.setExternalId(extParamValSet.getExtparamvalsetid());
         for (ExtParamValSetComp extParamValSetComp : extParamValSet.getExtparamvalsetcomps()) {
             ExtParamVal extParamVal = extParamValSetComp.getExtparamval(); 
             String extName = extParamVal.getExtparam().getName();
