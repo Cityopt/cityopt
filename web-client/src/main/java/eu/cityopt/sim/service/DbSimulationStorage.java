@@ -221,8 +221,14 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         scenario.setDescription(scenarioDescription);
         scenario.setCreatedby(userId);
         scenario.setCreatedon(now);
-        scenario.setScenariogenerator(getScenarioGenerator());
+        ScenarioGenerator scenGen = getScenarioGenerator();
+        if (scenGen != null) {
+            scenario.setScenariogenerator(scenGen);
+            scenGen.getScenarios().add(scenario);
+        }
         scenario.setStatus(null);
+        scenario.setProject(project);
+        project.getScenarios().add(scenario);
 
         Namespace namespace = simInput.getNamespace();
         for (Component component : project.getComponents()) {
@@ -240,14 +246,15 @@ public class DbSimulationStorage implements DbSimulationStorageI {
 
                         inputParamVal.setInputparameter(inputParameter);
                         inputParameter.getInputparamvals().add(inputParamVal);
+
+                        inputParamVal.setScenario(scenario);
+                        scenario.getInputparamvals().add(inputParamVal);
                     }
                 }
             }
         }
         inputParamValRepository.save(scenario.getInputparamvals());
 
-        scenario.setProject(project);
-        project.getScenarios().add(scenario);
         return scenarioRepository.save(scenario);
     }
 
