@@ -226,7 +226,7 @@ public class SimulationService {
          * Otherwise this is the id of a newly generated ExtParamValSet.
          * However, this can be null if no metrics were updated.
          */
-        public int extParamValSetId;
+        public Integer extParamValSetId;
 
         /** Brief human-readable description. */
         public String toString() {
