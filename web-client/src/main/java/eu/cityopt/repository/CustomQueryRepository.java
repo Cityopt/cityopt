@@ -90,6 +90,16 @@ public class CustomQueryRepository {
 	
 
 	@Transactional
+	public void deleteTimeSeriesValues(int tseriesid) {
+		String sql = "delete from timeseriesval "
+				+ "where tseriesid = ?";
+		
+		Object [] argso = new Object [] { tseriesid };
+		
+		template.update(sql, argso);
+	}
+	
+	@Transactional
 	public boolean insertTimeSeriesBatch(final List<TimeSeriesVal> tsvalues){
 		try { 
 			insertBatch(tsvalues); 

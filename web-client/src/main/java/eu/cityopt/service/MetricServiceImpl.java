@@ -14,8 +14,10 @@ import com.google.common.reflect.TypeToken;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.MetricValDTO;
 import eu.cityopt.model.Metric;
+import eu.cityopt.model.MetricVal;
 import eu.cityopt.model.Project;
 import eu.cityopt.repository.MetricRepository;
+import eu.cityopt.repository.MetricValRepository;
 import eu.cityopt.repository.ProjectRepository;
 
 @Service("MetricService")
@@ -25,6 +27,9 @@ public class MetricServiceImpl implements MetricService {
 	
 	@Autowired
 	private MetricRepository metricRepository;
+	
+	@Autowired
+	private MetricValRepository metricValRepository;
 	
 	@Autowired
 	private ProjectRepository projectRepository;
@@ -74,8 +79,8 @@ public class MetricServiceImpl implements MetricService {
 	
 	@Override
 	@Transactional(readOnly = true)
-	public Set<MetricValDTO> getMetricVals(int id) throws EntityNotFoundException {
-		Metric m = metricRepository.findOne(id);
+	public Set<MetricValDTO> getMetricVals(int metricId) throws EntityNotFoundException {
+		Metric m = metricRepository.findOne(metricId);
 		
 		if(m == null) {
 			throw new EntityNotFoundException();
@@ -86,6 +91,35 @@ public class MetricServiceImpl implements MetricService {
 				new TypeToken<Set<MetricValDTO>>() {}.getType());
 	}
 	
+	@Override
+	@Transactional(readOnly = true)
+	public List<MetricValDTO> getMetricValsByEParamSet(int metricId, int epvsId)
+			throws EntityNotFoundException {
+		List<MetricVal> res = metricValRepository.findByMetricAndEParamSet(metricId, epvsId);
+		
+		if(res == null) {
+			throw new EntityNotFoundException();
+		}		
+		
+		//m.getMetricvals() == null ? new HashSet<MetricValDTO>() :
+		return modelMapper.map(res, 
+				new TypeToken<List<MetricValDTO>>() {}.getType());
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<MetricValDTO> getMetricVals(int metricId, int scenId) throws EntityNotFoundException {
+		List<MetricVal> res = metricValRepository.findByMetricAndScen(metricId, scenId);
+		
+		if(res == null) {
+			throw new EntityNotFoundException();
+		}		
+		
+		//m.getMetricvals() == null ? new HashSet<MetricValDTO>() :
+		return modelMapper.map(res, 
+				new TypeToken<List<MetricValDTO>>() {}.getType());
+	}
+	
 	@Transactional
 	public void setProject(int metId, int prjid){
 		Metric met = metricRepository.findOne(metId);
@@ -93,5 +127,7 @@ public class MetricServiceImpl implements MetricService {
 		met.setProject(p);
 		metricRepository.save(met);
 	}
+
+	
 	
 }
