@@ -22,16 +22,18 @@
 			<div style="overflow:scroll;height:400px;width:1000px;overflow:auto">
 			<table>
 				<tr>
+					<td><h2>Project metrics</h2></td>
+				</tr>
+				<tr>
 					<td>
-						<h2>Project metrics</h2>
-						<table class="tablestyle" width="800px" border="1">
+						<table class="tablestyle" width="800px">
 							<col style="width: 150px">
 							<col style="width: 100px">
 							<col style="width: 250px">
 							<col style="width: 100px">
 							<col style="width: 100px">
 							<col style="width: 100px">
-							
+
 							<tr height="20">
 							    <th>Name</th>
 							    <th>Id</th>
@@ -42,7 +44,7 @@
 							</tr>
 							
 							<c:forEach items="${metrics}" var="metric">
-								<tr>
+							<tr>
 								<td>${metric.name}</td>
 						    	<td>${metric.metid}</td>
 						    	<td>${metric.expression}</td>
@@ -66,20 +68,13 @@
 						</table>
 					</td>
 				</tr>
-			</table>
-			<br>
-			
-			<table width="800">
-			
-			<tr>
-				<td align="left">
-					<input align="left" type="submit" value="Upload the metrics"/>
-				</td>
-				<td align="right">
-					<a href="createmetric.html"><button type="button">Create metric</button></a>
-			    </td>
-			</tr>
-			      
+				<tr>
+					<td align="right">
+						<input type="submit" value="Upload the metrics"/>
+				
+						<a href="createmetric.html"><button type="button">Create metric</button></a>
+			   		</td>
+				</tr>
 			</table>
 			</div>
 		</td>

@@ -882,22 +882,23 @@ public class ProjectController {
 		return "projectparameters";
 	}
 
-	@RequestMapping(value="editinputparamvalue", method=RequestMethod.GET)
-	public String getEditInputParamVal(Model model, @RequestParam(value="componentid", required=true) String componentid) {
-		int nComponentId = Integer.parseInt(componentid);
-		ComponentInputParamDTO inputParamVal = null;
-
+	@RequestMapping(value="editinputparametervalue", method=RequestMethod.GET)
+	public String getEditInputParameterValue(Model model, @RequestParam(value="inputparamvalid", required=true) String inputvalid) {
+		int nInputValId = Integer.parseInt(inputvalid);
+		InputParamValDTO inputParamVal = null;
+		
 		try {
-			inputParamVal = null;//componentInputParamService.findAllByComponentId(nComponentId);
-		} catch (Exception e) {
+			inputParamVal = inputParamValService.findByID(nInputValId);
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		model.addAttribute("inputParamVal", inputParamVal);
 		
-		return "editinputparamvalue";
+		return "editinputparametervalue";
 	}
 
-	@RequestMapping(value="editinputparamvalue", method=RequestMethod.POST)
+	@RequestMapping(value="editinputparametervalue", method=RequestMethod.POST)
 	public String getEditInputParamValPost(InputParamValDTO inputParamVal, Map<String, Object> model,
 		@RequestParam(value="inputparamvalid", required=true) String inputParamValId){
 		ProjectDTO project = (ProjectDTO) model.get("project");
@@ -915,24 +916,25 @@ public class ProjectController {
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
-		
 		updatedInputParamVal.setValue(inputParamVal.getValue());
-		//UnitDTO unit = unitService.save(new UnitDTO());
+		UnitDTO unit = unitService.save(new UnitDTO());
 		inputParamValService.save(updatedInputParamVal);
 				
 		model.put("selectedcompid", updatedInputParamVal.getInputparameter().getComponent().getComponentid());
-
+		
 		try {
-			model.put("selectedComponent", inputParamValService.findByID(updatedInputParamVal.getInputparameter().getComponent().getComponentid()));
+			model.put("selectedComponent", inputParamService.findByID(updatedInputParamVal.getInputparameter().getComponent().getComponentid()));
 		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		model.put("project", project);
+		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+		model.put("extParams", extParams);
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
 
-		return "projectparameters";
+		return "scenarioparameters";
 	}
 
 	@RequestMapping(value="createinputparameter", method=RequestMethod.GET)
@@ -1673,25 +1675,59 @@ public class ProjectController {
 		    }
 
 			iterator = userSession.getSelectedChartMetricIds().iterator();
-
-			// Get metric time series
-			while(iterator.hasNext()) {
-				int metricId = iterator.next(); 
-		    
+			
+			// Get metrics time series (max 2 metrics)
+			if (userSession.getSelectedChartMetricIds().size() == 2)
+			{
+				timeSeriesCollection.removeAllSeries();
+				
+				int metric1Id = iterator.next(); 
+				int metric2Id = iterator.next(); 
+			    
 				try {
-					MetricDTO metric = metricService.findByID(metricId);
-					TimeSeries timeSeries = new TimeSeries(metric.getName());
-					timeSeries.add(new Minute(new Date()), Double.parseDouble(metric.getExpression()));
+					MetricDTO metric1 = metricService.findByID(metric1Id);
+					MetricDTO metric2 = metricService.findByID(metric2Id);
+					//Set<MetricValDTO> metricVals1 = metricService.getMetricVals(metric1Id);
+					//Set<MetricValDTO> metricVals2 = metricService.getMetricVals(metric2Id);
+					TimeSeries timeSeries = new TimeSeries("Scenario metric values");
+
+					Set<Integer> scenarioIds = userSession.getScenarioIds();
+					Iterator scenIter = scenarioIds.iterator();
 					
+					while (scenIter.hasNext())
+					{
+						Integer integerScenarioId = (Integer) scenIter.next();
+						int nScenarioId = (int)integerScenarioId;
+						MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
+						MetricValDTO metricVal2 = metricService.getMetricVals(metric2Id, nScenarioId).get(0);
+						
+						timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
+					}				
+															
 					timeSeriesCollection.addSeries(timeSeries);
+				
+					JFreeChart chart = null;
+					
+					if (userSession.getChartType() == 0) {
+						chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", metric1.getName(), metric2.getName());
+					} else if (userSession.getChartType() == 1) {
+						chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", metric1.getName(), metric2.getName());
+					}
+
+					if (timeSeriesCollection.getSeriesCount() > 0)
+					{
+						TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName() + " time series", timeSeriesCollection, "Time", "");
+					}
 				} catch (EntityNotFoundException e) {
 					e.printStackTrace();
 				}
-		    }
-
-			if (timeSeriesCollection.getSeriesCount() > 0)
+			}
+			else
 			{
-				TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName() + " time series", timeSeriesCollection, "Time", "");
+				if (timeSeriesCollection.getSeriesCount() > 0)
+				{
+					TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName() + " time series", timeSeriesCollection, "Time", "");
+				}
 			}
 		}
 		
@@ -1799,8 +1835,7 @@ public class ProjectController {
 				MetricDTO metric2 = metricService.findByID(metric2Id);
 				//Set<MetricValDTO> metricVals1 = metricService.getMetricVals(metric1Id);
 				//Set<MetricValDTO> metricVals2 = metricService.getMetricVals(metric2Id);
-				TimeSeries timeSeries = new TimeSeries("Scenario metric values");
-
+				
 				Set<Integer> scenarioIds = userSession.getScenarioIds();
 				Iterator scenIter = scenarioIds.iterator();
 				
@@ -1811,10 +1846,10 @@ public class ProjectController {
 					MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
 					MetricValDTO metricVal2 = metricService.getMetricVals(metric2Id, nScenarioId).get(0);
 					
+					TimeSeries timeSeries = new TimeSeries(scenario.getName());
 					timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
+					timeSeriesCollection.addSeries(timeSeries);
 				}				
-
-				timeSeriesCollection.addSeries(timeSeries);
 			
 				JFreeChart chart = null;
 				
