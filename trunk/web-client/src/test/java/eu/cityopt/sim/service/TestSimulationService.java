@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
@@ -39,6 +41,8 @@ public class TestSimulationService extends SimulationTestBase {
 
     @Test
     @DatabaseSetup("classpath:/testData/plumbing_scenario.xml")
+    @ExpectedDatabase(value="classpath:/testData/plumbing_result.xml",
+        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testPlumbing() throws Exception {
         loadModel("Plumbing test model", "/testData/plumbing.zip");
         runSimulation();
@@ -47,6 +51,8 @@ public class TestSimulationService extends SimulationTestBase {
 
     @Test
     @DatabaseSetup("classpath:/testData/plumbing_scenario.xml")
+    @ExpectedDatabase(value="classpath:/testData/plumbing_metrics_result.xml",
+        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testPlumbingAndUpdateMetrics() throws Exception {
         loadModel("Plumbing test model", "/testData/plumbing.zip");
         runSimulation();
@@ -56,6 +62,8 @@ public class TestSimulationService extends SimulationTestBase {
 
     @Test
     @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
+    @ExpectedDatabase(value="classpath:/testData/testmodel_result.xml",
+        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testModel() throws Exception {
         loadModel("Apros test model", "/testData/testmodel.zip");
         runSimulation();
