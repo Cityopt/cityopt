@@ -50,5 +50,35 @@ public class MetricServiceTest {
 		mvs = metricService.getMetricVals(4);
 		assertEquals(0, mvs.size());
 	}
+	
+	@Test
+	public void getMetricValuesByScenario() throws EntityNotFoundException {
+		MetricDTO m1 = metricService.findByID(1);
+		
+		List<MetricValDTO> mvs = metricService.getMetricVals(1, 1);
+		
+		assertEquals(1, mvs.size());
+		
+		mvs = metricService.getMetricVals(3, 1);
+		assertEquals(1, mvs.size());
+		
+		mvs = metricService.getMetricVals(4, 1);
+		assertEquals(0, mvs.size());
+	}
+	
+	@Test
+	public void getMetricValuesByEPVS() throws EntityNotFoundException {
+		MetricDTO m1 = metricService.findByID(1);
+		
+		List<MetricValDTO> mvs = metricService.getMetricValsByEParamSet(1, 1);
+		
+		assertEquals(1, mvs.size());
+		
+		mvs = metricService.getMetricValsByEParamSet(3, 1);
+		assertEquals(2, mvs.size());
+		
+		mvs = metricService.getMetricValsByEParamSet(4, 1);
+		assertEquals(0, mvs.size());
+	}
 
 }

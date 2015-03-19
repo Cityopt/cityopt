@@ -1,5 +1,6 @@
 package eu.cityopt.service;
 
+import java.util.List;
 import java.util.Set;
 
 import eu.cityopt.DTO.MetricDTO;
@@ -15,4 +16,8 @@ public interface MetricService extends CityOptService<MetricDTO> {
 	public void setProject(int metId, int prjid);
 
 	Set<MetricValDTO> getMetricVals(int id) throws EntityNotFoundException;
+	
+	List<MetricValDTO> getMetricVals(int metricId, int scenId) throws EntityNotFoundException;
+	
+	List<MetricValDTO> getMetricValsByEParamSet(int metricId, int epvsId) throws EntityNotFoundException;
 }
