@@ -20,6 +20,9 @@ import org.jfree.data.time.Hour;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.xy.DefaultXYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -1826,6 +1829,7 @@ public class ProjectController {
 		if (userSession.getSelectedChartMetricIds().size() == 2)
 		{
 			timeSeriesCollection.removeAllSeries();
+			XYSeriesCollection collection = new XYSeriesCollection();
 			
 			int metric1Id = iterator.next(); 
 			int metric2Id = iterator.next(); 
@@ -1838,17 +1842,35 @@ public class ProjectController {
 				
 				Set<Integer> scenarioIds = userSession.getScenarioIds();
 				Iterator scenIter = scenarioIds.iterator();
+				//double[][] data = new double[2][userSession.getScenarioIds().size()];
+				int index = 0;
 				
 				while (scenIter.hasNext())
 				{
 					Integer scenarioId = (Integer) scenIter.next();
 					int nScenarioId = (int)scenarioId;
+					ScenarioDTO scenarioTemp = scenarioService.findByID(nScenarioId);
 					MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
 					MetricValDTO metricVal2 = metricService.getMetricVals(metric2Id, nScenarioId).get(0);
+					DefaultXYDataset dataset = new DefaultXYDataset();
+
+					if (userSession.getChartType() == 0) {
+						TimeSeries timeSeries = new TimeSeries(scenarioTemp.getName());
+						timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
+						System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
+						timeSeriesCollection.addSeries(timeSeries);
+					} else if (userSession.getChartType() == 1) {
+						XYSeries series = new XYSeries(scenarioTemp.getName());
+						series.add(Double.parseDouble(metricVal1.getValue()), Double.parseDouble(metricVal2.getValue()));
+						/*double[][] data = new double[2][1];
+						data[0][0] = Double.parseDouble(metricVal1.getValue());
+						data[1][0] = Double.parseDouble(metricVal2.getValue());
+					    dataset.addSeries(scenario.getName(), data);*/
+					    System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
+						collection.addSeries(series);						
+					}
 					
-					TimeSeries timeSeries = new TimeSeries(scenario.getName());
-					timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
-					timeSeriesCollection.addSeries(timeSeries);
+					index++;
 				}				
 			
 				JFreeChart chart = null;
@@ -1856,7 +1878,7 @@ public class ProjectController {
 				if (userSession.getChartType() == 0) {
 					chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", metric1.getName(), metric2.getName());
 				} else if (userSession.getChartType() == 1) {
-					chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", metric1.getName(), metric2.getName());
+					chart = ScatterPlotVisualization.createChart(collection, "Scatter plot", metric1.getName(), metric2.getName());
 				}
 				
 				ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
