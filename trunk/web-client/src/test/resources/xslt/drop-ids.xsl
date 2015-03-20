@@ -46,8 +46,10 @@
   <xsl:template match="timeseries"/>
   <xsl:template match="simulationresult"/>
   <xsl:template match="extparamval"/>
+  <xsl:template match="scengenoptconstraint"/>
 
   <!-- Also remove generated attributes that vary on every run. -->
+  <xsl:template match="scenario/@name"/>
   <xsl:template match="scenario/@description"/>
   <xsl:template match="scenario/@createdon"/>
   <xsl:template match="scenario/@updatedon"/>
@@ -55,6 +57,7 @@
   <xsl:template match="scenario/@runend"/>
   <xsl:template match="scenario/@log"/>
   <xsl:template match="scenariogenerator/@log"/>
+  <xsl:template match="inputparamval/@createdon"/>
 
   <xsl:template match="@*|node()">
     <xsl:copy>

@@ -53,17 +53,11 @@ public class ScenarioGenerationService {
     public Future<OptimisationResults> startOptimisation(int scenGenId)
             throws ConfigurationException, ConfigurationException, 
             ParseException, ScriptException, IOException {
-        return startOptimisation(scenGenId, executorService);
-    }
-
-    public Future<OptimisationResults> startOptimisation(int scenGenId, Executor executor)
-            throws ConfigurationException, ConfigurationException, 
-            ParseException, ScriptException, IOException {
         ScenarioGenerator scenarioGenerator = scenarioGeneratorRepository.findOne(scenGenId);
         Project project = scenarioGenerator.getProject();
 
         String algorithmName = scenarioGenerator.getAlgorithm().getDescription();
-        OptimisationAlgorithm searchAlgorithm = OptimisationAlgorithms.get(algorithmName);
+        OptimisationAlgorithm optimisationAlgorithm = OptimisationAlgorithms.get(algorithmName);
         AlgorithmParameters algorithmParameters = loadAlgorithmParameters(scenarioGenerator);
 
         Namespace namespace = simulationService.makeProjectNamespace(project, scenarioGenerator);
@@ -83,17 +77,23 @@ public class ScenarioGenerationService {
         storage.initialize(project.getPrjid(), externals, null, null);
 
         ByteArrayOutputStream messageStream = new ByteArrayOutputStream(); 
-        CompletableFuture<OptimisationResults> job = searchAlgorithm.start(
-                problem, algorithmParameters, storage, messageStream, executor);
-        job.whenCompleteAsync(
+        CompletableFuture<OptimisationResults> optimisationJob = optimisationAlgorithm.start(
+                problem, algorithmParameters, storage, messageStream, executorService);
+        CompletableFuture<OptimisationResults> finishJob = optimisationJob.whenCompleteAsync(
                 (results, throwable) -> {
                     String messages = messageStream.toString();
                     if (throwable != null) {
                         messages += "\nOptimisation terminated: " + throwable.getMessage();
                     }
                     storage.saveScenarioGeneratorStatus(scenGenId, results, messages);
-                }, executor);
-        return job;
+                }, executorService);
+        // If finishJob is cancelled, we need to cancel optimisationJob. 
+        finishJob.whenComplete((result, throwable) -> {
+            if (finishJob.isCancelled()) {
+                optimisationJob.cancel(true);
+            }
+        });
+        return finishJob;
     }
 
     AlgorithmParameters loadAlgorithmParameters(ScenarioGenerator scenarioGenerator) {

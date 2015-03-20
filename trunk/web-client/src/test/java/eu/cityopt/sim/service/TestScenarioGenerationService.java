@@ -2,8 +2,6 @@ package eu.cityopt.sim.service;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayDeque;
-import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -17,19 +15,31 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.opt.OptimisationResults;
 
-@Transactional
+/**
+ * Basic testing for scenario generation.
+ *
+ * The expected results file plumbing_scengen_result.xml is produced by
+ * the drop-ids.xsl script: see TestSimulationService documentation. 
+ *
+ * @author Hannu Rummukainen
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:/jpaContext.xml", "classpath:/test-context.xml"})
+@DatabaseTearDown(value="classpath:/testData/cleantables.xml",
+        type=DatabaseOperation.DELETE_ALL)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionDbUnitTestExecutionListener.class })
@@ -39,6 +49,8 @@ public class TestScenarioGenerationService extends SimulationTestBase {
 
     @Test
     @DatabaseSetup("classpath:/testData/plumbing_scengen.xml")
+    @ExpectedDatabase(value="classpath:/testData/plumbing_scengen_result.xml",
+        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testPlumbing() throws Exception {
         loadModel("Plumbing test model", "/testData/plumbing.zip");
         runScenarioGeneration();
@@ -50,15 +62,8 @@ public class TestScenarioGenerationService extends SimulationTestBase {
             ExecutionException, ScriptException, Exception {
         ScenarioGenerator scenarioGenerator =
                 scenarioGeneratorRepository.findAll().iterator().next();
-        Queue<Runnable> tasks = new ArrayDeque<>();
         Future<OptimisationResults> job = scenarioGenerationService.startOptimisation(
-                scenarioGenerator.getScengenid(), tasks::add);
-        while (!tasks.isEmpty()) {
-            tasks.poll().run();
-        }
+                scenarioGenerator.getScengenid());
         job.get();
-        while (!tasks.isEmpty()) {
-            tasks.poll().run();
-        }
     }
 }
