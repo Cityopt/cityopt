@@ -47,12 +47,6 @@ public abstract class AbstractOptimiser implements Runnable {
     Object paretoFrontMutex = new Object();
     ParetoFront paretoFront = new ParetoFront();
 
-    /**
-     * Read by the default isFeasible() method.
-     * Set via the evaluateAsync method.
-     */
-    protected volatile boolean problemFeasible;
-
     public AbstractOptimiser(OptimisationProblem problem,
             SimulationStorage storage, OutputStream messageSink,
             Executor executor, int maxEvaluationsInParallel)
@@ -89,7 +83,6 @@ public abstract class AbstractOptimiser implements Runnable {
         }
         try {
             result.paretoFront = takeParetoFront();
-            result.feasible = isFeasible();
         } catch (Throwable t) {
             result.status = AlgorithmStatus.FAILED;
         }
@@ -97,10 +90,6 @@ public abstract class AbstractOptimiser implements Runnable {
     }
 
     abstract protected AlgorithmStatus doRun() throws Exception;
-
-    protected boolean isFeasible() {
-        return problemFeasible;
-    }
 
     protected void queueJob(DecisionValues decisions, int jobId)
             throws ScriptException, IOException {
@@ -128,14 +117,11 @@ public abstract class AbstractOptimiser implements Runnable {
                                 new ConstraintContext(preConstraintContext, metricValues);
                         ConstraintStatus postConstraintStatus =
                                 new ConstraintStatus(postConstraintContext, problem.constraints, false);
-                        if (postConstraintStatus.isDefinitelyFeasible()) {
-                            problemFeasible = true;
-                        }
 
                         ObjectiveStatus objectiveStatus =
                                 new ObjectiveStatus(metricValues, problem.objectives);
                         Solution solution = new Solution(
-                                postConstraintStatus, objectiveStatus, metricValues);
+                                postConstraintStatus, objectiveStatus, input);
                         updateParetoFront(solution);
                         return solution;
                     } else {

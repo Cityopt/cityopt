@@ -16,13 +16,14 @@ public class OptimisationResults {
     /** Reason for stopping the algorithm. */
     public AlgorithmStatus status;
 
-    /** Whether any feasible solutions were found. */
-    public boolean feasible;
-
     /** All non-dominated feasible solutions found. */
     public Collection<Solution> paretoFront = Collections.emptyList();
 
+    public boolean isFeasible() {
+        return !paretoFront.isEmpty();
+    }
+
     public String toString() {
-        return status + " : " + (feasible ? "FEASIBLE" : "INFEASIBLE");
+        return status + " : " + (isFeasible() ? "FEASIBLE" : "INFEASIBLE");
     }
 }
