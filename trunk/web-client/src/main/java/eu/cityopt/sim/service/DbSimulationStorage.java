@@ -464,6 +464,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         if (scenarioGenerator != null) {
             scenarioGenerator.setStatus(results.toString());
             scenarioGenerator.setLog(messages);
+            scenarioGeneratorRepository.save(scenarioGenerator);
         } else {
             Log.warn("Failed to save status: ScenarioGenerator " + scenGenId + " has been deleted");
         }
