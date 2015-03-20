@@ -36,6 +36,7 @@ import eu.cityopt.sim.eval.ObjectiveStatus;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
+import eu.cityopt.sim.eval.SimulationStorage;
 
 @Service
 public class OptimisationSupport {
@@ -84,9 +85,8 @@ public class OptimisationSupport {
         ExternalParameters externals = simulationService.loadExternalParametersFromSet(
                 optimizationSet.getExtparamvalset(), namespace);
 
-        DbSimulationStorageI storage =
-                (DbSimulationStorageI) applicationContext.getBean("dbSimulationStorage");
-        storage.initialize(project.getPrjid(), externals, null, null);
+        SimulationStorage storage =
+                simulationService.makeDbSimulationStorage(project.getPrjid(), externals);
 
         List<MetricExpression> metricExpressions =
                 simulationService.loadMetricExpressions(project, namespace);

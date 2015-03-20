@@ -6,8 +6,11 @@ import eu.cityopt.sim.opt.OptimisationResults;
 
 /** SimulationStorage bound to a specific project and external parameter values. */
 public interface DbSimulationStorageI extends SimulationStorage {
-    void initialize(int projectId, ExternalParameters externals, 
+    void initialize(DbSimulationStorageI proxy,
+            int projectId, ExternalParameters externals, 
             Integer userId, Integer scenGenId);
+
+    void loadCache();
 
     void saveScenarioGeneratorStatus(int scenGenId,
             OptimisationResults results, String messages);

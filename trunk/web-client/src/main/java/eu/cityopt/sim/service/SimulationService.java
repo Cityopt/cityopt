@@ -58,6 +58,7 @@ import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.ConfigurationException;
+import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.TimeSeriesI;
@@ -131,10 +132,7 @@ public class SimulationService {
 
         ExternalParameters externals = loadExternalParametersFromDefaults(project, namespace);
         SimulationInput input = loadSimulationInput(scenario, externals);
-
-        DbSimulationStorageI storage =
-                (DbSimulationStorageI) applicationContext.getBean("dbSimulationStorage");
-        storage.initialize(project.getPrjid(), externals, null, null);
+        SimulationStorage storage = makeDbSimulationStorage(project.getPrjid(), externals);
 
         SimulationModel model = loadSimulationModel(project);
         List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
@@ -255,9 +253,7 @@ public class SimulationService {
         Project project = projectRepository.findOne(projectId);
         Namespace namespace = makeProjectNamespace(project);
         ExternalParameters externals = loadExternalParameters(project, extParamValSetId, namespace);
-        DbSimulationStorageI storage =
-                (DbSimulationStorageI) applicationContext.getBean("dbSimulationStorage");
-        storage.initialize(projectId, externals, null, null);
+        SimulationStorage storage = makeDbSimulationStorage(projectId, externals);
         List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
         MetricUpdateStatus status = new MetricUpdateStatus();
         //TODO: first remove all metric values associated with the external parameter value set
@@ -512,5 +508,17 @@ public class SimulationService {
             }
         }
         return namespace;
+    }
+
+    DbSimulationStorageI makeDbSimulationStorage(int prjid, ExternalParameters externals) {
+        return makeDbSimulationStorage(prjid, externals, null, null);
+    }
+
+    DbSimulationStorageI makeDbSimulationStorage(
+            int prjid, ExternalParameters externals, Integer userId, Integer scenGenId) {
+        DbSimulationStorageI storage =
+                (DbSimulationStorageI) applicationContext.getBean("dbSimulationStorage");
+        storage.initialize(storage, prjid, externals, userId, scenGenId);
+        return storage;
     }
 }

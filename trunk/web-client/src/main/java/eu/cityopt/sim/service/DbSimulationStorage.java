@@ -70,6 +70,7 @@ import eu.cityopt.sim.opt.OptimisationResults;
 public class DbSimulationStorage implements DbSimulationStorageI {
     private static Logger log = Logger.getLogger(DbSimulationStorage.class); 
 
+    private DbSimulationStorageI proxy;
     private int projectId;
     private ExternalParameters externals;
     private Integer userId;
@@ -97,8 +98,11 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository;
 
     @Override
-    public void initialize(int projectId, ExternalParameters externals,
+    public void initialize(
+            DbSimulationStorageI proxy,
+            int projectId, ExternalParameters externals,
             Integer userId, Integer scenGenId) {
+        this.proxy = proxy;
         this.projectId = projectId;
         this.externals = externals;
         this.userId = userId;
@@ -110,7 +114,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     @Override
     public Iterator<SimulationOutput> iterator() {
         if ( ! cachePopulated) {
-            loadCache();
+            proxy.loadCache();
         }
         return cache.values().iterator();
     }
@@ -118,7 +122,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     @Override
     public SimulationOutput get(SimulationInput input) {
         if ( ! cachePopulated) {
-            loadCache();
+            proxy.loadCache();
         }
         return cache.get(input);
     }
@@ -135,6 +139,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         cache.put(output.getInput(), output);
         Scenario scenario = saveSimulationInput(output.getInput(), scenarioName, scenarioDescription);
         saveSimulationOutput(scenario, output);
+        output.getInput().setScenarioId(scenario.getScenid());
     }
 
     @Override
@@ -146,7 +151,9 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         }
     }
 
-    private void loadCache() {
+    @Override
+    @Transactional
+    public void loadCache() {
         synchronized (cacheFillMutex) {
             if ( ! cachePopulated) {
                 Project project = getProject();
@@ -258,7 +265,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         return scenarioRepository.save(scenario);
     }
 
-    void saveSimulationOutput(Scenario scenario, SimulationOutput simOutput) {
+    Scenario saveSimulationOutput(Scenario scenario, SimulationOutput simOutput) {
         scenario.setLog(simOutput.getMessages());
         scenario.setRunstart((simOutput.runStart != null) ? Date.from(simOutput.runStart) : null);
         scenario.setRunend((simOutput.runEnd != null) ? Date.from(simOutput.runEnd) : null);
@@ -308,7 +315,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
             }
             scenario.setSimulationresults(newResults);
             simulationResultRepository.save(newResults);
-            scenarioRepository.save(scenario);
+            scenario = scenarioRepository.save(scenario);
 
             timeSeriesValRepository.flush();
             for (Runnable update : idUpdates) {
@@ -321,8 +328,9 @@ public class DbSimulationStorage implements DbSimulationStorageI {
             } else {
                 scenario.setStatus(SimulationService.STATUS_SIMULATOR_FAILURE);
             }
-            scenarioRepository.save(scenario);
+            scenario = scenarioRepository.save(scenario);
         }
+        return scenario;
     }
 
     void saveMetricValues(Scenario scenario, MetricValues metricValues) {
