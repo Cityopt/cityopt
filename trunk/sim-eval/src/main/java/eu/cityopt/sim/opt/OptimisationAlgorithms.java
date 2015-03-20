@@ -35,11 +35,7 @@ public class OptimisationAlgorithms {
     }
 
     /** Registers a new OptimisationAlgorithm instance. */
-    public static void register(String algorithmName, OptimisationAlgorithm searchAlgorithm) {
-        algorithms.put(algorithmName, searchAlgorithm);
-    }
-
-    static {
-        register("grid search", new GridSearchAlgorithm());
+    public static void register(OptimisationAlgorithm algorithm) {
+        algorithms.put(algorithm.getName(), algorithm);
     }
 }
