@@ -6,7 +6,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -49,10 +48,22 @@ public class ScenarioGenerationService {
 
     // TODO register opt-ga in SearchAlgorithms
 
+    /**
+     * Starts a scenario generation run in the background.
+     *
+     * @param scenGenId id of a ScenarioGenerator instance that determines what
+     *   is computed.
+     * @param userId put in the createdby field of the generated scenarios
+     * @return a future that indicates when the run is done.  The results are also
+     *   stored in the database.
+     * @throws ConfigurationException if there is an error in algorithm parameters
+     * @throws ParseException if the external or input parameter values cannot be parsed
+     * @throws ScriptException if e.g. input expressions or metric expressions are invalid
+     * @throws IOException on other I/O failures
+     */
     @Transactional
-    public Future<OptimisationResults> startOptimisation(int scenGenId)
-            throws ConfigurationException, ConfigurationException, 
-            ParseException, ScriptException, IOException {
+    public Future<OptimisationResults> startOptimisation(int scenGenId, Integer userId)
+            throws ConfigurationException, ParseException, ScriptException, IOException {
         ScenarioGenerator scenarioGenerator = scenarioGeneratorRepository.findOne(scenGenId);
         Project project = scenarioGenerator.getProject();
 
@@ -72,9 +83,8 @@ public class ScenarioGenerationService {
         problem.constraints = optimisationSupport.loadConstraints(scenarioGenerator, namespace);
         problem.objectives = optimisationSupport.loadObjectives(scenarioGenerator, namespace);
 
-        DbSimulationStorageI storage =
-                (DbSimulationStorageI) applicationContext.getBean("dbSimulationStorage");
-        storage.initialize(project.getPrjid(), externals, null, null);
+        DbSimulationStorageI storage = simulationService.makeDbSimulationStorage(
+                project.getPrjid(), externals, scenarioGenerator.getScengenid(), userId);
 
         ByteArrayOutputStream messageStream = new ByteArrayOutputStream(); 
         CompletableFuture<OptimisationResults> optimisationJob = optimisationAlgorithm.start(
