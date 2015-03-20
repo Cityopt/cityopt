@@ -30,4 +30,6 @@ public interface OptimisationAlgorithm {
             OptimisationProblem problem, AlgorithmParameters parameters,
             SimulationStorage storage, OutputStream messageSink, Executor executor)
                     throws ConfigurationException, IOException, ConfigurationException;
+
+    String getName();
 }

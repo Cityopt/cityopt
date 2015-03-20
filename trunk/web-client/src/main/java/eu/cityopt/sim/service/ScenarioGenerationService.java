@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -11,11 +12,17 @@ import java.util.concurrent.Future;
 
 import javax.script.ScriptException;
 
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.cityopt.model.AlgoParam;
 import eu.cityopt.model.AlgoParamVal;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.ModelParameter;
@@ -38,15 +45,47 @@ import eu.cityopt.sim.opt.OptimisationAlgorithms;
 import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.OptimisationResults;
 
+/**
+ * Service to run scenario generation (optimisation) and save the results.
+ * Functions as a bridge between the sim-eval, opt-ga and web-client packages,
+ * translating between the JPA entities used in web-client and the Java objects
+ * used in sim-eval and opt-ga.
+ * <p>
+ * OptimisationAlgorithm implementations are found by scanning the class path.
+ * By default the package eu.cityopt and its subpackages are scanned.
+ * 
+ * @author Hannu Rummukainen
+ */
 @Service
-public class ScenarioGenerationService {
-    @Autowired private ApplicationContext applicationContext;
+public class ScenarioGenerationService implements InitializingBean {
     @Autowired private ExecutorService executorService;
     @Autowired private SimulationService simulationService;
     @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository; 
     @Autowired private OptimisationSupport optimisationSupport; 
 
-    // TODO register opt-ga in SearchAlgorithms
+    private static Logger log = Logger.getLogger(ScenarioGenerationService.class); 
+
+    List<String> packagesToScan = Arrays.asList("eu.cityopt");
+
+    public void setAlgorithmPackagesToScan(List<String> values) {
+        packagesToScan = values;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        ClassPathScanningCandidateComponentProvider provider =
+                new ClassPathScanningCandidateComponentProvider(false);
+        provider.addIncludeFilter(new AssignableTypeFilter(OptimisationAlgorithm.class));
+        for (String packageName : packagesToScan) {
+            for (BeanDefinition component : provider.findCandidateComponents(packageName)) {
+                @SuppressWarnings("unchecked")
+                Class<OptimisationAlgorithm> cls = (Class<OptimisationAlgorithm>)
+                        Class.forName(component.getBeanClassName());
+                OptimisationAlgorithm algorithm = cls.newInstance();
+                OptimisationAlgorithms.register(algorithm);
+            }
+        }
+    }
 
     /**
      * Starts a scenario generation run in the background.
@@ -108,9 +147,16 @@ public class ScenarioGenerationService {
 
     AlgorithmParameters loadAlgorithmParameters(ScenarioGenerator scenarioGenerator) {
         AlgorithmParameters algorithmParameters = new AlgorithmParameters();
+        int algoId = scenarioGenerator.getAlgorithm().getAlgorithmid();
         for (AlgoParamVal algoParamVal : scenarioGenerator.getAlgoparamvals()) {
-            String parameterName = algoParamVal.getAlgoparam().getName();
-            algorithmParameters.put(parameterName, algoParamVal.getValue());
+            AlgoParam algoParam = algoParamVal.getAlgoparam();
+            if (algoParam.getAlgorithm().getAlgorithmid() == algoId) {
+                String parameterName = algoParamVal.getAlgoparam().getName();
+                algorithmParameters.put(parameterName, algoParamVal.getValue());
+            } else {
+                log.warn("Ignoring AlgoParam for wrong Algorithm in ScenarioGenerator "
+                        + scenarioGenerator.getScengenid());
+            }
         }
         return algorithmParameters;
     }

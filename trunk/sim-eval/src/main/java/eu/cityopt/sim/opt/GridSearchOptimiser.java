@@ -31,7 +31,7 @@ public class GridSearchOptimiser extends AbstractOptimiser {
                     throws ConfigurationException, IOException, 
                     ConfigurationException {
         super(problem, storage, messageSink, executor,
-                parameters.getInt("max parallel evaluations", 100));
+                parameters.getMaxParallelEvaluations());
 
         deadline = Instant.now().plus(parameters.getMaxRunTime());
         maxEvaluationsTotal = parameters.getInt("max scenarios", 10000);

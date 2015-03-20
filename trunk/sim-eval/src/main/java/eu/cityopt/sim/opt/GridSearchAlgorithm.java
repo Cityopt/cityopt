@@ -20,4 +20,9 @@ public class GridSearchAlgorithm implements OptimisationAlgorithm {
         executor.execute(job);
         return job.completableFuture;
     }
+
+    @Override
+    public String getName() {
+        return "grid search";
+    }
 }
