@@ -53,7 +53,7 @@
 
   <objectivefunction obtfunctionid="1" prjid="2" typeid="1" name="obj1" expression="PIP01.PI12_MIX_MASS_FLOW * C01.typ" ismaximise="true"/>
 
-  <optconstraint optconstid="1" prjid="2" name="con1" expression="mean(PIP01.PI12_MIX_MASS_FLOW)" lowerbound="0.5" upperbound="5.0"/>
+  <optconstraint optconstid="1" prjid="2" name="con1" expression="mean(PIP01.PI12_MIX_MASS_FLOW)" lowerbound="0.1" upperbound="1.0"/>
 
   <scenariogenerator scengenid="1" prjid="2" algorithmid="1" extparamvalsetid="1"/>
   <scengenobjectivefunction sgobfunctionid="1" scengenid="1" optfunctionid="1"/>

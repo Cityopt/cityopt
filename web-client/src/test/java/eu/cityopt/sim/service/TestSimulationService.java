@@ -29,6 +29,19 @@ import eu.cityopt.model.Scenario;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.SimulationOutput;
 
+/**
+ * Test simulation runs via the SimulationService class.
+ *
+ * We use the ExpectedDatabase annotation to check the test results.
+ * The expected results are manually reviewed results from earlier
+ * JUnit test runs.
+ * 
+ * After every test, the database content is dumped to the system %TEMP%
+ * folder: see files *_result.xml.  The expected results files are produced
+ * from these with the XSL script src/test/resources/xslt/drop-ids.xsl. 
+ *
+ * @author Hannu Rummukainen
+ */
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:/jpaContext.xml", "classpath:/test-context.xml"})
