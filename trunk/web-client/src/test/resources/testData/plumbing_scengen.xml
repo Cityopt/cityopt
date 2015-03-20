@@ -9,7 +9,15 @@
 
   <algorithm algorithmid="1" description="grid search"/>
   <algoparam aparamsid="1" algorithmid="1" name="max runtime [minutes]"/>
-  <algoparam aparamsid="2" algorithmid="1" name="max variable domain size"/>
+  <algoparam aparamsid="2" algorithmid="1" name="max scenarios"/>
+
+  <algorithm algorithmid="2" description="genetic algorithm"/>
+  <algoparam aparamsid="3" algorithmid="2" name="max runtime [minutes]"/>
+  <algoparam aparamsid="4" algorithmid="2" name="number of generations"/>
+  <algoparam aparamsid="5" algorithmid="2" name="population size"/>
+  <algoparam aparamsid="6" algorithmid="2" name="number of parents per generation"/>
+  <algoparam aparamsid="7" algorithmid="2" name="number of offspring per generation"/>
+  <algoparam aparamsid="8" algorithmid="2" name="seed of the random number generator"/>
 
   <type typeid="1" name="Double"/>
   <type typeid="2" name="Integer"/>
@@ -51,7 +59,7 @@
   <metric prjid="1" name="dummy" unitid="1" expression="C01.typ"/>
   <metric prjid="2" name="symmetric" unitid="1" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>
 
-  <objectivefunction obtfunctionid="1" prjid="2" typeid="1" name="obj1" expression="PIP01.PI12_MIX_MASS_FLOW * C01.typ" ismaximise="true"/>
+  <objectivefunction obtfunctionid="1" prjid="2" typeid="1" name="obj1" expression="integrate(PIP01.PI12_MIX_MASS_FLOW * C01.typ, 0, INFINITY)" ismaximise="true"/>
 
   <optconstraint optconstid="1" prjid="2" name="con1" expression="mean(PIP01.PI12_MIX_MASS_FLOW)" lowerbound="0.1" upperbound="1.0"/>
 
@@ -68,5 +76,11 @@
   <algoparamval aparamsid="1" ascengenid="1" value="1"/>
   <algoparamval aparamsid="2" ascengenid="1" value="1000"/>
 
+  <algoparamval aparamsid="3" ascengenid="1" value="1"/>
+  <algoparamval aparamsid="4" ascengenid="1" value="2"/>
+  <algoparamval aparamsid="5" ascengenid="1" value="3"/>
+  <algoparamval aparamsid="6" ascengenid="1" value="2"/>
+  <algoparamval aparamsid="7" ascengenid="1" value="2"/>
+  <algoparamval aparamsid="8" ascengenid="1" value="1"/>
 
 </dataset>

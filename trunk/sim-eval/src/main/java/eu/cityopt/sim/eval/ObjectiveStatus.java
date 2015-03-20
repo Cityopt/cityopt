@@ -47,11 +47,16 @@ public class ObjectiveStatus implements PartiallyComparable<ObjectiveStatus> {
         }
     }
 
-    public ObjectiveStatus(ConstraintStatus constraintStatus,
-            ObjectiveStatus objectiveStatus) {
-        this.namespace = objectiveStatus.namespace;
-        this.objectiveValues = constraintStatus.infeasibilities;
-        this.asMinGoalValues = constraintStatus.infeasibilities;
+    public ObjectiveStatus(Namespace namespace, double[] objectiveValues,
+            Collection<ObjectiveExpression> objectives) {
+        this.namespace = namespace;
+        this.objectiveValues = objectiveValues;
+        this.asMinGoalValues = new double[objectiveValues.length];
+        int i = 0;
+        for (ObjectiveExpression objective : objectives) {
+            this.asMinGoalValues[i] = objective.flipSignIfMax(objectiveValues[i]);
+            ++i;
+        }
     }
 
     /**
