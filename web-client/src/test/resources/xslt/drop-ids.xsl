@@ -4,6 +4,7 @@
   <xsl:template match="@aparamsid"/>
   <xsl:template match="@aparamvalid"/>
   <xsl:template match="@algorithmid"/>
+  <xsl:template match="@ascengenid"/>
   <xsl:template match="@userid"/>
   <xsl:template match="@componentid"/>
   <xsl:template match="@datarelid"/>

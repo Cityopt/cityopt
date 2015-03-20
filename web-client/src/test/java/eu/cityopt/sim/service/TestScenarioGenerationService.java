@@ -1,7 +1,11 @@
 package eu.cityopt.sim.service;
 
+
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -23,10 +27,14 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
+import eu.cityopt.model.Algorithm;
 import eu.cityopt.model.ScenarioGenerator;
+import eu.cityopt.repository.AlgorithmRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
+import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.opt.OptimisationResults;
+import eu.cityopt.sim.opt.Solution;
 
 /**
  * Basic testing for scenario generation.
@@ -46,24 +54,61 @@ import eu.cityopt.sim.opt.OptimisationResults;
 public class TestScenarioGenerationService extends SimulationTestBase {
     @Autowired ScenarioGenerationService scenarioGenerationService;
     @Autowired ScenarioGeneratorRepository scenarioGeneratorRepository;
+    @Autowired AlgorithmRepository algorithmRepository;
 
     @Test
     @DatabaseSetup("classpath:/testData/plumbing_scengen.xml")
-    @ExpectedDatabase(value="classpath:/testData/plumbing_scengen_result.xml",
+    @ExpectedDatabase(value="classpath:/testData/plumbing_gridsearch_result.xml",
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
-    public void testPlumbing() throws Exception {
+    public void testPlumbingGridSearch() throws Exception {
         loadModel("Plumbing test model", "/testData/plumbing.zip");
-        runScenarioGeneration();
-        dumpTables("plumbing_scengen");
+        runScenarioGeneration("grid search");
+        dumpTables("plumbing_gridsearch");
     }
 
-    private void runScenarioGeneration() throws ParseException, IOException,
+    @Test
+    @DatabaseSetup("classpath:/testData/plumbing_scengen.xml")
+    @ExpectedDatabase(value="classpath:/testData/plumbing_ga_result.xml",
+        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testPlumbingGA() throws Exception {
+        loadModel("Plumbing test model", "/testData/plumbing.zip");
+        runScenarioGeneration("genetic algorithm");
+        dumpTables("plumbing_ga");
+    }
+
+    private void runScenarioGeneration(String algorithmName) throws ParseException, IOException,
             ConfigurationException, InterruptedException,
             ExecutionException, ScriptException, Exception {
         ScenarioGenerator scenarioGenerator =
                 scenarioGeneratorRepository.findAll().iterator().next();
+        scenarioGenerator.setAlgorithm(findAlgorithm(algorithmName));
+        scenarioGeneratorRepository.save(scenarioGenerator);
         Future<OptimisationResults> job = scenarioGenerationService.startOptimisation(
-                scenarioGenerator.getScengenid());
-        job.get();
+                scenarioGenerator.getScengenid(), null);
+        OptimisationResults results = job.get();
+        System.out.println("Results of " + algorithmName + ":");
+        printResults(results);
+    }
+
+    private void printResults(OptimisationResults results) {
+        System.out.println("status = " + results.status);
+        System.out.println("paretoFront = {");
+        for (Solution solution : results.paretoFront) {
+            System.out.println("  {");
+            System.out.println("    input = " + solution.input);
+            System.out.println("    infeasibilities = " + Arrays.toString(solution.constraintStatus.infeasibilities));
+            System.out.println("    objectiveValues = " + Arrays.toString(solution.objectiveStatus.objectiveValues));
+            System.out.println("  }");
+        }
+        System.out.println("}");
+    }
+
+    private Algorithm findAlgorithm(String name) throws EntityNotFoundException {
+        for (Algorithm a : algorithmRepository.findAll()) {
+            if (a.getDescription().equalsIgnoreCase(name)) {
+                return a;
+            }
+        }
+        throw new EntityNotFoundException("Algorithm " + name);
     }
 }

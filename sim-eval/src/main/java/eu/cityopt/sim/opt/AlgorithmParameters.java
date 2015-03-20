@@ -13,6 +13,9 @@ public class AlgorithmParameters extends Properties {
     public static final String KEY_MAX_RUNTIME_MINUTES = "max runtime [minutes]";
     public static final Double DEFAULT_MAX_RUNTIME_MINUTES = (double) TimeUnit.DAYS.toMinutes(366);
 
+    public static final String KEY_MAX_PARALLEL_EVALUATIONS = "max parallel evaluations";
+    public static final int DEFAULT_MAX_PARALLEL_EVALUATIONS = 100;
+
     /** Creates an empty object. */
     public AlgorithmParameters() {
     }
@@ -86,6 +89,11 @@ public class AlgorithmParameters extends Properties {
     public Duration getMaxRunTime() throws ConfigurationException {
         double minutes = getDouble(KEY_MAX_RUNTIME_MINUTES, DEFAULT_MAX_RUNTIME_MINUTES);
         return Duration.ofNanos((long) (minutes * 60.0e9));
+    }
+
+    public int getMaxParallelEvaluations() throws ConfigurationException {
+        return getInt(KEY_MAX_PARALLEL_EVALUATIONS,
+                DEFAULT_MAX_PARALLEL_EVALUATIONS);
     }
 
     Object parseProperty(String key, Object defaultValue,

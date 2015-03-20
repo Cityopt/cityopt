@@ -64,6 +64,14 @@ public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
         this.feasible = computeFeasibility(infeasibilities);
     }
 
+    /**
+     * Constructs an instance from explicitly given infeasibility values.
+     */
+    public ConstraintStatus(double[] infeasibilities) {
+        this.infeasibilities = infeasibilities;
+        this.feasible = computeFeasibility(infeasibilities);
+    }
+
     public boolean mayBeFeasible() {
         return feasible == null || feasible == true;
     }

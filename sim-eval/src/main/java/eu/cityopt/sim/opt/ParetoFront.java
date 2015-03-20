@@ -21,7 +21,7 @@ public class ParetoFront {
      * 
      */
     void add(Solution newSolution) {
-        if (newSolution != null && newSolution.metricValues != null
+        if (newSolution != null && newSolution.input != null
                 && newSolution.constraintStatus.isDefinitelyFeasible()) {
             Iterator<Solution> it = solutions.iterator();
             while (it.hasNext()) {
