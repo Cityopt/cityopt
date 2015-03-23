@@ -15,4 +15,7 @@ public interface ExtParamValSetService extends CityOptService<ExtParamValSetDTO>
 	
 	public void addExtParamVals(int extParamValSetId, Set<ExtParamValDTO> epVals) 
 			throws EntityNotFoundException;	
+	
+	public void removeExtParamValsFromSet(int extParamValSetId, Set<ExtParamValDTO> epVals) 
+			throws EntityNotFoundException;	
 }
