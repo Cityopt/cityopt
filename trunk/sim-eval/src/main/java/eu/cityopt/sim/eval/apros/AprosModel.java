@@ -52,6 +52,7 @@ public class AprosModel implements SimulationModel {
     Document extractModelFiles(InputStream inputStream, Path dir)
             throws IOException, ConfigurationException {
         Document ucs = null;
+        boolean filesFound = true;
         try (ZipInputStream zis = new ZipInputStream(inputStream)) {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
@@ -72,8 +73,16 @@ public class AprosModel implements SimulationModel {
                     Files.createDirectories(target.getParent());
                     Files.copy(new UncloseableInputStream(zis),
                             target, StandardCopyOption.REPLACE_EXISTING);
+                    filesFound = true;
                 }
             }
+        }
+        if (!filesFound) {
+            throw new ConfigurationException("No model files found in zip package");
+        }
+        if (ucs == null) {
+            throw new ConfigurationException("No " + USER_COMPONENT_PROPERTIES_FILENAME
+                    + " file found in zip package");
         }
         return ucs;
     }
