@@ -40,10 +40,10 @@ import eu.cityopt.sim.opt.Solution;
  *
  * @author Hannu Rummukainen
  */
-public class OptimiserAdapter {
+class OptimiserAdapter {
     OptimisationProblem problem;
     Opt4JTask task;
-    Control control;
+    TimeoutControl control;
     Archive archive;
 
     /**
@@ -72,34 +72,35 @@ public class OptimiserAdapter {
         }
     };
 
-    public OptimiserAdapter(
+    OptimiserAdapter(
             OptimisationProblem problem, SimulationStorage storage,
             OutputStream messageSink, Instant deadline,
             Module... modules) {
         this.problem = problem;
         this.constraintAndObjectiveIndices = mapConstraintAndObjectiveIndices(problem);
+        this.control = new TimeoutControl(deadline);
 
         List<Module> moduleList = new ArrayList<>(Arrays.asList(modules));
-        moduleList.add(new CityoptAdapterModule(problem, storage));
+        moduleList.add(new CityoptAdapterModule(problem, storage, control));
         this.task = new Opt4JTask(false);
         task.init(moduleList);
 
         task.open();
-        this.control = task.getInstance(Control.class);
         this.archive = task.getInstance(Archive.class);
 
         //TODO use messageSink with Optimizer.addOptimizerIterationListener
         // maybe also addIndividualStateListener for slow simulations
     }
 
-    public CompletableFuture<OptimisationResults> start(Executor executor) {
+    CompletableFuture<OptimisationResults> start(Executor executor) {
         executor.execute(() -> {
             try {
                 OptimisationResults results = new OptimisationResults();
                 try {
                     task.call();
-                    //TODO implement timeout
-                    if (control.getState() == Control.State.TERMINATED) {
+                    if (control.timeout) {
+                        results.status = AlgorithmStatus.COMPLETED_TIME;
+                    } else if (control.getState() == Control.State.TERMINATED) {
                         results.status = AlgorithmStatus.INTERRUPTED;
                     } else {
                         results.status = AlgorithmStatus.COMPLETED_RESULTS;
@@ -146,6 +147,10 @@ public class OptimiserAdapter {
         return map;
     }
 
+    /**
+     * Converts an Opt4J Individual to a feasible sim-eval Solution, or null if
+     * the individual is not feasible.
+     */
     Solution makeSolutionFromIndividual(Individual individual) {
         CityoptPhenotype phenotype = (CityoptPhenotype) individual.getPhenotype();
         Objectives objectives = individual.getObjectives();
