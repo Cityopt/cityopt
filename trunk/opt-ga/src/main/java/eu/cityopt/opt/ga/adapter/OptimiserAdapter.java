@@ -131,7 +131,7 @@ public class OptimiserAdapter {
         }
         for (int i = 0; i < problem.objectives.size(); ++i) {
             ObjectiveExpression objective = problem.objectives.get(i);
-            Integer old = map.put(objective.getName(), i);
+            Integer old = map.put(objective.getName(), i + nConstraints);
             if (old != null) {
                 if (old < nConstraints) {
                     throw new IllegalArgumentException(
