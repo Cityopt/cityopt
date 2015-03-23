@@ -84,4 +84,22 @@ public class ExtParamValSetServiceTest {
 		}
 	}
 	
+	@Test
+	public void removeExtParamVals() throws EntityNotFoundException {
+		
+		List<ExtParamDTO> epList = extParamService.findByName("Cost");
+		epList.addAll(extParamService.findByName("Emissions"));
+		
+		List<ExtParamValDTO> epv = extParamValSetService.getExtParamVals(1);
+		ExtParamValDTO val = epv.get(2);
+		epv.remove(2);
+		extParamValSetService.removeExtParamValsFromSet(1, new HashSet<ExtParamValDTO>(epv));
+		
+		epv = extParamValSetService.getExtParamVals(1);
+		
+		assertEquals(1, epv.size());
+		assertEquals(epv.iterator().next().getExtparam().getName(), val.getExtparam().getName());
+		
+	}
+	
 }

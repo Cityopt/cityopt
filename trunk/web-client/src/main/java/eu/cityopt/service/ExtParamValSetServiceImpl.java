@@ -107,4 +107,18 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
 		}		
 	}
 
+	@Override
+	@Transactional
+	public void removeExtParamValsFromSet(int extParamValSetId,
+			Set<ExtParamValDTO> epVals) throws EntityNotFoundException {
+		ExtParamValSet epvs = extParamValSetRepository.findOne(extParamValSetId);	
+		if(epvs == null) 
+			throw new EntityNotFoundException();
+		
+		for(ExtParamValDTO epvDTO : epVals){
+			extParamValSetCompRepository.removeExtParamValFromSet(extParamValSetId,
+					epvDTO.getExtparamvalid());
+		}
+	}
+
 }
