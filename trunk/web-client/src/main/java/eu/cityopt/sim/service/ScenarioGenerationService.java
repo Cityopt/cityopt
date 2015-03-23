@@ -5,12 +5,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -20,7 +17,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +59,8 @@ import eu.cityopt.sim.opt.OptimisationResults;
  * @author Hannu Rummukainen
  */
 @Service
-public class ScenarioGenerationService implements InitializingBean {
+public class ScenarioGenerationService
+        implements InitializingBean, ApplicationListener<ContextClosedEvent> {
     @Autowired private ExecutorService executorService;
     @Autowired private SimulationService simulationService;
     @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository; 
@@ -68,8 +68,7 @@ public class ScenarioGenerationService implements InitializingBean {
 
     private static Logger log = Logger.getLogger(ScenarioGenerationService.class); 
 
-    private Map<Integer, CompletableFuture<OptimisationResults>> activeJobs
-        = new ConcurrentHashMap<>();
+    private JobManager<OptimisationResults> jobManager = new JobManager<>();
 
     private List<String> packagesToScan = Arrays.asList("eu.cityopt");
 
@@ -109,6 +108,9 @@ public class ScenarioGenerationService implements InitializingBean {
     @Transactional
     public Future<OptimisationResults> startOptimisation(int scenGenId, Integer userId)
             throws ConfigurationException, ParseException, ScriptException, IOException {
+        if (jobManager.isShutdown()) {
+            throw new IllegalStateException("Service shutting down");
+        }
         ScenarioGenerator scenarioGenerator = scenarioGeneratorRepository.findOne(scenGenId);
         Project project = scenarioGenerator.getProject();
 
@@ -142,28 +144,24 @@ public class ScenarioGenerationService implements InitializingBean {
                     }
                     storage.saveScenarioGeneratorStatus(scenGenId, results, messages);
                 }, executorService);
+        jobManager.putJob(scenGenId, finishJob);
         // If finishJob is cancelled, we need to cancel optimisationJob. 
         finishJob.whenComplete((result, throwable) -> {
             if (finishJob.isCancelled()) {
                 optimisationJob.cancel(true);
             }
+            jobManager.removeJob(scenGenId, finishJob);
         });
-
-        Future<OptimisationResults> oldJob = activeJobs.put(scenGenId, finishJob);
-        if (oldJob != null) {
-            oldJob.cancel(true);
-        }
-
         return finishJob;
     }
 
     /**
-     * Returns currently ongoing optimisation runs.
+     * Returns set of currently ongoing optimisation runs.
      * The result is a snapshot of the situation at the time the method is called.
      * @return set of ScenarioGenerator entity ids
      */
-    public Set<Integer> getRunningGenerators() {
-        return new HashSet<Integer>(activeJobs.keySet());
+    public Set<Integer> getRunningOptimisations() {
+        return jobManager.getJobIds();
     }
 
     /**
@@ -173,12 +171,8 @@ public class ScenarioGenerationService implements InitializingBean {
      *  no run to cancel, or the run has already completed, or the
      *  cancellation fails for some other reason.
      */
-    public boolean cancelSimulation(int scenGenId) {
-        Future<OptimisationResults> oldJob = activeJobs.remove(scenGenId);
-        if (oldJob != null) {
-            return oldJob.cancel(true);
-        }
-        return false;
+    public boolean cancelOptimisation(int scenGenId) {
+        return jobManager.cancelJob(scenGenId);
     }
 
     AlgorithmParameters loadAlgorithmParameters(ScenarioGenerator scenarioGenerator) {
@@ -247,5 +241,11 @@ public class ScenarioGenerationService implements InitializingBean {
             }
         }
         return simInputExpressions;
+    }
+
+    @Override
+    public void onApplicationEvent(ContextClosedEvent event) {
+        log.info("Shutting down.");
+        jobManager.shutdown();
     }
 }

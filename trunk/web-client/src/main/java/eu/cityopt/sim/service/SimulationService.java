@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -23,6 +22,8 @@ import javax.script.ScriptException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +47,7 @@ import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.TimeSeriesValRepository;
+import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.MetricExpression;
@@ -57,7 +59,6 @@ import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
-import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.SimulatorManagers;
@@ -77,7 +78,7 @@ import eu.cityopt.sim.eval.util.TimeUtils;
  * @author Hannu Rummukainen
  */
 @Service
-public class SimulationService {
+public class SimulationService implements ApplicationListener<ContextClosedEvent> {
     private static final Instant DEFAULT_TIME_ORIGIN = Instant.ofEpochMilli(0);
 
     public static final String STATUS_SUCCESS = "SUCCESS";
@@ -94,10 +95,9 @@ public class SimulationService {
     @Autowired private ApplicationContext applicationContext;
     @Autowired private ExecutorService executorService;
 
-    private Evaluator evaluator = new Evaluator();
+    private JobManager<SimulationOutput> jobManager = new JobManager<>();
 
-    private ConcurrentHashMap<Integer, Future<SimulationOutput>>
-        activeJobs = new ConcurrentHashMap<>();
+    private Evaluator evaluator = new Evaluator();
 
     public Evaluator getEvaluator() {
         return evaluator;
@@ -126,6 +126,9 @@ public class SimulationService {
 
     Future<SimulationOutput> startSimulation(int scenId, Executor executor)
             throws ParseException, IOException, ConfigurationException, ScriptException {
+        if (jobManager.isShutdown()) {
+            throw new IllegalStateException("Service shutting down");
+        }
         Scenario scenario = scenarioRepository.findOne(scenId);
         Project project = scenario.getProject();
         Namespace namespace = makeProjectNamespace(project);
@@ -141,7 +144,7 @@ public class SimulationService {
             SimulationRunner runner = model.getSimulatorManager().makeRunner(model, input.getNamespace());
             CompletableFuture<SimulationOutput> newJob = runner.start(input);
             started = true;
-            Future<SimulationOutput> oldJob = activeJobs.put(scenId, newJob);
+            jobManager.putJob(scenId, newJob);
             newJob.whenCompleteAsync( // Store output & metric values
                     (output, throwable) -> {
                         if (output != null) {
@@ -158,9 +161,9 @@ public class SimulationService {
                             }
                         }
                     }, executor)
-                .whenCompleteAsync( // Clean up
+                .whenComplete( // Clean up
                     (output, throwable) -> {
-                        activeJobs.remove(scenId, newJob);
+                        jobManager.removeJob(scenId, newJob);
                         try {
                             try {
                                 runner.close();
@@ -170,10 +173,7 @@ public class SimulationService {
                         } catch (IOException e) {
                             log.warn("Failed to clean up simulation run: " + e.getMessage());
                         }
-                    }, executor);
-            if (oldJob != null) {
-                oldJob.cancel(true);
-            }
+                    });
             return newJob;
         } finally {
             if (!started) model.close();
@@ -185,8 +185,8 @@ public class SimulationService {
      * The result is a snapshot of the situation at the time the method is called.
      * @return set of scenario ids
      */
-    public Set<Integer> getRunningScenarios() {
-        return new HashSet<Integer>(activeJobs.keySet());
+    public Set<Integer> getRunningSimulations() {
+        return jobManager.getJobIds();
     }
 
     /**
@@ -197,11 +197,7 @@ public class SimulationService {
      *  the cancellation fails for some other reason.
      */
     public boolean cancelSimulation(int scenId) {
-        Future<SimulationOutput> oldJob = activeJobs.remove(scenId);
-        if (oldJob != null) {
-            return oldJob.cancel(true);
-        }
-        return false;
+        return jobManager.cancelJob(scenId);
     }
 
     /** Results from {@link SimulationService#updateMetricValues(int, Integer)} */
@@ -520,5 +516,11 @@ public class SimulationService {
                 (DbSimulationStorageI) applicationContext.getBean("dbSimulationStorage");
         storage.initialize(storage, prjid, externals, userId, scenGenId);
         return storage;
+    }
+
+    @Override
+    public void onApplicationEvent(ContextClosedEvent event) {
+        log.info("Shutting down.");
+        jobManager.shutdown();
     }
 }
