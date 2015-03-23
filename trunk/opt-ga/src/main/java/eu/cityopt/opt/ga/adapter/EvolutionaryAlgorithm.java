@@ -7,6 +7,11 @@ import org.opt4j.optimizers.ea.EvolutionaryAlgorithmModule.CrossoverRateType;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.opt.AlgorithmParameters;
 
+/**
+ * Provides the Opt4J EvolutionaryAlgorithm for CityOPT.
+ *
+ * @author Hannu Rummukainen
+ */
 public class EvolutionaryAlgorithm extends AbstractOpt4JAlgorithm {
     protected OptimizerModule configureOptimizer(
             AlgorithmParameters parameters) throws ConfigurationException {
