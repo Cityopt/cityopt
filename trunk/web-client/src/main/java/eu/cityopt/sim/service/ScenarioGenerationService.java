@@ -5,8 +5,12 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -16,7 +20,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.stereotype.Service;
@@ -61,11 +64,14 @@ public class ScenarioGenerationService implements InitializingBean {
     @Autowired private ExecutorService executorService;
     @Autowired private SimulationService simulationService;
     @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository; 
-    @Autowired private OptimisationSupport optimisationSupport; 
+    @Autowired private OptimisationSupport optimisationSupport;
 
     private static Logger log = Logger.getLogger(ScenarioGenerationService.class); 
 
-    List<String> packagesToScan = Arrays.asList("eu.cityopt");
+    private Map<Integer, CompletableFuture<OptimisationResults>> activeJobs
+        = new ConcurrentHashMap<>();
+
+    private List<String> packagesToScan = Arrays.asList("eu.cityopt");
 
     public void setAlgorithmPackagesToScan(List<String> values) {
         packagesToScan = values;
@@ -92,7 +98,7 @@ public class ScenarioGenerationService implements InitializingBean {
      *
      * @param scenGenId id of a ScenarioGenerator instance that determines what
      *   is computed.
-     * @param userId put in the createdby field of the generated scenarios
+     * @param userId will be put in the createdby field of the generated scenarios
      * @return a future that indicates when the run is done.  The results are also
      *   stored in the database.
      * @throws ConfigurationException if there is an error in algorithm parameters
@@ -142,7 +148,37 @@ public class ScenarioGenerationService implements InitializingBean {
                 optimisationJob.cancel(true);
             }
         });
+
+        Future<OptimisationResults> oldJob = activeJobs.put(scenGenId, finishJob);
+        if (oldJob != null) {
+            oldJob.cancel(true);
+        }
+
         return finishJob;
+    }
+
+    /**
+     * Returns currently ongoing optimisation runs.
+     * The result is a snapshot of the situation at the time the method is called.
+     * @return set of ScenarioGenerator entity ids
+     */
+    public Set<Integer> getRunningGenerators() {
+        return new HashSet<Integer>(activeJobs.keySet());
+    }
+
+    /**
+     * Cancels an ongoing optimisation run.
+     * @param scenId ScenarioGenerator entity id
+     * @return true if the run was cancelled.  Returns false if there is
+     *  no run to cancel, or the run has already completed, or the
+     *  cancellation fails for some other reason.
+     */
+    public boolean cancelSimulation(int scenGenId) {
+        Future<OptimisationResults> oldJob = activeJobs.remove(scenGenId);
+        if (oldJob != null) {
+            return oldJob.cancel(true);
+        }
+        return false;
     }
 
     AlgorithmParameters loadAlgorithmParameters(ScenarioGenerator scenarioGenerator) {
