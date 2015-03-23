@@ -4,7 +4,10 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.inject.Singleton;
 import javax.script.ScriptException;
@@ -17,6 +20,7 @@ import org.opt4j.core.problem.Evaluator;
 
 import com.google.inject.Inject;
 
+import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.ConstraintContext;
 import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.MetricValues;
@@ -27,7 +31,6 @@ import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.SimulationStorage;
-import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.opt.OptimisationProblem;
 
 /**
@@ -58,7 +61,8 @@ import eu.cityopt.sim.opt.OptimisationProblem;
 public class CityoptEvaluator
 implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     private OptimisationProblem problem;
-    private SimulationRunner runner;
+    private volatile SimulationRunner runner;
+    private Set<Future<SimulationOutput>> jobs = ConcurrentHashMap.newKeySet();
     private SimulationStorage storage = new SimulationStorage() {        
         @Override
         public void updateMetricValues(MetricValues metricValues) {}
@@ -93,6 +97,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
 
     @Override
     public Objectives evaluate(CityoptPhenotype pt) {
+        Future<SimulationOutput> job = null;
         try {
             ConstraintContext coco = new ConstraintContext(
                     pt.decisions, pt.input);
@@ -106,7 +111,11 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
             }
             SimulationOutput out = storage.get(pt.input);
             if (out == null) {
-                out = runner.start(pt.input).get();
+                job = runner.start(pt.input);
+                jobs.add(job);
+                out = job.get();
+                jobs.remove(job);
+                job = null;
                 storage.put(out);
             }
             if (!(out instanceof SimulationResults)) {
@@ -133,6 +142,11 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
             throw new RuntimeException("Evaluation error", e);
         } catch (InterruptedException | ExecutionException | IOException e) {
             throw new RuntimeException("Execution error", e);
+        } finally {
+            if (job != null) {
+                job.cancel(true);
+                jobs.remove(job);
+            }
         }
     }
     
@@ -161,10 +175,19 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     @Override
     public void close() throws IOException {
         if (runner != null) {
-            try {
-                runner.close();
-            } finally {
-                runner = null;
+            SimulationRunner r = runner;
+            runner = null;
+            cancelJobs();
+            r.close();
+        }
+    }
+
+    private void cancelJobs() {
+        while (!jobs.isEmpty()) {
+            Iterator<Future<SimulationOutput>> it = jobs.iterator();
+            while (it.hasNext()) {
+                it.next().cancel(true);
+                it.remove();
             }
         }
     }
