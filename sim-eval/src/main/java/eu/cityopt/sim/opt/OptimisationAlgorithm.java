@@ -31,5 +31,6 @@ public interface OptimisationAlgorithm {
             SimulationStorage storage, OutputStream messageSink, Executor executor)
                     throws ConfigurationException, IOException, ConfigurationException;
 
+    /** Returns the user-visible name of the optimisation algorithm. */
     String getName();
 }
