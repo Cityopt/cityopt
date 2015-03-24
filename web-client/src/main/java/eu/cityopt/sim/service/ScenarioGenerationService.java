@@ -153,6 +153,11 @@ public class ScenarioGenerationService
                 optimisationJob.cancel(true);
             }
             jobManager.removeJob(scenGenId, finishJob);
+            try {
+                model.close();
+            } catch (IOException e) {
+                log.warn("Failed to clean up optimisation run: " + e.getMessage());
+            }
         });
         return finishJob;
     }
