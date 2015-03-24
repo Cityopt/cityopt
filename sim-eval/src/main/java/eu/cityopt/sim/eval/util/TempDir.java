@@ -7,14 +7,17 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.concurrent.Executor;
 
 /** A Closeable wrapper for temporary directories.
  * Intended to be used in try-with-resources statements.
  * The directory (including all contents) is automatically deleted on close.
  */
 public class TempDir implements Closeable {
+    private static DelayedDeleter delayedDeleter;
+
     private final Path path;
     private boolean is_closed;
     
@@ -32,7 +35,7 @@ public class TempDir implements Closeable {
         path = Files.createTempDirectory(prefix);
         is_closed = false;
     }
-    
+
     /** Check whether close() has been called. */
     public boolean isClosed() {return is_closed;} 
 
@@ -42,6 +45,22 @@ public class TempDir implements Closeable {
         if (is_closed)
             return;
         is_closed = true;
+        try {
+            deleteTree(path);
+        } catch (AccessDeniedException e) {
+            if (delayedDeleter != null) {
+                delayedDeleter.add(path);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    static void use(DelayedDeleter instance) {
+        delayedDeleter = instance;
+    }
+
+    static void deleteTree(Path path) throws IOException {
         if (Files.isDirectory(path)) {
             /* Initially copied from the Javadoc of FileVisitor.
                However, Windows seems to throw AccessDeniedExceptions for no
