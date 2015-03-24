@@ -31,11 +31,11 @@ import eu.cityopt.sim.eval.SimulationStorage;
 
 public abstract class AbstractOptimiser implements Runnable {
     protected final OptimisationProblem problem;
-    protected final SimulationRunner runner;
     protected final SimulationStorage storage;
     protected final ScenarioNameFormat formatter;
     protected final OutputStream messageSink;
     protected final Executor executor;
+    protected SimulationRunner runner;
 
     protected CompletableFuture<OptimisationResults> completableFuture =
             new CompletableFuture<>();
@@ -58,7 +58,6 @@ public abstract class AbstractOptimiser implements Runnable {
         this.formatter = new SimpleScenarioNameFormat(runName, problem.decisionVars);
         this.messageSink = messageSink;
         this.executor = executor;
-        this.runner = problem.makeRunner();
 
         activeJobs = new AtomicReferenceArray<CompletableFuture<SimulationOutput>>(
                 maxEvaluationsInParallel);
@@ -73,23 +72,31 @@ public abstract class AbstractOptimiser implements Runnable {
     public void run() {
         OptimisationResults result = new OptimisationResults();
         try {
-            result.status = doRun();
-        } catch (TimeoutException e) {
-            result.status = AlgorithmStatus.COMPLETED_TIME;
-            cancel();
-        } catch (InterruptedException e) {
-            result.status = AlgorithmStatus.INTERRUPTED;
-            cancel();
-        } catch (Throwable t) {
-            result.status = AlgorithmStatus.FAILED;
-            cancel();
+            try {
+                runner = problem.makeRunner();
+                result.status = doRun();
+            } catch (TimeoutException e) {
+                result.status = AlgorithmStatus.COMPLETED_TIME;
+            } catch (InterruptedException e) {
+                result.status = AlgorithmStatus.INTERRUPTED;
+            } catch (Throwable t) {
+                result.status = AlgorithmStatus.FAILED;
+            }
+            try {
+                cancel();
+                result.paretoFront = takeParetoFront();
+            } catch (Throwable t) {
+                result.status = AlgorithmStatus.FAILED;
+            }
+        } finally {
+            try {
+                runner.close();
+                runner = null;
+            } catch (Throwable t) {
+                System.err.println("Failed to clean up: " + t);
+            }
+            completableFuture.complete(result);
         }
-        try {
-            result.paretoFront = takeParetoFront();
-        } catch (Throwable t) {
-            result.status = AlgorithmStatus.FAILED;
-        }
-        completableFuture.complete(result);
     }
 
     abstract protected AlgorithmStatus doRun() throws Exception;
@@ -190,8 +197,7 @@ public abstract class AbstractOptimiser implements Runnable {
         }
     }
 
-    protected Collection<Solution> takeParetoFront()
-            throws InterruptedException, ExecutionException {
+    protected Collection<Solution> takeParetoFront() {
         synchronized (paretoFrontMutex) {
             List<Solution> solutions = paretoFront.solutions;
             paretoFront = null;

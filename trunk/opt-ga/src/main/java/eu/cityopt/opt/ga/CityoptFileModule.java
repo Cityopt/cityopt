@@ -54,6 +54,7 @@ public class CityoptFileModule extends ProblemModule {
         install(new JacksonCsvModule());
         bind(SimulatorManager.class).toProvider(SimulatorProvider.class);
         bind(SimulationModel.class).toProvider(ModelBlobLoader.class);
+        addOptimizerStateListener(ModelBlobCleanup.class);
         bind(OptimisationProblem.class).toProvider(ProblemFromBinder.class);
         bind(Path.class).annotatedWith(Names.named("model")).toInstance(
                 Paths.get(modelFile));

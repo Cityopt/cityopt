@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 
+import javax.inject.Singleton;
+
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
@@ -18,6 +20,7 @@ import eu.cityopt.sim.eval.SimulatorManager;
  * The model is loaded by our constructor and can be retrieved with
  * {@link #get()}.
  */
+@Singleton
 public class ModelBlobLoader implements Provider<SimulationModel> {
     private SimulationModel model;
 

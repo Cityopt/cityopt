@@ -38,7 +38,7 @@ public class AprosModel implements SimulationModel {
     AprosModel(InputStream inputStream, AprosManager manager)
             throws IOException, ConfigurationException {
         this.manager = manager; 
-        modelDir = new TempDir("sim");
+        modelDir = new TempDir("cityopt_model");
         resultFiles = new String[] { "results.dat" };
         try {
             uc_props = extractModelFiles(inputStream, modelDir.getPath());
