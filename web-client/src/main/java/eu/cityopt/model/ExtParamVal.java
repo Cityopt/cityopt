@@ -48,6 +48,16 @@ public class ExtParamVal implements java.io.Serializable {
 		this.value = value;
 		this.extparamvalsetcomps = extparamvalsetcomps;
 	}
+	
+	public ExtParamVal clone() {
+		ExtParamVal c = new ExtParamVal();
+		c.extparamvalid = this.extparamvalid;
+		c.extparam = this.extparam;
+		c.timeseries = this.timeseries;
+		c.value = this.value;
+		c.extparamvalsetcomps = this.extparamvalsetcomps;
+		return c;
+	}
 
 	@SequenceGenerator(name="extparamval_extparamvalid_seq",sequenceName="extparamval_extparamvalid_seq") 
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="extparamval_extparamvalid_seq")

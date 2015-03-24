@@ -269,7 +269,7 @@ public class Scenario implements java.io.Serializable {
 		this.optimizationsets = optimizationsets;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade={CascadeType.REMOVE})
 	public Set<SimulationResult> getSimulationresults() {
 		return this.simulationresults;
 	}

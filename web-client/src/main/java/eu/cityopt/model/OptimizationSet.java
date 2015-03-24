@@ -68,6 +68,23 @@ public class OptimizationSet implements java.io.Serializable {
 		this.optsetscenarioses = optsetscenarioses;
 		this.optsearchconsts = optsearchconsts;
 	}
+	
+	public OptimizationSet clone() {
+		OptimizationSet c = new OptimizationSet();
+		c.optid = this.optid;
+		c.extparamvalset = this.extparamvalset;
+		c.objectivefunction = this.objectivefunction;
+		c.scenario = this.scenario;
+		c.prjid = this.prjid;
+		c.createdon = this.createdon;
+		c.updatedon = this.updatedon;
+		c.createdby = this.createdby;
+		c.updatedby = this.updatedby;
+		c.optstart = this.optstart;
+		c.optsetscenarioses = this.optsetscenarioses;
+		c.optsearchconsts = this.optsearchconsts;
+		return c;
+	}
 
 	@SequenceGenerator(name="optimizationset_optid_seq",sequenceName="optimizationset_optid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="optimizationset_optid_seq")
 	@Id

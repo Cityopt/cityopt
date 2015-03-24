@@ -43,7 +43,7 @@ public class OutputVariable implements java.io.Serializable {
 	}
 
 	public OutputVariable(int outvarid, Component component, Unit unit, String name,
-			String alias, Boolean selected, Integer typeid,
+			String alias, Boolean selected, Integer unitid,
 			Set<SimulationResult> simulationresults) {
 		this.outvarid = outvarid;
 		this.component = component;
@@ -51,8 +51,21 @@ public class OutputVariable implements java.io.Serializable {
 		this.name = name;
 		this.alias = alias;
 		this.selected = selected;
-		this.unitid = typeid;
+		this.unitid = unitid;
 		this.simulationresults = simulationresults;
+	}
+	
+	public OutputVariable clone() {
+		OutputVariable c = new OutputVariable();
+		c.outvarid = this.outvarid;
+		c.component = this.component;
+		c.unit = this.unit;
+		c.name = this.name;
+		c.alias = this.alias;
+		c.selected = this.selected;
+		c.unitid = this.unitid;
+		c.simulationresults = this.simulationresults;
+		return c;
 	}
 
 	@SequenceGenerator(name="outputvariable_outvarid_seq",sequenceName="outputvariable_outvarid_seq") 
