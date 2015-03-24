@@ -9,13 +9,15 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.script.ScriptException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.ConstraintContext;
@@ -30,8 +32,10 @@ import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.SimulationStorage;
 
 public abstract class AbstractOptimiser implements Runnable {
+    protected final Logger logger = LoggerFactory.getLogger(AbstractOptimiser.class);
     protected final OptimisationProblem problem;
     protected final SimulationStorage storage;
+    protected final String runName;
     protected final ScenarioNameFormat formatter;
     protected final OutputStream messageSink;
     protected final Executor executor;
@@ -55,6 +59,7 @@ public abstract class AbstractOptimiser implements Runnable {
                     throws IOException, ConfigurationException {
         this.problem = problem;
         this.storage = storage;
+        this.runName = runName;
         this.formatter = new SimpleScenarioNameFormat(runName, problem.decisionVars);
         this.messageSink = messageSink;
         this.executor = executor;
@@ -70,6 +75,7 @@ public abstract class AbstractOptimiser implements Runnable {
 
     @Override
     public void run() {
+        logger.info("Starting run " + runName);
         OptimisationResults result = new OptimisationResults();
         try {
             try {
@@ -80,12 +86,14 @@ public abstract class AbstractOptimiser implements Runnable {
             } catch (InterruptedException e) {
                 result.status = AlgorithmStatus.INTERRUPTED;
             } catch (Throwable t) {
+                logger.warn("Caught exception: " + t);
                 result.status = AlgorithmStatus.FAILED;
             }
             try {
                 cancel();
                 result.paretoFront = takeParetoFront();
             } catch (Throwable t) {
+                logger.warn("Caught unexpected exception: " + t);
                 result.status = AlgorithmStatus.FAILED;
             }
         } finally {
@@ -93,9 +101,10 @@ public abstract class AbstractOptimiser implements Runnable {
                 runner.close();
                 runner = null;
             } catch (Throwable t) {
-                System.err.println("Failed to clean up: " + t);
+                logger.warn("Failed to clean up: " + t);
             }
             completableFuture.complete(result);
+            logger.info("Ending run " + runName);
         }
     }
 
@@ -112,7 +121,7 @@ public abstract class AbstractOptimiser implements Runnable {
         if (preConstraintStatus.mayBeFeasible()) {
             final String jobName = "#" + jobCounter + " [" + jobId + "]";
             ++jobCounter;
-            System.err.println("Starting simulation job " + jobName + ": " + decisions);
+            logger.info("Starting simulation job " + jobName + ": " + decisions);
             CompletableFuture<SimulationOutput> job = runner.start(input);
             activeJobs.set(jobId, job);
             job.thenApplyAsync(output -> {
@@ -149,7 +158,7 @@ public abstract class AbstractOptimiser implements Runnable {
                         jobsDoneCondition.notifyAll();
                     }
                 }
-                System.err.println("Completed simulation job " + jobName);
+                logger.info("Completed simulation job " + jobName);
             });
         }
     }
@@ -165,8 +174,8 @@ public abstract class AbstractOptimiser implements Runnable {
 
     protected void waitForCompletion(Instant deadline)
             throws InterruptedException, TimeoutException {
-        System.err.println("Waiting for remaining simulation jobs to complete.");
         if (freeJobIds.remainingCapacity() > 0) {
+            logger.info("Waiting for remaining simulation jobs to complete.");
             synchronized (jobsDoneCondition) {
                 while (freeJobIds.remainingCapacity() > 0) {
                     long millisLeft = Instant.now().until(deadline, ChronoUnit.MILLIS);
@@ -180,12 +189,16 @@ public abstract class AbstractOptimiser implements Runnable {
     }
 
     protected void cancel() {
-        System.err.println("Canceling simulation jobs.");
+        int canceled = 0;
         for (int i = 0; i < activeJobs.length(); ++i) {
             CompletableFuture<SimulationOutput> job = activeJobs.get(i);
             if (job != null && !job.isDone()) {
                 job.cancel(true);
+                ++canceled;
             }
+        }
+        if (canceled > 0) {
+            logger.info("Canceled " + canceled + " simulation jobs.");
         }
     }
 

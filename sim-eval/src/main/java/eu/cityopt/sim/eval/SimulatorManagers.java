@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Access to SimulatorManager implementations for named simulators.
@@ -14,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Hannu Rummukainen
  */
 public class SimulatorManagers {
+    private static Logger logger = LoggerFactory.getLogger(SimulatorManagers.class);
     private static Map<String, SimulatorManager> simulatorManagers
         = new ConcurrentHashMap<String, SimulatorManager>();
 
@@ -63,7 +66,7 @@ public class SimulatorManagers {
         try {
             manager.close();
         } catch (IOException e) {
-            System.err.println("Failed to close SimulatorManager: " + e.getMessage());
+            logger.warn("Failed to close SimulatorManager: " + e.getMessage());
         }
     }
 
