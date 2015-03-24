@@ -33,6 +33,7 @@ public abstract class AbstractOptimiser implements Runnable {
     protected final OptimisationProblem problem;
     protected final SimulationRunner runner;
     protected final SimulationStorage storage;
+    protected final ScenarioNameFormat formatter;
     protected final OutputStream messageSink;
     protected final Executor executor;
 
@@ -42,17 +43,19 @@ public abstract class AbstractOptimiser implements Runnable {
     AtomicReferenceArray<CompletableFuture<SimulationOutput>> activeJobs;
     BlockingQueue<Integer> freeJobIds;
     Object jobsDoneCondition = new Object();
-    long jobCounter = 0;
+    long jobCounter = 1;
 
     Object paretoFrontMutex = new Object();
     ParetoFront paretoFront = new ParetoFront();
 
     public AbstractOptimiser(OptimisationProblem problem,
-            SimulationStorage storage, OutputStream messageSink,
-            Executor executor, int maxEvaluationsInParallel)
+            SimulationStorage storage, String runName,
+            OutputStream messageSink, Executor executor,
+            int maxEvaluationsInParallel)
                     throws IOException, ConfigurationException {
         this.problem = problem;
         this.storage = storage;
+        this.formatter = new SimpleScenarioNameFormat(runName, problem.decisionVars);
         this.messageSink = messageSink;
         this.executor = executor;
         this.runner = problem.makeRunner();
@@ -107,7 +110,7 @@ public abstract class AbstractOptimiser implements Runnable {
             activeJobs.set(jobId, job);
             job.thenApplyAsync(output -> {
                 try {
-                    storage.put(output);
+                    storage.put(output, formatter.format(decisions, input));
                     if (output instanceof SimulationResults) {
                         SimulationResults results = (SimulationResults) output;
                         MetricValues metricValues = new MetricValues(results, problem.metrics);

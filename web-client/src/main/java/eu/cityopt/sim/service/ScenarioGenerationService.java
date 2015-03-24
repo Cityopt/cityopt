@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -112,6 +113,7 @@ public class ScenarioGenerationService
             throw new IllegalStateException("Service shutting down");
         }
         ScenarioGenerator scenarioGenerator = scenarioGeneratorRepository.findOne(scenGenId);
+        String runName = "SG" + scenarioGenerator.getScengenid();
         Project project = scenarioGenerator.getProject();
 
         String algorithmName = scenarioGenerator.getAlgorithm().getDescription();
@@ -124,7 +126,7 @@ public class ScenarioGenerationService
 
         SimulationModel model = simulationService.loadSimulationModel(project);
         OptimisationProblem problem = new OptimisationProblem(model, externals);
-        problem.decisionVars = loadDecisionDomains(scenarioGenerator, namespace);
+        problem.decisionVars = loadDecisionVariables(scenarioGenerator, namespace);
         problem.inputExprs = loadInputExpressions(scenarioGenerator, namespace, problem.inputConst);
         problem.metrics = simulationService.loadMetricExpressions(project, namespace);
         problem.constraints = optimisationSupport.loadConstraints(scenarioGenerator, namespace);
@@ -135,7 +137,7 @@ public class ScenarioGenerationService
 
         ByteArrayOutputStream messageStream = new ByteArrayOutputStream(); 
         CompletableFuture<OptimisationResults> optimisationJob = optimisationAlgorithm.start(
-                problem, algorithmParameters, storage, messageStream, executorService);
+                problem, algorithmParameters, storage, runName, messageStream, executorService);
         CompletableFuture<OptimisationResults> finishJob = optimisationJob.whenCompleteAsync(
                 (results, throwable) -> {
                     String messages = messageStream.toString();
@@ -191,7 +193,7 @@ public class ScenarioGenerationService
         return algorithmParameters;
     }
 
-    public List<DecisionVariable> loadDecisionDomains(
+    public List<DecisionVariable> loadDecisionVariables(
             ScenarioGenerator scenarioGenerator, Namespace namespace)
                     throws ScriptException, ParseException {
         List<DecisionVariable> simDecisions = new ArrayList<>();
@@ -216,6 +218,7 @@ public class ScenarioGenerationService
 
             simDecisions.add(new DecisionVariable(componentName, variableName, domain));
         }
+        Collections.sort(simDecisions, (d, e) -> d.toString().compareTo(e.toString()));
         return simDecisions;
     }
 

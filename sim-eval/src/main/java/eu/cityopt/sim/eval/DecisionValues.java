@@ -1,6 +1,7 @@
 package eu.cityopt.sim.eval;
 
 import java.text.ParseException;
+import java.util.Collection;
 
 import javax.script.Bindings;
 import javax.script.ScriptException;
@@ -137,5 +138,10 @@ public class DecisionValues implements EvaluationContext {
     @Override
     public String toString() {
         return bindingLayer.toString();
+    }
+
+    /** Formats the values to a string in the given order. */
+    public String formatString(Collection<DecisionVariable> variableOrder) {
+        return bindingLayer.formatString(variableOrder);
     }
 }

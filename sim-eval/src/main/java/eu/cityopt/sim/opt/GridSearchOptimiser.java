@@ -26,11 +26,11 @@ public class GridSearchOptimiser extends AbstractOptimiser {
 
     public GridSearchOptimiser(
             OptimisationProblem problem, AlgorithmParameters parameters,
-            SimulationStorage storage, OutputStream messageSink,
-            Executor executor)
+            SimulationStorage storage, String runName,
+            OutputStream messageSink, Executor executor)
                     throws ConfigurationException, IOException, 
                     ConfigurationException {
-        super(problem, storage, messageSink, executor,
+        super(problem, storage, runName, messageSink, executor,
                 parameters.getMaxParallelEvaluations());
 
         deadline = Instant.now().plus(parameters.getMaxRunTime());

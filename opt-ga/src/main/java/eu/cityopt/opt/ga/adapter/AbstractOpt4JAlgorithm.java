@@ -16,6 +16,7 @@ import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.opt.AlgorithmParameters;
 import eu.cityopt.sim.opt.OptimisationAlgorithm;
+import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.OptimisationResults;
 
 /**
@@ -31,13 +32,13 @@ public abstract class AbstractOpt4JAlgorithm implements OptimisationAlgorithm {
 
     @Override
     public CompletableFuture<OptimisationResults> start(
-            eu.cityopt.sim.opt.OptimisationProblem problem,
-            AlgorithmParameters parameters, SimulationStorage storage,
+            OptimisationProblem problem, AlgorithmParameters parameters,
+            SimulationStorage storage, String runName,
             OutputStream messageSink, Executor executor)
             throws ConfigurationException, IOException, ConfigurationException {
         Instant deadline = Instant.now().plus(parameters.getMaxRunTime());
         OptimiserAdapter adapter = new OptimiserAdapter(
-                problem, storage, messageSink, deadline,
+                problem, storage, runName, messageSink, deadline,
                 configureOptimizer(parameters),
                 configureRandom(parameters),
                 configureIndividualCompleter(parameters),

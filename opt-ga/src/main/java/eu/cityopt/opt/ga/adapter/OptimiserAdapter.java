@@ -30,6 +30,8 @@ import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.opt.AlgorithmStatus;
 import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.OptimisationResults;
+import eu.cityopt.sim.opt.ScenarioNameFormat;
+import eu.cityopt.sim.opt.SimpleScenarioNameFormat;
 import eu.cityopt.sim.opt.Solution;
 
 /**
@@ -37,6 +39,10 @@ import eu.cityopt.sim.opt.Solution;
  * algorithm. Specifically, provides a CompletableFuture that allows cancelling
  * the optimisation task, and converts the results to an OptimisationResults
  * instance.
+ *<p>
+ * Known issue:  If the run is terminated during an iteration, the Pareto front
+ * will not contain solutions discovered on the terminated iteration.  This is
+ * because Opt4J updates the archive only at the end of an iteration.
  *
  * @author Hannu Rummukainen
  */
@@ -73,15 +79,16 @@ class OptimiserAdapter {
     };
 
     OptimiserAdapter(
-            OptimisationProblem problem, SimulationStorage storage,
-            OutputStream messageSink, Instant deadline,
-            Module... modules) {
+            OptimisationProblem problem, SimulationStorage storage, String runName,
+            OutputStream messageSink, Instant deadline, Module... modules) {
         this.problem = problem;
         this.constraintAndObjectiveIndices = mapConstraintAndObjectiveIndices(problem);
         this.control = new TimeoutControl(deadline);
 
+        ScenarioNameFormat formatter = new SimpleScenarioNameFormat(runName, problem.decisionVars);
+
         List<Module> moduleList = new ArrayList<>(Arrays.asList(modules));
-        moduleList.add(new CityoptAdapterModule(problem, storage, control));
+        moduleList.add(new CityoptAdapterModule(problem, storage, formatter, control));
         this.task = new Opt4JTask(false);
         task.init(moduleList);
 

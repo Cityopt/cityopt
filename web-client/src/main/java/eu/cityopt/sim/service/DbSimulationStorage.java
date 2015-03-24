@@ -129,14 +129,14 @@ public class DbSimulationStorage implements DbSimulationStorageI {
 
     @Override
     @Transactional
-    public void put(SimulationOutput output) {
-        put(output, null, null);
-    }
-
-    @Override
-    @Transactional
-    public void put(SimulationOutput output, String scenarioName, String scenarioDescription) {
+    public void put(SimulationOutput output, String[] scenarioNameAndDescription) {
         cache.put(output.getInput(), output);
+        String scenarioName =
+                (scenarioNameAndDescription != null && scenarioNameAndDescription.length >= 1)
+                ? scenarioNameAndDescription[0] : null;
+        String scenarioDescription =
+                (scenarioNameAndDescription != null && scenarioNameAndDescription.length >= 2)
+                ? scenarioNameAndDescription[1] : null;
         Scenario scenario = saveSimulationInput(output.getInput(), scenarioName, scenarioDescription);
         saveSimulationOutput(scenario, output);
         output.getInput().setScenarioId(scenario.getScenid());
