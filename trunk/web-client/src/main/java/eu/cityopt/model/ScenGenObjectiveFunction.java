@@ -36,6 +36,14 @@ public class ScenGenObjectiveFunction implements java.io.Serializable {
 		this.objectivefunction = objectivefunction;
 		this.scenariogenerator = scenariogenerator;
 	}
+	
+	public ScenGenObjectiveFunction clone() {
+		ScenGenObjectiveFunction c = new ScenGenObjectiveFunction();
+		c.sgobfunctionid = this.sgobfunctionid;
+		c.objectivefunction = this.objectivefunction;
+		c.scenariogenerator = this.scenariogenerator;
+		return c;
+	}
 
 	@SequenceGenerator(name="scengenobjectivefunction_sgobfunctionid_seq",sequenceName="scengenobjectivefunction_sgobfunctionid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="scengenobjectivefunction_sgobfunctionid_seq")
 	@Id

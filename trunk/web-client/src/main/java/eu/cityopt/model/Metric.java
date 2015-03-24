@@ -49,6 +49,17 @@ public class Metric implements java.io.Serializable {
 		this.metricvals = metricvals;
 	}
 
+	public Metric clone() {
+		Metric c = new Metric();
+		c.metid = this.metid;
+		c.unit = this.unit;
+		c.project = this.project;
+		c.name = this.name;
+		c.expression = this.expression;
+		c.metricvals = this.metricvals;
+		return c;
+	}
+	
 	@SequenceGenerator(name="metric_metid_seq",sequenceName="metric_metid_seq") 
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="metric_metid_seq")
 	@Id

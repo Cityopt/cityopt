@@ -40,6 +40,15 @@ public class OptSetScenarios implements java.io.Serializable {
 		this.scenario = scenario;
 		this.value = value;
 	}
+	
+	public OptSetScenarios clone() {
+		OptSetScenarios c = new OptSetScenarios();
+		c.optscenid = this.optscenid;
+		c.optimizationset = this.optimizationset;
+		c.scenario = this.scenario;
+		c.value = this.value;
+		return c;
+	}
 
 	@SequenceGenerator(name="OptSetScenarios_optScenID_seq",sequenceName="OptSetScenarios_optScenID_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="OptSetScenarios_optScenID_seq")
 	@Id

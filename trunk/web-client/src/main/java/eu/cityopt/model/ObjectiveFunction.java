@@ -61,6 +61,20 @@ public class ObjectiveFunction implements java.io.Serializable {
 		this.optimizationsets = optimizationsets;
 		this.scengenobjectivefunctions = scengenobjectivefunctions;
 	}
+	
+	public ObjectiveFunction clone() {
+		ObjectiveFunction c = new ObjectiveFunction();
+		c.obtfunctionid = this.obtfunctionid;
+		c.project = this.project;
+		c.type = this.type;
+		c.name = this.name;
+		c.expression = this.expression;
+		c.ismaximise = this.ismaximise;
+		c.executedat = this.executedat;
+		c.optimizationsets = this.optimizationsets;
+		c.scengenobjectivefunctions = this.scengenobjectivefunctions;
+		return c;
+	}
 
 	@SequenceGenerator(name="objectivefunction_obtfunctionid_seq",sequenceName="objectivefunction_obtfunctionid_seq") 
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="objectivefunction_obtfunctionid_seq")

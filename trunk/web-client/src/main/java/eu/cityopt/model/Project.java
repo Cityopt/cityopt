@@ -93,6 +93,30 @@ public class Project implements java.io.Serializable {
 		this.usergroupprojects = usergroupprojects;
 		this.extparams = extparams;
 	}
+	
+	public Project clone() {
+		Project c = new Project();
+		c.prjid = this.prjid;
+		c.simulationmodel = this.simulationmodel;
+		c.name = this.name;
+		c.description = this.description;
+		c.designtarget = this.designtarget;
+		c.timehorizon = this.timehorizon;
+		c.location = this.location;
+		c.createdon = this.createdon;
+		c.updatedon = this.updatedon;
+		c.createdby = this.createdby;
+		c.updatedby = this.updatedby;
+		c.objectivefunctions = this.objectivefunctions;
+		c.scenarios = this.scenarios;
+		c.scenariogenerators = this.scenariogenerators;
+		c.components = this.components;
+		c.optconstraints = this.optconstraints;
+		c.metrics = this.metrics;
+		c.usergroupprojects = this.usergroupprojects;
+		c.extparams = this.extparams;
+		return c;
+	}
 
 	@SequenceGenerator(name="project_prjid_seq",sequenceName="project_prjid_seq") 
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="project_prjid_seq")

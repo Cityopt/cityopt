@@ -31,7 +31,7 @@ public class ExtParam implements java.io.Serializable {
 
 	private int extparamid;
 	private Unit unit;
-	private TimeSeries timeseries;
+	private TimeSeries defaulttimeseries;
 	private Project project;
 	private String defaultvalue;
 	private String name;
@@ -50,11 +50,23 @@ public class ExtParam implements java.io.Serializable {
 			Set<ExtParamVal> extparamvals) {
 		this.extparamid = extparamid;
 		this.unit = unit;
-		this.timeseries = timeseries;
+		this.defaulttimeseries = timeseries;
 		this.project = project;
 		this.defaultvalue = defaultvalue;
 		this.name = name;
 		this.extparamvals = extparamvals;
+	}
+	
+	public ExtParam clone() {
+		ExtParam c = new ExtParam();
+		c.extparamid = this.extparamid;
+		c.unit = this.unit;
+		c.defaulttimeseries = this.defaulttimeseries;
+		c.project = this.project;
+		c.defaultvalue = this.defaultvalue;
+		c.name = this.name;
+		c.extparamvals = this.extparamvals;
+		return c;
 	}
 
 	@SequenceGenerator(name="extparam_extparamid_seq",sequenceName="extparam_extparamid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="extparam_extparamid_seq")
@@ -81,11 +93,11 @@ public class ExtParam implements java.io.Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "defaulttimeseries")
 	public TimeSeries getTimeseries() {
-		return this.timeseries;
+		return this.defaulttimeseries;
 	}
 
 	public void setTimeseries(TimeSeries timeseries) {
-		this.timeseries = timeseries;
+		this.defaulttimeseries = timeseries;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

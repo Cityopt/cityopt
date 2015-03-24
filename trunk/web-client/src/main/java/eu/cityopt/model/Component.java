@@ -56,6 +56,18 @@ public class Component implements java.io.Serializable {
 		this.inputparameters = inputparameters;
 		this.outputvariables = outputvariables;
 	}
+	
+	public Component clone() {
+		Component c = new Component();
+		c.componentid = this.componentid;
+		c.project = this.project;
+		c.name = this.name;
+		c.alias = this.alias;
+		c.geometryblob = this.geometryblob;
+		c.inputparameters = this.inputparameters;
+		c.outputvariables = this.outputvariables;
+		return c;
+	}
 
 	@SequenceGenerator(name="component_componentid_seq",sequenceName="component_componentid_seq") 
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="component_componentid_seq")

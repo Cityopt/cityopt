@@ -54,6 +54,19 @@ public class InputParameter implements java.io.Serializable {
 		this.modelparameters = modelparameters;
 		this.inputparamvals = inputparamvals;
 	}
+	
+	public InputParameter clone() {
+		InputParameter c = new InputParameter();
+		c.inputid = this.inputid;
+		c.unit = this.unit;
+		c.component = this.component;
+		c.name = this.name;
+		c.alias = this.alias;
+		c.defaultvalue = this.defaultvalue;
+		c.modelparameters = this.modelparameters;
+		c.inputparamvals = this.inputparamvals;
+		return c;
+	}
 
 	@SequenceGenerator(name="inputparameter_inputid_seq",sequenceName="inputparameter_inputid_seq") 
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="inputparameter_inputid_seq")
