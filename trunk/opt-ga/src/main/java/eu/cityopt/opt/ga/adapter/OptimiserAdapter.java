@@ -18,6 +18,8 @@ import org.opt4j.core.Value;
 import org.opt4j.core.optimizer.Archive;
 import org.opt4j.core.optimizer.Control;
 import org.opt4j.core.start.Opt4JTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Module;
 
@@ -47,10 +49,12 @@ import eu.cityopt.sim.opt.Solution;
  * @author Hannu Rummukainen
  */
 class OptimiserAdapter {
-    OptimisationProblem problem;
-    Opt4JTask task;
-    TimeoutControl control;
-    Archive archive;
+    private final Logger logger = LoggerFactory.getLogger(OptimiserAdapter.class);
+    private final OptimisationProblem problem;
+    private final String runName;
+    private final Opt4JTask task;
+    private final TimeoutControl control;
+    private final Archive archive;
 
     /**
      * Map from constraint/objective name to its index in the problem definition,
@@ -82,6 +86,7 @@ class OptimiserAdapter {
             OptimisationProblem problem, SimulationStorage storage, String runName,
             OutputStream messageSink, Instant deadline, Module... modules) {
         this.problem = problem;
+        this.runName = runName;
         this.constraintAndObjectiveIndices = mapConstraintAndObjectiveIndices(problem);
         this.control = new TimeoutControl(deadline);
 
@@ -102,6 +107,7 @@ class OptimiserAdapter {
     CompletableFuture<OptimisationResults> start(Executor executor) {
         executor.execute(() -> {
             try {
+                logger.info("Starting run " + runName);
                 OptimisationResults results = new OptimisationResults();
                 try {
                     task.call();
@@ -120,6 +126,7 @@ class OptimiserAdapter {
                 completableFuture.complete(results);
             } catch (Throwable t) {
                 completableFuture.completeExceptionally(t);
+                logger.info("Ending run " + runName);
             }
         });
         return completableFuture;

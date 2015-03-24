@@ -9,7 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.concurrent.Executor;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** A Closeable wrapper for temporary directories.
  * Intended to be used in try-with-resources statements.
@@ -17,6 +19,7 @@ import java.util.concurrent.Executor;
  */
 public class TempDir implements Closeable {
     private static DelayedDeleter delayedDeleter;
+    private static final Logger logger = LoggerFactory.getLogger(TempDir.class);
 
     private final Path path;
     private boolean is_closed;
@@ -81,7 +84,7 @@ public class TempDir implements Closeable {
                 public FileVisitResult visitFileFailed(Path file,
                         IOException exc) throws IOException {
                     if (exc instanceof AccessDeniedException) {
-                        System.err.println("visitFileFailed: " + exc);
+                        logger.warn("visitFileFailed: " + exc);
                     } else {
                         throw exc;
                     }
@@ -96,7 +99,7 @@ public class TempDir implements Closeable {
                             throw exc;
                         Files.delete(dir);
                     } catch (AccessDeniedException e) {
-                        System.err.println("postVisitDirectory: " + e);
+                        logger.warn("postVisitDirectory: " + e);
                     } catch (DirectoryNotEmptyException e) {}
                     return FileVisitResult.CONTINUE;
                 }
