@@ -50,13 +50,15 @@
 	<property name="password" value="cit.opt#"></property>	
 </bean>
 
-<task:annotation-driven executor="myExecutor" proxy-target-class="true"/>
+<task:annotation-driven executor="myExecutor" scheduler="myScheduler" proxy-target-class="true"/>
 
 <bean id="myExecutor"
   class="org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean">
   <property name="corePoolSize" value="4" />
   <property name="maxPoolSize" value="256" />
 </bean>
+
+<task:scheduler id="myScheduler" pool-size="2"/>
 
 <bean id="dbSimulationStorage" class="eu.cityopt.sim.service.DbSimulationStorage" scope="prototype"/>
 

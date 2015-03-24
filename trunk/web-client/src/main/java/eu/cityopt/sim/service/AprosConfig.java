@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.DisposableBean;
@@ -15,9 +16,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.scheduling.TaskScheduler;
 
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.apros.AprosManager;
+import eu.cityopt.sim.eval.util.DelayedDeleter;
 
 /**
  * Configuration of Apros simulation server in CityOPT.
@@ -26,6 +29,8 @@ import eu.cityopt.sim.eval.apros.AprosManager;
 @Configuration
 @PropertySource("classpath:/application.properties")
 public class AprosConfig implements InitializingBean, DisposableBean {
+    private static final long DELETE_PERIOD_MINUTES = 60;
+
     /**
      * Apros profile directory names delimited by system path separator
      * (semicolon on Windows).
@@ -38,6 +43,11 @@ public class AprosConfig implements InitializingBean, DisposableBean {
 
     @Autowired
     ExecutorService executor;
+
+    @Autowired
+    TaskScheduler scheduler;
+
+    DelayedDeleter deleter = DelayedDeleter.activate();
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -56,6 +66,8 @@ public class AprosConfig implements InitializingBean, DisposableBean {
 
     @Override
     public void afterPropertiesSet() throws IOException {
+        scheduler.scheduleAtFixedRate(deleter::tryDelete,
+                TimeUnit.MINUTES.toMillis(DELETE_PERIOD_MINUTES));
         readSystemEnvironment();
         if (profilePath != null) {
             String[] dirNames = profilePath.split(
@@ -88,5 +100,6 @@ public class AprosConfig implements InitializingBean, DisposableBean {
     @Override
     public void destroy() throws Exception {
         SimulatorManagers.shutdown();
-    }
+        deleter.tryDelete();
+   }
 }
