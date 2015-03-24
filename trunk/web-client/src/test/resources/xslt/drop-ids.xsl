@@ -50,7 +50,6 @@
   <xsl:template match="scengenoptconstraint"/>
 
   <!-- Also remove generated attributes that vary on every run. -->
-  <xsl:template match="scenario/@name"/>
   <xsl:template match="scenario/@description"/>
   <xsl:template match="scenario/@createdon"/>
   <xsl:template match="scenario/@updatedon"/>

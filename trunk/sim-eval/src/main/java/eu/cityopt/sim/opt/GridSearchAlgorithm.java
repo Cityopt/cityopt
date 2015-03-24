@@ -13,10 +13,11 @@ public class GridSearchAlgorithm implements OptimisationAlgorithm {
     @Override
     public CompletableFuture<OptimisationResults> start(
             OptimisationProblem problem, AlgorithmParameters parameters,
-            SimulationStorage storage, OutputStream messageSink,
-            Executor executor) throws ConfigurationException, IOException, ConfigurationException {
+            SimulationStorage storage, String runName,
+            OutputStream messageSink, Executor executor)
+                    throws ConfigurationException, IOException, ConfigurationException {
         GridSearchOptimiser job = new GridSearchOptimiser(
-                problem, parameters, storage, messageSink, executor);
+                problem, parameters, storage, runName, messageSink, executor);
         executor.execute(job);
         return job.completableFuture;
     }

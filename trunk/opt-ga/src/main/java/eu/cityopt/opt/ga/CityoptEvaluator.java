@@ -32,6 +32,8 @@ import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.opt.OptimisationProblem;
+import eu.cityopt.sim.opt.ScenarioNameFormat;
+import eu.cityopt.sim.opt.SimpleScenarioNameFormat;
 
 /**
  * The Cityopt evaluator for Opt4J.
@@ -68,11 +70,8 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
         public void updateMetricValues(MetricValues metricValues) {}
         
         @Override
-        public void put(SimulationOutput output, String scenarioName,
-                        String scenarioDescription) {}
-        
-        @Override
-        public void put(SimulationOutput output) {}
+        public void put(SimulationOutput output,
+                String[] scenarioNameAndDescription) {}
         
         @Override
         public SimulationOutput get(SimulationInput input) {return null;}
@@ -82,7 +81,8 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
             return Collections.emptyIterator();
         }
     };
-    
+    private ScenarioNameFormat formatter = (d, i) -> null;
+
     @Inject
     public CityoptEvaluator(OptimisationProblem problem)
                     throws IOException, ConfigurationException {
@@ -93,6 +93,11 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     @Inject(optional=true)
     public void setStorage(SimulationStorage storage) {
         this.storage = storage;
+    }
+
+    @Inject(optional=true)
+    public void setFormatter(ScenarioNameFormat formatter) {
+        this.formatter = formatter;
     }
 
     @Override
@@ -116,7 +121,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
                 out = job.get();
                 jobs.remove(job);
                 job = null;
-                storage.put(out);
+                storage.put(out, formatter.format(pt.decisions, pt.input));
             }
             if (!(out instanceof SimulationResults)) {
                 return infeasibleObj(prior);

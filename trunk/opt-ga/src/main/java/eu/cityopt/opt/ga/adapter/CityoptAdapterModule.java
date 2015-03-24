@@ -6,23 +6,32 @@ import com.google.inject.AbstractModule;
 
 import eu.cityopt.opt.ga.CityoptModule;
 import eu.cityopt.sim.opt.OptimisationProblem;
+import eu.cityopt.sim.opt.ScenarioNameFormat;
 import eu.cityopt.sim.eval.SimulationStorage;
 
 /**
- * Configures the OptimisationProblem and SimulationStorage for CityoptModule.
+ * Configures the classes required by CityoptModule.
+ *
+ * @see CityoptModule
  *
  * @author Hannu Rummukainen
  */
 public class CityoptAdapterModule extends AbstractModule {
-    SimulationStorage storage;
     OptimisationProblem problem;
+    SimulationStorage storage;
+    ScenarioNameFormat formatter;
     Control control;
 
+    /**
+     * Provides the instances to be used by CityoptModule.
+     * The Control argument can be left null.
+     */
     public CityoptAdapterModule(
             OptimisationProblem problem, SimulationStorage storage,
-            Control control) {
+            ScenarioNameFormat formatter, Control control) {
         this.problem = problem;
         this.storage = storage;
+        this.formatter = formatter;
         this.control = control;
     }
 
@@ -31,6 +40,7 @@ public class CityoptAdapterModule extends AbstractModule {
         install(new CityoptModule());
         bind(OptimisationProblem.class).toInstance(problem);
         bind(SimulationStorage.class).toInstance(storage);
+        bind(ScenarioNameFormat.class).toInstance(formatter);
         if (control != null) {
             bind(Control.class).toInstance(control);
         }

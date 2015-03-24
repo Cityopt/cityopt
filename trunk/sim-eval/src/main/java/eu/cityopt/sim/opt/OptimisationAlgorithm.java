@@ -20,6 +20,7 @@ public interface OptimisationAlgorithm {
      * @param problem specifies the decision variables, constraints etc.
      * @param parameters contains algorithm specific configuration
      * @param storage where to store simulation outputs and computed metrics
+     * @param runName short run name to be used in scenario names
      * @param messageSink for writing user-readable progress messages
      * @param executor to be used for asynchronous execution of the algorithm.
      * @return future gives the final status and results of the algorithm.
@@ -28,7 +29,8 @@ public interface OptimisationAlgorithm {
      */
     CompletableFuture<OptimisationResults> start(
             OptimisationProblem problem, AlgorithmParameters parameters,
-            SimulationStorage storage, OutputStream messageSink, Executor executor)
+            SimulationStorage storage, String runName,
+            OutputStream messageSink, Executor executor)
                     throws ConfigurationException, IOException, ConfigurationException;
 
     /** Returns the user-visible name of the optimisation algorithm. */

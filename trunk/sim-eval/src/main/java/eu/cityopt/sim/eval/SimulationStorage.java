@@ -25,31 +25,22 @@ public interface SimulationStorage extends Iterable<SimulationOutput> {
     /**
      * Stores the simulation output that results with the given input. The
      * output may be either a SimulationFailure instance or a SimulationResults
-     * instance.
-     * 
-     * @param output
-     *            the simulation output data, containing a reference to the
-     *            corresponding input data and external parameter values.
-     */
-    public void put(SimulationOutput output);
-
-    /**
-     * Stores the simulation output that results with the given input. The
-     * output may be either a SimulationFailure instance or a SimulationResults
      * instance. Also saves a human-readable name and description for the
      * simulated scenario.
      *
      * @param output
      *            the simulation output data, containing a reference to the
      *            corresponding input data and external parameter values.
-     * @param scenarioName
-     *            brief human-readable name for the simulated scenario
-     * @param scenarioDescription
-     *            more detailed human-readable description for the simulated
-     *            scenario
+     * @param scenarioNameAndDescription
+     *            Array containing first a brief human-readable name for the
+     *            simulated scenario, and then a more detailed description of
+     *            the scenario.  The argument is ignored if the scenario has
+     *            already been stored before.
+     *            The argument may be left null, in which case a nondescript
+     *            name may be generated.
      */
     public void put(SimulationOutput output,
-            String scenarioName, String scenarioDescription);
+            String[] scenarioNameAndDescription);
 
     /** Updates the metric values of a previously stored successful simulation. */
     public void updateMetricValues(MetricValues metricValues);

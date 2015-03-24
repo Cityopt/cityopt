@@ -1,6 +1,7 @@
 package eu.cityopt.sim.eval;
 
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -326,6 +327,7 @@ class BindingLayer {
         return true;
     }
 
+    /** Convert to string for debug use. */
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append('{');
@@ -345,6 +347,20 @@ class BindingLayer {
             }
         }
         sb.append(" }");
+        return sb.toString();
+    }
+
+    /** Format as a human-readable string. */
+    public String formatString(Collection<? extends Symbol> order) {
+        StringBuilder sb = new StringBuilder();
+        String delim = "";
+        for (Symbol symbol : order) {
+            sb.append(delim);
+            sb.append(symbol.toString());
+            sb.append(" = ");
+            sb.append(getString(symbol.componentName, symbol.name));
+            delim = ", ";
+        }
         return sb.toString();
     }
 }

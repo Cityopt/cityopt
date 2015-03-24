@@ -148,7 +148,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             newJob.whenCompleteAsync( // Store output & metric values
                     (output, throwable) -> {
                         if (output != null) {
-                            storage.put(output);
+                            storage.put(output, null);
                             if (output instanceof SimulationResults) {
                                 SimulationResults results = (SimulationResults) output;
                                 try {
