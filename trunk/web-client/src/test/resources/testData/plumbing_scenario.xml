@@ -38,8 +38,8 @@
 
   <outputvariable outvarid="1" name="PI12_MIX_MASS_FLOW" unitid="6" componentid="2"/>
 
-  <scenario scenid="0" prjid="2" name="dummy"/>
-  <scenario scenid="1" prjid="2" name="testscenario"/>
+  <scenario scenid="0" prjid="2" name="dummy" description="dummy scenario"/>
+  <scenario scenid="1" prjid="2" name="testscenario" description="test scenario"/>
   <inputparamval scendefinitionid="1" scenid="1" inputid="1" value="3"/>
   <inputparamval scendefinitionid="2" scenid="1" inputid="2" value="2015-01-01T00:00:00"/>
   <inputparamval scendefinitionid="3" scenid="1" inputid="3" value="2015-01-01T00:01:00"/>

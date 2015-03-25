@@ -54,7 +54,7 @@
   <outputvariable outvarid="5" componentid="6" name="MULTIPLYER_OUTPUT" unitid="6"/>
   <outputvariable outvarid="6" componentid="7" name="MULTIPLYER_OUTPUT" unitid="6"/>
 
-  <scenario scenid="1" prjid="1" name="testscenario"/>
+  <scenario scenid="1" prjid="1" name="testscenario" description="1st test scenario"/>
   <inputparamval scendefinitionid="1" scenid="1" inputid="1" value="2400.0"/>
   <inputparamval scendefinitionid="2" scenid="1" inputid="2" value="0.7"/>
   <inputparamval scendefinitionid="3" scenid="1" inputid="3" value="10.0"/>
@@ -77,7 +77,7 @@
   <metric prjid="1" name="fuelconsumption" unitid="1" expression="integrate(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
   <metric prjid="1" name="fuelcost" unitid="1" expression="integrate(fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
 
-  <scenario scenid="2" prjid="1" name="testscenario2"/>
+  <scenario scenid="2" prjid="1" name="testscenario2" description="2nd test scenario"/>
   <inputparamval scendefinitionid="21" scenid="2" inputid="1" value="2300.0"/>
   <inputparamval scendefinitionid="22" scenid="2" inputid="2" value="0.6"/>
   <inputparamval scendefinitionid="23" scenid="2" inputid="3" value="9.0"/>
@@ -90,7 +90,7 @@
   <inputparamval scendefinitionid="30" scenid="2" inputid="10" value="2015-01-01T00:00:00Z"/>
   <inputparamval scendefinitionid="31" scenid="2" inputid="11" value="2015-01-08T00:00:00Z"/>
 
-  <scenario scenid="3" prjid="1" name="testscenario3"/>
+  <scenario scenid="3" prjid="1" name="testscenario3" description="3rd test scenario"/>
   <inputparamval scendefinitionid="41" scenid="3" inputid="1" value="2500.0"/>
   <inputparamval scendefinitionid="42" scenid="3" inputid="2" value="0.8"/>
   <inputparamval scendefinitionid="43" scenid="3" inputid="3" value="11.0"/>
