@@ -1,4 +1,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:output indent="yes"/>
+  <xsl:strip-space elements="*"/>
+
   <!-- Remove id columns to simplify comparisons via the ExpectedDataBase
        annotation of Spring Test DBUnit. -->
   <xsl:template match="@aparamsid"/>
@@ -50,7 +53,7 @@
   <xsl:template match="scengenoptconstraint"/>
 
   <!-- Also remove generated attributes that vary on every run. -->
-  <xsl:template match="scenario/@description"/>
+  <xsl:template match="scenario/@name"/>
   <xsl:template match="scenario/@createdon"/>
   <xsl:template match="scenario/@updatedon"/>
   <xsl:template match="scenario/@runstart"/>
@@ -59,9 +62,49 @@
   <xsl:template match="scenariogenerator/@log"/>
   <xsl:template match="inputparamval/@createdon"/>
 
+  <!-- inputparamval elements are ordered by inputid then value. -->
+  <xsl:template match="inputparamval"/>
+  <xsl:template match="inputparamval" mode="sort">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+
+  <!-- metricval elements are ordered by value. -->
+  <xsl:template match="metricval"/>
+  <xsl:template match="metricval" mode="sort">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+
+  <!-- timeseriesval elements are ordered by time then value. -->
+  <xsl:template match="timeseriesval"/>
+  <xsl:template match="timeseriesval" mode="sort">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="dataset">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+      <xsl:apply-templates select="inputparamval" mode="sort">
+        <xsl:sort select="concat(@inputid,@value)"/>
+      </xsl:apply-templates>
+      <xsl:apply-templates select="metricval" mode="sort">
+        <xsl:sort select="@value"/>
+      </xsl:apply-templates>
+      <xsl:apply-templates select="timeseriesval" mode="sort">
+        <xsl:sort select="concat(@time,@value)"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
+
   <xsl:template match="@*|node()">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
+
 </xsl:stylesheet>
