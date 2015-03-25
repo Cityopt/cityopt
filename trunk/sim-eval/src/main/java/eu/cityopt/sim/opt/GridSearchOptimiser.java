@@ -154,7 +154,7 @@ public class GridSearchOptimiser extends AbstractOptimiser {
             }
 
             int jobId = getJobId(deadline);
-            queueJob(decisions, jobId);
+            queueJob(new DecisionValues(decisions), jobId);
             ++numberOfEvaluations;
 
             boolean carry = true;

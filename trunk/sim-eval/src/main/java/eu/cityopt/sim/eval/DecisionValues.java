@@ -17,8 +17,8 @@ import javax.script.ScriptException;
  * @author Hannu Rummukainen
  */
 public class DecisionValues implements EvaluationContext {
-    private BindingLayer bindingLayer;
-    private ExternalParameters externalParameters;
+    private final BindingLayer bindingLayer;
+    private final ExternalParameters externalParameters;
 
     /**
      * Constructs an empty instance.
@@ -44,6 +44,7 @@ public class DecisionValues implements EvaluationContext {
     /** Copy constructor. */
     public DecisionValues(DecisionValues other) {
         this.bindingLayer = new BindingLayer(other.bindingLayer);
+        this.externalParameters = other.externalParameters;
     }
 
     ExternalParameters getExternalParameters() {
