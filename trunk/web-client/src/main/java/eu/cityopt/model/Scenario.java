@@ -127,7 +127,7 @@ public class Scenario implements java.io.Serializable {
 		this.scenid = scenid;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "prjid", nullable = false)
 	public Project getProject() {
 		return this.project;
@@ -251,7 +251,7 @@ public class Scenario implements java.io.Serializable {
 		this.scenariometricses = scenariometricses;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade={CascadeType.REMOVE, CascadeType.PERSIST})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade={CascadeType.REMOVE})
 	public Set<InputParamVal> getInputparamvals() {
 		return this.inputparamvals;
 	}
@@ -278,7 +278,7 @@ public class Scenario implements java.io.Serializable {
 		this.simulationresults = simulationresults;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade={CascadeType.PERSIST})
 	public Set<OptSetScenarios> getOptsetscenarioses() {
 		return this.optsetscenarioses;
 	}

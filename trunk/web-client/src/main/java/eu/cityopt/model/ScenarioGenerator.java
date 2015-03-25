@@ -68,6 +68,23 @@ public class ScenarioGenerator implements java.io.Serializable {
 		this.algoparamvals = algoparamvals;
 		this.scengenobjectivefunctions = scengenobjectivefunctions;
 	}
+	
+	public ScenarioGenerator clone() {
+		ScenarioGenerator c = new ScenarioGenerator();
+		c.scengenid = this.scengenid;
+		c.algorithm = this.algorithm;
+		c.extparamvalset = this.extparamvalset;
+		c.project = this.project;
+		c.status = this.status;
+		c.log = this.log;
+		c.decisionvariables = this.decisionvariables;
+		c.modelparameters = this.modelparameters;
+		c.scengenoptconstraints = this.scengenoptconstraints;
+		c.scenarios = this.scenarios;
+		c.algoparamvals = this.algoparamvals;
+		c.scengenobjectivefunctions = this.scengenobjectivefunctions;
+		return c;
+	}
 
 	@SequenceGenerator(name="scenariogenerator_scengenid_seq",sequenceName="scenariogenerator_scengenid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="scenariogenerator_scengenid_seq")
 	@Id
