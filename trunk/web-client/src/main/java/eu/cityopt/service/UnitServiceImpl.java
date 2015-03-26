@@ -2,6 +2,9 @@ package eu.cityopt.service;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.UnitDTO;
+import eu.cityopt.model.Scenario;
+import eu.cityopt.model.Type;
 import eu.cityopt.model.Unit;
 import eu.cityopt.repository.UnitRepository;
 
@@ -22,6 +27,9 @@ public class UnitServiceImpl implements UnitService {
 	@Autowired
 	private UnitRepository unitRepository;
 	
+	@PersistenceContext
+	private EntityManager em;
+	
 	@Transactional(readOnly=true)
 	public List<UnitDTO> findAll() {
 		return modelMapper.map(unitRepository.findAll(), 
@@ -31,6 +39,8 @@ public class UnitServiceImpl implements UnitService {
 	@Transactional
 	public UnitDTO save(UnitDTO u) {
 		Unit unit = modelMapper.map(u, Unit.class);
+		if(unit.getType() != null)
+			unit.setType(em.getReference(Type.class, u.getType().getTypeid()));
 		unit = unitRepository.save(unit);
 		return modelMapper.map(unit, UnitDTO.class);
 	}
