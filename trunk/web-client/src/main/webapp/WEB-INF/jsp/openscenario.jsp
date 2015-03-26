@@ -26,7 +26,8 @@
 			<table class="tablestyle" width="600" border="1">
 				<col style="width:200px">	
 				<col style="width:50px">
-				<col style="width:300px">
+				<col style="width:250px">
+				<col style="width:50px">
 				<col style="width:50px">
 																									
 				<tr height="20">
@@ -34,6 +35,7 @@
 				    <th>Id</th>
 				    <th>Description</th>
 				    <th>Open</th>
+				    <th>Clone</th>
 				</tr>
 								
 				<c:forEach items="${scenarios}" var="scenario">
@@ -44,6 +46,11 @@
 					<td>
 						<a href="<c:url value='openscenario.html?scenarioid=${scenario.scenid}'/>">
 							<button align="right" type="button" value="Open">Open</button>
+						</a>
+					</td>
+					<td>
+						<a href="<c:url value='clonescenario.html?scenarioid=${scenario.scenid}'/>">
+							<button align="right" type="button" value="Clone">Clone</button>
 						</a>
 					</td>
 			   	</tr>

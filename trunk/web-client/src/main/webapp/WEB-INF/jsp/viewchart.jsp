@@ -24,7 +24,7 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width="20"></td>
-		<td>
+		<td valign="top">
 			<div style="overflow:scroll;height:600px;width:1130px;overflow:auto">
 			<table width="1100px">
 				<col style="width:300px">
@@ -212,7 +212,7 @@
 						</table>
 					</td>
 					<td></td>
-					<td>
+					<td valign="top">
 						<table>
 							<tr>
 								<td valign="top">
