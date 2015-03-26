@@ -6,7 +6,7 @@ import eu.cityopt.model.Type;
 
 public class UnitDTO {
 	@Getter @Setter private int unitid;
-	@Getter @Setter private Type type;
+	@Getter @Setter private TypeDTO type;
 	@Getter @Setter private String name;
 //	@Getter @Setter private Set<ExtParam> extparams = new HashSet<ExtParam>(0);
 //	@Getter @Setter private Set<SearchConstraint> searchconstraints = new HashSet<SearchConstraint>(
