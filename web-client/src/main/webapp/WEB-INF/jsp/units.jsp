@@ -39,20 +39,28 @@
 						    <th>Name</th>
 						    <th>Data reliability</th>
 						    <th>Type</th>
+						    <th>Delete</th>
 						</tr>
 						
+						<c:forEach items="${units}" var="unit">
 						<tr>
-							<td>x</td>
-							<td>x</td>
-							<td>x</td>
-						</tr>
+							<td>${unit.name}</td>
+							<td>
+							</td>
+							<td>
+							</td>
+							<td><a href="<c:url value='deleteunit.html?unitid=${unit.unitid}'/>">
+									<button align="right" type="button" value="Delete">Delete</button>
+								</a>
+							</td>
+					   	</tr>
+						</c:forEach>
 						</table>
 					</td>
 					<td width="20">
 					</td>
-					<td>
-						<a href=""><button>Create unit</button></a><br>
-						<a href=""><button>Delete unit</button></a>
+					<td valign="top">
+						<a href="createunit.html"><button>Create unit</button></a>
 					</td>
 				</tr>
 			</table>

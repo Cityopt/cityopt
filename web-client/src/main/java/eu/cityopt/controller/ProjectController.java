@@ -5,7 +5,9 @@ import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,10 +50,12 @@ import eu.cityopt.DTO.TimeSeriesDTO;
 import eu.cityopt.DTO.TimeSeriesValDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.model.TimeSeriesVal;
+import eu.cityopt.model.Type;
 import eu.cityopt.service.AppUserServiceImpl;
 import eu.cityopt.service.AprosService;
 import eu.cityopt.service.ComponentInputParamDTOServiceImpl;
 import eu.cityopt.service.ComponentServiceImpl;
+import eu.cityopt.service.CopyServiceImpl;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ExtParamServiceImpl;
 import eu.cityopt.service.ExtParamValServiceImpl;
@@ -64,12 +68,14 @@ import eu.cityopt.service.ProjectServiceImpl;
 import eu.cityopt.service.ScenarioServiceImpl;
 import eu.cityopt.service.SimulationResultServiceImpl;
 import eu.cityopt.service.TimeSeriesServiceImpl;
+import eu.cityopt.service.TypeServiceImpl;
 import eu.cityopt.service.UnitServiceImpl;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.BarChartVisualization;
 import eu.cityopt.web.ScatterPlotVisualization;
 import eu.cityopt.web.TimeSeriesVisualization;
+import eu.cityopt.web.UnitForm;
 import eu.cityopt.web.UserSession;
 
 @Controller
@@ -123,6 +129,12 @@ public class ProjectController {
 
 	@Autowired
 	OutputVariableServiceImpl outputVarService;
+	
+	@Autowired
+	TypeServiceImpl typeService;
+
+	@Autowired
+	CopyServiceImpl copyService;
 	
 	@RequestMapping(value="createproject", method=RequestMethod.GET)
 	public String getCreateProject(Map<String, Object> model) {
@@ -313,6 +325,39 @@ public class ProjectController {
 		return "openscenario";
 	}
 
+	@RequestMapping(value="clonescenario",method=RequestMethod.GET)
+	public String getCloneScenario (Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid)
+	{
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		if (scenarioid != null)
+		{
+			ScenarioDTO scenario = null;
+			int nScenarioId = Integer.parseInt(scenarioid);
+			
+			try {
+				scenario = scenarioService.findByID(nScenarioId);
+
+				ScenarioDTO cloneScenario = copyService.copyScenario(nScenarioId, scenario.getName() + " clone", true, false, true, false);
+				scenarioService.save(cloneScenario, project.getPrjid());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+			
+		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
+		model.put("scenarios", scenarios);
+
+		return "openscenario";
+	}
+	
 	@RequestMapping(value="editscenario",method=RequestMethod.GET)
 	public String getEditScenario (Map<String, Object> model) {
 		if (!model.containsKey("project"))
@@ -485,6 +530,57 @@ public class ProjectController {
 		return "units";
 	}
 
+	@RequestMapping(value="createunit", method=RequestMethod.GET)
+	public String getCreateUnit(Model model) {
+
+		UnitForm unitForm = new UnitForm();
+		model.addAttribute("unitForm", unitForm);
+		
+		List<Type> types = typeService.findAll();
+		List<String> typeStrings = new ArrayList<String>();
+		
+		for (int i = 0; i < types.size(); i++)
+		{
+			typeStrings.add(types.get(i).getName());
+		}
+		
+		model.addAttribute("types", typeStrings);
+		
+		return "createunit";
+	}
+
+	@RequestMapping(value="createunit", method=RequestMethod.POST)
+	public String getCreateUnitPost(UnitForm unitForm, Model model) {
+
+		if (unitForm != null)
+		{
+			if (unitForm.getName() != null && unitForm.getType() != null && !unitForm.getName().isEmpty())
+			{
+				UnitDTO newUnit = new UnitDTO();
+				newUnit.setName(unitForm.getName());
+				List<Type> types = typeService.findAll();
+
+				// Find the type
+				for (int i = 0; i < types.size(); i++)
+				{
+					if (types.get(i).getName().equals(unitForm.getType()))
+					{
+						newUnit.setType(types.get(i));
+						break;
+					}
+				}
+				
+				System.out.println("unit " + newUnit.getName() + " type " + newUnit.getType());
+				unitService.save(newUnit);
+			}
+		}
+		
+		List<UnitDTO> units = unitService.findAll();
+		model.addAttribute("units", units);
+		
+		return "units";
+	}
+	
 	@RequestMapping(value="paramreliability", method=RequestMethod.GET)
 	public String getParamReliability(Model model){
 	
@@ -564,7 +660,7 @@ public class ProjectController {
 	}
 	
 	@RequestMapping(value="deleteuser", method=RequestMethod.GET)
-	public String getDeleteUser(Model model, @RequestParam(value="userid") String userid){
+	public String getDeleteUser(Model model, @RequestParam(value="userid") String userid) {
 		int nUserId = Integer.parseInt(userid);
 		
 		if (nUserId >= 0)
@@ -1230,7 +1326,7 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="createmetric", method=RequestMethod.POST)
-	public String getCreateMetricPost(MetricDTO metricForm, Map<String, Object> model){
+	public String getCreateMetricPost(MetricDTO metricForm, Map<String, Object> model) {
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		project = projectService.findByID(project.getPrjid());
 		
@@ -1258,6 +1354,7 @@ public class ProjectController {
 	public String getEditMetric(Model model, @RequestParam(value="metricid", required=true) String metricid) {
 		int nMetricId = Integer.parseInt(metricid);
 		MetricDTO metric = null;
+
 		try {
 			metric = metricService.findByID(nMetricId);
 		} catch (EntityNotFoundException e) {

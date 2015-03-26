@@ -1,4 +1,4 @@
-<table class="menustyle" height=600 align="left">
+<table class="menustyle" height=700 align="left">
 <tr>
 	<td valign="top">
 		<b>Main menu</b>
@@ -190,7 +190,7 @@
 </tr>
 <tr>
 	<td>
-		<a href="units.html">Units definition</a>
+		<a href="units.html">Units</a>
 	</td>
 </tr>
 <tr>
