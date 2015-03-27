@@ -7,7 +7,13 @@ import java.util.function.Function;
 
 import eu.cityopt.sim.eval.ConfigurationException;
 
-
+/**
+ * Properties wrapper with support for typed values and defaults.
+ * Provides accessors for the most common simulation optimisation
+ * algorithm parameters.
+ *
+ * @author Hannu Rummukainen
+ */
 @SuppressWarnings("serial")
 public class AlgorithmParameters extends Properties {
     public static final String KEY_MAX_RUNTIME_MINUTES = "max runtime [minutes]";
@@ -86,11 +92,13 @@ public class AlgorithmParameters extends Properties {
         return (String) parseProperty(key, defaultValue, s -> s, "a string");
     }
 
+    /** Maximum algorithm run time. */
     public Duration getMaxRunTime() throws ConfigurationException {
         double minutes = getDouble(KEY_MAX_RUNTIME_MINUTES, DEFAULT_MAX_RUNTIME_MINUTES);
         return Duration.ofNanos((long) (minutes * 60.0e9));
     }
 
+    /** Maximum number of simulations that may be evaluated in parallel. */
     public int getMaxParallelEvaluations() throws ConfigurationException {
         return getInt(KEY_MAX_PARALLEL_EVALUATIONS,
                 DEFAULT_MAX_PARALLEL_EVALUATIONS);

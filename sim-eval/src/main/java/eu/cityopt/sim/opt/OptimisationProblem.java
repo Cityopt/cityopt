@@ -17,12 +17,11 @@ import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationRunner;
 
-/** The data for a Cityopt optimisation problem.
+/** The data for a simulation optimisation problem.
  * 
  * @author Timo Korvola
  */
 public class OptimisationProblem {
-    public String runName;
     public SimulationModel model;
     public SimulationInput inputConst;
     public List<DecisionVariable> decisionVars = new ArrayList<>();

@@ -17,6 +17,12 @@ import eu.cityopt.sim.eval.DecisionVariable;
 import eu.cityopt.sim.eval.NumericInterval;
 import eu.cityopt.sim.eval.SimulationStorage;
 
+/**
+ * Grid search iterates systematically over all combinations of decision
+ * variable values.
+ *
+ * @author Hannu Rummukainen
+ */
 public class GridSearchOptimiser extends AbstractOptimiser {
     Instant deadline;
     int rangeSplit;

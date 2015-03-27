@@ -8,6 +8,13 @@ import java.util.concurrent.Executor;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.ConfigurationException;
 
+/**
+ * Starts the grid search algorithm.
+ *
+ * @see GridSearchOptimiser
+ *
+ * @author Hannu Rummukainen
+ */
 public class GridSearchAlgorithm implements OptimisationAlgorithm {
 
     @Override

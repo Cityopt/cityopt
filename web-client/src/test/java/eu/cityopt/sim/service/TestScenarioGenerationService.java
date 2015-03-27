@@ -1,15 +1,8 @@
 package eu.cityopt.sim.service;
 
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
-import javax.script.ScriptException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,15 +25,15 @@ import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.repository.AlgorithmRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.service.EntityNotFoundException;
-import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.opt.OptimisationResults;
 import eu.cityopt.sim.opt.Solution;
 
 /**
  * Basic testing for scenario generation.
  *
- * The expected results file plumbing_scengen_result.xml is produced by
- * the drop-ids.xsl script: see TestSimulationService documentation. 
+ * After every test, the database content is dumped to the system %TEMP%
+ * folder: see files *_result.xml.  The expected results files are produced
+ * from these with the XSL script src/test/resources/xslt/drop-ids.xsl. 
  *
  * @author Hannu Rummukainen
  */
@@ -76,9 +69,7 @@ public class TestScenarioGenerationService extends SimulationTestBase {
         dumpTables("plumbing_ga");
     }
 
-    private void runScenarioGeneration(String algorithmName) throws ParseException, IOException,
-            ConfigurationException, InterruptedException,
-            ExecutionException, ScriptException, Exception {
+    private void runScenarioGeneration(String algorithmName) throws Exception {
         ScenarioGenerator scenarioGenerator =
                 scenarioGeneratorRepository.findAll().iterator().next();
         scenarioGenerator.setAlgorithm(findAlgorithm(algorithmName));
