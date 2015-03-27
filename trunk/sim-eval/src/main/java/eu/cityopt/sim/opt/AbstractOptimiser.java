@@ -31,6 +31,14 @@ import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.SimulationStorage;
 
+/**
+ * Algorithm-independent functionality for simulation optimisation:
+ * Handles evaluation of simulations in parallel, given decision variable
+ * values.  For now the class contains only as much functionality as needed
+ * by the grid search algorithm.
+ *
+ * @author Hannu Rummukainen
+ */
 public abstract class AbstractOptimiser implements Runnable {
     protected final Logger logger = LoggerFactory.getLogger(AbstractOptimiser.class);
     protected final OptimisationProblem problem;

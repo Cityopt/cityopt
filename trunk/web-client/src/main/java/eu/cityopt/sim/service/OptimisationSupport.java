@@ -38,6 +38,12 @@ import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationStorage;
 
+/**
+ * Support functions for database optimisation and scenario generation
+ * optimisation.
+ *
+ * @author Hannu Rummukainen
+ */
 @Service
 public class OptimisationSupport {
     private static Logger log = Logger.getLogger(OptimisationSupport.class); 

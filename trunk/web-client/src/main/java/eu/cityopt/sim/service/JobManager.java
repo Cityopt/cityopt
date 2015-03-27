@@ -10,7 +10,9 @@ import java.util.concurrent.Future;
 import org.apache.log4j.Logger;
 
 /**
- * Implementation convenience class for 
+ * Implementation convenience class for managing the set of currently active
+ * simulation and optimisation jobs.
+ * 
  * @author Hannu Rummukainen
  * @param <T>
  */
