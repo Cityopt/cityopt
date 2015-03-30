@@ -39,9 +39,7 @@ public class UnitServiceImpl implements UnitService {
 	@Transactional
 	public UnitDTO save(UnitDTO u) {
 		Unit unit = modelMapper.map(u, Unit.class);
-		if(unit.getType() != null)
-			unit.setType(em.getReference(Type.class, u.getType().getTypeid()));
-		unit = unitRepository.save(unit);
+		unit = em.merge(unit);
 		return modelMapper.map(unit, UnitDTO.class);
 	}
 
