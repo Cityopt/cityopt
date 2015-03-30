@@ -2,6 +2,9 @@ package eu.cityopt.service;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,9 @@ public class ExtParamValServiceImpl implements ExtParamValService {
 	@Autowired
 	private ExtParamValRepository extParamValRepository;
 	
+	@PersistenceContext
+	private EntityManager em;
+	
 	@Transactional(readOnly=true)
 	public List<ExtParamValDTO> findAll() {
 		return modelMapper.map(extParamValRepository.findAll(), 
@@ -30,7 +36,7 @@ public class ExtParamValServiceImpl implements ExtParamValService {
 	@Transactional
 	public ExtParamValDTO save(ExtParamValDTO u) {
 		ExtParamVal eparam = modelMapper.map(u, ExtParamVal.class);
-		eparam = extParamValRepository.save(eparam);
+		eparam = em.merge(eparam);
 		return modelMapper.map(eparam, ExtParamValDTO.class);
 	}
 

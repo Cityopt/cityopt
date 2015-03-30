@@ -12,8 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.reflect.TypeToken;
 
+import eu.cityopt.DTO.OptConstraintDTO;
 import eu.cityopt.DTO.OptimizationSetDTO;
+import eu.cityopt.model.OptConstraint;
 import eu.cityopt.model.OptimizationSet;
+import eu.cityopt.repository.OptSearchConstRepository;
 import eu.cityopt.repository.OptimizationSetRepository;
 
 @Service("OptimizationSetService")
@@ -27,6 +30,9 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 	
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private OptSearchConstRepository optSearchConstRepository;
 	
 	@Transactional(readOnly=true)
 	@Override
@@ -76,6 +82,20 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 		}
 		
 		return modelMapper.map(os, OptimizationSetDTO.class);
+	}
+	
+	@Transactional(readOnly=true)
+	@Override
+	public List<OptConstraintDTO> getSearchConstraints(int optimizationSetId) throws EntityNotFoundException {
+		OptimizationSet os = optimizationSetRepository.findOne(optimizationSetId);
+		
+		if(os == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		List<OptConstraint> osList = optSearchConstRepository.findOptConstraintsforOptSet(os.getOptid());
+		
+		return modelMapper.map(osList, new TypeToken<List<OptConstraintDTO>>() {}.getType());
 	}
 	
 }
