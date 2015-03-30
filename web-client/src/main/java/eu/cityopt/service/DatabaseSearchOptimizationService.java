@@ -9,9 +9,11 @@ import javax.persistence.PersistenceContext;
 import javax.script.ScriptException;
 import javax.transaction.Transactional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.model.OptSetScenarios;
 import eu.cityopt.model.OptimizationSet;
 import eu.cityopt.model.Project;
@@ -19,6 +21,7 @@ import eu.cityopt.model.Scenario;
 import eu.cityopt.repository.OptSetScenariosRepository;
 import eu.cityopt.repository.OptimizationSetRepository;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.sim.eval.ObjectiveStatus;
 import eu.cityopt.sim.service.OptimisationSupport;
 import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
@@ -36,13 +39,35 @@ public class DatabaseSearchOptimizationService {
 	OptSetScenariosRepository optSetScenariosRepository;
 	
 	@Autowired
+	ScenarioRepository scenarioRepository;
+	
+	@Autowired
 	OptimisationSupport optSupport;
+	
+	@Autowired 
+	ModelMapper modelMapper;
 	
 	@PersistenceContext
 	EntityManager em;
 	
+	/**
+	 *  Evaluates search constrains for the chosen project/optimization set. Scenarios 
+			which fulfill those requirements are stored in OptSetScenario. Their objective function 
+			is evaluated and stored under OptSetScenario.value. The result scenario is stored in OptimizationSet (Just one Scenario)
+	 * 
+	 * @param prjId
+	 * 		Defines the Project to optimize
+	 * @param optId
+	 * 		Defines the OptimizationSet to use
+	 * @return
+	 * 		The SearchOptimizationResults, which contain the resulting scenario (if not null) 
+	 * 		and the results of the Constraint Evaluation
+	 * @throws ParseException
+	 * @throws ScriptException
+	 * @throws EntityNotFoundException
+	 */
 	@Transactional
-	public EvaluationResults searchConstEval(int prjId, int optId) throws ParseException, ScriptException, EntityNotFoundException{   	
+	public SearchOptimizationResults searchConstEval(int prjId, int optId) throws ParseException, ScriptException, EntityNotFoundException{   	
 		Project project = projectRepository.findOne(prjId);
 		
 		OptimizationSet optimizationSet = optimizationSetRepository.findOne(optId);
@@ -55,8 +80,9 @@ public class DatabaseSearchOptimizationService {
 		if(optimizationSet.getPrjid() != prjId)
 			throw new InvalidParameterException("optimization set is not part of the project" +optimizationSet);
 		
+		SearchOptimizationResults sor = new SearchOptimizationResults();
 		EvaluationResults er = optSupport.evaluateScenarios(project, optimizationSet);
-		
+		sor.setEvaluationResult(er);
 //		boolean isMax = optimizationSet.getObjectivefunction().getIsmaximise();
 		
 		if(!er.feasible.isEmpty()){
@@ -98,17 +124,17 @@ public class DatabaseSearchOptimizationService {
 				optSetScenariosRepository.save(oss);
 			}
 			//prevScenId is now the optimized scenario: save it
-			Scenario scen = em.getReference(Scenario.class, prevScenId);
+//			Scenario scen = em.getReference(Scenario.class, prevScenId);
+			Scenario scen = scenarioRepository.findOne(prevScenId);
+			sor.setResultScenario(modelMapper.map(scen, ScenarioDTO.class));
 			optimizationSet.setScenario(scen);
 			optimizationSetRepository.save(optimizationSet);
 		}else{
 			//no Scenario is feasible - what now?
 		}	
 		
-		return er;
+		return sor;
 		//System.out.println(er);
 	}
-	
-	
-	
+
 }
