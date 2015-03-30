@@ -44,6 +44,15 @@ public class AlgoParamVal implements java.io.Serializable {
 		this.algoparam = algoparam;
 		this.value = value;
 	}
+	
+	public AlgoParamVal clone() {
+		AlgoParamVal c = new AlgoParamVal();
+		c.aparamvalid = this.aparamvalid;
+		c.scenariogenerator = this.scenariogenerator;
+		c.algoparam = this.algoparam;
+		c.value = this.value;
+		return c;
+	}
 
 	@SequenceGenerator(name="algoparamval_aparamvalid_seq",sequenceName="algoparamval_aparamvalid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="algoparamval_aparamvalid_seq")
 	@Id

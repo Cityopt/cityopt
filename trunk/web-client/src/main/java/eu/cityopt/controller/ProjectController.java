@@ -48,6 +48,7 @@ import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.SimulationResultDTO;
 import eu.cityopt.DTO.TimeSeriesDTO;
 import eu.cityopt.DTO.TimeSeriesValDTO;
+import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.model.Type;
@@ -536,7 +537,7 @@ public class ProjectController {
 		UnitForm unitForm = new UnitForm();
 		model.addAttribute("unitForm", unitForm);
 		
-		List<Type> types = typeService.findAll();
+		List<TypeDTO> types = typeService.findAll();
 		List<String> typeStrings = new ArrayList<String>();
 		
 		for (int i = 0; i < types.size(); i++)
@@ -558,7 +559,7 @@ public class ProjectController {
 			{
 				UnitDTO newUnit = new UnitDTO();
 				newUnit.setName(unitForm.getName());
-				List<Type> types = typeService.findAll();
+				List<TypeDTO> types = typeService.findAll();
 
 				// Find the type
 				for (int i = 0; i < types.size(); i++)

@@ -46,6 +46,16 @@ public class ModelParameter implements java.io.Serializable {
 		this.expression = expression;
 		this.value = value;
 	}
+	
+	public ModelParameter clone() {
+		ModelParameter c = new ModelParameter();
+		c.modelparamid = this.modelparamid;
+		c.inputparameter = this.inputparameter;
+		c.scenariogenerator = this.scenariogenerator;
+		c.expression = this.expression;
+		c.value = this.value;
+		return c;
+	}
 
 	@SequenceGenerator(name="modelparameter_modelparamid_seq",sequenceName="modelparameter_modelparamid_seq") 
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="modelparameter_modelparamid_seq")

@@ -54,6 +54,19 @@ public class OptConstraint implements java.io.Serializable {
 		this.scengenoptconstraints = scengenoptconstraints;
 		this.optsearchconsts = optsearchconsts;
 	}
+	
+	public OptConstraint clone() {
+		OptConstraint c = new OptConstraint();
+		c.optconstid = this.optconstid;
+		c.project = this.project;
+		c.name = this.name;
+		c.expression = this.expression;
+		c.lowerbound = this.lowerbound;
+		c.upperbound = this.upperbound;
+		c.scengenoptconstraints = this.scengenoptconstraints;
+		c.optsearchconsts = this.optsearchconsts;
+		return c;
+	}
 
 	@SequenceGenerator(name="optconstraint_optconstid_seq",sequenceName="optconstraint_optconstid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="optconstraint_optconstid_seq")
 	@Id
