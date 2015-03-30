@@ -25,6 +25,7 @@ Help > Eclipse Marketplace...
 
 - JBoss Tools: web and database development tools (Hibernate)
 
+- Spring Tool Suite
 
 Project Lombok from [http://projectlombok.org/download.html]
 
@@ -151,11 +152,17 @@ To test the user interface manually:
 - *Run As > Run on Server* for the web-client project
 
 
-Deployment
-==========
+Deployment to the server
+========================
 
-To Be Defined
-
+1. Install PostgreSQL database
+2. Run the latest SQL database script
+3. Install Apros
+4. Build WAR file in Eclipse
+	-Right click web-client project and export as WAR file
+5. Copy WAR file to server
+6. Install WAR file in Tomcat
+	-Open Tomcat web manager and upload WAR file
 
 
 [//]: # (List of links for the Markdown processor.)
