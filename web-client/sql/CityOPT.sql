@@ -404,7 +404,8 @@ CREATE TABLE OptimizationSet
 	updatedBy integer,
 	optStart timestamp,
 	scenID integer,
-	extParamValSetID integer
+	extParamValSetID integer,
+	name varchar(50)	
 )
 ;
 
@@ -895,6 +896,9 @@ CREATE INDEX IXFK_OptSearchConst_OptimizationSet ON OptSearchConst (optID ASC)
 
 ALTER TABLE OptSearchConst ADD CONSTRAINT PK_OptSearchConstraints
 	PRIMARY KEY (optSearchConstID)
+;
+
+ALTER TABLE OptSearchConst ADD CONSTRAINT UQ_OptSearchConst_optID_OptConstID UNIQUE (optID,optConstID)
 ;
 
 CREATE INDEX IXFK_optID_02 ON OptSetScenarios (optID ASC)
