@@ -113,7 +113,7 @@ public class TimeSeriesVisualization {
 		
 		if (r instanceof XYLineAndShapeRenderer) {
 			XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
-			renderer.setBaseShapesVisible(true);
+			renderer.setBaseShapesVisible(false);
 			renderer.setBaseShapesFilled(true);
 		}
 		
