@@ -15,6 +15,7 @@ public class OptimizationSetDTO {
 	@Getter @Setter private Date updatedon;
 	@Getter @Setter private Integer createdby;
 	@Getter @Setter private Integer updatedby;
+	@Getter @Setter private String name;
 //	@Getter @Setter private Set<OptSearchConst> optsearchconsts = new HashSet<OptSearchConst>(0);
 
 }

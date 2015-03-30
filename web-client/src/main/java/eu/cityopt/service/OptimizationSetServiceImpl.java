@@ -2,10 +2,17 @@ package eu.cityopt.service;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.reflect.TypeToken;
+
+import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.model.OptimizationSet;
 import eu.cityopt.repository.OptimizationSetRepository;
 
@@ -15,17 +22,30 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 	@Autowired
 	private OptimizationSetRepository optimizationSetRepository;
 	
+	@PersistenceContext
+	private EntityManager em;
+	
+	@Autowired
+	private ModelMapper modelMapper;
+	
 	@Transactional(readOnly=true)
-	public List<OptimizationSet> findAll() {
-		return optimizationSetRepository.findAll();
+	@Override
+	public List<OptimizationSetDTO> findAll() {
+		return modelMapper.map(optimizationSetRepository.findAll(), 
+				new TypeToken<List<OptimizationSetDTO>>() {}.getType());
 	}
 
 	@Transactional
-	public OptimizationSet save(OptimizationSet u) {
-		return optimizationSetRepository.save(u);
+	@Override
+	public OptimizationSetDTO save(OptimizationSetDTO u) {
+		OptimizationSet os = modelMapper.map(u, OptimizationSet.class);
+		em.merge(os);
+		os = optimizationSetRepository.save(os);
+		return modelMapper.map(os, OptimizationSetDTO.class);
 	}
 
 	@Transactional
+	@Override
 	public void delete(int id) throws EntityNotFoundException {
 		
 		if(optimizationSetRepository.findOne(id) == null) {
@@ -36,7 +56,8 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 	}
 	
 	@Transactional
-	public OptimizationSet update(OptimizationSet toUpdate) throws EntityNotFoundException {
+	@Override
+	public OptimizationSetDTO update(OptimizationSetDTO toUpdate) throws EntityNotFoundException {
 		
 		if(optimizationSetRepository.findOne(toUpdate.getOptid()) == null) {
 			throw new EntityNotFoundException();
@@ -46,8 +67,15 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 	}
 	
 	@Transactional(readOnly=true)
-	public OptimizationSet findByID(int id) {
-		return optimizationSetRepository.findOne(id);
+	@Override
+	public OptimizationSetDTO findByID(int id) throws EntityNotFoundException {
+		OptimizationSet os = optimizationSetRepository.findOne(id);
+		
+		if(os == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return modelMapper.map(os, OptimizationSetDTO.class);
 	}
 	
 }
