@@ -156,16 +156,19 @@ public class DatabaseSearchOptimizationTest {
 	}
 	
 	@Test
+	@Rollback
 	@Transactional
 	public void dbSearchOptTestIsMaximise() throws ParseException, ScriptException, 
 			EntityNotFoundException {   
-		
+		long start = System.nanoTime();
 		OptimizationSet os = optimizationSetRepository.findOne(1);
 		ObjectiveFunction of = os.getObjectivefunction();
 		of.setIsmaximise(true);
 		objectiveFunctionRepository.saveAndFlush(of);		
 		
 		dbSearchOptService.searchConstEval(1, 1);
+		
+		System.out.printf("time in millis: " + (System.nanoTime()- start)/1000000);
 		
 		os = optimizationSetRepository.findOne(1);
 		

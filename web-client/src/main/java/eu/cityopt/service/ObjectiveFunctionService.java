@@ -1,7 +1,18 @@
 package eu.cityopt.service;
 
-import eu.cityopt.model.ObjectiveFunction;
+import java.util.Set;
 
-public interface ObjectiveFunctionService extends CityOptService<ObjectiveFunction> {
+import eu.cityopt.DTO.ObjectiveFunctionDTO;
+import eu.cityopt.DTO.OptimizationSetDTO;
+
+public interface ObjectiveFunctionService extends CityOptService<ObjectiveFunctionDTO> {
+
+	ObjectiveFunctionDTO save(ObjectiveFunctionDTO u);
+
+	ObjectiveFunctionDTO update(ObjectiveFunctionDTO toUpdate)
+			throws EntityNotFoundException;
+
+	Set<OptimizationSetDTO> getOptimizationSets(int objectiveFunctionId)
+			throws EntityNotFoundException;
 
 }
