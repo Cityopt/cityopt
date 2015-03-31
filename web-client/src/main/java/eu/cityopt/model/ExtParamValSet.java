@@ -23,6 +23,7 @@ import javax.persistence.Table;
 public class ExtParamValSet implements java.io.Serializable {
 
 	private int extparamvalsetid;
+	private String name;
 	private Set<ScenarioGenerator> scenariogenerators = new HashSet<ScenarioGenerator>(
 			0);
 	private Set<ScenarioMetrics> scenariometricses = new HashSet<ScenarioMetrics>(
@@ -37,11 +38,12 @@ public class ExtParamValSet implements java.io.Serializable {
 		this.extparamvalsetid = extparamvalsetid;
 	}
 
-	public ExtParamValSet(int extparamvalsetid,
+	public ExtParamValSet(int extparamvalsetid, String name,
 			Set<ScenarioGenerator> scenariogenerators,
 			Set<ScenarioMetrics> scenariometricses,
 			Set<ExtParamValSetComp> extparamvalsetcomps) {
 		this.extparamvalsetid = extparamvalsetid;
+		this.name = name;
 		this.scenariogenerators = scenariogenerators;
 		this.scenariometricses = scenariometricses;
 		this.extparamvalsetcomps = extparamvalsetcomps;
@@ -56,6 +58,15 @@ public class ExtParamValSet implements java.io.Serializable {
 
 	public void setExtparamvalsetid(int extparamvalsetid) {
 		this.extparamvalsetid = extparamvalsetid;
+	}
+	
+	@Column(name = "name", length = 50)
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "extparamvalset")

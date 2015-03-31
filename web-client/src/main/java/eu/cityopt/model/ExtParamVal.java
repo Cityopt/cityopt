@@ -29,6 +29,7 @@ public class ExtParamVal implements java.io.Serializable {
 	private TimeSeries timeseries;
 	private ExtParam extparam;
 	private String value;
+	private String comment;
 	private Set<ExtParamValSetComp> extparamvalsetcomps = new HashSet<ExtParamValSetComp>(
 			0);
 
@@ -40,12 +41,13 @@ public class ExtParamVal implements java.io.Serializable {
 	}
 
 	public ExtParamVal(int extparamvalid, ExtParam extparam,
-			TimeSeries timeseries, String value,
+			TimeSeries timeseries, String value, String comment,
 			Set<ExtParamValSetComp> extparamvalsetcomps) {
 		this.extparamvalid = extparamvalid;
 		this.extparam = extparam;
 		this.timeseries = timeseries;
 		this.value = value;
+		this.comment = comment;
 		this.extparamvalsetcomps = extparamvalsetcomps;
 	}
 	
@@ -55,6 +57,7 @@ public class ExtParamVal implements java.io.Serializable {
 		c.extparam = this.extparam;
 		c.timeseries = this.timeseries;
 		c.value = this.value;
+		c.comment = this.comment;
 		c.extparamvalsetcomps = this.extparamvalsetcomps;
 		return c;
 	}
@@ -98,6 +101,15 @@ public class ExtParamVal implements java.io.Serializable {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	@Column(name = "comment")
+	public String getComment() {
+		return this.comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "extparamval", cascade=CascadeType.REMOVE)
