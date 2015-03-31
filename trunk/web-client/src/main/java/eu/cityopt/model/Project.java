@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -56,6 +54,8 @@ public class Project implements java.io.Serializable {
 	private Set<UserGroupProject> usergroupprojects = new HashSet<UserGroupProject>(
 			0);
 	private Set<ExtParam> extparams = new HashSet<ExtParam>(0);
+	private Set<OptimizationSet> optimizationsets = new HashSet<OptimizationSet>(
+			0);
 
 	public Project() {
 	}
@@ -71,12 +71,11 @@ public class Project implements java.io.Serializable {
 			Integer updatedby, Set<ObjectiveFunction> objectivefunctions,
 			Set<Scenario> scenarios, Set<ScenarioGenerator> scenariogenerators,
 			List<Component> components, Set<OptConstraint> optconstraints,
-			Set<Metric> metrics,
-			Set<UserGroupProject> usergroupprojects, Set<ExtParam> extparams) {
+			Set<Metric> metrics, Set<UserGroupProject> usergroupprojects, 
+			Set<ExtParam> extparams, Set<OptimizationSet> optimizationsets) {
 		this.prjid = prjid;
 		this.simulationmodel = simulationmodel;
 		this.name = name;
-		this.description = description;
 		this.designtarget = designtarget;
 		this.timehorizon = timehorizon;
 		this.location = location;
@@ -84,6 +83,7 @@ public class Project implements java.io.Serializable {
 		this.updatedon = updatedon;
 		this.createdby = createdby;
 		this.updatedby = updatedby;
+		this.description = description;
 		this.objectivefunctions = objectivefunctions;
 		this.scenarios = scenarios;
 		this.scenariogenerators = scenariogenerators;
@@ -92,6 +92,7 @@ public class Project implements java.io.Serializable {
 		this.metrics = metrics;
 		this.usergroupprojects = usergroupprojects;
 		this.extparams = extparams;
+		this.optimizationsets = optimizationsets;
 	}
 	
 	public Project clone() {
@@ -115,6 +116,7 @@ public class Project implements java.io.Serializable {
 		c.metrics = this.metrics;
 		c.usergroupprojects = this.usergroupprojects;
 		c.extparams = this.extparams;
+		c.optimizationsets = this.optimizationsets;
 		return c;
 	}
 
@@ -297,4 +299,12 @@ public class Project implements java.io.Serializable {
 		this.extparams = extparams;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+	public Set<OptimizationSet> getOptimizationsets() {
+		return this.optimizationsets;
+	}
+
+	public void setOptimizationsets(Set<OptimizationSet> optimizationsets) {
+		this.optimizationsets = optimizationsets;
+	}
 }

@@ -45,7 +45,9 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 	@Override
 	public OptimizationSetDTO save(OptimizationSetDTO u) {
 		OptimizationSet os = modelMapper.map(u, OptimizationSet.class);
-		em.merge(os);
+//		os.getProject().setName("prj name before merge");
+//		os = em.merge(os);
+//		os.getProject().setName("prj name after merge");
 		os = optimizationSetRepository.save(os);
 		return modelMapper.map(os, OptimizationSetDTO.class);
 	}
