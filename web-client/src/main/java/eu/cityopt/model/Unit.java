@@ -62,7 +62,7 @@ public class Unit implements java.io.Serializable {
 		this.unitid = unitid;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade={CascadeType.MERGE, CascadeType.PERSIST})
+	@ManyToOne(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST})
 	@JoinColumn(name = "typeid")
 	public Type getType() {
 		return this.type;

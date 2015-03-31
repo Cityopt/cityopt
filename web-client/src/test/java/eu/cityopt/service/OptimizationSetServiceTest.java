@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -19,6 +20,8 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.DTO.OptConstraintDTO;
+import eu.cityopt.DTO.OptimizationSetDTO;
+import eu.cityopt.DTO.ProjectDTO;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,8 +36,11 @@ public class OptimizationSetServiceTest {
 	@Autowired
 	OptimizationSetService optimizationSetService; 
 	
+	@Autowired
+	ProjectService projectService; 
+	
 	@Test
-	public void test() throws EntityNotFoundException {
+	public void testGetSearchConstraints() throws EntityNotFoundException {
 		List<OptConstraintDTO> optConst = optimizationSetService.getSearchConstraints(1);
 
 		boolean cont1 = false;
@@ -51,5 +57,32 @@ public class OptimizationSetServiceTest {
 		assertTrue(cont1 && cont2 && cont3);
 		assertEquals(7, optConst.size());
 	}
+	
+	@Test
+//	@Rollback(false)
+	public void testSaveOptimizationSet() throws EntityNotFoundException {
+		ProjectDTO project = projectService.findByID(1);
+		Integer sizeBefore = optimizationSetService.findAll().size();
 
+		OptimizationSetDTO testSet = new OptimizationSetDTO();
+		testSet.setProject(project);
+		testSet.setName("my first optset");
+		
+		testSet = optimizationSetService.save(testSet);
+
+//		optimizationSetService.findByID(id)
+		assertEquals(sizeBefore + 1, optimizationSetService.findAll().size());
+	}
+
+	@Test
+//	@Rollback(false)
+	public void testUpdateOptimizationSet() throws EntityNotFoundException {
+		
+		OptimizationSetDTO testSet = optimizationSetService.findByID(1);
+		testSet.setName("my first optset");
+		testSet.getProject().setDescription("asdf");
+		testSet = optimizationSetService.save(testSet);
+		
+		assertEquals(testSet.getName(), optimizationSetService.findByID(1).getName());
+	}
 }

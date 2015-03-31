@@ -9,7 +9,7 @@ import lombok.Setter;
 //@DomainClass("eu.cityopt.model.Project")
 public class ProjectDTO {
 		//@MappedBy(readOnly = true)
-		@Getter @Setter private int Prjid;
+		@Getter @Setter private int prjid;
 		@Getter @Setter private String name;
 		@Getter @Setter private String location;
 		//@NotMapped

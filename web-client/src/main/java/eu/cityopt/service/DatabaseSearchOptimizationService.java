@@ -77,7 +77,7 @@ public class DatabaseSearchOptimizationService {
 		if(optimizationSet == null)
 			throw new EntityNotFoundException("could not find optId: "+ optId);
 		
-		if(optimizationSet.getPrjid() != prjId)
+		if(optimizationSet.getProject().getPrjid() != prjId)
 			throw new InvalidParameterException("optimization set is not part of the project" +optimizationSet);
 		
 		SearchOptimizationResults sor = new SearchOptimizationResults();
