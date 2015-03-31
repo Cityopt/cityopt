@@ -31,8 +31,8 @@ public class OptimizationSet implements java.io.Serializable {
 	private int optid;
 	private ExtParamValSet extparamvalset;
 	private ObjectiveFunction objectivefunction;
+	private Project project;
 	private Scenario scenario;
-	private Integer prjid;
 	private Date createdon;
 	private Date updatedon;
 	private Integer createdby;
@@ -46,12 +46,13 @@ public class OptimizationSet implements java.io.Serializable {
 	public OptimizationSet() {
 	}
 
-	public OptimizationSet(int optid) {
+	public OptimizationSet(int optid, Project project) {
 		this.optid = optid;
+		this.project = project;
 	}
 
 	public OptimizationSet(int optid, ExtParamValSet extparamvalset,
-			ObjectiveFunction objectivefunction, Scenario scenario,
+			ObjectiveFunction objectivefunction, Project project, Scenario scenario,
 			Integer prjid, Date createdon, Date updatedon, Integer createdby,
 			Integer updatedby, Date optstart, String name,
 			Set<OptSetScenarios> optsetscenarioses,
@@ -59,8 +60,8 @@ public class OptimizationSet implements java.io.Serializable {
 		this.optid = optid;
 		this.extparamvalset = extparamvalset;
 		this.objectivefunction = objectivefunction;
+		this.project = project;
 		this.scenario = scenario;
-		this.prjid = prjid;
 		this.createdon = createdon;
 		this.updatedon = updatedon;
 		this.createdby = createdby;
@@ -77,7 +78,7 @@ public class OptimizationSet implements java.io.Serializable {
 		c.extparamvalset = this.extparamvalset;
 		c.objectivefunction = this.objectivefunction;
 		c.scenario = this.scenario;
-		c.prjid = this.prjid;
+		c.project = this.project;
 		c.createdon = this.createdon;
 		c.updatedon = this.updatedon;
 		c.createdby = this.createdby;
@@ -130,13 +131,14 @@ public class OptimizationSet implements java.io.Serializable {
 		this.scenario = scenario;
 	}
 
-	@Column(name = "prjid")
-	public Integer getPrjid() {
-		return this.prjid;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "prjid", nullable = false)
+	public Project getProject() {
+		return this.project;
 	}
 
-	public void setPrjid(Integer prjid) {
-		this.prjid = prjid;
+	public void setProject(Project project) {
+		this.project = project;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

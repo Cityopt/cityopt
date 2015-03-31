@@ -108,7 +108,7 @@ public class ObjectiveFunction implements java.io.Serializable {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "prjid")
+	@JoinColumn(name = "prjid", nullable = false)
 	public Project getProject() {
 		return this.project;
 	}

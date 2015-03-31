@@ -83,7 +83,7 @@ public class Metric implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST})
-	@JoinColumn(name = "prjid")
+	@JoinColumn(name = "prjid", nullable = false)
 	public Project getProject() {
 		return this.project;
 	}
