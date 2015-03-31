@@ -82,9 +82,6 @@ DROP SEQUENCE IF EXISTS scengenobjectivefunction_sgobfunctionid_seq
 DROP SEQUENCE IF EXISTS scengenoptconstraint_sgoptconstraintid_seq
 ;
 
-DROP SEQUENCE IF EXISTS searchconstraint_scid_seq
-;
-
 DROP SEQUENCE IF EXISTS simulationmodel_modelid_seq
 ;
 
@@ -193,9 +190,6 @@ DROP TABLE IF EXISTS ScenGenObjectiveFunction CASCADE
 DROP TABLE IF EXISTS ScenGenOptConstraint CASCADE
 ;
 
-DROP TABLE IF EXISTS SearchConstraint CASCADE
-;
-
 DROP TABLE IF EXISTS SimulationModel CASCADE
 ;
 
@@ -297,13 +291,15 @@ CREATE TABLE ExtParamVal
 	extParamValID integer NOT NULL DEFAULT nextval(('extparamval_extparamvalid_seq'::text)::regclass),
 	extParamID integer,
 	value text,
+	comment text,
 	tSeriesID integer
 )
 ;
 
 CREATE TABLE ExtParamValSet
 (
-	extParamValSetID integer NOT NULL DEFAULT nextval(('extparamvalset_extparamvalsetid_seq'::text)::regclass)
+	extParamValSetID integer NOT NULL DEFAULT nextval(('extparamvalset_extparamvalsetid_seq'::text)::regclass),
+	name varchar(50)	
 )
 ;
 
@@ -343,7 +339,7 @@ CREATE TABLE InputParamVal
 CREATE TABLE Metric
 (
 	metID integer NOT NULL DEFAULT nextval(('metric_metid_seq'::text)::regclass),
-	prjID integer,
+	prjID integer NOT NULL,
 	unitID integer,
 	name varchar(50)	,
 	expression text
@@ -373,7 +369,7 @@ CREATE TABLE ModelParameter
 CREATE TABLE ObjectiveFunction
 (
 	obtFunctionID integer NOT NULL DEFAULT nextval(('objectivefunction_obtfunctionid_seq'::text)::regclass),
-	prjID integer,
+	prjID integer NOT NULL,
 	typeID integer,
 	name varchar(50)	,
 	expression text,
@@ -396,7 +392,7 @@ CREATE TABLE OptConstraint
 CREATE TABLE OptimizationSet
 (
 	optID integer NOT NULL DEFAULT nextval(('optimizationset_optid_seq'::text)::regclass),
-	prjID integer,
+	prjID integer NOT NULL,
 	optFunctionID integer,
 	createdOn timestamp,
 	updatedOn timestamp,
@@ -881,6 +877,9 @@ CREATE INDEX IXFK_OptimizationSet_ExtParamValSet ON OptimizationSet (extParamVal
 CREATE INDEX IXFK_OptimizationSet_ObjectiveFunction ON OptimizationSet (optFunctionID ASC)
 ;
 
+CREATE INDEX IXFK_OptimizationSet_Project ON OptimizationSet (prjID ASC)
+;
+
 CREATE INDEX IXFK_OptimizationSet_Scenario ON OptimizationSet (scenID ASC)
 ;
 
@@ -1193,6 +1192,10 @@ ALTER TABLE OptimizationSet ADD CONSTRAINT FK_OptimizationSet_ObjectiveFunction
 
 ALTER TABLE OptimizationSet ADD CONSTRAINT FK_OptimizationSet_Scenario
 	FOREIGN KEY (scenID) REFERENCES Scenario (scenID) ON DELETE No Action ON UPDATE No Action
+;
+
+ALTER TABLE OptimizationSet ADD CONSTRAINT FK_OptimizationSet_Project
+	FOREIGN KEY (prjID) REFERENCES Project (prjID) ON DELETE No Action ON UPDATE No Action
 ;
 
 ALTER TABLE OptSearchConst ADD CONSTRAINT FK_OptSearchConst_OptimizationSet
