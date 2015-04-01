@@ -53,6 +53,11 @@
 			<artifactId>sim-eval</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 	<parent>
 		<groupId>eu.cityopt</groupId>
