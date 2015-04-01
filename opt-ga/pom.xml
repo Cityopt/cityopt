@@ -65,8 +65,16 @@
 			<version>1</version>
 		</dependency>
 	    <dependency>
+	    	<groupId>com.google.guava</groupId>
+	    	<artifactId>guava</artifactId>
+	    </dependency>
+	    <dependency>
 	    	<groupId>org.slf4j</groupId>
-	    	<artifactId>slf4j-log4j12</artifactId>
+	    	<artifactId>slf4j-api</artifactId>
+	    </dependency>
+	    <dependency>
+	    	<groupId>org.slf4j</groupId>
+	    	<artifactId>slf4j-simple</artifactId>
 	    </dependency>
 	</dependencies>
 	<parent>
