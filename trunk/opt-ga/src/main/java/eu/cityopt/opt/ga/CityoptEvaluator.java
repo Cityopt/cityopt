@@ -33,7 +33,6 @@ import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.ScenarioNameFormat;
-import eu.cityopt.sim.opt.SimpleScenarioNameFormat;
 
 /**
  * The Cityopt evaluator for Opt4J.
