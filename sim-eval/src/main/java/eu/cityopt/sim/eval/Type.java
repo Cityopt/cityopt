@@ -309,7 +309,8 @@ public enum Type {
 
     /**
      * List of integers.
-     * <br>Compatible value types: List<Integer>, List<Short>, List<Byte>.
+     * <br>Compatible value types: {@code List<Integer>}, {@code List<Short>},
+     * {@code List<Byte>}.
      * <br>User text representation: a bracketed comma-separated list of
      * decimal integers.
      * <br>Python type: list of int.
@@ -353,7 +354,8 @@ public enum Type {
 
     /**
      * List of double precision floating point numbers.
-     * <br>Compatible value types: List<Double>, List<? extends Number>.
+     * <br>Compatible value types: {@code List<Double>},
+     * {@code List<? extends Number>}.
      * <br>User text representation: a bracketed comma-separated list of
      * decimal numbers.
      * <br>Python type: list of float or int.
@@ -397,7 +399,8 @@ public enum Type {
 
     /**
      * List of time stamps.
-     * <br>Compatible value types: List<Double>, List<? extends Number>.
+     * <br>Compatible value types: {@code List<Double>},
+     * {@code List<? extends Number>}.
      * The values are in simulation time, i.e. seconds from the time origin
      * of the simulation model.
      * <br>User text representation: a bracketed comma-separated list of quoted
