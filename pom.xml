@@ -25,6 +25,10 @@
                                 <additionalparam>-Xdoclint:none</additionalparam>
                         </configuration>
                 </plugin>
+                <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.10</version>
+                </plugin>
         </plugins>
   </build>
   <name>Cityopt planning application</name>
