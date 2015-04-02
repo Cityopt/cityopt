@@ -76,6 +76,7 @@ public class JacksonBinder {
     })
     public abstract static class Item {
         public Kind kind;
+        public String name;
 
         /**
          * Add this item to a {@link Namespace}.
@@ -90,8 +91,6 @@ public class JacksonBinder {
     }
     
     public abstract static class Var extends Item {
-        @JsonProperty("variable")
-        public String var;
         public Type type;
         
         public String getType() {return type.name;}
@@ -108,7 +107,7 @@ public class JacksonBinder {
 
         @Override
         public void addToNamespace(Namespace ns) {
-            ns.externals.put(var, type);
+            ns.externals.put(name, type);
         }
 
         @Override
@@ -117,7 +116,7 @@ public class JacksonBinder {
             ExternalParameters ext = prob.inputConst.getExternalParameters();
             if (type.isTimeSeriesType())
                 return; // Not supported.
-            ext.putString(var, value);
+            ext.putString(name, value);
         }
     }
     
@@ -128,7 +127,7 @@ public class JacksonBinder {
 
         @Override
         public void addToNamespace(Namespace ns) {
-            ns.getOrNew(comp).inputs.put(var, type);
+            ns.getOrNew(comp).inputs.put(name, type);
         }
 
         @Override
@@ -138,12 +137,12 @@ public class JacksonBinder {
             if (!(value == null ^ expr == null))
                 throw new IllegalArgumentException(String.format(
                         "Either value or expr (not both) must be present"
-                                + " on input %s,%s", comp, var));
+                                + " on input %s,%s", comp, name));
             if (value != null) {
-                prob.inputConst.putString(comp, var, value);
+                prob.inputConst.putString(comp, name, value);
             } else {
                 prob.inputExprs.add(new InputExpression(
-                        comp, var, expr, ns.evaluator));
+                        comp, name, expr, ns.evaluator));
             }
         }
     }
@@ -151,7 +150,7 @@ public class JacksonBinder {
     public static class Output extends CompVar {
         @Override
         public void addToNamespace(Namespace ns) {
-            ns.getOrNew(comp).outputs.put(var, type);
+            ns.getOrNew(comp).outputs.put(name, type);
         }
 
         @Override
@@ -164,7 +163,7 @@ public class JacksonBinder {
         @Override
         public void addToNamespace(Namespace ns) {
             (comp == null ? ns.decisions : ns.getOrNew(comp).decisions)
-                    .put(var, type);
+                    .put(name, type);
         }
 
         @Override
@@ -183,7 +182,7 @@ public class JacksonBinder {
                                (Double)lb, (Double)ub)
                        : NumericInterval.makeIntInterval(
                                (Integer)lb, (Integer)ub));
-                prob.decisionVars.add(new DecisionVariable(comp, var, dom));
+                prob.decisionVars.add(new DecisionVariable(comp, name, dom));
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -197,7 +196,7 @@ public class JacksonBinder {
 
         @Override
         public void addToNamespace(Namespace ns) {
-            ns.metrics.put(var, type);
+            ns.metrics.put(name, type);
         }
 
         @Override
@@ -207,7 +206,7 @@ public class JacksonBinder {
             if (expression == null)
                 throw new IllegalArgumentException("Missing expression");
             prob.metrics.add(new MetricExpression(
-                    prob.metrics.size(), var, expression, ns.evaluator));
+                    prob.metrics.size(), name, expression, ns.evaluator));
         } 
     }
     
@@ -228,9 +227,8 @@ public class JacksonBinder {
                                         : Double.NEGATIVE_INFINITY),
                     ub = (upper != null ? Double.valueOf(upper)
                                         : Double.POSITIVE_INFINITY);
-                String id = "con" + prob.constraints.size();
                 prob.constraints.add(new Constraint(
-                        id, expression, lb, ub,
+                        name, expression, lb, ub,
                         prob.getNamespace().evaluator));
             }
         }
@@ -252,9 +250,8 @@ public class JacksonBinder {
             if (is_max == null)
                 throw new IllegalArgumentException(
                         "Invalid objective type " + type);
-            String id = "obj" + prob.objectives.size(); 
             prob.objectives.add(new ObjectiveExpression(
-                    id, expression, is_max,
+                    name, expression, is_max,
                     prob.getNamespace().evaluator));
 
         }
