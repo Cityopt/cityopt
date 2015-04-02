@@ -6,6 +6,8 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -95,11 +97,27 @@ public class JacksonBinder {
         
         public String getType() {return type.name;}
         public void setType(String name) {type = Type.getByName(name);}
+        
+        protected void addToNSMap(Map<String, Type> map) {
+            addToNSMap(map, name);
+        }
+        protected void addToNSMap(Map<String, Type> map, String dname) {
+            if (map.putIfAbsent(name, type) != null) {
+                throw new IllegalArgumentException(
+                        "duplicate " + kind + " name " + dname);
+            }
+        }
     }
-    
+   
     public abstract static class CompVar extends Var {
         @JsonProperty("component")
         public String comp;
+        
+        protected void addToNSComp(
+                Namespace ns,
+                Function<Namespace.Component, Map<String, Type>> getMap) {
+            addToNSMap(getMap.apply(ns.getOrNew(comp)), "comp." + name);
+        }
     }
     
     public static class ExtParam extends Var {
@@ -107,7 +125,7 @@ public class JacksonBinder {
 
         @Override
         public void addToNamespace(Namespace ns) {
-            ns.externals.put(name, type);
+            addToNSMap(ns.externals, name);
         }
 
         @Override
@@ -127,7 +145,7 @@ public class JacksonBinder {
 
         @Override
         public void addToNamespace(Namespace ns) {
-            ns.getOrNew(comp).inputs.put(name, type);
+            addToNSComp(ns, c -> c.inputs);
         }
 
         @Override
@@ -150,7 +168,7 @@ public class JacksonBinder {
     public static class Output extends CompVar {
         @Override
         public void addToNamespace(Namespace ns) {
-            ns.getOrNew(comp).outputs.put(name, type);
+            addToNSComp(ns, c -> c.outputs);
         }
 
         @Override
@@ -162,8 +180,11 @@ public class JacksonBinder {
 
         @Override
         public void addToNamespace(Namespace ns) {
-            (comp == null ? ns.decisions : ns.getOrNew(comp).decisions)
-                    .put(name, type);
+            if (comp != null) {
+                addToNSComp(ns, c -> c.decisions);
+            } else {
+                addToNSMap(ns.decisions);
+            }
         }
 
         @Override
@@ -196,7 +217,7 @@ public class JacksonBinder {
 
         @Override
         public void addToNamespace(Namespace ns) {
-            ns.metrics.put(name, type);
+            addToNSMap(ns.metrics);
         }
 
         @Override
