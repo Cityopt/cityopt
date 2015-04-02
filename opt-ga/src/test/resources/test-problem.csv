@@ -1,4 +1,4 @@
-kind,component,variable,type,value,lower,upper,expression
+kind,component,name,type,value,lower,upper,expression
 ext,,fuel_cost,Double,1,,,
 ext,,x,Double,100,,,
 in,CITYOPT,simulation_end,Timestamp,2015-06-27T00:00:00Z,,,
@@ -22,5 +22,5 @@ met,,fuelconsumption,Double,,,,FUEL_CONSUMPTION.MULTIPLYER_OUTPUT.values[-1]
 met,,fuelcost,Double,,,,"integrate(fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"
 dv,,panels,Double,,0,20,
 dv,,collectors,Double,,0,20,
-con,,,,,,20,panels + collectors
-obj,,,min,,,,fuelconsumption
+con,,roof_space,,,,20,panels + collectors
+obj,,fuelconsumption,min,,,,fuelconsumption

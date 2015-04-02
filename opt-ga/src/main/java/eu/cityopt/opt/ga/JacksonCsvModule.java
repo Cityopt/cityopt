@@ -97,7 +97,7 @@ public class JacksonCsvModule extends AbstractModule {
          */
         CsvSchema sch = CsvSchema.builder()
                 .addColumn("kind").addColumn("component")
-                .addColumn("variable").addColumn("type").addColumn("value")
+                .addColumn("name").addColumn("type").addColumn("value")
                 .addColumn("lower").addColumn("upper").addColumn("expression")
                 .build().withHeader();
         return mapper.writer(sch);
