@@ -14,9 +14,11 @@ import java.util.List;
 import java.util.Properties;
 
 import org.junit.*;
+import org.junit.rules.ExpectedException;
 import org.opt4j.core.start.Opt4JTask;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -37,6 +39,9 @@ public class JacksonTest {
     private final static String propsName = "/test.properties";
     private static Properties props;
     private static Path dataDir;
+    
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
     
     public static class TestModule extends AbstractModule {
         Instant t0 = Instant.parse(props.getProperty("time_origin"));
@@ -82,6 +87,20 @@ public class JacksonTest {
         assertEquals(2, p.inputExprs.size());
         assertEquals(2, p.metrics.size());
         assertEquals(1, p.objectives.size());
+    }
+    
+    @Test
+    public void testNameClash() throws Exception {
+        TestModule tm = new TestModule();
+        ObjectMapper json = new ObjectMapper();
+        json.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
+        String row
+            = "{'kind': 'ext', 'name': 'foo', 'type': 'Double', 'value': '1'}";
+        JacksonBinder binder = json.readValue(
+                String.format("[%s, %s]", row, row), JacksonBinder.class);
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("duplicate");
+        binder.makeNamespace(tm.t0);
     }
 
     @Test
