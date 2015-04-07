@@ -35,13 +35,13 @@ public class TypeRepositoryTest {
 	
 	@Test
 	public void findByNameLike() {
-		List<Type> types = typeRepository.findByNameLike("Double");
+		Type type = typeRepository.findByNameLike("Double");
 
-		assertEquals(1, types.size());
+		assertNotNull(type);
 		
-		types = typeRepository.findByNameLike("double");
+		type = typeRepository.findByNameLike("double");
 
-		assertEquals(0, types.size());		
+		assertNull(type);		
 	}
 
 	@Test

@@ -15,9 +15,9 @@ public interface TypeRepository extends JpaRepository<Type, Integer> {
 	 * @param searchTerm
 	 * the search term
 	 * @return
-	 * Types which exactly match the search term
+	 * Type which exactly matches the search term. Can only be one, because of unique constraint
 	 */
-	List<Type> findByNameLike(String searchTerm);
+	Type findByNameLike(String searchTerm);
 	
 	/**
 	 * @param searchTerm

@@ -14,9 +14,9 @@ public interface UnitRepository extends JpaRepository<Unit, Integer> {
 	 * @param searchTerm
 	 * the search term
 	 * @return
-	 * Units which exactly match the search term
+	 * Unit which exactly match the search term. Can only be one, because of unique constraint
 	 */
-	List<Unit> findByNameLike(String searchTerm);
+	Unit findByNameLike(String searchTerm);
 	
 	/**
 	 * @param searchTerm
