@@ -292,8 +292,8 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                         Type simType = nsComponent.outputs.get(outputName);
                         if (simType != null) {
                             TimeSeriesI simTS = simResults.getTS(componentName, outputName);
+                            eu.cityopt.model.Type type = typeRepository.findByNameLike(simType.name);
                             if (simTS != null) {
-                                eu.cityopt.model.Type type = findType(simType);
                                 TimeSeries timeSeries =
                                         saveTimeSeries(simTS, type, namespace.timeOrigin, idUpdates);
 
@@ -391,10 +391,10 @@ public class DbSimulationStorage implements DbSimulationStorageI {
             String extName = extParam.getName();
             Type simType = namespace.externals.get(extName);
             if (simType != null) {
+                eu.cityopt.model.Type type = typeRepository.findByNameLike(simType.name);
                 ExtParamVal extParamVal = new ExtParamVal();
                 extParamVal.setExtparam(extParam);
                 if (simType.isTimeSeriesType()) {
-                    eu.cityopt.model.Type type = findType(simType);
                     TimeSeries timeSeries = saveTimeSeries(
                             simExternals.getTS(extName), type,
                             namespace.timeOrigin, idUpdateList);
@@ -423,15 +423,6 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         extParamValSetRepository.save(extParamValSet);
         idUpdateList.add(
                 () -> simExternals.setExternalId(extParamValSet.getExtparamvalsetid()));
-    }
-
-    eu.cityopt.model.Type findType(Type simType) {
-        for (eu.cityopt.model.Type type : typeRepository.findAll()) {
-            if (type.getName().equalsIgnoreCase(simType.name)) {
-                return type;
-            }
-        }
-        return null;
     }
 
     TimeSeries saveTimeSeries(TimeSeriesI simTS, eu.cityopt.model.Type type,
