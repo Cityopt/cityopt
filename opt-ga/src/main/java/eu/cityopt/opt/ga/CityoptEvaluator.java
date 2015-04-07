@@ -21,6 +21,7 @@ import org.opt4j.core.problem.Evaluator;
 import com.google.inject.Inject;
 
 import eu.cityopt.sim.eval.ConfigurationException;
+import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.ConstraintContext;
 import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.MetricValues;
@@ -138,7 +139,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
             Objectives obj = toObjectives(post);
             for (int i = 0; i != problem.objectives.size(); ++i) {
                 ObjectiveExpression o = problem.objectives.get(i);
-                obj.add(o.getName(), o.isMaximize() ? Sign.MAX : Sign.MIN,
+                obj.add(getOName(o), o.isMaximize() ? Sign.MAX : Sign.MIN,
                         ost.objectiveValues[i]);
             }
             return obj;
@@ -157,7 +158,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     private Objectives toObjectives(ConstraintStatus st) {
         Objectives obj = new Objectives();
         for (int i = 0; i != problem.constraints.size(); ++i) {
-            String name = problem.constraints.get(i).getName();
+            String name = getOName(problem.constraints.get(i));
             double infeas = st.infeasibilities[i];
             if (Double.isNaN(infeas)) {
                 obj.add(name, Sign.MIN, null);
@@ -171,9 +172,17 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     private Objectives infeasibleObj(ConstraintStatus st) {
         Objectives obj = toObjectives(st);
         for (ObjectiveExpression o : problem.objectives) {
-            obj.add(o.getName(), o.isMaximize() ? Sign.MAX : Sign.MIN, null);
+            obj.add(getOName(o), o.isMaximize() ? Sign.MAX : Sign.MIN, null);
         }
         return obj;
+    }
+    
+    private String getOName(Constraint c) {
+        return "C" + c.getName();
+    }
+    
+    private String getOName(ObjectiveExpression o) {
+        return "O" + o.getName();
     }
 
     @Override
