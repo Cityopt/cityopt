@@ -95,11 +95,26 @@ public class JacksonTest {
         ObjectMapper json = new ObjectMapper();
         json.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
         String row
-            = "{'kind': 'ext', 'name': 'foo', 'type': 'Double', 'value': '1'}";
+            = "{'kind': 'obj', 'name': 'foo', 'type': 'min',"
+            + " 'expression': '1'}";
         JacksonBinder binder = json.readValue(
                 String.format("[%s, %s]", row, row), JacksonBinder.class);
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("duplicate");
+        binder.makeNamespace(tm.t0);
+    }
+    
+    @Test
+    public void testNoClash() throws Exception {
+        TestModule tm = new TestModule();
+        ObjectMapper json = new ObjectMapper();
+        json.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
+        String rowf
+            = "{'kind': 'in', 'component': '%s', 'name': 'var',"
+            + " 'type': 'Double', 'value': '1'}";
+        String rowsf = String.format("[%s, %s]", rowf, rowf);
+        JacksonBinder binder = json.readValue(
+                String.format(rowsf, "c1", "c2"), JacksonBinder.class);
         binder.makeNamespace(tm.t0);
     }
 

@@ -5,8 +5,11 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 import javax.inject.Inject;
@@ -90,6 +93,16 @@ public class JacksonBinder {
          */
         public abstract void addToProblem(OptimisationProblem prob)
                 throws ParseException, ScriptException;
+        
+        /**
+         * Return the qualified name of this item.
+         * Objects of the same kind must have unique qualified names.
+         * @return either name or component.name if applicable.
+         */
+        @JsonIgnore
+        public String getQName() {
+            return name;
+        }
     }
     
     public abstract static class Var extends Item {
@@ -99,12 +112,9 @@ public class JacksonBinder {
         public void setType(String name) {type = Type.getByName(name);}
         
         protected void addToNSMap(Map<String, Type> map) {
-            addToNSMap(map, name);
-        }
-        protected void addToNSMap(Map<String, Type> map, String dname) {
             if (map.putIfAbsent(name, type) != null) {
                 throw new IllegalArgumentException(
-                        "duplicate " + kind + " name " + dname);
+                        "duplicate " + kind + " name " + getQName());
             }
         }
     }
@@ -116,7 +126,12 @@ public class JacksonBinder {
         protected void addToNSComp(
                 Namespace ns,
                 Function<Namespace.Component, Map<String, Type>> getMap) {
-            addToNSMap(getMap.apply(ns.getOrNew(comp)), "comp." + name);
+            addToNSMap(getMap.apply(ns.getOrNew(comp)));
+        }
+        
+        @Override
+        public String getQName() {
+            return comp != null ? comp + "." + name : name;
         }
     }
     
@@ -125,7 +140,7 @@ public class JacksonBinder {
 
         @Override
         public void addToNamespace(Namespace ns) {
-            addToNSMap(ns.externals, name);
+            addToNSMap(ns.externals);
         }
 
         @Override
@@ -310,6 +325,23 @@ public class JacksonBinder {
     public List<Item> getItems() {return items;}
 
     /**
+     * Check for name uniqueness.
+     * @throws IllegalArgumentException on duplicate names
+     */
+    public void checkNames() {
+        Map<Kind, Set<String>> names = new HashMap<>();
+        for (Item it : items) {
+            Set<String> ns = names.computeIfAbsent(
+                    it.kind, k -> new HashSet<>());
+            String qn = it.getQName();
+            if (!ns.add(qn)) {
+                throw new IllegalArgumentException(
+                        "duplicate " + it.kind + " name " + qn);
+            }
+        }
+    }        
+
+    /**
      * Sort items by kind (in place).
      */
     public void sort() {
@@ -323,6 +355,7 @@ public class JacksonBinder {
      */
     public Namespace makeNamespace(
             Instant timeOrigin) {
+        checkNames();
         Namespace ns = new Namespace(new Evaluator(), timeOrigin, true);
         items.forEach(item -> item.addToNamespace(ns));
         return ns;
