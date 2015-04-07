@@ -176,12 +176,12 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
         }
         return obj;
     }
-    
-    private String getOName(Constraint c) {
+
+    public static String getOName(Constraint c) {
         return "C" + c.getName();
     }
-    
-    private String getOName(ObjectiveExpression o) {
+
+    public static String getOName(ObjectiveExpression o) {
         return "O" + o.getName();
     }
 

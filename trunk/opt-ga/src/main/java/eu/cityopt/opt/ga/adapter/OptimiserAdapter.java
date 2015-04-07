@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Module;
 
+import eu.cityopt.opt.ga.CityoptEvaluator;
 import eu.cityopt.opt.ga.CityoptPhenotype;
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.ConstraintStatus;
@@ -126,8 +127,8 @@ class OptimiserAdapter {
                 completableFuture.complete(results);
             } catch (Throwable t) {
                 completableFuture.completeExceptionally(t);
-                logger.info("Ending run " + runName);
             }
+            logger.info("Ending run " + runName);
         });
         return completableFuture;
     }
@@ -138,7 +139,7 @@ class OptimiserAdapter {
         int nConstraints = problem.constraints.size();
         for (int i = 0; i < nConstraints; ++i) {
             Constraint constraint = problem.constraints.get(i);
-            Integer old = map.put(constraint.getName(), i);
+            Integer old = map.put(CityoptEvaluator.getOName(constraint), i);
             if (old != null) {
                 throw new IllegalArgumentException(
                         "Duplicate constraints with name " + constraint.getName());
@@ -146,16 +147,10 @@ class OptimiserAdapter {
         }
         for (int i = 0; i < problem.objectives.size(); ++i) {
             ObjectiveExpression objective = problem.objectives.get(i);
-            Integer old = map.put(objective.getName(), i + nConstraints);
+            Integer old = map.put(CityoptEvaluator.getOName(objective), i + nConstraints);
             if (old != null) {
-                if (old < nConstraints) {
-                    throw new IllegalArgumentException(
-                            "The same name " + objective.getName()
-                            + " was used for both a constraint and an objective");
-                } else {
-                    throw new IllegalArgumentException(
-                            "Duplicate objectives with name " + objective.getName());
-                }
+                throw new IllegalArgumentException(
+                        "Duplicate objectives with name " + objective.getName());
             }
         }
         return map;
