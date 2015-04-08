@@ -37,6 +37,8 @@ public class ObjectiveFunction implements java.io.Serializable {
 	private Date executedat;
 	private Set<OptimizationSet> optimizationsets = new HashSet<OptimizationSet>(
 			0);
+	private Set<ObjectiveFunctionResult> objectivefunctionresults = new HashSet<ObjectiveFunctionResult>(
+			0);
 	private Set<ScenGenObjectiveFunction> scengenobjectivefunctions = new HashSet<ScenGenObjectiveFunction>(
 			0);
 
@@ -50,6 +52,7 @@ public class ObjectiveFunction implements java.io.Serializable {
 	public ObjectiveFunction(int obtfunctionid, Project project, Type type,
 			String name, String expression, Boolean ismaximise,
 			Date executedat, Set<OptimizationSet> optimizationsets,
+			Set<ObjectiveFunctionResult> objectivefunctionresults,
 			Set<ScenGenObjectiveFunction> scengenobjectivefunctions) {
 		this.obtfunctionid = obtfunctionid;
 		this.project = project;
@@ -59,6 +62,7 @@ public class ObjectiveFunction implements java.io.Serializable {
 		this.ismaximise = ismaximise;
 		this.executedat = executedat;
 		this.optimizationsets = optimizationsets;
+		this.objectivefunctionresults = objectivefunctionresults;
 		this.scengenobjectivefunctions = scengenobjectivefunctions;
 	}
 	
@@ -72,6 +76,7 @@ public class ObjectiveFunction implements java.io.Serializable {
 		c.ismaximise = this.ismaximise;
 		c.executedat = this.executedat;
 		c.optimizationsets = this.optimizationsets;
+		c.objectivefunctionresults = this.objectivefunctionresults;
 		c.scengenobjectivefunctions = this.scengenobjectivefunctions;
 		return c;
 	}
@@ -154,6 +159,16 @@ public class ObjectiveFunction implements java.io.Serializable {
 		this.optimizationsets = optimizationsets;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "objectivefunction")
+	public Set<ObjectiveFunctionResult> getObjectivefunctionresults() {
+		return this.objectivefunctionresults;
+	}
+
+	public void setObjectivefunctionresults(
+			Set<ObjectiveFunctionResult> objectivefunctionresults) {
+		this.objectivefunctionresults = objectivefunctionresults;
+	}
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "objectivefunction", cascade=CascadeType.REMOVE)
 	public Set<ScenGenObjectiveFunction> getScengenobjectivefunctions() {
 		return this.scengenobjectivefunctions;

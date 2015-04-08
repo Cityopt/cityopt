@@ -436,7 +436,7 @@ CREATE TABLE OptConstraintResult
 	optConstResultID integer NOT NULL DEFAULT nextval(('optconstraintresult_optconstresultid_seq'::text)::regclass),
 	optConstID integer,
 	scenGenResultID integer NOT NULL,
-	value text
+	infeasibility text
 )
 ;
 
@@ -933,9 +933,6 @@ CREATE INDEX IXFK_ModelParameters_ScenarioGenerator ON ModelParameter (scenGenID
 
 ALTER TABLE ModelParameter ADD CONSTRAINT PK_ModelParameters
 	PRIMARY KEY (modelParamID)
-;
-
-CREATE INDEX IXFK_ObjectiveFunction_ObjectiveFunctionResult ON ObjectiveFunction ()
 ;
 
 CREATE INDEX IXFK_ObjectiveFunction_Project ON ObjectiveFunction (prjID ASC)

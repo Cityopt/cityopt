@@ -2,6 +2,9 @@ package eu.cityopt.model;
 
 // Generated 13.11.2014 15:13:00 by Hibernate Tools 4.0.0
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -27,6 +31,8 @@ public class DecisionVariable implements java.io.Serializable {
 	private String name;
 	private String lowerbound;
 	private String upperbound;
+	private Set<DecisionVariableResult> decisionvariableresults = new HashSet<DecisionVariableResult>(
+			0);
 
 	public DecisionVariable() {
 	}
@@ -39,7 +45,8 @@ public class DecisionVariable implements java.io.Serializable {
 
 	public DecisionVariable(int decisionvarid, InputParameter inputparameter,
 			ScenarioGenerator scenariogenerator, Type type, String name,
-			String lowerbound, String upperbound) {
+			String lowerbound, String upperbound,
+			Set<DecisionVariableResult> decisionvariableresults) {
 		this.decisionvarid = decisionvarid;
 		this.inputparameter = inputparameter;
 		this.scenariogenerator = scenariogenerator;
@@ -47,6 +54,7 @@ public class DecisionVariable implements java.io.Serializable {
 		this.name = name;
 		this.lowerbound = lowerbound;
 		this.upperbound = upperbound;
+		this.decisionvariableresults = decisionvariableresults;
 	}
 
 	@SequenceGenerator(name="decisionvariable_decisionvarid_seq",sequenceName="decisionvariable_decisionvarid_seq") 
@@ -116,6 +124,16 @@ public class DecisionVariable implements java.io.Serializable {
 
 	public void setUpperbound(String upperbound) {
 		this.upperbound = upperbound;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "decisionvariable")
+	public Set<DecisionVariableResult> getDecisionvariableresults() {
+		return this.decisionvariableresults;
+	}
+
+	public void setDecisionvariableresults(
+			Set<DecisionVariableResult> decisionvariableresults) {
+		this.decisionvariableresults = decisionvariableresults;
 	}
 
 }

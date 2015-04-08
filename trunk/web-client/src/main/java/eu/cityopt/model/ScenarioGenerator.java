@@ -31,9 +31,11 @@ public class ScenarioGenerator implements java.io.Serializable {
 	private Project project;
 	private String status;
 	private String log;
+	private String name;
 	private Set<DecisionVariable> decisionvariables = new HashSet<DecisionVariable>(
 			0);
 	private Set<ModelParameter> modelparameters = new HashSet<ModelParameter>(0);
+	private Set<ScenGenResult> scengenresults = new HashSet<ScenGenResult>(0);
 	private Set<ScenGenOptConstraint> scengenoptconstraints = new HashSet<ScenGenOptConstraint>(
 			0);
 	private Set<Scenario> scenarios = new HashSet<Scenario>(0);
@@ -50,8 +52,9 @@ public class ScenarioGenerator implements java.io.Serializable {
 
 	public ScenarioGenerator(int scengenid, Algorithm algorithm,
 			ExtParamValSet extparamvalset, Project project, String status,
-			String log, Set<DecisionVariable> decisionvariables,
+			String log, String name, Set<DecisionVariable> decisionvariables,
 			Set<ModelParameter> modelparameters,
+			Set<ScenGenResult> scengenresults,
 			Set<ScenGenOptConstraint> scengenoptconstraints,
 			Set<Scenario> scenarios, Set<AlgoParamVal> algoparamvals,
 			Set<ScenGenObjectiveFunction> scengenobjectivefunctions) {
@@ -61,8 +64,10 @@ public class ScenarioGenerator implements java.io.Serializable {
 		this.project = project;
 		this.status = status;
 		this.log = log;
+		this.name = name;
 		this.decisionvariables = decisionvariables;
 		this.modelparameters = modelparameters;
+		this.scengenresults = scengenresults;
 		this.scengenoptconstraints = scengenoptconstraints;
 		this.scenarios = scenarios;
 		this.algoparamvals = algoparamvals;
@@ -145,6 +150,15 @@ public class ScenarioGenerator implements java.io.Serializable {
 		this.log = log;
 	}
 	
+	@Column(name = "name", length = 50)
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
 	public Set<DecisionVariable> getDecisionvariables() {
 		return this.decisionvariables;
@@ -161,6 +175,15 @@ public class ScenarioGenerator implements java.io.Serializable {
 
 	public void setModelparameters(Set<ModelParameter> modelparameters) {
 		this.modelparameters = modelparameters;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
+	public Set<ScenGenResult> getScengenresults() {
+		return this.scengenresults;
+	}
+
+	public void setScengenresults(Set<ScenGenResult> scengenresults) {
+		this.scengenresults = scengenresults;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
