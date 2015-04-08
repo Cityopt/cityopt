@@ -11,6 +11,7 @@ import org.opt4j.core.start.Constant;
 
 import com.google.inject.name.Names;
 
+import eu.cityopt.opt.io.JacksonCsvModule;
 import eu.cityopt.sim.eval.HashSimulationStorage;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationStorage;

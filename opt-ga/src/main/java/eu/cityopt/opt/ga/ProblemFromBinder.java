@@ -11,6 +11,7 @@ import javax.script.ScriptException;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
+import eu.cityopt.opt.io.JacksonBinder;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationModel;
