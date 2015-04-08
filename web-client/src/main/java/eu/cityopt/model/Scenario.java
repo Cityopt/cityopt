@@ -52,6 +52,7 @@ public class Scenario implements java.io.Serializable {
 			0);
 	private Set<OptSetScenarios> optsetscenarioses = new HashSet<OptSetScenarios>(
 			0);
+	private Set<ScenGenResult> scengenresults = new HashSet<ScenGenResult>(0);
 
 	public Scenario() {
 	}
@@ -71,7 +72,8 @@ public class Scenario implements java.io.Serializable {
 			Set<InputParamVal> inputparamvals,
 			Set<OptimizationSet> optimizationsets,
 			Set<SimulationResult> simulationresults,
-			Set<OptSetScenarios> optsetscenarioses) {
+			Set<OptSetScenarios> optsetscenarioses,
+			Set<ScenGenResult> scengenresults) {
 		this.scenid = scenid;
 		this.project = project;
 		this.scenariogenerator = scenariogenerator;
@@ -90,6 +92,7 @@ public class Scenario implements java.io.Serializable {
 		this.optimizationsets = optimizationsets;
 		this.simulationresults = simulationresults;
 		this.optsetscenarioses = optsetscenarioses;
+		this.scengenresults = scengenresults;
 	}
 	
 	public Scenario clone() {
@@ -112,6 +115,7 @@ public class Scenario implements java.io.Serializable {
 		c.optimizationsets = this.optimizationsets;
 		c.simulationresults = this.simulationresults;
 		c.optsetscenarioses = this.optsetscenarioses;
+		c.scengenresults = this.scengenresults;
 		return c;
 	}
 
@@ -285,5 +289,14 @@ public class Scenario implements java.io.Serializable {
 
 	public void setOptsetscenarioses(Set<OptSetScenarios> optsetscenarioses) {
 		this.optsetscenarioses = optsetscenarioses;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
+	public Set<ScenGenResult> getScengenresults() {
+		return this.scengenresults;
+	}
+
+	public void setScengenresults(Set<ScenGenResult> scengenresults) {
+		this.scengenresults = scengenresults;
 	}
 }
