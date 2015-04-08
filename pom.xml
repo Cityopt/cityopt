@@ -11,6 +11,7 @@
   	<module>sim-runner</module>
   	<module>web-client</module>
         <module>opt-runner</module>
+        <module>test-resources</module>
   </modules>
   <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

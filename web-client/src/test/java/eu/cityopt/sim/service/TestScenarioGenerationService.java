@@ -54,7 +54,7 @@ public class TestScenarioGenerationService extends SimulationTestBase {
     @ExpectedDatabase(value="classpath:/testData/plumbing_gridsearch_result.xml",
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testPlumbingGridSearch() throws Exception {
-        loadModel("Plumbing test model", "/testData/plumbing.zip");
+        loadModel("Plumbing test model", "/plumbing.zip");
         runScenarioGeneration("grid search");
         dumpTables("plumbing_gridsearch");
     }
@@ -64,7 +64,7 @@ public class TestScenarioGenerationService extends SimulationTestBase {
     @ExpectedDatabase(value="classpath:/testData/plumbing_ga_result.xml",
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testPlumbingGA() throws Exception {
-        loadModel("Plumbing test model", "/testData/plumbing.zip");
+        loadModel("Plumbing test model", "/plumbing.zip");
         runScenarioGeneration("genetic algorithm");
         dumpTables("plumbing_ga");
     }

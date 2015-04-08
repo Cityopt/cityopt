@@ -57,7 +57,7 @@ public class TestSimulationService extends SimulationTestBase {
     @ExpectedDatabase(value="classpath:/testData/plumbing_result.xml",
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testPlumbing() throws Exception {
-        loadModel("Plumbing test model", "/testData/plumbing.zip");
+        loadModel("Plumbing test model", "/plumbing.zip");
         runSimulation();
         dumpTables("plumbing");
     }
@@ -67,7 +67,7 @@ public class TestSimulationService extends SimulationTestBase {
     @ExpectedDatabase(value="classpath:/testData/plumbing_metrics_result.xml",
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testPlumbingAndUpdateMetrics() throws Exception {
-        loadModel("Plumbing test model", "/testData/plumbing.zip");
+        loadModel("Plumbing test model", "/plumbing.zip");
         runSimulation();
         updateMetrics();
         dumpTables("plumbing_metrics");
@@ -78,7 +78,7 @@ public class TestSimulationService extends SimulationTestBase {
     @ExpectedDatabase(value="classpath:/testData/testmodel_result.xml",
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testModel() throws Exception {
-        loadModel("Apros test model", "/testData/testmodel.zip");
+        loadModel("Apros test model", "/testmodel.zip");
         runSimulation();
         //updateMetrics();
         dumpTables("testmodel");
