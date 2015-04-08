@@ -76,6 +76,12 @@
 	    	<groupId>org.slf4j</groupId>
 	    	<artifactId>slf4j-simple</artifactId>
 	    </dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+	    	<artifactId>test-resources</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<parent>
 		<groupId>eu.cityopt</groupId>

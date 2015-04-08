@@ -173,6 +173,12 @@
 		<artifactId>opt-ga</artifactId>
 		<version>${project.version}</version>
 	</dependency>
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+    	<artifactId>test-resources</artifactId>
+		<version>${project.version}</version>
+		<scope>test</scope>
+	</dependency>
   </dependencies>
   <build>
     <finalName>CityOPT</finalName>
