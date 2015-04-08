@@ -19,6 +19,9 @@ DROP SEQUENCE IF EXISTS datareliability_datarelid_seq
 DROP SEQUENCE IF EXISTS decisionvariable_decisionvarid_seq
 ;
 
+DROP SEQUENCE IF EXISTS decisionvariableresult_decvarresultid_seq
+;
+
 DROP SEQUENCE IF EXISTS extparam_extparamid_seq
 ;
 
@@ -49,7 +52,13 @@ DROP SEQUENCE IF EXISTS modelparameter_modelparamid_seq
 DROP SEQUENCE IF EXISTS objectivefunction_obtfunctionid_seq
 ;
 
+DROP SEQUENCE IF EXISTS objectivefunctionresult_objectivefunctionresultid_seq
+;
+
 DROP SEQUENCE IF EXISTS optconstraint_optconstid_seq
+;
+
+DROP SEQUENCE IF EXISTS optconstraintresult_optconstresultid_seq
 ;
 
 DROP SEQUENCE IF EXISTS optimizationset_optid_seq
@@ -80,6 +89,9 @@ DROP SEQUENCE IF EXISTS scengenobjectivefunction_sgobfunctionid_seq
 ;
 
 DROP SEQUENCE IF EXISTS scengenoptconstraint_sgoptconstraintid_seq
+;
+
+DROP SEQUENCE IF EXISTS scengenresult_scengenresultid_seq
 ;
 
 DROP SEQUENCE IF EXISTS simulationmodel_modelid_seq
@@ -127,6 +139,9 @@ DROP TABLE IF EXISTS DataReliability CASCADE
 DROP TABLE IF EXISTS DecisionVariable CASCADE
 ;
 
+DROP TABLE IF EXISTS DecisionVariableResult CASCADE
+;
+
 DROP TABLE IF EXISTS ExtParam CASCADE
 ;
 
@@ -157,7 +172,13 @@ DROP TABLE IF EXISTS ModelParameter CASCADE
 DROP TABLE IF EXISTS ObjectiveFunction CASCADE
 ;
 
+DROP TABLE IF EXISTS ObjectiveFunctionResult CASCADE
+;
+
 DROP TABLE IF EXISTS OptConstraint CASCADE
+;
+
+DROP TABLE IF EXISTS OptConstraintResult CASCADE
 ;
 
 DROP TABLE IF EXISTS OptimizationSet CASCADE
@@ -188,6 +209,9 @@ DROP TABLE IF EXISTS ScenGenObjectiveFunction CASCADE
 ;
 
 DROP TABLE IF EXISTS ScenGenOptConstraint CASCADE
+;
+
+DROP TABLE IF EXISTS ScenGenResult CASCADE
 ;
 
 DROP TABLE IF EXISTS SimulationModel CASCADE
@@ -272,6 +296,15 @@ CREATE TABLE DecisionVariable
 	upperBound text,
 	typeID integer,
 	inputID integer
+)
+;
+
+CREATE TABLE DecisionVariableResult
+(
+	decVarResultID integer NOT NULL DEFAULT nextval(('decisionvariableresult_decvarresultid_seq'::text)::regclass),
+	value text,
+	scenGenResultID integer,
+	decisionVarID integer
 )
 ;
 
@@ -378,6 +411,15 @@ CREATE TABLE ObjectiveFunction
 )
 ;
 
+CREATE TABLE ObjectiveFunctionResult
+(
+	objectiveFunctionResultID integer NOT NULL DEFAULT nextval(('objectivefunctionresult_objectivefunctionresultid_seq'::text)::regclass),
+	scenGenResultID integer NOT NULL,
+	obtFunctionID integer,
+	value text
+)
+;
+
 CREATE TABLE OptConstraint
 (
 	optConstID integer NOT NULL DEFAULT nextval(('optconstraint_optconstid_seq'::text)::regclass),
@@ -386,6 +428,15 @@ CREATE TABLE OptConstraint
 	expression text,
 	lowerBound text,
 	upperBound text
+)
+;
+
+CREATE TABLE OptConstraintResult
+(
+	optConstResultID integer NOT NULL DEFAULT nextval(('optconstraintresult_optconstresultid_seq'::text)::regclass),
+	sgOptConstraintID integer,
+	scenGenResultID integer,
+	value text
 )
 ;
 
@@ -502,6 +553,16 @@ CREATE TABLE ScenGenOptConstraint
 )
 ;
 
+CREATE TABLE ScenGenResult
+(
+	scenGenResultID integer NOT NULL DEFAULT nextval(('scengenresult_scengenresultid_seq'::text)::regclass),
+	feasible boolean,
+	pareto-optimal boolean,
+	scenGenID integer NOT NULL,
+	scenID integer NOT NULL
+)
+;
+
 CREATE TABLE SimulationModel
 (
 	modelID integer NOT NULL DEFAULT nextval(('simulationmodel_modelid_seq'::text)::regclass),
@@ -595,6 +656,9 @@ CREATE SEQUENCE datareliability_datarelid_seq INCREMENT 1 START 1
 CREATE SEQUENCE decisionvariable_decisionvarid_seq INCREMENT 1 START 1
 ;
 
+CREATE SEQUENCE decisionvariableresult_decvarresultid_seq INCREMENT 1 START 1
+;
+
 CREATE SEQUENCE extparam_extparamid_seq INCREMENT 1 START 1
 ;
 
@@ -625,7 +689,13 @@ CREATE SEQUENCE modelparameter_modelparamid_seq INCREMENT 1 START 1
 CREATE SEQUENCE objectivefunction_obtfunctionid_seq INCREMENT 1 START 1
 ;
 
+CREATE SEQUENCE objectivefunctionresult_objectivefunctionresultid_seq INCREMENT 1 START 1
+;
+
 CREATE SEQUENCE optconstraint_optconstid_seq INCREMENT 1 START 1
+;
+
+CREATE SEQUENCE optconstraintresult_optconstresultid_seq INCREMENT 1 START 1
 ;
 
 CREATE SEQUENCE optimizationset_optid_seq INCREMENT 1 START 1
@@ -656,6 +726,9 @@ CREATE SEQUENCE scengenobjectivefunction_sgobfunctionid_seq INCREMENT 1 START 1
 ;
 
 CREATE SEQUENCE scengenoptconstraint_sgoptconstraintid_seq INCREMENT 1 START 1
+;
+
+CREATE SEQUENCE scengenresult_scengenresultid_seq INCREMENT 1 START 1
 ;
 
 CREATE SEQUENCE simulationmodel_modelid_seq INCREMENT 1 START 1
@@ -741,6 +814,19 @@ CREATE INDEX IXFK_DecisionVariables_ScenarioGenerator ON DecisionVariable (scenG
 
 ALTER TABLE DecisionVariable ADD CONSTRAINT PK_DecisionVariables
 	PRIMARY KEY (decisionVarID)
+;
+
+CREATE INDEX IXFK_DecisionVariableResult_DecisionVariable ON DecisionVariableResult (decisionVarID ASC)
+;
+
+CREATE INDEX IXFK_DecisionVariableResult_ScenGenResult ON DecisionVariableResult (scenGenResultID ASC)
+;
+
+ALTER TABLE DecisionVariableResult ADD CONSTRAINT PK_DecisionVariableResult
+	PRIMARY KEY (decVarResultID)
+;
+
+CREATE UNIQUE INDEX UQ_DecisionVariableResult_scenGenResultID ON DecisionVariableResult (scenGenResultID ASC)
 ;
 
 ALTER TABLE ExtParam ADD CONSTRAINT PK_ExternalParameter
@@ -848,6 +934,9 @@ ALTER TABLE ModelParameter ADD CONSTRAINT PK_ModelParameters
 	PRIMARY KEY (modelParamID)
 ;
 
+CREATE INDEX IXFK_ObjectiveFunction_ObjectiveFunctionResult ON ObjectiveFunction ()
+;
+
 CREATE INDEX IXFK_ObjectiveFunction_Project ON ObjectiveFunction (prjID ASC)
 ;
 
@@ -861,6 +950,19 @@ ALTER TABLE ObjectiveFunction ADD CONSTRAINT PK_OptimizationFunction
 ALTER TABLE ObjectiveFunction ADD CONSTRAINT IXUQ_ObjectiveFunction_Name UNIQUE (prjID,name)
 ;
 
+CREATE INDEX IXFK_ObjectiveFunctionResult_ObjectiveFunction ON ObjectiveFunctionResult (obtFunctionID ASC)
+;
+
+CREATE INDEX IXFK_ObjectiveFunctionResult_ScenGenResult ON ObjectiveFunctionResult (scenGenResultID ASC)
+;
+
+ALTER TABLE ObjectiveFunctionResult ADD CONSTRAINT PK_ObjectiveFunctionResult
+	PRIMARY KEY (objectiveFunctionResultID)
+;
+
+CREATE UNIQUE INDEX UQ_ObjectiveFunctionResult_scenGenResultID ON ObjectiveFunctionResult (scenGenResultID ASC)
+;
+
 CREATE INDEX IXFK_OptConstraints_Project ON OptConstraint (prjID ASC)
 ;
 
@@ -869,6 +971,19 @@ ALTER TABLE OptConstraint ADD CONSTRAINT PK_OptConstraints
 ;
 
 ALTER TABLE OptConstraint ADD CONSTRAINT IXUQ_OptConstraints_Name UNIQUE (prjID,name)
+;
+
+CREATE INDEX IXFK_OptConstraintResult_ScenGenOptConstraint ON OptConstraintResult (sgOptConstraintID ASC)
+;
+
+CREATE INDEX IXFK_OptConstraintResult_ScenGenResult ON OptConstraintResult (scenGenResultID ASC)
+;
+
+ALTER TABLE OptConstraintResult ADD CONSTRAINT PK_OptConstraintResult
+	PRIMARY KEY (optConstResultID)
+;
+
+CREATE UNIQUE INDEX UQ_OptConstraintResult_scenGenResultID ON OptConstraintResult (scenGenResultID ASC)
 ;
 
 CREATE INDEX IXFK_OptimizationSet_ExtParamValSet ON OptimizationSet (extParamValSetID ASC)
@@ -992,6 +1107,19 @@ CREATE INDEX IXFK_ScenGenOptConstraint_OptConstraint ON ScenGenOptConstraint (op
 CREATE INDEX IXFK_ScenGenOptConstraint_ScenarioGenerator ON ScenGenOptConstraint (scenGenID ASC)
 ;
 
+CREATE INDEX IXFK_ScenGenResult_Scenario ON ScenGenResult (scenID ASC)
+;
+
+CREATE INDEX IXFK_ScenGenResult_ScenarioGenerator ON ScenGenResult (scenGenID ASC)
+;
+
+ALTER TABLE ScenGenResult ADD CONSTRAINT PK_ScenarioGeneratorResult
+	PRIMARY KEY (scenGenResultID)
+;
+
+CREATE UNIQUE INDEX UQ_ScenarioGeneratorResult_ScenID_ScenGenID ON ScenGenResult (scenID ASC,scenGenID ASC)
+;
+
 ALTER TABLE SimulationModel ADD CONSTRAINT PK_SimulationModel
 	PRIMARY KEY (modelID)
 ;
@@ -1094,6 +1222,14 @@ ALTER TABLE DecisionVariable ADD CONSTRAINT FK_DecisionVariable_InputParameter
 	FOREIGN KEY (inputID) REFERENCES InputParameter (inputID) ON DELETE No Action ON UPDATE No Action
 ;
 
+ALTER TABLE DecisionVariableResult ADD CONSTRAINT FK_DecisionVariableResult_DecisionVariable
+	FOREIGN KEY (decisionVarID) REFERENCES DecisionVariable (decisionVarID) ON DELETE No Action ON UPDATE No Action
+;
+
+ALTER TABLE DecisionVariableResult ADD CONSTRAINT FK_DecisionVariableResult_ScenGenResult
+	FOREIGN KEY (scenGenResultID) REFERENCES ScenGenResult (scenGenResultID) ON DELETE No Action ON UPDATE No Action
+;
+
 ALTER TABLE ExtParam ADD CONSTRAINT FK_ExtParam_Project
 	FOREIGN KEY (prjID) REFERENCES Project (prjID) ON DELETE No Action ON UPDATE No Action
 ;
@@ -1178,8 +1314,24 @@ ALTER TABLE ObjectiveFunction ADD CONSTRAINT FK_ObjectiveFunction_Type
 	FOREIGN KEY (typeID) REFERENCES Type (typeID) ON DELETE No Action ON UPDATE No Action
 ;
 
+ALTER TABLE ObjectiveFunctionResult ADD CONSTRAINT FK_ObjectiveFunctionResult_ObjectiveFunction
+	FOREIGN KEY (obtFunctionID) REFERENCES ObjectiveFunction (obtFunctionID) ON DELETE No Action ON UPDATE No Action
+;
+
+ALTER TABLE ObjectiveFunctionResult ADD CONSTRAINT FK_ObjectiveFunctionResult_ScenGenResult
+	FOREIGN KEY (scenGenResultID) REFERENCES ScenGenResult (scenGenResultID) ON DELETE No Action ON UPDATE No Action
+;
+
 ALTER TABLE OptConstraint ADD CONSTRAINT FK_OptConstraints_Project
 	FOREIGN KEY (prjID) REFERENCES Project (prjID) ON DELETE No Action ON UPDATE No Action
+;
+
+ALTER TABLE OptConstraintResult ADD CONSTRAINT FK_OptConstraintResult_ScenGenOptConstraint
+	FOREIGN KEY (sgOptConstraintID) REFERENCES ScenGenOptConstraint (sgOptConstraintID) ON DELETE No Action ON UPDATE No Action
+;
+
+ALTER TABLE OptConstraintResult ADD CONSTRAINT FK_OptConstraintResult_ScenGenResult
+	FOREIGN KEY (scenGenResultID) REFERENCES ScenGenResult (scenGenResultID) ON DELETE No Action ON UPDATE No Action
 ;
 
 ALTER TABLE OptimizationSet ADD CONSTRAINT FK_OptimizationSet_ExtParamValSet
@@ -1268,6 +1420,14 @@ ALTER TABLE ScenGenOptConstraint ADD CONSTRAINT FK_ScenGenOptConstraint_OptConst
 
 ALTER TABLE ScenGenOptConstraint ADD CONSTRAINT FK_ScenGenOptConstraint_ScenarioGenerator
 	FOREIGN KEY (scenGenID) REFERENCES ScenarioGenerator (scenGenID) ON DELETE No Action ON UPDATE No Action
+;
+
+ALTER TABLE ScenGenResult ADD CONSTRAINT FK_ScenGenResult_Scenario
+	FOREIGN KEY (scenID) REFERENCES Scenario (scenID) ON DELETE No Action ON UPDATE Cascade
+;
+
+ALTER TABLE ScenGenResult ADD CONSTRAINT FK_ScenGenResult_ScenarioGenerator
+	FOREIGN KEY (scenGenID) REFERENCES ScenarioGenerator (scenGenID) ON DELETE Cascade ON UPDATE Cascade
 ;
 
 ALTER TABLE SimulationResult ADD CONSTRAINT FK_SimulationResult_TimeSeries
