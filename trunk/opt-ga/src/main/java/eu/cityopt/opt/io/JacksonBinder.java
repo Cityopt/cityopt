@@ -1,4 +1,4 @@
-package eu.cityopt.opt.ga;
+package eu.cityopt.opt.io;
 
 import java.io.IOException;
 import java.nio.file.Path;

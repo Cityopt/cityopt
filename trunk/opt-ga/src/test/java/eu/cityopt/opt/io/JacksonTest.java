@@ -1,4 +1,4 @@
-package eu.cityopt.opt.ga;
+package eu.cityopt.opt.io;
 
 import static org.junit.Assert.*;
 
@@ -31,6 +31,7 @@ import com.google.inject.grapher.graphviz.GraphvizGrapher;
 import com.google.inject.grapher.graphviz.GraphvizModule;
 import com.google.inject.name.Names;
 
+import eu.cityopt.opt.ga.CityoptFileModule;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.opt.OptimisationProblem;
@@ -139,7 +140,16 @@ public class JacksonTest {
         checkProblem(p);
         assertNull(p.model);
     }
-    
+
+    @Test
+    public void testReadCsvFacade() throws Exception {
+        OptimisationProblem p = OptimisationProblemIO.readCsv(
+                JacksonTest.dataDir.resolve(props.getProperty("problem_file")),
+                Instant.parse(props.getProperty("time_origin")));
+        checkProblem(p);
+        assertNull(p.model);
+    }
+
     private CityoptFileModule getCityoptFileModule() {
         TestModule tm = new TestModule();
         CityoptFileModule cfm = new CityoptFileModule();
