@@ -303,7 +303,7 @@ CREATE TABLE DecisionVariableResult
 (
 	decVarResultID integer NOT NULL DEFAULT nextval(('decisionvariableresult_decvarresultid_seq'::text)::regclass),
 	value text,
-	scenGenResultID integer,
+	scenGenResultID integer NOT NULL,
 	decisionVarID integer
 )
 ;
@@ -434,8 +434,8 @@ CREATE TABLE OptConstraint
 CREATE TABLE OptConstraintResult
 (
 	optConstResultID integer NOT NULL DEFAULT nextval(('optconstraintresult_optconstresultid_seq'::text)::regclass),
-	sgOptConstraintID integer,
-	scenGenResultID integer,
+	optConstID integer,
+	scenGenResultID integer NOT NULL,
 	value text
 )
 ;
@@ -525,7 +525,8 @@ CREATE TABLE ScenarioGenerator
 	algorithmID integer,
 	extParamValSetID integer,
 	status varchar(50)	,
-	log text
+	log text,
+	name varchar(50)	
 )
 ;
 
@@ -557,7 +558,7 @@ CREATE TABLE ScenGenResult
 (
 	scenGenResultID integer NOT NULL DEFAULT nextval(('scengenresult_scengenresultid_seq'::text)::regclass),
 	feasible boolean,
-	pareto-optimal boolean,
+	paretoOptimal boolean,
 	scenGenID integer NOT NULL,
 	scenID integer NOT NULL
 )
@@ -973,7 +974,7 @@ ALTER TABLE OptConstraint ADD CONSTRAINT PK_OptConstraints
 ALTER TABLE OptConstraint ADD CONSTRAINT IXUQ_OptConstraints_Name UNIQUE (prjID,name)
 ;
 
-CREATE INDEX IXFK_OptConstraintResult_ScenGenOptConstraint ON OptConstraintResult (sgOptConstraintID ASC)
+CREATE INDEX IXFK_OptConstraintResult_OptConstraint ON OptConstraintResult (optConstID ASC)
 ;
 
 CREATE INDEX IXFK_OptConstraintResult_ScenGenResult ON OptConstraintResult (scenGenResultID ASC)
@@ -1326,8 +1327,8 @@ ALTER TABLE OptConstraint ADD CONSTRAINT FK_OptConstraints_Project
 	FOREIGN KEY (prjID) REFERENCES Project (prjID) ON DELETE No Action ON UPDATE No Action
 ;
 
-ALTER TABLE OptConstraintResult ADD CONSTRAINT FK_OptConstraintResult_ScenGenOptConstraint
-	FOREIGN KEY (sgOptConstraintID) REFERENCES ScenGenOptConstraint (sgOptConstraintID) ON DELETE No Action ON UPDATE No Action
+ALTER TABLE OptConstraintResult ADD CONSTRAINT FK_OptConstraintResult_OptConstraint
+	FOREIGN KEY (optConstID) REFERENCES OptConstraint (optConstID) ON DELETE No Action ON UPDATE No Action
 ;
 
 ALTER TABLE OptConstraintResult ADD CONSTRAINT FK_OptConstraintResult_ScenGenResult
