@@ -1,6 +1,7 @@
 package eu.cityopt.opt.io;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.time.Instant;
@@ -315,7 +316,17 @@ public class JacksonBinder {
         JacksonBinder bd = reader.readValue(file.toFile());
         this.items = bd.getItems();
     }
-    
+
+    /**
+     * Read from an input stream.
+     */
+    public JacksonBinder(
+            ObjectReader reader, InputStream stream)
+            throws JsonProcessingException, IOException {
+        JacksonBinder bd = reader.readValue(stream);
+        this.items = bd.getItems();
+    }
+
     @JsonCreator
     public JacksonBinder(List<Item> items) {
         this.items = items;
