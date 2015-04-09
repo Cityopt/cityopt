@@ -55,8 +55,12 @@ public enum Type {
      */
     INTEGER("Integer") {
         @Override
-        public Integer parse(String value, EvaluationSetup setup) {
-            return Integer.parseInt(value);
+        public Integer parse(String value, EvaluationSetup setup) throws ParseException {
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                throw new ParseException(e.getMessage(), 0);
+            }
         }
 
         @Override
@@ -95,8 +99,12 @@ public enum Type {
      */
     DOUBLE("Double") {
         @Override
-        public Double parse(String value, EvaluationSetup setup) {
-            return Double.parseDouble(value);
+        public Double parse(String value, EvaluationSetup setup) throws ParseException {
+            try {
+                return Double.parseDouble(value);
+            } catch (NumberFormatException e) {
+                throw new ParseException(e.getMessage(), 0);
+            }
         }
 
         @Override
