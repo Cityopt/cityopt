@@ -45,7 +45,6 @@
   <objectivefunctionresult/>
   <optconstraintresult/>
   <outputvariable name="PI12_MIX_MASS_FLOW"/>
-  <modelparameter/>
   <extparam defaultvalue="100" name="d"/>
   <algoparam/>
   <algoparamval/>
@@ -55,6 +54,7 @@
   <inputparamval value="3"/>
   <inputparamval value="2015-01-01T00:00:00"/>
   <inputparamval value="2015-01-01T00:01:00"/>
+  <modelparameter/>
   <metricval value="103.6336715"/>
   <timeseriesval value="0.0" time="2015-01-01 00:00:00.0"/>
   <timeseriesval value="0.01040966" time="2015-01-01 00:00:00.2"/>

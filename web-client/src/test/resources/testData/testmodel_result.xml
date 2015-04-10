@@ -39,7 +39,8 @@
   <inputparameter name="Heat_storage_tank_height" defaultvalue="15.0"/>
   <inputparameter name="simulation_start" defaultvalue="2015-01-01T00:00:00"/>
   <inputparameter name="simulation_end" defaultvalue="2015-01-01T00:00:00"/>
-  <algorithm/>
+  <algorithm description="grid search"/>
+  <algorithm description="genetic algorithm"/>
   <scenariogenerator/>
   <scenario description="1st test scenario" status="SUCCESS"/>
   <scenario description="2nd test scenario"/>
@@ -62,10 +63,16 @@
   <outputvariable name="MULTIPLYER_OUTPUT"/>
   <outputvariable name="MULTIPLYER_OUTPUT"/>
   <outputvariable name="MULTIPLYER_OUTPUT"/>
-  <modelparameter/>
   <extparam defaulttimeseries="1" defaultvalue="dummy" name="fuel_cost"/>
   <extparam defaultvalue="100" name="x"/>
-  <algoparam/>
+  <algoparam name="max runtime [minutes]"/>
+  <algoparam name="max scenarios"/>
+  <algoparam name="max runtime [minutes]"/>
+  <algoparam name="number of generations"/>
+  <algoparam name="population size"/>
+  <algoparam name="number of parents per generation"/>
+  <algoparam name="number of offspring per generation"/>
+  <algoparam name="seed of the random number generator"/>
   <algoparamval/>
   <appuser/>
   <usergroup/>
@@ -103,6 +110,7 @@
   <inputparamval value="14.0"/>
   <inputparamval value="15.0"/>
   <inputparamval value="16.0"/>
+  <modelparameter/>
   <metricval value="3.2009353830528E11"/>
   <metricval value="3.2009353830528E13"/>
   <timeseriesval value="100.0" time="1970-01-01 00:00:00.0"/>
