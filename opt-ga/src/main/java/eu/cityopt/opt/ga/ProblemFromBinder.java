@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 import eu.cityopt.opt.io.JacksonBinder;
+import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationModel;
@@ -34,9 +35,10 @@ public class ProblemFromBinder implements Provider<OptimisationProblem> {
     @Inject
     public ProblemFromBinder(SimulationModel model,
                              @Named("timeOrigin") @Nullable Instant t0,
-                             JacksonBinder binder)
+                             JacksonBinder binder,
+                             Evaluator evaluator)
                                      throws ParseException, ScriptException {
-        Namespace ns = binder.makeNamespace(
+        Namespace ns = binder.makeNamespace(evaluator,
                 t0 != null ? t0 : model.getTimeOrigin());
         p = new OptimisationProblem(model, new ExternalParameters(ns));
         binder.addToProblem(p);

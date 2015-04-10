@@ -40,13 +40,15 @@ import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.NumericInterval;
 import eu.cityopt.sim.eval.ObjectiveExpression;
 import eu.cityopt.sim.eval.SimulationModel;
+import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.OptimisationProblem;
 
 /**
  * A Jackson-mapped class for {@link OptimisationProblem} definition.
  * If you have a {@link SimulationModel}, the time origin (possibly from
- * the model object) and a JacksonBinder, you can construct an
+ * the model object), external parameter time series in
+ * {@link TimeSeriesData} and a JacksonBinder, you can construct an
  * OptimisationProblem.  JacksonBinder is (de)serialisable with Jackson.
  * 
  * @author ttekth
@@ -92,7 +94,8 @@ public class JacksonBinder {
         /**
          * Add this item to an {@link OptimisationProblem}.
          */
-        public abstract void addToProblem(OptimisationProblem prob)
+        public abstract void addToProblem(
+                OptimisationProblem prob, TimeSeriesData tsData)
                 throws ParseException, ScriptException;
         
         /**
@@ -145,12 +148,22 @@ public class JacksonBinder {
         }
 
         @Override
-        public void addToProblem(OptimisationProblem prob)
-                throws ParseException {
+        public void addToProblem(OptimisationProblem prob,
+                TimeSeriesData tsData) throws ParseException {
             ExternalParameters ext = prob.inputConst.getExternalParameters();
-            if (type.isTimeSeriesType())
-                return; // Not supported.
-            ext.putString(name, value);
+            if (type.isTimeSeriesType()) {
+                Evaluator ev = prob.getNamespace().evaluator;
+                TimeSeriesData.Series sd = tsData.getSeriesData(name);
+                if (sd == null) {
+                    throw new IllegalArgumentException(
+                            "No time series data for external parameter "
+                            + name);
+                }
+                TimeSeriesI ts = ev.makeTS(type, sd.times, sd.values);
+                ext.put(name, ts);
+            } else {
+                ext.putString(name, value);
+            }
         }
     }
     
@@ -165,8 +178,9 @@ public class JacksonBinder {
         }
 
         @Override
-        public void addToProblem(OptimisationProblem prob)
-                throws ParseException, ScriptException {
+        public void addToProblem(
+                OptimisationProblem prob, TimeSeriesData tsData)
+                        throws ParseException, ScriptException {
             Namespace ns = prob.getNamespace();
             if (!(value == null ^ expr == null))
                 throw new IllegalArgumentException(String.format(
@@ -188,7 +202,8 @@ public class JacksonBinder {
         }
 
         @Override
-        public void addToProblem(OptimisationProblem prob) {}
+        public void addToProblem(
+                OptimisationProblem prob, TimeSeriesData tsData) {}
     }
     
     public static class DecisionVar extends CompVar {
@@ -204,8 +219,8 @@ public class JacksonBinder {
         }
 
         @Override
-        public void addToProblem(OptimisationProblem prob)
-                throws ParseException {
+        public void addToProblem(OptimisationProblem prob,
+                TimeSeriesData tsData) throws ParseException {
             Namespace ns = prob.getNamespace();
             switch (type) {
             case DOUBLE:
@@ -237,8 +252,8 @@ public class JacksonBinder {
         }
 
         @Override
-        public void addToProblem(OptimisationProblem prob)
-                throws ScriptException {
+        public void addToProblem(OptimisationProblem prob,
+                TimeSeriesData tsData) throws ScriptException {
             Namespace ns = prob.getNamespace();
             if (expression == null)
                 throw new IllegalArgumentException("Missing expression");
@@ -254,8 +269,8 @@ public class JacksonBinder {
         public void addToNamespace(Namespace ns) {}
 
         @Override
-        public void addToProblem(OptimisationProblem prob)
-                throws ScriptException {
+        public void addToProblem(OptimisationProblem prob,
+                TimeSeriesData tsData) throws ScriptException {
             if (expression == null)
                 throw new IllegalArgumentException("Missing expression");
             else {
@@ -278,8 +293,8 @@ public class JacksonBinder {
         public void addToNamespace(Namespace ns) {}
 
         @Override
-        public void addToProblem(OptimisationProblem prob)
-                throws ScriptException {
+        public void addToProblem(OptimisationProblem prob,
+                TimeSeriesData tsData) throws ScriptException {
             Boolean is_max = isMaximize(type);
             if (expression == null)
                 throw new IllegalArgumentException(
@@ -304,6 +319,9 @@ public class JacksonBinder {
  
     @JsonIgnore
     final private List<Item> items;
+
+    @JsonIgnore
+    final private TimeSeriesData tsData;
     
     /**
      * Read from a file.
@@ -311,25 +329,29 @@ public class JacksonBinder {
     @Inject
     public JacksonBinder(
             @Named("problem") ObjectReader reader,
-            @Named("problem") Path file)
+            @Named("problem") Path file,
+            TimeSeriesData tsData)
             throws JsonProcessingException, IOException {
         JacksonBinder bd = reader.readValue(file.toFile());
         this.items = bd.getItems();
+        this.tsData = tsData;
     }
 
     /**
      * Read from an input stream.
      */
     public JacksonBinder(
-            ObjectReader reader, InputStream stream)
+            ObjectReader reader, InputStream stream, TimeSeriesData tsData)
             throws JsonProcessingException, IOException {
         JacksonBinder bd = reader.readValue(stream);
         this.items = bd.getItems();
+        this.tsData = tsData;
     }
 
     @JsonCreator
     public JacksonBinder(List<Item> items) {
         this.items = items;
+        this.tsData = null;
     }
 
     @JsonValue
@@ -361,13 +383,13 @@ public class JacksonBinder {
     
     /**
      * Create a {@link Namespace} and populate it with our items.
+     * @param evaluator
      * @param timeOrigin time stamp corresponding to t = 0
      * @return a new Namespace.
      */
-    public Namespace makeNamespace(
-            Instant timeOrigin) {
+    public Namespace makeNamespace(Evaluator evaluator, Instant timeOrigin) {
         checkNames();
-        Namespace ns = new Namespace(new Evaluator(), timeOrigin, true);
+        Namespace ns = new Namespace(evaluator, timeOrigin, true);
         items.forEach(item -> item.addToNamespace(ns));
         return ns;
     }
@@ -384,7 +406,7 @@ public class JacksonBinder {
             OptimisationProblem prob)
                     throws ParseException, ScriptException {
         for (Item item : items) {
-            item.addToProblem(prob);
+            item.addToProblem(prob, tsData);
         }
     }
     
