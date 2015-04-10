@@ -9,9 +9,12 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.StringJoiner;
+import java.util.regex.Pattern;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
@@ -30,10 +33,16 @@ import com.google.inject.Key;
 import com.google.inject.grapher.graphviz.GraphvizGrapher;
 import com.google.inject.grapher.graphviz.GraphvizModule;
 import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
 import eu.cityopt.opt.ga.CityoptFileModule;
+import eu.cityopt.opt.ga.TimeSeriesLoader;
+import eu.cityopt.sim.eval.EvaluationSetup;
+import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.SimulationModel;
+import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.opt.OptimisationProblem;
 
 public class JacksonTest {
@@ -48,7 +57,24 @@ public class JacksonTest {
         Instant t0 = Instant.parse(props.getProperty("time_origin"));
         Path mfile = dataDir.resolve(props.getProperty("model_file"));
         Path pfile = dataDir.resolve(props.getProperty("problem_file"));
-       
+        List<Path> tsfiles = new ArrayList<>();
+        String tspath;
+
+        TestModule() {
+            // The paths in property ts_files are interpreted as relative to
+            // dataDir
+            String sep = System.getProperty("path.separator");
+            String[] names = props.getProperty("ts_files").split(
+                    Pattern.quote(sep));
+            StringJoiner joiner = new StringJoiner(sep);
+            for (String name : names) {
+                Path p = dataDir.resolve(name);
+                tsfiles.add(p);
+                joiner.add(p.toString());
+            }
+            tspath = joiner.toString();
+        }
+
         @Override
         protected void configure() {
             bind(Instant.class).annotatedWith(Names.named("timeOrigin"))
@@ -57,9 +83,24 @@ public class JacksonTest {
                     .toInstance(mfile);
             bind(Path.class).annotatedWith(Names.named("problem"))
                     .toInstance(pfile);
+            bind(String.class).annotatedWith(Names.named("timeseries"))
+                    .toInstance(tspath);
         }
     }
-   
+
+    public static class TsTestModule extends TestModule {
+        Evaluator evaluator = new Evaluator();
+
+        @Override
+        protected void configure() {
+            super.configure();
+            bind(Evaluator.class).toInstance(evaluator);
+            bind(TimeSeriesData.class).toProvider(TimeSeriesLoader.class);
+            bind(SimulationModel.class).toProvider(
+                    Providers.<SimulationModel>of(null));
+        }
+    }
+
     @BeforeClass
     public static void setupProps() throws Exception {
         URL purl = JacksonTest.class.getResource(propsName);
@@ -102,7 +143,7 @@ public class JacksonTest {
                 String.format("[%s, %s]", row, row), JacksonBinder.class);
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("duplicate");
-        binder.makeNamespace(tm.t0);
+        binder.makeNamespace(new Evaluator(), tm.t0);
     }
     
     @Test
@@ -116,12 +157,12 @@ public class JacksonTest {
         String rowsf = String.format("[%s, %s]", rowf, rowf);
         JacksonBinder binder = json.readValue(
                 String.format(rowsf, "c1", "c2"), JacksonBinder.class);
-        binder.makeNamespace(tm.t0);
+        binder.makeNamespace(new Evaluator(), tm.t0);
     }
 
     @Test
     public void testReadCSV() throws Exception {
-        TestModule tm = new TestModule();
+        TsTestModule tm = new TsTestModule();
         JacksonCsvModule jm = new JacksonCsvModule();
         Injector csv_inj = Guice.createInjector(jm, tm);
         JacksonBinder binder = csv_inj.getInstance(JacksonBinder.class);
@@ -133,7 +174,7 @@ public class JacksonTest {
                 Key.get(ObjectWriter.class, Names.named("problem")));
         wtr.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
                 .writeValue(System.out, binder);
-        Namespace ns = binder.makeNamespace(tm.t0);
+        Namespace ns = binder.makeNamespace(tm.evaluator, tm.t0);
         OptimisationProblem p = new OptimisationProblem(
                 null, new ExternalParameters(ns));
         binder.addToProblem(p);
@@ -143,11 +184,36 @@ public class JacksonTest {
 
     @Test
     public void testReadCsvFacade() throws Exception {
-        OptimisationProblem p = OptimisationProblemIO.readCsv(
-                JacksonTest.dataDir.resolve(props.getProperty("problem_file")),
-                Instant.parse(props.getProperty("time_origin")));
+        TestModule tm = new TestModule();
+        CsvTimeSeriesData tsd = new CsvTimeSeriesData(
+                new EvaluationSetup(new Evaluator(), tm.t0));
+        for (Path tsfile : tm.tsfiles) {
+            tsd.read(tsfile);
+        }
+        OptimisationProblem p = OptimisationProblemIO.readCsv(tm.pfile, tsd);
         checkProblem(p);
         assertNull(p.model);
+        TimeSeriesI ts = p.getExternalParameters().getTS("fuel_cost");
+        assertEquals(3, ts.getValues().length);
+    }
+
+    @Test
+    public void testReadTimeSeries() throws Exception {
+        Evaluator evaluator = new Evaluator();
+        Instant t0 = Instant.parse("2050-01-01T00:00:00Z"); 
+        EvaluationSetup setup = new EvaluationSetup(evaluator, t0);
+        CsvTimeSeriesData tsd = new CsvTimeSeriesData(setup);
+        String name = "/timeSeries.csv";
+        try (InputStream is = getClass().getResourceAsStream(name)) {
+            tsd.read(is, name);
+        }
+        TimeSeriesData.Series sd = tsd.getSeriesData("fuel_cost");
+        System.out.println("times = " + Arrays.toString(sd.times));
+        System.out.println("fuel_cost = " + Arrays.toString(sd.values));
+        final double delta = 1e-12;
+        assertArrayEquals(new double[] { -t0.toEpochMilli()/1000, -1.0, 0.0 },
+                sd.times, delta);
+        assertArrayEquals(new double[] { 10.0, 10.0, 10.0 }, sd.values, delta);
     }
 
     private CityoptFileModule getCityoptFileModule() {

@@ -22,7 +22,7 @@ public class EvaluationSetup {
      */
     final double originTimestamp;
 
-    EvaluationSetup(Evaluator evaluator, Instant timeOrigin) {
+    public EvaluationSetup(Evaluator evaluator, Instant timeOrigin) {
         this.evaluator = evaluator;
         this.timeOrigin = timeOrigin;
         this.originTimestamp = (timeOrigin != null)

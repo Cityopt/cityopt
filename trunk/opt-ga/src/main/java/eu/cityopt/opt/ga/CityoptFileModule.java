@@ -12,6 +12,8 @@ import org.opt4j.core.start.Constant;
 import com.google.inject.name.Names;
 
 import eu.cityopt.opt.io.JacksonCsvModule;
+import eu.cityopt.opt.io.TimeSeriesData;
+import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.HashSimulationStorage;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationStorage;
@@ -49,6 +51,11 @@ public class CityoptFileModule extends ProblemModule {
     @Constant(value="problemFile", namespace=CityoptFileModule.class)
     private String problemFile = "";
 
+    @Info("The optimisation problem time series file")
+    @File
+    @Constant(value="timeSeriesFile", namespace=CityoptFileModule.class)
+    private String timeSeriesFile = "";
+
     @Override
     public void config() {
         install(new CityoptModule());
@@ -61,10 +68,14 @@ public class CityoptFileModule extends ProblemModule {
                 Paths.get(modelFile));
         bind(Path.class).annotatedWith(Names.named("problem")).toInstance(
                 Paths.get(problemFile));
+        bind(TimeSeriesData.class).toProvider(TimeSeriesLoader.class);
+        bind(String.class).annotatedWith(Names.named("timeseries")).toInstance(
+                timeSeriesFile);
         bind(Instant.class).annotatedWith(Names.named("timeOrigin"))
                 .toInstance(Instant.parse(timeOrigin));
         bind(SimulationStorage.class).to(HashSimulationStorage.class)
                 .in(SINGLETON);
+        bind(Evaluator.class).in(SINGLETON);
     }
 
     public String getAprosDir() {
@@ -95,18 +106,23 @@ public class CityoptFileModule extends ProblemModule {
         return modelFile;
     }
 
-
     public void setModelFile(String modelFile) {
         this.modelFile = modelFile;
     }
-
 
     public String getProblemFile() {
         return problemFile;
     }
 
-
     public void setProblemFile(String problemFile) {
         this.problemFile = problemFile;
+    }
+
+    public String getTimeSeriesFile() {
+        return timeSeriesFile;
+    }
+
+    public void setTimeSeriesFile(String timeSeriesFile) {
+        this.timeSeriesFile = timeSeriesFile;
     }
 }

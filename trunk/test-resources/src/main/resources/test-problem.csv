@@ -1,5 +1,5 @@
 kind,component,name,type,value,lower,upper,expression
-ext,,fuel_cost,Double,1,,,
+ext,,fuel_cost,TimeSeries/linear,,,,
 ext,,x,Double,100,,,
 in,CITYOPT,simulation_end,Timestamp,2015-06-27T00:00:00Z,,,
 in,CITYOPT,simulation_start,Timestamp,2015-06-20T00:00:00Z,,,

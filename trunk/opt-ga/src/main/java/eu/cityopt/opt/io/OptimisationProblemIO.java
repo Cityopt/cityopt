@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.text.ParseException;
-import java.time.Instant;
 
 import javax.script.ScriptException;
 
 import com.fasterxml.jackson.databind.ObjectReader;
 
+import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.opt.OptimisationProblem;
@@ -22,18 +22,20 @@ import eu.cityopt.sim.opt.OptimisationProblem;
  * @author Hannu Rummukainen
  */
 public class OptimisationProblemIO {
-    public static OptimisationProblem readCsv(Path path, Instant timeOrigin)
+    public static OptimisationProblem readCsv(Path path, TimeSeriesData timeSeriesData)
             throws ParseException, ScriptException, IOException {
         try (FileInputStream fis = new FileInputStream(path.toFile())) {
-            return readCsv(fis, timeOrigin);
+            return readCsv(fis, timeSeriesData);
         }
     }
 
-    public static OptimisationProblem readCsv(InputStream problemStream, Instant timeOrigin)
+    public static OptimisationProblem readCsv(
+            InputStream problemStream, TimeSeriesData timeSeriesData)
             throws ParseException, ScriptException, IOException {
         ObjectReader reader = JacksonCsvModule.getReader(JacksonCsvModule.getCsvMapper());
-        JacksonBinder binder = new JacksonBinder(reader, problemStream);
-        Namespace ns = binder.makeNamespace(timeOrigin);
+        JacksonBinder binder = new JacksonBinder(reader, problemStream, timeSeriesData);
+        EvaluationSetup setup = timeSeriesData.getEvaluationSetup();
+        Namespace ns = binder.makeNamespace(setup.evaluator, setup.timeOrigin);
         OptimisationProblem problem = new OptimisationProblem(
                 null, new ExternalParameters(ns));
         binder.addToProblem(problem);
