@@ -4,6 +4,7 @@
     <groupId>eu.cityopt</groupId>
     <artifactId>cityopt-planning</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent>
   <artifactId>test-resources</artifactId>
   <name>Cityopt common test resources</name>

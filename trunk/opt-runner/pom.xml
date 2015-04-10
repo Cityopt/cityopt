@@ -7,6 +7,7 @@
 		<groupId>eu.cityopt</groupId>
 		<artifactId>cityopt-planning</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>opt-runner</artifactId>
 	<name>Cityopt Opt4J runner</name>
