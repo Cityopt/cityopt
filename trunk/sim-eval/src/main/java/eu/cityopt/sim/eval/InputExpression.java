@@ -10,8 +10,7 @@ import javax.script.ScriptException;
  * @author Hannu Rummukainen
  */
 public class InputExpression extends Expression {
-    private final String componentName;
-    private final String inputName;
+    Symbol input;
 
     /**
      * Constructs an instance associated with a specific input variable.
@@ -24,8 +23,7 @@ public class InputExpression extends Expression {
     public InputExpression(String componentName, String inputName,
             String source, Evaluator evaluator) throws ScriptException {
         super(source, evaluator);
-        this.componentName = componentName;
-        this.inputName = inputName;
+        this.input = new Symbol(componentName, inputName);
     }
 
     /**
@@ -44,11 +42,7 @@ public class InputExpression extends Expression {
                 evaluator);
     }
 
-    public String getComponentName() {
-        return componentName;
-    }
-
-    public String getInputName() {
-        return inputName;
+    public Symbol getInput() {
+        return input;
     }
 }

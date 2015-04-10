@@ -36,6 +36,10 @@ public class Constraint {
         return name;
     }
 
+    public Expression getExpression() {
+        return expression;
+    }
+
     /**
      * Computes the infeasibility of the constraint, i.e. by how much it is
      * violated. 0.0 means that the constraint is satisfied, positive values
@@ -67,5 +71,13 @@ public class Constraint {
         } else {
             throw new InvalidValueException(value, expression.source);
         }
+    }
+
+    public double getLowerBound() {
+        return lowerBound;
+    }
+
+    public double getUpperBound() {
+        return upperBound;
     }
 }

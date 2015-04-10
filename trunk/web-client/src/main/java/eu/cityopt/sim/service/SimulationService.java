@@ -40,13 +40,18 @@ import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
+import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesVal;
+import eu.cityopt.repository.ExtParamValRepository;
+import eu.cityopt.repository.ExtParamValSetCompRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioRepository;
+import eu.cityopt.repository.TimeSeriesRepository;
 import eu.cityopt.repository.TimeSeriesValRepository;
+import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
@@ -89,7 +94,11 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
 
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ScenarioRepository scenarioRepository;
+    @Autowired private TypeRepository typeRepository;
+    @Autowired private ExtParamValRepository extParamValRepository;
     @Autowired private ExtParamValSetRepository extParamValSetRepository;
+    @Autowired private ExtParamValSetCompRepository extParamValSetCompRepository;
+    @Autowired private TimeSeriesRepository timeSeriesRepository;
     @Autowired private TimeSeriesValRepository timeSeriesValRepository;
 
     @Autowired private ApplicationContext applicationContext;
@@ -516,6 +525,93 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                 (DbSimulationStorageI) applicationContext.getBean("dbSimulationStorage");
         storage.initialize(storage, prjid, externals, userId, scenGenId);
         return storage;
+    }
+
+    ExtParamValSet saveExternalParameterValues(Project project,
+            ExternalParameters simExternals, ScenarioMetrics newScenarioMetrics,
+            ScenarioGenerator newScenarioGenerator, List<Runnable> idUpdateList) {
+        Integer extId = simExternals.getExternalId();
+        if (extId != null) {
+            // TODO: Should we check if the external parameter value set has changed?
+            return extParamValSetRepository.findOne(extId);
+        }
+        Namespace namespace = simExternals.getNamespace();
+
+        ExtParamValSet extParamValSet = new ExtParamValSet();
+        for (ExtParam extParam : project.getExtparams()) {
+            String extName = extParam.getName();
+            Type simType = namespace.externals.get(extName);
+            if (simType != null) {
+                eu.cityopt.model.Type type = typeRepository.findByNameLike(simType.name);
+                ExtParamVal extParamVal = new ExtParamVal();
+                extParamVal.setExtparam(extParam);
+                if (simType.isTimeSeriesType()) {
+                    TimeSeries timeSeries = saveTimeSeries(
+                            simExternals.getTS(extName), type,
+                            namespace.timeOrigin, idUpdateList);
+                    extParamVal.setTimeseries(timeSeries);
+                    timeSeries.getExtparamvals().add(extParamVal);
+                } else {
+                    extParamVal.setValue(simExternals.getString(extName));
+                }
+                ExtParamValSetComp extParamValSetComp = new ExtParamValSetComp();
+
+                extParamValSetComp.setExtparamval(extParamVal);
+                extParamVal.getExtparamvalsetcomps().add(extParamValSetComp);
+
+                extParamValSetComp.setExtparamvalset(extParamValSet);
+                extParamValSet.getExtparamvalsetcomps().add(extParamValSetComp);
+
+                extParamValRepository.save(extParamVal);
+                extParamValSetCompRepository.save(extParamValSetComp);
+                extParamValSetRepository.save(extParamValSet);
+            }
+        }
+
+        if (newScenarioMetrics != null) {
+            newScenarioMetrics.setExtparamvalset(extParamValSet);
+            extParamValSet.getScenariometricses().add(newScenarioMetrics);
+        }
+        if (newScenarioGenerator != null) {
+            newScenarioGenerator.setExtparamvalset(extParamValSet);
+            extParamValSet.getScenariogenerators().add(newScenarioGenerator);
+        }
+
+        ExtParamValSet finalExtParamValSet = extParamValSetRepository.save(extParamValSet);
+        idUpdateList.add(
+                () -> simExternals.setExternalId(finalExtParamValSet.getExtparamvalsetid()));
+        return finalExtParamValSet;
+    }
+
+    TimeSeries saveTimeSeries(TimeSeriesI simTS, eu.cityopt.model.Type type,
+            Instant timeOrigin, List<Runnable> idUpdateList) {
+        if (simTS.getTimeSeriesId() != null) {
+            TimeSeries timeSeries = timeSeriesRepository.findOne(simTS.getTimeSeriesId());
+            if (timeSeries != null) {
+                //TODO: should we check if the time series has changed?
+                return timeSeries;
+            }
+            simTS.setTimeSeriesId(null);
+        }
+        TimeSeries timeSeries = new TimeSeries();
+        timeSeries.setType(type);
+        double[] times = simTS.getTimes();
+        double[] values = simTS.getValues();
+        int n = times.length;
+        for (int i = 0; i < n; ++i) {
+            TimeSeriesVal timeSeriesVal = new TimeSeriesVal();
+
+            timeSeriesVal.setTime(TimeUtils.toDate(times[i], timeOrigin));
+            timeSeriesVal.setValue(Double.toString(values[i]));
+
+            timeSeriesVal.setTimeseries(timeSeries);
+            timeSeries.getTimeseriesvals().add(timeSeriesVal);
+        }
+        timeSeriesValRepository.save(timeSeries.getTimeseriesvals());
+        timeSeriesRepository.save(timeSeries);
+        // Copy the database row id once it is available.
+        idUpdateList.add(() -> simTS.setTimeSeriesId(timeSeries.getTseriesid()));
+        return timeSeries;
     }
 
     @Override

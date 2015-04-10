@@ -3,6 +3,7 @@ package eu.cityopt.sim.service;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 import eu.cityopt.model.SimulationModel;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.SimulationModelRepository;
+import eu.cityopt.sim.eval.util.TempDir;
 
 public class SimulationTestBase {
     @Autowired
@@ -65,5 +67,19 @@ public class SimulationTestBase {
             }
         }
         return out.toArray(new String[out.size()]);
+    }
+
+    Path copyResource(String resourceName, TempDir tempDir) throws IOException {
+        return copyResource(resourceName, tempDir.getPath());
+    }
+
+    Path copyResource(String resourceName, Path workDir) throws IOException {
+        int i = resourceName.lastIndexOf('/');
+        String baseName = (i >= 0) ? resourceName.substring(i+1) : resourceName;
+        Path target = workDir.resolve(baseName);
+        try (InputStream in = getClass().getResource(resourceName).openStream()) {
+            Files.copy(in, target);
+        }
+        return target;
     }
 }

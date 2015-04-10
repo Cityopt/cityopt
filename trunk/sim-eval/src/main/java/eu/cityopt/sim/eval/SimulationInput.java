@@ -113,7 +113,7 @@ public class SimulationInput implements EvaluationContext {
                     throws ScriptException {
         for (InputExpression expression : inputExpressions) {
             Object value = expression.evaluate(decisions);
-            put(expression.getComponentName(), expression.getInputName(), value);
+            put(expression.input.componentName, expression.input.name, value);
         }
     }
 
