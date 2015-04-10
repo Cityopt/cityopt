@@ -72,6 +72,14 @@
     </xsl:copy>
   </xsl:template>
 
+  <!-- modelparameter elements are ordered by value. -->
+  <xsl:template match="modelparameter"/>
+  <xsl:template match="modelparameter" mode="sort">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+
   <!-- metricval elements are ordered by value. -->
   <xsl:template match="metricval"/>
   <xsl:template match="metricval" mode="sort">
@@ -93,6 +101,9 @@
       <xsl:apply-templates select="@*|node()"/>
       <xsl:apply-templates select="inputparamval" mode="sort">
         <xsl:sort select="concat(@inputid,@value)"/>
+      </xsl:apply-templates>
+      <xsl:apply-templates select="modelparameter" mode="sort">
+        <xsl:sort select="@value"/>
       </xsl:apply-templates>
       <xsl:apply-templates select="metricval" mode="sort">
         <xsl:sort select="@value"/>

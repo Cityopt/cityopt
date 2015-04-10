@@ -46,9 +46,6 @@
   <objectivefunctionresult/>
   <optconstraintresult/>
   <outputvariable name="PI12_MIX_MASS_FLOW"/>
-  <modelparameter expression="C01.typ"/>
-  <modelparameter expression="" value="2015-01-01T00:00:00"/>
-  <modelparameter value="2015-01-01T00:01:00"/>
   <extparam defaultvalue="100" name="d"/>
   <algoparam name="max runtime [minutes]"/>
   <algoparam name="max scenarios"/>
@@ -75,6 +72,9 @@
   <inputparamval value="2015-01-01T00:00:00Z" createdby="1"/>
   <inputparamval value="2015-01-01T00:01:00Z" createdby="1"/>
   <inputparamval value="2015-01-01T00:01:00Z" createdby="1"/>
+  <modelparameter expression="C01.typ"/>
+  <modelparameter expression="" value="2015-01-01T00:00:00"/>
+  <modelparameter value="2015-01-01T00:01:00"/>
   <metricval value="101.03143398"/>
   <metricval value="102.1154875"/>
   <metricval value="102.1154875"/>
