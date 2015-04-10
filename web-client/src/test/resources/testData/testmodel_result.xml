@@ -51,14 +51,17 @@
   <optsetscenarios/>
   <metric name="fuelconsumption" expression="integrate(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
   <metric name="fuelcost" expression="integrate(fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
-  <outputvariable name="MULTIPLYER_OUTPUT"/>
-  <outputvariable name="MULTIPLYER_OUTPUT"/>
-  <outputvariable name="MULTIPLYER_OUTPUT"/>
-  <outputvariable name="MULTIPLYER_OUTPUT"/>
-  <outputvariable name="MULTIPLYER_OUTPUT"/>
-  <outputvariable name="MULTIPLYER_OUTPUT"/>
-  <scengenobjectivefunction/>
   <decisionvariable/>
+  <scengenresult/>
+  <decisionvariableresult/>
+  <objectivefunctionresult/>
+  <optconstraintresult/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
   <modelparameter/>
   <extparam defaulttimeseries="1" defaultvalue="dummy" name="fuel_cost"/>
   <extparam defaultvalue="100" name="x"/>

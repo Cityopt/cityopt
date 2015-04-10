@@ -40,9 +40,12 @@
   <optsetscenarios/>
   <metric name="dummy" expression="C01.typ"/>
   <metric name="symmetric" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>
-  <outputvariable name="PI12_MIX_MASS_FLOW"/>
-  <scengenobjectivefunction optfunctionid="1"/>
   <decisionvariable lowerbound="1" upperbound="2"/>
+  <scengenresult/>
+  <decisionvariableresult/>
+  <objectivefunctionresult/>
+  <optconstraintresult/>
+  <outputvariable name="PI12_MIX_MASS_FLOW"/>
   <modelparameter expression="C01.typ"/>
   <modelparameter expression="" value="2015-01-01T00:00:00"/>
   <modelparameter value="2015-01-01T00:01:00"/>

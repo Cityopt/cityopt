@@ -19,6 +19,11 @@ public class Expression {
         this.script = evaluator.getCompiler().compile(source);
     }
 
+    /** Returns the source code of the expression. */
+    public String getSource() {
+        return source;
+    }
+
     /**
      * Evaluates the expression in the given context.
      */

@@ -22,6 +22,7 @@
   <xsl:template match="@metricvalid"/>
   <xsl:template match="@modelparamid"/>
   <xsl:template match="@obtfunctionid"/>
+  <xsl:template match="@optfunctionid"/>
   <xsl:template match="@optconstid"/>
   <xsl:template match="@optid"/>
   <xsl:template match="@optsearchconstid"/>
@@ -51,6 +52,7 @@
   <xsl:template match="simulationresult"/>
   <xsl:template match="extparamval"/>
   <xsl:template match="scengenoptconstraint"/>
+  <xsl:template match="scengenobjectivefunction"/>
 
   <!-- Also remove generated attributes that vary on every run. -->
   <xsl:template match="scenario/@name"/>

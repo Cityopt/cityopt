@@ -39,9 +39,12 @@
   <optsetscenarios/>
   <metric name="dummy" expression="C01.typ"/>
   <metric name="symmetric" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>
-  <outputvariable name="PI12_MIX_MASS_FLOW"/>
-  <scengenobjectivefunction/>
   <decisionvariable/>
+  <scengenresult/>
+  <decisionvariableresult/>
+  <objectivefunctionresult/>
+  <optconstraintresult/>
+  <outputvariable name="PI12_MIX_MASS_FLOW"/>
   <modelparameter/>
   <extparam defaultvalue="100" name="d"/>
   <algoparam/>

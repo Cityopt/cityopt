@@ -12,7 +12,6 @@ import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import eu.cityopt.model.ObjectiveFunction;
@@ -24,6 +23,12 @@ import eu.cityopt.model.ScenGenObjectiveFunction;
 import eu.cityopt.model.ScenGenOptConstraint;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
+import eu.cityopt.repository.ObjectiveFunctionRepository;
+import eu.cityopt.repository.OptConstraintRepository;
+import eu.cityopt.repository.OptSearchConstRepository;
+import eu.cityopt.repository.ScenGenObjectiveFunctionRepository;
+import eu.cityopt.repository.ScenGenOptConstraintRepository;
+import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.EvaluationSetup;
@@ -37,6 +42,7 @@ import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationStorage;
+import eu.cityopt.sim.eval.Type;
 
 /**
  * Support functions for database optimisation and scenario generation
@@ -48,7 +54,12 @@ import eu.cityopt.sim.eval.SimulationStorage;
 public class OptimisationSupport {
     private static Logger log = Logger.getLogger(OptimisationSupport.class); 
 
-    private @Autowired ApplicationContext applicationContext;
+    private @Autowired TypeRepository typeRepository;
+    private @Autowired ScenGenOptConstraintRepository scenGenOptConstraintRepository;
+    private @Autowired OptSearchConstRepository optSearchConstRepository;
+    private @Autowired OptConstraintRepository optConstraintRepository;
+    private @Autowired ScenGenObjectiveFunctionRepository scenGenObjectiveFunctionRepository;
+    private @Autowired ObjectiveFunctionRepository objectiveFunctionRepository;
     private @Autowired SimulationService simulationService;
 
 
@@ -193,5 +204,87 @@ public class OptimisationSupport {
         return new ObjectiveExpression(
                 objectiveFunction.getName(), objectiveFunction.getExpression(),
                 objectiveFunction.getIsmaximise(), namespace.evaluator);
+    }
+
+    public void saveConstraints(
+            ScenarioGenerator scenarioGenerator,
+            List<Constraint> constraints, EvaluationSetup setup) {
+        for (Constraint constraint : constraints) {
+            OptConstraint optConstraint = saveConstraint(
+                    scenarioGenerator.getProject(), constraint, setup);
+
+            ScenGenOptConstraint scenGenOptConstraint = new ScenGenOptConstraint();
+            optConstraint.getScengenoptconstraints().add(scenGenOptConstraint);
+            scenGenOptConstraint.setOptconstraint(optConstraint);
+
+            scenGenOptConstraint.setScenariogenerator(scenarioGenerator);
+            scenarioGenerator.getScengenoptconstraints().add(scenGenOptConstraint);
+        }
+        scenGenOptConstraintRepository.save(scenarioGenerator.getScengenoptconstraints());
+    }
+
+    public void saveConstraints(
+            Project project, OptimizationSet optimizationSet, List<Constraint> constraints,
+            EvaluationSetup setup) {
+        for (Constraint constraint : constraints) {
+            OptConstraint optConstraint = saveConstraint(project, constraint, setup);
+
+            OptSearchConst optSearchConst = new OptSearchConst();
+            optConstraint.getOptsearchconsts().add(optSearchConst);
+            optSearchConst.setOptconstraint(optConstraint);
+
+            optSearchConst.setOptimizationset(optimizationSet);
+            optimizationSet.getOptsearchconsts().add(optSearchConst);
+        }
+        optSearchConstRepository.save(optimizationSet.getOptsearchconsts());
+    }
+
+    private OptConstraint saveConstraint(
+            Project project, Constraint constraint, EvaluationSetup setup) {
+        OptConstraint optConstraint = new OptConstraint();
+        optConstraint.setName(constraint.getName());
+        optConstraint.setExpression(constraint.getExpression().getSource());
+        optConstraint.setLowerbound(Type.DOUBLE.format(constraint.getLowerBound(), setup));
+        optConstraint.setUpperbound(Type.DOUBLE.format(constraint.getUpperBound(), setup));
+        optConstraint.setProject(project);
+        project.getOptconstraints().add(optConstraint);
+        return optConstraintRepository.save(optConstraint);
+    }
+
+    public void saveObjectives(ScenarioGenerator scenarioGenerator,
+            List<ObjectiveExpression> objectives) {
+        for (ObjectiveExpression objective : objectives) {
+            ObjectiveFunction objectiveFunction = saveObjective(
+                    scenarioGenerator.getProject(), objective);
+
+            ScenGenObjectiveFunction scenGenObjectiveFunction = new ScenGenObjectiveFunction();
+            objectiveFunction.getScengenobjectivefunctions().add(scenGenObjectiveFunction);
+            scenGenObjectiveFunction.setObjectivefunction(objectiveFunction);
+
+            scenGenObjectiveFunction.setScenariogenerator(scenarioGenerator);
+            scenarioGenerator.getScengenobjectivefunctions().add(scenGenObjectiveFunction);
+        }
+        scenGenObjectiveFunctionRepository.save(scenarioGenerator.getScengenobjectivefunctions());
+    }
+
+    public void saveObjective(Project project, OptimizationSet optimizationSet,
+            ObjectiveExpression objective) {
+        ObjectiveFunction objectiveFunction = saveObjective(project, objective);
+
+        objectiveFunction.getOptimizationsets().add(optimizationSet);
+        optimizationSet.setObjectivefunction(objectiveFunction);
+    }
+
+    private ObjectiveFunction saveObjective(Project project, ObjectiveExpression objective) {
+        ObjectiveFunction objectiveFunction = new ObjectiveFunction();
+        objectiveFunction.setExpression(objective.getSource());
+        objectiveFunction.setIsmaximise(objective.isMaximize());
+        objectiveFunction.setName(objective.getName());
+        eu.cityopt.model.Type type = typeRepository.findByNameLike(Type.DOUBLE.name);
+        objectiveFunction.setType(type);
+
+        objectiveFunction.setProject(project);
+        project.getObjectivefunctions().add(objectiveFunction);
+        return objectiveFunctionRepository.save(objectiveFunction);
     }
 }

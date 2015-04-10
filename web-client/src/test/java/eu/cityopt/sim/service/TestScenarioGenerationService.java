@@ -1,12 +1,15 @@
 package eu.cityopt.sim.service;
 
 
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.concurrent.Future;
 
+import javax.inject.Inject;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -21,10 +24,12 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import eu.cityopt.model.Algorithm;
+import eu.cityopt.model.Project;
 import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.repository.AlgorithmRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.service.EntityNotFoundException;
+import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.opt.OptimisationResults;
 import eu.cityopt.sim.opt.Solution;
 
@@ -45,9 +50,10 @@ import eu.cityopt.sim.opt.Solution;
     DirtiesContextTestExecutionListener.class,
     TransactionDbUnitTestExecutionListener.class })
 public class TestScenarioGenerationService extends SimulationTestBase {
-    @Autowired ScenarioGenerationService scenarioGenerationService;
-    @Autowired ScenarioGeneratorRepository scenarioGeneratorRepository;
-    @Autowired AlgorithmRepository algorithmRepository;
+    @Inject ScenarioGenerationService scenarioGenerationService;
+    @Inject ScenarioGeneratorRepository scenarioGeneratorRepository;
+    @Inject AlgorithmRepository algorithmRepository;
+    @Inject ImportExportService importExportService;
 
     @Test
     @DatabaseSetup("classpath:/testData/plumbing_scengen.xml")
@@ -69,13 +75,36 @@ public class TestScenarioGenerationService extends SimulationTestBase {
         dumpTables("plumbing_ga");
     }
 
+    @Test
+    @Ignore("This can take a long time")
+    @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
+    public void testImportedProblem() throws Exception {
+        loadModel("Apros test model", "/testmodel.zip");
+        Project project = scenarioRepository.findByName("testscenario").get(0).getProject();
+        Integer scId = null;
+        try (TempDir tempDir = new TempDir("testimport")) {
+            Path problemPath = copyResource("/test-problem.csv", tempDir);
+            Path paramPath = copyResource("/ga.properties", tempDir);
+            Path tsPath = copyResource("/timeseries.csv", tempDir);
+            scId = importExportService.importOptimisationProblem(
+                    project.getPrjid(), "import optimisation test",
+                    problemPath, null, paramPath, tsPath);
+        }
+        runScenarioGeneration(scId, "imported");
+        dumpTables("imported_opt");
+    }
+
     private void runScenarioGeneration(String algorithmName) throws Exception {
         ScenarioGenerator scenarioGenerator =
                 scenarioGeneratorRepository.findAll().iterator().next();
         scenarioGenerator.setAlgorithm(findAlgorithm(algorithmName));
         scenarioGeneratorRepository.save(scenarioGenerator);
-        Future<OptimisationResults> job = scenarioGenerationService.startOptimisation(
-                scenarioGenerator.getScengenid(), null);
+        runScenarioGeneration(scenarioGenerator.getScengenid(), algorithmName);
+    }
+
+    private void runScenarioGeneration(int scenGenId, String algorithmName) throws Exception {
+        Future<OptimisationResults> job =
+                scenarioGenerationService.startOptimisation(scenGenId, null);
         OptimisationResults results = job.get();
         System.out.println("Results of " + algorithmName + ":");
         printResults(results);
