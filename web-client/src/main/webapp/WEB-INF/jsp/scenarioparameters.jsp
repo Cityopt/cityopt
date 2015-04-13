@@ -24,7 +24,7 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td style="width: 30px"></td>
-		<td>
+		<td valign="top">
 			<div style="overflow:scroll;height:600px;width:800px;overflow:auto">
 			<table>
 				<col style="width:30px">
@@ -65,12 +65,12 @@
 										
 										<c:forEach items="${components}" var="component">
 										<c:if test="${selectedComponent.componentid == component.componentid}">
-											<tr style="background-color: rgb(140, 200, 200)">
+											<tr style="background-color: #D4D4D4"><td>Selected</td>
 										</c:if>
 										<c:if test="${selectedComponent.componentid != component.componentid}">
 											<tr>
-										</c:if>
 											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+										</c:if>
 											<td>${component.name}</td>
 									    	<td>${component.componentid}</td>
 									   	</tr>

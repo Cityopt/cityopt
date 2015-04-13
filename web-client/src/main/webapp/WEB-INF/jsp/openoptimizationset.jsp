@@ -1,5 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%--@elvariable id="optimizationset" type="eu.cityopt.DTO.OptimizationSetDTO"--%>
+<%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -10,62 +12,36 @@
 </head>
 
 <body>
-<%@ include file="mainmenu.inc"%>
-
-<%
-	//ArrayList<Book> b = new ArrayList<Book>();
-	//b = SqlSentencesList.showCatalog(); // this method returns an arrayList with all books
-%>
-
-<div style="overflow:scroll;height:400px;width:600px;overflow:auto">
-<form method="get" action="OptimizationController">
-<h2>Open optimization set</h2>
-<table class="tablestyle" width="600" border="1">
-
-<tr height="20">
-    <th>Name</th>
-    <th>Type</th>
-    <th>User</th>
-    <th>Description</th>
-    <th>Creation date</th>
-    <th>Setting</th>
-    <th>Run</th>
-    <th>Open</th>
-</tr>
-
-<tr height="20">
-    <td>optimization set 1</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td> <input type="radio"/> </td>
-</tr>
-
-<tr height="20">
-    <td>optimization set 2</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td> <input type="radio"/> </td>
-</tr>
+<table cellspacing="0" cellpadding="0">
+	<tr>	
+		<td><%@ include file="mainmenu.inc"%></td>
+		<td width="30"></td>
+		<td valign="top">
+			<div style="overflow:scroll;height:400px;width:600px;overflow:auto">
+			<h2>Open optimization set</h2>
+			<table class="tablestyle" width="350" border="1">
+				<col style="width: 250px">
+				<col style="width: 80px">
+			
+				<tr height="20">
+				    <th>Name</th>
+				    <th>Open</th>
+				</tr>
+			
+				<c:forEach items="${optimizationsets}" var="optimizationset">
+				<tr>
+					<td>${optimizationset.name}</td>
+					<td>
+						<a href="<c:url value='editoptimizationset.html?optsetid=${optimizationset.optid}'/>">
+							<button align="right"  type="button" value="Open">Open</button>
+						</a>
+					</td>
+			   	</tr>
+				</c:forEach>
+			</table>
+			</div>
+		</td>
+	</tr>
 </table>
-
-<table width="600">
-
-<tr>
-	<td align="right">
-		<input align="right" type="submit" value="Open optimization set"/>
-    </td>
-</tr>
-      
-</table>
-</form>
-</div>
 </body>
 </html>

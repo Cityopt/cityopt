@@ -7,6 +7,6 @@ public class OptSearchConstDTO {
 
 	@Getter @Setter private Integer optsearchconstid;
 //	@Getter @Setter private OptimizationSet optimizationset;
-//	@Getter @Setter private SearchConstraint searchconstraint;
+	@Getter @Setter private SearchConstraintDTO searchconstraint;
 	
 }

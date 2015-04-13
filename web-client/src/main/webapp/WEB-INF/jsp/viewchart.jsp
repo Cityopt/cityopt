@@ -58,7 +58,7 @@
 										<tr>
 											<c:choose>
 												<c:when test="${usersession.hasScenarioId(scenario.scenid)}">
-													<tr style="background-color: rgb(140, 200, 200)">
+													<tr style="background-color: #D4D4D4">
 													<td>Added (<a href="viewchart.html?action=remove&scenarioid=${scenario.scenid}">Remove</a>)</td>
 												</c:when>
 												<c:otherwise>
@@ -90,7 +90,7 @@
 										</tr>
 										<c:forEach items="${components}" var="component">
 										<c:if test="${selectedcompid == component.componentid}">
-											<tr style="background-color: rgb(140, 200, 200)">
+											<tr style="background-color: #D4D4D4">
 											<td><a href="viewchart.html?selectedcompid=${component.componentid}">Selected</a></td>
 										</c:if>
 										<c:if test="${selectedcompid != component.componentid}">
@@ -122,7 +122,7 @@
 										<c:forEach items="${outputVars}" var="outputVar">
 											<c:choose>
 												<c:when test="${usersession.hasOutputVar(outputVar.outvarid)}">
-													<tr style="background-color: rgb(140, 200, 200)">
+													<tr style="background-color: #D4D4D4">
 													<td>Added (<a href="viewchart.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Remove</a>)</td>
 												</c:when>
 												<c:otherwise>
@@ -159,7 +159,7 @@
 										<tr>
 											<c:choose>
 												<c:when test="${usersession.hasExtParam(extParamVal.extparamvalid)}">
-													<tr style="background-color: rgb(140, 200, 200)">
+													<tr style="background-color: #D4D4D4">
 													<td>Added (<a href="viewchart.html?action=remove&extparamid=${extParamVal.extparamvalid}">Remove</a>)</td>
 												</c:when>
 												<c:otherwise>
@@ -195,7 +195,7 @@
 									<c:forEach items="${metrics}" var="metric">
 										<c:choose>
 											<c:when test="${usersession.hasMetric(metric.metid)}">
-												<tr style="background-color: rgb(140, 200, 200)">
+												<tr style="background-color: #D4D4D4">
 												<td>Added (<a href="viewchart.html?action=remove&metricid=${metric.metid}">Remove</a>)</td>
 											</c:when>
 											<c:otherwise>

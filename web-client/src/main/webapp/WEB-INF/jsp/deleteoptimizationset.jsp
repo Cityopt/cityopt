@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -33,27 +34,12 @@
     <th>Delete</th>
 </tr>
 
-<tr height="20">
-    <td>optimization set 1</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td> <input type="radio"/> </td>
-</tr>
-
-<tr height="20">
-    <td>optimization set 2</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td>x</td>
-    <td> <input type="radio"/> </td>
-</tr>
+	<c:forEach items="${optsets}" var="optset">
+	<tr>
+		<td>${optset.getOptconstraint().name}</td>
+   	</tr>
+	</c:forEach>
+	
 </table>
 
 <table width="600">

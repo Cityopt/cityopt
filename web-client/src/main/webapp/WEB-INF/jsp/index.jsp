@@ -11,36 +11,40 @@ pageEncoding="UTF-8"%>
 <title>Virtual City Login</title>
 </head>
 <body>
- 
-<h1 align="center">Your Virtual City Account</h1>
-<div id="login-error"> 
- 
-${error}</div><form action="../../j_spring_security_check" method="post" >
- 
-<div align="center"> 
-<table>
-<tr>
-<td><label for="j_username">User name:</label></td>
-<td><input id="j_username" name="j_username" type="text" /></td>
-</tr>
+<form action="../../j_spring_security_check" method="post" >
+<table height="600px" align="center">
+	<tr height="200px">
+	</tr>
+	<tr>
+		<td>
+			<div class="login">
+			<table>
+				<tr>
+					<td align="center">
+						<img src="assets/img/icon_logo_big.jpg"/>
+					</td>
+				</tr>
+				<tr>
+					<td><input class="login" id="j_username" name="j_username" type="text" value="Username" /></td>
+				</tr>
+				<tr>
+					<td><input class="login" id="j_password" name="j_password" type="password" value="Password" /></td>
+				</tr>
 
-<tr>
-<td><label for="j_password">Password:</label></td>
-<td><input id="j_password" name="j_password" type="password" /></td>
-</tr>
-
-<tr height="10"></tr>
-
-<tr>
-<td>
-</td>
-<td align="right">
-<a href="start.html">Sign in</a>
-<!--<input type="submit" value="Login"/>-->       
-</td>
-</tr>
-</table>
-</div> 
-</form></body>
+				<tr height="10"></tr>
+				<tr>
+					<td align="center">
+					<a href="start.html">Log in</a>
+					<!--<input type="submit" value="Login"/>-->       
+					</td>
+				</tr>
+			</table>
+			</div> 
+		</td>
+	</tr>
+</table>	
+<div id="login-error">${error}</div>
+</form>
+</body>
 </html>
 
