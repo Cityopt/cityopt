@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
-<form:form method="post" action="createobjfunction.html?action=create" modelAttribute="function">
+<form:form method="post" action="createobjfunction.html" modelAttribute="function">
 <table cellspacing="0" cellpadding="0">
 	<tr>
 		<td>
@@ -42,22 +42,35 @@
 								<td>
 									Output variables
 								</td>
+								<td></td>
 							</tr>
 							<tr>
 								<td></td>
 								<td>
 									<table class="tablestyle">
-										<col style="width:250px">
-										
+										<col style="width:60px">
+										<col style="width:190px">
+										<tr>
+											<th>Select</th>
+											<th>Component</th>
+										</tr>
+							
 										<c:forEach items="${components}" var="component">
 										<tr>
-											<td>${component.name}</td>
+											<c:if test="${selectedcompid == component.componentid}">
+												<tr style="background-color: #D4D4D4"><td>Selected</td>
+											</c:if>
+											<c:if test="${selectedcompid != component.componentid}">
+												<tr>
+												<td><a href="<c:url value='createobjfunction.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+											</c:if>
+												<td>${component.name}</td>
 									   	</tr>
 										</c:forEach>
-									</table>										
+									</table>
 								</td>
 								<td></td>
-								<td>
+								<td valign="top">
 									<table class="tablestyle">
 										<col style="width:250px">
 										<tr>
@@ -73,11 +86,16 @@
 								</td>
 								<td></td>
 							</tr>
+							<tr height="20">
+							</tr>
 							<tr>
 								<td></td>
 								<td>
 									Metrics
 								</td>
+								<td></td>
+								<td></td>
+								<td></td>
 							</tr>
 							<tr>
 								<td></td>
@@ -92,21 +110,44 @@
 										</c:forEach>
 									</table>										
 								</td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr height="20">
+							</tr>
+							<tr>
+								<td></td>
+								<td>Name</td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>					
+							<tr>
+								<td></td>
+								<td colspan="3"><form:input style="width:520px" type="text" path="name"/></td>
+								<td></td>
 							</tr>
 							<tr>
 								<td></td>
 								<td>Expression</td>
+								<td></td>
+								<td></td>
+								<td></td>
 							</tr>					
 							<tr>
 								<td></td>
-								<td><form:input style="width:400px" type="text" path="expression"/></td>
+								<td colspan="3"><form:input style="width:520px" type="text" path="expression"/></td>
 								<td></td>
 							</tr>
 							<tr>
 								<td></td>
 								<td></td>
-								<td><a href=""><button type="button"></button></a>
-								<a href=""><button type="button"></button></a></td>
+								<td></td>
+								<td align="right"><input type="submit" value="Ok"></input>
+								<a href="editoptimizationset.html"><button type="button">Cancel</button></a></td>
+								<td></td>
+								
 							</tr>					
 						</table>
 					</td>

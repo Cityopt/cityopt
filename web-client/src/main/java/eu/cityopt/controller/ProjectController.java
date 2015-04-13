@@ -777,14 +777,28 @@ public class ProjectController {
 
 	@RequestMapping(value="createobjfunction", method=RequestMethod.POST)
 	public String getCreateObjFunctionPost(ObjectiveFunctionDTO function, Map<String, Object> model) {
-		OptimizationSetDTO optSet = (OptimizationSetDTO) model.get("optimizationset");
+		OptimizationSetDTO optSet = null;
 		
-		if (function.getExpression() != null)
+		if (model.containsKey("optimizationset"))
 		{
-			optSet.setObjectivefunction(function);
+			optSet = (OptimizationSetDTO) model.get("optimizationset");
+			model.put("optimizationset", optSet);
+		}
+		else
+		{
+			return "error";
+		}
+		
+		if (function != null && function.getExpression() != null)
+		{
+			ObjectiveFunctionDTO newFunc = new ObjectiveFunctionDTO();
+			newFunc.setName(function.getName());
+			newFunc.setExpression(function.getExpression());
+			optSet.setObjectivefunction(newFunc);
+			optSetService.save(optSet);
 		}
 
-		List<OptSearchConstDTO> optSearchConstraints = null;////optSearchService.findAll();
+		List<OptSearchConst> optSearchConstraints = optSearchService.findAll();
 		model.put("constraints", optSearchConstraints);
 
 		return "editoptimizationset";
