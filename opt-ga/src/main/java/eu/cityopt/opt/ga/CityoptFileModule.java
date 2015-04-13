@@ -52,7 +52,7 @@ public class CityoptFileModule extends ProblemModule {
     private String problemFile = "";
 
     @Info("The optimisation problem time series file")
-    @File
+    @File(".csv")
     @Constant(value="timeSeriesFile", namespace=CityoptFileModule.class)
     private String timeSeriesFile = "";
 
