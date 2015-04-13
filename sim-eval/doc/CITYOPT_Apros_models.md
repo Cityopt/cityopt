@@ -55,15 +55,21 @@ the following properties:
 - resultFiles is a semicolon-separated list of output file patterns,
   for example: "resultFiles = *.dat;myfile.out".  It defines which files
   the Apros model outputs, and which are then read back to the CityOPT
-  database.  It is recommended that the patterns exclude any model input
-  files contained in the zip.  If the resultFiles property is not defined,
-  the default value is "results.dat".
+  database.  The patterns must not include any model input files.  If the
+  resultFiles property is not defined, the default value is "results.dat".
 
 - timeOrigin indicates the real-world time that corresponds to a simulation
   time of 0.  It is in ISO-8601 format, for example:
   "timeOrigin = 2014-04-23T04:30:45.123+01:00".
   The field has no effect as of yet; it would be natural to read it
   in the model import phase.
+
+Model result files can also be included in the zip file.  They will be used to
+find which model output variables are available, before performing any
+simulations in the CityOPT tool.  The result files are detected by file name:
+see the description of resultFiles above.  The actual data values in the
+included result files do not matter: only the header lines defining the
+variables are read by the tool.
 
 
 User component properties of an Apros model

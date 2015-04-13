@@ -7,13 +7,11 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.Writer;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
@@ -23,7 +21,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -38,25 +35,9 @@ import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
 
-public class AprosRunnerTest {
-    private final static String propsName = "/apros/test.properties";
-    private static Properties props;
-    private static Path dataDir;
-    private static Path profileDir;
+public class AprosRunnerTest extends AprosTestBase {
     private Namespace ns;
-    
-    @BeforeClass
-    public static void setupProps() throws Exception {
-        URL purl = AprosRunnerTest.class.getResource(propsName);
-        props = new Properties();
-        try (InputStream str = purl.openStream()) {
-            props.load(str);
-        }
-        dataDir = Paths.get(purl.toURI()).getParent();
-        profileDir = dataDir.resolve(
-                props.getProperty("profile_dir"));
-    }
-    
+
     @Test
     public void testGetTransformer() throws Exception {
         assertNotNull(AprosRunner.getTransformer());
@@ -118,7 +99,7 @@ public class AprosRunnerTest {
         Path modelDir = dataDir.resolve(props.getProperty("model_dir"));
         
         return new AprosRunner(
-                profileDir, props.getProperty("profile"),
+                profileDir, profileName,
                 Executors.newSingleThreadExecutor(),
                 ns, ucs, modelDir,
                 props.getProperty("result_file"));

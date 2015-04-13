@@ -69,7 +69,7 @@ public class AprosManager implements SimulatorManager {
         try {
             return new AprosRunner(profileDir, profileName, executor,
                     namespace, aprosModel.uc_props, aprosModel.modelDir.getPath(),
-                    aprosModel.resultFiles);
+                    aprosModel.resultFilePatterns);
         } catch (TransformerException e) {
             throw new ConfigurationException(
                     "Failed to process user component properties", e);

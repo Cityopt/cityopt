@@ -124,37 +124,64 @@ public class AprosJob extends CompletableFuture<SimulationOutput>
         String line = rd.readLine(); 
         return line == null ? null : line.trim().split("[ \t]+");
     }
-        
-    
-    private void readResultFile(IFile file, SimulationResults res) 
+
+    static List<String[]> parseResultHeader(BufferedReader in)
+            throws IOException {
+        String [] line = readAndSplit(in);
+        int n_cols = 0;
+        if (line != null && line.length == 1) {
+            try {
+                n_cols = Integer.parseInt(line[0]);
+            } catch (NumberFormatException e) {}
+        }
+        if (n_cols < 1) {
+            throw new IOException("Bad first line");
+        }
+
+        // First column is always time.
+        line = readAndSplit(in);
+        if (line == null) {
+            throw new IOException("Premature EOF");
+        }
+        if (line.length != 2
+                || ! line[0].equals("SIMULATION")
+                || ! line[1].equals("TIME")) {
+            throw new IOException("Expected SIMULATION TIME, got "
+                + String.join(" ",  line));
+        }
+
+        List<String[]> variables = new ArrayList<>();
+        for (int i = 1; i != n_cols; ++i) {
+            line = readAndSplit(in);
+            if (line == null) {
+                throw new IOException("Premature EOF");
+            }
+            if (line.length != 2) {
+                throw new IOException(
+                        "Bad header line " + (i + 1) + ": "
+                        + line.length + " columns");
+            }
+            variables.add(line);
+        }
+        return variables;
+    }
+
+    private static void readResultFile(IFile file, SimulationResults res) 
             throws IOException {
         Namespace ns = res.getNamespace();
         try (InputStream str = file.open();
              BufferedReader in = new BufferedReader(
                      new InputStreamReader(str))) {
-            String [] line = readAndSplit(in);
-            int n_cols;
-            if (line.length != 1
-                || (n_cols = Integer.parseInt(line[0])) < 1) {
-                throw new IOException("Bad first line");
-            }
+            List<String []> variables = parseResultHeader(in);
+            int n_cols = variables.size() + 1;
             List<String []> names = new ArrayList<>();
             List<Integer> cols = new ArrayList<>();
             List<Type> types = new ArrayList<>();
             List<List<Double>> vals = new ArrayList<>();
-            // First column is always time.
-            readAndSplit(in);
             List<Double> times = new ArrayList<>();
+            String[] line;
             for (int i = 1; i != n_cols; ++i) {
-                line = readAndSplit(in);
-                if (line == null) {
-                    throw new IOException("Premature EOF");
-                }
-                if (line.length != 2) {
-                    throw new IOException(
-                            "Bad header line " + (i + 1) + ": "
-                            + line.length + " columns");
-                }
+                line = variables.get(i - 1);
                 System.out.printf("Output: %s.%s%n", line[0], line[1]);
                 Namespace.Component comp = ns.components.get(line[0]);
                 Type type = comp != null ? comp.outputs.get(line[1]) : null;
@@ -173,10 +200,15 @@ public class AprosJob extends CompletableFuture<SimulationOutput>
                             "Line " + ln + " too short: " + line.length
                             + " < " + n_cols + " columns");
                 }
-                //TODO Translate
                 times.add(Double.parseDouble(line[0]));
                 for (int i = 0; i != cols.size(); ++i) {
-                    vals.get(i).add(Double.parseDouble(line[cols.get(i)]));
+                    String v = line[cols.get(i)];
+                    try {
+                        vals.get(i).add(Double.parseDouble(v));
+                    } catch (NumberFormatException e) {
+                        throw new IOException("Line " + ln
+                                + ": invalid value '" + v + "'");
+                    }
                 }
             }
             for (int i = 0; i != names.size(); ++i) {

@@ -153,6 +153,16 @@ public class Namespace extends EvaluationSetup {
         this.decisions = useDecisions ? new HashMap<>() : null;
     }
 
+    /**
+     * Sets up the names and types of the parameters in the virtual
+     * configuration component.
+     */
+    public void initConfigComponent() {
+        Component component = getOrNew(CONFIG_COMPONENT);
+        component.inputs.put(CONFIG_SIMULATION_START, Type.TIMESTAMP);
+        component.inputs.put(CONFIG_SIMULATION_END, Type.TIMESTAMP);
+    }
+
     public boolean usesDecisions() {
         return decisions != null;
     }
