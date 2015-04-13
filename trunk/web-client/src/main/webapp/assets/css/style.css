@@ -2,9 +2,9 @@ body {
     /*background-image: url("../img/Nice_background.jpg");*/
 	margin: 0px;
 	padding: 0px;
-	font-family: tahoma, verdana, arial, helvetica, sans-serif;
-	font-size: 12px;
-	color: #444444;
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 14px;
+	color: #4D4D4D;
 }
 
 a, a:visited, a:active {
@@ -15,16 +15,14 @@ a, a:visited, a:active {
 }
 
 a:hover {
-	color: #444444;
+	color: #4D4D4D;
 	text-decoration: underline;
 
 }
 
 h3 {
-	margin-top: 30px;
-	color: #5D6E63;
-	font-size: 14px;
-	font-weight: bold;
+	color: #B3B3B3;
+	font-size: 12px;
 }
 
 .pcenter {
@@ -51,6 +49,13 @@ blockquote {
 	margin: 15px 30px 15px 10px;
 	padding-left: 20px;
 	border-left: 5px solid #C8D0CA;
+}
+
+.login {
+  	display: table-cell;
+  	vertical-align: middle;
+  	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 14px;
 }
 
 #header {
@@ -81,28 +86,28 @@ blockquote {
 }
 
 #title h1 {
-	letter-spacing: -1px;
-	color: #ffffff;
+	color: #4D4D4D;
 	font-size: 32px;
-	font-weight: bold;
-	margin: 0;
-	padding: 0;
+	font-family: blanch, arial;
+    background-color: #FBBA00;
 }
 
 #title h1 a, #title h1 a:visited, #title h1 a:active, #title h1 a:hover {
 	letter-spacing: -1px;
-	color: #ffffff;
+	color: #4D4D4D;
 	font-size: 32px;
 	font-weight: bold;
 	margin: 0;
 	padding: 0;
 	text-decoration: none;
+    background-color: #FBBA00;
 }
 
 #title p {
 	margin-top: 0px;
 	text-align: center;
 	font-size: 12px;
+	font-family: blanch, arial;
 	color: #F1F3F2;
 }
 
@@ -180,13 +185,29 @@ blockquote {
 }
 
 .menustyle {
-	background: rgb(190, 210, 250) left bottom no-repeat;
+	background: #F7F7F7 left bottom no-repeat;
 	display: block;
 	margin: 0px 0px 14px 0px;
+	color: #808080;
+	font-family: blanch, arial;
+	font-size: 12px;
+}
+
+.menustyle a {
+	font-family: blanch, arial;
+	font-size: 12px;
+}
+
+.menustyle a:active {
+	font-size: 12px;
+}
+
+.menustyle b {
+	font-size: 14px;
 }
 
 .menustyle tr:hover {
-    background-color: rgb(230, 230, 250);
+    background-color: #F6F6F6;
 }
 
 .tablestyle {
@@ -194,33 +215,36 @@ blockquote {
     border-collapse: collapse;
     padding-left: 20px;
     margin-left: 0px;
+   	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 14px;
 }
 
 .tablestyle th {
-	background: rgb(130, 230, 160);
+	background: #47AFE2;
+	height: 30px;
 }
 
 .tablestyle td { 
 	padding:7px; 
-	border:#4e95a4 1px solid;
+	border:#47AFE2 1px solid;
 }
 
 /* Define the default color for all the table rows */
 .tablestyle tr {
-	background: rgb(190, 250, 190);
+	background: #F6F6F6;
 }
 
 /* Define the hover highlight color for the table row */
 .tablestyle tr:hover {
-    background-color: rgb(220, 250, 220);
+    background-color: #E6E6E6;
 }
 
 .frametable td {
 	vertical-align: top;
 }
 
-.selectedRowStyle tr {
-    background-color: rgb(170, 180, 190);
+.selectedRowStyle {
+    background-color: #A3A3A3;
 }
 
 .sidebarboxtop {
@@ -310,6 +334,27 @@ blockquote {
 .posttitle h2 a:hover {
 	color: #444444;
 	text-decoration: underline;
+}
+
+button, input[type="button"], input[type="submit"] {
+	background-color:#F6F6F6;
+	display:inline-block;
+	cursor:pointer;
+	color:#4D4D4D;
+	font-family: blanch, arial;
+	font-size:16px;
+	border: 0px;
+	border-radius: 6px;
+}
+
+
+button:hover, input[type="button"]:hover, input[type="submit"]:hover {
+	background-color:#47AFE2;
+}
+
+button:active, input[type="button"]:active, input[type="submit"]:active {
+	position:relative;
+	background-color:#47AFE2;
 }
 
 .postdate {

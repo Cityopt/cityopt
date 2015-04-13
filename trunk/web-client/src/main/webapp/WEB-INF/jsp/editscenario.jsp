@@ -95,10 +95,10 @@
 					</td>
 					<td valign="top">
 						<table>
-							<tr><td><input type="submit" value="Update scenario" style="width:120px"></td></tr>
-							<tr><td><a href="runscenario.html"><button type="button" style="width:120px">Run scenario</button></a></td></tr>
-							<tr><td><input type="submit" value="Abort run scenario" style="width:120px"></td></tr>
-							<tr><td><input type="submit" value="Clone scenario" style="width:120px"></td></tr>
+							<tr><td><input type="submit" value="Update scenario" style="width:200px"></td></tr>
+							<tr><td><a href="runscenario.html"><button type="button" style="width:200px">Run scenario</button></a></td></tr>
+							<tr><td><input type="submit" value="Abort run scenario" style="width:200px"></td></tr>
+							<tr><td><input type="submit" value="Clone scenario" style="width:200px"></td></tr>
 						</table>
 					</td>
 				</tr>

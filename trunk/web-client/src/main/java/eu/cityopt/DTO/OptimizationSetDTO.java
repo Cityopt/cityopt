@@ -11,8 +11,9 @@ import lombok.Setter;
 public class OptimizationSetDTO {
 
 	@Getter @Setter private int optid;
+	@Getter @Setter private ObjectiveFunctionDTO objectivefunction;
 	@Getter @Setter private ExtParamValSet extparamvalset;
-//	@Getter @Setter private ObjectiveFunctionDTO objectivefunction;
+	@Getter @Setter private Integer prjid;
 //	@Getter @Setter private ScenarioDTO scenario;
 	@Getter @Setter private ProjectDTO project;
 	@Getter @Setter private Date createdon;

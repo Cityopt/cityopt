@@ -20,7 +20,7 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width="30"></td>
-		<td>
+		<td valign="top">
 			<div style="overflow:scroll;height:600px;width:1100px;overflow:auto">
 			<table>
 				<col style="width:40px">

@@ -23,7 +23,7 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width="30"></td>
-		<td>
+		<td valign="top">
 			<div style="overflow:scroll;height:600px;width:1100px;overflow:auto">
 			<table>
 				<col style="width:40px">
@@ -67,12 +67,12 @@
 													<c:forEach items="${components}" var="component">
 													<tr>
 														<c:if test="${selectedcompid == component.componentid}">
-															<tr style="background-color: rgb(140, 200, 200)">
+															<tr style="background-color: #D4D4D4"><td>Selected</td>
 														</c:if>
 														<c:if test="${selectedcompid != component.componentid}">
 															<tr>
-														</c:if>
 															<td><a href="<c:url value='outputvariables.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+														</c:if>
 															<td>${component.name}</td>
 													    	<td>${component.componentid}</td>
 												   	</tr>

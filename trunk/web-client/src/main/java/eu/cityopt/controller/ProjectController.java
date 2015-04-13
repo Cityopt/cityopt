@@ -42,14 +42,19 @@ import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.MetricValDTO;
+import eu.cityopt.DTO.ObjectiveFunctionDTO;
+import eu.cityopt.DTO.OptSearchConstDTO;
+import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.SearchConstraintDTO;
 import eu.cityopt.DTO.SimulationResultDTO;
 import eu.cityopt.DTO.TimeSeriesDTO;
 import eu.cityopt.DTO.TimeSeriesValDTO;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
+import eu.cityopt.model.OptSearchConst;
 import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.model.Type;
 import eu.cityopt.service.AppUserServiceImpl;
@@ -64,6 +69,10 @@ import eu.cityopt.service.InputParamValServiceImpl;
 import eu.cityopt.service.InputParameterServiceImpl;
 import eu.cityopt.service.MetricServiceImpl;
 import eu.cityopt.service.MetricValServiceImpl;
+import eu.cityopt.service.ObjectiveFunctionServiceImpl;
+import eu.cityopt.service.OptSearchConstServiceImpl;
+import eu.cityopt.service.OptSetScenariosImpl;
+import eu.cityopt.service.OptimizationSetServiceImpl;
 import eu.cityopt.service.OutputVariableServiceImpl;
 import eu.cityopt.service.ProjectServiceImpl;
 import eu.cityopt.service.ScenarioServiceImpl;
@@ -80,7 +89,7 @@ import eu.cityopt.web.UnitForm;
 import eu.cityopt.web.UserSession;
 
 @Controller
-@SessionAttributes({"project", "scenario", "usersession"})
+@SessionAttributes({"project", "scenario", "optimizationset", "usersession"})
 public class ProjectController {
 	
 	@Autowired
@@ -136,6 +145,18 @@ public class ProjectController {
 
 	@Autowired
 	CopyServiceImpl copyService;
+	
+	@Autowired
+	OptimizationSetServiceImpl optSetService;
+	
+	@Autowired
+	ObjectiveFunctionServiceImpl objFuncService;
+	
+	@Autowired
+	OptSearchConstServiceImpl optSearchService;
+	
+	@Autowired
+	OptSetScenariosImpl optSetScenarioService;
 	
 	@RequestMapping(value="createproject", method=RequestMethod.GET)
 	public String getCreateProject(Map<String, Object> model) {
@@ -703,15 +724,144 @@ public class ProjectController {
 		return "coordinates";
 	}
 	
-	@RequestMapping(value="databaseoptimization",method=RequestMethod.GET)
-	public String getDatabaseOptimization(Model model){
+	@RequestMapping(value="createobjfunction",method=RequestMethod.GET)
+	public String getCreateObjFunction(Map<String, Object> model,
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		project = projectService.findByID(project.getPrjid());
 	
-		return "databaseoptimization";
+		OptimizationSetDTO optSet = (OptimizationSetDTO) model.get("optimizationset");
+		
+		if (optSet == null)
+		{
+			optSet = new OptimizationSetDTO();
+		}
+		
+		UserSession userSession = (UserSession) model.get("usersession");
+		
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+		
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+		
+		if (selectedCompId != null && !selectedCompId.isEmpty())
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
+			if (nSelectedCompId > 0)
+			{
+				userSession.setComponentId(nSelectedCompId);
+				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				model.put("outputVars", outputVars);
+			}
+			model.put("selectedcompid", nSelectedCompId);
+		}
+		
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+
+		ObjectiveFunctionDTO function = new ObjectiveFunctionDTO();
+		model.put("function", function);
+		
+		return "createobjfunction";
+	}
+
+	@RequestMapping(value="createobjfunction", method=RequestMethod.POST)
+	public String getCreateObjFunctionPost(ObjectiveFunctionDTO function, Map<String, Object> model) {
+		OptimizationSetDTO optSet = (OptimizationSetDTO) model.get("optimizationset");
+		
+		if (function.getExpression() != null)
+		{
+			optSet.setObjectivefunction(function);
+		}
+
+		List<OptSearchConstDTO> optSearchConstraints = null;////optSearchService.findAll();
+		model.put("constraints", optSearchConstraints);
+
+		return "editoptimizationset";
+	}
+	
+	@RequestMapping(value="createoptimizationset",method=RequestMethod.GET)
+	public String getCreateOptimizationSet(Map<String, Object> model) {
+	
+		OptimizationSetDTO optSet = new OptimizationSetDTO();
+		model.put("optimizationset", optSet);
+		
+		return "createoptimizationset";
+	}
+
+	@RequestMapping(value="createoptimizationset",method=RequestMethod.POST)
+	public String getCreateOptimizationSetPost(Map<String, Object> model, OptimizationSetDTO optSet) {
+	
+		List<OptSearchConst> optSearchConstraints = optSearchService.findAll();
+		model.put("constraints", optSearchConstraints);
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		if (optSet != null)
+		{
+			optSet.setProject(project);
+			
+			optSetService.save(optSet);
+		}
+		
+		model.put("optimizationset", optSet);
+		
+		return "editoptimizationset";
+	}
+
+	@RequestMapping(value="editoptimizationset",method=RequestMethod.GET)
+	public String getEditOptimizationSet(Map<String, Object> model, 
+		@RequestParam(value="optsetid", required=false) String optsetid) {
+
+		if (optsetid != null)
+		{
+			OptimizationSetDTO optSet = null;
+			int nOptSetId = Integer.parseInt(optsetid);
+			
+			try {
+				optSet = optSetService.findByID(nOptSetId);
+			} catch (NumberFormatException | EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			model.put("optimizationset", optSet);
+		}
+		else if (model.containsKey("optimizationset"))
+		{
+			OptimizationSetDTO optSet = (OptimizationSetDTO) model.get("optimizationset");
+			model.put("optimizationset", optSet);
+		}
+		else
+		{
+			return "error";
+		}
+		
+		List<OptSearchConst> optSearchConstraints = optSearchService.findAll();
+		model.put("constraints", optSearchConstraints);
+		
+		return "editoptimizationset";
 	}
 	
 	@RequestMapping(value="openoptimizationset",method=RequestMethod.GET)
-	public String getOpenOptimizationSet(Model model){
+	public String getOpenOptimizationSet(Map<String, Object> model){
 	
+		List<OptimizationSetDTO> optSets = optSetService.findAll();
+		model.put("optimizationsets", optSets);
+				
 		return "openoptimizationset";
 	}
 
@@ -720,7 +870,19 @@ public class ProjectController {
 	
 		return "deleteoptimizationset";
 	}
-
+	
+	@RequestMapping(value="createconstraint",method=RequestMethod.GET)
+	public String getCreateConstraint(Model model){
+	
+		return "createconstraint";
+	}
+	
+	@RequestMapping(value="showresults",method=RequestMethod.GET)
+	public String getShowResults(Model model){
+	
+		return "showresults";
+	}
+	
 	@RequestMapping(value="outputvariables",method=RequestMethod.GET)
 	public String getOutputVariables(Map<String, Object> model,
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
@@ -745,6 +907,7 @@ public class ProjectController {
 			//Hibernate.initialize(selectedComponent.getInputparameters());
 			//model.put("inputParams", selectedComponent.getInputparameters());
 			model.put("selectedComponent",  selectedComponent);
+			model.put("selectedcompid", selectedCompId);
 		}
 
 		model.put("project", project);
@@ -829,7 +992,6 @@ public class ProjectController {
 			try {
 				selectedComponent = componentService.findByID(nSelectedCompId);
 			} catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			model.put("selectedcompid", selectedCompId);
@@ -840,7 +1002,6 @@ public class ProjectController {
 			model.put("inputParameters", inputParams);
 		}
 
-		
 		model.put("project", project);
 		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
 		model.put("extParams", extParams);
