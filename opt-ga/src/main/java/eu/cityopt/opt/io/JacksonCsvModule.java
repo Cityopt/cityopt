@@ -54,7 +54,6 @@ public class JacksonCsvModule extends AbstractModule {
      * Different kinds of objects require different fields, hence we
      * accept and ignore unknown columns.  Empty cells are mapped to
      * null also when the target is String.
-     * @return
      */
     @Provides
     @Singleton
@@ -73,7 +72,6 @@ public class JacksonCsvModule extends AbstractModule {
      * A header row is required in the CSV.  Columns are identified by their
      * names in the header.  Column order is thus irrelevant.
      * @param mapper
-     * @return
      */
     @Provides
     @Named("problem")
@@ -87,7 +85,6 @@ public class JacksonCsvModule extends AbstractModule {
      * This uses a fixed schema: always the same columns in the same order.
      * This method needs to be modified if new columns are required.
      * @param mapper
-     * @return
      */
     @Provides
     @Named("problem")

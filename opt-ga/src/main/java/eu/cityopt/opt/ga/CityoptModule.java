@@ -4,6 +4,7 @@ import org.opt4j.core.config.annotations.Ignore;
 import org.opt4j.core.problem.ProblemModule;
 
 import eu.cityopt.sim.eval.SimulationStorage;
+import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.ScenarioNameFormat;
 
 /**
