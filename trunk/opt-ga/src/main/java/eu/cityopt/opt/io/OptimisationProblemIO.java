@@ -32,7 +32,7 @@ public class OptimisationProblemIO {
     public static OptimisationProblem readCsv(
             InputStream problemStream, TimeSeriesData timeSeriesData)
             throws ParseException, ScriptException, IOException {
-        ObjectReader reader = JacksonCsvModule.getReader(JacksonCsvModule.getCsvMapper());
+        ObjectReader reader = JacksonCsvModule.getProblemReader(JacksonCsvModule.getCsvMapper());
         JacksonBinder binder = new JacksonBinder(reader, problemStream, timeSeriesData);
         EvaluationSetup setup = timeSeriesData.getEvaluationSetup();
         Namespace ns = binder.makeNamespace(setup.evaluator, setup.timeOrigin);
