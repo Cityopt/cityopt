@@ -69,7 +69,7 @@ public class JacksonCsvModule extends AbstractModule {
     }
     
     /**
-     * Create a reader.
+     * Create a reader for problem definitions.
      * A header row is required in the CSV.  Columns are identified by their
      * names in the header.  Column order is thus irrelevant.
      * @param mapper
@@ -77,13 +77,13 @@ public class JacksonCsvModule extends AbstractModule {
      */
     @Provides
     @Named("problem")
-    public static ObjectReader getReader(CsvMapper mapper) {
+    public static ObjectReader getProblemReader(CsvMapper mapper) {
         return mapper.reader(JacksonBinder.class)
                 .with(CsvSchema.emptySchema().withHeader());
     }
     
     /**
-     * Create a writer.
+     * Create a writer for problem definitions.
      * This uses a fixed schema: always the same columns in the same order.
      * This method needs to be modified if new columns are required.
      * @param mapper
@@ -91,7 +91,7 @@ public class JacksonCsvModule extends AbstractModule {
      */
     @Provides
     @Named("problem")
-    public static ObjectWriter getWriter(CsvMapper mapper) {
+    public static ObjectWriter getProblemWriter(CsvMapper mapper) {
         /* Automatic schema creation does not appear to work for polymorphic
          * data.
          */
