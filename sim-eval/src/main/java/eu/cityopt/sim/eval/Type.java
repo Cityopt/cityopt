@@ -240,7 +240,7 @@ public enum Type {
      * <br>User text representation: not supported.
      * <br>Python type: TimeSeries from the cityopt module
      */
-    TIMESERIES_STEP("TimeSeries/Step") {
+    TIMESERIES_STEP("TimeSeries/step") {
         @Override
         public TimeSeries parse(String value, EvaluationSetup setup) {
             throw new UnsupportedOperationException(
@@ -281,7 +281,7 @@ public enum Type {
      * <br>User text representation: not supported. 
      * <br>Python type: TimeSeries from the cityopt module
      */
-    TIMESERIES_LINEAR("TimeSeries/Linear") {
+    TIMESERIES_LINEAR("TimeSeries/linear") {
         @Override
         public TimeSeries parse(String value, EvaluationSetup setup) {
             throw new UnsupportedOperationException(
