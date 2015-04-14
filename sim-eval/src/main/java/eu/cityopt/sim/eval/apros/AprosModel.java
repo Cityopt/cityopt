@@ -214,30 +214,40 @@ public class AprosModel implements SimulationModel {
     String findOutputs(SyntaxChecker syntaxChecker, Namespace newNamespace) {
         String warnings = "";
         if (modelOutputs == null) {
-            warnings += "Cannot fill in output variables: "
+            warnings += "Cannot determine output variables: "
                     + "No valid sample result files found in the zip package.\n";
         } else {
             boolean validOutputsFound = false;
             List<String> invalidComponentNames = new ArrayList<>();
+            List<String> invalidOutputNames = new ArrayList<>();
             List<String> duplicateOutputNames = new ArrayList<>();
             for (String[] variable : modelOutputs) {
                 String componentName = variable[0];
                 String outputName = variable[1];
                 if (syntaxChecker.isValidTopLevelName(componentName)) {
-                    Namespace.Component component = newNamespace.getOrNew(variable[0]);
-                    Type old = component.outputs.putIfAbsent(outputName, Type.DOUBLE);
-                    if (old != null) {
-                        duplicateOutputNames.add(componentName + "." + outputName);
+                    if (syntaxChecker.isValidAttributeName(outputName)) {
+                        Namespace.Component component = newNamespace.getOrNew(variable[0]);
+                        Type old = component.outputs.putIfAbsent(outputName, Type.DOUBLE);
+                        if (old != null) {
+                            duplicateOutputNames.add(componentName + "." + outputName);
+                        }
+                        validOutputsFound = true;
+                    } else {
+                        invalidOutputNames.add(outputName);
                     }
-                    validOutputsFound = true;
                 } else {
                     invalidComponentNames.add(componentName); 
                 }
             }
             if ( ! invalidComponentNames.isEmpty()) {
                 String s = (invalidComponentNames.size() == 1) ? "" : "s";
-                warnings += "Invalid output component name"+s+": "
+                warnings += "Invalid output name"+s+": "
                         + String.join(" ", invalidComponentNames) + "\n";
+            }
+            if ( ! invalidOutputNames.isEmpty()) {
+                String s = (invalidOutputNames.size() == 1) ? "" : "s";
+                warnings += "Invalid output variable name"+s+": "
+                        + String.join(" ", invalidOutputNames) + "\n";
             }
             if ( ! duplicateOutputNames.isEmpty()) {
                 String s = (duplicateOutputNames.size() == 1) ? "" : "s";
@@ -266,6 +276,7 @@ public class AprosModel implements SimulationModel {
                 NodeList moduleNodes = (NodeList) xpath.evaluate( 
                         moduleExpr, rootNode, XPathConstants.NODESET);
                 List<String> invalidComponentNames = new ArrayList<>();
+                List<String> invalidInputNames = new ArrayList<>();
                 List<String> duplicateInputNames = new ArrayList<>();
                 boolean propertiesSeen = false;
                 boolean validInputsFound = false;
@@ -287,6 +298,8 @@ public class AprosModel implements SimulationModel {
                                     duplicateInputNames.add(moduleName + "." + propName);
                                 }
                                 validInputsFound = true;
+                            } else {
+                                invalidInputNames.add(propName);
                             }
                         }
                     } else if (propNodes.getLength() > 0) {
@@ -308,6 +321,11 @@ public class AprosModel implements SimulationModel {
                         String s = (invalidComponentNames.size() == 1) ? "" : "s";
                         warnings += "Invalid input component name"+s+": "
                                 + String.join(" ", invalidComponentNames) + "\n";
+                    }
+                    if ( ! invalidInputNames.isEmpty()) {
+                        String s = (invalidInputNames.size() == 1) ? "" : "s";
+                        warnings += "Invalid input parameter name"+s+": "
+                                + String.join(" ", invalidInputNames) + "\n";
                     }
                     if ( ! duplicateInputNames.isEmpty()) {
                         String s = (duplicateInputNames.size() == 1) ? "" : "s";
