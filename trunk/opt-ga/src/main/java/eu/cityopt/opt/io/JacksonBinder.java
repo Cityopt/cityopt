@@ -400,7 +400,7 @@ public class JacksonBinder {
      * containing our items.
      * 
      * @param prob the problem to modify
-     * @see #makeNamespace(Instant)
+     * @see #makeNamespace
      */
     public void addToProblem(
             OptimisationProblem prob)

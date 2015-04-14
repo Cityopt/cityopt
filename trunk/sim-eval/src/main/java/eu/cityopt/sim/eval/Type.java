@@ -517,7 +517,7 @@ public enum Type {
     /**
      * Whether this is a time series type. Time series instances must be
      * constructed by calling {@link Evaluator#makeTS(Type, double[], double[])},
-     * whereas for other types you can call {@link Type#parse(String)}.
+     * whereas for other types you can call {@link Type#parse}.
      */
     public boolean isTimeSeriesType() {
         return false;

@@ -11,9 +11,9 @@ import org.python.core.PyObject;
 /**
  * Time series representation for expression evaluation in Python.
  * In Java code, please use the TimeSeriesI interface.
- *
- * @see CITYOPT Planning Tool Expression Language documentation for the
- *   supported Python operations.
+ * <p>
+ * See CITYOPT Planning Tool Expression Language documentation for the
+ * supported Python operations.
  * @author Hannu Rummukainen
  */
 public class TimeSeries implements TimeSeriesI {
