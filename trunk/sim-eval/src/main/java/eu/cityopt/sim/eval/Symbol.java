@@ -22,4 +22,19 @@ public class Symbol {
                 ? componentName + "." + name
                 : name;
     }
+
+    @Override
+    public int hashCode() {
+        return componentName.hashCode() ^ ~name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( ! (obj instanceof Symbol)) {
+            return false;
+        }
+        Symbol other = (Symbol) obj; 
+        return componentName.equals(other.componentName)
+                && name.equals(other.name); 
+    }
 }
