@@ -137,7 +137,10 @@ public class ScenarioGenerationService
             throw new IllegalStateException("Service shutting down");
         }
         ScenarioGenerator scenarioGenerator = scenarioGeneratorRepository.findOne(scenGenId);
-        String runName = "SG" + scenarioGenerator.getScengenid();
+        String runName = scenarioGenerator.getName();
+        if (runName == null) {
+            runName = "SG" + scenarioGenerator.getScengenid();
+        }
         Project project = scenarioGenerator.getProject();
 
         String algorithmName = scenarioGenerator.getAlgorithm().getDescription();
