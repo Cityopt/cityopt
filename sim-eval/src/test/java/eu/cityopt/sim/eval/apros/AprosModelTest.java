@@ -27,8 +27,8 @@ public class AprosModelTest extends AprosTestBase {
                 "Insulation_layer_factor"));
         assertEquals(0, ns.components.get("HEATING_LOAD").inputs.size());
         assertEquals(1, ns.components.get("HEATING_LOAD").outputs.size());
-        assertEquals(Type.DOUBLE, ns.components.get("HEATING_LOAD").outputs.get(
-                "MULTIPLYER_OUTPUT"));
+        assertEquals(Type.TIMESERIES_LINEAR,
+                ns.components.get("HEATING_LOAD").outputs.get("MULTIPLYER_OUTPUT"));
     }
 
     @Test

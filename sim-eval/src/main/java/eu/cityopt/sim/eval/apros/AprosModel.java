@@ -227,7 +227,8 @@ public class AprosModel implements SimulationModel {
                 if (syntaxChecker.isValidTopLevelName(componentName)) {
                     if (syntaxChecker.isValidAttributeName(outputName)) {
                         Namespace.Component component = newNamespace.getOrNew(variable[0]);
-                        Type old = component.outputs.putIfAbsent(outputName, Type.DOUBLE);
+                        Type old = component.outputs.putIfAbsent(
+                                outputName, Type.TIMESERIES_LINEAR);
                         if (old != null) {
                             duplicateOutputNames.add(componentName + "." + outputName);
                         }
