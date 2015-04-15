@@ -417,11 +417,10 @@ public class JacksonBinder {
 
     /**
      * Add metrics to a collection.
-     * The project must have been constructed with a {@link Namespace}
-     * containing our items.
      * 
-     * @param proj the project to modify
-     * @see #makeNamespace(Instant)
+     * @param metrics the collection to modify
+     * @param namespace a namespace containing our items
+     * @see #makeNamespace(Evaluator, Instant)
      */
     public void addMetrics(Collection<MetricExpression> metrics,
             Namespace namespace) throws ScriptException {

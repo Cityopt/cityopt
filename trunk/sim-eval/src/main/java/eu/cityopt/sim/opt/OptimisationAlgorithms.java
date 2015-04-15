@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import eu.cityopt.sim.eval.ConfigurationException;
 
 /**
- * Access to SearchAlgorithm implementations by name.
+ * Access to {@link OptimisationAlgorithm} implementations by name.
  *
  * @author Hannu Rummukainen
  */
@@ -22,7 +22,7 @@ public class OptimisationAlgorithms {
     }
 
     /**
-     * Returns an OptimisationAlgorithm implementation by name.
+     * Returns an {@link OptimisationAlgorithm} implementation by name.
      * @throws ConfigurationException if the name is unknown 
      */
     public static OptimisationAlgorithm get(String algorithmName)
@@ -34,7 +34,7 @@ public class OptimisationAlgorithms {
         return algorithm;
     }
 
-    /** Registers a new OptimisationAlgorithm instance. */
+    /** Registers a new {@link OptimisationAlgorithm} instance. */
     public static void register(OptimisationAlgorithm algorithm) {
         algorithms.put(algorithm.getName(), algorithm);
     }
