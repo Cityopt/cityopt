@@ -1,5 +1,6 @@
 package eu.cityopt.sim.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +9,7 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +41,15 @@ import eu.cityopt.repository.MetricRepository;
 import eu.cityopt.repository.OutputVariableRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
+import eu.cityopt.repository.SimulationModelRepository;
 import eu.cityopt.repository.UnitRepository;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.SimulationModel;
+import eu.cityopt.sim.eval.SimulatorManager;
+import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.AlgorithmParameters;
 import eu.cityopt.sim.opt.OptimisationProblem;
@@ -64,6 +70,7 @@ public class ImportExportService {
     @Inject private ScenarioGenerationService scenarioGenerationService;
 
     @Inject private ProjectRepository projectRepository;
+    @Inject private SimulationModelRepository simulationModelRepository;
     @Inject private AlgorithmRepository algorithmRepository;
     @Inject private ScenarioGeneratorRepository scenarioGeneratorRepository;
     @Inject private ExtParamRepository extParamRepository;
@@ -72,6 +79,87 @@ public class ImportExportService {
     @Inject private OutputVariableRepository outputVariableRepository;
     @Inject private MetricRepository metricRepository;
     @Inject private UnitRepository unitRepository;
+
+    /**
+     * Creates a SimulationModel row in the database.
+     * The imageblob and description fields of the SimulationModel are left null.
+     * 
+     * @param projectId id of the project in which the model is initially inserted,
+     *    or null if the model is not inserted anywhere.
+     * @param userId id of the creating user, or null
+     * @param description model description
+     * @param modelData the binary model data (e.g. zip file bytes)
+     * @param simulatorName a valid simulator name from {@link SimulatorManagers}
+     * @param overrideTimeOrigin the time corresponding to a simulation time of zero.
+     *   If null, then an attempt is made to get the origin is from the model data.
+     * @return id of the created SimulationModel row
+     * @throws ConfigurationException
+     * @throws IOException
+     */
+    @Transactional
+    public int importSimulationModel(Integer projectId, Integer userId,
+            String description, byte[] modelData,
+            String simulatorName, Instant overrideTimeOrigin)
+                    throws ConfigurationException, IOException {
+        SimulatorManager manager = SimulatorManagers.get(simulatorName);
+        SimulationModel model;
+        try (ByteArrayInputStream in = new ByteArrayInputStream(modelData)) {
+            model = manager.parseModel(in);
+        }
+        Instant timeOrigin = (overrideTimeOrigin != null)
+                ? overrideTimeOrigin : model.getTimeOrigin();
+        if (timeOrigin == null) {
+            throw new ConfigurationException("No time origin provided");
+        }
+
+        eu.cityopt.model.SimulationModel simulationModel =
+                new eu.cityopt.model.SimulationModel();
+        simulationModel.setCreatedby(userId);
+        simulationModel.setCreatedon(new Date());
+        simulationModel.setDescription(description);
+        simulationModel.setModelblob(modelData);
+        simulationModel.setSimulator(simulatorName);
+        simulationModel.setTimeorigin(Date.from(timeOrigin));
+        simulationModel = simulationModelRepository.save(simulationModel);
+
+        if (projectId != null) {
+            Project project = projectRepository.findOne(projectId);
+            project.setSimulationmodel(simulationModel);
+            simulationModel.getProjects().add(project);
+            projectRepository.save(project);
+        }
+        return simulationModel.getModelid();
+    }
+
+    /**
+     * Creates input parameters and output variables from model data.
+     * The methods picks arbitrary units of an appropriate type.
+     *
+     * @param projectId id of the project to be modified.  The project
+     *   must already have a SimulationModel with a set time origin.
+     *   Any existing input parameters and output variables will be
+     *   overwritten in case of name clashes, and otherwise left untouched.
+     * @param detailLevel indicates how much of the available input
+     *   parameters and output variables are to be included.  0 is minimal,
+     *   larger numbers may provide more results.
+     * @return human-readable warning messages about possible problems,
+     *   e.g. if there are invalid component or variable names.
+     * @throws ConfigurationException
+     * @throws IOException
+     */
+    @Transactional
+    public String importModelInputsAndOutputs(
+            int projectId, int detailLevel) throws ConfigurationException, IOException {
+        Project project = projectRepository.findOne(projectId);
+        SimulationModel model = simulationService.loadSimulationModel(project);
+        Instant timeOrigin = simulationService.loadTimeOrigin(project.getSimulationmodel());
+        Namespace namespace = new Namespace(simulationService.getEvaluator(), timeOrigin);
+        String warnings = model.findInputsAndOutputs(namespace, detailLevel);
+        Map<Type, Unit> unitMap = pickUnits();
+        saveNamespaceComponents(project, namespace, unitMap);
+        projectRepository.save(project);
+        return warnings;
+    }
 
     /**
      * Creates external parameters, input parameters, output variables
@@ -386,7 +474,7 @@ public class ImportExportService {
      *   simulation model data
      */
     public CsvTimeSeriesData makeTimeSeriesReader(Project project) {
-        Instant timeOrigin = project.getSimulationmodel().getTimeorigin().toInstant();
+        Instant timeOrigin = simulationService.loadTimeOrigin(project.getSimulationmodel());
         EvaluationSetup setup = new EvaluationSetup(simulationService.getEvaluator(), timeOrigin);
         return new CsvTimeSeriesData(setup);
     }

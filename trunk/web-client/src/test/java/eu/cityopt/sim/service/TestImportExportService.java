@@ -1,6 +1,7 @@
 package eu.cityopt.sim.service;
 
 import java.nio.file.Path;
+import java.time.Instant;
 
 import javax.inject.Inject;
 
@@ -31,6 +32,21 @@ import eu.cityopt.sim.eval.util.TempDir;
 public class TestImportExportService extends SimulationTestBase {
     @Inject ImportExportService importExportService;
     @Inject ProjectRepository projectRepository;
+
+    @Test
+    @DatabaseSetup("classpath:/testData/empty_project.xml")
+    @ExpectedDatabase(value="classpath:/testData/import_model_result.xml",
+        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testImportModel() throws Exception {
+        int projectId = projectRepository.findByName("Empty test project").get(0).getPrjid();
+        byte[] modelData = getResourceBytes("/testmodel.zip");
+        importExportService.importSimulationModel(
+                projectId, null, "test project",
+                modelData, "Apros-Combustion-5.13.06-64bit",
+                Instant.parse("2015-01-01T00:00:00Z"));
+        importExportService.importModelInputsAndOutputs(projectId, 0);
+        dumpTables("import_model", true);
+    }
 
     @Test
     @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")

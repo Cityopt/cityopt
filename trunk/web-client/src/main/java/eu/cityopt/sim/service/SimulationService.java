@@ -443,6 +443,13 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         return metricExpressions;
     }
 
+    /** Loads the time origin of a simulation model. */
+    public Instant loadTimeOrigin(eu.cityopt.model.SimulationModel simulationModel) {
+        Date timeOriginDate = simulationModel.getTimeorigin();
+        return (timeOriginDate != null)
+                ? timeOriginDate.toInstant() : DEFAULT_TIME_ORIGIN;
+    }
+
     /**
      * Loads the names and types of named objects in a project: external parameters,
      * input parameters, output variables and metrics.  The actual values are
@@ -461,9 +468,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
      *    instance from which names and types of decision variables will be loaded 
      */
     public Namespace makeProjectNamespace(Project project, ScenarioGenerator scenarioGenerator) {
-        Date timeOriginDate = project.getSimulationmodel().getTimeorigin();
-        Instant timeOrigin = (timeOriginDate != null)
-                ? timeOriginDate.toInstant() : DEFAULT_TIME_ORIGIN;
+        Instant timeOrigin = loadTimeOrigin(project.getSimulationmodel());
         Namespace namespace = new Namespace(evaluator, timeOrigin, (scenarioGenerator != null));
         for (ExtParam mExternal : project.getExtparams()) {
             Type extType = null;
