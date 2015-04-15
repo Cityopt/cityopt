@@ -19,6 +19,7 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import eu.cityopt.model.Project;
+import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.sim.eval.util.TempDir;
 
 @Transactional
@@ -29,6 +30,7 @@ import eu.cityopt.sim.eval.util.TempDir;
     TransactionDbUnitTestExecutionListener.class })
 public class TestImportExportService extends SimulationTestBase {
     @Inject ImportExportService importExportService;
+    @Inject ProjectRepository projectRepository;
 
     @Test
     @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
@@ -44,5 +46,18 @@ public class TestImportExportService extends SimulationTestBase {
                     project.getPrjid(), "testygeneration", problemPath, null, paramPath, tsPath);
         }
         dumpTables("import_problem");
+    }
+
+    @Test
+    @DatabaseSetup("classpath:/testData/empty_project.xml")
+    @ExpectedDatabase(value="classpath:/testData/import_structure_result.xml",
+        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testImportProjectStructure() throws Exception {
+        Project project = projectRepository.findByName("Empty test project").get(0);
+        try (TempDir tempDir = new TempDir("testimport")) {
+            Path problemPath = copyResource("/test-problem.csv", tempDir);
+            importExportService.importSimulationStructure(project.getPrjid(), problemPath);
+        }
+        dumpTables("import_structure");
     }
 }

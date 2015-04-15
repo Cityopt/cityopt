@@ -1,33 +1,26 @@
 package eu.cityopt.sim.opt;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.DecisionVariable;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.InputExpression;
-import eu.cityopt.sim.eval.MetricExpression;
-import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.ObjectiveExpression;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationModel;
-import eu.cityopt.sim.eval.SimulationRunner;
 
 /** The data for a simulation optimisation problem.
  * 
  * @author Timo Korvola
  */
-public class OptimisationProblem {
-    public SimulationModel model;
+public class OptimisationProblem extends SimulationStructure {
     public SimulationInput inputConst;
     public List<DecisionVariable> decisionVars = new ArrayList<>();
     public Collection<InputExpression> inputExprs = new ArrayList<>();
     public List<Constraint> constraints = new ArrayList<>();
-    public Collection<MetricExpression> metrics = new ArrayList<>();
     public List<ObjectiveExpression> objectives = new ArrayList<>();
 
     /**
@@ -36,20 +29,11 @@ public class OptimisationProblem {
      * The empty inputConst references the given external parameters object.
      */
     public OptimisationProblem(SimulationModel model, ExternalParameters ext) {
-        this.model = model;
+        super(model, ext.getNamespace());
         inputConst = new SimulationInput(ext);
-    }
-
-    public Namespace getNamespace() {
-        return inputConst.getNamespace();
     }
 
     public ExternalParameters getExternalParameters() {
         return inputConst.getExternalParameters();
-    }
-
-    public SimulationRunner makeRunner()
-            throws IOException, ConfigurationException {
-        return model.getSimulatorManager().makeRunner(model, getNamespace());
     }
 }

@@ -43,7 +43,9 @@ import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.TimeSeriesI;
+import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.OptimisationProblem;
+import eu.cityopt.sim.opt.SimulationStructure;
 
 public class JacksonTest {
     private final static String propsName = "/test.properties";
@@ -125,7 +127,6 @@ public class JacksonTest {
         assertFalse(p.inputConst.isComplete());
         assertEquals(1, p.constraints.size());
         assertEquals(2, p.decisionVars.size());
-        assertFalse(p.inputConst.isComplete());
         assertEquals(2, p.inputExprs.size());
         assertEquals(2, p.metrics.size());
         assertEquals(1, p.objectives.size());
@@ -183,6 +184,30 @@ public class JacksonTest {
     }
 
     @Test
+    public void testReadSimulationProject() throws Exception {
+        EvaluationSetup setup = new EvaluationSetup(
+                new Evaluator(), Instant.EPOCH);
+        SimulationStructure s = OptimisationProblemIO.readStructureCsv(
+                dataDir.resolve("test-project.csv"), setup);
+        assertNull(s.model);
+        assertEquals(8, s.namespace.components.size());
+
+        Namespace.Component c = s.namespace.components.get("SAMPLE_DISTRICT");
+        assertEquals(9, c.inputs.size());
+        assertEquals(0, c.outputs.size());
+        assertEquals(Type.DOUBLE, c.inputs.get("CHP_thermal_power_rating"));
+
+        c = s.namespace.components.get("HEATING_LOAD"); 
+        assertEquals(0, c.inputs.size());
+        assertEquals(1, c.outputs.size());
+        assertEquals(Type.TIMESERIES_LINEAR, c.outputs.get("MULTIPLYER_OUTPUT"));
+
+        assertEquals(2, s.namespace.metrics.size());
+        assertEquals(2, s.metrics.size());
+        assertEquals(Type.DOUBLE, s.namespace.metrics.get("fuelconsumption"));
+    }
+
+    @Test
     public void testReadCsvFacade() throws Exception {
         TestModule tm = new TestModule();
         CsvTimeSeriesData tsd = new CsvTimeSeriesData(
@@ -190,7 +215,7 @@ public class JacksonTest {
         for (Path tsfile : tm.tsfiles) {
             tsd.read(tsfile);
         }
-        OptimisationProblem p = OptimisationProblemIO.readCsv(tm.pfile, tsd);
+        OptimisationProblem p = OptimisationProblemIO.readProblemCsv(tm.pfile, tsd);
         checkProblem(p);
         assertNull(p.model);
         TimeSeriesI ts = p.getExternalParameters().getTS("fuel_cost");

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -251,14 +252,18 @@ public class JacksonBinder {
             addToNSMap(ns.metrics);
         }
 
+        public void addToCollection(Collection<MetricExpression> metrics,
+                Namespace ns) throws ScriptException {
+            if (expression == null)
+                throw new IllegalArgumentException("Missing expression");
+            metrics.add(new MetricExpression(
+                    metrics.size(), name, expression, ns.evaluator));
+        } 
+
         @Override
         public void addToProblem(OptimisationProblem prob,
                 TimeSeriesData tsData) throws ScriptException {
-            Namespace ns = prob.getNamespace();
-            if (expression == null)
-                throw new IllegalArgumentException("Missing expression");
-            prob.metrics.add(new MetricExpression(
-                    prob.metrics.size(), name, expression, ns.evaluator));
+            addToCollection(prob.metrics, prob.getNamespace());
         } 
     }
     
@@ -409,7 +414,23 @@ public class JacksonBinder {
             item.addToProblem(prob, tsData);
         }
     }
-    
+
+    /**
+     * Add metrics to a collection.
+     * The project must have been constructed with a {@link Namespace}
+     * containing our items.
+     * 
+     * @param proj the project to modify
+     * @see #makeNamespace(Instant)
+     */
+    public void addMetrics(Collection<MetricExpression> metrics,
+            Namespace namespace) throws ScriptException {
+        for (Item item : items) {
+            if (item instanceof Metric) {
+                ((Metric) item).addToCollection(metrics, namespace);
+            }
+        }
+    }
+
     //TODO OptimisationProblem -> JacksonBinder (serialisation)
-    //TODO time series (in external parameters)
 }
