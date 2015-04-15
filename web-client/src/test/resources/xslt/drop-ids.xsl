@@ -63,6 +63,8 @@
   <xsl:template match="scenario/@log"/>
   <xsl:template match="scenariogenerator/@log"/>
   <xsl:template match="inputparamval/@createdon"/>
+  <xsl:template match="simulationmodel/@createdon"/>
+  <xsl:template match="simulationmodel/@modelblob"/>
 
   <!-- inputparamval elements are ordered by inputid then value. -->
   <xsl:template match="inputparamval"/>

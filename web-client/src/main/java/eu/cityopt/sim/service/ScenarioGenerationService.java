@@ -182,6 +182,7 @@ public class ScenarioGenerationService
      * Returns set of currently ongoing optimisation runs.
      * The result is a snapshot of the situation at the time the method is called.
      * @return set of ScenarioGenerator entity ids
+     * @todo map from entity id to iteration number
      */
     public Set<Integer> getRunningOptimisations() {
         return jobManager.getJobIds();

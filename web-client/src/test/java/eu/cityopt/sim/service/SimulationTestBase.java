@@ -47,14 +47,20 @@ public class SimulationTestBase {
     }
 
     public void dumpTables(String caseName) throws Exception {
+        dumpTables(caseName, false);
+    }
+
+    public void dumpTables(String caseName, boolean includeModel) throws Exception {
         Path outputPath = Paths.get(System.getProperty("java.io.tmpdir"))
                 .resolve(caseName + "_result.xml");
         scenarioRepository.flush();
         IDatabaseConnection dbConnection = new DatabaseConnection(
                 DataSourceUtils.getConnection(dataSource));
-        String[] tableNames = copyIfNotEqual(
-                TablesDependencyHelper.getAllDependentTables(dbConnection, "scenario"),
-                "simulationmodel");
+        String[] tableNames = 
+                TablesDependencyHelper.getAllDependentTables(dbConnection, "scenario");
+        if ( ! includeModel) {
+            tableNames = copyIfNotEqual(tableNames, "simulationmodel");
+        }
         IDataSet depDataset = dbConnection.createDataSet(tableNames);
         FlatXmlDataSet.write(depDataset, new FileOutputStream(outputPath.toFile()));
     }
@@ -67,6 +73,12 @@ public class SimulationTestBase {
             }
         }
         return out.toArray(new String[out.size()]);
+    }
+
+    byte[] getResourceBytes(String resourceName) throws IOException {
+        try (InputStream in = getClass().getResource(resourceName).openStream()) {
+            return IOUtils.toByteArray(in);
+        }
     }
 
     Path copyResource(String resourceName, TempDir tempDir) throws IOException {
