@@ -14,24 +14,26 @@ import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.opt.OptimisationProblem;
+import eu.cityopt.sim.opt.SimulationStructure;
 
 /**
- * Reads OptimisationProblem instances from CSV files.
- * This is a simple facade over Jackson based (de)serialisation.
+ * Reads {@link OptimisationProblem} and {@link SimulationStructure} instances
+ * from CSV files. This is a simple facade over Jackson based (de)serialisation.
  *
  * @author Hannu Rummukainen
  */
 public class OptimisationProblemIO {
-    public static OptimisationProblem readCsv(Path path, TimeSeriesData timeSeriesData)
-            throws ParseException, ScriptException, IOException {
+    public static OptimisationProblem readProblemCsv(
+            Path path, TimeSeriesData timeSeriesData)
+                    throws ParseException, ScriptException, IOException {
         try (FileInputStream fis = new FileInputStream(path.toFile())) {
-            return readCsv(fis, timeSeriesData);
+            return readProblemCsv(fis, timeSeriesData);
         }
     }
 
-    public static OptimisationProblem readCsv(
+    public static OptimisationProblem readProblemCsv(
             InputStream problemStream, TimeSeriesData timeSeriesData)
-            throws ParseException, ScriptException, IOException {
+                    throws ParseException, ScriptException, IOException {
         ObjectReader reader = JacksonCsvModule.getProblemReader(JacksonCsvModule.getCsvMapper());
         JacksonBinder binder = new JacksonBinder(reader, problemStream, timeSeriesData);
         EvaluationSetup setup = timeSeriesData.getEvaluationSetup();
@@ -40,5 +42,24 @@ public class OptimisationProblemIO {
                 null, new ExternalParameters(ns));
         binder.addToProblem(problem);
         return problem;
+    }
+
+    public static SimulationStructure readStructureCsv(
+            Path path, EvaluationSetup setup)
+                    throws ParseException, ScriptException, IOException {
+        try (FileInputStream fis = new FileInputStream(path.toFile())) {
+            return readStructureCsv(fis, setup);
+        }
+    }
+
+    public static SimulationStructure readStructureCsv(
+            InputStream structureStream, EvaluationSetup setup)
+                    throws ParseException, ScriptException, IOException {
+        ObjectReader reader = JacksonCsvModule.getProblemReader(JacksonCsvModule.getCsvMapper());
+        JacksonBinder binder = new JacksonBinder(reader, structureStream, null);
+        Namespace ns = binder.makeNamespace(setup.evaluator, setup.timeOrigin);
+        SimulationStructure structure = new SimulationStructure(null, ns);
+        binder.addMetrics(structure.metrics, ns);
+        return structure;
     }
 }

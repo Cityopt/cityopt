@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<dataset>
+  <datareliability/>
+  <project name="Empty test project" location="Helsinki"/>
+  <component name="PV_TOTAL_ENERGY"/>
+  <component name="ETH_NETWORK"/>
+  <component name="HEATING_LOAD"/>
+  <component name="CITYOPT"/>
+  <component name="CHP_ELECT_PROD"/>
+  <component name="SAMPLE_DISTRICT"/>
+  <component name="CHP_BOIL_TH_OUT"/>
+  <component name="FUEL_CONSUMPTION"/>
+  <type name="Double"/>
+  <type name="Integer"/>
+  <type name="String"/>
+  <type name="Timestamp"/>
+  <type name="TimeSeries/step"/>
+  <type name="TimeSeries/linear"/>
+  <type name="List of Double"/>
+  <type name="List of Integer"/>
+  <type name="List of Timestamp"/>
+  <unit name="Unit/Double"/>
+  <unit name="Unit/Integer"/>
+  <unit name="Unit/String"/>
+  <unit name="Unit/Timestamp"/>
+  <unit name="Unit/TimeSeries/step"/>
+  <unit name="Unit/TimeSeries/linear"/>
+  <unit name="Unit/List of Double"/>
+  <unit name="Unit/List of Integer"/>
+  <unit name="Unit/List of Timestamp"/>
+  <inputparameter name="simulation_start"/>
+  <inputparameter name="simulation_end"/>
+  <inputparameter name="Burner_efficiency"/>
+  <inputparameter name="Heat_storage_nominal_charge_or_discharge_capacity"/>
+  <inputparameter name="CHP_thermal_power_rating"/>
+  <inputparameter name="Share_of_roof_area_occupied_by_THcollectors"/>
+  <inputparameter name="Heat_storage_tank_height"/>
+  <inputparameter name="CHP_electrical_power_rating"/>
+  <inputparameter name="Insulation_layer_factor"/>
+  <inputparameter name="Burner_nominal_power"/>
+  <inputparameter name="Share_of_roof_area_occupied_by_PVpanels"/>
+  <algorithm description="grid search"/>
+  <algorithm description="genetic algorithm"/>
+  <scenariogenerator/>
+  <scenario/>
+  <optconstraint/>
+  <objectivefunction/>
+  <optimizationset/>
+  <optsearchconst/>
+  <optsetscenarios/>
+  <metric name="fuelcost" expression="integrate(fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
+  <metric name="fuelconsumption" expression="FUEL_CONSUMPTION.MULTIPLYER_OUTPUT.values[-1]"/>
+  <decisionvariable/>
+  <scengenresult/>
+  <decisionvariableresult/>
+  <objectivefunctionresult/>
+  <optconstraintresult/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <extparam name="fuel_cost"/>
+  <extparam name="x"/>
+  <algoparam name="max runtime [minutes]"/>
+  <algoparam name="max scenarios"/>
+  <algoparam name="max runtime [minutes]"/>
+  <algoparam name="number of generations"/>
+  <algoparam name="population size"/>
+  <algoparam name="number of parents per generation"/>
+  <algoparam name="number of offspring per generation"/>
+  <algoparam name="seed of the random number generator"/>
+  <algoparamval/>
+  <appuser/>
+  <usergroup/>
+  <usergroupproject/>
+  <inputparamval/>
+  <modelparameter/>
+  <metricval/>
+  <timeseriesval/>
+</dataset>
