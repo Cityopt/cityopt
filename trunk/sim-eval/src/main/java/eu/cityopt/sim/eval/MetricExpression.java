@@ -13,13 +13,11 @@ import javax.script.ScriptException;
  */
 public class MetricExpression extends Expression {
     private final int metricId;
-    private final String metricName;
 
     public MetricExpression(int metricId, String metricName, String source,
             Evaluator evaluator) throws ScriptException {
-        super(source, evaluator);
+        super(source, metricName, evaluator);
         this.metricId = metricId;
-        this.metricName = metricName;
     }
 
     public int getMetricId() {
@@ -27,6 +25,11 @@ public class MetricExpression extends Expression {
     }
 
     public String getMetricName() {
-        return metricName;
+        return name;
+    }
+
+    @Override
+    protected String kind() {
+        return "metric";
     }
 }

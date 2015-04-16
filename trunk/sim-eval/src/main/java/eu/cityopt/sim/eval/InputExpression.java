@@ -22,7 +22,7 @@ public class InputExpression extends Expression {
      */
     public InputExpression(String componentName, String inputName,
             String source, Evaluator evaluator) throws ScriptException {
-        super(source, evaluator);
+        super(source, componentName + "." + inputName, evaluator);
         this.input = new Symbol(componentName, inputName);
     }
 
@@ -44,5 +44,10 @@ public class InputExpression extends Expression {
 
     public Symbol getInput() {
         return input;
+    }
+
+    @Override
+    protected String kind() {
+        return "input";
     }
 }

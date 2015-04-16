@@ -9,15 +9,11 @@ import javax.script.ScriptException;
  */
 @SuppressWarnings("serial")
 public class InvalidValueException extends ScriptException {
+    InvalidValueException(String message) {
+        super(message);
+    }
+
     InvalidValueException(Type expectedType, Object value) {
-        super("Expected " + expectedType + " but got " + value);
-    }
-
-    InvalidValueException(Type expectedType, Object value, String source) {
-        super("Expected " + expectedType + " but got " + value + " from script: " + source);
-    }
-
-    InvalidValueException(Object value, String source) {
-        super("Invalid value " + value + " from script: " + source);
+        super("Expected " + expectedType.name + " but got " + value);
     }
 }

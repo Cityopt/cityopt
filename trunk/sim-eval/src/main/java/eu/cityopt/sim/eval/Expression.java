@@ -9,14 +9,24 @@ import javax.script.ScriptException;
  * @author Hannu Rummukainen
  */
 public class Expression {
-    final String source;
+    protected final String source;
+    protected final String name;
     private final Evaluator evaluator;
     private final CompiledScript script;
 
     Expression(String source, Evaluator evaluator) throws ScriptException {
+        this(source, null, evaluator);
+    }
+
+    Expression(String source, String name, Evaluator evaluator) throws ScriptException {
         this.source = source;
+        this.name = name;
         this.evaluator = evaluator;
-        this.script = evaluator.getCompiler().compile(source);
+        try {
+            this.script = evaluator.getCompiler().compile(source);
+        } catch (ScriptException e) {
+            throw wrapScriptException(e);
+        }
     }
 
     /** Returns the source code of the expression. */
@@ -28,7 +38,11 @@ public class Expression {
      * Evaluates the expression in the given context.
      */
     public Object evaluate(EvaluationContext context) throws ScriptException {
-        return evaluator.eval(script, context.toBindings(), context.getEvaluationSetup());
+        try {
+            return evaluator.eval(script, context.toBindings(), context.getEvaluationSetup());
+        } catch (ScriptException e) {
+            throw wrapScriptException(e);
+        }
     }
 
     /**
@@ -38,11 +52,13 @@ public class Expression {
      * @throws InvalidValueException if the result cannot be converted
      */
     public Object evaluateAs(Type type, EvaluationContext context) throws ScriptException {
-        Object result = evaluator.eval(script, context.toBindings(), context.getEvaluationSetup());
+        Object result = evaluate(context);
         try {
             return type.fromScriptResult(result, context.getEvaluationSetup());
         } catch (InvalidValueException e) {
-            throw new InvalidValueException(type, result, source);
+            throw new InvalidValueException(mungeErrorMessage(e.getMessage()));
+        } catch (ScriptException e) {
+            throw wrapScriptException(e);
         }
     }
 
@@ -53,5 +69,28 @@ public class Expression {
      */
     public double evaluateDouble(EvaluationContext context) throws ScriptException {
         return (Double) evaluateAs(Type.DOUBLE, context);
+    }
+
+    private ScriptException wrapScriptException(ScriptException e) {
+        return new ScriptException(mungeErrorMessage(e.getMessage()));
+    }
+
+    String mungeErrorMessage(String error) {
+        StringBuilder sb = new StringBuilder();
+        if (name != null) {
+            sb.append("In ").append(kind()).append(' ').append(name).append(": ");
+        }
+        // Remove non-informative filename.
+        error = error.replaceFirst(" in <script>", "");
+        // Drop line number from the message if the expression is a one-liner.
+        if ( ! source.contains("\n")) {
+            error = error.replaceFirst(" at line number 1", "");
+        }
+        sb.append(error).append("; source: ").append(source);
+        return sb.toString();
+    }
+
+    protected String kind() {
+        return "expression";
     }
 }
