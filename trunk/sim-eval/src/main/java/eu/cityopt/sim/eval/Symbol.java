@@ -1,5 +1,7 @@
 package eu.cityopt.sim.eval;
 
+import java.util.Objects;
+
 /**
  * The qualified name of a variable or parameter.
  *
@@ -25,7 +27,9 @@ public class Symbol {
 
     @Override
     public int hashCode() {
-        return componentName.hashCode() ^ ~name.hashCode();
+        return (componentName != null)
+                ? componentName.hashCode() ^ ~name.hashCode()
+                : name.hashCode();
     }
 
     @Override
@@ -33,8 +37,8 @@ public class Symbol {
         if ( ! (obj instanceof Symbol)) {
             return false;
         }
-        Symbol other = (Symbol) obj; 
-        return componentName.equals(other.componentName)
-                && name.equals(other.name); 
+        Symbol other = (Symbol) obj;
+        return Objects.equals(componentName, other.componentName)
+                && name.equals(other.name);
     }
 }
