@@ -17,6 +17,7 @@ import java.util.concurrent.Future;
 import javax.script.CompiledScript;
 import javax.script.ScriptException;
 
+import org.hamcrest.core.StringStartsWith;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -232,6 +233,126 @@ public class TestEval {
     private TimeSeriesI ts(double value) {
         return evaluator.makeTS( 
                 Type.TIMESERIES_LINEAR, new double[] { 0 }, new double[] { value });
+    }
+
+    @Test
+    public void errorMessages() {
+        // constraint construction
+        try {
+            new Constraint("foo", "C2.x9 * (C1.x5 - C1.x9", -1.0, 0.0, evaluator);
+            fail("expected exception");
+        } catch (ScriptException e) {
+            System.out.println(e.getMessage());
+            assertThat(e.getMessage(), StringStartsWith.startsWith(
+                    "In constraint foo: SyntaxError:"));
+        }
+        // constraint evaluation
+        try {
+            new Constraint("foo", "C2.x9 / (C1.x6 - 2 * C1.x5)", -1.0, 0.0, evaluator)
+                .infeasibility(basicInput);
+            fail("expected exception");
+        } catch (ScriptException e) {
+            System.out.println(e.getMessage());
+            assertThat(e.getMessage(), StringStartsWith.startsWith(
+                    "In constraint foo: ZeroDivisionError:"));
+        }
+        // constraint value
+        try {
+            new Constraint("foo", "str(C2.x9)", -1.0, 0.0, evaluator)
+                .infeasibility(basicInput);
+            fail("expected exception");
+        } catch (ScriptException e) {
+            System.out.println(e.getMessage());
+            assertThat(e.getMessage(), StringStartsWith.startsWith(
+                    "In constraint foo: Expected number or time series but got "));
+        }
+        // objective construction
+        try {
+            new ObjectiveExpression("bar", "C1.x5 - C1.", true, evaluator);
+            fail("expected exception");
+        } catch (ScriptException e) {
+            System.out.println(e.getMessage());
+            assertThat(e.getMessage(), StringStartsWith.startsWith(
+                    "In objective bar: SyntaxError:"));
+        }
+        // objective evaluation
+        try {
+            new ObjectiveExpression("bar", "asin(C1.x6)", true, evaluator)
+                .evaluateDouble(basicInput);
+            fail("expected exception");
+        } catch (ScriptException e) {
+            System.out.println(e.getMessage());
+            assertThat(e.getMessage(), StringStartsWith.startsWith(
+                    "In objective bar: ValueError:"));
+        }
+        // objective value
+        try {
+            new ObjectiveExpression("bar", "str(C1.x6)", true, evaluator)
+                .evaluateDouble(basicInput);
+            fail("expected exception");
+        } catch (ScriptException e) {
+            System.out.println(e.getMessage());
+            assertThat(e.getMessage(), StringStartsWith.startsWith(
+                    "In objective bar: Expected Double but got "));
+        }
+        // metric construction
+        try {
+            new MetricExpression(0, "met", "C1.x5 -", evaluator);
+            fail("expected exception");
+        } catch (ScriptException e) {
+            System.out.println(e.getMessage());
+            assertThat(e.getMessage(), StringStartsWith.startsWith(
+                    "In metric met: SyntaxError:"));
+        }
+        // metric evaluation
+        try {
+            new MetricExpression(0, "met", "C1.x5 - C1", evaluator)
+                .evaluateDouble(basicInput);
+            fail("expected exception");
+        } catch (ScriptException e) {
+            System.out.println(e.getMessage());
+            assertThat(e.getMessage(), StringStartsWith.startsWith(
+                    "In metric met: TypeError:"));
+        }
+        // metric value
+        try {
+            new MetricExpression(0, "met", "a", evaluator)
+                .evaluateDouble(basicInput);
+            fail("expected exception");
+        } catch (ScriptException e) {
+            System.out.println(e.getMessage());
+            assertThat(e.getMessage(), StringStartsWith.startsWith(
+                    "In metric met: Expected Double but got "));
+        }
+        // input construction
+        try {
+            new InputExpression("C2", "x9", "C1.5x", evaluator);
+            fail("expected exception");
+        } catch (ScriptException e) {
+            System.out.println(e.getMessage());
+            assertThat(e.getMessage(), StringStartsWith.startsWith(
+                    "In input C2.x9: SyntaxError:"));
+        }
+        // input evaluation
+        try {
+            new InputExpression("C2", "x9", "sin(a)", evaluator)
+                .evaluateDouble(basicInput);
+            fail("expected exception");
+        } catch (ScriptException e) {
+            System.out.println(e.getMessage());
+            assertThat(e.getMessage(), StringStartsWith.startsWith(
+                    "In input C2.x9: TypeError:"));
+        }
+        // input value
+        try {
+            new InputExpression("C2", "x9", "C1.x5", evaluator)
+                .evaluateAs(Type.TIMESERIES_LINEAR, basicInput);
+            fail("expected exception");
+        } catch (ScriptException e) {
+            System.out.println(e.getMessage());
+            assertThat(e.getMessage(), StringStartsWith.startsWith(
+                    "In input C2.x9: Expected TimeSeries/linear but got "));
+        }
     }
 
     @Test(expected=ScriptException.class)

@@ -9,13 +9,11 @@ import javax.script.ScriptException;
  * @author Hannu Rummukainen
  */
 public class ObjectiveExpression extends Expression {
-    private final String name;
-    private boolean maximize;
+    private final boolean maximize;
 
     public ObjectiveExpression(String objectiveName, String source,
             boolean maximize, Evaluator evaluator) throws ScriptException {
-        super(source, evaluator);
-        this.name = objectiveName;
+        super(source, objectiveName, evaluator);
         this.maximize = maximize;
     }
 
@@ -35,5 +33,10 @@ public class ObjectiveExpression extends Expression {
 
     public double flipSignIfMax(double value) {
         return maximize ? -value : value;
+    }
+
+    @Override
+    protected String kind() {
+        return "objective";
     }
 }

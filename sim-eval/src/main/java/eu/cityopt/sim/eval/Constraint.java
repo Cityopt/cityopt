@@ -13,6 +13,18 @@ public class Constraint {
     private double lowerBound;
     private double upperBound;
 
+    static class ConstraintExpression extends Expression {
+        ConstraintExpression(String source, String name, Evaluator evaluator)
+                throws ScriptException {
+            super(source, name, evaluator);
+        }
+
+        @Override
+        protected String kind() {
+            return "constraint";
+        }
+    };
+
     /**
      * Construct a new constraint.
      * @throws IllegalArgumentException if lowerBound > upperBound  
@@ -21,7 +33,7 @@ public class Constraint {
             double lowerBound, double upperBound, Evaluator evaluator)
             throws ScriptException {
         this.name = constraintName;
-        this.expression = new Expression(source, evaluator);
+        this.expression = new ConstraintExpression(source, constraintName, evaluator);
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
         if (lowerBound > upperBound) {
@@ -69,7 +81,9 @@ public class Constraint {
                return 0.0;
            }
         } else {
-            throw new InvalidValueException(value, expression.source);
+            throw new InvalidValueException(
+                    expression.mungeErrorMessage(
+                            "Expected number or time series but got " + value));
         }
     }
 
