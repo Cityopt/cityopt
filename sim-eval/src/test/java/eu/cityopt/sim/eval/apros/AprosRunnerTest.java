@@ -2,11 +2,8 @@ package eu.cityopt.sim.eval.apros;
 
 import static org.junit.Assert.*;
 
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.InputStream;
-import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,11 +16,12 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import com.fasterxml.jackson.databind.SequenceWriter;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.google.common.io.ByteStreams;
 
 import eu.cityopt.sim.eval.Evaluator;
@@ -140,14 +138,16 @@ public class AprosRunnerTest extends AprosTestBase {
                     if (pofile != null) {
                         System.out.println(
                                 "Writing simulation output to " + pofile);
-                        CSVFormat fmt = CSVFormat.DEFAULT.withHeader(
-                                "time", pocomp + "." + poname);
-                        try (Writer w = new FileWriter(
-                                dataDir.resolve(pofile).toFile());
-                             CSVPrinter prn = fmt.print(
-                                     new BufferedWriter(w))) {
+                        CsvMapper m = new CsvMapper();
+                        CsvSchema sch = CsvSchema.builder()
+                                .addColumn("time")
+                                .addColumn(pocomp + "." + poname)
+                                .build().withHeader();
+                        try (SequenceWriter w = m.writer(sch).writeValues(
+                                dataDir.resolve(pofile).toFile())) {
                             for (int i = 0; i != t.length; ++i) {
-                                prn.printRecord(t[i], v[i]);
+                                double[] row = {t[i], v[i]};
+                                w.write(row);
                             }
                         }
                     }
