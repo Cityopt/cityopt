@@ -37,11 +37,6 @@
     	<artifactId>guava</artifactId>
     </dependency>
     <dependency>
-    	<groupId>org.apache.commons</groupId>
-    	<artifactId>commons-csv</artifactId>
-    	<scope>test</scope>
-    </dependency>
-    <dependency>
     	<groupId>org.slf4j</groupId>
     	<artifactId>slf4j-api</artifactId>
     </dependency>
@@ -53,6 +48,11 @@
 		<groupId>${project.groupId}</groupId>
     	<artifactId>test-resources</artifactId>
 		<version>${project.version}</version>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>com.fasterxml.jackson.dataformat</groupId>
+		<artifactId>jackson-dataformat-csv</artifactId>
 		<scope>test</scope>
 	</dependency>
   </dependencies>
