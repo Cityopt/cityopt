@@ -82,16 +82,16 @@ public class ImportExportService {
 
     /**
      * Creates a SimulationModel row in the database.
-     * The imageblob and description fields of the SimulationModel are left null.
+     * The imageblob field of the SimulationModel is left null.
      * 
      * @param projectId id of the project in which the model is initially inserted,
-     *    or null if the model is not inserted anywhere.
+     *    or null if the model is not inserted in any project.
      * @param userId id of the creating user, or null
      * @param description model description
      * @param modelData the binary model data (e.g. zip file bytes)
      * @param simulatorName a valid simulator name from {@link SimulatorManagers}
      * @param overrideTimeOrigin the time corresponding to a simulation time of zero.
-     *   If null, then an attempt is made to get the origin is from the model data.
+     *   If null, then an attempt is made to get the origin from the model data.
      * @return id of the created SimulationModel row
      * @throws ConfigurationException
      * @throws IOException

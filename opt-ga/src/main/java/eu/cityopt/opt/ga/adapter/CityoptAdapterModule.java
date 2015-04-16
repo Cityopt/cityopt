@@ -10,9 +10,8 @@ import eu.cityopt.sim.opt.ScenarioNameFormat;
 import eu.cityopt.sim.eval.SimulationStorage;
 
 /**
- * Configures the classes required by CityoptModule.
- *
- * @see CityoptModule
+ * Configures the classes required by {@link CityoptModule}.
+ * Used by {@link OptimiserAdapter}.
  *
  * @author Hannu Rummukainen
  */
@@ -23,8 +22,8 @@ public class CityoptAdapterModule extends AbstractModule {
     Control control;
 
     /**
-     * Provides the instances to be used by CityoptModule.
-     * The Control argument can be left null.
+     * Provides the instances to be used by {@link CityoptModule}.
+     * The {@link Control} argument can be left null.
      */
     public CityoptAdapterModule(
             OptimisationProblem problem, SimulationStorage storage,
