@@ -1,7 +1,6 @@
 package eu.cityopt.sim.opt;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
@@ -12,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.script.ScriptException;
@@ -30,6 +30,7 @@ import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.SimulationStorage;
+import eu.cityopt.sim.eval.util.ExceptionHelpers;
 
 /**
  * Algorithm-independent functionality for simulation optimisation:
@@ -45,7 +46,7 @@ public abstract class AbstractOptimiser implements Runnable {
     protected final SimulationStorage storage;
     protected final String runName;
     protected final ScenarioNameFormat formatter;
-    protected final OutputStream messageSink;
+    protected final OptimisationStateListener listener;
     protected final Executor executor;
     protected SimulationRunner runner;
 
@@ -53,6 +54,7 @@ public abstract class AbstractOptimiser implements Runnable {
             new CompletableFuture<>();
 
     AtomicReferenceArray<CompletableFuture<SimulationOutput>> activeJobs;
+    AtomicInteger evaluationsCompleted = new AtomicInteger();
     BlockingQueue<Integer> freeJobIds;
     Object jobsDoneCondition = new Object();
     long jobCounter = 1;
@@ -62,14 +64,14 @@ public abstract class AbstractOptimiser implements Runnable {
 
     public AbstractOptimiser(OptimisationProblem problem,
             SimulationStorage storage, String runName,
-            OutputStream messageSink, Executor executor,
+            OptimisationStateListener listener, Executor executor,
             int maxEvaluationsInParallel)
                     throws IOException, ConfigurationException {
         this.problem = problem;
         this.storage = storage;
         this.runName = runName;
         this.formatter = new SimpleScenarioNameFormat(runName, problem.decisionVars);
-        this.messageSink = messageSink;
+        this.listener = listener;
         this.executor = executor;
 
         activeJobs = new AtomicReferenceArray<CompletableFuture<SimulationOutput>>(
@@ -94,14 +96,16 @@ public abstract class AbstractOptimiser implements Runnable {
             } catch (InterruptedException e) {
                 result.status = AlgorithmStatus.INTERRUPTED;
             } catch (Throwable t) {
-                logger.warn("Caught exception: " + t);
+                logger.warn("Caught exception", t);
+                t = ExceptionHelpers.peelCommonWrappers(t);
+                listener.logMessage("Algorithm failed: " + t.getMessage());
                 result.status = AlgorithmStatus.FAILED;
             }
             try {
                 cancel();
                 result.paretoFront = takeParetoFront();
             } catch (Throwable t) {
-                logger.warn("Caught unexpected exception: " + t);
+                logger.warn("Caught unexpected exception", t);
                 result.status = AlgorithmStatus.FAILED;
             }
         } finally {
@@ -109,7 +113,7 @@ public abstract class AbstractOptimiser implements Runnable {
                 runner.close();
                 runner = null;
             } catch (Throwable t) {
-                logger.warn("Failed to clean up: " + t);
+                logger.warn("Failed to clean up", t);
             }
             completableFuture.complete(result);
             logger.info("Ending run " + runName);
@@ -118,7 +122,7 @@ public abstract class AbstractOptimiser implements Runnable {
 
     abstract protected AlgorithmStatus doRun() throws Exception;
 
-    protected void queueJob(DecisionValues decisions, int jobId)
+    protected CompletableFuture<Solution> queueJob(DecisionValues decisions, int jobId)
             throws ScriptException, IOException {
         SimulationInput input = new SimulationInput(problem.inputConst);
         input.putExpressionValues(decisions, problem.inputExprs);
@@ -130,9 +134,10 @@ public abstract class AbstractOptimiser implements Runnable {
             final String jobName = "#" + jobCounter + " [" + jobId + "]";
             ++jobCounter;
             logger.info("Starting simulation job " + jobName + ": " + decisions);
-            CompletableFuture<SimulationOutput> job = runner.start(input);
-            activeJobs.set(jobId, job);
-            job.thenApplyAsync(output -> {
+            CompletableFuture<SimulationOutput> simulationJob = runner.start(input);
+            activeJobs.set(jobId, simulationJob);
+            CompletableFuture<Solution> evaluationJob =
+                    simulationJob.thenApplyAsync(output -> {
                 try {
                     storage.put(output, formatter.format(decisions, input));
                     if (output instanceof SimulationResults) {
@@ -157,8 +162,7 @@ public abstract class AbstractOptimiser implements Runnable {
                 } catch (ScriptException e) {
                     return null;
                 }
-            }, executor)
-            .whenComplete((solution, throwable) -> {
+            }, executor).whenComplete((solution, throwable) -> {
                 activeJobs.set(jobId, null);
                 freeJobIds.add(jobId);
                 if (freeJobIds.remainingCapacity() == 0) {
@@ -166,8 +170,20 @@ public abstract class AbstractOptimiser implements Runnable {
                         jobsDoneCondition.notifyAll();
                     }
                 }
+                evaluationsCompleted.incrementAndGet();
                 logger.info("Completed simulation job " + jobName);
             });
+            // Propagate cancelation of evaluationJob back to simulationJob.
+            evaluationJob.whenComplete((solution, throwable) -> {
+                if (evaluationJob.isCancelled()) {
+                    simulationJob.cancel(true);
+                }
+            });
+            return evaluationJob;
+        } else {
+            evaluationsCompleted.incrementAndGet();
+            Solution solution = new Solution(preConstraintStatus, null, input);
+            return CompletableFuture.completedFuture(solution);
         }
     }
 

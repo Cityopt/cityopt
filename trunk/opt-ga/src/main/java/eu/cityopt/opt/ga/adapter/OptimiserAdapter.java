@@ -1,6 +1,5 @@
 package eu.cityopt.opt.ga.adapter;
 
-import java.io.OutputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +16,7 @@ import org.opt4j.core.Objectives;
 import org.opt4j.core.Value;
 import org.opt4j.core.optimizer.Archive;
 import org.opt4j.core.optimizer.Control;
+import org.opt4j.core.optimizer.Optimizer;
 import org.opt4j.core.start.Opt4JTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +30,11 @@ import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.ObjectiveExpression;
 import eu.cityopt.sim.eval.ObjectiveStatus;
 import eu.cityopt.sim.eval.SimulationStorage;
+import eu.cityopt.sim.eval.util.ExceptionHelpers;
 import eu.cityopt.sim.opt.AlgorithmStatus;
 import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.OptimisationResults;
+import eu.cityopt.sim.opt.OptimisationStateListener;
 import eu.cityopt.sim.opt.ScenarioNameFormat;
 import eu.cityopt.sim.opt.SimpleScenarioNameFormat;
 import eu.cityopt.sim.opt.Solution;
@@ -52,6 +54,7 @@ import eu.cityopt.sim.opt.Solution;
 class OptimiserAdapter {
     private final Logger logger = LoggerFactory.getLogger(OptimiserAdapter.class);
     private final OptimisationProblem problem;
+    private final OptimisationStateListener listener;
     private final String runName;
     private final Opt4JTask task;
     private final TimeoutControl control;
@@ -85,11 +88,12 @@ class OptimiserAdapter {
 
     OptimiserAdapter(
             OptimisationProblem problem, SimulationStorage storage, String runName,
-            OutputStream messageSink, Instant deadline, Module... modules) {
+            OptimisationStateListener listener, Instant deadline, Module... modules) {
         this.problem = problem;
         this.runName = runName;
         this.constraintAndObjectiveIndices = mapConstraintAndObjectiveIndices(problem);
         this.control = new TimeoutControl(deadline);
+        this.listener = listener;
 
         ScenarioNameFormat formatter = new SimpleScenarioNameFormat(runName, problem.decisionVars);
 
@@ -101,8 +105,9 @@ class OptimiserAdapter {
         task.open();
         this.archive = task.getInstance(Archive.class);
 
-        //TODO use messageSink with Optimizer.addOptimizerIterationListener
-        // maybe also addIndividualStateListener for slow simulations
+        Optimizer optimizer = task.getInstance(Optimizer.class);
+        optimizer.addOptimizerIterationListener(
+                iteration -> listener.setProgressState("Iteration " + iteration));
     }
 
     CompletableFuture<OptimisationResults> start(Executor executor) {
@@ -121,6 +126,9 @@ class OptimiserAdapter {
                     }
                 } catch (Throwable t) {
                     results.status = AlgorithmStatus.FAILED;
+                    logger.debug("Caught throwable from Opt4J", t);
+                    t = ExceptionHelpers.peelCommonWrappers(t);
+                    listener.logMessage(t.getMessage());
                 }
                 results.paretoFront = archive.stream().map(this::makeSolutionFromIndividual)
                         .filter(s -> s != null).collect(Collectors.toList());

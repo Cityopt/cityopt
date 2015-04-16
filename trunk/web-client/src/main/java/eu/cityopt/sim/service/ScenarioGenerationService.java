@@ -1,17 +1,18 @@
 package eu.cityopt.sim.service;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -61,6 +62,8 @@ import eu.cityopt.sim.opt.OptimisationAlgorithm;
 import eu.cityopt.sim.opt.OptimisationAlgorithms;
 import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.OptimisationResults;
+import eu.cityopt.sim.opt.OptimisationStateListener;
+import eu.cityopt.sim.opt.Solution;
 
 /**
  * Service to run scenario generation (optimisation) and save the results.
@@ -97,6 +100,8 @@ public class ScenarioGenerationService
 
     private List<String> packagesToScan = Arrays.asList("eu.cityopt");
 
+    private Map<Integer, Listener> listeners = new ConcurrentHashMap<>();
+
     public void setAlgorithmPackagesToScan(List<String> values) {
         packagesToScan = values;
     }
@@ -114,6 +119,44 @@ public class ScenarioGenerationService
                 OptimisationAlgorithm algorithm = cls.newInstance();
                 OptimisationAlgorithms.register(algorithm);
             }
+        }
+    }
+
+    static class Listener implements OptimisationStateListener {
+        RunInfo info = new RunInfo();
+        Object messageMutex = new Object();
+        StringBuilder messages = new StringBuilder();
+
+        volatile String progressState = "started";
+
+        Listener(Instant started, Instant deadline) {
+            info.started = started;
+            info.deadline = deadline;
+        }
+
+        @Override
+        public void logMessage(String text) {
+            synchronized (messageMutex) {
+                messages.append(text);
+                if ( ! text.endsWith("\n")) {
+                    messages.append('\n');
+                }
+            }
+        }
+
+        String getMessages() {
+            synchronized (messageMutex) {
+                return messages.toString();
+            }
+        }
+
+        @Override
+        public void setProgressState(String state) {
+            progressState = state;
+        }
+
+        @Override
+        public void updateParetoFront(Iterator<Solution> solutions) {
         }
     }
 
@@ -154,24 +197,29 @@ public class ScenarioGenerationService
                 project.getPrjid(), problem.getExternalParameters(),
                 scenarioGenerator.getScengenid(), userId);
 
-        ByteArrayOutputStream messageStream = new ByteArrayOutputStream(); 
+        Instant started = Instant.now();
+        Instant deadline = started.plus(algorithmParameters.getMaxRunTime());
+        Listener listener = new Listener(started, deadline);
         CompletableFuture<OptimisationResults> optimisationJob = optimisationAlgorithm.start(
-                problem, algorithmParameters, storage, runName, messageStream, executorService);
+                problem, algorithmParameters, storage,
+                runName, listener, deadline, executorService);
         CompletableFuture<OptimisationResults> finishJob = optimisationJob.whenCompleteAsync(
                 (results, throwable) -> {
-                    String messages = messageStream.toString();
+                    String messages = listener.getMessages();
                     if (throwable != null) {
                         messages += "\nOptimisation terminated: " + throwable.getMessage();
                     }
                     storage.saveScenarioGeneratorStatus(scenGenId, results, messages);
                 }, executorService);
         jobManager.putJob(scenGenId, finishJob);
+        listeners .put(scenGenId, listener);
         // If finishJob is cancelled, we need to cancel optimisationJob. 
         finishJob.whenComplete((result, throwable) -> {
             if (finishJob.isCancelled()) {
                 optimisationJob.cancel(true);
             }
             jobManager.removeJob(scenGenId, finishJob);
+            listeners.remove(scenGenId, listener);
             try {
                 model.close();
             } catch (IOException e) {
@@ -182,13 +230,39 @@ public class ScenarioGenerationService
     }
 
     /**
-     * Returns set of currently ongoing optimisation runs.
-     * The result is a snapshot of the situation at the time the method is called.
-     * @return set of ScenarioGenerator entity ids
-     * @todo map from entity id to iteration number
+     * Information about an ongoing optimisation run.
+     * @see ScenarioGenerationService#getRunningOptimisations()
      */
-    public Set<Integer> getRunningOptimisations() {
-        return jobManager.getJobIds();
+    public static class RunInfo {
+        /** When the run was started. */
+       Instant started;
+
+        /**
+         * When the run should be ending. Derived from the start time and the
+         * configured maximum run time.
+         */
+       Instant deadline;
+
+       /** Short status string, e.g. "iteration 43" */
+       String status;
+    }
+
+    /**
+     * Returns the status of currently ongoing optimisation runs.
+     * The result is a snapshot of the situation at the time the method is called.
+     * @return map from ScenarioGenerator entity id to {@link RunInfo} 
+     */
+    public Map<Integer, RunInfo> getRunningOptimisations() {
+        Map<Integer, RunInfo> statusMap = new HashMap<>();
+        for (Map.Entry<Integer, Listener> entry : listeners.entrySet()) {
+            Listener listener = entry.getValue();
+            RunInfo runInfo = new RunInfo();
+            runInfo.started = listener.info.started;
+            runInfo.deadline = listener.info.deadline;
+            runInfo.status = listener.progressState;
+            statusMap.put(entry.getKey(), runInfo);
+        }
+        return statusMap;
     }
 
     /**
