@@ -1,10 +1,11 @@
 package eu.cityopt.sim.opt;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeoutException;
 
@@ -33,13 +34,13 @@ public class GridSearchOptimiser extends AbstractOptimiser {
     public GridSearchOptimiser(
             OptimisationProblem problem, AlgorithmParameters parameters,
             SimulationStorage storage, String runName,
-            OutputStream messageSink, Executor executor)
+            OptimisationStateListener listener, Instant deadline, Executor executor)
                     throws ConfigurationException, IOException, 
                     ConfigurationException {
-        super(problem, storage, runName, messageSink, executor,
+        super(problem, storage, runName, listener, executor,
                 parameters.getMaxParallelEvaluations());
 
-        deadline = Instant.now().plus(parameters.getMaxRunTime());
+        this.deadline = deadline;
         maxEvaluationsTotal = parameters.getInt("max scenarios", 10000);
         rangeSplit = parameters.getInt("continuous range split factor", 2);
         inputOnly = parameters.getBoolean("disable simulation", false);
@@ -48,6 +49,7 @@ public class GridSearchOptimiser extends AbstractOptimiser {
     static interface DecisionIterator {
         Object reset();
         Object next();
+        long count();
     }
 
     static class IntegerIterator implements DecisionIterator {
@@ -60,21 +62,24 @@ public class GridSearchOptimiser extends AbstractOptimiser {
         }
 
         @Override
-        public
-        Object reset() {
+        public Object reset() {
             value = interval.getLowerBound();
             return value;
         }
 
         @Override
-        public
-        Object next() {
+        public Object next() {
             if (value == interval.getUpperBound()) {
                 return null;
             } else {
                 ++value;
                 return value;
             }
+        }
+
+        @Override
+        public long count() {
+            return (long) interval.getUpperBound() - interval.getLowerBound() + 1;
         }
     }
 
@@ -122,6 +127,11 @@ public class GridSearchOptimiser extends AbstractOptimiser {
                 return getValue();
             }
         }
+
+        @Override
+        public long count() {
+            return choices;
+        }
         
     }
 
@@ -147,21 +157,39 @@ public class GridSearchOptimiser extends AbstractOptimiser {
         List<DecisionIterator> decisionIterators = new ArrayList<>();
         DecisionValues decisions = new DecisionValues(
                 problem.getExternalParameters());
+        double totalCount = 1; 
         for (DecisionVariable variable : problem.decisionVars) {
             DecisionIterator it = makeDecisionIterator(variable.domain);
             decisionIterators.add(it);
             decisions.put(variable, it.reset());
+            totalCount *= it.count();
         }
 
-        int numberOfEvaluations = 0;
+        listener.logMessage(String.format(Locale.US,
+                "Iterating over %d decision variable%s with a total of %.0G value combination%s.",
+                problem.decisionVars.size(), ((problem.decisionVars.size() == 1) ? "" : "s"),
+                totalCount, ((totalCount == 1) ? "" : "s")));
+        if (maxEvaluationsTotal < totalCount) {
+            listener.logMessage("Number of combinations is limited to " + maxEvaluationsTotal
+                    + " by algorithm parameter.");
+        }
+
+        int evaluationsStarted = 0;
+        int evaluationLimit = (totalCount < maxEvaluationsTotal)
+                ? (int) totalCount : maxEvaluationsTotal; 
         while (true) {
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
 
             int jobId = getJobId(deadline);
-            queueJob(new DecisionValues(decisions), jobId);
-            ++numberOfEvaluations;
+            CompletableFuture<Solution> job = queueJob(
+                    new DecisionValues(decisions), jobId);
+            ++evaluationsStarted;
+            job.whenComplete((s, t) -> {
+                int n = evaluationsCompleted.get();
+                listener.setProgressState(n +"/" + evaluationLimit);
+            });
 
             boolean carry = true;
             int i = decisionIterators.size() - 1;
@@ -177,7 +205,9 @@ public class GridSearchOptimiser extends AbstractOptimiser {
                 --i;
             }
             // At this point carry is set if we have rolled over to the initial solution.
-            if (carry || numberOfEvaluations >= maxEvaluationsTotal) {
+            if (carry || evaluationsStarted >= maxEvaluationsTotal) {
+                listener.logMessage("All " + evaluationsStarted + " value combinations generated. "
+                        + "Waiting for the remaining simulations to complete.");
                 waitForCompletion(deadline);
                 return AlgorithmStatus.COMPLETED_RESULTS;
             }

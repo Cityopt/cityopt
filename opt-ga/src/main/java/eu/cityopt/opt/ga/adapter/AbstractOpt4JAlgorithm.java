@@ -1,7 +1,6 @@
 package eu.cityopt.opt.ga.adapter;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -18,6 +17,7 @@ import eu.cityopt.sim.opt.AlgorithmParameters;
 import eu.cityopt.sim.opt.OptimisationAlgorithm;
 import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.OptimisationResults;
+import eu.cityopt.sim.opt.OptimisationStateListener;
 
 /**
  * Skeleton implementation of the sim-eval OptimisationAlgorithm interface for
@@ -34,11 +34,11 @@ public abstract class AbstractOpt4JAlgorithm implements OptimisationAlgorithm {
     public CompletableFuture<OptimisationResults> start(
             OptimisationProblem problem, AlgorithmParameters parameters,
             SimulationStorage storage, String runName,
-            OutputStream messageSink, Executor executor)
+            OptimisationStateListener listener, Instant deadline,
+            Executor executor)
             throws ConfigurationException, IOException, ConfigurationException {
-        Instant deadline = Instant.now().plus(parameters.getMaxRunTime());
         OptimiserAdapter adapter = new OptimiserAdapter(
-                problem, storage, runName, messageSink, deadline,
+                problem, storage, runName, listener, deadline,
                 configureOptimizer(parameters),
                 configureRandom(parameters),
                 configureIndividualCompleter(parameters),
