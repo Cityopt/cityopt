@@ -10,4 +10,10 @@ public interface ScenarioNameFormat {
      * description.  Must be thread safe.
      */
     String[] format(DecisionValues decisions, SimulationInput input);
+
+    /**
+     * Variant of {@link #format(DecisionValues, SimulationInput) to be used
+     * when simulation input is not yet available.
+     */
+    String[] format(DecisionValues decisions);
 }

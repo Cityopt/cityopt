@@ -35,7 +35,6 @@ import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.opt.OptimisationLog;
 import eu.cityopt.sim.opt.OptimisationProblem;
-import eu.cityopt.sim.opt.ScenarioNameFormat;
 
 /**
  * The Cityopt evaluator for Opt4J.
@@ -82,8 +81,6 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
             return Collections.emptyIterator();
         }
     };
-    private ScenarioNameFormat formatter =
-            (d, i) -> new String[] { "-", d.toString() };
     private OptimisationLog userLog =
             m -> System.err.println(m);
 
@@ -100,11 +97,6 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     }
 
     @Inject(optional=true)
-    public void setFormatter(ScenarioNameFormat formatter) {
-        this.formatter = formatter;
-    }
-
-    @Inject(optional=true)
     public void setUserLog(OptimisationLog log) {
         this.userLog = log;
     }
@@ -112,8 +104,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     @Override
     public Objectives evaluate(CityoptPhenotype pt) {
         Future<SimulationOutput> job = null;
-        String[] desc = formatter.format(pt.decisions, pt.input);
-        SimulationStorage.Put put = new SimulationStorage.Put(pt.input, desc);
+        SimulationStorage.Put put = new SimulationStorage.Put(pt.input, pt.description);
         put.decisions = pt.decisions;
         try {
             ConstraintContext coco = new ConstraintContext(
@@ -137,7 +128,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
                 put.output = out;
             }
             if (!(out instanceof SimulationResults)) {
-                userLog.logSimulationFailure(desc, (SimulationFailure) out);
+                userLog.logSimulationFailure(pt.description, (SimulationFailure) out);
                 return infeasibleObj(prior);
             }
             MetricValues mv = new MetricValues(
@@ -160,7 +151,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
             }
             return obj;
         } catch (ScriptException e) {
-            userLog.logEvaluationFailure(desc, e);
+            userLog.logEvaluationFailure(pt.description, e);
             throw new RuntimeException("Evaluation error", e);
         } catch (InterruptedException | ExecutionException | IOException e) {
             throw new RuntimeException("Execution error", e);
