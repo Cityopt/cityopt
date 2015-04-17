@@ -43,9 +43,11 @@ public class SimulationRunnerWithStorage implements SimulationRunner {
         } else {
             CompletableFuture<SimulationOutput> simulation = runner.start(input);
             // Store the output once the simulation is completed.
-            simulation.thenAcceptAsync(
-                    newOutput -> storage.put(newOutput, null),
-                    executor);
+            simulation.thenAcceptAsync(newOutput -> {
+                SimulationStorage.Put put = new SimulationStorage.Put(input);
+                put.output = newOutput;
+                storage.put(put);
+            }, executor);
             return simulation;
         }
     }

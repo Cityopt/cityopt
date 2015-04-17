@@ -8,6 +8,7 @@ import javax.script.ScriptException;
  * @author Hannu Rummukainen
  */
 public class Constraint {
+    private final Integer constraintId;
     private String name;
     private Expression expression;
     private double lowerBound;
@@ -26,21 +27,25 @@ public class Constraint {
     };
 
     /**
-     * Construct a new constraint.
+     * Constructs a new constraint.
      * @throws IllegalArgumentException if lowerBound > upperBound  
      */
-    public Constraint(String constraintName, String source,
+    public Constraint(Integer constraintId, String constraintName, String source,
             double lowerBound, double upperBound, Evaluator evaluator)
             throws ScriptException {
+        this.constraintId = constraintId;
         this.name = constraintName;
         this.expression = new ConstraintExpression(source, constraintName, evaluator);
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
         if (lowerBound > upperBound) {
             throw new IllegalArgumentException("Lower bound " + lowerBound
-                    + " exceeds upper bound " + upperBound + " of constraint "
-                    + source);
+                    + " exceeds upper bound " + upperBound + " of constraint " + name);
         }
+    }
+
+    public Integer getConstraintId() {
+        return constraintId;
     }
 
     /** Returns a symbolic name for the constraint. */

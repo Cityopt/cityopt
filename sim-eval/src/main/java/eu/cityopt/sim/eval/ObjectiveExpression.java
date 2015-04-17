@@ -9,12 +9,18 @@ import javax.script.ScriptException;
  * @author Hannu Rummukainen
  */
 public class ObjectiveExpression extends Expression {
+    private final Integer objectiveId;
     private final boolean maximize;
 
-    public ObjectiveExpression(String objectiveName, String source,
+    public ObjectiveExpression(Integer objectiveId, String objectiveName, String source,
             boolean maximize, Evaluator evaluator) throws ScriptException {
         super(source, objectiveName, evaluator);
+        this.objectiveId = objectiveId;
         this.maximize = maximize;
+    }
+
+    public Integer getObjectiveId() {
+        return objectiveId;
     }
 
     /** Returns a symbolic name for the objective function. */

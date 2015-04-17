@@ -185,7 +185,8 @@ class OptimiserAdapter {
                 objectiveValues[i - nConstraints] = value;
             }
         }
-        ConstraintStatus constraintStatus = new ConstraintStatus(infeasibilities);
+        ConstraintStatus constraintStatus =
+                new ConstraintStatus(problem.constraints, infeasibilities);
         if (constraintStatus.isDefinitelyFeasible()) {
             ObjectiveStatus objectiveStatus = new ObjectiveStatus(
                     problem.getNamespace(), objectiveValues, problem.objectives);

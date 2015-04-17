@@ -21,20 +21,24 @@
   <ExtParamVal/>
   <ExtParamValSet/>
   <ExtParamValSetComp/>
-  <Scenario/>
-  <InputParamVal/>
-  <SimulationResult/>
-  <ScenarioMetrics/>
-  <MetricVal/>
-  <OptimizationSet/>
   <ObjectiveFunction/>
   <OptConstraint/>
-  <OptSearchConst/>
-  <OptSetScenarios/>
   <ScenarioGenerator/>
   <AlgoParamVal/>
   <ModelParameter/>
   <DecisionVariable/>
   <ScenGenObjectiveFunction/>
   <ScenGenOptConstraint/>
+  <Scenario/>
+  <InputParamVal/>
+  <SimulationResult/>
+  <ScenarioMetrics/>
+  <MetricVal/>
+  <ScenGenResult/>
+  <DecisionVariableResult/>
+  <ObjectiveFunctionResult/>
+  <OptConstraintResult/>
+  <OptimizationSet/>
+  <OptSearchConst/>
+  <OptSetScenarios/>
 </dataset>

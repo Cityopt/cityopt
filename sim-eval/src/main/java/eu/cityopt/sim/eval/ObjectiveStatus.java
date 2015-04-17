@@ -1,5 +1,6 @@
 package eu.cityopt.sim.eval;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.script.ScriptException;
@@ -13,9 +14,11 @@ import javax.script.ScriptException;
 public class ObjectiveStatus implements PartiallyComparable<ObjectiveStatus> {
     private final Namespace namespace;
 
+    /** The evaluated objectives. */
+    public final Collection<ObjectiveExpression> objectives;
+
     /**
-     * Values of objective functions, in the same order as the constructor
-     * arguments.
+     * Values of objective functions, in the same order as {@link #objectives}.
      */
     public final double[] objectiveValues;
 
@@ -28,6 +31,8 @@ public class ObjectiveStatus implements PartiallyComparable<ObjectiveStatus> {
     public ObjectiveStatus(MetricValues context,
             ObjectiveExpression singleObjective) throws ScriptException {
         this.namespace = context.getResults().getNamespace();
+        this.objectives = new ArrayList<>();
+        objectives.add(singleObjective);
         double value = singleObjective.evaluateDouble(context);
         this.objectiveValues = new double[] { value };
         this.asMinGoalValues = new double[] { singleObjective.flipSignIfMax(value) };
@@ -36,6 +41,7 @@ public class ObjectiveStatus implements PartiallyComparable<ObjectiveStatus> {
     public ObjectiveStatus(MetricValues context,
             Collection<ObjectiveExpression> objectives) throws ScriptException {
         this.namespace = context.getResults().getNamespace();
+        this.objectives = objectives;
         this.objectiveValues = new double[objectives.size()];
         this.asMinGoalValues = new double[objectives.size()];
         int i = 0;
@@ -50,6 +56,7 @@ public class ObjectiveStatus implements PartiallyComparable<ObjectiveStatus> {
     public ObjectiveStatus(Namespace namespace, double[] objectiveValues,
             Collection<ObjectiveExpression> objectives) {
         this.namespace = namespace;
+        this.objectives = objectives;
         this.objectiveValues = objectiveValues;
         this.asMinGoalValues = new double[objectiveValues.length];
         int i = 0;

@@ -10,6 +10,46 @@ package eu.cityopt.sim.eval;
  * @author Hannu Rummukainen
  */
 public interface SimulationStorage extends Iterable<SimulationOutput> {
+    /** Data associated with the evaluation of a single set of simulation input. */
+    public static class Put {
+        /** Short scenario name.  May be null. */
+        public String name;
+
+        /** More detailed scenario description.  May be null. */
+        public String description;
+
+        /** Simulation input. Must be non-null. */
+        public SimulationInput input;
+
+        /**
+         * Simulation output computed from the input.
+         * May be SimulationResults, SimulationFailure or null.
+         */
+        public SimulationOutput output;
+
+        /** Evaluated metric values.  May be null. */
+        public MetricValues metricValues;
+
+        /** Decision variable values from which the input was constructed.  May be null. */
+        public DecisionValues decisions;
+
+        /** Evaluated constraint infeasibilities.  May be null. */
+        public ConstraintStatus constraintStatus;
+
+        /** Evaluated objective values.  May be null. */
+        public ObjectiveStatus objectiveStatus;
+
+        public Put(SimulationInput input) {
+            this.input = input;
+        }
+
+        public Put(SimulationInput input, String[] nameAndDescription) {
+            this.input = input;
+            this.name = nameAndDescription[0];
+            this.description = nameAndDescription[1];
+        }
+    }
+
     /**
      * Finds the simulation output that results with the given input, if
      * available.
@@ -23,28 +63,16 @@ public interface SimulationStorage extends Iterable<SimulationOutput> {
     public SimulationOutput get(SimulationInput input);
 
     /**
-     * Stores the simulation output that results with the given input. The
-     * output may be either a SimulationFailure instance or a SimulationResults
-     * instance. Also saves a human-readable name and description for the
-     * simulated scenario.
+     * Stores all evaluation data associated with specific simulation output.
+     * If a scenario with the same input has already been stored before, the
+     * scenario name and description are not changed.
      *
-     * @param output
-     *            the simulation output data, containing a reference to the
-     *            corresponding input data and external parameter values.
-     * @param scenarioNameAndDescription
-     *            Array containing first a brief human-readable name for the
-     *            simulated scenario, and then a more detailed description of
-     *            the scenario.  The argument is ignored if the scenario has
-     *            already been stored before.
-     *            The argument may be left null, in which case a nondescript
-     *            name may be generated.
+     * @param put
+     *            the data to be stored.  References will be retained to the
+     *            SimulationInput and SimulationOutput objects.
      */
-    public void put(SimulationOutput output,
-            String[] scenarioNameAndDescription);
+    public void put(Put put);
 
     /** Updates the metric values of a previously stored successful simulation. */
     public void updateMetricValues(MetricValues metricValues);
-
-    //TODO save metrics & output in the same transaction
-    //TODO save feasibility flag in scenario generation
 }

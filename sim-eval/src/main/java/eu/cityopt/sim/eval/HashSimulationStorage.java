@@ -22,8 +22,10 @@ public class HashSimulationStorage implements SimulationStorage {
     }
 
     @Override
-    public void put(SimulationOutput output, String[] scenarioNameAndDescription) {
-        inputOutputCache.put(output.getInput(), output);
+    public void put(Put put) {
+        if (put.output != null) {
+            inputOutputCache.put(put.input, put.output);
+        }
     }
 
     @Override

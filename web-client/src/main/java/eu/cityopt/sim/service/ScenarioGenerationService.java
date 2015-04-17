@@ -56,6 +56,7 @@ import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.NumericInterval;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationModel;
+import eu.cityopt.sim.eval.Symbol;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.AlgorithmParameters;
 import eu.cityopt.sim.opt.OptimisationAlgorithm;
@@ -195,7 +196,7 @@ public class ScenarioGenerationService
 
         DbSimulationStorageI storage = simulationService.makeDbSimulationStorage(
                 project.getPrjid(), problem.getExternalParameters(),
-                scenarioGenerator.getScengenid(), userId);
+                userId, scenarioGenerator.getScengenid());
 
         Instant started = Instant.now();
         Instant deadline = started.plus(algorithmParameters.getMaxRunTime());
@@ -209,10 +210,10 @@ public class ScenarioGenerationService
                     if (throwable != null) {
                         messages += "\nOptimisation terminated: " + throwable.getMessage();
                     }
-                    storage.saveScenarioGeneratorStatus(scenGenId, results, messages);
+                    storage.saveScenarioGeneratorResults(results, messages);
                 }, executorService);
         jobManager.putJob(scenGenId, finishJob);
-        listeners .put(scenGenId, listener);
+        listeners.put(scenGenId, listener);
         // If finishJob is cancelled, we need to cancel optimisationJob. 
         finishJob.whenComplete((result, throwable) -> {
             if (finishJob.isCancelled()) {
@@ -273,7 +274,9 @@ public class ScenarioGenerationService
      *  cancellation fails for some other reason.
      */
     public boolean cancelOptimisation(int scenGenId) {
-        return jobManager.cancelJob(scenGenId);
+        boolean canceled = jobManager.cancelJob(scenGenId);
+        listeners.remove(scenGenId);
+        return canceled;
     }
 
     OptimisationProblem loadOptimisationProblem(
@@ -358,27 +361,32 @@ public class ScenarioGenerationService
         List<DecisionVariable> simDecisions = new ArrayList<>();
         for (eu.cityopt.model.DecisionVariable decisionVariable 
                 : scenarioGenerator.getDecisionvariables()) {
-            String componentName = null;
-            String variableName = null;
-            InputParameter inputParameter = decisionVariable.getInputparameter();
-            if (inputParameter != null) {
-                componentName = inputParameter.getComponent().getName();
-                variableName = inputParameter.getName();
-            } else {
-                variableName = decisionVariable.getName();
-            }
+            Symbol symbol = getDecisionVariableSymbol(decisionVariable);
             DecisionDomain domain = null;
-            Type variableType = namespace.getDecisionType(componentName, variableName);
+            Type variableType = namespace.getDecisionType(symbol.componentName, symbol.name);
             String lbText = decisionVariable.getLowerbound();
             String ubText = decisionVariable.getUpperbound();
             Object lb = lbText != null ? variableType.parse(lbText, namespace) : null;
             Object ub = (ubText != null) ? variableType.parse(ubText, namespace) : null;
             domain = NumericInterval.makeInterval(variableType, lb, ub);
 
-            simDecisions.add(new DecisionVariable(componentName, variableName, domain));
+            simDecisions.add(new DecisionVariable(symbol.componentName, symbol.name, domain));
         }
         Collections.sort(simDecisions, (d, e) -> d.toString().compareTo(e.toString()));
         return simDecisions;
+    }
+
+    public Symbol getDecisionVariableSymbol(eu.cityopt.model.DecisionVariable decisionVariable) {
+        String componentName = null;
+        String variableName = null;
+        InputParameter inputParameter = decisionVariable.getInputparameter();
+        if (inputParameter != null) {
+            componentName = inputParameter.getComponent().getName();
+            variableName = inputParameter.getName();
+        } else {
+            variableName = decisionVariable.getName();
+        }
+        return new Symbol(componentName, variableName);
     }
 
     public void saveDecisionVariables(

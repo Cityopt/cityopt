@@ -4,24 +4,27 @@
 
   <!-- Remove id columns to simplify comparisons via the ExpectedDataBase
        annotation of Spring Test DBUnit. -->
+  <xsl:template match="@algorithmid"/>
   <xsl:template match="@aparamsid"/>
   <xsl:template match="@aparamvalid"/>
-  <xsl:template match="@algorithmid"/>
   <xsl:template match="@ascengenid"/>
-  <xsl:template match="@userid"/>
   <xsl:template match="@componentid"/>
+  <xsl:template match="@createdby"/>
   <xsl:template match="@datarelid"/>
   <xsl:template match="@decisionvarid"/>
+  <xsl:template match="@decvarresultid"/>
   <xsl:template match="@extparamid"/>
   <xsl:template match="@extparamvalid"/>
   <xsl:template match="@extparamvalsetid"/>
   <xsl:template match="@id"/>
   <xsl:template match="@inputid"/>
-  <xsl:template match="@scendefinitionid"/>
   <xsl:template match="@metid"/>
   <xsl:template match="@metricvalid"/>
+  <xsl:template match="@modelid"/>
   <xsl:template match="@modelparamid"/>
   <xsl:template match="@obtfunctionid"/>
+  <xsl:template match="@objectivefunctionresultid"/>
+  <xsl:template match="@optconstresultid"/>
   <xsl:template match="@optfunctionid"/>
   <xsl:template match="@optconstid"/>
   <xsl:template match="@optid"/>
@@ -29,18 +32,20 @@
   <xsl:template match="@optscenid"/>
   <xsl:template match="@outvarid"/>
   <xsl:template match="@prjid"/>
+  <xsl:template match="@scendefinitionid"/>
   <xsl:template match="@scenid"/>
   <xsl:template match="@scengenid"/>
+  <xsl:template match="@scengenresultid"/>
   <xsl:template match="@scenmetricid"/>
+  <xsl:template match="@scid"/>
   <xsl:template match="@sgobfunctionid"/>
   <xsl:template match="@sgoptconstraintid"/>
-  <xsl:template match="@scid"/>
-  <xsl:template match="@modelid"/>
   <xsl:template match="@simresid"/>
   <xsl:template match="@tseriesid"/>
   <xsl:template match="@tseriesvalid"/>
   <xsl:template match="@typeid"/>
   <xsl:template match="@unitid"/>
+  <xsl:template match="@userid"/>
   <xsl:template match="@usergroupid"/>
   <xsl:template match="@usergroupprojectid"/>
 
@@ -66,38 +71,60 @@
   <xsl:template match="simulationmodel/@createdon"/>
   <xsl:template match="simulationmodel/@modelblob"/>
 
-  <!-- inputparamval elements are ordered by inputid then value. -->
+  <!-- Elements whose insertion order varies are removed,
+       and then output separately in sorted order. -->
   <xsl:template match="inputparamval"/>
   <xsl:template match="inputparamval" mode="sort">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
-
-  <!-- modelparameter elements are ordered by value. -->
   <xsl:template match="modelparameter"/>
   <xsl:template match="modelparameter" mode="sort">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
-
-  <!-- metricval elements are ordered by value. -->
   <xsl:template match="metricval"/>
   <xsl:template match="metricval" mode="sort">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
-
-  <!-- timeseriesval elements are ordered by time then value. -->
   <xsl:template match="timeseriesval"/>
   <xsl:template match="timeseriesval" mode="sort">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
+  <xsl:template match="scengenresult"/>
+  <xsl:template match="scengenresult" mode="sort">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="decisionvariableresult"/>
+  <xsl:template match="decisionvariableresult" mode="sort">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="objectivefunctionresult"/>
+  <xsl:template match="objectivefunctionresult" mode="sort">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="optconstraintresult"/>
+  <xsl:template match="optconstraintresult" mode="sort">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
 
+  <!-- The contents of the top-level dataset element are processed
+       first normally, and then selected elements are output
+       in sorted order, with the mode set as "sort". -->
   <xsl:template match="dataset">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
@@ -109,6 +136,18 @@
       </xsl:apply-templates>
       <xsl:apply-templates select="metricval" mode="sort">
         <xsl:sort select="@value"/>
+      </xsl:apply-templates>
+      <xsl:apply-templates select="scengenresult" mode="sort">
+        <xsl:sort select="@feasible"/>
+      </xsl:apply-templates>
+      <xsl:apply-templates select="decisionvariableresult" mode="sort">
+        <xsl:sort select="@value"/>
+      </xsl:apply-templates>
+      <xsl:apply-templates select="objectivefunctionresult" mode="sort">
+        <xsl:sort select="@value"/>
+      </xsl:apply-templates>
+      <xsl:apply-templates select="optconstraintresult" mode="sort">
+        <xsl:sort select="@infeasibility"/>
       </xsl:apply-templates>
       <xsl:apply-templates select="timeseriesval" mode="sort">
         <xsl:sort select="concat(@time,@value)"/>
