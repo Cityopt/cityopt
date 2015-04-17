@@ -157,17 +157,17 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             newJob.whenCompleteAsync( // Store output & metric values
                     (output, throwable) -> {
                         if (output != null) {
-                            storage.put(output, null);
+                            SimulationStorage.Put put = new SimulationStorage.Put(input);
+                            put.output = output;
                             if (output instanceof SimulationResults) {
                                 SimulationResults results = (SimulationResults) output;
                                 try {
-                                    MetricValues metricValues = 
-                                            new MetricValues(results, metricExpressions);
-                                    storage.updateMetricValues(metricValues);
+                                    put.metricValues = new MetricValues(results, metricExpressions);
                                 } catch (ScriptException e) {
                                     log.warn("Failed to compute metric values: " + e.getMessage());
                                 }
                             }
+                            storage.put(put);
                         }
                     }, executor)
                 .whenComplete( // Clean up

@@ -72,8 +72,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
         public void updateMetricValues(MetricValues metricValues) {}
         
         @Override
-        public void put(SimulationOutput output,
-                String[] scenarioNameAndDescription) {}
+        public void put(Put put) {}
         
         @Override
         public SimulationOutput get(SimulationInput input) {return null;}
@@ -114,11 +113,14 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     public Objectives evaluate(CityoptPhenotype pt) {
         Future<SimulationOutput> job = null;
         String[] desc = formatter.format(pt.decisions, pt.input);
+        SimulationStorage.Put put = new SimulationStorage.Put(pt.input, desc);
+        put.decisions = pt.decisions;
         try {
             ConstraintContext coco = new ConstraintContext(
                     pt.decisions, pt.input);
             ConstraintStatus prior = new ConstraintStatus(
                     coco, problem.constraints, true);
+            put.constraintStatus = prior;
             if (!prior.mayBeFeasible()) {
                 return infeasibleObj(prior); 
             }
@@ -132,7 +134,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
                 out = job.get();
                 jobs.remove(job);
                 job = null;
-                storage.put(out, desc);
+                put.output = out;
             }
             if (!(out instanceof SimulationResults)) {
                 userLog.logSimulationFailure(desc, (SimulationFailure) out);
@@ -140,14 +142,16 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
             }
             MetricValues mv = new MetricValues(
                     (SimulationResults)out, problem.metrics);
-            storage.updateMetricValues(mv);
+            put.metricValues = mv;
             ConstraintStatus post = new ConstraintStatus(
                     new ConstraintContext(coco, mv),
                     problem.constraints, false);
-            if (!post.mayBeFeasible()) {
+            put.constraintStatus = post;
+            if (!post.isDefinitelyFeasible()) {
                 return infeasibleObj(post);
             }
             ObjectiveStatus ost = new ObjectiveStatus(mv, problem.objectives);
+            put.objectiveStatus = ost;
             Objectives obj = toObjectives(post);
             for (int i = 0; i != problem.objectives.size(); ++i) {
                 ObjectiveExpression o = problem.objectives.get(i);
@@ -161,6 +165,9 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
         } catch (InterruptedException | ExecutionException | IOException e) {
             throw new RuntimeException("Execution error", e);
         } finally {
+            if (put.output != null) {
+                storage.put(put);
+            }
             if (job != null) {
                 job.cancel(true);
                 jobs.remove(job);

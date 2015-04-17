@@ -257,7 +257,7 @@ public class JacksonBinder {
             if (expression == null)
                 throw new IllegalArgumentException("Missing expression");
             metrics.add(new MetricExpression(
-                    metrics.size(), name, expression, ns.evaluator));
+                    null, name, expression, ns.evaluator));
         } 
 
         @Override
@@ -285,7 +285,7 @@ public class JacksonBinder {
                     ub = (upper != null ? Double.valueOf(upper)
                                         : Double.POSITIVE_INFINITY);
                 prob.constraints.add(new Constraint(
-                        name, expression, lb, ub,
+                        null, name, expression, lb, ub,
                         prob.getNamespace().evaluator));
             }
         }
@@ -308,7 +308,7 @@ public class JacksonBinder {
                 throw new IllegalArgumentException(
                         "Invalid objective type " + type);
             prob.objectives.add(new ObjectiveExpression(
-                    name, expression, is_max,
+                    null, name, expression, is_max,
                     prob.getNamespace().evaluator));
 
         }

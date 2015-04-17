@@ -119,13 +119,13 @@ public class TestEval {
         System.out.println("--- withDecisions=" + withDecisions + " ---");
         final double delta = 1.0e-12;
         Constraint[] constraints = {
-                new Constraint("con1",
+                new Constraint(1, "con1",
                         "C2.x9 * (C1.x5 - C1.x6) + 0.02 * C1.x6 - 0.025 * C1.x5",
                         Double.NEGATIVE_INFINITY, 0.0, evaluator),
-                new Constraint("con2",
+                new Constraint(2, "con2",
                         "C2.x9 * (C1.x8 - C1.x7) + 0.02 * C1.x7 - 0.015 * C1.x8",
                         Double.NEGATIVE_INFINITY, 0.0, evaluator),
-                new Constraint("con3",
+                new Constraint(3, "con3",
                         "C2.x4", -10000, 10000, evaluator) };
         MetricExpression[] metrics = {
                 new MetricExpression(1, "m1", "-9 * C1.x5 - 15 * C1.x8", evaluator),
@@ -134,7 +134,7 @@ public class TestEval {
                 new MetricExpression(4, "m4", "C2.x3 + C1.x1", evaluator)
         };
         ObjectiveExpression[] objectives = { new ObjectiveExpression(
-                "obj1", "m1 + m2", false, evaluator) };
+                1, "obj1", "m1 + m2", false, evaluator) };
 
         ConstraintContext precc = null;
         if (withDecisions) {
@@ -239,7 +239,7 @@ public class TestEval {
     public void errorMessages() {
         // constraint construction
         try {
-            new Constraint("foo", "C2.x9 * (C1.x5 - C1.x9", -1.0, 0.0, evaluator);
+            new Constraint(1, "foo", "C2.x9 * (C1.x5 - C1.x9", -1.0, 0.0, evaluator);
             fail("expected exception");
         } catch (ScriptException e) {
             System.out.println(e.getMessage());
@@ -248,7 +248,7 @@ public class TestEval {
         }
         // constraint evaluation
         try {
-            new Constraint("foo", "C2.x9 / (C1.x6 - 2 * C1.x5)", -1.0, 0.0, evaluator)
+            new Constraint(1, "foo", "C2.x9 / (C1.x6 - 2 * C1.x5)", -1.0, 0.0, evaluator)
                 .infeasibility(basicInput);
             fail("expected exception");
         } catch (ScriptException e) {
@@ -258,7 +258,7 @@ public class TestEval {
         }
         // constraint value
         try {
-            new Constraint("foo", "str(C2.x9)", -1.0, 0.0, evaluator)
+            new Constraint(1, "foo", "str(C2.x9)", -1.0, 0.0, evaluator)
                 .infeasibility(basicInput);
             fail("expected exception");
         } catch (ScriptException e) {
@@ -268,7 +268,7 @@ public class TestEval {
         }
         // objective construction
         try {
-            new ObjectiveExpression("bar", "C1.x5 - C1.", true, evaluator);
+            new ObjectiveExpression(1, "bar", "C1.x5 - C1.", true, evaluator);
             fail("expected exception");
         } catch (ScriptException e) {
             System.out.println(e.getMessage());
@@ -277,7 +277,7 @@ public class TestEval {
         }
         // objective evaluation
         try {
-            new ObjectiveExpression("bar", "asin(C1.x6)", true, evaluator)
+            new ObjectiveExpression(1, "bar", "asin(C1.x6)", true, evaluator)
                 .evaluateDouble(basicInput);
             fail("expected exception");
         } catch (ScriptException e) {
@@ -287,7 +287,7 @@ public class TestEval {
         }
         // objective value
         try {
-            new ObjectiveExpression("bar", "str(C1.x6)", true, evaluator)
+            new ObjectiveExpression(1, "bar", "str(C1.x6)", true, evaluator)
                 .evaluateDouble(basicInput);
             fail("expected exception");
         } catch (ScriptException e) {
@@ -357,7 +357,7 @@ public class TestEval {
 
     @Test(expected=ScriptException.class)
     public void accessNonexistentComponentMember() throws Exception {
-        Constraint invalidConstraint = new Constraint("con1",
+        Constraint invalidConstraint = new Constraint(1, "con1",
                 "C2.x9 * (C1.x5 - C1.x9) + 0.02 * C1.x6 - 0.025 * C1.x5",
                 Double.NEGATIVE_INFINITY, 0.0, evaluator);
 

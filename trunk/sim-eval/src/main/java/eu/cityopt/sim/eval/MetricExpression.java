@@ -12,15 +12,15 @@ import javax.script.ScriptException;
  * @author Hannu Rummukainen
  */
 public class MetricExpression extends Expression {
-    private final int metricId;
+    private final Integer metricId;
 
-    public MetricExpression(int metricId, String metricName, String source,
+    public MetricExpression(Integer metricId, String metricName, String source,
             Evaluator evaluator) throws ScriptException {
         super(source, metricName, evaluator);
         this.metricId = metricId;
     }
 
-    public int getMetricId() {
+    public Integer getMetricId() {
         return metricId;
     }
 

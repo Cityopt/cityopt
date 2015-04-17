@@ -140,22 +140,23 @@ public abstract class AbstractOptimiser implements Runnable {
             String[] nameAndDescription = formatter.format(decisions, input);
             CompletableFuture<Solution> evaluationJob =
                     simulationJob.thenApplyAsync(output -> {
+                SimulationStorage.Put put = new SimulationStorage.Put(input, nameAndDescription);
+                put.decisions = decisions;
+                put.output = output;
                 try {
-                    storage.put(output, nameAndDescription);
                     if (output instanceof SimulationResults) {
                         SimulationResults results = (SimulationResults) output;
-                        MetricValues metricValues = new MetricValues(results, problem.metrics);
-                        storage.updateMetricValues(metricValues);
+                        put.metricValues = new MetricValues(results, problem.metrics);
 
                         ConstraintContext postConstraintContext = new ConstraintContext(
-                                preConstraintContext, metricValues);
-                        ConstraintStatus postConstraintStatus = new ConstraintStatus(
+                                preConstraintContext, put.metricValues);
+                        put.constraintStatus = new ConstraintStatus(
                                 postConstraintContext, problem.constraints, false);
 
-                        ObjectiveStatus objectiveStatus =
-                                new ObjectiveStatus(metricValues, problem.objectives);
+                        put.objectiveStatus =
+                                new ObjectiveStatus(put.metricValues, problem.objectives);
                         Solution solution = new Solution(
-                                postConstraintStatus, objectiveStatus, input);
+                                put.constraintStatus, put.objectiveStatus, input);
                         updateParetoFront(solution);
                         return solution;
                     } else {
@@ -166,8 +167,19 @@ public abstract class AbstractOptimiser implements Runnable {
                 } catch (ScriptException e) {
                     listener.logEvaluationFailure(nameAndDescription, e);
                     return null;
+                } finally {
+                    if (put.output != null) {
+                        storage.put(put);
+                    }
                 }
             }, executor).whenComplete((solution, throwable) -> {
+                evaluationsCompleted.incrementAndGet();
+            });
+            evaluationJob.whenComplete((solution, throwable) -> {
+                // Propagate cancelation of evaluationJob back to simulationJob.
+                if (evaluationJob.isCancelled()) {
+                    simulationJob.cancel(true);
+                }
                 activeJobs.set(jobId, null);
                 freeJobIds.add(jobId);
                 if (freeJobIds.remainingCapacity() == 0) {
@@ -175,14 +187,7 @@ public abstract class AbstractOptimiser implements Runnable {
                         jobsDoneCondition.notifyAll();
                     }
                 }
-                evaluationsCompleted.incrementAndGet();
                 logger.info("Completed simulation job " + jobName);
-            });
-            // Propagate cancelation of evaluationJob back to simulationJob.
-            evaluationJob.whenComplete((solution, throwable) -> {
-                if (evaluationJob.isCancelled()) {
-                    simulationJob.cancel(true);
-                }
             });
             return evaluationJob;
         } else {

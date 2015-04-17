@@ -13,6 +13,9 @@ import javax.script.ScriptException;
  * @author Hannu Rummukainen
  */
 public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
+    /** The evaluated constraints. */
+    public final Collection<Constraint> constraints;
+
     /**
      * Whether all constraints are feasible. This is null if SimulationInput was
      * evaluated, and some constraints depend on values that are not yet
@@ -22,7 +25,7 @@ public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
 
     /**
      * Infeasibility values of individual constraints, in the same order as the
-     * constructor arguments. Values are set NaN if constraint evaluation fails
+     * {@link #constraints}. Values are set NaN if constraint evaluation fails
      * and errors are ignored.
      */
     public final double[] infeasibilities;
@@ -34,6 +37,7 @@ public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
     public ConstraintStatus(SimulationInput input,
             Collection<Constraint> constraints, boolean ignoreErrors)
             throws ScriptException {
+        this.constraints = constraints;
         this.infeasibilities = computeInfeasibilities(input, constraints,
                 ignoreErrors);
         this.feasible = computeFeasibility(infeasibilities);
@@ -45,6 +49,7 @@ public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
      */
     public ConstraintStatus(MetricValues values,
             Collection<Constraint> constraints) throws ScriptException {
+        this.constraints = constraints;
         this.infeasibilities = computeInfeasibilities(values, constraints,
                 false);
         this.feasible = computeFeasibility(infeasibilities);
@@ -60,6 +65,7 @@ public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
     public ConstraintStatus(ConstraintContext values,
             Collection<Constraint> constraints, boolean ignoreErrors)
             throws ScriptException {
+        this.constraints = constraints;
         this.infeasibilities = computeInfeasibilities(values, constraints, ignoreErrors);
         this.feasible = computeFeasibility(infeasibilities);
     }
@@ -67,7 +73,8 @@ public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
     /**
      * Constructs an instance from explicitly given infeasibility values.
      */
-    public ConstraintStatus(double[] infeasibilities) {
+    public ConstraintStatus(Collection<Constraint> constraints, double[] infeasibilities) {
+        this.constraints = constraints;
         this.infeasibilities = infeasibilities;
         this.feasible = computeFeasibility(infeasibilities);
     }

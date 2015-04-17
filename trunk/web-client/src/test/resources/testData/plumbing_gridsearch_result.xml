@@ -31,8 +31,8 @@
   <algorithm description="grid search"/>
   <algorithm description="genetic algorithm"/>
   <scenariogenerator status="COMPLETED_RESULTS : FEASIBLE"/>
-  <scenario description="C01.typ = 2" createdby="1" status="SUCCESS"/>
-  <scenario description="C01.typ = 1" createdby="1" status="SUCCESS"/>
+  <scenario description="C01.typ = 1" status="SUCCESS"/>
+  <scenario description="C01.typ = 2" status="SUCCESS"/>
   <optconstraint name="con1" expression="mean(PIP01.PI12_MIX_MASS_FLOW)" lowerbound="0.1" upperbound="1.0"/>
   <objectivefunction name="obj1" expression="integrate(PIP01.PI12_MIX_MASS_FLOW * C01.typ, 0, INFINITY)" ismaximise="true"/>
   <optimizationset/>
@@ -41,10 +41,6 @@
   <metric name="dummy" expression="C01.typ"/>
   <metric name="symmetric" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>
   <decisionvariable lowerbound="1" upperbound="2"/>
-  <scengenresult/>
-  <decisionvariableresult/>
-  <objectivefunctionresult/>
-  <optconstraintresult/>
   <outputvariable name="PI12_MIX_MASS_FLOW"/>
   <extparam defaultvalue="100" name="d"/>
   <algoparam name="max runtime [minutes]"/>
@@ -66,17 +62,25 @@
   <appuser/>
   <usergroup/>
   <usergroupproject/>
-  <inputparamval value="1" createdby="1"/>
-  <inputparamval value="2" createdby="1"/>
-  <inputparamval value="2015-01-01T00:00:00Z" createdby="1"/>
-  <inputparamval value="2015-01-01T00:00:00Z" createdby="1"/>
-  <inputparamval value="2015-01-01T00:01:00Z" createdby="1"/>
-  <inputparamval value="2015-01-01T00:01:00Z" createdby="1"/>
+  <inputparamval value="1"/>
+  <inputparamval value="2"/>
+  <inputparamval value="2015-01-01T00:00:00Z"/>
+  <inputparamval value="2015-01-01T00:00:00Z"/>
+  <inputparamval value="2015-01-01T00:01:00Z"/>
+  <inputparamval value="2015-01-01T00:01:00Z"/>
   <modelparameter expression="C01.typ"/>
   <modelparameter expression="" value="2015-01-01T00:00:00"/>
   <modelparameter value="2015-01-01T00:01:00"/>
   <metricval value="101.03143398"/>
   <metricval value="102.1154875"/>
+  <scengenresult feasible="false" paretooptimal="false"/>
+  <scengenresult feasible="true" paretooptimal="true"/>
+  <decisionvariableresult value="1"/>
+  <decisionvariableresult value="2"/>
+  <objectivefunctionresult value="1.881090598899993"/>
+  <objectivefunctionresult value="13.770240904399932"/>
+  <optconstraintresult infeasibility="0.0"/>
+  <optconstraintresult infeasibility="0.06864849001833345"/>
   <timeseriesval value="0.0" time="2015-01-01 00:00:00.0"/>
   <timeseriesval value="0.0" time="2015-01-01 00:00:00.0"/>
   <timeseriesval value="0.001306271" time="2015-01-01 00:00:00.2"/>

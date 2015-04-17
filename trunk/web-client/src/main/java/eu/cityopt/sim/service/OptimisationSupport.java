@@ -181,8 +181,8 @@ public class OptimisationSupport {
         String ubText = optConstraint.getUpperbound();
         double lb = (lbText != null) ? Double.valueOf(lbText) : Double.NEGATIVE_INFINITY;
         double ub = (ubText != null) ? Double.valueOf(ubText) : Double.POSITIVE_INFINITY;
-        return new Constraint(optConstraint.getName(), optConstraint.getExpression(),
-                lb, ub, setup.evaluator);
+        return new Constraint(optConstraint.getOptconstid(), optConstraint.getName(),
+                optConstraint.getExpression(), lb, ub, setup.evaluator);
     }
 
     public List<ObjectiveExpression> loadObjectives(
@@ -202,7 +202,8 @@ public class OptimisationSupport {
     {
         //TODO maybe save objectiveFunction.getType() for formatting values?
         return new ObjectiveExpression(
-                objectiveFunction.getName(), objectiveFunction.getExpression(),
+                objectiveFunction.getObtfunctionid(), objectiveFunction.getName(),
+                objectiveFunction.getExpression(),
                 objectiveFunction.getIsmaximise(), namespace.evaluator);
     }
 
