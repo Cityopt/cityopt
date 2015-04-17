@@ -13,8 +13,18 @@ public class SimulationFailure extends SimulationOutput {
      */
     public final boolean permanent;
 
-    public SimulationFailure(SimulationInput input, boolean permanent, String messages) {
+    /** Brief description of the failure for log messages. */
+    public final String reason;
+
+    public SimulationFailure(SimulationInput input, boolean permanent,
+            String reason, String messages) {
         super(input, messages);
         this.permanent = permanent;
+        this.reason = reason;
+    }
+
+    @Override
+    public String toString() {
+        return reason;
     }
 }
