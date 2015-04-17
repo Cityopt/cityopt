@@ -27,11 +27,13 @@ import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.ObjectiveExpression;
 import eu.cityopt.sim.eval.ObjectiveStatus;
+import eu.cityopt.sim.eval.SimulationFailure;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.SimulationStorage;
+import eu.cityopt.sim.opt.OptimisationLog;
 import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.ScenarioNameFormat;
 
@@ -81,7 +83,10 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
             return Collections.emptyIterator();
         }
     };
-    private ScenarioNameFormat formatter = (d, i) -> null;
+    private ScenarioNameFormat formatter =
+            (d, i) -> new String[] { "-", d.toString() };
+    private OptimisationLog userLog =
+            m -> System.err.println(m);
 
     @Inject
     public CityoptEvaluator(OptimisationProblem problem)
@@ -100,9 +105,15 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
         this.formatter = formatter;
     }
 
+    @Inject(optional=true)
+    public void setUserLog(OptimisationLog log) {
+        this.userLog = log;
+    }
+
     @Override
     public Objectives evaluate(CityoptPhenotype pt) {
         Future<SimulationOutput> job = null;
+        String[] desc = formatter.format(pt.decisions, pt.input);
         try {
             ConstraintContext coco = new ConstraintContext(
                     pt.decisions, pt.input);
@@ -121,9 +132,10 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
                 out = job.get();
                 jobs.remove(job);
                 job = null;
-                storage.put(out, formatter.format(pt.decisions, pt.input));
+                storage.put(out, desc);
             }
             if (!(out instanceof SimulationResults)) {
+                userLog.logSimulationFailure(desc, (SimulationFailure) out);
                 return infeasibleObj(prior);
             }
             MetricValues mv = new MetricValues(
@@ -144,6 +156,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
             }
             return obj;
         } catch (ScriptException e) {
+            userLog.logEvaluationFailure(desc, e);
             throw new RuntimeException("Evaluation error", e);
         } catch (InterruptedException | ExecutionException | IOException e) {
             throw new RuntimeException("Execution error", e);
