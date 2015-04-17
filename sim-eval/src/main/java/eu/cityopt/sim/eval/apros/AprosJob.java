@@ -17,6 +17,7 @@ import org.simantics.simulation.scheduling.Job;
 import org.simantics.simulation.scheduling.JobConfiguration;
 import org.simantics.simulation.scheduling.files.IFile;
 import org.simantics.simulation.scheduling.listening.StateListener;
+import org.simantics.simulation.scheduling.status.JobFailed;
 import org.simantics.simulation.scheduling.status.JobFinished;
 import org.simantics.simulation.scheduling.status.JobStatus;
 import org.simantics.simulation.scheduling.status.JobSucceeded;
@@ -104,8 +105,10 @@ public class AprosJob extends CompletableFuture<SimulationOutput>
                 //TODO Check that all outputs were found.
                 output = res;
             } else {
-                output = new SimulationFailure(
-                        input, false, st.toString() + "\n" + ostr.toString());
+                String reason = (st instanceof JobFailed)
+                        ? ((JobFailed) st).description : st.toString();
+                String messages = reason + "\n" + ostr.toString();
+                output = new SimulationFailure(input, false, reason, messages);
             }
             Experiment x = job.getExperiment();
             job = null;

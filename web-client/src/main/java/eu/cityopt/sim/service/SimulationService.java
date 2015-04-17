@@ -413,12 +413,14 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                 simOutput = simResults;
             } else {
                 // Note: The run start and end times are left null.
-                return new SimulationFailure(simInput, false,
+                return new SimulationFailure(
+                        simInput, false, "Missing simulation results in database",
                         "Could not find simulation results for all output variables in database.");
             }
         } else {
             boolean permanent = (scenario.getStatus() == STATUS_MODEL_FAILURE);
-            simOutput = new SimulationFailure(simInput, permanent, scenario.getLog());
+            simOutput = new SimulationFailure(
+                    simInput, permanent, scenario.getStatus(), scenario.getLog());
         }
         if (scenario.getRunstart() != null) {
             simOutput.runStart = scenario.getRunstart().toInstant(); 
