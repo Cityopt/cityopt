@@ -98,7 +98,7 @@ class OptimiserAdapter {
         ScenarioNameFormat formatter = new SimpleScenarioNameFormat(runName, problem.decisionVars);
 
         List<Module> moduleList = new ArrayList<>(Arrays.asList(modules));
-        moduleList.add(new CityoptAdapterModule(problem, storage, formatter, control));
+        moduleList.add(new CityoptAdapterModule(problem, storage, formatter, listener, control));
         this.task = new Opt4JTask(false);
         task.init(moduleList);
 
@@ -128,7 +128,7 @@ class OptimiserAdapter {
                     results.status = AlgorithmStatus.FAILED;
                     logger.debug("Caught throwable from Opt4J", t);
                     t = ExceptionHelpers.peelCommonWrappers(t);
-                    listener.logMessage(t.getMessage());
+                    listener.logMessage("Terminating optimisation at error: " + t.getMessage());
                 }
                 results.paretoFront = archive.stream().map(this::makeSolutionFromIndividual)
                         .filter(s -> s != null).collect(Collectors.toList());

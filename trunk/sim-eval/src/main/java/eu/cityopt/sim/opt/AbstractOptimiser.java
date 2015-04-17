@@ -25,6 +25,7 @@ import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.DecisionValues;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.ObjectiveStatus;
+import eu.cityopt.sim.eval.SimulationFailure;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
@@ -136,19 +137,20 @@ public abstract class AbstractOptimiser implements Runnable {
             logger.info("Starting simulation job " + jobName + ": " + decisions);
             CompletableFuture<SimulationOutput> simulationJob = runner.start(input);
             activeJobs.set(jobId, simulationJob);
+            String[] nameAndDescription = formatter.format(decisions, input);
             CompletableFuture<Solution> evaluationJob =
                     simulationJob.thenApplyAsync(output -> {
                 try {
-                    storage.put(output, formatter.format(decisions, input));
+                    storage.put(output, nameAndDescription);
                     if (output instanceof SimulationResults) {
                         SimulationResults results = (SimulationResults) output;
                         MetricValues metricValues = new MetricValues(results, problem.metrics);
                         storage.updateMetricValues(metricValues);
 
-                        ConstraintContext postConstraintContext =
-                                new ConstraintContext(preConstraintContext, metricValues);
-                        ConstraintStatus postConstraintStatus =
-                                new ConstraintStatus(postConstraintContext, problem.constraints, false);
+                        ConstraintContext postConstraintContext = new ConstraintContext(
+                                preConstraintContext, metricValues);
+                        ConstraintStatus postConstraintStatus = new ConstraintStatus(
+                                postConstraintContext, problem.constraints, false);
 
                         ObjectiveStatus objectiveStatus =
                                 new ObjectiveStatus(metricValues, problem.objectives);
@@ -157,9 +159,12 @@ public abstract class AbstractOptimiser implements Runnable {
                         updateParetoFront(solution);
                         return solution;
                     } else {
+                        listener.logSimulationFailure(
+                                nameAndDescription, (SimulationFailure) output);
                         return null;
                     }
                 } catch (ScriptException e) {
+                    listener.logEvaluationFailure(nameAndDescription, e);
                     return null;
                 }
             }, executor).whenComplete((solution, throwable) -> {

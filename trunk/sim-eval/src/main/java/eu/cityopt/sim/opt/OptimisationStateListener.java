@@ -8,10 +8,7 @@ import java.util.Iterator;
  *
  * @author Hannu Rummukainen
  */
-public interface OptimisationStateListener {
-    /** Stores a user-level log message. */
-    public void logMessage(String text);
-
+public interface OptimisationStateListener extends OptimisationLog {
     /**
      * Updates the current status string. This should be a short string such as
      * "iteration 37" or "63/127 scenarios".
