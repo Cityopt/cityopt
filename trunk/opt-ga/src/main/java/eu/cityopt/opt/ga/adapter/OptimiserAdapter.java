@@ -36,7 +36,7 @@ import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.OptimisationResults;
 import eu.cityopt.sim.opt.OptimisationStateListener;
 import eu.cityopt.sim.opt.ScenarioNameFormat;
-import eu.cityopt.sim.opt.SimpleScenarioNameFormat;
+import eu.cityopt.sim.opt.SequentialScenarioNameFormat;
 import eu.cityopt.sim.opt.Solution;
 
 /**
@@ -95,7 +95,7 @@ class OptimiserAdapter {
         this.control = new TimeoutControl(deadline);
         this.listener = listener;
 
-        ScenarioNameFormat formatter = new SimpleScenarioNameFormat(runName, problem.decisionVars);
+        ScenarioNameFormat formatter = new SequentialScenarioNameFormat(runName, problem.decisionVars);
 
         List<Module> moduleList = new ArrayList<>(Arrays.asList(modules));
         moduleList.add(new CityoptAdapterModule(problem, storage, formatter, listener, control));

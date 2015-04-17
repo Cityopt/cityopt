@@ -71,7 +71,7 @@ public abstract class AbstractOptimiser implements Runnable {
         this.problem = problem;
         this.storage = storage;
         this.runName = runName;
-        this.formatter = new SimpleScenarioNameFormat(runName, problem.decisionVars);
+        this.formatter = new SequentialScenarioNameFormat(runName, problem.decisionVars);
         this.listener = listener;
         this.executor = executor;
 
@@ -126,7 +126,12 @@ public abstract class AbstractOptimiser implements Runnable {
     protected CompletableFuture<Solution> queueJob(DecisionValues decisions, int jobId)
             throws ScriptException, IOException {
         SimulationInput input = new SimulationInput(problem.inputConst);
-        input.putExpressionValues(decisions, problem.inputExprs);
+        try {
+            input.putExpressionValues(decisions, problem.inputExprs);
+        } catch (ScriptException e) {
+            listener.logEvaluationFailure(formatter.format(decisions), e);
+            throw e;
+        }
 
         ConstraintContext preConstraintContext = new ConstraintContext(decisions, input);
         ConstraintStatus preConstraintStatus =

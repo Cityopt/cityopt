@@ -1,25 +1,53 @@
 package eu.cityopt.opt.ga;
 
-import javax.inject.Inject;
 import javax.script.ScriptException;
 
 import org.opt4j.core.genotype.MapGenotype;
 import org.opt4j.core.problem.Decoder;
 
+import com.google.inject.Inject;
+
 import eu.cityopt.sim.eval.DecisionValues;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.Type;
+import eu.cityopt.sim.opt.OptimisationLog;
 import eu.cityopt.sim.opt.OptimisationProblem;
+import eu.cityopt.sim.opt.ScenarioNameFormat;
 
 public class ComponentwiseDecoder
 implements Decoder<ComponentwiseGenotype, CityoptPhenotype> {
     private final OptimisationProblem problem;
-    
+
+    private ScenarioNameFormat formatter = new ScenarioNameFormat() {
+        @Override
+        public String[] format(DecisionValues decisions, SimulationInput input) {
+            return format(decisions);
+        }
+
+        @Override
+        public String[] format(DecisionValues decisions) {
+            return new String[] { "-", decisions.toString() };
+        }
+    };
+
+    private OptimisationLog userLog =
+            m -> System.err.println(m);
+
+    @Inject(optional=true)
+    public void setFormatter(ScenarioNameFormat formatter) {
+        this.formatter = formatter;
+    }
+
+    @Inject(optional=true)
+    public void setUserLog(OptimisationLog log) {
+        this.userLog = log;
+    }
+
     @Inject
     public ComponentwiseDecoder(OptimisationProblem problem) {
         this.problem = problem;
     }
-    
+
     @Override
     public CityoptPhenotype decode(ComponentwiseGenotype genotype) {
         DecisionValues dv = new DecisionValues(
@@ -37,9 +65,11 @@ implements Decoder<ComponentwiseGenotype, CityoptPhenotype> {
         try {
             inp.putExpressionValues(dv, problem.inputExprs);
         } catch (ScriptException e) {
+            userLog.logEvaluationFailure(formatter.format(dv), e);
             throw new RuntimeException(
                     "Input expression evaluation failed", e);
         }
-        return new CityoptPhenotype(dv, inp);
+        String[] desc = formatter.format(dv, inp);
+        return new CityoptPhenotype(dv, inp, desc);
     }
 }

@@ -13,12 +13,12 @@ import eu.cityopt.sim.eval.SimulationInput;
  *
  * @author Hannu Rummukainen
  */
-public class SimpleScenarioNameFormat implements ScenarioNameFormat {
+public class SequentialScenarioNameFormat implements ScenarioNameFormat {
     private final String prefix;
     private final Collection<DecisionVariable> variableOrder;
     private AtomicInteger sequenceNumber = new AtomicInteger();
 
-    public SimpleScenarioNameFormat(
+    public SequentialScenarioNameFormat(
             String generatorRunName, Collection<DecisionVariable> variableOrder) {
         this.prefix = generatorRunName;
         this.variableOrder = variableOrder;
@@ -26,6 +26,11 @@ public class SimpleScenarioNameFormat implements ScenarioNameFormat {
 
     @Override
     public String[] format(DecisionValues decisions, SimulationInput input) {
+        return format(decisions);
+    }
+
+    @Override
+    public String[] format(DecisionValues decisions) {
         String[] result = new String[2];
         result[0] = prefix + "-" + sequenceNumber.incrementAndGet();
         result[1] = decisions.formatString(variableOrder);
