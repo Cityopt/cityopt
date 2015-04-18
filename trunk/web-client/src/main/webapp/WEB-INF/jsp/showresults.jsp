@@ -6,7 +6,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt create scenario</title>
+<title>CityOpt show optimization results</title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -20,12 +20,16 @@
 			<table>
 				<tr>
 					<td>
-						<h2>Results</h2>
+						<h2>Optimization results</h2>
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<table>
+							<col style="width:100px">
+							<col style="width:200px">
+							<col style="width:100px">
+							<col style="width:200px">
 							<tr>
 								<td>Scenario name:</td>
 								<td>${scenario.name}</td>
@@ -38,21 +42,51 @@
 								<td></td>
 								<td></td>
 							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table>
+							<col style="width:250px">
+							<col style="width:30px">
+							<col style="width:250px">
+							<col style="width:30px">
+							<col style="width:250px">
+
 							<tr>
+								<td><b>Components</b></td>
 								<td></td>
-								<td>
+								<td><b>Input parameters</b></td>
+								<td></td>
+								<td><b>Output variables</b></td>
+							</tr>
+							<tr>
+								<td valign="top">
 									<table class="tablestyle">
-										<col style="width:250px">
-										
+										<col style="width:60px">
+										<col style="width:190px">
+										<tr>
+											<th>Select</th>
+											<th>Component</th>
+										</tr>
+							
 										<c:forEach items="${components}" var="component">
 										<tr>
-											<td>${component.name}</td>
+											<c:if test="${selectedcompid == component.componentid}">
+												<tr style="background-color: #D4D4D4"><td>Selected</td>
+											</c:if>
+											<c:if test="${selectedcompid != component.componentid}">
+												<tr>
+												<td><a href="<c:url value='showresults.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+											</c:if>
+												<td>${component.name}</td>
 									   	</tr>
 										</c:forEach>
-									</table>										
+									</table>
 								</td>
 								<td></td>
-								<td>
+								<td valign="top">
 									<table class="tablestyle">
 										<col style="width:250px">
 										<tr>
@@ -67,7 +101,7 @@
 									</table>
 								</td>
 								<td></td>
-								<td>
+								<td valign="top">
 									<table class="tablestyle">
 										<col style="width:250px">
 										<tr>
@@ -82,12 +116,19 @@
 									</table>
 								</td>
 							</tr>
+							<tr height="20"></tr>
 							<tr>
-								<td></td>
+								<td><b>Metrics</b></td>
+							</tr>
+							<tr>
 								<td>
 									<table class="tablestyle">
 										<col style="width:250px">
 										
+										<tr>
+											<th>Metric</th>
+										</tr>
+					
 										<c:forEach items="${metrics}" var="metric">
 										<tr>
 											<td>${metric.name}</td>
@@ -100,8 +141,9 @@
 							<tr>						
 								<td></td>
 								<td></td>
-								<td align="right"><a href="editoptimizationset.html"><button type="button">Back</button></a></td>
 								<td></td>
+								<td></td>
+								<td align="right"><a href="editoptimizationset.html"><button type="button">Back</button></a></td>
 							</tr>
 						</table>
 					</td>

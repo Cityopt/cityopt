@@ -1,5 +1,9 @@
 <%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
-<%--@elvariable id="function" type="eu.cityopt.DTO.ObjectiveFunctionDTO"--%>
+<%--@elvariable id="constraint" type="eu.cityopt.DTO.OptConstraintDTO"--%>
+<%--@elvariable id="component" type="eu.cityopt.DTO.ComponentDTO"--%>
+<%--@elvariable id="inputParam" type="eu.cityopt.DTO.InputParameterDTO"--%>
+<%--@elvariable id="outputVar" type="eu.cityopt.DTO.OutputVariableDTO"--%>
+<%--@elvariable id="metric" type="eu.cityopt.DTO.MetricDTO"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -10,7 +14,7 @@
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
-<form:form method="post" action="createconstraint.html?action=create" modelAttribute="function">
+<form:form method="post" action="createconstraint.html?action=create" modelAttribute="constraint">
 <table cellspacing="0" cellpadding="0">
 	<tr>
 		<td>
@@ -27,28 +31,45 @@
 				<tr>
 					<td>
 						<table>
+							<col style="width:250px">
 							<col style="width:30px">
 							<col style="width:250px">
-							<col style="width:20px">
-							<col style="width:250px">
-							<col style="width:80px">
+							<col style="width:30px">
 							<col style="width:250px">
 
 							<tr>
+								<td><b>Components</b></td>
 								<td></td>
-								<td>
+								<td><b>Input parameters</b></td>
+								<td></td>
+								<td><b>Output variables</b></td>
+							</tr>
+							<tr>
+								<td valign="top">
 									<table class="tablestyle">
-										<col style="width:250px">
-										
+										<col style="width:60px">
+										<col style="width:190px">
+										<tr>
+											<th>Select</th>
+											<th>Component</th>
+										</tr>
+							
 										<c:forEach items="${components}" var="component">
 										<tr>
-											<td>${component.name}</td>
+											<c:if test="${selectedcompid == component.componentid}">
+												<tr style="background-color: #D4D4D4"><td>Selected</td>
+											</c:if>
+											<c:if test="${selectedcompid != component.componentid}">
+												<tr>
+												<td><a href="<c:url value='createconstraint.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+											</c:if>
+												<td>${component.name}</td>
 									   	</tr>
 										</c:forEach>
-									</table>										
+									</table>
 								</td>
 								<td></td>
-								<td>
+								<td valign="top">
 									<table class="tablestyle">
 										<col style="width:250px">
 										<tr>
@@ -63,7 +84,7 @@
 									</table>
 								</td>
 								<td></td>
-								<td>
+								<td valign="top">
 									<table class="tablestyle">
 										<col style="width:250px">
 										<tr>
@@ -78,12 +99,19 @@
 									</table>
 								</td>
 							</tr>
+							<tr height="20"></tr>
 							<tr>
-								<td></td>
+								<td><b>Metrics</b></td>
+							</tr>
+							<tr>
 								<td>
 									<table class="tablestyle">
 										<col style="width:250px">
 										
+										<tr>
+											<th>Metric</th>
+										</tr>
+					
 										<c:forEach items="${metrics}" var="metric">
 										<tr>
 											<td>${metric.name}</td>
@@ -92,32 +120,42 @@
 									</table>										
 								</td>
 							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr height=20></tr>
+				<tr>
+					<td>
+						<table>						
+							<col style="width:30px">
+							<col style="width:150px">
+							<col style="width:400px">
+							<col style="width:240px">
 							<tr>
+								<td></td>
 								<td>Lower bound</td>
-								<td><form:input style="width:400px" type="text" path="lowerbound"/></td>
-								<td><a href=""><button type="button">F(x)</button></a></td>
+								<td><input style="width:400px" type="text"/></td>
+								<td></td>
 							</tr>
+							<tr height=10></tr>
 							<tr>
+								<td></td>
 								<td>Expression</td>
 								<td><form:input style="width:400px" type="text" path="expression"/></td>
-								<td><a href=""><button type="button">F(x)</button></a></td>
+								<td></td>
 							</tr>
+							<tr height=10></tr>
 							<tr>
+								<td></td>
 								<td>Upper bound</td>
-								<td><form:input style="width:400px" type="text" path="upperbound"/></td>
-								<td><a href=""><button type="button">F(x)</button></a></td>
-							</tr>
-							<tr>
-								<td>Type</td>
-								<td><form:input style="width:400px" type="text" path="type"/></td>
-								<td>Unit</td>
-								<td><form:input style="width:400px" type="text" path="unit"/></td>
+								<td><input style="width:400px" type="text"/></td>
+								<td></td>
 							</tr>
 							<tr>
 								<td></td>
 								<td></td>
-								<td><a href=""><button type="button"></button></a>
-								<a href=""><button type="button"></button></a></td>
+								<td></td>
+								<td align=right><a href=""><button type="button">Ok</button></a><a href="editoptimizationset.html"><button type="button">Cancel</button></a></td>
 							</tr>					
 						</table>
 					</td>

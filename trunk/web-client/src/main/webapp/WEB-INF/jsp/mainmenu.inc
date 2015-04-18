@@ -51,18 +51,26 @@
 		<a href="deleteproject.html">Delete project</a>
 	</td>
 </tr>
-<tr height=10>
-	<td></td>
-	<td>
-		
-	</td>
-</tr>
 <tr>
 	<td></td>
 	<td>
 		<a href="importdata.html">Import data</a>
 	</td>
 </tr>
+<% if (request.getSession().getAttribute("project") != null) { %>
+<tr>
+	<td></td>
+	<td>
+		<a href="metricdefinition.html">Metrics</a>
+	</td></tr>
+<% } else { %>
+<tr>
+	<td></td>
+	<td>
+		Metrics
+	</td>
+</tr>
+<% } %>
 <tr height=10>
 	<td></td>
 	<td>
@@ -149,32 +157,13 @@
 		
 	</td>
 </tr>
-<% if (request.getSession().getAttribute("project") != null) { %>
-<tr>
-	<td></td>
-	<td>
-		<a href="metricdefinition.html">Metrics</a>
-	</td></tr>
-<% } else { %>
-<tr>
-	<td></td>
-	<td>
-		Metrics
-	</td>
-</tr>
-<% } %>
-<tr height=10>
-	<td></td>
-	<td>
-		
-	</td>
-</tr>
 <tr>
 	<td>
 		<img src="assets/img/icon_optimization_black.jpg"/>
 	</td>
 	<td><b>Optimization</b></td>
 </tr>
+<% if (request.getSession().getAttribute("project") != null) { %>
 <tr>
 	<td></td>
 	<td>
@@ -185,6 +174,20 @@
 	<td>
 		<a href="openoptimizationset.html">Open optimization set</a>
 	</td></tr>
+<% } else { %>
+<tr>
+	<td></td>
+	<td>
+		Create optimization set
+	</td>
+</tr>
+<tr>
+	<td></td>
+	<td>
+		Open optimization set
+	</td>
+</tr>
+<% } %>
 <% if (request.getSession().getAttribute("optimizationset") != null) { %>
 <tr>
 	<td></td>

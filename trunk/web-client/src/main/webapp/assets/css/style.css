@@ -1,3 +1,18 @@
+@import url(http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic);
+
+@font-face {
+    font-family: 'blanchcaps';
+    src: url('blanch/blanch_caps-webfont.eot');
+    src: url('blanch/blanch_caps-webfont.eot?#iefix') format('embedded-opentype'),
+         url('blanch/blanch_caps-webfont.woff2') format('woff2'),
+         url('blanch/blanch_caps-webfont.woff') format('woff'),
+         url('blanch/blanch_caps-webfont.ttf') format('truetype'),
+         url('blanch/blanch_caps-webfont.svg#blanchcaps') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    text-transform: uppercase;
+}
+
 body {
     /*background-image: url("../img/Nice_background.jpg");*/
 	margin: 0px;
@@ -8,7 +23,7 @@ body {
 }
 
 a, a:visited, a:active {
-	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	font-size: 12px;
 	color: #5D6E63;
 	text-decoration: none;
@@ -107,7 +122,7 @@ blockquote {
 	margin-top: 0px;
 	text-align: center;
 	font-size: 12px;
-	font-family: blanch, arial;
+	font-family: PT Sans, arial;
 	color: #F1F3F2;
 }
 
@@ -189,12 +204,12 @@ blockquote {
 	display: block;
 	margin: 0px 0px 14px 0px;
 	color: #808080;
-	font-family: blanch, arial;
+	font-family: PT Sans, arial;
 	font-size: 12px;
 }
 
 .menustyle a {
-	font-family: blanch, arial;
+	font-family: PT Sans, arial;
 	font-size: 12px;
 }
 
@@ -341,7 +356,7 @@ button, input[type="button"], input[type="submit"] {
 	display:inline-block;
 	cursor:pointer;
 	color:#4D4D4D;
-	font-family: blanch, arial;
+	font-family: 'blanchcaps', arial;
 	font-size:16px;
 	border: 0px;
 	border-radius: 6px;
