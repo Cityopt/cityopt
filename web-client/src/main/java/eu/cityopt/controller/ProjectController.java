@@ -43,6 +43,7 @@ import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.MetricValDTO;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
+import eu.cityopt.DTO.OptConstraintDTO;
 import eu.cityopt.DTO.OptSearchConstDTO;
 import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
@@ -867,6 +868,17 @@ public class ProjectController {
 		List<OptSearchConst> optSearchConstraints = optSearchService.findAll();
 		model.put("constraints", optSearchConstraints);
 		
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		project = projectService.findByID(project.getPrjid());
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+		
 		return "editoptimizationset";
 	}
 	
@@ -886,14 +898,141 @@ public class ProjectController {
 	}
 	
 	@RequestMapping(value="createconstraint",method=RequestMethod.GET)
-	public String getCreateConstraint(Model model){
+	public String getCreateConstraint(Map<String, Object> model,
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
 	
+		OptConstraintDTO constraint = new OptConstraintDTO();
+		model.put("constraint", constraint);
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		project = projectService.findByID(project.getPrjid());
+
+		UserSession userSession = (UserSession) model.get("usersession");
+		
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+		
+		if (selectedCompId != null && !selectedCompId.isEmpty())
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
+			if (nSelectedCompId > 0)
+			{
+				userSession.setComponentId(nSelectedCompId);
+				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				model.put("outputVars", outputVars);
+				
+				Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+				model.put("inputParams", inputParams);
+			}
+			model.put("selectedcompid", nSelectedCompId);
+		}
+		
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+
 		return "createconstraint";
 	}
 	
-	@RequestMapping(value="showresults",method=RequestMethod.GET)
-	public String getShowResults(Model model){
+	@RequestMapping(value="createconstraint", method=RequestMethod.POST)
+	public String getCreateConstraintPost(SearchConstraintDTO constraint, Map<String, Object> model) {
+		OptimizationSetDTO optSet = null;
+		
+		if (model.containsKey("optimizationset"))
+		{
+			optSet = (OptimizationSetDTO) model.get("optimizationset");
+			model.put("optimizationset", optSet);
+		}
+		else
+		{
+			return "error";
+		}
+		
+		if (constraint != null && constraint.getExpression() != null)
+		{
+			OptSearchConstDTO parentConstraint = new OptSearchConstDTO();
+			parentConstraint.setOptimizationset(optSet);
+			parentConstraint.setSearchconstraint(constraint);
+			//optSearchService.save(parentConstraint);
+		}
+
+		List<OptSearchConst> optSearchConstraints = optSearchService.findAll();
+		model.put("constraints", optSearchConstraints);
+
+		return "editoptimizationset";
+	}
 	
+	@RequestMapping(value="importobjfunction",method=RequestMethod.GET)
+	public String getImportObjFunction(Model model) {
+	
+		return "importobjfunction";
+	}
+
+	@RequestMapping(value="importsearchconstraint",method=RequestMethod.GET)
+	public String getImportSearchConstraint(Model model) {
+	
+		return "importsearchconstraint";
+	}
+
+	@RequestMapping(value="extparamsets",method=RequestMethod.GET)
+	public String getExtParamSets(Model model) {
+	
+		return "extparamsets";
+	}
+	
+	@RequestMapping(value="showresults",method=RequestMethod.GET)
+	public String getShowResults(Map<String, Object> model,
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+			
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		project = projectService.findByID(project.getPrjid());
+
+		UserSession userSession = (UserSession) model.get("usersession");
+		
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+		
+		if (selectedCompId != null && !selectedCompId.isEmpty())
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
+			if (nSelectedCompId > 0)
+			{
+				userSession.setComponentId(nSelectedCompId);
+				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				model.put("outputVars", outputVars);
+				
+				Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+				model.put("inputParams", inputParams);
+			}
+			model.put("selectedcompid", nSelectedCompId);
+		}
+		
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+			
 		return "showresults";
 	}
 	

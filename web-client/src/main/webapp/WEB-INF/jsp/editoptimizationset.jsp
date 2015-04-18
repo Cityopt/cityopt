@@ -67,12 +67,12 @@
 								<td>
 									<a href="createobjfunction.html"><button type="button">Create</button></a>
 									<input type="submit" value="Delete">
-									<input type="submit" value="Import">
+									<a href="importobjfunction.html"><button type="button">Import</button></a>
 								</td>
 							</tr>
 							<tr height="20"></tr>
 							<tr>
-								<td><b>Searching constraint</b></td>
+								<td><b>Searching constraints</b></td>
 							</tr>
 							<tr>
 								<td>
@@ -94,37 +94,24 @@
 							</tr>
 							<tr>
 								<td>
-									<input type="submit" value="Add">
+									<a href="createconstraint.html"><button type="button">Create</button></a>
 									<input type="submit" value="Delete">
-									<input type="submit" value="Import">
+									<a href="importsearchconstraint.html"><button type="button">Import</button></a>
 								</td>
 							</tr>
 							<tr height="20"></tr>
 							<tr>
-								<td><b>External parameter value sets</b></td>
+								<td><b>External parameter value set</b></td>
 							</tr>
 							<tr>
 								<td>
-									<table class="tablestyle" style="width: 390px">
-										<tr>
-											<th>Name</th>
-										</tr>
-										
-										<c:forEach items="${extparamvalsets}" var="extParamValSet">
-										<tr>
-											<td>${extParamValSet.name}</td>
-											<td></td>
-									   	</tr>
-										</c:forEach>
-						
-									</table>
+									<input type="text" style="width: 350px">
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<input type="submit" value="Add">
+									<a href="extparamsets.html"><button type="button">Add</button></a>
 									<input type="submit" value="Delete">
-									<input type="submit" value="Import">
 								</td>
 							</tr>
 						</table>
@@ -142,7 +129,7 @@
 							<tr>
 								<td>Scenario name</td>
 								<td><input type="text" style="width:190px"></td>
-								<td align="right"><input type="submit" value="Show scenario"></td>
+								<td align="right"><a href="showresults.html"><button type="button">Show results</button></a></td>
 							</tr>
 							<tr>
 								<td>Objective function value</td>
@@ -150,20 +137,24 @@
 								<td></td>
 							</tr>
 							<tr><td><br></td></tr>
+							<tr><td><b>Metrics</b></td></tr>
 							<tr>
 								<td colspan="3">
-									<table class="tablestyle" style="width: 100%">
+									<table class="tablestyle">
+										<col style="width:400px">
+										
 										<tr>
-											<th>Metrics</th>
+											<th>Metric</th>
 											<th>Value</th>
-											<th>Unit</th>
-										</tr>									
-										<tr>
-											<td>x</td>
-											<td>x</td>
-											<td>x</td>
 										</tr>
-									</table>
+					
+										<c:forEach items="${metrics}" var="metric">
+										<tr>
+											<td>${metric.name}</td>
+											<td></td>
+									   	</tr>
+										</c:forEach>
+									</table>	
 								</td>
 							</tr>
 							<tr><td><br></td></tr>
