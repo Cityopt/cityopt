@@ -2,7 +2,9 @@ package eu.cityopt.model;
 
 // Generated 13.11.2014 15:13:00 by Hibernate Tools 4.0.0
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -24,7 +26,7 @@ public class Algorithm implements java.io.Serializable {
 
 	private int algorithmid;
 	private String description;
-	private Set<AlgoParam> algoparams = new HashSet<AlgoParam>(0);
+	private List<AlgoParam> algoparams = new ArrayList<AlgoParam>(0);
 	private Set<ScenarioGenerator> scenariogenerators = new HashSet<ScenarioGenerator>(
 			0);
 
@@ -36,7 +38,7 @@ public class Algorithm implements java.io.Serializable {
 	}
 
 	public Algorithm(int algorithmid, String description,
-			Set<AlgoParam> algoparams, Set<ScenarioGenerator> scenariogenerators) {
+			List<AlgoParam> algoparams, Set<ScenarioGenerator> scenariogenerators) {
 		this.algorithmid = algorithmid;
 		this.description = description;
 		this.algoparams = algoparams;
@@ -64,11 +66,11 @@ public class Algorithm implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "algorithm")
-	public Set<AlgoParam> getAlgoparams() {
+	public List<AlgoParam> getAlgoparams() {
 		return this.algoparams;
 	}
 
-	public void setAlgoparams(Set<AlgoParam> algoparams) {
+	public void setAlgoparams(List<AlgoParam> algoparams) {
 		this.algoparams = algoparams;
 	}
 

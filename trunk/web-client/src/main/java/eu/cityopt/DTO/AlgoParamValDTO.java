@@ -7,7 +7,7 @@ public class AlgoParamValDTO {
 
 	@Getter @Setter private int aparamvalid;
 //	private ScenarioGenerator scenariogenerator;
-//	private AlgoParam algoparam;
+	@Getter @Setter private AlgoParamDTO algoparam;
 	@Getter @Setter private String value;
 
 }

@@ -1,27 +1,15 @@
 package eu.cityopt.service;
 
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
-import org.hibernate.Session;
-import org.hibernate.internal.util.SerializationHelper;
-import org.hibernate.proxy.HibernateProxy;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,45 +22,36 @@ import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
+import eu.cityopt.DTO.OpenOptimizationSetDTO;
+import eu.cityopt.DTO.OptSetToOpenOptimizationSetDTOMap;
 import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ProjectScenariosDTO;
 import eu.cityopt.DTO.ScenarioDTO;
-import eu.cityopt.model.AlgoParamVal;
+import eu.cityopt.DTO.ScenarioGeneratorToOpenOptimizationSetDTOMap;
 import eu.cityopt.model.Component;
-import eu.cityopt.model.DecisionVariable;
 import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.ExtParamVal;
-import eu.cityopt.model.ExtParamValSet;
 import eu.cityopt.model.ExtParamValSetComp;
-import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.Metric;
 import eu.cityopt.model.MetricVal;
-import eu.cityopt.model.ModelParameter;
 import eu.cityopt.model.ObjectiveFunction;
 import eu.cityopt.model.OptConstraint;
 import eu.cityopt.model.OptSearchConst;
-import eu.cityopt.model.OptSetScenarios;
 import eu.cityopt.model.OptimizationSet;
 import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
-import eu.cityopt.model.ScenGenObjectiveFunction;
-import eu.cityopt.model.ScenGenOptConstraint;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
-import eu.cityopt.model.ScenarioMetrics;
-import eu.cityopt.model.SimulationModel;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
-import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.repository.ProjectRepository;
-import eu.cityopt.sim.eval.MetricValues;
 
 @Service
 public class ProjectServiceImpl implements ProjectService{
-	@Autowired
+	
 	private ModelMapper modelMapper;
 	
 	@Autowired
@@ -83,9 +62,13 @@ public class ProjectServiceImpl implements ProjectService{
 	
 	static Logger log = Logger.getLogger(ProjectServiceImpl.class);
 
-	public ProjectServiceImpl() {
+	@Autowired
+	public ProjectServiceImpl(ModelMapper modelMapper) {
 //		modelMapper = new ModelMapper();
 //		modelMapper.addMappings(new ScenarioMap());
+		this.modelMapper = modelMapper;
+		modelMapper.addMappings(new OptSetToOpenOptimizationSetDTOMap());
+		modelMapper.addMappings(new ScenarioGeneratorToOpenOptimizationSetDTOMap());
 	}
 
 	@Transactional(readOnly = true)
@@ -116,7 +99,7 @@ public class ProjectServiceImpl implements ProjectService{
 	public ProjectDTO save(ProjectDTO projectDTO) {
 		Project result = modelMapper.map(projectDTO, Project.class);
 		result = projectRepository.save(result);
-		modelMapper.map(result, projectDTO);
+		projectDTO = modelMapper.map(result, ProjectDTO.class);
 		return projectDTO;
 	}
 
@@ -132,7 +115,7 @@ public class ProjectServiceImpl implements ProjectService{
 		if(project == null) {
 			throw new EntityNotFoundException();
 		}
-		
+
 		projectRepository.delete(project.getPrjid());
 	}
 	
@@ -721,7 +704,7 @@ public class ProjectServiceImpl implements ProjectService{
 	
 	@Transactional(readOnly = true)
 	@Override
-	public Set<OptimizationSetDTO> getOptimizationSets(int prjid) throws EntityNotFoundException {
+	public Set<OptimizationSetDTO> getSearchOptimizationSets(int prjid) throws EntityNotFoundException {
 		Project p = projectRepository.findOne(prjid);
 		
 		if(p == null) {
@@ -729,6 +712,26 @@ public class ProjectServiceImpl implements ProjectService{
 		}
 		
 		return modelMapper.map(p.getOptimizationsets(), new TypeToken<Set<OptimizationSetDTO>>() {}.getType());
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public Set<OpenOptimizationSetDTO> getSearchAndGAOptimizationSets(int prjid) 
+			throws EntityNotFoundException {
+		Project p = projectRepository.findOne(prjid);
+		
+		if(p == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		Set<OptimizationSet> osSet = p.getOptimizationsets();
+		Set<ScenarioGenerator> sgSet = p.getScenariogenerators();
+		Set<OpenOptimizationSetDTO> osSetDTO = modelMapper.map(osSet, 
+				new TypeToken<Set<OpenOptimizationSetDTO>>() {}.getType());
+		osSetDTO.addAll(modelMapper.map(sgSet, 
+				new TypeToken<Set<OpenOptimizationSetDTO>>() {}.getType()));
+
+		return osSetDTO;
 	}
 	
 	@Transactional(readOnly = true)

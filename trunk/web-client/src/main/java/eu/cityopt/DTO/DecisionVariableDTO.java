@@ -6,7 +6,7 @@ import lombok.Setter;
 public class DecisionVariableDTO {
 
 	@Getter @Setter private int decisionvarid;
-//	@Getter @Setter private Type type;
+	@Getter @Setter private TypeDTO type;
 //	@Getter @Setter private ScenarioGenerator scenariogenerator;
 	@Getter @Setter private String name;
 	@Getter @Setter private String expression;

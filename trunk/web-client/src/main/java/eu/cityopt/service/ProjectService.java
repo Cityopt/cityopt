@@ -12,6 +12,7 @@ import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
+import eu.cityopt.DTO.OpenOptimizationSetDTO;
 import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ProjectScenariosDTO;
@@ -45,9 +46,12 @@ public interface ProjectService extends CityOptService<ProjectDTO> {
 	
 	List<ProjectDTO> findByName(String name);
 
-	Set<OptimizationSetDTO> getOptimizationSets(int prjid) throws EntityNotFoundException;
+	Set<OptimizationSetDTO> getSearchOptimizationSets(int prjid) throws EntityNotFoundException;
 
 	Set<ObjectiveFunctionDTO> getObjectiveFunctions(int prjid)
+			throws EntityNotFoundException;
+
+	Set<OpenOptimizationSetDTO> getSearchAndGAOptimizationSets(int prjid)
 			throws EntityNotFoundException;
 	
 }
