@@ -61,6 +61,13 @@ The repository contains the following Eclipse projects:
   client library for manual testing.  Not needed for the CityOPT Planning
   Tool.
 
+- opt-runner - integrates the Opt4J graphical user interface with CityOPT
+  modules.  Can be used for testing Opt4J algorithms with Apros models.
+  Not needed for the CityOPT Planning tool.
+
+- test-resources - test data shared between multiple subprojects.
+  Not needed for the production version of the CityOPT Planning tool.
+
 - misc - miscellaneous; e.g. an Apros script required in CityOPT.
 
 In addition, the top-level Maven build file pom.xml is directly in the trunk
