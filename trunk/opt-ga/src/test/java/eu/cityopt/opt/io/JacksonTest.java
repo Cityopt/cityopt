@@ -246,12 +246,12 @@ public class JacksonTest {
         CityoptFileModule cfm = new CityoptFileModule();
         cfm.setModelFile(tm.mfile.toString());
         cfm.setProblemFile(tm.pfile.toString());
+        cfm.setTimeSeriesFile(tm.tspath);
         cfm.setTimeOrigin(tm.t0.toString());
         return cfm;
     }
     
     @Test
-    @Ignore("model file likely incorrect")
     public void testInjectProblem() throws Exception {
         CityoptFileModule cfm = getCityoptFileModule();
         Opt4JTask task = new Opt4JTask(false);
