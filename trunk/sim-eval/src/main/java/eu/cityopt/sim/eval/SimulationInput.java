@@ -111,9 +111,10 @@ public class SimulationInput implements EvaluationContext {
     public void putExpressionValues(
             DecisionValues decisions, Collection<InputExpression> inputExpressions)
                     throws ScriptException {
-        for (InputExpression expression : inputExpressions) {
-            Object value = expression.evaluate(decisions);
-            put(expression.input.componentName, expression.input.name, value);
+        for (InputExpression expr : inputExpressions) {
+            Type type = getNamespace().getInputType(expr.input.componentName, expr.input.name);
+            Object value = expr.evaluateAs(type, decisions);
+            put(expr.input.componentName, expr.input.name, value);
         }
     }
 
