@@ -376,22 +376,26 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         simulationService.saveExternalParameterValues(
                 scenario.getProject(), simExternals, scenarioMetrics, null, idUpdateList);
 
+        Namespace namespace = metricValues.getResults().getNamespace();
         for (Metric metric : scenario.getProject().getMetrics()) {
-            String value = null;
-            try {
-                value = metricValues.getString(metric.getName());
-            } catch (IllegalArgumentException e) {
-                // Ignore missing values
-            }
-            //TODO time series
+            Object value = metricValues.get(metric.getName());
             if (value != null) {
                 MetricVal metricVal = new MetricVal();
                 metricVal.setMetric(metric);
-                metricVal.setValue(value);
-    
+                Type simType = namespace.metrics.get(metric.getName());
+                if (simType.isTimeSeriesType()) {
+                    TimeSeriesI simTS = (TimeSeriesI) value;
+                    eu.cityopt.model.Type type = typeRepository.findByNameLike(simType.name);
+                    TimeSeries timeSeries = simulationService.saveTimeSeries(
+                            simTS, type, namespace.timeOrigin, idUpdateList);
+                    metricVal.setTimeseries(timeSeries);
+                } else {
+                    String text = simType.format(value, namespace);
+                    metricVal.setValue(text);
+                }
                 metricVal.setScenariometrics(scenarioMetrics);
                 scenarioMetrics.getMetricvals().add(metricVal);
-            }
+            } // else: ignore missing values
         }
 
         scenarioMetrics.setScenario(scenario);

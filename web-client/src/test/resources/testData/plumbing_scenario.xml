@@ -46,7 +46,8 @@
 
   <extparam prjid="2" defaultvalue="100" name="d" unitid="1"/>
 
-  <metric prjid="1" name="dummy" unitid="1" expression="C01.typ"/>
-  <metric prjid="2" name="symmetric" unitid="1" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>
+  <metric metid="0" prjid="1" name="dummy" unitid="1" expression="C01.typ"/>
+  <metric metid="1" prjid="2" name="symmetric" unitid="1" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>
+  <metric metid="2" prjid="2" name="seriesmetric" unitid="6" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW"/>
 
 </dataset>
