@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.DTO.ComponentInputParamDTO;
 import eu.cityopt.model.TimeSeriesVal;
+import eu.cityopt.service.ProjectServiceImpl;
 
 @Repository
 public class CustomQueryRepository {	
@@ -22,6 +24,8 @@ public class CustomQueryRepository {
 //	private DataSource dataSource;
 	
 	private JdbcTemplate template;
+	
+	static Logger log = Logger.getLogger(ProjectServiceImpl.class);
 	
 	@Autowired //constructor injection - so spring knows that the datasource is required
 	public CustomQueryRepository(DataSource dataSource) {
@@ -105,7 +109,7 @@ public class CustomQueryRepository {
 			insertBatch(tsvalues); 
 			return true;
 		} catch (Exception e) { 
-			System.out.println(e.getMessage()); 
+			log.error("Error on inserting batch", e);
 			return false;
 		} 
 	}

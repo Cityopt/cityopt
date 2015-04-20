@@ -83,8 +83,7 @@ public class DatabaseSearchOptimizationService {
 		SearchOptimizationResults sor = new SearchOptimizationResults();
 		EvaluationResults er = optSupport.evaluateScenarios(project, optimizationSet);
 		sor.setEvaluationResult(er);
-//		boolean isMax = optimizationSet.getObjectivefunction().getIsmaximise();
-		
+
 		if(!er.feasible.isEmpty()){
 			ObjectiveStatus previous = null;
 			int prevScenId =0;
@@ -96,7 +95,6 @@ public class DatabaseSearchOptimizationService {
 				oss.setScenario(scen);
 				
 				ObjectiveStatus other = er.feasible.get(scenId);
-				//TODO possible nullpointer exception?
 				Double value = other.objectiveValues[0];				
 				
 				if(previous == null)
@@ -104,37 +102,24 @@ public class DatabaseSearchOptimizationService {
 				else {
 					Integer compareRes = previous.compareTo(other);
 					if(compareRes != null && compareRes != 0 && compareRes > 0) 
-					{ //other dominates
+					{ 
+						//other dominates previous
 						previous = other;
 						prevScenId = scenId;
 					}
-//					else if(compareRes > 0){ //this dominates
-//						if(!isMax){ //-->minimize: store the smaller one
-//							prevScenId = scenId;
-//							previous = other;
-//						}
-//					}else{
-//						if(isMax){
-//							prevScenId = scenId;
-//							previous = other;
-//						}
-//					}
 				}
 				oss.setValue(String.format(Locale.ENGLISH, "%s", value));
 				optSetScenariosRepository.save(oss);
 			}
+			
 			//prevScenId is now the optimized scenario: save it
-//			Scenario scen = em.getReference(Scenario.class, prevScenId);
 			Scenario scen = scenarioRepository.findOne(prevScenId);
 			sor.setResultScenario(modelMapper.map(scen, ScenarioDTO.class));
 			optimizationSet.setScenario(scen);
 			optimizationSetRepository.save(optimizationSet);
-		}else{
-			//no Scenario is feasible - what now?
 		}	
 		
 		return sor;
-		//System.out.println(er);
 	}
 
 }

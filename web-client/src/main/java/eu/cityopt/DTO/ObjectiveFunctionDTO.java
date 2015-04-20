@@ -9,7 +9,7 @@ public class ObjectiveFunctionDTO {
 
 	@Getter @Setter private int obtfunctionid;
 //	@Getter @Setter private Type type;
-//	@Getter @Setter private Project project;
+	@Getter @Setter private ProjectDTO project;
 	@Getter @Setter private String name;
 	@Getter @Setter private String expression;
 	@Getter @Setter private Boolean ismaximise;

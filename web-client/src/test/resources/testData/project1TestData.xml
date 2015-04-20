@@ -3,7 +3,7 @@
 <dataset>
 <simulationmodel modelid="1" description="Apros test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit"/>
 
-<project prjid="1" location="Helsinki" name="Sample Project" modelid="1" />
+<project prjid="1" location="Helsinki" name="Sample Project" modelid="1" createdon="2010-07-31 10:00:00"/>
 
 <component componentid="1" prjid="1" name="Solar_thermal_panels" />
 <component componentid="2" prjid="1" name="Storage_Vertical_tank_with_heat_structure" />
@@ -69,7 +69,12 @@
 
 <objectivefunction obtfunctionid="1" prjid="1" typeid="1" expression="CO2_Emissions + Cost" ismaximise="false" />
 
-<optimizationset optid="1" prjid="1" optfunctionid="1" extparamvalsetid="1" />
+<optimizationset optid="1" prjid="1" optfunctionid="1" extparamvalsetid="1" name="Optimization Set 1"/>
+<algorithm algorithmid="1" description="grid search"/>
+<algoparam aparamsid="1" algorithmid="1" name="max runtime [minutes]"/>
+<algoparam aparamsid="2" algorithmid="1" name="max scenarios"/>
+<scenariogenerator scengenid="1" prjid="1" algorithmid="1" extparamvalsetid="1" name="test name" />
+
 
 <!-- pk not set -->
 <optsearchconst optid="1" optconstid="1" />
