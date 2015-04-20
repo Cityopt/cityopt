@@ -19,10 +19,15 @@ public class MetricValues implements EvaluationContext {
 
     /**
      * Creates an empty instance, which has to be filled in manually
-     * by calling put.
+     * by calling {@link #evaluate(MetricExpression)} or {@link #put(String, Object)}.
      */
-    public MetricValues(SimulationResults results) throws ScriptException {
-        this(results, null);
+    public MetricValues(SimulationResults results) {
+        this.results = results;
+        final Namespace namespace = results.getNamespace();
+        this.bindingLayer = new BindingLayer(namespace,
+                results.getBindingLayer(),
+                name -> (name == null) ? namespace.metrics : null,
+                "metric");
     }
 
     /**
@@ -30,22 +35,29 @@ public class MetricValues implements EvaluationContext {
      */
     public MetricValues(SimulationResults results,
             Collection<MetricExpression> metrics) throws ScriptException {
-        this.results = results;
-        final Namespace namespace = results.getNamespace();
-        this.bindingLayer = new BindingLayer(namespace,
-                results.getBindingLayer(),
-                name -> (name == null) ? namespace.metrics : null,
-                "metric");
+        this(results);
         if (metrics != null) {
             for (MetricExpression metric : metrics) {
-                Object value = metric.evaluate(results);
-                bindingLayer.put(null, metric.getMetricName(), value);
+                evaluate(metric);
             }
         }
     }
 
+    /**
+     * Evaluates and stores the value of a single metric expression.
+     */
+    public void evaluate(MetricExpression metric) throws ScriptException {
+        Type type = getNamespace().metrics.get(metric.getMetricName());
+        Object value = metric.evaluateAs(type, results);
+        bindingLayer.put(null, metric.getMetricName(), value);
+    }
+
     public SimulationResults getResults() {
         return results;
+    }
+
+    public Namespace getNamespace() {
+        return bindingLayer.getNamespace();
     }
 
     /** Gets the value of a named metric. */

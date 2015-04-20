@@ -161,10 +161,13 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                             put.output = output;
                             if (output instanceof SimulationResults) {
                                 SimulationResults results = (SimulationResults) output;
-                                try {
-                                    put.metricValues = new MetricValues(results, metricExpressions);
-                                } catch (ScriptException e) {
-                                    log.warn("Failed to compute metric values: " + e.getMessage());
+                                put.metricValues = new MetricValues(results);
+                                for (MetricExpression metric : metricExpressions) {
+                                    try {
+                                        put.metricValues.evaluate(metric);
+                                    } catch (ScriptException e) {
+                                        log.warn(e.getMessage());
+                                    }
                                 }
                             }
                             storage.put(put);
