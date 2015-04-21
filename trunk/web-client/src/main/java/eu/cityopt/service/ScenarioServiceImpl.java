@@ -14,14 +14,18 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.InputParamValDTO;
+import eu.cityopt.DTO.MetricValDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioMetricsDTO;
 import eu.cityopt.DTO.SimulationResultDTO;
 import eu.cityopt.model.InputParamVal;
+import eu.cityopt.model.MetricVal;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.model.SimulationResult;
+import eu.cityopt.repository.MetricRepository;
+import eu.cityopt.repository.MetricValRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioRepository;
 
@@ -36,15 +40,20 @@ public class ScenarioServiceImpl implements ScenarioService {
 	@Autowired
 	private ProjectRepository projectRepository;
 	
+	@Autowired 
+	private MetricValRepository metricValRepository;
+	
 	@PersistenceContext
     private EntityManager em;
 	
+	@Override
 	@Transactional(readOnly=true)
 	public List<ScenarioDTO> findAll(){
 		return modelMapper.map(scenarioRepository.findAll(), 
 				new TypeToken<List<ScenarioDTO>>() {}.getType());
 	}
 
+	@Override
 	@Transactional
 	public ScenarioDTO save(ScenarioDTO s, int prjid){
 		Scenario scen = modelMapper.map(s, Scenario.class);
@@ -55,6 +64,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 		return scenRet;
 	}
 	
+	@Override
 	@Transactional
 	public void delete(int id) throws EntityNotFoundException {
 		
@@ -65,6 +75,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 		scenarioRepository.delete(id);
 	}
 	
+	@Override
 	@Transactional
 	public ScenarioDTO update(ScenarioDTO toUpdate, int prjid) throws EntityNotFoundException {
 		
@@ -75,6 +86,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 		return save(toUpdate, prjid);
 	}
 
+	@Override
 	@Transactional(readOnly=true)
 	public ScenarioDTO findByID(int id) throws EntityNotFoundException {
 		Scenario scen = scenarioRepository.findOne(id);
@@ -84,6 +96,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 		return modelMapper.map(scen, ScenarioDTO.class);
 	}
 	
+	@Override
 	@Transactional(readOnly=true)
 	public Set<InputParamValDTO> getInputParamVals(int scenId)	{
 		Scenario scen = scenarioRepository.findOne(scenId);
@@ -91,6 +104,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 		return modelMapper.map(inputParamVals, new TypeToken<Set<InputParamValDTO>>() {}.getType());
 	}
 
+	@Override
 	@Transactional(readOnly=true)
 	public Set<ScenarioMetricsDTO> getScenarioMetrics(int scenId)	{
 		Scenario scen = scenarioRepository.findOne(scenId);
@@ -98,6 +112,15 @@ public class ScenarioServiceImpl implements ScenarioService {
 		return modelMapper.map(scenarioMetrics, new TypeToken<Set<ScenarioMetricsDTO>>() {}.getType());
 	}
 	
+	@Override
+	@Transactional(readOnly=true)
+	public Set<ScenarioMetricsDTO> getMetricsValues(int scenId)	{
+		List<MetricVal> mvList = metricValRepository.findByScenId(scenId);
+		return modelMapper.map(mvList, 
+				new TypeToken<Set<MetricValDTO>>() {}.getType());
+	}
+	
+	@Override
 	@Transactional(readOnly=true)
 	public List<ScenarioDTO> findByName(String name) {
 		List<Scenario> scenarios = scenarioRepository.findByName(name);
@@ -106,6 +129,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 		return result;
 	}
 	
+	@Override
 	@Transactional(readOnly=true)
 	public Set<SimulationResultDTO> getSimulationResults(int scenId) {
 		Scenario scen = scenarioRepository.findOne(scenId);

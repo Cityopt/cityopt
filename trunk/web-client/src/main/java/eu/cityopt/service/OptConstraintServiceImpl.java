@@ -2,10 +2,14 @@ package eu.cityopt.service;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.reflect.TypeToken;
+
+import eu.cityopt.DTO.OptConstraintDTO;
 import eu.cityopt.model.OptConstraint;
 import eu.cityopt.repository.OptConstraintRepository;
 
@@ -15,16 +19,27 @@ public class OptConstraintServiceImpl implements OptConstraintService {
 	@Autowired
 	private OptConstraintRepository optConstraintRepository;
 	
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	@Override
 	@Transactional(readOnly=true)
-	public List<OptConstraint> findAll() {
-		return optConstraintRepository.findAll();
+	public List<OptConstraintDTO> findAll() {
+		return modelMapper.map(optConstraintRepository.findAll(), 
+				new TypeToken<List<OptConstraintDTO>>(){}.getType());
 	}
-
+	
+	@Override
 	@Transactional
-	public OptConstraint save(OptConstraint u) {
-		return optConstraintRepository.save(u);
+	public OptConstraintDTO save(OptConstraintDTO u) {
+		OptConstraint oc = modelMapper.map(u, OptConstraint.class);
+		
+		oc = optConstraintRepository.save(oc);
+	
+		return modelMapper.map(oc, OptConstraintDTO.class);
 	}
 
+	@Override
 	@Transactional
 	public void delete(int id) throws EntityNotFoundException {
 		
@@ -35,19 +50,16 @@ public class OptConstraintServiceImpl implements OptConstraintService {
 		optConstraintRepository.delete(id);
 	}
 	
-	@Transactional
-	public OptConstraint update(OptConstraint toUpdate) throws EntityNotFoundException {
+	@Override
+	@Transactional(readOnly=true)
+	public OptConstraintDTO findByID(int id) throws EntityNotFoundException {
+		OptConstraint oc = optConstraintRepository.findOne(id);
 		
-		if(optConstraintRepository.findOne(toUpdate.getOptconstid()) == null) {
+		if(oc == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		return save(toUpdate);
-	}
-	
-	@Transactional(readOnly=true)
-	public OptConstraint findByID(int id) {
-		return optConstraintRepository.findOne(id);
+		return modelMapper.map(oc, OptConstraintDTO.class);
 	}
 	
 }

@@ -6,7 +6,7 @@ import lombok.Setter;
 public class OptConstraintDTO {
 
 	@Getter @Setter private int optconstid;
-//	@Getter @Setter private Project project;
+	@Getter @Setter private ProjectDTO project;
 	@Getter @Setter private String name;
 	@Getter @Setter private String expression;
 	@Getter @Setter private Double lowerbound;

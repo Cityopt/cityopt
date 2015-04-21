@@ -15,4 +15,7 @@ public interface OptimizationSetService extends CityOptService<OptimizationSetDT
 	List<OptConstraintDTO> getSearchConstraints(int optimizationSetId)
 			throws EntityNotFoundException;
 
+	OptConstraintDTO addSearchConstraint(int optSetId, OptConstraintDTO ocDTO) 
+			throws EntityNotFoundException;
+
 }

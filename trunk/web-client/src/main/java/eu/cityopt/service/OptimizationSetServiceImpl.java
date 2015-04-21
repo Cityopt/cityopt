@@ -15,7 +15,9 @@ import com.google.common.reflect.TypeToken;
 import eu.cityopt.DTO.OptConstraintDTO;
 import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.model.OptConstraint;
+import eu.cityopt.model.OptSearchConst;
 import eu.cityopt.model.OptimizationSet;
+import eu.cityopt.repository.OptConstraintRepository;
 import eu.cityopt.repository.OptSearchConstRepository;
 import eu.cityopt.repository.OptimizationSetRepository;
 
@@ -33,6 +35,9 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 	
 	@Autowired
 	private OptSearchConstRepository optSearchConstRepository;
+	
+	@Autowired
+	private OptConstraintRepository optConstraintRepository;
 	
 	@Transactional(readOnly=true)
 	@Override
@@ -98,6 +103,29 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 		List<OptConstraint> osList = optSearchConstRepository.findOptConstraintsforOptSet(os.getOptid());
 		
 		return modelMapper.map(osList, new TypeToken<List<OptConstraintDTO>>() {}.getType());
+	}
+	
+	@Transactional
+	@Override
+	public OptConstraintDTO addSearchConstraint(int optSetId, OptConstraintDTO ocDTO) 
+			throws EntityNotFoundException {
+		
+		OptimizationSet optSet = optimizationSetRepository.findOne(optSetId);
+		if(optSet == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		OptConstraint oc = modelMapper.map(ocDTO, OptConstraint.class);
+		oc = optConstraintRepository.save(oc);
+		OptSearchConst osc = new OptSearchConst();
+		osc.setOptconstraint(oc);
+		osc.setOptimizationset(optSet);
+		optSet.getOptsearchconsts().add(osc);
+		
+		optSearchConstRepository.save(osc);
+		optimizationSetRepository.save(optSet);
+		
+		return modelMapper.map(oc, OptConstraintDTO.class);
 	}
 	
 }
