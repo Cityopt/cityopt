@@ -2,28 +2,44 @@ package eu.cityopt.service;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.reflect.TypeToken;
+
+import eu.cityopt.DTO.AlgoParamValDTO;
+import eu.cityopt.DTO.DecisionVariableDTO;
 import eu.cityopt.model.AlgoParamVal;
+import eu.cityopt.model.DecisionVariable;
 import eu.cityopt.repository.AlgoParamValRepository;
 
-@Service("AlgoParamValService")
+@Service
 public class AlgoParamValServiceImpl implements AlgoParamValService{
 	
 	@Autowired
 	private AlgoParamValRepository algoParamValRepository;
 	
-	public List<AlgoParamVal> findAll() {
-		return algoParamValRepository.findAll();
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	@Override
+	@Transactional(readOnly=true)
+	public List<AlgoParamValDTO> findAll() {
+		return modelMapper.map(algoParamValRepository.findAll(), 
+				new TypeToken<List<AlgoParamValDTO>>(){}.getType());
 	}
 
+	@Override
 	@Transactional
-	public AlgoParamVal save(AlgoParamVal u) {
-		return algoParamValRepository.save(u);
+	public AlgoParamValDTO save(AlgoParamValDTO u) {
+		AlgoParamVal algoParVal = modelMapper.map(u, AlgoParamVal.class);
+		algoParVal = algoParamValRepository.save(algoParVal);
+		return modelMapper.map(algoParVal, AlgoParamValDTO.class);
 	}
 	
+	@Override
 	@Transactional
 	public void delete(int id) throws EntityNotFoundException {
 		
@@ -34,8 +50,9 @@ public class AlgoParamValServiceImpl implements AlgoParamValService{
 		algoParamValRepository.delete(id);
 	}
 	
+	@Override
 	@Transactional
-	public AlgoParamVal update(AlgoParamVal toUpdate) throws EntityNotFoundException {
+	public AlgoParamValDTO update(AlgoParamValDTO toUpdate) throws EntityNotFoundException {
 		
 		if(algoParamValRepository.findOne(toUpdate.getAparamvalid()) == null) {
 			throw new EntityNotFoundException();
@@ -44,8 +61,16 @@ public class AlgoParamValServiceImpl implements AlgoParamValService{
 		return save(toUpdate);
 	}
 	
-	public AlgoParamVal findByID(int id) {
-		return algoParamValRepository.findOne(id);
+	@Override
+	@Transactional(readOnly=true)
+	public AlgoParamValDTO findByID(int id) throws EntityNotFoundException {
+		AlgoParamVal aParamVal = algoParamValRepository.findOne(id);
+		
+		if(aParamVal == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return modelMapper.map(aParamVal, AlgoParamValDTO.class);
 	}
 	
 }

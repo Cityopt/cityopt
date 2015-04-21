@@ -2,29 +2,42 @@ package eu.cityopt.service;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.reflect.TypeToken;
+
+import eu.cityopt.DTO.DecisionVariableDTO;
 import eu.cityopt.model.DecisionVariable;
 import eu.cityopt.repository.DecisionVariableRepository;
 
 @Service("DecisionVariableService")
-@Transactional
 public class DecisionVariableServiceImpl implements DecisionVariableService {
 	
 	@Autowired
 	private DecisionVariableRepository decisionVariableRepository;
 	
-	public List<DecisionVariable> findAll() {
-		return decisionVariableRepository.findAll();
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	@Override
+	@Transactional(readOnly=true)
+	public List<DecisionVariableDTO> findAll() {
+		return modelMapper.map(decisionVariableRepository.findAll(), 
+				new TypeToken<List<DecisionVariableDTO>>(){}.getType());
 	}
 
+	@Override
 	@Transactional
-	public DecisionVariable save(DecisionVariable u) {
-		return decisionVariableRepository.save(u);
+	public DecisionVariableDTO save(DecisionVariableDTO u) {
+		DecisionVariable decVar = modelMapper.map(u, DecisionVariable.class);
+		decVar = decisionVariableRepository.save(decVar);
+		return modelMapper.map(decVar, DecisionVariableDTO.class);
 	}
 
+	@Override
 	@Transactional
 	public void delete(int id) throws EntityNotFoundException {
 		
@@ -35,8 +48,10 @@ public class DecisionVariableServiceImpl implements DecisionVariableService {
 		decisionVariableRepository.delete(id);
 	}
 	
+	@Override
 	@Transactional
-	public DecisionVariable update(DecisionVariable toUpdate) throws EntityNotFoundException {
+	public DecisionVariableDTO update(DecisionVariableDTO toUpdate) 
+			throws EntityNotFoundException {
 		
 		if(decisionVariableRepository.findOne(toUpdate.getDecisionvarid()) == null) {
 			throw new EntityNotFoundException();
@@ -45,8 +60,16 @@ public class DecisionVariableServiceImpl implements DecisionVariableService {
 		return save(toUpdate);
 	}
 	
-	public DecisionVariable findByID(int id) {
-		return decisionVariableRepository.findOne(id);
+	@Override
+	@Transactional(readOnly=true)
+	public DecisionVariableDTO findByID(int id) throws EntityNotFoundException {
+		DecisionVariable decVar = decisionVariableRepository.findOne(id);
+		
+		if(decVar == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return modelMapper.map(decVar, DecisionVariableDTO.class);
 	}
 	
 }
