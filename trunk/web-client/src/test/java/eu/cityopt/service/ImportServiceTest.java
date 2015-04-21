@@ -61,7 +61,7 @@ public class ImportServiceTest {
 
 	@Test
 	@DatabaseSetup({"classpath:/testData/inputParameter_TestData.xml"})
-	@Rollback(false)
+//	@Rollback(false)
 	public void testImportExternalParameters() throws EntityNotFoundException, ParseException {
 		File epValSetInput = new File("ExtParamSet.csv");
 		File timeSeriesInput = new File("timeseries.csv");
