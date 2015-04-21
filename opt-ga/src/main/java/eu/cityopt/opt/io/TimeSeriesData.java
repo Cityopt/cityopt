@@ -12,6 +12,13 @@ public interface TimeSeriesData {
     public static class Series {
         double[] times;
         double[] values;
+        
+        public double[] getTimes(){
+			return times;
+		}
+        public double[] getValues(){
+        	return values;
+        }
     }
 
     /** Returns the data for the named series, or null if not available. */
