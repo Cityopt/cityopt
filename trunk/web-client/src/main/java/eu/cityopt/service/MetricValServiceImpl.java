@@ -15,7 +15,6 @@ import eu.cityopt.repository.MetricRepository;
 import eu.cityopt.repository.MetricValRepository;
 
 @Service("MetricValService")
-@Transactional
 public class MetricValServiceImpl implements MetricValService {
 	@Autowired
 	private ModelMapper modelMapper;
@@ -34,6 +33,7 @@ public class MetricValServiceImpl implements MetricValService {
 	}
 
 	@Override
+	@Transactional
 	public void delete(int id) throws EntityNotFoundException {
 		
 		if(metricRepository.findOne(id) == null) {
@@ -44,6 +44,7 @@ public class MetricValServiceImpl implements MetricValService {
 	}
 
 	@Override
+	@Transactional
 	public MetricValDTO save(MetricValDTO u, int metId) {
 		MetricVal metric = modelMapper.map(u, MetricVal.class);
 		metric.setMetric(metricRepository.findOne(metId));
@@ -52,6 +53,7 @@ public class MetricValServiceImpl implements MetricValService {
 	}
 
 	@Override
+	@Transactional
 	public MetricValDTO update(MetricValDTO toUpdate, int metId) throws EntityNotFoundException{
 
 		if(metricRepository.findOne(toUpdate.getMetricvalid()) == null) {

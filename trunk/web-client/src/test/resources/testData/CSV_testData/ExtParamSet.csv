@@ -1,0 +1,8 @@
+﻿ExtParamValSetName;ExtParamUnitName;ExtParamdefaultValue;ExtParamdefaultTimeseriesId;ExtParamName;ExtParamValValue;ExtParamValTimeSeriesId;ExtParamValComment
+Energy Cost 2013;€;5;;electricity;4;;2013
+Energy Cost 2010;€;5;;electricity;3;;2010
+Energy Cost 2013;€;3;;gas;2;;2013
+Energy Cost 2010;€;3;;gas;1;;2010
+Energy Cost 2013;€;2;;petrol;1;;2013
+Energy Cost 2010;€;2;;petrol;2;;2010
+;kgCO2/a;;;heating emission;;1;medium heating
