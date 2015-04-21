@@ -41,7 +41,7 @@ public class ComponentServiceImpl implements ComponentService {
 
 	@Transactional(readOnly = true)
 	public List<ComponentDTO> findByName(String name) {
-		List<Component> components = componentRepository.findByName(name);
+		List<Component> components = componentRepository.findByNameContaining(name);
 		List<ComponentDTO> result 
 			= modelMapper.map(components, new TypeToken<List<ComponentDTO>>() {}.getType());
 		return result;
