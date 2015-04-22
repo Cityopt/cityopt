@@ -33,7 +33,6 @@ import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.ExternalParameters;
-import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.ObjectiveExpression;
@@ -43,6 +42,7 @@ import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.Type;
+import eu.cityopt.sim.opt.OptimisationProblem;
 
 /**
  * Support functions for database optimisation and scenario generation
@@ -60,7 +60,9 @@ public class OptimisationSupport {
     private @Autowired OptConstraintRepository optConstraintRepository;
     private @Autowired ScenGenObjectiveFunctionRepository scenGenObjectiveFunctionRepository;
     private @Autowired ObjectiveFunctionRepository objectiveFunctionRepository;
+
     private @Autowired SimulationService simulationService;
+    private @Autowired SyntaxCheckerService syntaxCheckerService;
 
 
     /** Results from {@link OptimisationSupport#evaluateScenarios(Project, OptimizationSet)} */
@@ -95,22 +97,27 @@ public class OptimisationSupport {
         }
     }
 
+    /**
+     * Evaluates metric, constraints and objective functions on all scenarios
+     * of a project.
+     * @param project the project in which to find the scenarios
+     * @param optimizationSet specifies the constraints and objective function
+     * @return structure containing the objective values of the scenarios that
+     *   are feasible with respect to the constraints, and information on any
+     *   problems encountered.
+     * @throws ParseException
+     * @throws ScriptException
+     */
     public EvaluationResults evaluateScenarios(
             Project project, OptimizationSet optimizationSet)
             throws ParseException, ScriptException {
-        Namespace namespace = simulationService.makeProjectNamespace(project);
-        ExternalParameters externals = simulationService.loadExternalParametersFromSet(
-                optimizationSet.getExtparamvalset(), namespace);
+        OptimisationProblem problem = loadOptimisationProblem(project, optimizationSet);
+        syntaxCheckerService.checkOptimizationSet(problem);
+        ExternalParameters externals = problem.getExternalParameters();
+        ObjectiveExpression objective = problem.objectives.get(0);
 
         SimulationStorage storage =
                 simulationService.makeDbSimulationStorage(project.getPrjid(), externals);
-
-        List<MetricExpression> metricExpressions =
-                simulationService.loadMetricExpressions(project, namespace);
-
-        List<Constraint> constraints = loadConstraints(optimizationSet, namespace);
-        ObjectiveExpression objective = loadObjective(
-                optimizationSet.getObjectivefunction(), namespace);
 
         EvaluationResults evaluationResults = new EvaluationResults();
         for (Scenario scenario : project.getScenarios()) {
@@ -122,11 +129,11 @@ public class OptimisationSupport {
                             simulationService.loadSimulationOutput(scenario, input);
                     if (output instanceof SimulationResults) {
                         SimulationResults results = (SimulationResults) output;
-                        MetricValues metricValues = new MetricValues(results, metricExpressions);
+                        MetricValues metricValues = new MetricValues(results, problem.metrics);
                         storage.updateMetricValues(metricValues);
 
                         ConstraintStatus constraintValues =
-                                new ConstraintStatus(metricValues, constraints);
+                                new ConstraintStatus(metricValues, problem.constraints);
                         if (constraintValues.feasible) {
                             ObjectiveStatus objectiveStatus =
                                     new ObjectiveStatus(metricValues, objective);
@@ -149,6 +156,26 @@ public class OptimisationSupport {
         log.info("Evaluated scenarios of project " + project.getPrjid() + ": "
                 + evaluationResults);
         return evaluationResults;
+    }
+
+    /**
+     * Fills a sim-eval OptimisationProblem structure with a database search
+     * problem definition from an OptimizationSet.
+     * The inputConst, decisionVars and inputExprs fields are left empty. 
+     */
+    public OptimisationProblem loadOptimisationProblem(
+            Project project, OptimizationSet optimizationSet)
+                    throws ParseException, ScriptException {
+        Namespace namespace = simulationService.makeProjectNamespace(project);
+        ExternalParameters externals = simulationService.loadExternalParametersFromSet(
+                optimizationSet.getExtparamvalset(), namespace);
+
+        OptimisationProblem problem = new OptimisationProblem(null, externals);
+        problem.metrics = simulationService.loadMetricExpressions(project, namespace);
+        problem.constraints = loadConstraints(optimizationSet, namespace);
+        problem.objectives.add(loadObjective(
+                optimizationSet.getObjectivefunction(), namespace));
+        return problem;
     }
 
     public List<Constraint> loadConstraints(
