@@ -1,5 +1,7 @@
 package eu.cityopt.sim.service;
 
+import static org.junit.Assert.assertThat;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayDeque;
@@ -9,6 +11,7 @@ import java.util.concurrent.Future;
 
 import javax.script.ScriptException;
 
+import org.hamcrest.core.StringContains;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +87,21 @@ public class TestSimulationService extends SimulationTestBase {
         runSimulation();
         //updateMetrics();
         dumpTables("testmodel");
+    }
+
+    @Test
+    @DatabaseSetup("classpath:/testData/testmodel_scenario_error.xml")
+    public void testModel_SyntaxError() throws Exception {
+        loadModel("Apros test model", "/testmodel.zip");
+        try {
+            runSimulation();
+        } catch (ScriptException e) {
+            assertThat(e.getMessage(), StringContains.containsString(
+                    "In metric fuelconsumption: name 'integrat' is not defined"));
+            assertThat(e.getMessage(), StringContains.containsString(
+                    "In metric fuelcost: name 'fue_cost' is not defined"));
+        }
+        dumpTables("testmodel_error");
     }
 
     private void runSimulation() throws ParseException, IOException,

@@ -92,6 +92,8 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
 
     private static Logger log = Logger.getLogger(SimulationService.class); 
 
+    @Autowired private SyntaxCheckerService syntaxCheckerService;
+
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ScenarioRepository scenarioRepository;
     @Autowired private TypeRepository typeRepository;
@@ -148,6 +150,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
 
         SimulationModel model = loadSimulationModel(project);
         List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
+        syntaxCheckerService.checkMetricExpressions(metricExpressions, namespace);
         boolean started = false;
         try {
             SimulationRunner runner = model.getSimulatorManager().makeRunner(model, input.getNamespace());
@@ -261,8 +264,9 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         Project project = projectRepository.findOne(projectId);
         Namespace namespace = makeProjectNamespace(project);
         ExternalParameters externals = loadExternalParameters(project, extParamValSetId, namespace);
-        SimulationStorage storage = makeDbSimulationStorage(projectId, externals);
         List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
+        syntaxCheckerService.checkMetricExpressions(metricExpressions, namespace);
+        SimulationStorage storage = makeDbSimulationStorage(projectId, externals);
         MetricUpdateStatus status = new MetricUpdateStatus();
         //TODO: first remove all metric values associated with the external parameter value set
         for (Scenario scenario : project.getScenarios()) {

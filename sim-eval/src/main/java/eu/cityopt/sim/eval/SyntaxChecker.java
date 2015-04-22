@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import javax.script.ScriptException;
@@ -92,8 +93,7 @@ public class SyntaxChecker {
      *  A complete namespace allows stricter checking.
      *  Ignored if namespace is null.
      */
-    public SyntaxChecker(Evaluator evaluator, Namespace namespace, boolean namespaceComplete)
-            throws ScriptException {
+    public SyntaxChecker(Evaluator evaluator, Namespace namespace, boolean namespaceComplete) {
         this.evaluator = evaluator;
         if (namespace != null) {
             if (namespace.evaluator != evaluator) {
@@ -118,16 +118,20 @@ public class SyntaxChecker {
             this.environmentsAreComplete = false;
         }
 
-        _checkExpressionSyntax = (PyObject) evaluator.getPyObject(
-                "cityopt.syntax.checkExpressionSyntax");
+        try {
+            _checkExpressionSyntax = (PyObject) evaluator.getPyObject(
+                    "cityopt.syntax.checkExpressionSyntax");
 
-        @SuppressWarnings("unchecked")
-        List<String> keywordList = (List<String>) evaluator.getPyObject(
-                "cityopt.syntax.kwlist");
-        reservedKeywords = prepareReservedNames(keywordList);
+            @SuppressWarnings("unchecked")
+            List<String> keywordList = (List<String>) evaluator.getPyObject(
+                    "cityopt.syntax.kwlist");
+            reservedKeywords = prepareReservedNames(keywordList);
+        } catch (ScriptException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void fillEnvironments(Namespace namespace) throws ScriptException {
+    private void fillEnvironments(Namespace namespace) {
         EnumMap<Type, Object> placeholders = makePlaceholders(namespace.evaluator);
 
         ExternalParameters externals = new ExternalParameters(namespace);
@@ -165,17 +169,17 @@ public class SyntaxChecker {
         }
         environmentWithResults.putAll(results.toBindings());
 
-        List<MetricExpression> metricList = new ArrayList<MetricExpression>();
-        for (Map.Entry<String, Type> me : namespace.metrics.entrySet()) {
-            Type type = me.getValue();
-            String expression = type.toConstantExpression(placeholders.get(type), namespace);
-            metricList.add(new MetricExpression(0, me.getKey(), expression, evaluator));
-        }
         try {
+            List<MetricExpression> metricList = new ArrayList<MetricExpression>();
+            for (Map.Entry<String, Type> me : namespace.metrics.entrySet()) {
+                Type type = me.getValue();
+                String expression = type.toConstantExpression(placeholders.get(type), namespace);
+                metricList.add(new MetricExpression(0, me.getKey(), expression, evaluator));
+            }
             MetricValues metrics = new MetricValues(results, metricList);
             environmentWithMetrics.putAll(metrics.toBindings());
-        } catch (InvalidValueException e) {
-            // Should not happen since the expressions are simply "1" or similar
+        } catch (ScriptException e) {
+            // Should not happen
             throw new RuntimeException(e);
         }
     }
@@ -329,6 +333,11 @@ public class SyntaxChecker {
         return checkExpressionSyntax(source, environmentWithExternals);
     }
 
+    public Error checkExternalExpression(Expression expression) {
+        return checkExpressionSyntax(expression.getSource(), environmentWithExternals,
+                expression::mungeErrorMessage);
+    }
+
     /**
      * Checks for errors in an expression defining an input variable.
      * Input expressions are only used in scenario generation optimization.
@@ -345,6 +354,15 @@ public class SyntaxChecker {
         return checkExpressionSyntax(source, environmentWithDecisions);
     }
 
+    public Error checkInputExpression(InputExpression inputExpression) {
+        if (environmentWithDecisions == null) {
+            throw new IllegalStateException(
+                    "Cannot check input expressions because decision variables have not been defined");
+        }
+        return checkExpressionSyntax(inputExpression.getSource(), environmentWithDecisions,
+                inputExpression::mungeErrorMessage); 
+    }
+
     /**
      * Checks for errors in an optimization constraint expression THAT IS
      * EVALUATED BEFORE SIMULATION.
@@ -356,6 +374,12 @@ public class SyntaxChecker {
         return checkExpressionSyntax(source, environmentWithInputs);
     }
 
+    public Error checkPreConstraintExpression(Constraint preConstraint) {
+        return checkExpressionSyntax(
+                preConstraint.getExpression().getSource(), environmentWithInputs,
+                preConstraint.getExpression()::mungeErrorMessage); 
+    }
+
     /**
      * Checks for errors in an expression defining a metric. 
      * @param source the expression text
@@ -363,6 +387,11 @@ public class SyntaxChecker {
      */
     public Error checkMetricExpression(String source) {
         return checkExpressionSyntax(source, environmentWithResults);
+    }
+
+    public Error checkMetricExpression(MetricExpression metricExpression) {
+        return checkExpressionSyntax(metricExpression.getSource(), environmentWithResults,
+                metricExpression::mungeErrorMessage); 
     }
 
     /**
@@ -377,6 +406,12 @@ public class SyntaxChecker {
         return checkExpressionSyntax(source, environmentWithMetrics);
     }
 
+    public Error checkConstraintExpression(Constraint postConstraint) {
+        return checkExpressionSyntax(
+                postConstraint.getExpression().getSource(), environmentWithMetrics,
+                postConstraint.getExpression()::mungeErrorMessage); 
+    }
+
     /**
      * Checks for errors in an objective function expression.
      *
@@ -385,6 +420,26 @@ public class SyntaxChecker {
      */
     public Error checkObjectiveExpression(String source) {
         return checkExpressionSyntax(source, environmentWithMetrics);
+    }
+
+    public Error checkObjectiveExpression(ObjectiveExpression objectiveExpression) {
+        return checkExpressionSyntax(
+                objectiveExpression.getSource(), environmentWithMetrics,
+                objectiveExpression::mungeErrorMessage); 
+    }
+
+    /**
+     * Calls the Python function cityopt.syntax.checkExpressionSyntax.
+     * In case of error, modifies the error message using the given function.
+     */
+    private Error checkExpressionSyntax(String source, PyDictionary environment,
+            Function<String, String> messageCompleter) {
+        Error error = checkExpressionSyntax(source, environment);
+        if (error != null) {
+            return new Error(error.line, error.column,
+                    messageCompleter.apply(error.message));
+        }
+        return null;
     }
 
     /** Calls the Python function cityopt.syntax.checkExpressionSyntax. */

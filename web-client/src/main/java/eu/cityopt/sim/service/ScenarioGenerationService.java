@@ -84,6 +84,7 @@ public class ScenarioGenerationService
 
     @Autowired private SimulationService simulationService;
     @Autowired private OptimisationSupport optimisationSupport;
+    @Autowired private SyntaxCheckerService syntaxCheckerService;
 
     @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository; 
     @Autowired private ComponentRepository componentRepository;
@@ -193,6 +194,8 @@ public class ScenarioGenerationService
 
         OptimisationProblem problem = loadOptimisationProblem(project, scenarioGenerator);
         final SimulationModel model = problem.model;
+
+        syntaxCheckerService.checkOptimisationProblem(problem);
 
         DbSimulationStorageI storage = simulationService.makeDbSimulationStorage(
                 project.getPrjid(), problem.getExternalParameters(),

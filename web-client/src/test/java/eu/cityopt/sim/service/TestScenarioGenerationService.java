@@ -1,12 +1,16 @@
 package eu.cityopt.sim.service;
 
 
+import static org.junit.Assert.assertThat;
+
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.concurrent.Future;
 
 import javax.inject.Inject;
+import javax.script.ScriptException;
 
+import org.hamcrest.core.StringContains;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -73,6 +77,23 @@ public class TestScenarioGenerationService extends SimulationTestBase {
         loadModel("Plumbing test model", "/plumbing.zip");
         runScenarioGeneration("genetic algorithm");
         dumpTables("plumbing_ga");
+    }
+
+    @Test
+    @DatabaseSetup("classpath:/testData/plumbing_scengen_error.xml")
+    public void testPumbingGA_SyntaxError() throws Exception {
+        loadModel("Plumbing test model", "/plumbing.zip");
+        try {
+            runScenarioGeneration("genetic algorithm");
+        } catch (ScriptException e) {
+            assertThat(e.getMessage(), StringContains.containsString(
+                    "In input C01.typ: name 'symmetric' is not defined"));
+            assertThat(e.getMessage(), StringContains.containsString(
+                    "In constraint con1: name 'meanie' is not defined"));
+            assertThat(e.getMessage(), StringContains.containsString(
+                    "In objective obj1: name 'INFINYTY' is not defined"));
+        }
+        dumpTables("plumbing_scengen_error");
     }
 
     @Test
