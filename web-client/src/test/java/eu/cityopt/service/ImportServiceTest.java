@@ -3,6 +3,7 @@ package eu.cityopt.service;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +24,12 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.model.Project;
+import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.repository.SimulationResultRepository;
 import eu.cityopt.repository.TimeSeriesRepository;
+import eu.cityopt.sim.service.SimulationTestBase;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -35,7 +39,7 @@ import eu.cityopt.repository.TimeSeriesRepository;
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
 
-public class ImportServiceTest {
+public class ImportServiceTest extends SimulationTestBase {
 
 	@Autowired
 	ImportServiceImpl importService;
@@ -45,6 +49,9 @@ public class ImportServiceTest {
 	
 	@Autowired
 	ProjectRepository projectRepository;
+	
+	@Autowired
+	SimulationResultRepository simulationResultRepository;
 	
 	@Test
 	@Rollback()
@@ -71,12 +78,18 @@ public class ImportServiceTest {
 	
 	@Test
 	@DatabaseSetup({"classpath:/testData/inputParameter_TestData.xml"})
-	@Rollback(false)
-	public void testImportSimulationResults() throws EntityNotFoundException, ParseException {
+//	@Rollback(false)
+	public void testImportSimulationResults() throws EntityNotFoundException, ParseException, IOException {
 		File simResInput = new File("./src/test/resources/testData/CSV_testData/simulationResults.csv");
 		File timeSeriesInput = new File("./src/test/resources/testData/CSV_testData/timeseries.csv");
 		
+		
+//		loadModel("Plumbing test model", "/plumbing.zip");
+		
 		importService.importSimulationResults(1, simResInput, timeSeriesInput, 1);
+		
+		List<SimulationResult> simResList = simulationResultRepository.findByScenId(1);
+		assertTrue(simResList.size() > 0);
 	}
 	
 }

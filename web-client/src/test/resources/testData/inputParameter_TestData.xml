@@ -2,7 +2,9 @@
 
 <dataset>
 
-<project prjid="1" name="Project 1" location="Vienna"/>
+<simulationmodel modelid="1" description="test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="1970-01-01 00:00:00"/>
+
+<project prjid="1" name="Project 1" location="Vienna" modelid="1"/>
 
 <scenario scenid="1" name="test" description="this is a test" createdon="2014-12-02" updatedon="2014-12-01" prjid="1"/>
 
