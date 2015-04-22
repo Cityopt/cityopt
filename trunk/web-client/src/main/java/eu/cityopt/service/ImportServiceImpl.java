@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,7 @@ import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.SimResCSVModel;
+import eu.cityopt.model.SimulationModel;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesCSVModel;
@@ -55,6 +57,8 @@ import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.repository.UnitRepository;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Evaluator;
+import eu.cityopt.sim.eval.util.TimeUtils;
+import eu.cityopt.sim.service.ImportExportService;
 
 @Service
 public class ImportServiceImpl implements ImportService {
@@ -99,6 +103,9 @@ public class ImportServiceImpl implements ImportService {
 	
 	@Autowired
 	private OutputVariableRepository outputVariableRepository;
+	
+	@Autowired
+	private ImportExportService importExportService;
 	
 	@Override
 	@Transactional
@@ -284,7 +291,7 @@ public class ImportServiceImpl implements ImportService {
 
 	@Override
 	@Transactional
-	public TimeSeries saveTimeSeriesData(TimeSeriesData.Series data, Type type){
+	public TimeSeries saveTimeSeriesData(TimeSeriesData.Series data, Type type, Instant timeOrigin){
 		TimeSeries timeSeries = new TimeSeries();
         timeSeries.setType(type);
         double[] times = data.getTimes();
@@ -293,8 +300,8 @@ public class ImportServiceImpl implements ImportService {
         int n = times.length;
         for (int i = 0; i < n; i++) {
             TimeSeriesVal timeSeriesVal = new TimeSeriesVal();
-
-            timeSeriesVal.setTime(new Date((long)times[i]));
+            
+            timeSeriesVal.setTime(TimeUtils.toDate(times[i], timeOrigin));
             timeSeriesVal.setValue(Double.toString(values[i]));
             timeSeriesVal.setTimeseries(timeSeries);
             
@@ -321,14 +328,12 @@ public class ImportServiceImpl implements ImportService {
 			throw new EntityNotFoundException("Type not found");
 		
 		//get timeseries data
-		Evaluator evaluator = new Evaluator();
-        Instant t0 = Instant.parse("2050-01-01T00:00:00Z"); 
-        EvaluationSetup setup = new EvaluationSetup(evaluator, t0);
-        CsvTimeSeriesData tsd = new CsvTimeSeriesData(setup);
-        String name = timeSeriesInput.getName();
+        CsvTimeSeriesData tsd = importExportService.makeTimeSeriesReader(scen.getProject());
+        
+        String tsName = timeSeriesInput.getName();
  
         try {
-            tsd.read(new FileInputStream(timeSeriesInput), name);
+            tsd.read(new FileInputStream(timeSeriesInput), tsName);
         } catch(Exception ex) {
         	log.error("Could not import TimeSeries", ex);
         	//TODO: throw exception
@@ -378,9 +383,10 @@ public class ImportServiceImpl implements ImportService {
 			}
 			
 			TimeSeries ts = new TimeSeries();
+			Date timeOrigin = scen.getProject().getSimulationmodel().getTimeorigin();
 			
 			try{
-				ts = saveTimeSeriesData(tsd.getSeriesData(row.TimeseriesName), type);
+				ts = saveTimeSeriesData(tsd.getSeriesData(row.TimeseriesName), type, timeOrigin.toInstant());
 			}catch(Exception ex){
 				log.error("error saving timeSeries: " + row.TimeseriesName, ex);
 				//TODO: throw?
