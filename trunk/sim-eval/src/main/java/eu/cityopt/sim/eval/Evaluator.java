@@ -276,7 +276,7 @@ public class Evaluator {
         void setAttributes(Bindings attributeBindings);
     }
 
-    Component makeComponent(String componentName) throws ScriptException {
+    Component makeComponent(String componentName) {
         final ComponentImpl component = new ComponentImpl();
         final Map<String, PyObject> attributes = component.attributes;
 

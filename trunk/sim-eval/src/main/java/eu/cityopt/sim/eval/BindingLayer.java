@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.script.Bindings;
-import javax.script.ScriptException;
 
 /**
  * Internal class for implementing layered bindings (environments).
@@ -97,9 +96,8 @@ class BindingLayer {
      * bound to special objects that contain component-level bindings. All names
      * bound on this layer, the parent layer, the parent's parent etc. are
      * included at the appropriate scopes.
-     * @throws ScriptException 
      */
-    Bindings toBindings() throws ScriptException {
+    Bindings toBindings() {
         if (evaluationBindings == null) {
             Bindings newEvaluationBindings = getEvaluator().copyGlobalBindings();
 

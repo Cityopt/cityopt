@@ -1,7 +1,6 @@
 package eu.cityopt.sim.eval;
 
 import javax.script.Bindings;
-import javax.script.ScriptException;
 
 /**
  * Context for evaluating constraints with current decision variable values.
@@ -63,7 +62,7 @@ public class ConstraintContext implements EvaluationContext {
     }
 
     @Override
-    public Bindings toBindings() throws ScriptException {
+    public Bindings toBindings() {
         return bindingLayer.toBindings();
     }
 

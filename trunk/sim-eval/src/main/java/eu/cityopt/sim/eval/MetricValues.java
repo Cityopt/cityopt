@@ -92,7 +92,7 @@ public class MetricValues implements EvaluationContext {
     }
 
     @Override
-    public Bindings toBindings() throws ScriptException {
+    public Bindings toBindings() {
         return bindingLayer.toBindings();
     }
 
