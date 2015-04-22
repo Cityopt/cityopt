@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.util.Collection;
 
 import javax.script.Bindings;
-import javax.script.ScriptException;
 
 /**
  * Container for decision variable values. This is only needed in scenario
@@ -110,7 +109,7 @@ public class DecisionValues implements EvaluationContext {
     }
 
     @Override
-    public Bindings toBindings() throws ScriptException {
+    public Bindings toBindings() {
         return bindingLayer.toBindings();
     }
 

@@ -3,7 +3,6 @@ package eu.cityopt.sim.eval;
 import java.text.ParseException;
 
 import javax.script.Bindings;
-import javax.script.ScriptException;
 
 /**
  * Results of a successful simulation run with specific input data. Instances
@@ -75,7 +74,7 @@ public class SimulationResults extends SimulationOutput implements
     }
 
     @Override
-    public Bindings toBindings() throws ScriptException {
+    public Bindings toBindings() {
         return bindingLayer.toBindings();
     }
 

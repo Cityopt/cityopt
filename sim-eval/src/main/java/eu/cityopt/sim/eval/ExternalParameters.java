@@ -3,7 +3,6 @@ package eu.cityopt.sim.eval;
 import java.text.ParseException;
 
 import javax.script.Bindings;
-import javax.script.ScriptException;
 
 /**
  * Container for external parameter values.
@@ -72,7 +71,7 @@ public class ExternalParameters implements EvaluationContext {
     }
 
     @Override
-    public Bindings toBindings() throws ScriptException {
+    public Bindings toBindings() {
         return bindingLayer.toBindings();
     }
 
