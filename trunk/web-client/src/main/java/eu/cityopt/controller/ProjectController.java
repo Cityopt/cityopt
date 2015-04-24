@@ -63,6 +63,7 @@ import eu.cityopt.service.AprosService;
 import eu.cityopt.service.ComponentInputParamDTOServiceImpl;
 import eu.cityopt.service.ComponentServiceImpl;
 import eu.cityopt.service.CopyServiceImpl;
+import eu.cityopt.service.DecisionVariableServiceImpl;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ExtParamServiceImpl;
 import eu.cityopt.service.ExtParamValServiceImpl;
@@ -159,11 +160,21 @@ public class ProjectController {
 	@Autowired
 	OptSetScenariosImpl optSetScenarioService;
 	
+	@Autowired
+	DecisionVariableServiceImpl decisionVarService;
+	
 	@RequestMapping(value="createproject", method=RequestMethod.GET)
 	public String getCreateProject(Map<String, Object> model) {
 		ProjectDTO newProject = new ProjectDTO();
 		model.put("project", newProject);
 		return "createproject";
+	}
+
+	@RequestMapping(value="createproject", method=RequestMethod.POST)
+	public String getCreateProjectPost(Map<String, Object> model, ProjectDTO projectForm) {
+		projectService.save(projectForm);
+		model.put("project", projectForm);
+		return "editproject";
 	}
 
 	@RequestMapping(value="openproject", method=RequestMethod.GET)
@@ -803,6 +814,86 @@ public class ProjectController {
 		model.put("constraints", optSearchConstraints);
 
 		return "editoptimizationset";
+	}
+	
+	@RequestMapping(value="creategaobjfunction",method=RequestMethod.GET)
+	public String getCreateGAObjFunction(Map<String, Object> model,
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		project = projectService.findByID(project.getPrjid());
+	
+		OptimizationSetDTO optSet = (OptimizationSetDTO) model.get("optimizationset");
+		
+		if (optSet == null)
+		{
+			optSet = new OptimizationSetDTO();
+		}
+		
+		UserSession userSession = (UserSession) model.get("usersession");
+		
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+		
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+		
+		if (selectedCompId != null && !selectedCompId.isEmpty())
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
+			if (nSelectedCompId > 0)
+			{
+				userSession.setComponentId(nSelectedCompId);
+				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				model.put("outputVars", outputVars);
+			}
+			model.put("selectedcompid", nSelectedCompId);
+		}
+		
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+
+		ObjectiveFunctionDTO function = new ObjectiveFunctionDTO();
+		model.put("function", function);
+		
+		return "creategaobjfunction";
+	}
+
+	@RequestMapping(value="creategaobjfunction", method=RequestMethod.POST)
+	public String getCreateGAObjFunctionPost(ObjectiveFunctionDTO function, Map<String, Object> model) {
+		OptimizationSetDTO optSet = null;
+		
+		if (model.containsKey("optimizationset"))
+		{
+			optSet = (OptimizationSetDTO) model.get("optimizationset");
+			model.put("optimizationset", optSet);
+		}
+		else
+		{
+			return "error";
+		}
+		
+		if (function != null && function.getExpression() != null)
+		{
+			ObjectiveFunctionDTO newFunc = new ObjectiveFunctionDTO();
+			newFunc.setName(function.getName());
+			newFunc.setExpression(function.getExpression());
+			optSet.setObjectivefunction(newFunc);
+			optSetService.save(optSet);
+		}
+
+		List<OptSearchConst> optSearchConstraints = optSearchService.findAll();
+		model.put("constraints", optSearchConstraints);
+
+		return "geneticalgorithm";
 	}
 	
 	@RequestMapping(value="createoptimizationset",method=RequestMethod.GET)
@@ -1653,8 +1744,8 @@ public class ProjectController {
 		MetricDTO metric = new MetricDTO();
 		metric.setName(metricForm.getName());
 		metric.setExpression(metricForm.getExpression());
+		metric.setProject (project);
 		metric = metricService.save(metric);
-		metricService.setProject(metric.getMetid(), project.getPrjid());
 		
 		project = projectService.findByID(project.getPrjid());
 		
