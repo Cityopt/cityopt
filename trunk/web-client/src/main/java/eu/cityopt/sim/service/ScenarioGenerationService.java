@@ -345,7 +345,7 @@ public class ScenarioGenerationService
     void saveAlgorithmParameters(ScenarioGenerator scenarioGenerator,
             Algorithm algorithm, AlgorithmParameters algorithmParameters) {
         for (AlgoParam algoParam : algorithm.getAlgoparams()) {
-            String value = (String) algorithmParameters.get(algoParam.getName());
+            String value = algorithmParameters.getProperty(algoParam.getName());
             if (value != null) {
                 AlgoParamVal algoParamVal = new AlgoParamVal();
                 algoParamVal.setAlgoparam(algoParam);

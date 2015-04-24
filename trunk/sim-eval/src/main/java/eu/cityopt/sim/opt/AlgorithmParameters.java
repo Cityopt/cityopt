@@ -1,5 +1,7 @@
 package eu.cityopt.sim.opt;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -14,24 +16,18 @@ import eu.cityopt.sim.eval.ConfigurationException;
  *
  * @author Hannu Rummukainen
  */
-@SuppressWarnings("serial")
-public class AlgorithmParameters extends Properties {
+public class AlgorithmParameters {
     public static final String KEY_MAX_RUNTIME_MINUTES = "max runtime [minutes]";
     public static final Double DEFAULT_MAX_RUNTIME_MINUTES = (double) TimeUnit.DAYS.toMinutes(366);
 
     public static final String KEY_MAX_PARALLEL_EVALUATIONS = "max parallel evaluations";
     public static final int DEFAULT_MAX_PARALLEL_EVALUATIONS = 100;
 
+    private Properties properties;
+
     /** Creates an empty object. */
     public AlgorithmParameters() {
-    }
-
-    /**
-     * Creates an empty object with the specified defaults.
-     * The defaults are searched if the property is not specified here.
-     */
-    public AlgorithmParameters(Properties defaults) {
-        super(defaults);
+        properties = new Properties();
     }
 
     public double getDouble(String key) throws ConfigurationException {
@@ -107,7 +103,7 @@ public class AlgorithmParameters extends Properties {
     Object parseProperty(String key, Object defaultValue,
             Function<String, Object> parser, String what)
                     throws ConfigurationException {
-        String value = getProperty(key);
+        String value = properties.getProperty(mangleKey(key));
         if (value == null) {
             if (defaultValue == null) {
                 throw new ConfigurationException(
@@ -122,5 +118,35 @@ public class AlgorithmParameters extends Properties {
             throw new ConfigurationException(
                     "Parameter " + key + " value is not " + what + ": " + value);
         }
+    }
+
+    /** Returns the value of the named parameter as a string with no conversions. */
+    public String getProperty(String key) {
+        return properties.getProperty(mangleKey(key));
+    }
+
+    /** Whether the named parameter has a value. */
+    public boolean containsKey(String key) {
+        return properties.containsKey(mangleKey(key));
+    }
+
+    /**
+     * Loads parameter values from an input stream in the Java property
+     * file format (i.e. rows of the form "parameter = value"), where
+     * spaces in parameter names are replaced with underscore characters.
+     *
+     * @see Properties#load(InputStream)
+     */
+    public void load(InputStream stream) throws IOException {
+        properties.load(stream);
+    }
+
+    /** Sets the value of a named parameter to an unparsed string value. */
+    public void put(String key, String value) {
+        properties.put(mangleKey(key), value);
+    }
+
+    String mangleKey(String key) {
+        return key.replace(' ', '_');
     }
 }
