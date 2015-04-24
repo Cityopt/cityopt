@@ -14,11 +14,11 @@ public class Expression {
     private final Evaluator evaluator;
     private final CompiledScript script;
 
-    Expression(String source, Evaluator evaluator) throws ScriptException {
+    public Expression(String source, Evaluator evaluator) throws ScriptException {
         this(source, null, evaluator);
     }
 
-    Expression(String source, String name, Evaluator evaluator) throws ScriptException {
+    public Expression(String source, String name, Evaluator evaluator) throws ScriptException {
         this.source = source;
         this.name = name;
         this.evaluator = evaluator;

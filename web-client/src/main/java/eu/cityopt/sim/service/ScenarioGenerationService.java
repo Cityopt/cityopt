@@ -50,6 +50,8 @@ import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.DecisionDomain;
 import eu.cityopt.sim.eval.DecisionVariable;
 import eu.cityopt.sim.eval.EvaluationSetup;
+import eu.cityopt.sim.eval.Evaluator;
+import eu.cityopt.sim.eval.Expression;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.InputExpression;
 import eu.cityopt.sim.eval.Namespace;
@@ -290,7 +292,7 @@ public class ScenarioGenerationService
         ExternalParameters externals = simulationService.loadExternalParametersFromSet(
                 scenarioGenerator.getExtparamvalset(), namespace);
         OptimisationProblem problem = new OptimisationProblem(model, externals);
-        problem.decisionVars = loadDecisionVariables(scenarioGenerator, namespace);
+        problem.decisionVars = loadDecisionVariables(scenarioGenerator, namespace, externals);
         problem.inputExprs = loadInputExpressions(scenarioGenerator, namespace, problem.inputConst);
         problem.metrics = simulationService.loadMetricExpressions(project, namespace);
         problem.constraints = optimisationSupport.loadConstraints(scenarioGenerator, namespace);
@@ -359,8 +361,8 @@ public class ScenarioGenerationService
     }
 
     public List<DecisionVariable> loadDecisionVariables(
-            ScenarioGenerator scenarioGenerator, Namespace namespace)
-                    throws ScriptException, ParseException {
+            ScenarioGenerator scenarioGenerator, Namespace namespace,
+            ExternalParameters externals) throws ScriptException, ParseException {
         List<DecisionVariable> simDecisions = new ArrayList<>();
         for (eu.cityopt.model.DecisionVariable decisionVariable 
                 : scenarioGenerator.getDecisionvariables()) {
@@ -369,10 +371,23 @@ public class ScenarioGenerationService
             Type variableType = namespace.getDecisionType(symbol.componentName, symbol.name);
             String lbText = decisionVariable.getLowerbound();
             String ubText = decisionVariable.getUpperbound();
-            Object lb = lbText != null ? variableType.parse(lbText, namespace) : null;
-            Object ub = (ubText != null) ? variableType.parse(ubText, namespace) : null;
+            Object lb = null;
+            Object ub = null;
+            if (externals != null) {
+                Evaluator ev = simulationService.getEvaluator();
+                if (lbText != null) {
+                    Expression lbExpr = new Expression(lbText, "lower bound for " + symbol, ev);
+                    lb = lbExpr.evaluateAs(variableType, externals);
+                }
+                if (ubText != null) {
+                    Expression ubExpr = new Expression(ubText, "upper bound for " + symbol, ev);
+                    ub = ubExpr.evaluateAs(variableType, externals);
+                }
+            } else {
+                lb = (lbText != null) ? variableType.parse(lbText, namespace) : null;
+                ub = (ubText != null) ? variableType.parse(ubText, namespace) : null;
+            }
             domain = NumericInterval.makeInterval(variableType, lb, ub);
-
             simDecisions.add(new DecisionVariable(symbol.componentName, symbol.name, domain));
         }
         Collections.sort(simDecisions, (d, e) -> d.toString().compareTo(e.toString()));

@@ -67,7 +67,7 @@
   <scengenobjectivefunction sgobfunctionid="1" scengenid="1" optfunctionid="1"/>
   <scengenoptconstraint sgoptconstraintid="1" scengenid="1" optconstid="1"/>
 
-  <decisionvariable decisionvarid="1" scengenid="1" inputid="1" lowerbound="1" upperbound="2" typeid="2"/>
+  <decisionvariable decisionvarid="1" scengenid="1" inputid="1" lowerbound="1" upperbound="d/50" typeid="2"/>
 
   <modelparameter modelparamid="2" scengenid="1" inputid="2" value="2015-01-01T00:00:00" expression=""/>
   <modelparameter modelparamid="3" scengenid="1" inputid="3" value="2015-01-01T00:01:00"/>

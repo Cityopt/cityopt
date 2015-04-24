@@ -40,7 +40,7 @@
   <optsetscenarios/>
   <metric name="dummy" expression="C01.typ"/>
   <metric name="symmetric" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>
-  <decisionvariable lowerbound="1" upperbound="2"/>
+  <decisionvariable lowerbound="1" upperbound="d/50"/>
   <outputvariable name="PI12_MIX_MASS_FLOW"/>
   <extparam defaultvalue="100" name="d"/>
   <algoparam name="max runtime [minutes]"/>
