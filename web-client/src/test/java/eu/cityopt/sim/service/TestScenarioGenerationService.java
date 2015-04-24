@@ -2,6 +2,7 @@ package eu.cityopt.sim.service;
 
 
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -85,6 +86,7 @@ public class TestScenarioGenerationService extends SimulationTestBase {
         loadModel("Plumbing test model", "/plumbing.zip");
         try {
             runScenarioGeneration("genetic algorithm");
+            fail();
         } catch (ScriptException e) {
             assertThat(e.getMessage(), StringContains.containsString(
                     "In input C01.typ: name 'symmetric' is not defined"));

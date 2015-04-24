@@ -1,6 +1,7 @@
 package eu.cityopt.sim.service;
 
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -95,6 +96,7 @@ public class TestSimulationService extends SimulationTestBase {
         loadModel("Apros test model", "/testmodel.zip");
         try {
             runSimulation();
+            fail();
         } catch (ScriptException e) {
             assertThat(e.getMessage(), StringContains.containsString(
                     "In metric fuelconsumption: name 'integrat' is not defined"));
