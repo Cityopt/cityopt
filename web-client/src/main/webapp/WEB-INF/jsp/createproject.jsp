@@ -9,7 +9,7 @@
 </head>
 <body>
 <%@ include file="mainmenu.inc"%>
-<form:form method="post" action="editproject.html?action=create" modelAttribute="project">
+<form:form method="post" action="createproject.html" modelAttribute="project">
 <table>
 	<tr>
 		<td width=20></td>

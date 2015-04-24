@@ -35,8 +35,17 @@ a:hover {
 
 }
 
+h1 {
+	font-family: 'blanchcaps', PT Sans, arial;
+}
+
+h2 {
+	font-family: 'blanchcaps', PT Sans, arial;
+}
+
 h3 {
 	color: #B3B3B3;
+	font-family: 'blanchcaps', PT Sans, arial;
 	font-size: 12px;
 }
 
@@ -103,7 +112,7 @@ blockquote {
 #title h1 {
 	color: #4D4D4D;
 	font-size: 32px;
-	font-family: blanch, arial;
+	font-family: 'blanchcaps', arial;
     background-color: #FBBA00;
 }
 
@@ -115,6 +124,7 @@ blockquote {
 	margin: 0;
 	padding: 0;
 	text-decoration: none;
+	font-family: 'blanchcaps', arial;
     background-color: #FBBA00;
 }
 
@@ -219,6 +229,7 @@ blockquote {
 
 .menustyle b {
 	font-size: 14px;
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 }
 
 .menustyle tr:hover {
@@ -235,17 +246,20 @@ blockquote {
 }
 
 .tablestyle th {
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	background: #47AFE2;
 	height: 30px;
 }
 
 .tablestyle td { 
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	padding:7px; 
 	border:#47AFE2 1px solid;
 }
 
 /* Define the default color for all the table rows */
 .tablestyle tr {
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	background: #F6F6F6;
 }
 
@@ -260,6 +274,7 @@ blockquote {
 
 .selectedRowStyle {
     background-color: #A3A3A3;
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 }
 
 .sidebarboxtop {
@@ -274,6 +289,7 @@ blockquote {
 	padding-bottom: 1px;
 	font-size: 16px;
 	font-weight: normal;
+	font-family: 'blanchcaps', arial;
 	background: url('images/borderb.gif') left bottom no-repeat; 
 }
 
@@ -336,6 +352,7 @@ blockquote {
 	margin-bottom: 6px;
 	font-size: 20px;
 	font-weight: normal;
+	font-family: 'blanchcaps', arial;
 	color: #5D6E63;
 }
 
@@ -343,6 +360,7 @@ blockquote {
 	font-size: 20px;
 	font-weight: normal;
 	color: #5D6E63;
+	font-family: 'blanchcaps', arial;
 	text-decoration: none;
 }
 
@@ -374,6 +392,7 @@ button:active, input[type="button"]:active, input[type="submit"]:active {
 
 .postdate {
 	float: left;
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	background: url('images/datebg.gif') no-repeat left center;
 	color: #5D6E63;
 	width: 55px;
@@ -390,23 +409,27 @@ button:active, input[type="button"]:active, input[type="submit"]:active {
 	font-size: 26px;
 	text-align: center;
 	font-weight: bold;
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	margin: 0px 0px 0px 0px;
 	padding: 0px 0px 0px 0px;
 }
 
 .postinfo {
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	margin-left: 59px;
 	padding-bottom: 6px;
 	border-bottom: 1px solid #C8D0CA;
 }
 
 .postauthcat {
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	background: url('images/iconcat.gif') no-repeat left center;
 	margin-top: 0px;
 	padding: 1px 0px 2px 19px;	
 }
 
 .postcomment {
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	background: url('images/iconcom.gif') no-repeat left center;
 	margin-top: 0px;
 	margin-left: 10px;
@@ -414,6 +437,7 @@ button:active, input[type="button"]:active, input[type="submit"]:active {
 }
 
 .posttext {
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	line-height: 130%;
 	margin-top: 0px;
 	margin-bottom: 0px;
@@ -421,6 +445,7 @@ button:active, input[type="button"]:active, input[type="submit"]:active {
 }
 
 .postfooter {
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	text-align: right;
 	padding: 3px 8px 3px 3px;
 	margin-bottom: 20px;
@@ -429,6 +454,7 @@ button:active, input[type="button"]:active, input[type="submit"]:active {
 
 .posttext p {
 	margin-top: 10px;
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 }
 
 #entrynav {
