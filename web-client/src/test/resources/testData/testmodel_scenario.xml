@@ -85,9 +85,10 @@
 
   <extparam prjid="1" defaultvalue="dummy" defaultTimeSeries="1" name="fuel_cost" unitid="6"/>
   <extparam prjid="1" defaultvalue="100" name="x" unitid="1"/>
+  <extparam prjid="1" defaultvalue="0.01" name="y"/>
 
   <metric prjid="1" name="fuelconsumption" unitid="1" expression="integrate(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
-  <metric prjid="1" name="fuelcost" unitid="1" expression="integrate(fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
+  <metric prjid="1" name="fuelcost" unitid="1" expression="integrate(x * y * fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
 
   <scenario scenid="2" prjid="1" name="testscenario2" description="2nd test scenario"/>
   <inputparamval scendefinitionid="21" scenid="2" inputid="1" value="2300.0"/>

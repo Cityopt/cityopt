@@ -113,7 +113,9 @@ public class JacksonBinder {
     public abstract static class Var extends Item {
         public Type type;
         
-        public String getType() {return type.name;}
+        public String getType() {
+            return (type == Type.DYNAMIC) ? "" : type.name;
+        }
         public void setType(String name) {type = Type.getByName(name);}
         
         protected void addToNSMap(Map<String, Type> map) {

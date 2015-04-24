@@ -214,6 +214,9 @@ public class SyntaxChecker {
             case LIST_OF_TIMESTAMP:
                 p = Arrays.asList(1.0);
                 break;
+            case DYNAMIC:
+                p = null;
+                break;
             default:
                 throw new IllegalStateException("No placeholder defined for "+type);
             }

@@ -13,7 +13,7 @@ import java.util.Date;
  * @author Hannu Rummukainen
  */
 public class TimeUtils {
-    static final ZoneId DEFAULT_ZONE = ZoneId.of("UTC");
+    static public final ZoneId DEFAULT_ZONE = ZoneId.of("UTC");
 
     /**
      * Parses an ISO-8601 timestamp.
