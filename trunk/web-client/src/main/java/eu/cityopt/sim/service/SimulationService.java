@@ -44,6 +44,7 @@ import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesVal;
+import eu.cityopt.model.Unit;
 import eu.cityopt.repository.ExtParamValRepository;
 import eu.cityopt.repository.ExtParamValSetCompRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
@@ -480,53 +481,47 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         Instant timeOrigin = loadTimeOrigin(project.getSimulationmodel());
         Namespace namespace = new Namespace(evaluator, timeOrigin, (scenarioGenerator != null));
         for (ExtParam mExternal : project.getExtparams()) {
-            Type extType = null;
-            if (mExternal.getTimeseries() != null) {
-                String typeName = mExternal.getTimeseries().getType().getName();
-                extType = Type.getByName(typeName);
-            } else {
-                String typeName = mExternal.getUnit().getType().getName();
-                extType = Type.getByName(typeName);
-            }
+            Type extType = getType(mExternal.getUnit());
             namespace.externals.put(mExternal.getName(), extType);
         }
         for (Component mComponent : project.getComponents()) {
             Namespace.Component nsComponent = namespace.getOrNew(mComponent.getName());
             for (InputParameter mInput : mComponent.getInputparameters()) {
-                String typeName = mInput.getUnit().getType().getName();
-                Type inputType = Type.getByName(typeName);
+                Type inputType = getType(mInput.getUnit());
                 nsComponent.inputs.put(mInput.getName(), inputType);
             }
             for (OutputVariable mOutput : mComponent.getOutputvariables()) {
-                String typeName = mOutput.getUnit().getType().getName();
-                Type outputType = Type.getByName(typeName);
+                Type outputType = getType(mOutput.getUnit());
                 nsComponent.outputs.put(mOutput.getName(), outputType);
             }
         }
         for (Metric mMetric : project.getMetrics()) {
-            String typeName = mMetric.getUnit().getType().getName();
-            Type metricType = Type.getByName(typeName);
+            Type metricType = getType(mMetric.getUnit());
             namespace.metrics.put(mMetric.getName(), metricType);
         }
         if (scenarioGenerator != null) {
             for (DecisionVariable decisionVariable : scenarioGenerator.getDecisionvariables()) {
                 InputParameter inputParameter = decisionVariable.getInputparameter();
                 if (inputParameter != null) {
-                    String typeName = (decisionVariable.getType() != null)
-                            ? decisionVariable.getType().getName()
-                            : inputParameter.getUnit().getType().getName();
-                    Type variableType = Type.getByName(typeName);
+                    Type variableType = (decisionVariable.getType() != null)
+                            ? Type.getByName(decisionVariable.getType().getName())
+                            : getType(inputParameter.getUnit());
                     Namespace.Component nsComponent =
                             namespace.components.get(inputParameter.getComponent().getName());
                     nsComponent.decisions.put(inputParameter.getName(), variableType);
                 } else {
-                    String typeName = decisionVariable.getType().getName();
-                    Type variableType = Type.getByName(typeName);
+                    Type variableType = Type.getByName((decisionVariable.getType() != null)
+                            ? decisionVariable.getType().getName() : null);
                     namespace.decisions.put(decisionVariable.getName(), variableType);
                 }
             }
         }
         return namespace;
+    }
+
+    Type getType(Unit unit) {
+        eu.cityopt.model.Type type = (unit != null) ? unit.getType() : null;
+        return Type.getByName((type != null) ? type.getName() : null);
     }
 
     DbSimulationStorageI makeDbSimulationStorage(int prjid, ExternalParameters externals) {

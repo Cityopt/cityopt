@@ -5,8 +5,11 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -27,7 +30,7 @@ import eu.cityopt.sim.eval.util.TimeUtils;
  *   or a String. Value objects are what is stored in classes such as
  *   SimulationInput and SimulationOutput.  For each Type, there is a small
  *   set of compatible Java value types.  The Python scripting engine provides
- *   access to value objects from Python expressions.
+ *   access to value objects in Python expressions.
  *  </li>
  *  <li>
  *   The <em>user text</em> representation is what a user can read and type in.
@@ -459,6 +462,81 @@ public enum Type {
                 throws ScriptException {
             return fromScriptResultList(value, TIMESTAMP, setup);
         }
+    },
+
+    /**
+     * Any primitive object or collection.
+     * <br>Compatible value types: Double, Float, Long, Integer, Short, Byte,
+     *   BigInteger, String, TimeSeriesI, Date, null,
+     *   Collection of any compatible value type,
+     *   Map between compatible value types.
+     * <br>User text representation: arbitrary Python expression.
+     * <br>Python type: int, long, float, str, datetime, TimeSeries,
+     *   list, tuple, set, dict, NoneType.
+     */
+    DYNAMIC("Dynamic") {
+        @Override
+        public Object parse(String value, EvaluationSetup setup) throws ParseException {
+            try {
+                return setup.evaluator.eval(value, setup);
+            } catch (ScriptException e) {
+                throw new ParseException(e.getMessage(), e.getColumnNumber());
+            }
+        }
+
+        @Override
+        public String format(Object value, EvaluationSetup setup) {
+            if (value == null) {
+                return "None";
+            } else if (value instanceof Float || value instanceof Double) {
+                return setup.evaluator.toExpression(((Number) value).doubleValue());
+            } else if (value instanceof Date) {
+                return setup.evaluator.toExpression((Date) value);
+            } else if (value instanceof List) {
+                return bracketedList(value, e -> format(e, setup));
+            } else if (value instanceof Set) {
+                return "set(" + bracketedList(value, e -> format(e, setup)) + ")";
+            } else if (value instanceof Map) {
+                return bracedMap(value, e -> format(e, setup));
+            } else {
+                return setup.evaluator.repr(value);
+            }
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public boolean isCompatible(Object value) {
+            if (value == null
+                    || value instanceof Number
+                    || value instanceof String
+                    || value instanceof TimeSeriesI
+                    || value instanceof Date) {
+                return true;
+            } else if (value instanceof Collection) {
+                for (Object element : (Collection) value) {
+                    if ( ! isCompatible(element)) {
+                        return false;
+                    }
+                }
+                return true;
+            } else if (value instanceof Map) {
+                for (Object element : ((Map) value).entrySet()) {
+                    Map.Entry entry = (Map.Entry) element;
+                    if ( ! isCompatible(entry.getKey())
+                            || ! isCompatible(entry.getValue())) {
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public String toConstantExpression(Object value, EvaluationSetup setup) {
+            return format(value, setup);
+        }
     };
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -533,12 +611,15 @@ public enum Type {
     /**
      * Gets a type by name.
      * 
-     * @param name
-     *            type name. Case insensitive.
+     * @param name type name. Case insensitive.
+     *    May be null or empty, in which case the DYNAMIC type is returned.
      * @throws IllegalArgumentException
      *             if the type name is unknown
      */
     public static Type getByName(String name) {
+        if (name == null || name.isEmpty()) {
+            return Type.DYNAMIC;
+        }
         for (Type type : Type.values()) {
             if (type.name.equalsIgnoreCase(name)) {
                 return type;
@@ -568,7 +649,7 @@ public enum Type {
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         boolean delimit = false;
-        for (Object element : (List) list) {
+        for (Object element : (Collection) list) {
             if (delimit) {
                 sb.append(", ");
             } else {
@@ -577,6 +658,27 @@ public enum Type {
             sb.append(formatElement.apply(element));
         }
         sb.append(']');
+        return sb.toString();
+    }
+
+    @SuppressWarnings("rawtypes")
+    protected static String bracedMap(
+            Object map, Function<Object, String> formatElement) {
+        StringBuilder sb = new StringBuilder();
+        sb.append('{');
+        boolean delimit = false;
+        for (Object element : ((Map) map).entrySet()) {
+            Map.Entry entry = (Map.Entry) element;
+            if (delimit) {
+                sb.append(", ");
+            } else {
+                delimit = true;
+            }
+            sb.append(formatElement.apply(entry.getKey()));
+            sb.append(": ");
+            sb.append(formatElement.apply(entry.getValue()));
+        }
+        sb.append('}');
         return sb.toString();
     }
 

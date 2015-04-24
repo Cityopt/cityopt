@@ -7,6 +7,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +27,8 @@ import org.python.core.Py;
 import org.python.core.PyList;
 import org.python.core.PyObject;
 import org.python.core.PyString;
+
+import eu.cityopt.sim.eval.util.TimeUtils;
 
 /**
  * Evaluation engine of the expression language. The expression language is
@@ -360,5 +365,24 @@ public class Evaluator {
     /** Converts a string to an equivalent Python expression. */
     String toExpression(String value) {
         return new PyString(value).__repr__().asString();
+    }
+
+    DateTimeFormatter datetimeFormatter = DateTimeFormatter.ofPattern("(yyyy,M,d,H,m,s)");
+
+    /** Converts a Date to an equivalent Python datetime constructor expression. */
+    public String toExpression(Date d) {
+        // NOTE: The Python default time zone must be the same as TimeUtils.DEFAULT_ZONE !
+        ZonedDateTime zdt = ZonedDateTime.ofInstant(d.toInstant(), TimeUtils.DEFAULT_ZONE);
+        return "datetime" + datetimeFormatter.format(zdt);
+    }
+
+    /** Converts a Java object to a Python object and returns its repr string. */
+    String repr(Object value) {
+        if (value instanceof String) {
+            // We special case strings to get 'foo' instead of u'foo'
+            return toExpression((String) value);
+        } else {
+            return Py.java2py(value).__repr__().asString();
+        }
     }
 }

@@ -51,7 +51,7 @@
   <optsearchconst/>
   <optsetscenarios/>
   <metric name="fuelconsumption" expression="integrate(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
-  <metric name="fuelcost" expression="integrate(fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
+  <metric name="fuelcost" expression="integrate(x * y * fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
   <decisionvariable name="panels" lowerbound="0.0" upperbound="20.0"/>
   <decisionvariable name="collectors" lowerbound="0.0" upperbound="20.0"/>
   <scengenresult/>
@@ -66,6 +66,7 @@
   <outputvariable name="MULTIPLYER_OUTPUT"/>
   <extparam defaulttimeseries="1" defaultvalue="dummy" name="fuel_cost"/>
   <extparam defaultvalue="100" name="x"/>
+  <extparam defaultvalue="0.01" name="y"/>
   <algoparam name="max runtime [minutes]"/>
   <algoparam name="max scenarios"/>
   <algoparam name="max runtime [minutes]"/>

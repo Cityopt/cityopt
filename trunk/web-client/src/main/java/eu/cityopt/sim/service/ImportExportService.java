@@ -207,7 +207,8 @@ public class ImportExportService {
     Map<Type, Unit> pickUnits() {
         Map<Type, Unit> unitMap = new HashMap<>();
         for (Unit unit : unitRepository.findAll()) {
-            Type type = Type.getByName(unit.getType().getName());
+            Type type = Type.getByName(
+                    (unit.getType() != null) ? unit.getType().getName() : null);
             Unit oldUnit = unitMap.get(type);
             // We prefer units with shorter names. As long as there are no units
             // in the CSV files, we should really prefer dimensionless units here.
