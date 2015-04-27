@@ -8,7 +8,7 @@ import lombok.Setter;
 public class ObjectiveFunctionDTO {
 
 	@Getter @Setter private int obtfunctionid;
-//	@Getter @Setter private Type type;
+	@Getter @Setter private TypeDTO type;
 	@Getter @Setter private ProjectDTO project;
 	@Getter @Setter private String name;
 	@Getter @Setter private String expression;
