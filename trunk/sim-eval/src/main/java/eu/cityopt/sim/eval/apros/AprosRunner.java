@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -46,6 +47,9 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationRunner;
@@ -59,8 +63,10 @@ import eu.cityopt.sim.eval.util.TempDir;
 public class AprosRunner implements SimulationRunner {
     /** Prefix for temporary directories. */
     public static String tmpPrefix = "cityopt_apros";
-    /** Number of cores to parallelise for. */
-    public static int cores = 2;
+    /** Server node configuration. */
+    public static List<Map<String, String>> nodes = ImmutableList.of(
+            ImmutableMap.of("type", "local",
+                            "cpu", "2"));
     
     final Namespace nameSpace;
     Document uc_structure;
@@ -131,11 +137,10 @@ public class AprosRunner implements SimulationRunner {
                         Files.createDirectory(tmp.getPath().resolve("srv")));
                 server.installProfile(profile, new LocalDirectory(
                         profileDir.resolve(profile)));
-                Map<String, String> p = new HashMap<String, String>();
-                p.put("type", "local");
-                p.put("cpu", String.valueOf(cores));
-                server.createNode(p);
                 StatusLoggingUtils.logServerStatus(System.out, server);
+                for (Map<String, String> p : nodes) {
+                    server.createNode(p);
+                }
             } catch (Exception e) {
                 tmp.close();
                 throw e;
