@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
@@ -19,6 +21,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SequenceWriter;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
@@ -95,6 +99,11 @@ public class AprosRunnerTest extends AprosTestBase {
         Document ucs = db.parse(
                 dataDir.resolve(props.getProperty("uc_props")).toFile());
         Path modelDir = dataDir.resolve(props.getProperty("model_dir"));
+        String nodes = props.getProperty("nodes");
+        if (nodes != null) {
+            AprosRunner.nodes = (new ObjectMapper()).readValue(
+                    nodes, new TypeReference<List<Map<String, String>>>() {});
+        }
         
         return new AprosRunner(
                 profileDir, profileName,
