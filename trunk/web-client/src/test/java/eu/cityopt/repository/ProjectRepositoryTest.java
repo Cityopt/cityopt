@@ -16,6 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -79,15 +80,15 @@ public class ProjectRepositoryTest {
 	@DatabaseSetup("classpath:/testData/scenario_TestData.xml")
 	public void CreateProject()
 	{	
+		int sizeBefore = projectRepository.findAll().size();
 		Project project = new Project();
 		project.setName("Project 2");
 		project.setLocation("Vienna");
 		
-		int id = project.getPrjid();
+		project = projectRepository.saveAndFlush(project);
 		
-		projectRepository.saveAndFlush(project);
-		
-		assertNotEquals(id,project.getPrjid());	
+		assertEquals(sizeBefore +1, projectRepository.findAll().size());
+		assertNotEquals(0,project.getPrjid());	
 	}
 	
 	@Test
@@ -138,7 +139,7 @@ public class ProjectRepositoryTest {
 	
 	@Test
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
-	"classpath:/testData/Sample Test case - SC1.xml"})
+	"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC1.xml"})
 	public void DeleteProject()
 	{		
 		List<Project> projects = projectRepository.findByName("Project");
@@ -157,4 +158,26 @@ public class ProjectRepositoryTest {
 		assertEquals(0, projectRepository.findByName("Project").size());	
 	}	
 
+	
+	@Test
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
+	public void findByName_QueryByMethodName_Test()
+	{		
+		List<Project> projects = projectRepository.findByNameLikeIgnoreCase("Project");
+		
+		assertEquals(0, projects.size());
+		
+		projects = projectRepository.findByNameLikeIgnoreCase("sample Project");
+		
+		assertEquals(1, projects.size());
+	}
+	
+	@Test
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
+	public void findByName_CriteriaAPI_Test()
+	{	
+		Specification<Project> prjSpecification = ProjectSpecifications.projectNameContaining("Sample");
+		List<Project> projects = projectRepository.findAll(prjSpecification);		
+		assertEquals(1, projects.size());
+	}
 }

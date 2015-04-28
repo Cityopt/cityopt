@@ -1,11 +1,12 @@
 package eu.cityopt.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,8 +24,6 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
-import eu.cityopt.model.ExtParam;
-import eu.cityopt.model.ExtParamVal;
 import eu.cityopt.repository.ExtParamRepository;
 
 @Transactional
@@ -99,7 +98,6 @@ public class ExtParamValSetServiceTest {
 		
 		assertEquals(1, epv.size());
 		assertEquals(epv.iterator().next().getExtparam().getName(), val.getExtparam().getName());
-		
 	}
 	
 }

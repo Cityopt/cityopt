@@ -7,12 +7,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -38,10 +40,16 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.MetricDTO;
+import eu.cityopt.DTO.OpenOptimizationSetDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ProjectScenariosDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.SimulationModelDTO;
+import eu.cityopt.model.Component;
+import eu.cityopt.model.Scenario;
+import eu.cityopt.repository.ScenarioRepository;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -50,7 +58,7 @@ import eu.cityopt.DTO.SimulationModelDTO;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
-@DatabaseSetup("classpath:/testData/scenario_TestData.xml")
+
 public class ProjectServiceDTOTest {
 
 	@Autowired
@@ -67,6 +75,7 @@ public class ProjectServiceDTOTest {
 	}
 
 	@Test
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
 	public void findAll() {
 		List<ProjectDTO> list = projectService.findAll();
 		Assert.notNull(list);
@@ -74,13 +83,15 @@ public class ProjectServiceDTOTest {
 	}
 	
 	@Test
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
 	public void findByNameTest() {
 		List<ProjectDTO> list = projectService.findByName("project");
 		Assert.notNull(list);
-		assertTrue(list.size() == 2);
+		assertTrue(list.size() == 1);
 	}
 	
 	@Test
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
 	public void findByNameTest2() {
 		List<ProjectDTO> list = projectService.findByName("notAProjectName");
 		Assert.notNull(list);
@@ -88,6 +99,7 @@ public class ProjectServiceDTOTest {
 	}
 	
 	@Test
+	@DatabaseSetup({"classpath:/testData/scenario_TestData.xml"})
 	public void getScenarios() throws EntityNotFoundException {		
 		//Scenarios are not loaded with the ProjectDTO object 
 		//if needed, load them from the service using the project's ID
@@ -102,6 +114,7 @@ public class ProjectServiceDTOTest {
 	}
 	
 	@Test
+	@DatabaseSetup({"classpath:/testData/scenario_TestData.xml"})
 	public void getComponents() throws EntityNotFoundException {		
 		//Scenarios are not loaded with the ProjectDTO object 
 		//if needed, load them from the service using the project's ID
@@ -110,11 +123,16 @@ public class ProjectServiceDTOTest {
 		
 		List<ComponentDTO> components = projectService.getComponents(item.getPrjid());
 		Assert.notNull(components);
-		ComponentDTO element2 = components.iterator().next();
-		assertEquals("testcomponent 1", element2.getName());
+
+		ComponentDTO comp = components.stream().filter(c -> c.getName().equals("testcomponent 1"))
+				.findFirst().get();
+		
+		assertNotNull(comp);
+		assertEquals(comp.getName(), "testcomponent 1");
 	}
 	
 	@Test
+	@DatabaseSetup({"classpath:/testData/scenario_TestData.xml"})
 	public void updateProject() throws EntityNotFoundException {		
 		ProjectDTO item = projectService.findByID(1);
 		Assert.notNull(item);
@@ -130,6 +148,7 @@ public class ProjectServiceDTOTest {
 	}
 	
 	@Test
+	@DatabaseSetup({"classpath:/testData/scenario_TestData.xml"})
 	public void getMetrics() throws EntityNotFoundException {		
 		ProjectDTO item = projectService.findByID(1);
 		Assert.notNull(item);
@@ -142,15 +161,17 @@ public class ProjectServiceDTOTest {
 	}
 	
 	@Test
+	@DatabaseSetup({"classpath:/testData/scenario_TestData.xml"})
 	public void getExtParams() throws EntityNotFoundException {		
 		ProjectDTO item = projectService.findByID(1);
 		Assert.notNull(item);
 		
-		Set<ExtParamDTO> metrics = projectService.getExtParams(item.getPrjid());
-		Assert.notNull(metrics);
+		Set<ExtParamDTO> externals = projectService.getExtParams(item.getPrjid());
+		Assert.notNull(externals);
 	}
 	
 	@Test
+	@DatabaseSetup({"classpath:/testData/scenario_TestData.xml"})
 	public void getSimmulationModel() throws EntityNotFoundException {		
 		ProjectDTO item = projectService.findByID(1);
 		Assert.notNull(item);
@@ -160,6 +181,7 @@ public class ProjectServiceDTOTest {
 	}
 	
 	@Test
+	@DatabaseSetup({"classpath:/testData/scenario_TestData.xml"})
 	public void getProjectScenariosDTO() {	
 		//Scenarios are directly loaded with the projectScenarioDTO object
 //		ProjectScenariosDTO item = projectService.findAllWithScenarios().get(0);
@@ -178,24 +200,25 @@ public class ProjectServiceDTOTest {
 	}
 	
 	@Test
-	public void setScenariosOnProjectTest() {	
+	@DatabaseSetup({"classpath:/testData/scenario_TestData.xml"})
+	public void setScenariosOnProjectTest() throws EntityNotFoundException {	
 		//Scenarios are directly loaded with the projectScenarioDTO object
-		ProjectScenariosDTO item = projectService.findAllWithScenarios().get(0);		
+		ProjectDTO item = projectService.findAllWithScenarios().get(0);		
 		Assert.notNull(item);
-		Set<ScenarioDTO> scenarios = item.getScenarios();
+		Set<ScenarioDTO> scenarios = projectService.getScenarios(item.getPrjid());
 		Assert.notNull(scenarios);
 		int sizeBefore = scenarios.size();
 		
 		ScenarioDTO newScen = new ScenarioDTO();
 		newScen.setName("My new Scenario");
 		newScen.setDescription("this is my new Scenario");
-//		newScen.setPrjid(item.getPrjid());
+		newScen = scenarioService.save(newScen, item.getPrjid());
 		scenarios.add(newScen);
 		
 		projectService.setScenarios(item.getPrjid(), scenarios);
-		item = projectService.findAllWithScenarios().get(0);		
+		item = projectService.findByID(item.getPrjid());		
 		Assert.notNull(item);
-		scenarios = item.getScenarios();
+		scenarios = projectService.getScenarios(item.getPrjid());
 		int sizeAfter = scenarios.size();
 		
 		newScen.setScenid(0);
@@ -204,6 +227,7 @@ public class ProjectServiceDTOTest {
 	}
 	
 	@Test
+	@DatabaseSetup({"classpath:/testData/scenario_TestData.xml"})
 	public void setScenarioOnScenarioServiceTest() {	
 		//Scenarios are directly loaded with the projectScenarioDTO object
 		ProjectScenariosDTO item = projectService.findAllWithScenarios().get(0);		
@@ -230,10 +254,10 @@ public class ProjectServiceDTOTest {
 		sizeAfter = testt.size();
 		
 		assertEquals(sizeBefore +1, sizeAfter);
-		//assertTrue(scenarios.contains(newScen)); //does not work - probably because equals/hashcode are not implemented	
 	}
 	
-	@Test	
+	@Test
+	@DatabaseSetup({"classpath:/testData/scenario_TestData.xml"})
 	public void CreateProjectWithSimulationModel() throws IOException, EntityNotFoundException {
 		
 		ProjectDTO project_2 = new ProjectDTO();
@@ -252,7 +276,7 @@ public class ProjectServiceDTOTest {
 		
 		project_2.setSimulationmodel(model);
 		
-		projectService.save(project_2);
+		project_2 = projectService.save(project_2);
 		
 		ProjectDTO fproject = projectService.findByID(project_2.getPrjid());
 		SimulationModelDTO modact = fproject.getSimulationmodel();
@@ -262,6 +286,7 @@ public class ProjectServiceDTOTest {
 	}
 	
 	@Test
+	@DatabaseSetup({"classpath:/testData/scenario_TestData.xml"})
 	public void getProjectSimulationmodel() throws EntityNotFoundException{
 		ProjectDTO item = projectService.findByID(1);
 		Assert.notNull(item);
@@ -303,4 +328,50 @@ public class ProjectServiceDTOTest {
 	    }
 	    return ous.toByteArray();
 	}
+	
+	@Autowired CopyService copyService;
+	@Autowired ScenarioRepository scenarioRepository;
+	
+	@Test
+//	@Rollback(false)
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
+	public void copyProject() throws EntityNotFoundException{
+
+		try {
+			copyService.copyProject(1, "copy of p1");
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		assertEquals(projectService.findByName("copy of").size(),1);
+	}	
+	
+	@Test
+//	@Rollback(false)
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
+	public void copyScenario() throws EntityNotFoundException{
+		try {
+			copyService.copyScenario(1, "copy of s1", true, true, true, true);
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		assertEquals(scenarioService.findByName("copy of").size(),1);
+	}	
+	
+	@Test
+//	@Rollback(false)
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
+	public void TestgetSearchAndGAOptimizationSets() throws EntityNotFoundException{
+		Set<OpenOptimizationSetDTO> oosDTOs = projectService.getSearchAndGAOptimizationSets(1);
+		
+		for(OpenOptimizationSetDTO oosd : oosDTOs){
+			System.out.println(oosd.getId() + " | " + oosd.getName() + " | " + oosd.getOptSetType());
+		}
+		
+		assertEquals(2, oosDTOs.size());
+	}
+	
 }

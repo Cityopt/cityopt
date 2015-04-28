@@ -1,18 +1,9 @@
 package eu.cityopt.repository;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,16 +18,15 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.cityopt.helper.Helper;
-import eu.cityopt.model.Project;
-import eu.cityopt.model.SimulationModel;
-import eu.cityopt.model.SimulationResult;
-import eu.cityopt.repository.ProjectRepository;
-import eu.cityopt.repository.SimulationModelRepository;
-import eu.cityopt.repository.UserGroupProjectRepository;
 
+
+//import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+//import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+
+import eu.cityopt.model.SimulationResult;
+import eu.cityopt.model.TimeSeries;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -52,12 +42,28 @@ public class SimulationResultRepositoryTest {
 
 	@Autowired
 	SimulationResultRepository simulationResultRepository;
+	
+	@Autowired
+	UnitRepository unitRepository;
+
+	@Autowired
+	ProjectRepository projectRepository;
 
 	@Test	
 	@Rollback(true)
 	public void findByScenID() {
 		List<SimulationResult> simResults = simulationResultRepository.findByScenId(1);
 		
-		assertEquals(4,simResults.size());
+		assertEquals(4, simResults.size());
+		
+		for(SimulationResult simres : simResults){
+			TimeSeries ts = simres.getTimeseries();
+			assertNotNull(ts);
+			assertTrue(ts.getTimeseriesvals().size() > 100);
+		}
+		
+		simResults = simulationResultRepository.findByScenId(33);
+		assertEquals(0,simResults.size());
 	}
+	
 }

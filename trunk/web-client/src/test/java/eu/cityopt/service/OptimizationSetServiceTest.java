@@ -3,6 +3,7 @@ package eu.cityopt.service;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,6 +66,7 @@ public class OptimizationSetServiceTest {
 		Integer sizeBefore = optimizationSetService.findAll().size();
 
 		OptimizationSetDTO testSet = new OptimizationSetDTO();
+
 		testSet.setProject(project);
 		testSet.setName("my first optset");
 		
@@ -72,6 +74,14 @@ public class OptimizationSetServiceTest {
 
 //		optimizationSetService.findByID(id)
 		assertEquals(sizeBefore + 1, optimizationSetService.findAll().size());
+		Set<OptimizationSetDTO> pOset = projectService.getSearchOptimizationSets(1);
+		assertNotNull(pOset);
+		boolean found = false;
+		for(OptimizationSetDTO os : pOset){
+			if(testSet.getName() == os.getName())
+				found = true;
+		}
+		assertTrue(found);
 	}
 
 	@Test

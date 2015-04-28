@@ -2,10 +2,8 @@ package eu.cityopt.service;
 
 import static org.junit.Assert.*;
 
-import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import eu.cityopt.DTO.ComponentDTO;
-import eu.cityopt.DTO.InputParamValDTO;
-import eu.cityopt.DTO.InputParameterDTO;
+import eu.cityopt.DTO.ExtParamDTO;
+import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.UnitDTO;
+import eu.cityopt.repository.ExtParamRepository;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,44 +30,31 @@ import eu.cityopt.DTO.UnitDTO;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
-@DatabaseSetup("classpath:/testData/inputParameter_TestData.xml")
-public class InputParamServiceTest {
+@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
+public class ExtParamServiceTest {
 	@Autowired
-	InputParameterService inputParamService;	
+	private ExtParamService extParamService;
 	
-	@Before
-	public void setUp() throws Exception {
-	}
-
+	@Autowired
+	private ProjectService projectService;
+	
+	@Autowired
+	private UnitService unitService;
+	
 	@Test
-	public void findById() throws EntityNotFoundException {
-		InputParameterDTO iparam = inputParamService.findByID(1);
-		UnitDTO u = iparam.getUnit();
-		ComponentDTO c = iparam.getComponent();
-//		int uid = iparam.getUnitID();
-//		int cid = iparam.getComponentID();
+	public void extParam_UnitReferenceTest() throws EntityNotFoundException {
+		ProjectDTO prj = projectService.findByID(1);
+		Set<ExtParamDTO> extParams = projectService.getExtParams(1);
 		
-		assertEquals(u.getName(), "myUnit");
-		assertEquals(c.getName(), "myComponent");
-//		assertTrue(uid == 1);
-//		assertTrue(cid == 1);
+		ExtParamDTO newParam = new ExtParamDTO();
+		newParam.setName("my new Param");
+		UnitDTO unit = unitService.findByID(5);
+		newParam.setUnit(unit);
+		newParam = extParamService.save(newParam, 1);
 		
-	}
-	
-	@Test
-	public void findValuesById() throws EntityNotFoundException {
-		Set<InputParamValDTO> iparamVal = inputParamService.getInputParamVals(1);
-		assertNotNull(iparamVal);
-		assertTrue(iparamVal.size() > 0);
-
-	}
-	
-	@Test
-	public void findValuesByName() throws EntityNotFoundException {
-		List<InputParameterDTO> iparam = inputParamService.findByName("parameter");
-		assertNotNull(iparam);
-		assertTrue(iparam.size() == 2);
-
+		assertNotNull(newParam);
+		assertNotNull(newParam.getUnit().getName());
+		assertEquals(newParam.getUnit().getName(), unit.getName());
 	}
 
 }
