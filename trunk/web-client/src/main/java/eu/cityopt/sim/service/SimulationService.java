@@ -401,7 +401,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     public SimulationOutput loadSimulationOutput(Scenario scenario, SimulationInput simInput)
             throws ParseException {
         SimulationOutput simOutput = null;
-        if (scenario.getStatus().equals(STATUS_SUCCESS)) {
+        if (STATUS_SUCCESS.equals(scenario.getStatus())) {
             Namespace namespace = simInput.getNamespace();
             SimulationResults simResults = new SimulationResults(simInput, scenario.getLog());
             for (SimulationResult mResult : scenario.getSimulationresults()) {
@@ -426,7 +426,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                         "Could not find simulation results for all output variables in database.");
             }
         } else {
-            boolean permanent = (scenario.getStatus() == STATUS_MODEL_FAILURE);
+            boolean permanent = (STATUS_MODEL_FAILURE.equals(scenario.getStatus()));
             simOutput = new SimulationFailure(
                     simInput, permanent, scenario.getStatus(), scenario.getLog());
         }
