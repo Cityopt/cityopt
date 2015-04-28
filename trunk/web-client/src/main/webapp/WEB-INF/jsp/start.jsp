@@ -7,7 +7,17 @@
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
-<%@ include file="mainmenu.inc"%>
+<table cellpadding="0" cellspacing="0">
+	<tr>
+		<td>
+			<%@ include file="mainmenu.inc"%>
+		</td>
+		<td width="20"></td>
+		<td valign="top">
+			<h2>Welcome to Cityopt planning tool!</h2>
+		</td>
+	</tr>
+</table>
 
 </body>
 </html>

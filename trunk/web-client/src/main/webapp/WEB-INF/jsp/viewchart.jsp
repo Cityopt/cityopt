@@ -25,7 +25,7 @@
 		</td>
 		<td width="20"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:600px;width:1130px;overflow:auto">
+			<div style="overflow:scroll;height:100%;width:1130px;overflow:auto">
 			<table width="1100px">
 				<col style="width:300px">
 				<col style="width:30px">

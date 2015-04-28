@@ -1,5 +1,5 @@
 <%--@elvariable id="optimizationset" type="eu.cityopt.DTO.OptimizationSetDTO"--%>
-<%--@elvariable id="constraint" type="eu.cityopt.DTO.OptSearchConstDTO"--%>
+<%--@elvariable id="constraint" type="eu.cityopt.DTO.OptConstraintDTO"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -51,17 +51,15 @@
 								<td><b>Objective function</b></td>
 							</tr>
 							<tr>
-								<c:choose>
-									<c:when test="${optimizationset.objectivefunction != null}">
-										<td><form:label path="optimizationset.objectivefunction.expression"></form:label></td>
-									</c:when>
-									<c:otherwise>
-										<td><label>-</label></td>
-									</c:otherwise>
-								</c:choose>
-							</tr>
-							<tr>
-								<td>Optimization sense: <input type="radio">Maximize <input type="radio">Minimize</td>
+								<td>
+									<table class="tablestyle" width="100%">
+										<tr>
+											<td>
+												${optimizationset.objectivefunction.expression}
+											</td>
+										</tr>
+									</table>
+								</td>
 							</tr>
 							<tr>
 								<td>
@@ -84,8 +82,8 @@
 										
 										<c:forEach items="${constraints}" var="constraint">
 										<tr>
-											<td>${constraint.searchconstraint.expression}</td>
-											<td></td>
+											<td>${constraint.name}</td>
+											<td>${constraint.expression}</td>
 									   	</tr>
 										</c:forEach>
 						

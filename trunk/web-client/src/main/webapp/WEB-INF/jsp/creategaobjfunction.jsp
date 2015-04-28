@@ -6,11 +6,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt create objective function</title>
+<title>CityOpt create GA objective function</title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
-<form:form method="post" action="createobjfunction.html" modelAttribute="function">
+<form:form method="post" action="creategaobjfunction.html" modelAttribute="function">
 <table cellspacing="0" cellpadding="0">
 	<tr>
 		<td>
@@ -21,7 +21,7 @@
 			<table>
 				<tr>
 					<td>
-						<h2>Create objective function</h2>
+						<h2>Create GA objective function</h2>
 					</td>
 				</tr>
 				<tr>
@@ -62,7 +62,7 @@
 											</c:if>
 											<c:if test="${selectedcompid != component.componentid}">
 												<tr>
-												<td><a href="<c:url value='createobjfunction.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+												<td><a href="<c:url value='creategaobjfunction.html?selectedcompid=${component.componentid}'/>">Select</a></td>
 											</c:if>
 												<td>${component.name}</td>
 									   	</tr>
@@ -94,7 +94,7 @@
 									Metrics
 								</td>
 								<td></td>
-								<td></td>
+								<td>Decision variables</td>
 								<td></td>
 							</tr>
 							<tr>
@@ -111,7 +111,19 @@
 									</table>										
 								</td>
 								<td></td>
-								<td></td>
+								<td>
+									<table class="tablestyle">
+										<col style="width:100px">
+										<col style="width:250px">
+										
+										<c:forEach items="${decisionVars}" var="decisionVar">
+										<tr>
+											<td>${decisionVar.name}</td>
+											<td>${decisionVar.expression}</td>
+									   	</tr>
+										</c:forEach>
+									</table>										
+								</td>
 								<td></td>
 							</tr>
 							<tr height="20">
@@ -142,15 +154,10 @@
 							</tr>
 							<tr>
 								<td></td>
-								<td colspan="3">Optimization sense: <input type="radio">Maximize <input type="radio">Minimize</td>
-								<td></td>
-							</tr>					
-							<tr>
-								<td></td>
 								<td></td>
 								<td></td>
 								<td align="right"><input type="submit" value="Ok"></input>
-								<a href="editoptimizationset.html"><button type="button">Cancel</button></a></td>
+								<a href="geneticalgorithm.html"><button type="button">Cancel</button></a></td>
 								<td></td>
 							</tr>					
 						</table>
