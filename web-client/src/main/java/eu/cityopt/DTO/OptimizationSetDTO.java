@@ -1,6 +1,8 @@
 package eu.cityopt.DTO;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import eu.cityopt.model.ExtParamValSet;
 import eu.cityopt.model.ObjectiveFunction;
@@ -22,6 +24,4 @@ public class OptimizationSetDTO {
 	@Getter @Setter private Integer updatedby;
 	@Getter @Setter private String name;
 	@Getter @Setter private Date optstart;
-//	@Getter @Setter private Set<OptSearchConst> optsearchconsts = new HashSet<OptSearchConst>(0);
-	
 }

@@ -1,4 +1,4 @@
-<%--@elvariable id="optimizationset" type="eu.cityopt.DTO.OptimizationSetDTO"--%>
+<%--@elvariable id="openoptimizationset" type="eu.cityopt.DTO.OpenOptimizationSetDTO"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -19,23 +19,38 @@
 		<td valign="top">
 			<div style="overflow:scroll;height:400px;width:600px;overflow:auto">
 			<h2>Open optimization set</h2>
-			<table class="tablestyle" width="350" border="1">
+			<table class="tablestyle" width="500" border="1">
 				<col style="width: 250px">
+				<col style="width: 150px">
 				<col style="width: 80px">
 			
 				<tr height="20">
 				    <th>Name</th>
+				    <th>Type</th>
 				    <th>Open</th>
 				</tr>
 			
-				<c:forEach items="${optimizationsets}" var="optimizationset">
+				<c:forEach items="${openoptimizationsets}" var="openoptimizationset">
 				<tr>
-					<td>${optimizationset.name}</td>
-					<td>
-						<a href="<c:url value='editoptimizationset.html?optsetid=${optimizationset.optid}'/>">
-							<button align="right"  type="button" value="Open">Open</button>
-						</a>
-					</td>
+					<td>${openoptimizationset.name}</td>
+						<c:choose>
+							<c:when test="${openoptimizationset.isDatabaseSearch()}">
+								<td>Database search</td>
+								<td>
+								<a href="<c:url value='openoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=db'/>">
+									<button align="right"  type="button" value="Open">Open</button>
+								</a>
+								</td>
+							</c:when>
+							<c:otherwise>
+								<td>Genetic algorithm</td>
+								<td>
+								<a href="<c:url value='editoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga'/>">
+									<button align="right"  type="button" value="Open">Open</button>
+								</a>
+								</td>
+							</c:otherwise>
+						</c:choose>
 			   	</tr>
 				</c:forEach>
 			</table>

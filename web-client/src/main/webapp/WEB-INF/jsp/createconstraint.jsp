@@ -1,5 +1,5 @@
 <%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
-<%--@elvariable id="constraint" type="eu.cityopt.DTO.OptConstraintDTO"--%>
+<%--@elvariable id="constraint" type="eu.cityopt.DTO.SearchConstraintDTO"--%>
 <%--@elvariable id="component" type="eu.cityopt.DTO.ComponentDTO"--%>
 <%--@elvariable id="inputParam" type="eu.cityopt.DTO.InputParameterDTO"--%>
 <%--@elvariable id="outputVar" type="eu.cityopt.DTO.OutputVariableDTO"--%>
@@ -133,6 +133,13 @@
 							<col style="width:240px">
 							<tr>
 								<td></td>
+								<td>Name</td>
+								<td><form:input style="width:400px" type="text" path="name"/></td>
+								<td></td>
+							</tr>
+							<tr height=10></tr>
+							<tr>
+								<td></td>
 								<td>Lower bound</td>
 								<td><input style="width:400px" type="text"/></td>
 								<td></td>
@@ -155,7 +162,7 @@
 								<td></td>
 								<td></td>
 								<td></td>
-								<td align=right><a href=""><button type="button">Ok</button></a><a href="editoptimizationset.html"><button type="button">Cancel</button></a></td>
+								<td align=right><input type="submit" value="Ok"/><a href="editoptimizationset.html"><button type="button">Cancel</button></a></td>
 							</tr>					
 						</table>
 					</td>

@@ -13,5 +13,9 @@ public class OpenOptimizationSetDTO {
 	@Getter @Setter private String name;
 	@Getter @Setter private String description;
 	@Getter @Setter private Date optstart;
+	
+	public boolean isDatabaseSearch() {
+		return optSetType == OptimizationSetType.DatabaseSearch;
+	}
 
 }

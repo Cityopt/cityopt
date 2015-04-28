@@ -43,19 +43,18 @@ import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.MetricValDTO;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
+import eu.cityopt.DTO.OpenOptimizationSetDTO;
 import eu.cityopt.DTO.OptConstraintDTO;
 import eu.cityopt.DTO.OptSearchConstDTO;
 import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
-import eu.cityopt.DTO.SearchConstraintDTO;
 import eu.cityopt.DTO.SimulationResultDTO;
 import eu.cityopt.DTO.TimeSeriesDTO;
 import eu.cityopt.DTO.TimeSeriesValDTO;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
-import eu.cityopt.model.OptSearchConst;
 import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.model.Type;
 import eu.cityopt.service.AppUserServiceImpl;
@@ -789,12 +788,25 @@ public class ProjectController {
 
 	@RequestMapping(value="createobjfunction", method=RequestMethod.POST)
 	public String getCreateObjFunctionPost(ObjectiveFunctionDTO function, Map<String, Object> model) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		project = projectService.findByID(project.getPrjid());
 		OptimizationSetDTO optSet = null;
 		
 		if (model.containsKey("optimizationset"))
 		{
 			optSet = (OptimizationSetDTO) model.get("optimizationset");
-			model.put("optimizationset", optSet);
+			
+			try {
+				optSet = optSetService.findByID(optSet.getOptid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 		else
 		{
@@ -806,11 +818,22 @@ public class ProjectController {
 			ObjectiveFunctionDTO newFunc = new ObjectiveFunctionDTO();
 			newFunc.setName(function.getName());
 			newFunc.setExpression(function.getExpression());
+			newFunc.setProject(project);
+			newFunc = objFuncService.save(newFunc);
 			optSet.setObjectivefunction(newFunc);
-			optSetService.save(optSet);
+			optSet = optSetService.save(optSet);
 		}
 
-		List<OptSearchConst> optSearchConstraints = optSearchService.findAll();
+		model.put("optimizationset", optSet);
+
+		List<OptConstraintDTO> optSearchConstraints = null;
+		
+		try {
+			optSearchConstraints = optSetService.getSearchConstraints(optSet.getOptid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 		model.put("constraints", optSearchConstraints);
 
 		return "editoptimizationset";
@@ -890,8 +913,8 @@ public class ProjectController {
 			optSetService.save(optSet);
 		}
 
-		List<OptSearchConst> optSearchConstraints = optSearchService.findAll();
-		model.put("constraints", optSearchConstraints);
+		//List<OptSearchConstDTO> optSearchConstraints = optSearchService.findAll();
+		//model.put("constraints", optSearchConstraints);
 
 		return "geneticalgorithm";
 	}
@@ -908,9 +931,6 @@ public class ProjectController {
 	@RequestMapping(value="createoptimizationset",method=RequestMethod.POST)
 	public String getCreateOptimizationSetPost(Map<String, Object> model, OptimizationSetDTO optSet) {
 	
-		List<OptSearchConst> optSearchConstraints = optSearchService.findAll();
-		model.put("constraints", optSearchConstraints);
-
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
 		if (project == null)
@@ -932,23 +952,14 @@ public class ProjectController {
 
 	@RequestMapping(value="editoptimizationset",method=RequestMethod.GET)
 	public String getEditOptimizationSet(Map<String, Object> model, 
-		@RequestParam(value="optsetid", required=false) String optsetid) {
+		@RequestParam(value="optsetid", required=false) String optsetid,
+		@RequestParam(value="optsettype", required=false) String optsettype) {
 
-		if (optsetid != null)
+		OptimizationSetDTO optSet = null;
+		
+		if (model.containsKey("optimizationset"))
 		{
-			OptimizationSetDTO optSet = null;
-			int nOptSetId = Integer.parseInt(optsetid);
-			
-			try {
-				optSet = optSetService.findByID(nOptSetId);
-			} catch (NumberFormatException | EntityNotFoundException e) {
-				e.printStackTrace();
-			}
-			model.put("optimizationset", optSet);
-		}
-		else if (model.containsKey("optimizationset"))
-		{
-			OptimizationSetDTO optSet = (OptimizationSetDTO) model.get("optimizationset");
+			optSet = (OptimizationSetDTO) model.get("optimizationset");
 			model.put("optimizationset", optSet);
 		}
 		else
@@ -956,7 +967,13 @@ public class ProjectController {
 			return "error";
 		}
 		
-		List<OptSearchConst> optSearchConstraints = optSearchService.findAll();
+		List<OptConstraintDTO> optSearchConstraints = null;
+		
+		try {
+			optSearchConstraints = optSetService.getSearchConstraints(optSet.getOptid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
 		model.put("constraints", optSearchConstraints);
 		
 		ProjectDTO project = (ProjectDTO) model.get("project");
@@ -969,17 +986,98 @@ public class ProjectController {
 		project = projectService.findByID(project.getPrjid());
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 		model.put("metrics", metrics);
-		
+
 		return "editoptimizationset";
 	}
 	
 	@RequestMapping(value="openoptimizationset",method=RequestMethod.GET)
-	public String getOpenOptimizationSet(Map<String, Object> model){
-	
-		List<OptimizationSetDTO> optSets = optSetService.findAll();
-		model.put("optimizationsets", optSets);
+	public String getOpenOptimizationSet(Map<String, Object> model,
+		@RequestParam(value="optsetid", required=false) String optsetid,
+		@RequestParam(value="optsettype", required=false) String optsettype) {
+
+		if (optsettype != null)
+		{
+			if (optsettype.equals("db"))
+			{
+				OptimizationSetDTO optSet = null;
+		
+				if (optsetid != null)
+				{
+					int nOptSetId = Integer.parseInt(optsetid);
+					
+					try {
+						optSet = optSetService.findByID(nOptSetId);
+					} catch (NumberFormatException | EntityNotFoundException e) {
+						e.printStackTrace();
+					}
+					model.put("optimizationset", optSet);
+				}
+				else if (model.containsKey("optimizationset"))
+				{
+					optSet = (OptimizationSetDTO) model.get("optimizationset");
+					
+					try {
+						optSet = optSetService.findByID(optSet.getOptid());
+					} catch (EntityNotFoundException e) {
+						e.printStackTrace();
+					}
+					
+					model.put("optimizationset", optSet);
+				}
+				else
+				{
+					return "error";
+				}
 				
-		return "openoptimizationset";
+				List<OptConstraintDTO> optSearchConstraints = null;
+				
+				try {
+					optSearchConstraints = optSetService.getSearchConstraints(optSet.getOptid());
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+				model.put("constraints", optSearchConstraints);
+				
+				ProjectDTO project = (ProjectDTO) model.get("project");
+		
+				if (project == null)
+				{
+					return "error";
+				}
+				
+				project = projectService.findByID(project.getPrjid());
+				Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+				model.put("metrics", metrics);
+		
+				return "editoptimizationset";
+			}
+			else
+			{
+				return "geneticalgorithm";
+			}
+		}
+		else
+		{
+			ProjectDTO project = (ProjectDTO) model.get("project");
+	
+			if (project == null)
+			{
+				return "error";
+			}
+			
+			project = projectService.findByID(project.getPrjid());
+			Set<OpenOptimizationSetDTO> optSets = null;
+	
+			try {
+				optSets = projectService.getSearchAndGAOptimizationSets(project.getPrjid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			model.put("openoptimizationsets", optSets);
+					
+			return "openoptimizationset";
+		}
 	}
 
 	@RequestMapping(value="deleteoptimizationset",method=RequestMethod.GET)
@@ -1037,12 +1135,19 @@ public class ProjectController {
 	}
 	
 	@RequestMapping(value="createconstraint", method=RequestMethod.POST)
-	public String getCreateConstraintPost(SearchConstraintDTO constraint, Map<String, Object> model) {
+	public String getCreateConstraintPost(OptConstraintDTO constraint, Map<String, Object> model) throws EntityNotFoundException {
 		OptimizationSetDTO optSet = null;
 		
 		if (model.containsKey("optimizationset"))
 		{
 			optSet = (OptimizationSetDTO) model.get("optimizationset");
+			
+			try {
+				optSet = optSetService.findByID(optSet.getOptid());
+			} catch (NumberFormatException | EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
 			model.put("optimizationset", optSet);
 		}
 		else
@@ -1052,13 +1157,26 @@ public class ProjectController {
 		
 		if (constraint != null && constraint.getExpression() != null)
 		{
-			OptSearchConstDTO parentConstraint = new OptSearchConstDTO();
-			parentConstraint.setOptimizationset(optSet);
-			parentConstraint.setSearchconstraint(constraint);
-			//optSearchService.save(parentConstraint);
+			OptConstraintDTO newOptConstraint = new OptConstraintDTO();
+			newOptConstraint.setName(constraint.getName());
+			newOptConstraint.setExpression(constraint.getExpression());
+			
+			try {
+				optSetService.addSearchConstraint(optSet.getOptid(), newOptConstraint);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			optSet = optSetService.save(optSet);
 		}
 
-		List<OptSearchConst> optSearchConstraints = optSearchService.findAll();
+		List<OptConstraintDTO> optSearchConstraints = null;
+		
+		try {
+			optSearchConstraints = optSetService.getSearchConstraints(optSet.getOptid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
 		model.put("constraints", optSearchConstraints);
 
 		return "editoptimizationset";
@@ -1692,8 +1810,8 @@ public class ProjectController {
 				MetricDTO cloneMetric = new MetricDTO();
 				cloneMetric.setName(metric.getName() + "_new");
 				cloneMetric.setExpression(metric.getExpression());
+				cloneMetric.setProject(project);
 				cloneMetric = metricService.save(cloneMetric);
-				metricService.setProject(cloneMetric.getMetid(), project.getPrjid());
 			}
 			else if (action.equals("delete")) {
 				MetricDTO metric = null;
@@ -1796,6 +1914,8 @@ public class ProjectController {
 		metricService.save(oldMetric);
 
 		model.put("project", project);
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
 		
 		return "metricdefinition";
 	}
