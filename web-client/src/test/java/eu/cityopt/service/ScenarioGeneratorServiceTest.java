@@ -39,18 +39,18 @@ public class ScenarioGeneratorServiceTest {
 	@Autowired
 	AlgorithmService algorithmService;
 	
-	@Test
-	public void testScenarioGeneratorService() {
-		ScenarioGeneratorDTO sgDTO = scenarioGeneratorService.findAll().iterator().next();
-		
-		assertEquals(8, sgDTO.getAlgoparamvals().size());
-		for(AlgoParamValDTO apvd : sgDTO.getAlgoparamvals()){
-			System.out.println("AlgoParam: \n name:" 
-					+ apvd.getAlgoparam().getName() + "\n val:"
-					+ apvd.getValue() + "\n descr: "
-					+ apvd.getAlgoparam().getAlgorithm().getDescription());
-		}
-	}
+//	@Test
+//	public void testScenarioGeneratorService() {
+//		ScenarioGeneratorDTO sgDTO = scenarioGeneratorService.findAll().iterator().next();
+//		
+//		assertEquals(8, sgDTO.getAlgoparamvals().size());
+//		for(AlgoParamValDTO apvd : sgDTO.getAlgoparamvals()){
+//			System.out.println("AlgoParam: \n name:" 
+//					+ apvd.getAlgoparam().getName() + "\n val:"
+//					+ apvd.getValue() + "\n descr: "
+//					+ apvd.getAlgoparam().getAlgorithm().getDescription());
+//		}
+//	}
 
 	@Test
 	public void testScenarioGeneratorService_getAlgorithm() throws EntityNotFoundException {
@@ -70,7 +70,7 @@ public class ScenarioGeneratorServiceTest {
 	public void testScenarioGeneratorService_findWithoutValues() throws EntityNotFoundException {
 		ScenarioGeneratorDTO sgDTO = scenarioGeneratorService.findAll().iterator().next();
 		
-		List<AlgoParamDTO> apDTO = scenarioGeneratorService.getAlgoParamVals(1);
+		List<AlgoParamDTO> apDTO = scenarioGeneratorService.getAlgoParams(1);
 
 		assertEquals(2, apDTO.size());
 		for(AlgoParamDTO apvd : apDTO){

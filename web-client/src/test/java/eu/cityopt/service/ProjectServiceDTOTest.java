@@ -48,8 +48,6 @@ import eu.cityopt.DTO.SimulationModelDTO;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.repository.ScenarioRepository;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
