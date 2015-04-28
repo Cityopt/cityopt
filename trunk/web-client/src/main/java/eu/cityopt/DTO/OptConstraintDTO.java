@@ -9,8 +9,8 @@ public class OptConstraintDTO {
 	@Getter @Setter private ProjectDTO project;
 	@Getter @Setter private String name;
 	@Getter @Setter private String expression;
-	@Getter @Setter private Double lowerbound;
-	@Getter @Setter private Double upperbound;
+	@Getter @Setter private String lowerbound;
+	@Getter @Setter private String upperbound;
 //	@Getter @Setter private Set<ScenGenOptConstraint> scengenoptconstraints = new HashSet<ScenGenOptConstraint>(
 //			0);
 }

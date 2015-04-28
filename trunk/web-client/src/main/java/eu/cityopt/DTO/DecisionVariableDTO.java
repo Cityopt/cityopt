@@ -10,7 +10,7 @@ public class DecisionVariableDTO {
 	@Getter @Setter private ScenarioGeneratorDTO scenariogenerator;
 	@Getter @Setter private String name;
 	@Getter @Setter private String expression;
-	@Getter @Setter private Double lowerbound;
-	@Getter @Setter private Double upperbound;
+	@Getter @Setter private String lowerbound;
+	@Getter @Setter private String upperbound;
 
 }
