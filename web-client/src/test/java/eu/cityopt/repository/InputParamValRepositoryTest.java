@@ -66,24 +66,23 @@ public class InputParamValRepositoryTest {
 	@Rollback(true)
 	public void UpdateIPVal() {
 	    List<InputParamVal> result = ipvalRepository.findAll();
-	    InputParamVal updatedVal = result.get(0);
-	    updatedVal.setValue("my new value");
+	    InputParamVal value = result.get(0);
+	    value.setValue("my new value");
 	    Date created = new Date();
-	    updatedVal.setCreatedon(created);
+	    value.setCreatedon(created);
 	    
-	    result = ipvalRepository.findAll();
-	    InputParamVal newVal = result.get(0);
-	    assertEquals(updatedVal.getValue(), newVal.getValue());
-	    assertEquals(updatedVal.getCreatedon(), newVal.getCreatedon());
+	    InputParamVal newVal = ipvalRepository.findOne(value.getScendefinitionid());
+	    assertEquals(value.getValue(), newVal.getValue());
+	    assertEquals(value.getCreatedon(), newVal.getCreatedon());
 	}
 	
 	@Test
 	@Rollback(true)
 	public void DeleteIPVal() {
 	    List<InputParamVal> result = ipvalRepository.findAll();
-	    int sizeBefore = result.size();
+//	    int sizeBefore = result.size();
 	    ipvalRepository.delete(result);
-	    assertEquals(sizeBefore-1, ipvalRepository.findAll().size());
+	    assertEquals(0, ipvalRepository.findAll().size());
 	}
 
 }

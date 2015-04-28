@@ -1,6 +1,8 @@
 package eu.cityopt.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,8 +21,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.DTO.ComponentDTO;
-import eu.cityopt.DTO.InputParameterDTO;
-import eu.cityopt.DTO.UnitDTO;
+import eu.cityopt.DTO.ProjectDTO;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -30,7 +31,9 @@ import eu.cityopt.DTO.UnitDTO;
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
 @DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
-	"classpath:/testData/Sample Test case - SC1.xml"})
+	"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC1.xml","classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC2.xml",
+	"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC3.xml", "classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC4.xml",
+	"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC5.xml"})
 public class ComponentServiceTest {
 	@Autowired
 	ComponentService componentService;	
@@ -41,18 +44,33 @@ public class ComponentServiceTest {
 
 	@Test
 //	@Rollback(false)
-	public void test() throws EntityNotFoundException {
+	public void testFindByID() throws EntityNotFoundException {
 		ComponentDTO com = componentService.findByID(1);
-//		UnitDTO u = iparam.getUnit();
-//		ComponentDTO c = iparam.getComponent();
-////		int uid = iparam.getUnitID();
-//		int cid = iparam.getComponentID();
 		
 		assertEquals(com.getName(), "Solar_thermal_panels");
-//		assertEquals(c.getName(), "myComponent");
-//		assertTrue(uid == 1);
-//		assertTrue(cid == 1);
-		
 	}
+	
+	@Autowired
+	ProjectService pjService;
+	
+	@Test
+//	@Rollback(false)
+//	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
+//	"classpath:/testData/Sample Test case - SC1.xml"})
+	public void DeleteProject() throws EntityNotFoundException
+	{		
+		long start= System.nanoTime();
+		
+		List<ProjectDTO> projects = pjService.findByName("Project");
+		
+		for(ProjectDTO p : projects)
+			pjService.delete(p.getPrjid());
+		
+		long end = System.nanoTime();
+		
+		System.out.println("time of execution " + (end-start)/1000000);
+		
+		assertEquals(0, pjService.findByName("Project").size());	
+	}	
 
 }

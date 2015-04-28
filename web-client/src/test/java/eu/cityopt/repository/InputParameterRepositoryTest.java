@@ -2,8 +2,11 @@ package eu.cityopt.repository;
 
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.List;
 
+import org.hibernate.internal.util.SerializationHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
+import eu.cityopt.model.ExtParamValSet;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.repository.InputParameterRepository;
 
@@ -37,6 +41,9 @@ public class InputParameterRepositoryTest {
 	@Autowired
 	InputParameterRepository inParamRepository;
 	
+	@Autowired
+	ExtParamValSetRepository extParamValSetRepository;
+	
 	@Before
 	public void setUp() throws Exception {
 
@@ -44,10 +51,13 @@ public class InputParameterRepositoryTest {
 	
 	@Test
 	@Rollback(true)
-	public void test() {
+	public void testFindAll() {
 		List<InputParameter> result = inParamRepository.findAll();
 		
 		assertFalse(result.isEmpty());
+		assertTrue(1 < result.size());
 	}
+	
+
 
 }

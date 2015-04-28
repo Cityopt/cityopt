@@ -56,7 +56,7 @@ public class ImportServiceTest extends SimulationTestBase {
 	@Test
 	@Rollback()
 	public void testImportTimeSeries() throws EntityNotFoundException, ParseException {
-		File timeSeriesInput = new File("timeseries.csv");
+		File timeSeriesInput = new File("./src/test/resources/testData/CSV_testData/timeSeries_aitFormat.csv");
 		
 		Map<Integer,TimeSeries> tsMap = importService.importTimeSeries(timeSeriesInput);
 		for(TimeSeries ts : tsMap.values()){
@@ -70,8 +70,8 @@ public class ImportServiceTest extends SimulationTestBase {
 	@DatabaseSetup({"classpath:/testData/inputParameter_TestData.xml"})
 //	@Rollback(false)
 	public void testImportExternalParameters() throws EntityNotFoundException, ParseException {
-		File epValSetInput = new File("ExtParamSet.csv");
-		File timeSeriesInput = new File("timeseries.csv");
+		File epValSetInput = new File("./src/test/resources/testData/CSV_testData/ExtParamSet.csv");
+		File timeSeriesInput = new File("./src/test/resources/testData/CSV_testData/timeSeries_aitFormat.csv");
 		
 		importService.importExtParamValSet(1, epValSetInput, timeSeriesInput);
 	}

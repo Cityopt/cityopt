@@ -3,6 +3,8 @@ package eu.cityopt.repository;
 import static org.junit.Assert.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.junit.Before;
@@ -21,6 +23,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.DTO.ComponentInputParamDTO;
+import eu.cityopt.model.TimeSeriesVal;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -30,11 +33,14 @@ import eu.cityopt.DTO.ComponentInputParamDTO;
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
 @DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
-	"classpath:/testData/Sample Test case - SC1.xml"})
+	"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC1.xml"})
 public class CustomQueryRepositoryTest {
 
 	@Autowired
 	private CustomQueryRepository cqrepo; 
+	
+	@Autowired
+	private TimeSeriesValRepository timeSeriesValRepository; 
 	
 	@Before
 	public void setUp() throws Exception {
@@ -56,5 +62,36 @@ public class CustomQueryRepositoryTest {
 	 	}
 	 	assertNotNull(list);
 	}
+	
+	@Test
+	public void testTSBatchInsert() {
+	 	List<TimeSeriesVal> list = new ArrayList<TimeSeriesVal>();
+	 	
+	 	Calendar cal = Calendar.getInstance();
 
+	 	for(int i =0; i < 8000; i++) {
+	 		TimeSeriesVal tsV = new TimeSeriesVal();
+	 		tsV.setTime(cal.getTime());
+	 		tsV.setValue(Integer.toString(i));
+	 		list.add(tsV);
+	 	}
+	 	
+	 	cqrepo.insertTimeSeriesBatch(list);
+	}
+
+	@Test
+	public void testTSBatchRepositoryInsert() {
+	 	List<TimeSeriesVal> list = new ArrayList<TimeSeriesVal>();
+	 	
+	 	Calendar cal = Calendar.getInstance();
+
+	 	for(int i =0; i < 8000; i++) {
+	 		TimeSeriesVal tsV = new TimeSeriesVal();
+	 		tsV.setTime(cal.getTime());
+	 		tsV.setValue(Integer.toString(i));
+	 		list.add(tsV);
+	 	}
+	 	
+	 	timeSeriesValRepository.save(list);
+	}
 }

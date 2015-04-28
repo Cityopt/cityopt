@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<!DOCTYPE dataset SYSTEM "src/main/resources/testData/cityopt.dtd">-->
+<dataset>
+<!--  -->
+
+<scenario scenid="5" name="Sample Test case - SC5" createdon="2015-01-26" prjid="1" status="SUCCESS"/>
+
+<inputparamval scendefinitionid="53" scenid="5" inputid="1" value="125"/>
+<inputparamval scendefinitionid="54" scenid="5" inputid="2" value="15"/>
+<inputparamval scendefinitionid="55" scenid="5" inputid="3" value="30"/>
+<inputparamval scendefinitionid="56" scenid="5" inputid="4" value="0.6"/>
+
+<inputparamval scendefinitionid="57" scenid="5" inputid="5" value="10"/>
+<inputparamval scendefinitionid="58" scenid="5" inputid="6" value="8"/>
+<inputparamval scendefinitionid="59" scenid="5" inputid="7" value="3"/>
+<inputparamval scendefinitionid="60" scenid="5" inputid="8" value="3"/>
+
+<inputparamval scendefinitionid="61" scenid="5" inputid="9" value="47.14"/>
+<inputparamval scendefinitionid="62" scenid="5" inputid="10" value="40"/>
+<inputparamval scendefinitionid="63" scenid="5" inputid="11" value="15"/>
+<inputparamval scendefinitionid="64" scenid="5" inputid="12" value="0.9"/>
+<inputparamval scendefinitionid="65" scenid="5" inputid="13" value="0.98"/>
+
+<scenariometrics scenmetricid="5" scenid="5" extparamvalsetid="1"/>
+
+<!-- <metricval metricvalid="25" metid="2" scenmetricid="5" value="" tseriesid="5" />--> <!-- time series -->
+<metricval metricvalid="26" metid="1" scenmetricid="5" value="82480.35" />
+<metricval metricvalid="27" metid="3" scenmetricid="5" value="73640.45" />
+<metricval metricvalid="28" metid="4" scenmetricid="5" value="5813.24" />
+<metricval metricvalid="29" metid="5" scenmetricid="5" value="581.32" />
+<metricval metricvalid="30" metid="6" scenmetricid="5" value="174397.26" />
+
+
+<!-- pk not set -->
+<!--<optsetscenarios  optid="5" scenid="5" value="174978.58" /> -->
+
+
+</dataset>

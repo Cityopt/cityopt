@@ -1,6 +1,6 @@
 package eu.cityopt.service;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -29,9 +29,9 @@ import eu.cityopt.DTO.ComponentInputParamDTO;
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
 @DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
-	"classpath:/testData/Sample Test case - SC1.xml", "classpath:/testData/Sample Test case - SC2.xml",
-	"classpath:/testData/Sample Test case - SC3.xml", "classpath:/testData/Sample Test case - SC4.xml",
-	"classpath:/testData/Sample Test case - SC5.xml"})
+	"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC1.xml", "classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC2.xml",
+	"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC3.xml", "classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC4.xml",
+	"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC5.xml"})
 public class ComponentInputParamDTOServiceTest {
 	@Autowired
 	ComponentInputParamDTOService cipDTOService;	
@@ -42,7 +42,7 @@ public class ComponentInputParamDTOServiceTest {
 
 	@Test
 //	@Rollback(false)
-	public void test() throws EntityNotFoundException {
+	public void testFindByPrjAndScen() throws EntityNotFoundException {
 		List<ComponentInputParamDTO> list = cipDTOService.findAllByPrjAndScenId(1, 1);
 
 	 	for(ComponentInputParamDTO item : list) {
@@ -58,6 +58,7 @@ public class ComponentInputParamDTOServiceTest {
 	 	}
 	 	
 	 	assertNotNull(list);	
+	 	assertEquals(13, list.size());
 	}
 
 }

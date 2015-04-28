@@ -401,7 +401,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     public SimulationOutput loadSimulationOutput(Scenario scenario, SimulationInput simInput)
             throws ParseException {
         SimulationOutput simOutput = null;
-        if (scenario.getStatus() == STATUS_SUCCESS) {
+        if (scenario.getStatus().equals(STATUS_SUCCESS)) {
             Namespace namespace = simInput.getNamespace();
             SimulationResults simResults = new SimulationResults(simInput, scenario.getLog());
             for (SimulationResult mResult : scenario.getSimulationresults()) {

@@ -39,7 +39,6 @@ import eu.cityopt.repository.ScenarioRepository;
 @ContextConfiguration(locations={"classpath:/jpaContext.xml", "classpath:/test-context.xml"})
 @Transactional
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-    DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
 @DatabaseSetup("classpath:/testData/scenario_TestData.xml")
@@ -122,6 +121,7 @@ public class ScenarioRepositoryTest {
 		Project project = new Project();
 		project.setName("Project 2");
 		project.setLocation("Helsinki");
+		project = projectRepository.save(project);
 		
 		//generate scenario from year 2013
 		Scenario testScenario = new Scenario(); 
