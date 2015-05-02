@@ -2,12 +2,14 @@ package eu.cityopt.opt.io;
 
 import static org.junit.Assert.*;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,13 +18,17 @@ import java.util.Properties;
 import java.util.StringJoiner;
 import java.util.regex.Pattern;
 
+import javax.script.ScriptException;
+
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.opt4j.core.start.Opt4JTask;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.collect.Lists;
@@ -205,6 +211,33 @@ public class JacksonTest {
         assertEquals(2, s.namespace.metrics.size());
         assertEquals(2, s.metrics.size());
         assertEquals(Type.DOUBLE, s.namespace.metrics.get("fuelconsumption"));
+    }
+    
+    @Test
+    public void readScenarioCSVwoGu() throws Exception {
+    	ObjectReader reader = JacksonCsvModule.getScenarioProblemReader(JacksonCsvModule.getCsvMapper());
+    	FileInputStream fis = new FileInputStream(dataDir.resolve("test-problem.csv").toFile());
+    	JacksonBinderScenario binder = new JacksonBinderScenario(reader, fis);
+
+    	binder.getItems().forEach( i -> System.out.println(i.scenarioname));
+    }
+    
+    @Test
+    public void readScenarioCsv() throws JsonProcessingException, IOException {
+    	TsTestModule tm = new TsTestModule();
+        JacksonCsvModule jm = new JacksonCsvModule();
+        Injector csv_inj = Guice.createInjector(jm, tm);
+        JacksonBinderScenario binder = csv_inj.getInstance(JacksonBinderScenario.class);
+        ObjectMapper json = new ObjectMapper();
+        json.enable(SerializationFeature.INDENT_OUTPUT);
+        json.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        json.writeValue(System.out, binder);
+        ObjectWriter wtr = csv_inj.getInstance(
+                Key.get(ObjectWriter.class, Names.named("problem")));
+        wtr.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
+                .writeValue(System.out, binder);
+
+        binder.getItems().forEach( i -> System.out.println(i.scenarioname));
     }
 
     @Test
