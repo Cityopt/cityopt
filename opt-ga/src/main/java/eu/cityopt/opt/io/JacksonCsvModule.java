@@ -80,6 +80,13 @@ public class JacksonCsvModule extends AbstractModule {
                 .with(CsvSchema.emptySchema().withHeader());
     }
     
+    @Provides
+    @Named("problemScen")
+    public static ObjectReader getScenarioProblemReader(CsvMapper mapper) {
+        return mapper.reader(JacksonBinderScenario.class)
+                .with(CsvSchema.emptySchema().withHeader());
+    }
+    
     /**
      * Create a writer for problem definitions.
      * This uses a fixed schema: always the same columns in the same order.
@@ -96,6 +103,7 @@ public class JacksonCsvModule extends AbstractModule {
                 .addColumn("kind").addColumn("component")
                 .addColumn("name").addColumn("type").addColumn("value")
                 .addColumn("lower").addColumn("upper").addColumn("expression")
+                .addColumn("scenarioname").addColumn("extparamvalsetname")
                 .build().withHeader();
         return mapper.writer(sch);
     }
