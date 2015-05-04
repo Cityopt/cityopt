@@ -185,11 +185,11 @@ public class JacksonBinder {
                 OptimisationProblem prob, TimeSeriesData tsData)
                         throws ParseException, ScriptException {
             Namespace ns = prob.getNamespace();
-            if (!(value == null ^ expr == null))
+            if (value == null && expr == null)
                 throw new IllegalArgumentException(String.format(
-                        "Either value or expr (not both) must be present"
+                        "Either value or expr must be present"
                                 + " on input %s,%s", comp, name));
-            if (value != null) {
+            if (expr == null) {
                 prob.inputConst.putString(comp, name, value);
             } else {
                 prob.inputExprs.add(new InputExpression(
