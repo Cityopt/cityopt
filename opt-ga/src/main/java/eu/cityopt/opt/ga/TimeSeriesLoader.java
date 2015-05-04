@@ -37,8 +37,10 @@ public class TimeSeriesLoader implements Provider<TimeSeriesData> {
         EvaluationSetup setup = new EvaluationSetup(evaluator, timeOrigin);
         CsvTimeSeriesData tsd = new CsvTimeSeriesData(setup);
         String sep = Pattern.quote(System.getProperty("path.separator"));
-        for (String s : pathString.split(sep)) {
-            tsd.read(Paths.get(s));
+        if (!pathString.isEmpty()) {
+            for (String s : pathString.split(sep)) {
+                tsd.read(Paths.get(s));
+            }
         }
         this.tsData = tsd;
     }
