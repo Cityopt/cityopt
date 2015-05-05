@@ -5,7 +5,7 @@
   <xsl:output method="text"/>
   
   <xsl:template match="/">setupUCs :: AprosSequence ()
-setupUCs = let node n m x = x
+setupUCs = let node n m x = fork x      // workaround against stack growth
                true = True
                false = False
            in <xsl:apply-templates select="node"/>
