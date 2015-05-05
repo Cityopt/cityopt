@@ -22,7 +22,7 @@
         </executions>
         <configuration>
           <target>
-            <ant antfile="build.xml" />
+            <ant/>
           </target>
         </configuration>
       </plugin>
