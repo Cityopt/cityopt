@@ -89,4 +89,11 @@
 		</dependency>
   	</dependencies>
   </dependencyManagement>
+  <scm>
+    <developerConnection>scm:svn:https://www.simulationsite.net/svn/cityopt</developerConnection>
+  </scm>
+  <issueManagement>
+    <url>https://www.simulationsite.net/redmine/projects/cityopt/</url>
+    <system>Redmine</system>
+  </issueManagement>
 </project>
