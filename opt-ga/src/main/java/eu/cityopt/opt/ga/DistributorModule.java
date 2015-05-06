@@ -16,7 +16,6 @@ import com.google.inject.name.Names;
 @Info("Configure job distribution")
 public class DistributorModule extends Opt4JModule {
     @Info("Distributed node configuration")
-    @Constant(value="nodeFile", namespace=DistributorModule.class)
     @File(".json")
     private String nodeFile = "";
 

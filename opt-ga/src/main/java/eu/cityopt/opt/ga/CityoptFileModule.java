@@ -38,22 +38,18 @@ public class CityoptFileModule extends ProblemModule {
     private String simulator = "Apros-Combustion-5.13.06-64bit";
     
     @Info("Time origin.  If empty read from the zip file.")
-    @Constant(value="timeOrigin", namespace=CityoptFileModule.class)
     private String timeOrigin = "2015-01-01T00:00:00Z";
     
     @Info("The zip file containing the model")
     @File(".zip")
-    @Constant(value="modelFile", namespace=CityoptFileModule.class)
     private String modelFile = "";
     
     @Info("The optimisation problem definition file")
     @File(".csv")
-    @Constant(value="problemFile", namespace=CityoptFileModule.class)
     private String problemFile = "";
 
     @Info("The optimisation problem time series file")
     @File(".csv")
-    @Constant(value="timeSeriesFile", namespace=CityoptFileModule.class)
     private String timeSeriesFile = "";
 
     @Override
