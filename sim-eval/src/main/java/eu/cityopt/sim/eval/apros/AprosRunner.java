@@ -184,6 +184,16 @@ public class AprosRunner implements SimulationRunner {
     private static final Pattern re1 = Pattern.compile("^(z+)_");
     private static final Pattern re2 = Pattern.compile("^([^a-z])");
 
+    /**
+     * Convert a string into a valid SCL variable name.
+     * The input string is assumed to consist of characters that are permitted
+     * in identifiers.  This function just ensures that the name starts with
+     * a lower case letter; it does not replace invalid characters in the
+     * string.  The mapping is injective: different inputs yield different
+     * outputs. 
+     * @param name string to convert
+     * @return name or some prefix + name
+     */
     public String sanitize(String name) {
         String foo = re1.matcher(name).replaceAll("$1z_");
         return re2.matcher(foo).replaceAll("z_$1");
