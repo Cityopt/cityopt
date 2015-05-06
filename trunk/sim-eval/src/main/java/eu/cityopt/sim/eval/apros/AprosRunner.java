@@ -133,6 +133,9 @@ public class AprosRunner implements SimulationRunner {
             try {
                 setup_scl = tmp.getPath().resolve("setup.scl");
                 writeSetup();
+                //TODO: lift server management somewhere above AprosManager.
+                // Maybe to SimulationManagers?  It would need to be non-static
+                // then.
                 server = ServerFactory.createLocalServer(
                         Files.createDirectory(tmp.getPath().resolve("srv")));
                 server.installProfile(profile, new LocalDirectory(
