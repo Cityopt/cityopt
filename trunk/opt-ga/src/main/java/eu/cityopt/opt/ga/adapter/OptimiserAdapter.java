@@ -3,17 +3,11 @@ package eu.cityopt.opt.ga.adapter;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
-import org.opt4j.core.Individual;
-import org.opt4j.core.Objective;
-import org.opt4j.core.Objectives;
-import org.opt4j.core.Value;
 import org.opt4j.core.optimizer.Archive;
 import org.opt4j.core.optimizer.Control;
 import org.opt4j.core.optimizer.Optimizer;
@@ -23,12 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Module;
 
-import eu.cityopt.opt.ga.CityoptEvaluator;
-import eu.cityopt.opt.ga.CityoptPhenotype;
-import eu.cityopt.sim.eval.Constraint;
-import eu.cityopt.sim.eval.ConstraintStatus;
-import eu.cityopt.sim.eval.ObjectiveExpression;
-import eu.cityopt.sim.eval.ObjectiveStatus;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.util.ExceptionHelpers;
 import eu.cityopt.sim.opt.AlgorithmStatus;
@@ -37,7 +25,6 @@ import eu.cityopt.sim.opt.OptimisationResults;
 import eu.cityopt.sim.opt.OptimisationStateListener;
 import eu.cityopt.sim.opt.ScenarioNameFormat;
 import eu.cityopt.sim.opt.SequentialScenarioNameFormat;
-import eu.cityopt.sim.opt.Solution;
 
 /**
  * Provides sim-eval optimisation functionality on top of an Opt4J optimisation
@@ -53,20 +40,12 @@ import eu.cityopt.sim.opt.Solution;
  */
 class OptimiserAdapter {
     private final Logger logger = LoggerFactory.getLogger(OptimiserAdapter.class);
-    private final OptimisationProblem problem;
+    private final SolutionTransformer solxform;
     private final OptimisationStateListener listener;
     private final String runName;
     private final Opt4JTask task;
     private final TimeoutControl control;
     private final Archive archive;
-
-    /**
-     * Map from constraint/objective name to its index in the problem definition,
-     * represented as follows.  Suppose C is the number of constraints and B is
-     * the number of objectives.  Then indices from 0 to (C-1) represent
-     * constraints, and indices from C to C+B-1 represent objectives.
-     */
-    Map<String, Integer> constraintAndObjectiveIndices;
 
     CompletableFuture<OptimisationResults>
     completableFuture = new CompletableFuture<OptimisationResults>() {
@@ -89,9 +68,8 @@ class OptimiserAdapter {
     OptimiserAdapter(
             OptimisationProblem problem, SimulationStorage storage, String runName,
             OptimisationStateListener listener, Instant deadline, Module... modules) {
-        this.problem = problem;
+        solxform = new SolutionTransformer(problem);
         this.runName = runName;
-        this.constraintAndObjectiveIndices = mapConstraintAndObjectiveIndices(problem);
         this.control = new TimeoutControl(deadline);
         this.listener = listener;
 
@@ -130,8 +108,10 @@ class OptimiserAdapter {
                     t = ExceptionHelpers.peelCommonWrappers(t);
                     listener.logMessage("Terminating optimisation at error: " + t.getMessage());
                 }
-                results.paretoFront = archive.stream().map(this::makeSolutionFromIndividual)
-                        .filter(s -> s != null).collect(Collectors.toList());
+                results.paretoFront = archive.stream()
+                        .map(solxform::makeSolutionFromIndividual)
+                        .filter(s -> s.objectiveStatus != null)
+                        .collect(Collectors.toList());
                 completableFuture.complete(results);
             } catch (Throwable t) {
                 completableFuture.completeExceptionally(t);
@@ -139,60 +119,5 @@ class OptimiserAdapter {
             logger.info("Ending run " + runName);
         });
         return completableFuture;
-    }
-
-    private static Map<String, Integer> mapConstraintAndObjectiveIndices(
-            OptimisationProblem problem) {
-        Map<String, Integer> map = new HashMap<>();
-        int nConstraints = problem.constraints.size();
-        for (int i = 0; i < nConstraints; ++i) {
-            Constraint constraint = problem.constraints.get(i);
-            Integer old = map.put(CityoptEvaluator.getOName(constraint), i);
-            if (old != null) {
-                throw new IllegalArgumentException(
-                        "Duplicate constraints with name " + constraint.getName());
-            }
-        }
-        for (int i = 0; i < problem.objectives.size(); ++i) {
-            ObjectiveExpression objective = problem.objectives.get(i);
-            Integer old = map.put(CityoptEvaluator.getOName(objective), i + nConstraints);
-            if (old != null) {
-                throw new IllegalArgumentException(
-                        "Duplicate objectives with name " + objective.getName());
-            }
-        }
-        return map;
-    }
-
-    /**
-     * Converts an Opt4J Individual to a feasible sim-eval Solution, or null if
-     * the individual is not feasible.
-     */
-    Solution makeSolutionFromIndividual(Individual individual) {
-        CityoptPhenotype phenotype = (CityoptPhenotype) individual.getPhenotype();
-        Objectives objectives = individual.getObjectives();
-        int nConstraints = problem.constraints.size();
-        double[] infeasibilities = new double[nConstraints];
-        double[] objectiveValues = new double[problem.objectives.size()];
-        for (Map.Entry<Objective, Value<?>> bar : objectives) {
-            String name = bar.getKey().getName();
-            Double valueOrNull = bar.getValue().getDouble();
-            double value = (valueOrNull != null) ? valueOrNull : Double.NaN;
-            int i = constraintAndObjectiveIndices.get(name);
-            if (i < nConstraints) {
-                infeasibilities[i] = value;
-            } else {
-                objectiveValues[i - nConstraints] = value;
-            }
-        }
-        ConstraintStatus constraintStatus =
-                new ConstraintStatus(problem.constraints, infeasibilities);
-        if (constraintStatus.isDefinitelyFeasible()) {
-            ObjectiveStatus objectiveStatus = new ObjectiveStatus(
-                    problem.getNamespace(), objectiveValues, problem.objectives);
-            return new Solution(constraintStatus, objectiveStatus, phenotype.input);
-        } else {
-            return null;
-        }
     }
 }
