@@ -4,12 +4,10 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.opt4j.core.Individual;
 import org.opt4j.core.IndividualSet;
-import org.opt4j.core.optimizer.Archive;
 import org.opt4j.core.optimizer.Optimizer;
 import org.opt4j.core.optimizer.OptimizerStateListener;
 import org.opt4j.core.start.Constant;
@@ -40,14 +38,18 @@ public class PopulationDumper implements OptimizerStateListener, Closeable {
     @Inject
     public PopulationDumper(
             @Named("outputSet") IndividualSet population,
-            SolutionTransformer solxform, SolutionWriter writer,
+            SolutionTransformer solxform, SolutionWriterFactory wfac,
             @Constant(value="filename", namespace=PopulationDumper.class)
             String filename) throws IOException {
         this.population = population;
         this.solxform = solxform;
-        this.writer = writer;
         out = Files.newOutputStream(Paths.get(filename));
-        writer.writeHeader(out);
+        try {
+            writer = wfac.create(out);
+        } catch (RuntimeException e) {
+            out.close();
+            throw e;
+        }
     }
 
     @Override
@@ -60,7 +62,7 @@ public class PopulationDumper implements OptimizerStateListener, Closeable {
                 for (Individual ind : population) {
                     CityoptPhenotype ph = (CityoptPhenotype)ind.getPhenotype();
                     writer.writeSolution(
-                            out, ph.decisions,
+                            ph.decisions,
                             solxform.makeSolutionFromIndividual(ind));
                 }
                 close();
@@ -80,6 +82,7 @@ public class PopulationDumper implements OptimizerStateListener, Closeable {
     public synchronized void close() throws IOException {
         if (out != null) {
             try {
+                writer.close();
                 out.close();
             } finally {
                 out = null;
