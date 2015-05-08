@@ -25,7 +25,7 @@ public class Expression {
         try {
             this.script = evaluator.getCompiler().compile(source);
         } catch (ScriptException e) {
-            throw wrapScriptException(e);
+            throw new ScriptException(mungeErrorMessage(e.getMessage()));
         }
     }
 
@@ -41,7 +41,7 @@ public class Expression {
         try {
             return evaluator.eval(script, context.toBindings(), context.getEvaluationSetup());
         } catch (ScriptException e) {
-            throw wrapScriptException(e);
+            throw new ScriptException(mungeErrorMessage(e.getMessage()));
         }
     }
 
@@ -58,7 +58,7 @@ public class Expression {
         } catch (InvalidValueException e) {
             throw new InvalidValueException(mungeErrorMessage(e.getMessage()));
         } catch (ScriptException e) {
-            throw wrapScriptException(e);
+            throw new ScriptException(mungeErrorMessage(e.getMessage()));
         }
     }
 
@@ -69,10 +69,6 @@ public class Expression {
      */
     public double evaluateDouble(EvaluationContext context) throws ScriptException {
         return (Double) evaluateAs(Type.DOUBLE, context);
-    }
-
-    private ScriptException wrapScriptException(ScriptException e) {
-        return new ScriptException(mungeErrorMessage(e.getMessage()));
     }
 
     String mungeErrorMessage(String error) {
