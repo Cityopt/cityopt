@@ -44,7 +44,6 @@ import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesVal;
-import eu.cityopt.model.Unit;
 import eu.cityopt.repository.ExtParamValRepository;
 import eu.cityopt.repository.ExtParamValSetCompRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
@@ -481,31 +480,30 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         Instant timeOrigin = loadTimeOrigin(project.getSimulationmodel());
         Namespace namespace = new Namespace(evaluator, timeOrigin, (scenarioGenerator != null));
         for (ExtParam mExternal : project.getExtparams()) {
-            Type extType = getType(mExternal.getUnit());
+            Type extType = getType(mExternal.getType());
             namespace.externals.put(mExternal.getName(), extType);
         }
         for (Component mComponent : project.getComponents()) {
             Namespace.Component nsComponent = namespace.getOrNew(mComponent.getName());
             for (InputParameter mInput : mComponent.getInputparameters()) {
-                Type inputType = getType(mInput.getUnit());
+                Type inputType = getType(mInput.getType());
                 nsComponent.inputs.put(mInput.getName(), inputType);
             }
             for (OutputVariable mOutput : mComponent.getOutputvariables()) {
-                Type outputType = getType(mOutput.getUnit());
+                Type outputType = getType(mOutput.getType());
                 nsComponent.outputs.put(mOutput.getName(), outputType);
             }
         }
         for (Metric mMetric : project.getMetrics()) {
-            Type metricType = getType(mMetric.getUnit());
+            Type metricType = getType(mMetric.getType());
             namespace.metrics.put(mMetric.getName(), metricType);
         }
         if (scenarioGenerator != null) {
             for (DecisionVariable decisionVariable : scenarioGenerator.getDecisionvariables()) {
                 InputParameter inputParameter = decisionVariable.getInputparameter();
                 if (inputParameter != null) {
-                    Type variableType = (decisionVariable.getType() != null)
-                            ? Type.getByName(decisionVariable.getType().getName())
-                            : getType(inputParameter.getUnit());
+                    Type variableType = getType((decisionVariable.getType() != null)
+                            ? decisionVariable.getType() : inputParameter.getType());
                     Namespace.Component nsComponent =
                             namespace.components.get(inputParameter.getComponent().getName());
                     nsComponent.decisions.put(inputParameter.getName(), variableType);
@@ -519,8 +517,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         return namespace;
     }
 
-    Type getType(Unit unit) {
-        eu.cityopt.model.Type type = (unit != null) ? unit.getType() : null;
+    Type getType(eu.cityopt.model.Type type) {
         return Type.getByName((type != null) ? type.getName() : null);
     }
 
