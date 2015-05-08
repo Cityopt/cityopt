@@ -7,7 +7,6 @@ import org.opt4j.core.config.Icons;
 import org.opt4j.core.config.annotations.File;
 import org.opt4j.core.config.annotations.Icon;
 import org.opt4j.core.config.annotations.Info;
-import org.opt4j.core.start.Constant;
 import org.opt4j.core.start.Opt4JModule;
 
 import com.google.inject.name.Names;
