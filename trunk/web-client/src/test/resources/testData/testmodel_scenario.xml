@@ -7,16 +7,16 @@
   <project prjid="1" name="Apros test project" location="Helsinki" modelid="1"/>
 
   <algorithm algorithmid="1" description="grid search"/>
-  <algoparam aparamsid="1" algorithmid="1" name="max runtime [minutes]"/>
-  <algoparam aparamsid="2" algorithmid="1" name="max scenarios"/>
+  <algoparam aparamsid="1" algorithmid="1" name="max runtime [minutes]" defaultValue="1000000"/>
+  <algoparam aparamsid="2" algorithmid="1" name="max scenarios" defaultValue="100"/>
 
   <algorithm algorithmid="2" description="genetic algorithm"/>
-  <algoparam aparamsid="3" algorithmid="2" name="max runtime [minutes]"/>
-  <algoparam aparamsid="4" algorithmid="2" name="number of generations"/>
-  <algoparam aparamsid="5" algorithmid="2" name="population size"/>
-  <algoparam aparamsid="6" algorithmid="2" name="number of parents per generation"/>
-  <algoparam aparamsid="7" algorithmid="2" name="number of offspring per generation"/>
-  <algoparam aparamsid="8" algorithmid="2" name="seed of the random number generator"/>
+  <algoparam aparamsid="3" algorithmid="2" name="max runtime [minutes]" defaultValue="1000000"/>
+  <algoparam aparamsid="4" algorithmid="2" name="number of generations" defaultValue="100"/>
+  <algoparam aparamsid="5" algorithmid="2" name="population size" defaultValue="100"/>
+  <algoparam aparamsid="6" algorithmid="2" name="number of parents per generation" defaultValue="25"/>
+  <algoparam aparamsid="7" algorithmid="2" name="number of offspring per generation" defaultValue="25"/>
+  <algoparam aparamsid="8" algorithmid="2" name="seed of the random number generator" defaultValue="0.95"/>
 
   <type typeid="1" name="Double"/>
   <type typeid="2" name="Integer"/>

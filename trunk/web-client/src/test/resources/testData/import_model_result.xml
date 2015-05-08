@@ -59,14 +59,14 @@
   <outputvariable name="MULTIPLYER_OUTPUT"/>
   <outputvariable name="MULTIPLYER_OUTPUT"/>
   <extparam/>
-  <algoparam name="max runtime [minutes]"/>
-  <algoparam name="max scenarios"/>
-  <algoparam name="max runtime [minutes]"/>
-  <algoparam name="number of generations"/>
-  <algoparam name="population size"/>
-  <algoparam name="number of parents per generation"/>
-  <algoparam name="number of offspring per generation"/>
-  <algoparam name="seed of the random number generator"/>
+  <algoparam name="max runtime [minutes]" defaultValue="1000000"/>
+  <algoparam name="max scenarios" defaultValue="100"/>
+  <algoparam name="max runtime [minutes]" defaultValue="1000000"/>
+  <algoparam name="number of generations" defaultValue="100"/>
+  <algoparam name="population size" defaultValue="100"/>
+  <algoparam name="number of parents per generation" defaultValue="25"/>
+  <algoparam name="number of offspring per generation" defaultValue="25"/>
+  <algoparam name="seed of the random number generator" defaultValue="0.95"/>
   <algoparamval/>
   <appuser/>
   <usergroup/>

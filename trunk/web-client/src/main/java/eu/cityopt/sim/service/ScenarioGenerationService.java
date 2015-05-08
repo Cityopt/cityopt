@@ -331,6 +331,9 @@ public class ScenarioGenerationService
     AlgorithmParameters loadAlgorithmParameters(ScenarioGenerator scenarioGenerator) {
         AlgorithmParameters algorithmParameters = new AlgorithmParameters();
         int algoId = scenarioGenerator.getAlgorithm().getAlgorithmid();
+        for (AlgoParam algoParam : scenarioGenerator.getAlgorithm().getAlgoparams()) {
+            algorithmParameters.put(algoParam.getName(), algoParam.getDefaultvalue());
+        }
         for (AlgoParamVal algoParamVal : scenarioGenerator.getAlgoparamvals()) {
             AlgoParam algoParam = algoParamVal.getAlgoparam();
             if (algoParam.getAlgorithm().getAlgorithmid() == algoId) {
