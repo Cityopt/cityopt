@@ -191,8 +191,8 @@ public class TestType {
         assertEquals("11.0", Type.DYNAMIC.format(new Float(11.0), es));
 
         BigInteger b = new BigInteger(new byte[] { 1, 0,0,0,0, 0,0,0,3 });
-        testDynamic(b, "18446744073709551619");
-        assertEquals(b, Type.DYNAMIC.parse("18446744073709551619L", es));
+        testDynamic(b, "18446744073709551619L");
+        assertEquals(b, Type.DYNAMIC.parse("18446744073709551619", es));
 
         testDynamic("foo", "'foo'");
         assertEquals("foo", Type.DYNAMIC.parse("\"foo\"", es));

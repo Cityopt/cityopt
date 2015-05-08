@@ -27,6 +27,7 @@ import org.python.core.Py;
 import org.python.core.PyList;
 import org.python.core.PyObject;
 import org.python.core.PyString;
+import org.python.core.PyType;
 
 import eu.cityopt.sim.eval.util.TimeUtils;
 
@@ -102,7 +103,7 @@ public class Evaluator {
             _convertSimtimesToDatetimes = getPyObject("cityopt._convertSimtimesToDatetimes");
             _convertToSimtimes = getPyObject("cityopt._convertToSimtimes");
             _convertToSimtime = getPyObject("cityopt._convertToSimtime");
-            _izip = getPyObject("itertools.izip");
+            _izip = PyType.fromClass((Class<?>) engine.eval("itertools.izip"));
             // TODO: engine.setContext
         } catch (ScriptException e) {
             throw new RuntimeException("Failed to initialize Python environment", e);
