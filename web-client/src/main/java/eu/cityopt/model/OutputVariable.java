@@ -27,6 +27,7 @@ public class OutputVariable implements java.io.Serializable {
 
 	private int outvarid;
 	private Component component;
+	private Type type;
 	private Unit unit;
 	private String name;
 	private String alias;
@@ -42,11 +43,13 @@ public class OutputVariable implements java.io.Serializable {
 		this.outvarid = outvarid;
 	}
 
-	public OutputVariable(int outvarid, Component component, Unit unit, String name,
+	public OutputVariable(int outvarid, Component component, Type type,
+			Unit unit, String name,
 			String alias, Boolean selected, Integer unitid,
 			Set<SimulationResult> simulationresults) {
 		this.outvarid = outvarid;
 		this.component = component;
+		this.type = type;
 		this.unit = unit;
 		this.name = name;
 		this.alias = alias;
@@ -59,7 +62,8 @@ public class OutputVariable implements java.io.Serializable {
 		OutputVariable c = new OutputVariable();
 		c.outvarid = this.outvarid;
 		c.component = this.component;
-		c.unit = this.unit;
+		c.type = this.type;
+		c.unit = unit;
 		c.name = this.name;
 		c.alias = this.alias;
 		c.selected = this.selected;
@@ -88,6 +92,16 @@ public class OutputVariable implements java.io.Serializable {
 
 	public void setComponent(Component component) {
 		this.component = component;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "typeid")
+	public Type getType() {
+		return this.type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)

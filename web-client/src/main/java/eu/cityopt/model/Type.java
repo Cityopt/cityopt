@@ -25,10 +25,13 @@ public class Type implements java.io.Serializable {
 
 	private int typeid;
 	private String name;
-	private Set<Unit> units = new HashSet<Unit>(0);
+	private Set<Metric> metrics = new HashSet<Metric>(0);
 	private Set<ObjectiveFunction> objectivefunctions = new HashSet<ObjectiveFunction>(
 			0);
 	private Set<TimeSeries> timeserieses = new HashSet<TimeSeries>(0);
+	private Set<OutputVariable> outputvariables = new HashSet<OutputVariable>(0);
+	private Set<InputParameter> inputparameters = new HashSet<InputParameter>(0);
+	private Set<ExtParam> extparams = new HashSet<ExtParam>(0);
 	private Set<DecisionVariable> decisionvariables = new HashSet<DecisionVariable>(
 			0);
 
@@ -39,19 +42,24 @@ public class Type implements java.io.Serializable {
 		this.typeid = typeid;
 	}
 
-	public Type(int typeid, String name, Set<Unit> units,
+	public Type(int typeid, String name, Set<Metric> metrics,
 			Set<ObjectiveFunction> objectivefunctions,
-			Set<TimeSeries> timeserieses,
+			Set<TimeSeries> timeserieses, Set<OutputVariable> outputvariables,
+			Set<InputParameter> inputparameters, Set<ExtParam> extparams,
 			Set<DecisionVariable> decisionvariables) {
 		this.typeid = typeid;
 		this.name = name;
-		this.units = units;
+		this.metrics = metrics;
 		this.objectivefunctions = objectivefunctions;
 		this.timeserieses = timeserieses;
+		this.outputvariables = outputvariables;
+		this.inputparameters = inputparameters;
+		this.extparams = extparams;
 		this.decisionvariables = decisionvariables;
 	}
-	
-	@SequenceGenerator(name="type_typeid_seq",sequenceName="type_typeid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="type_typeid_seq")
+
+	@SequenceGenerator(name="type_typeid_seq",sequenceName="type_typeid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="type_typeid_seq")
 	@Id
 	@Column(name = "typeid", unique = true, nullable = false)
 	public int getTypeid() {
@@ -72,12 +80,12 @@ public class Type implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "type")
-	public Set<Unit> getUnits() {
-		return this.units;
+	public Set<Metric> getMetrics() {
+		return this.metrics;
 	}
 
-	public void setUnits(Set<Unit> units) {
-		this.units = units;
+	public void setMetrics(Set<Metric> metrics) {
+		this.metrics = metrics;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "type")
@@ -96,6 +104,33 @@ public class Type implements java.io.Serializable {
 
 	public void setTimeserieses(Set<TimeSeries> timeserieses) {
 		this.timeserieses = timeserieses;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "type")
+	public Set<OutputVariable> getOutputvariables() {
+		return this.outputvariables;
+	}
+
+	public void setOutputvariables(Set<OutputVariable> outputvariables) {
+		this.outputvariables = outputvariables;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "type")
+	public Set<InputParameter> getInputparameters() {
+		return this.inputparameters;
+	}
+
+	public void setInputparameters(Set<InputParameter> inputparameters) {
+		this.inputparameters = inputparameters;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "type")
+	public Set<ExtParam> getExtparams() {
+		return this.extparams;
+	}
+
+	public void setExtparams(Set<ExtParam> extparams) {
+		this.extparams = extparams;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "type")

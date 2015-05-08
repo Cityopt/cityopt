@@ -33,6 +33,7 @@ import javax.persistence.UniqueConstraint;
 public class Project implements java.io.Serializable {
 
 	private int prjid;
+	private ExtParamValSet extparamvalset;
 	private SimulationModel simulationmodel;
 	private String name;
 	private String description;
@@ -65,7 +66,7 @@ public class Project implements java.io.Serializable {
 		this.name = name;
 	}
 
-	public Project(int prjid, SimulationModel simulationmodel, String name,
+	public Project(int prjid, SimulationModel simulationmodel, ExtParamValSet extparamvalset, String name,
 			String description, String designtarget, Date timehorizon, String location,
 			Date createdon, Date updatedon, Integer createdby,
 			Integer updatedby, Set<ObjectiveFunction> objectivefunctions,
@@ -74,6 +75,7 @@ public class Project implements java.io.Serializable {
 			Set<Metric> metrics, Set<UserGroupProject> usergroupprojects, 
 			Set<ExtParam> extparams, Set<OptimizationSet> optimizationsets) {
 		this.prjid = prjid;
+		this.extparamvalset = extparamvalset;
 		this.simulationmodel = simulationmodel;
 		this.name = name;
 		this.designtarget = designtarget;
@@ -131,6 +133,16 @@ public class Project implements java.io.Serializable {
 	public void setPrjid(int prjid) {
 		this.prjid = prjid;
 	}
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="defaultextparamvalsetid")
+    public ExtParamValSet getExtparamvalset() {
+        return this.extparamvalset;
+    }
+    
+    public void setExtparamvalset(ExtParamValSet extparamvalset) {
+        this.extparamvalset = extparamvalset;
+    }
 
 	@ManyToOne(fetch = FetchType.LAZY,cascade={CascadeType.PERSIST, CascadeType.REMOVE})
 	@JoinColumn(name = "modelid")

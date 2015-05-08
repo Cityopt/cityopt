@@ -24,6 +24,7 @@ public class ExtParamValSet implements java.io.Serializable {
 
 	private int extparamvalsetid;
 	private String name;
+	private Set<Project> projects = new HashSet<Project>(0);
 	private Set<ScenarioGenerator> scenariogenerators = new HashSet<ScenarioGenerator>(
 			0);
 	private Set<ScenarioMetrics> scenariometricses = new HashSet<ScenarioMetrics>(
@@ -38,12 +39,13 @@ public class ExtParamValSet implements java.io.Serializable {
 		this.extparamvalsetid = extparamvalsetid;
 	}
 
-	public ExtParamValSet(int extparamvalsetid, String name,
+	public ExtParamValSet(int extparamvalsetid, String name, Set<Project> projects,
 			Set<ScenarioGenerator> scenariogenerators,
 			Set<ScenarioMetrics> scenariometricses,
 			Set<ExtParamValSetComp> extparamvalsetcomps) {
 		this.extparamvalsetid = extparamvalsetid;
 		this.name = name;
+		this.projects = projects;
 		this.scenariogenerators = scenariogenerators;
 		this.scenariometricses = scenariometricses;
 		this.extparamvalsetcomps = extparamvalsetcomps;
@@ -67,6 +69,15 @@ public class ExtParamValSet implements java.io.Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "extparamvalset")
+	public Set<Project> getProjects() {
+		return this.projects;
+	}
+
+	public void setProjects(Set<Project> projects) {
+		this.projects = projects;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "extparamvalset")

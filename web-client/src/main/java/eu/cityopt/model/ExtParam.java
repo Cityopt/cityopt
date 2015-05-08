@@ -30,6 +30,7 @@ import org.hibernate.annotations.Cascade;
 public class ExtParam implements java.io.Serializable {
 
 	private int extparamid;
+	private Type type;
 	private Unit unit;
 	private TimeSeries defaulttimeseries;
 	private Project project;
@@ -45,11 +46,12 @@ public class ExtParam implements java.io.Serializable {
 		this.defaultvalue = defaultvalue;
 	}
 
-	public ExtParam(int extparamid, Unit unit, TimeSeries timeseries,
+	public ExtParam(int extparamid, Type type, Unit unit, TimeSeries timeseries,
 			Project project, String defaultvalue, String name,
 			Set<ExtParamVal> extparamvals) {
 		this.extparamid = extparamid;
-		this.unit = unit;
+		this.type = type;
+		this.unit = this.unit;
 		this.defaulttimeseries = timeseries;
 		this.project = project;
 		this.defaultvalue = defaultvalue;
@@ -60,6 +62,7 @@ public class ExtParam implements java.io.Serializable {
 	public ExtParam clone() {
 		ExtParam c = new ExtParam();
 		c.extparamid = this.extparamid;
+		c.type = this.type;
 		c.unit = this.unit;
 		c.defaulttimeseries = this.defaulttimeseries;
 		c.project = this.project;
@@ -80,6 +83,16 @@ public class ExtParam implements java.io.Serializable {
 		this.extparamid = extparamid;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "typeid")
+	public Type getType() {
+		return this.type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "unitid")
 	public Unit getUnit() {

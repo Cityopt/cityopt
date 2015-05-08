@@ -27,7 +27,6 @@ import javax.persistence.UniqueConstraint;
 public class Unit implements java.io.Serializable {
 
 	private int unitid;
-	private Type type;
 	private String name;
 	private Set<ExtParam> extparams = new HashSet<ExtParam>(0);
 	private Set<InputParameter> inputparameters = new HashSet<InputParameter>(0);
@@ -41,17 +40,17 @@ public class Unit implements java.io.Serializable {
 		this.unitid = unitid;
 	}
 
-	public Unit(int unitid, Type type, String name, Set<ExtParam> extparams,
+	public Unit(int unitid, String name, Set<ExtParam> extparams,
 			Set<InputParameter> inputparameters, Set<Metric> metrics) {
 		this.unitid = unitid;
-		this.type = type;
 		this.name = name;
 		this.extparams = extparams;
 		this.inputparameters = inputparameters;
 		this.metrics = metrics;
 	}
 
-	@SequenceGenerator(name="unit_unitid_seq",sequenceName="unit_unitid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="unit_unitid_seq")
+	@SequenceGenerator(name="unit_unitid_seq",sequenceName="unit_unitid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="unit_unitid_seq")
 	@Id
 	@Column(name = "unitid", unique = true, nullable = false)
 	public int getUnitid() {
@@ -60,16 +59,6 @@ public class Unit implements java.io.Serializable {
 
 	public void setUnitid(int unitid) {
 		this.unitid = unitid;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST})
-	@JoinColumn(name = "typeid")
-	public Type getType() {
-		return this.type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
 	}
 
 	@Column(name = "name", unique = true, length = 50)

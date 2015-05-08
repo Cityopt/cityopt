@@ -9,7 +9,8 @@ public class OutputVariableDTO {
 	@Getter @Setter private ComponentDTO component;
 	@Getter @Setter private String name;
 	@Getter @Setter private Boolean selected;
-	@Getter @Setter private Integer typeid;
+//	@Getter @Setter private UnitDTO unit;
+//	@Getter @Setter private TypeDTO type;
 //	@Getter @Setter private Set<SimulationResult> simulationresults = new HashSet<SimulationResult>(
 //			0);
 

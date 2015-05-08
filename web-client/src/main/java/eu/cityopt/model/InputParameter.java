@@ -27,6 +27,7 @@ public class InputParameter implements java.io.Serializable {
 
 	private int inputid;
 	private Unit unit;
+	private Type type;
 	private Component component;
 	private String name;
 	private String alias;
@@ -41,11 +42,12 @@ public class InputParameter implements java.io.Serializable {
 		this.inputid = inputid;
 	}
 
-	public InputParameter(int inputid, Unit unit, Component component,
-			String name, String alias, String defaultvalue,
+	public InputParameter(int inputid, Type type, Component component,
+			Unit unit, String name, String alias, String defaultvalue,
 			Set<ModelParameter> modelparameters,
 			Set<InputParamVal> inputparamvals) {
 		this.inputid = inputid;
+		this.type = type;
 		this.unit = unit;
 		this.component = component;
 		this.name = name;
@@ -58,6 +60,7 @@ public class InputParameter implements java.io.Serializable {
 	public InputParameter clone() {
 		InputParameter c = new InputParameter();
 		c.inputid = this.inputid;
+		c.type = this.type;
 		c.unit = this.unit;
 		c.component = this.component;
 		c.name = this.name;
@@ -81,6 +84,16 @@ public class InputParameter implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST})
+	@JoinColumn(name = "typeid")
+	public Type getType() {
+		return this.type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "unitid")
 	public Unit getUnit() {
 		return this.unit;
