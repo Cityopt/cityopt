@@ -63,7 +63,7 @@ import eu.cityopt.sim.opt.OptimisationProblem;
 @Singleton
 public class CityoptEvaluator
 implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
-    private OptimisationProblem problem;
+    private final OptimisationProblem problem;
     private volatile SimulationRunner runner;
     private Set<Future<SimulationOutput>> jobs = ConcurrentHashMap.newKeySet();
     private SimulationStorage storage = new SimulationStorage() {        
@@ -224,5 +224,9 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
         try {
             close();
         } catch (IOException e) {}
+    }
+
+    public OptimisationProblem getProblem() {
+        return problem;
     }
 }
