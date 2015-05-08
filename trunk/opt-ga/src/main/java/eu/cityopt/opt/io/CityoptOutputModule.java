@@ -10,6 +10,7 @@ import org.opt4j.core.optimizer.Archive;
 import org.opt4j.core.optimizer.Population;
 import org.opt4j.core.start.Constant;
 
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.name.Names;
 
 @Info("Cityopt solution output")
@@ -25,7 +26,9 @@ public class CityoptOutputModule extends OutputModule {
 
     @Override
     protected void config() {
-        bind(SolutionWriter.class).to(CSVSolutionWriter.class).in(SINGLETON);
+        install(new FactoryModuleBuilder()
+                .implement(SolutionWriter.class, CSVSolutionWriter.class)
+                .build(SolutionWriterFactory.class));
         if (!archiveFile.isEmpty()) {
             bind(IndividualSet.class).annotatedWith(Names.named("outputSet"))
                     .to(dumpAll ? Population.class : Archive.class);

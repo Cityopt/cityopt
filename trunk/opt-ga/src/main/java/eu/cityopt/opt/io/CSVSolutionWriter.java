@@ -6,11 +6,12 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SequenceWriter;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
 
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.DecisionValues;
@@ -25,16 +26,22 @@ import eu.cityopt.sim.opt.Solution;
 public class CSVSolutionWriter implements SolutionWriter {
     public final OptimisationProblem problem;
     public final ObjectWriter writer;
+    private final OutputStream str;
+    private SequenceWriter seq = null;
     
-    @Inject
-    public CSVSolutionWriter(CsvMapper mapper, OptimisationProblem problem) {
+    @AssistedInject
+    public CSVSolutionWriter(CsvMapper mapper, OptimisationProblem problem,
+                             @Assisted OutputStream str) {
         this.problem = problem;
         writer = mapper.writer()
                 .without(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        this.str = str;
     }
-    
-    @Override
-    public void writeHeader(OutputStream str) throws IOException {
+
+    private synchronized void writeHeader() throws IOException {
+        if (seq == null) {
+            seq = writer.writeValues(str);
+        }
         Stream<String> row
                 = problem.decisionVars.stream().map(v -> v.toString());
         row = Stream.concat(row,
@@ -43,13 +50,15 @@ public class CSVSolutionWriter implements SolutionWriter {
         row = Stream.concat(row,
                             problem.objectives.stream().map(
                                     ObjectiveExpression::getName));
-        writer.writeValue(str, row.collect(Collectors.toList()));
+        seq.write(row.collect(Collectors.toList()));
     }
     
     @Override
-    public void writeSolution(
-            OutputStream str, DecisionValues dvals, Solution sol)
-                    throws IOException {
+    public synchronized void writeSolution(DecisionValues dvals, Solution sol)
+            throws IOException {
+        if (seq == null) {
+            writeHeader();
+        }
         Stream<Object> row
                 = problem.decisionVars.stream().map(v -> dvals.get(v));
         row = Stream.concat(
@@ -58,6 +67,20 @@ public class CSVSolutionWriter implements SolutionWriter {
         row = Stream.concat(
                 row,
                 Arrays.stream(sol.objectiveStatus.objectiveValues).boxed());
-        writer.writeValue(str, row.collect(Collectors.toList()));
+        seq.write(row.collect(Collectors.toList()));
+    }
+
+    /**
+     * Flush any internal buffers.  This does not close the underlying stream.
+     */
+    @Override
+    public synchronized void close() throws IOException {
+        if (seq != null) {
+            try {
+                seq.close();
+            } finally {
+                seq = null;
+            }
+        }
     }
 }
