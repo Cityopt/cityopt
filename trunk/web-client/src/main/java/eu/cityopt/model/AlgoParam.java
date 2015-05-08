@@ -28,6 +28,7 @@ public class AlgoParam implements java.io.Serializable {
 
 	private int aparamsid;
 	private Algorithm algorithm;
+	private String defaultvalue;
 	private String name;
 	private Set<AlgoParamVal> algoparamvals = new HashSet<AlgoParamVal>(0);
 
@@ -38,10 +39,11 @@ public class AlgoParam implements java.io.Serializable {
 		this.aparamsid = aparamsid;
 	}
 
-	public AlgoParam(int aparamsid, Algorithm algorithm, String name,
-			Set<AlgoParamVal> algoparamvals) {
+	public AlgoParam(int aparamsid, Algorithm algorithm, String defaultvalue,
+			String name, Set<AlgoParamVal> algoparamvals) {
 		this.aparamsid = aparamsid;
 		this.algorithm = algorithm;
+		this.defaultvalue = defaultvalue;
 		this.name = name;
 		this.algoparamvals = algoparamvals;
 	}
@@ -67,6 +69,15 @@ public class AlgoParam implements java.io.Serializable {
 		this.algorithm = algorithm;
 	}
 
+	@Column(name = "defaultvalue")
+	public String getDefaultvalue() {
+		return this.defaultvalue;
+	}
+
+	public void setDefaultvalue(String defaultvalue) {
+		this.defaultvalue = defaultvalue;
+	}
+	
 	@Column(name = "name", length = 50)
 	public String getName() {
 		return this.name;

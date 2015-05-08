@@ -242,6 +242,7 @@ CREATE TABLE AlgoParam
 (
 	aParamsID integer NOT NULL DEFAULT nextval(('algoparam_aparamsid_seq'::text)::regclass),
 	algorithmID integer,
+	defaultValue text,
 	name varchar(50)	
 )
 ;
@@ -313,9 +314,10 @@ CREATE TABLE ExtParam
 	extParamID integer NOT NULL DEFAULT nextval(('extparam_extparamid_seq'::text)::regclass),
 	prjID integer,
 	defaultTimeSeries integer,
-	unitID integer,
 	defaultValue varchar(50)	,
-	name varchar(50)	
+	name varchar(50)	,
+	typeID integer,
+	unitID integer
 )
 ;
 
@@ -349,9 +351,10 @@ CREATE TABLE InputParameter
 	inputID integer NOT NULL DEFAULT nextval(('inputparameter_inputid_seq'::text)::regclass),
 	name varchar(100)	,
 	alias varchar(50)	,
-	unitID integer,
 	componentID integer,
-	defaultValue text
+	defaultValue text,
+	typeID integer,
+	unitID integer
 )
 ;
 
@@ -373,9 +376,10 @@ CREATE TABLE Metric
 (
 	metID integer NOT NULL DEFAULT nextval(('metric_metid_seq'::text)::regclass),
 	prjID integer NOT NULL,
-	unitID integer,
 	name varchar(50)	,
-	expression text
+	expression text,
+	typeID integer,
+	unitID integer
 )
 ;
 
@@ -479,8 +483,9 @@ CREATE TABLE OutputVariable
 	name varchar(50)	,
 	alias varchar(50)	,
 	selected boolean,
-	unitID integer,
-	componentID integer
+	componentID integer,
+	typeID integer,
+	unitID integer
 )
 ;
 
@@ -496,7 +501,8 @@ CREATE TABLE Project
 	updatedOn timestamp,
 	createdBy integer,
 	updatedBy integer,
-	description text
+	description text,
+	defaultExtParamValSetID integer
 )
 ;
 
@@ -615,8 +621,7 @@ CREATE TABLE Type
 CREATE TABLE Unit
 (
 	unitID integer NOT NULL DEFAULT nextval(('unit_unitid_seq'::text)::regclass),
-	name varchar(50)	,
-	typeID integer
+	name varchar(50)	
 )
 ;
 
@@ -843,6 +848,12 @@ CREATE INDEX IXFK_ExtParam_Project ON ExtParam (prjID ASC)
 CREATE INDEX IXFK_ExtParam_TimeSeries ON ExtParam (defaultTimeSeries ASC)
 ;
 
+CREATE INDEX IXFK_ExtParam_Type ON ExtParam (typeID ASC)
+;
+
+CREATE INDEX IXFK_ExtParam_Type_02 ON ExtParam (typeID ASC)
+;
+
 CREATE INDEX IXFK_ExtParam_Unit ON ExtParam (unitID ASC)
 ;
 
@@ -876,6 +887,12 @@ CREATE INDEX IXFK_extParamValSetComp_ExtParamValSet ON extParamValSetComp (extPa
 CREATE INDEX IXFK_InputParameter_Components ON InputParameter (componentID ASC)
 ;
 
+CREATE INDEX IXFK_InputParameter_Type ON InputParameter (typeID ASC)
+;
+
+CREATE INDEX IXFK_InputParameter_Type_02 ON InputParameter (typeID ASC)
+;
+
 CREATE INDEX IXFK_InputParameter_Unit ON InputParameter (unitID ASC)
 ;
 
@@ -900,6 +917,12 @@ ALTER TABLE InputParamVal ADD CONSTRAINT PK_ScenarioDefinition
 ;
 
 CREATE INDEX IXFK_Metric_Project ON Metric (prjID ASC)
+;
+
+CREATE INDEX IXFK_Metric_Type ON Metric (typeID ASC)
+;
+
+CREATE INDEX IXFK_Metric_Type_02 ON Metric (typeID ASC)
 ;
 
 CREATE INDEX IXFK_Metric_Unit ON Metric (unitID ASC)
@@ -1023,6 +1046,12 @@ ALTER TABLE OptSetScenarios ADD CONSTRAINT PK_OptSetScenarios
 	PRIMARY KEY (optScenID)
 ;
 
+CREATE INDEX IXFK_OutputVariable_Type ON OutputVariable (typeID ASC)
+;
+
+CREATE INDEX IXFK_OutputVariable_Type_02 ON OutputVariable (typeID ASC)
+;
+
 CREATE INDEX IXFK_OutputVariable_Unit ON OutputVariable (unitID ASC)
 ;
 
@@ -1034,6 +1063,12 @@ ALTER TABLE OutputVariable ADD CONSTRAINT PK_OutputVariables
 ;
 
 ALTER TABLE Project ADD CONSTRAINT UQ_Project_prjName UNIQUE (name)
+;
+
+CREATE INDEX IXFK_Project_ExtParamValSet ON Project (defaultExtParamValSetID ASC)
+;
+
+CREATE INDEX IXFK_Project_ExtParamValSet_02 ON Project (defaultExtParamValSetID ASC)
 ;
 
 CREATE INDEX IXFK_Project_SimulationModel ON Project (modelID ASC)
@@ -1162,9 +1197,6 @@ ALTER TABLE Type ADD CONSTRAINT PK_Type
 ALTER TABLE Unit ADD CONSTRAINT UQ_Unit_unitName UNIQUE (name)
 ;
 
-CREATE INDEX IXFK_Unit_Type ON Unit (typeID ASC)
-;
-
 ALTER TABLE Unit ADD CONSTRAINT PK_Unit
 	PRIMARY KEY (unitID)
 ;
@@ -1236,6 +1268,10 @@ ALTER TABLE ExtParam ADD CONSTRAINT FK_ExtParam_TimeSeries
 	FOREIGN KEY (defaultTimeSeries) REFERENCES TimeSeries (tSeriesID) ON DELETE No Action ON UPDATE No Action
 ;
 
+ALTER TABLE ExtParam ADD CONSTRAINT FK_ExtParam_Type
+	FOREIGN KEY (typeID) REFERENCES Type (typeID) ON DELETE No Action ON UPDATE No Action
+;
+
 ALTER TABLE ExtParam ADD CONSTRAINT FK_ExtParam_Unit
 	FOREIGN KEY (unitID) REFERENCES Unit (unitID) ON DELETE No Action ON UPDATE No Action
 ;
@@ -1260,6 +1296,10 @@ ALTER TABLE InputParameter ADD CONSTRAINT FK_InputParameter_Components
 	FOREIGN KEY (componentID) REFERENCES Component (componentID) ON DELETE No Action ON UPDATE No Action
 ;
 
+ALTER TABLE InputParameter ADD CONSTRAINT FK_InputParameter_Type
+	FOREIGN KEY (typeID) REFERENCES Type (typeID) ON DELETE No Action ON UPDATE No Action
+;
+
 ALTER TABLE InputParameter ADD CONSTRAINT FK_InputParameter_Unit
 	FOREIGN KEY (unitID) REFERENCES Unit (unitID) ON DELETE No Action ON UPDATE No Action
 ;
@@ -1278,6 +1318,10 @@ ALTER TABLE InputParamVal ADD CONSTRAINT FK_ScenarioDefinition_Scenario
 
 ALTER TABLE Metric ADD CONSTRAINT FK_Metric_Project
 	FOREIGN KEY (prjID) REFERENCES Project (prjID) ON DELETE No Action ON UPDATE No Action
+;
+
+ALTER TABLE Metric ADD CONSTRAINT FK_Metric_Type
+	FOREIGN KEY (typeID) REFERENCES Type (typeID) ON DELETE No Action ON UPDATE No Action
 ;
 
 ALTER TABLE Metric ADD CONSTRAINT FK_Metric_Unit
@@ -1364,16 +1408,24 @@ ALTER TABLE OptSetScenarios ADD CONSTRAINT FK_OptSetScenarios_Scenario
 	FOREIGN KEY (scenID) REFERENCES Scenario (scenID) ON DELETE No Action ON UPDATE No Action
 ;
 
-ALTER TABLE OutputVariable ADD CONSTRAINT FK_OutputVariable_Unit
-	FOREIGN KEY (unitID) REFERENCES Unit (unitID) ON DELETE No Action ON UPDATE No Action
-;
-
 ALTER TABLE OutputVariable ADD CONSTRAINT FK_OutputVariables_Components
 	FOREIGN KEY (componentID) REFERENCES Component (componentID) ON DELETE No Action ON UPDATE No Action
 ;
 
+ALTER TABLE OutputVariable ADD CONSTRAINT FK_OutputVariable_Type
+	FOREIGN KEY (typeID) REFERENCES Type (typeID) ON DELETE No Action ON UPDATE No Action
+;
+
+ALTER TABLE OutputVariable ADD CONSTRAINT FK_OutputVariable_Unit
+	FOREIGN KEY (unitID) REFERENCES Unit (unitID) ON DELETE No Action ON UPDATE No Action
+;
+
 ALTER TABLE Project ADD CONSTRAINT FK_Project_SimulationModel
 	FOREIGN KEY (modelID) REFERENCES SimulationModel (modelID) ON DELETE No Action ON UPDATE No Action
+;
+
+ALTER TABLE Project ADD CONSTRAINT FK_Project_ExtParamValSet
+	FOREIGN KEY (defaultExtParamValSetID) REFERENCES ExtParamValSet (extParamValSetID) ON DELETE No Action ON UPDATE No Action
 ;
 
 ALTER TABLE Scenario ADD CONSTRAINT FK_Scenario_Project
@@ -1446,10 +1498,6 @@ ALTER TABLE TimeSeries ADD CONSTRAINT FK_TimeSeries_Type
 
 ALTER TABLE TimeSeriesVal ADD CONSTRAINT FK_TimeSeriesVal_TimeSeries
 	FOREIGN KEY (tSeriesID) REFERENCES TimeSeries (tSeriesID) ON DELETE Cascade ON UPDATE No Action
-;
-
-ALTER TABLE Unit ADD CONSTRAINT FK_Unit_Type
-	FOREIGN KEY (typeID) REFERENCES Type (typeID) ON DELETE No Action ON UPDATE No Action
 ;
 
 ALTER TABLE UserGroupProject ADD CONSTRAINT FK_UserGroupProject_Project

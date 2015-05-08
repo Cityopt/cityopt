@@ -5,7 +5,8 @@ import lombok.Setter;
 
 public class MetricDTO {
 	@Getter @Setter private int metid;
-//	@Getter @Setter private Unit unit;
+//	@Getter @Setter private UnitDTO unit;
+//	@Getter @Setter private TypeDTO type;
 	@Getter @Setter private ProjectDTO project;
 	@Getter @Setter private String name;
 	@Getter @Setter private String expression;

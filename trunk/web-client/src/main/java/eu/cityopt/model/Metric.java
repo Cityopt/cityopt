@@ -26,6 +26,7 @@ import javax.persistence.Table;
 public class Metric implements java.io.Serializable {
 
 	private int metid;
+	private Type type;
 	private Unit unit;
 	private Project project;
 	private String name;
@@ -39,9 +40,10 @@ public class Metric implements java.io.Serializable {
 		this.metid = metid;
 	}
 
-	public Metric(int metid, Unit unit, Project project, String name,
+	public Metric(int metid, Type type, Unit unit, Project project, String name,
 			String expression, Set<MetricVal> metricvals) {
 		this.metid = metid;
+		this.type = type;
 		this.unit = unit;
 		this.project = project;
 		this.name = name;
@@ -52,7 +54,8 @@ public class Metric implements java.io.Serializable {
 	public Metric clone() {
 		Metric c = new Metric();
 		c.metid = this.metid;
-		c.unit = this.unit;
+		c.type = this.type;
+		c.unit = unit;
 		c.project = this.project;
 		c.name = this.name;
 		c.expression = this.expression;
@@ -72,6 +75,16 @@ public class Metric implements java.io.Serializable {
 		this.metid = metid;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "typeid")
+	public Type getType() {
+		return this.type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "unitid")
 	public Unit getUnit() {
