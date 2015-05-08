@@ -29,7 +29,6 @@ import eu.cityopt.model.Metric;
 import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.ScenarioGenerator;
-import eu.cityopt.model.Unit;
 import eu.cityopt.opt.io.CsvTimeSeriesData;
 import eu.cityopt.opt.io.OptimisationProblemIO;
 import eu.cityopt.opt.io.TimeSeriesData;
@@ -42,7 +41,6 @@ import eu.cityopt.repository.OutputVariableRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.repository.SimulationModelRepository;
-import eu.cityopt.repository.UnitRepository;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.MetricExpression;
@@ -78,7 +76,6 @@ public class ImportExportService {
     @Inject private InputParameterRepository inputParameterRepository;
     @Inject private OutputVariableRepository outputVariableRepository;
     @Inject private MetricRepository metricRepository;
-    @Inject private UnitRepository unitRepository;
 
     /**
      * Creates a SimulationModel row in the database.
@@ -133,7 +130,8 @@ public class ImportExportService {
 
     /**
      * Creates input parameters and output variables from model data.
-     * The methods picks arbitrary units of an appropriate type.
+     * The required components are also created.  The types of the
+     * inputs and outputs are set, but the units are left null.
      *
      * @param projectId id of the project to be modified.  The project
      *   must already have a SimulationModel with a set time origin.
@@ -155,8 +153,7 @@ public class ImportExportService {
         Instant timeOrigin = simulationService.loadTimeOrigin(project.getSimulationmodel());
         Namespace namespace = new Namespace(simulationService.getEvaluator(), timeOrigin);
         String warnings = model.findInputsAndOutputs(namespace, detailLevel);
-        Map<Type, Unit> unitMap = pickUnits();
-        saveNamespaceComponents(project, namespace, unitMap);
+        saveNamespaceComponents(project, namespace);
         projectRepository.save(project);
         return warnings;
     }
@@ -164,8 +161,8 @@ public class ImportExportService {
     /**
      * Creates external parameters, input parameters, output variables
      * and/or metrics from text files.  As the supported text format
-     * does not include units (only types), the method uses arbitrary
-     * units of the correct type.
+     * does not include units for now (only types), the method leaves
+     * units null.
      * 
      * @param projectId the associate project.  Any existing external
      *   parameters, input parameters, output variables and metrics
@@ -197,30 +194,13 @@ public class ImportExportService {
 
     public void saveSimulationStructure(
             Project project, SimulationStructure structure) {
-        Map<Type, Unit> unitMap = pickUnits();
-        saveExternalParameters(project, structure.getNamespace(), unitMap);
-        saveNamespaceComponents(project, structure.getNamespace(), unitMap);
-        saveMetrics(project, structure.getNamespace(), structure.metrics, unitMap);
+        saveExternalParameters(project, structure.getNamespace());
+        saveNamespaceComponents(project, structure.getNamespace());
+        saveMetrics(project, structure.getNamespace(), structure.metrics);
         projectRepository.save(project);
     }
 
-    Map<Type, Unit> pickUnits() {
-        Map<Type, Unit> unitMap = new HashMap<>();
-        for (Unit unit : unitRepository.findAll()) {
-            Type type = Type.getByName(
-                    (unit.getType() != null) ? unit.getType().getName() : null);
-            Unit oldUnit = unitMap.get(type);
-            // We prefer units with shorter names. As long as there are no units
-            // in the CSV files, we should really prefer dimensionless units here.
-            if (oldUnit == null || unit.getName().length() < oldUnit.getName().length()) {
-                unitMap.put(type, unit);
-            }
-        }
-        return unitMap;
-    }
-
-    public void saveExternalParameters(
-            Project project, Namespace namespace, Map<Type, Unit> unitMap) {
+    public void saveExternalParameters(Project project, Namespace namespace) {
         Map<String, ExtParam> old = new HashMap<>();
         for (ExtParam extParam : project.getExtparams()) {
             old.put(extParam.getName(), extParam);
@@ -233,7 +213,7 @@ public class ImportExportService {
             // If there is an old ExtParam of different type, delete it.
             ExtParam extParam = old.get(name);
             if (extParam != null) {
-                eu.cityopt.model.Type oldType = extParam.getUnit().getType();
+                eu.cityopt.model.Type oldType = extParam.getType();
                 if ( ! oldType.getName().equalsIgnoreCase(type.name)) {
                     extParamRepository.delete(extParam);
                     extParam = null;
@@ -243,7 +223,6 @@ public class ImportExportService {
             if (extParam == null) {
                 extParam = new ExtParam();
                 extParam.setName(entry.getKey());
-                extParam.setUnit(unitMap.get(entry.getValue()));
                 extParam.setProject(project);
                 project.getExtparams().add(extParam);
                 changed.add(extParam);
@@ -252,8 +231,7 @@ public class ImportExportService {
         extParamRepository.save(changed);
     }
 
-    public void saveNamespaceComponents(
-            Project project, Namespace namespace, Map<Type, Unit> unitMap) {
+    public void saveNamespaceComponents(Project project, Namespace namespace) {
         Map<String, Component> oldComponents = new HashMap<>();
         for (Component component : project.getComponents()) {
             oldComponents.put(component.getName(), component);
@@ -271,13 +249,12 @@ public class ImportExportService {
                 componentRepository.save(component);
             }
 
-            saveComponentInputParameters(component, nsComponent.inputs, unitMap);
-            saveComponentOutputVariables(component, nsComponent.outputs, unitMap);
+            saveComponentInputParameters(component, nsComponent.inputs);
+            saveComponentOutputVariables(component, nsComponent.outputs);
         }
     }
 
-    public void saveComponentInputParameters(
-            Component component, Map<String, Type> inputs, Map<Type, Unit> unitMap) {
+    public void saveComponentInputParameters(Component component, Map<String, Type> inputs) {
         List<InputParameter> changedInputParameters = new ArrayList<>();
         Map<String, InputParameter> oldInputParameters = new HashMap<>();
         for (InputParameter inputParameter : component.getInputparameters()) {
@@ -290,7 +267,7 @@ public class ImportExportService {
             // If there is an old InputParameter of different type, delete it.
             InputParameter inputParameter = oldInputParameters.get(name);
             if (inputParameter != null) {
-                eu.cityopt.model.Type oldType = inputParameter.getUnit().getType();
+                eu.cityopt.model.Type oldType = inputParameter.getType();
                 if ( ! oldType.getName().equalsIgnoreCase(type.name)) {
                     inputParameterRepository.delete(inputParameter);
                     inputParameter = null;
@@ -300,7 +277,6 @@ public class ImportExportService {
             if (inputParameter == null) {
                 inputParameter = new InputParameter();
                 inputParameter.setName(name);
-                inputParameter.setUnit(unitMap.get(type));
                 inputParameter.setComponent(component);
                 component.getInputparameters().add(inputParameter);
                 changedInputParameters.add(inputParameter);
@@ -309,8 +285,7 @@ public class ImportExportService {
         inputParameterRepository.save(changedInputParameters);
     }
 
-    public void saveComponentOutputVariables(
-            Component component, Map<String, Type> outputs, Map<Type, Unit> unitMap) {
+    public void saveComponentOutputVariables(Component component, Map<String, Type> outputs) {
         Map<String, OutputVariable> oldOutputVariables = new HashMap<>();
         for (OutputVariable outputVariable : component.getOutputvariables()) {
             oldOutputVariables.put(outputVariable.getName(), outputVariable);
@@ -323,7 +298,7 @@ public class ImportExportService {
             // If there is an old OutputVariable of different type, delete it.
             OutputVariable outputVariable = oldOutputVariables.get(name);
             if (outputVariable != null) {
-                eu.cityopt.model.Type oldType = outputVariable.getUnit().getType();
+                eu.cityopt.model.Type oldType = outputVariable.getType();
                 if ( ! oldType.getName().equalsIgnoreCase(type.name)) {
                     outputVariableRepository.delete(outputVariable);
                     outputVariable = null;
@@ -333,7 +308,6 @@ public class ImportExportService {
             if (outputVariable == null) {
                 outputVariable = new OutputVariable();
                 outputVariable.setName(name);
-                outputVariable.setUnit(unitMap.get(type));
                 outputVariable.setComponent(component);
                 component.getOutputvariables().add(outputVariable);
                 changedOutputVariables.add(outputVariable);
@@ -343,7 +317,7 @@ public class ImportExportService {
     }
 
     public void saveMetrics(Project project, Namespace namespace,
-            Collection<MetricExpression> metricExpressions, Map<Type, Unit> unitMap) {
+            Collection<MetricExpression> metricExpressions) {
         Map<String, Metric> oldMetrics = new HashMap<>();
         for (Metric metric : project.getMetrics()) {
             oldMetrics.put(metric.getName(), metric);
@@ -362,7 +336,7 @@ public class ImportExportService {
             // expression, delete it.
             Metric metric = oldMetrics.get(name);
             if (metric != null) {
-                eu.cityopt.model.Type oldType = metric.getUnit().getType();
+                eu.cityopt.model.Type oldType = metric.getType();
                 String oldExpression = metric.getExpression();
                 if ( ! (oldType.getName().equalsIgnoreCase(type.name)
                         && oldExpression.equals(expression))) {
@@ -374,7 +348,6 @@ public class ImportExportService {
             if (metric == null) {
                 metric = new Metric();
                 metric.setName(name);
-                metric.setUnit(unitMap.get(type));
                 metric.setExpression(expressionMap.get(name).getSource());
                 metric.setProject(project);
                 project.getMetrics().add(metric);

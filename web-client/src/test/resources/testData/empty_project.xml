@@ -26,14 +26,14 @@
   <type typeid="8" name="List of Integer"/>
   <type typeid="9" name="List of Timestamp"/>
 
-  <unit unitid="1" typeid="1" name="Unit/Double"/>
-  <unit unitid="2" typeid="2" name="Unit/Integer"/>
-  <unit unitid="3" typeid="3" name="Unit/String"/>
-  <unit unitid="4" typeid="4" name="Unit/Timestamp"/>
-  <unit unitid="5" typeid="5" name="Unit/TimeSeries/step"/>
-  <unit unitid="6" typeid="6" name="Unit/TimeSeries/linear"/>
-  <unit unitid="7" typeid="7" name="Unit/List of Double"/>
-  <unit unitid="8" typeid="8" name="Unit/List of Integer"/>
-  <unit unitid="9" typeid="9" name="Unit/List of Timestamp"/>
+  <unit unitid="1" name="Unit/Double"/>
+  <unit unitid="2" name="Unit/Integer"/>
+  <unit unitid="3" name="Unit/String"/>
+  <unit unitid="4" name="Unit/Timestamp"/>
+  <unit unitid="5" name="Unit/TimeSeries/step"/>
+  <unit unitid="6" name="Unit/TimeSeries/linear"/>
+  <unit unitid="7" name="Unit/List of Double"/>
+  <unit unitid="8" name="Unit/List of Integer"/>
+  <unit unitid="9" name="Unit/List of Timestamp"/>
 
 </dataset>
