@@ -1,15 +1,11 @@
 package eu.cityopt.opt.io;
 
-import java.io.Closeable;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.opt4j.core.Individual;
 import org.opt4j.core.IndividualSet;
 import org.opt4j.core.optimizer.Optimizer;
-import org.opt4j.core.optimizer.OptimizerStateListener;
 import org.opt4j.core.start.Constant;
 
 import com.google.inject.Inject;
@@ -27,29 +23,18 @@ import eu.cityopt.opt.ga.adapter.SolutionTransformer;
  * if things go abnormally and writing never happens, you may need to close
  * the file explicitly with {@link #close()}.
  * @author ttekth
- *
  */
-public class PopulationDumper implements OptimizerStateListener, Closeable {
+public class PopulationDumper extends SolutionLogger  {
     private final IndividualSet population;
-    private OutputStream out = null;
-    private final SolutionTransformer solxform;
-    private final SolutionWriter writer;
-    
+
     @Inject
     public PopulationDumper(
             @Named("outputSet") IndividualSet population,
             SolutionTransformer solxform, SolutionWriterFactory wfac,
             @Constant(value="filename", namespace=PopulationDumper.class)
             String filename) throws IOException {
+        super(solxform, wfac, Paths.get(filename));
         this.population = population;
-        this.solxform = solxform;
-        out = Files.newOutputStream(Paths.get(filename));
-        try {
-            writer = wfac.create(out);
-        } catch (RuntimeException e) {
-            out.close();
-            throw e;
-        }
     }
 
     @Override
@@ -67,25 +52,8 @@ public class PopulationDumper implements OptimizerStateListener, Closeable {
                 }
                 close();
             } catch (IOException e) {
-                // Not much we can do here.
+                // TODO Auto-generated catch block
                 e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Close the output file.
-     * The file is automatically closed after writing the results, so normally
-     * there is no need to call this.
-     */
-    @Override
-    public synchronized void close() throws IOException {
-        if (out != null) {
-            try {
-                writer.close();
-                out.close();
-            } finally {
-                out = null;
             }
         }
     }

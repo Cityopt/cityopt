@@ -19,11 +19,16 @@ public class CityoptOutputModule extends OutputModule {
     @Info("Archive output file (empty for no output)")
     @Constant(value="filename", namespace=PopulationDumper.class)
     @File(".csv")
-    private String archiveFile = "output.csv";
+    private String archiveFile = "";
     
     @Info("Dump the whole population (instead of just the archive)")
     private boolean dumpAll = false;
 
+    @Info("Evalauation log file (empty for no output)")
+    @Constant(value="filename", namespace=EvaluationLogger.class)
+    @File(".csv")
+    private String evalLogFile = "";
+    
     @Override
     protected void config() {
         install(new FactoryModuleBuilder()
@@ -32,7 +37,13 @@ public class CityoptOutputModule extends OutputModule {
         if (!archiveFile.isEmpty()) {
             bind(IndividualSet.class).annotatedWith(Names.named("outputSet"))
                     .to(dumpAll ? Population.class : Archive.class);
+            bind(PopulationDumper.class).in(SINGLETON);
             addOptimizerStateListener(PopulationDumper.class);
+        }
+        if (!evalLogFile.isEmpty()) {
+            bind(EvaluationLogger.class).in(SINGLETON);
+            addOptimizerStateListener(EvaluationLogger.class);
+            addIndividualStateListener(EvaluationLogger.class);
         }
     }
 
@@ -50,5 +61,13 @@ public class CityoptOutputModule extends OutputModule {
 
     public void setDumpAll(boolean dumpAll) {
         this.dumpAll = dumpAll;
+    }
+
+    public String getEvalLogFile() {
+        return evalLogFile;
+    }
+
+    public void setEvalLogFile(String indLogFile) {
+        this.evalLogFile = indLogFile;
     }
 }
