@@ -1,29 +1,27 @@
 package eu.cityopt.DTO;
 
+import java.util.Date;
 import java.util.Set;
 
+import eu.cityopt.model.ExtParamValSet;
 import lombok.Getter;
 import lombok.Setter;
 
-//@Data
-//@DomainClass("eu.cityopt.model.Project")
 public class ProjectDTO {
-		//@MappedBy(readOnly = true)
+
 		@Getter @Setter private int prjid;
+		@Getter @Setter private ExtParamValSetDTO extparamvalset;
 		@Getter @Setter private String name;
 		@Getter @Setter private String location;
-		//@NotMapped
 		@Getter @Setter private String projectCreator;
-		
 		@Getter @Setter private String description;
-		
 		@Getter @Setter private SimulationModelDTO simulationmodel;
 		@Getter @Setter private String designtarget;
-//		private Date timehorizon;
-//		private Date createdon;
-//		private Date updatedon;
-//		private Integer createdby;
-//		private Integer updatedby;
+		private Date timehorizon;
+		private Date createdon;
+		private Date updatedon;
+		private Integer createdby;
+		private Integer updatedby;
 //		private Set<ObjectiveFunction> objectivefunctions = new HashSet<ObjectiveFunction>(
 //				0);
 		//@MappedBy(typeConverter = "scenarioToList")
