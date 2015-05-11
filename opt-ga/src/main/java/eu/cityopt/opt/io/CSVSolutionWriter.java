@@ -70,6 +70,17 @@ public class CSVSolutionWriter implements SolutionWriter {
         seq.write(row.collect(Collectors.toList()));
     }
 
+
+    /**
+     * Flush internal buffers and the underlying stream.
+     */
+    @Override
+    public synchronized void flush() throws IOException {
+        if (seq != null) {
+            seq.flush();
+        }
+    }
+
     /**
      * Flush any internal buffers.  This does not close the underlying stream.
      */
