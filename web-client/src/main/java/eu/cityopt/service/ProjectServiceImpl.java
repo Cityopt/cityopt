@@ -401,10 +401,10 @@ public class ProjectServiceImpl implements ProjectService{
 				if(ts != null)
 					Hibernate.initialize(ts.getTimeseriesvals());
 			}
-			TimeSeries ts = ep.getTimeseries();
-			if(ts != null)
-				Hibernate.initialize(ts.getTimeseriesvals());
-			log.info("initializing extparams done");
+//			TimeSeries ts = ep.getTimeseries();
+//			if(ts != null)
+//				Hibernate.initialize(ts.getTimeseriesvals());
+//			log.info("initializing extparams done");
 		}
 		///check single fields
 		for(Metric m : project.getMetrics()){

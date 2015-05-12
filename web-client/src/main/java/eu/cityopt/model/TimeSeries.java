@@ -28,7 +28,6 @@ public class TimeSeries implements java.io.Serializable {
 	private int tseriesid;
 	private Type type;
 	private Set<TimeSeriesVal> timeseriesvals = new HashSet<TimeSeriesVal>(0);
-	private Set<ExtParam> extparams = new HashSet<ExtParam>(0);
 	private Set<MetricVal> metricvals = new HashSet<MetricVal>(0);
 	private Set<SimulationResult> simulationresults = new HashSet<SimulationResult>(
 			0);
@@ -42,13 +41,12 @@ public class TimeSeries implements java.io.Serializable {
 	}
 
 	public TimeSeries(int tseriesid, Type type,
-			Set<TimeSeriesVal> timeseriesvals, Set<ExtParam> extparams,
+			Set<TimeSeriesVal> timeseriesvals,
 			Set<MetricVal> metricvals, Set<SimulationResult> simulationresults,
 			Set<ExtParamVal> extparamvals) {
 		this.tseriesid = tseriesid;
 		this.type = type;
 		this.timeseriesvals = timeseriesvals;
-		this.extparams = extparams;
 		this.metricvals = metricvals;
 		this.simulationresults = simulationresults;
 		this.extparamvals = extparamvals;
@@ -59,7 +57,6 @@ public class TimeSeries implements java.io.Serializable {
 		t.tseriesid = this.tseriesid;
 		t.type = this.type;
 		t.timeseriesvals = this.timeseriesvals;
-		t.extparams = this.extparams;
 		t.metricvals = this.metricvals;
 		t.simulationresults = this.simulationresults;
 		t.extparamvals = this.extparamvals;
@@ -94,15 +91,6 @@ public class TimeSeries implements java.io.Serializable {
 
 	public void setTimeseriesvals(Set<TimeSeriesVal> timeseriesvals) {
 		this.timeseriesvals = timeseriesvals;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries", cascade={CascadeType.PERSIST})
-	public Set<ExtParam> getExtparams() {
-		return this.extparams;
-	}
-
-	public void setExtparams(Set<ExtParam> extparams) {
-		this.extparams = extparams;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries", cascade={CascadeType.PERSIST})

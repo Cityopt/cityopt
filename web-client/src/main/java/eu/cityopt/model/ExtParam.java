@@ -32,29 +32,24 @@ public class ExtParam implements java.io.Serializable {
 	private int extparamid;
 	private Type type;
 	private Unit unit;
-	private TimeSeries defaulttimeseries;
 	private Project project;
-	private String defaultvalue;
 	private String name;
 	private Set<ExtParamVal> extparamvals = new HashSet<ExtParamVal>(0);
 
 	public ExtParam() {
 	}
 
-	public ExtParam(int extparamid, String defaultvalue) {
+	public ExtParam(int extparamid) {
 		this.extparamid = extparamid;
-		this.defaultvalue = defaultvalue;
 	}
 
-	public ExtParam(int extparamid, Type type, Unit unit, TimeSeries timeseries,
-			Project project, String defaultvalue, String name,
+	public ExtParam(int extparamid, Type type, Unit unit,
+			Project project, String name,
 			Set<ExtParamVal> extparamvals) {
 		this.extparamid = extparamid;
 		this.type = type;
 		this.unit = unit;
-		this.defaulttimeseries = timeseries;
 		this.project = project;
-		this.defaultvalue = defaultvalue;
 		this.name = name;
 		this.extparamvals = extparamvals;
 	}
@@ -64,9 +59,7 @@ public class ExtParam implements java.io.Serializable {
 		c.extparamid = this.extparamid;
 		c.type = this.type;
 		c.unit = this.unit;
-		c.defaulttimeseries = this.defaulttimeseries;
 		c.project = this.project;
-		c.defaultvalue = this.defaultvalue;
 		c.name = this.name;
 		c.extparamvals = this.extparamvals;
 		return c;
@@ -104,16 +97,6 @@ public class ExtParam implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "defaulttimeseries")
-	public TimeSeries getTimeseries() {
-		return this.defaulttimeseries;
-	}
-
-	public void setTimeseries(TimeSeries timeseries) {
-		this.defaulttimeseries = timeseries;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "prjid")
 	public Project getProject() {
 		return this.project;
@@ -121,15 +104,6 @@ public class ExtParam implements java.io.Serializable {
 
 	public void setProject(Project project) {
 		this.project = project;
-	}
-
-	@Column(name = "defaultvalue", length = 50)
-	public String getDefaultvalue() {
-		return this.defaultvalue;
-	}
-
-	public void setDefaultvalue(String defaultvalue) {
-		this.defaultvalue = defaultvalue;
 	}
 
 	@Column(name = "name", length = 50)
