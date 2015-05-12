@@ -42,7 +42,8 @@
   <metric name="seriesmetric" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW"/>
   <decisionvariable/>
   <outputvariable name="PI12_MIX_MASS_FLOW"/>
-  <extparam defaultvalue="100" name="d"/>
+  <extparam name="d"/>
+  <extparamval value="100"/>
   <algoparam/>
   <algoparamval/>
   <appuser/>

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <dataset>
   <datareliability/>
+  <extparamvalset name="defaults"/>
   <project name="Project 1" location="dummy"/>
   <project name="Plumbing test project" location="Helsinki"/>
   <component name="dummy"/>
@@ -42,7 +43,8 @@
   <metric name="seriesmetric" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW"/>
   <decisionvariable/>
   <outputvariable name="PI12_MIX_MASS_FLOW"/>
-  <extparam defaultvalue="100" name="d"/>
+  <extparam name="d"/>
+  <extparamval value="100"/>
   <algoparam/>
   <algoparamval/>
   <appuser/>

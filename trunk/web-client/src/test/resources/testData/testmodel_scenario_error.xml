@@ -4,7 +4,8 @@
 
   <simulationmodel modelid="1" description="Apros test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="2015-01-01 00:00:00"/>
 
-  <project prjid="1" name="Apros test project" location="Helsinki" modelid="1"/>
+  <extparamvalset extparamvalsetid="1" name="externals"/>
+  <project prjid="1" name="Apros test project" location="Helsinki" modelid="1" defaultextparamvalsetid="1"/>
 
   <algorithm algorithmid="1" description="grid search"/>
   <algoparam aparamsid="1" algorithmid="1" name="max runtime [minutes]" defaultValue="1000000"/>
@@ -83,8 +84,13 @@
   <timeseriesval tseriesid="1" tseriesvalid="1" time="1970-01-01 00:00:00" value="100.0"/>
   <timeseriesval tseriesid="1" tseriesvalid="2" time="2050-01-01 00:00:00" value="100.0"/>
 
-  <extparam prjid="1" defaultvalue="dummy" defaultTimeSeries="1" name="fuel_cost" unitid="6" typeid="6"/>
-  <extparam prjid="1" defaultvalue="100" name="x" unitid="1" typeid="1"/>
+  <extparam extparamid="1" prjid="1" name="fuel_cost" unitid="6" typeid="6"/>
+  <extparam extparamid="2" prjid="1" name="x" unitid="1" typeid="1"/>
+
+  <extparamval extparamvalid="1" extparamid="1" value="[null]" tseriesid="1"/>
+  <extparamval extparamvalid="2" extparamid="2" value="100"/>
+  <extparamvalsetcomp extparamvalsetid="1" extparamvalid="1"/>
+  <extparamvalsetcomp extparamvalsetid="1" extparamvalid="2"/>
 
   <metric prjid="1" name="fuelconsumption" unitid="1" typeid="1" expression="integrat(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
   <metric prjid="1" name="fuelcost" unitid="1" typeid="1" expression="integrate(fue_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>

@@ -374,7 +374,8 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                 metricValues.getResults().getInput().getExternalParameters();
         List<Runnable> idUpdateList = new ArrayList<Runnable>();
         simulationService.saveExternalParameterValues(
-                scenario.getProject(), simExternals, scenarioMetrics, null, idUpdateList);
+                scenario.getProject(), simExternals, null,
+                scenarioMetrics, null, idUpdateList);
 
         Namespace namespace = metricValues.getResults().getNamespace();
         for (Metric metric : scenario.getProject().getMetrics()) {
@@ -494,8 +495,10 @@ public class DbSimulationStorage implements DbSimulationStorageI {
             ScenarioGenerator scenarioGenerator, Collection<Solution> paretoFront) {
         Set<Integer> dominantScenarioIds = new HashSet<>();
         for (Solution solution : paretoFront) {
-            int scenarioId = getScenario(solution.input).getScenid();
-            dominantScenarioIds.add(scenarioId);
+            Scenario scenario = getScenario(solution.input);
+            if (scenario != null) {
+                dominantScenarioIds.add(scenario.getScenid());
+            }
         }
         for (ScenGenResult scenGenResult : scenarioGenerator.getScengenresults()) {
             int scenarioId = scenGenResult.getScenario().getScenid();

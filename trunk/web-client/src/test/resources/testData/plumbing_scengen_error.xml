@@ -4,8 +4,11 @@
 
   <simulationmodel modelid="1" description="Plumbing test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="2015-01-01 00:00:00"/>
 
+  <extparamvalset extparamvalsetid="0" name="defaults"/>
+  <extparamvalset extparamvalsetid="1" name="scengentest"/>
+
   <project prjid="1" name="Project 1" location="dummy" modelid="1"/>
-  <project prjid="2" name="Plumbing test project" location="Helsinki" modelid="1"/>
+  <project prjid="2" name="Plumbing test project" location="Helsinki" modelid="1" defaultextparamvalsetid="0"/>
 
   <algorithm algorithmid="1" description="grid search"/>
   <algoparam aparamsid="1" algorithmid="1" name="max runtime [minutes]" defaultValue="1000000"/>
@@ -50,11 +53,13 @@
 
   <outputvariable outvarid="1" name="PI12_MIX_MASS_FLOW" unitid="6" typeid="6" componentid="2"/>
 
-  <extparam extparamid="1" prjid="2" defaultvalue="100" name="d" unitid="1" typeid="1"/>
+  <extparam extparamid="1" prjid="2" name="d" unitid="1" typeid="1"/>
 
-  <extparamvalset extparamvalsetid="1"/>
+  <extparamval extparamvalid="0" extparamid="1" value="99"/>
   <extparamval extparamvalid="1" extparamid="1" value="100.0"/>
-  <extparamvalsetcomp id="1" extparamvalsetid="1" extparamvalid="1"/>
+
+  <extparamvalsetcomp extparamvalsetid="0" extparamvalid="0"/>
+  <extparamvalsetcomp extparamvalsetid="1" extparamvalid="1"/>
 
   <metric prjid="1" name="dummy" unitid="1" typeid="1" expression="C01.typ"/>
   <metric prjid="2" name="symmetric" unitid="1" typeid="1" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>

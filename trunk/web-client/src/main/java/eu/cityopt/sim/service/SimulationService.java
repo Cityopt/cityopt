@@ -144,7 +144,8 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         Project project = scenario.getProject();
         Namespace namespace = makeProjectNamespace(project);
 
-        ExternalParameters externals = loadExternalParametersFromDefaults(project, namespace);
+        ExternalParameters externals = loadExternalParametersFromSet(
+                project.getExtparamvalset(), namespace);
         SimulationInput input = loadSimulationInput(scenario, externals);
         SimulationStorage storage = makeDbSimulationStorage(project.getPrjid(), externals);
 
@@ -322,26 +323,8 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             ExtParamValSet extParamValSet = extParamValSetRepository.findOne(extParamValSetId);
             return loadExternalParametersFromSet(extParamValSet, namespace);
         } else {
-            return loadExternalParametersFromDefaults(project, namespace);
+            return loadExternalParametersFromSet(project.getExtparamvalset(), namespace);
         }
-    }
-
-    /** Loads the project-specific default values of external parameters. */
-    public ExternalParameters loadExternalParametersFromDefaults(
-            Project project, Namespace namespace) throws ParseException {
-        ExternalParameters simExternals = new ExternalParameters(namespace);
-        for (ExtParam extParam : project.getExtparams()) {
-            Type extType = namespace.externals.get(extParam.getName());
-            Object simValue;
-            if (extType.isTimeSeriesType()) {
-                simValue = loadTimeSeries(extParam.getTimeseries(), extType,
-                        namespace.evaluator, namespace.timeOrigin);
-            } else {
-                simValue = extType.parse(extParam.getDefaultvalue(), namespace);
-            }
-            simExternals.put(extParam.getName(), simValue);
-        }
-        return simExternals;
     }
 
     /** Loads an external parameter value set. */
@@ -534,46 +517,49 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     }
 
     ExtParamValSet saveExternalParameterValues(Project project,
-            ExternalParameters simExternals, ScenarioMetrics newScenarioMetrics,
-            ScenarioGenerator newScenarioGenerator, List<Runnable> idUpdateList) {
+            ExternalParameters simExternals, String setName,
+            ScenarioMetrics newScenarioMetrics, ScenarioGenerator newScenarioGenerator,
+            List<Runnable> idUpdateList) {
         Integer extId = simExternals.getExternalId();
+        ExtParamValSet extParamValSet = null;
         if (extId != null) {
             // TODO: Should we check if the external parameter value set has changed?
-            return extParamValSetRepository.findOne(extId);
-        }
-        Namespace namespace = simExternals.getNamespace();
+            extParamValSet = extParamValSetRepository.findOne(extId);
+        } else {
+            Namespace namespace = simExternals.getNamespace();
+    
+            extParamValSet = new ExtParamValSet();
+            extParamValSet.setName(setName);
+            for (ExtParam extParam : project.getExtparams()) {
+                String extName = extParam.getName();
+                Type simType = namespace.externals.get(extName);
+                if (simType != null) {
+                    eu.cityopt.model.Type type = typeRepository.findByNameLike(simType.name);
+                    ExtParamVal extParamVal = new ExtParamVal();
+                    extParamVal.setExtparam(extParam);
+                    if (simType.isTimeSeriesType()) {
+                        TimeSeries timeSeries = saveTimeSeries(
+                                simExternals.getTS(extName), type,
+                                namespace.timeOrigin, idUpdateList);
+                        extParamVal.setTimeseries(timeSeries);
+                        timeSeries.getExtparamvals().add(extParamVal);
+                    } else {
+                        extParamVal.setValue(simExternals.getString(extName));
+                    }
+                    ExtParamValSetComp extParamValSetComp = new ExtParamValSetComp();
 
-        ExtParamValSet extParamValSet = new ExtParamValSet();
-        for (ExtParam extParam : project.getExtparams()) {
-            String extName = extParam.getName();
-            Type simType = namespace.externals.get(extName);
-            if (simType != null) {
-                eu.cityopt.model.Type type = typeRepository.findByNameLike(simType.name);
-                ExtParamVal extParamVal = new ExtParamVal();
-                extParamVal.setExtparam(extParam);
-                if (simType.isTimeSeriesType()) {
-                    TimeSeries timeSeries = saveTimeSeries(
-                            simExternals.getTS(extName), type,
-                            namespace.timeOrigin, idUpdateList);
-                    extParamVal.setTimeseries(timeSeries);
-                    timeSeries.getExtparamvals().add(extParamVal);
-                } else {
-                    extParamVal.setValue(simExternals.getString(extName));
+                    extParamValSetComp.setExtparamval(extParamVal);
+                    extParamVal.getExtparamvalsetcomps().add(extParamValSetComp);
+
+                    extParamValSetComp.setExtparamvalset(extParamValSet);
+                    extParamValSet.getExtparamvalsetcomps().add(extParamValSetComp);
+
+                    extParamValRepository.save(extParamVal);
+                    extParamValSetCompRepository.save(extParamValSetComp);
+                    extParamValSetRepository.save(extParamValSet);
                 }
-                ExtParamValSetComp extParamValSetComp = new ExtParamValSetComp();
-
-                extParamValSetComp.setExtparamval(extParamVal);
-                extParamVal.getExtparamvalsetcomps().add(extParamValSetComp);
-
-                extParamValSetComp.setExtparamvalset(extParamValSet);
-                extParamValSet.getExtparamvalsetcomps().add(extParamValSetComp);
-
-                extParamValRepository.save(extParamVal);
-                extParamValSetCompRepository.save(extParamValSetComp);
-                extParamValSetRepository.save(extParamValSet);
             }
         }
-
         if (newScenarioMetrics != null) {
             newScenarioMetrics.setExtparamvalset(extParamValSet);
             extParamValSet.getScenariometricses().add(newScenarioMetrics);
@@ -582,11 +568,14 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             newScenarioGenerator.setExtparamvalset(extParamValSet);
             extParamValSet.getScenariogenerators().add(newScenarioGenerator);
         }
-
-        ExtParamValSet finalExtParamValSet = extParamValSetRepository.save(extParamValSet);
-        idUpdateList.add(
-                () -> simExternals.setExternalId(finalExtParamValSet.getExtparamvalsetid()));
-        return finalExtParamValSet;
+        if (extId == null) {
+            ExtParamValSet finalExtParamValSet = extParamValSetRepository.save(extParamValSet);
+            idUpdateList.add(
+                    () -> simExternals.setExternalId(finalExtParamValSet.getExtparamvalsetid()));
+            return finalExtParamValSet;
+        } else {
+            return extParamValSet;
+        }
     }
 
     TimeSeries saveTimeSeries(TimeSeriesI simTS, eu.cityopt.model.Type type,
