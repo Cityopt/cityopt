@@ -41,7 +41,6 @@ import eu.cityopt.model.MetricVal;
 import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
-import eu.cityopt.model.ScenarioCSVModel;
 import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.model.SimResCSVModel;
 import eu.cityopt.model.SimulationModel;
@@ -439,69 +438,6 @@ public class ImportServiceImpl implements ImportService {
 			ts.getSimulationresults().add(simRes);
 			scen.getSimulationresults().add(simRes);
 		}
-	}
-	
-	public void importScenarioDataS(int prjid, File scenarioInput, 
-			List<File> timeSeriesInput, int typeid)
-			throws EntityNotFoundException, ParseException{
-		
-		//get project
-		Project project = projectRepository.findOne(prjid);
-		if(project == null)
-			throw new EntityNotFoundException("Project not found");
-		
-		//get type
-		Type type = typeRepository.findOne(typeid);
-		if(type == null)
-			throw new EntityNotFoundException("Type not found");
-		
-		//get timeseries data
-        CsvTimeSeriesData tsd = importExportService.makeTimeSeriesReader(project);
-        
-        for(File tsinFile : timeSeriesInput){
-        	String tsName = tsinFile.getName();
-        	 
-            try {
-                tsd.read(new FileInputStream(tsinFile), tsName);
-            } catch(Exception ex) {
-            	log.error("Could not import TimeSeries", ex);
-            	//TODO: throw exception
-            }
-        }      
-        
-        
-        //read simulationResult csv
-		CsvMapper mapper = new CsvMapper();
-		CsvSchema schema = CsvSchema.builder()
-				.addColumn("type")
-				.addColumn("projectname")
-				.addColumn("scenarioname")
-				.addColumn("component")
-				.addColumn("name")
-				.addColumn("value")
-				.addColumn("eparamvalsetname").build();
-		schema = schema.withColumnSeparator(',').withHeader();
-		MappingIterator<ScenarioCSVModel> it = null;
-		
-		try {
-			it = mapper.reader(SimResCSVModel.class).with(schema).readValues(scenarioInput);
-		} catch (IOException e) {
-			log.error("could not read input file", e);
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		//read csv line by line
-		while (it.hasNext()){
-			ScenarioCSVModel row = it.next();
-			
-			//get scenario 
-//			Scenario scen = scenarioRepository.findByName("");
-//			if(scen == null)
-//				throw new EntityNotFoundException("Scenario not found");
-
-		}
-		
 	}
 	
 	public JacksonBinderScenario getBinder(File file) throws JsonProcessingException, IOException{

@@ -53,7 +53,7 @@ public class TestImportExportService extends SimulationTestBase {
     @ExpectedDatabase(value="classpath:/testData/import_problem_result.xml",
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testImportOptimisationProblem() throws Exception {
-        Project project = scenarioRepository.findByName("testscenario").get(0).getProject();
+        Project project = scenarioRepository.findByNameContaining("testscenario").get(0).getProject();
         try (TempDir tempDir = new TempDir("testimport")) {
             Path problemPath = copyResource("/test-problem.csv", tempDir);
             Path paramPath = copyResource("/ga.properties", tempDir);
