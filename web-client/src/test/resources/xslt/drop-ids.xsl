@@ -13,6 +13,7 @@
   <xsl:template match="@datarelid"/>
   <xsl:template match="@decisionvarid"/>
   <xsl:template match="@decvarresultid"/>
+  <xsl:template match="@defaultextparamvalsetid"/>
   <xsl:template match="@extparamid"/>
   <xsl:template match="@extparamvalid"/>
   <xsl:template match="@extparamvalsetid"/>
@@ -50,12 +51,11 @@
   <xsl:template match="@usergroupprojectid"/>
 
   <!-- Tables with only id fields cannot be compared now, so drop them. -->
-  <xsl:template match="extparamvalset"/>
+  <!-- N.B. For now some extparamval rows require manual handling. -->
   <xsl:template match="extparamvalsetcomp"/>
   <xsl:template match="scenariometrics"/>
   <xsl:template match="timeseries"/>
   <xsl:template match="simulationresult"/>
-  <xsl:template match="extparamval"/>
   <xsl:template match="scengenoptconstraint"/>
   <xsl:template match="scengenobjectivefunction"/>
 

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <dataset>
   <datareliability/>
+  <extparamvalset name="externals"/>
   <project name="Apros test project" location="Helsinki"/>
   <component name="SAMPLE_DISTRICT"/>
   <component name="PV_TOTAL_ENERGY"/>
@@ -63,9 +64,12 @@
   <outputvariable name="MULTIPLYER_OUTPUT"/>
   <outputvariable name="MULTIPLYER_OUTPUT"/>
   <outputvariable name="MULTIPLYER_OUTPUT"/>
-  <extparam defaulttimeseries="1" defaultvalue="dummy" name="fuel_cost"/>
-  <extparam defaultvalue="100" name="x"/>
-  <extparam defaultvalue="0.01" name="y"/>
+  <extparam name="fuel_cost"/>
+  <extparam name="x"/>
+  <extparam  name="y"/>
+  <extparamval value="[null]"/>
+  <extparamval value="100"/>
+  <extparamval value="0.01"/>
   <algoparam name="max runtime [minutes]" defaultValue="1000000"/>
   <algoparam name="max scenarios" defaultValue="100"/>
   <algoparam name="max runtime [minutes]" defaultValue="1000000"/>

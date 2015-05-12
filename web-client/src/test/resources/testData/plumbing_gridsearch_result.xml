@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <dataset>
   <datareliability/>
+  <extparamvalset name="defaults"/>
+  <extparamvalset name="scengentest"/>
   <project name="Project 1" location="dummy"/>
   <project name="Plumbing test project" location="Helsinki"/>
   <component name="dummy"/>
@@ -42,7 +44,9 @@
   <metric name="symmetric" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>
   <decisionvariable lowerbound="1" upperbound="d/50"/>
   <outputvariable name="PI12_MIX_MASS_FLOW"/>
-  <extparam defaultvalue="100" name="d"/>
+  <extparam name="d"/>
+  <extparamval value="99"/>
+  <extparamval value="100.0"/>
   <algoparam name="max runtime [minutes]" defaultValue="1000000"/>
   <algoparam name="max scenarios" defaultValue="100"/>
   <algoparam name="max runtime [minutes]" defaultValue="1000000"/>

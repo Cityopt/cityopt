@@ -4,8 +4,9 @@
 
   <simulationmodel modelid="1" description="Plumbing test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="2015-01-01 00:00:00"/>
 
+  <extparamvalset extparamvalsetid="1" name="defaults"/>
   <project prjid="1" name="Project 1" location="dummy" modelid="1"/>
-  <project prjid="2" name="Plumbing test project" location="Helsinki" modelid="1"/>
+  <project prjid="2" name="Plumbing test project" location="Helsinki" modelid="1" defaultextparamvalsetid="1"/>
 
   <type typeid="1" name="Double"/>
   <type typeid="2" name="Integer"/>
@@ -44,7 +45,10 @@
   <inputparamval scendefinitionid="2" scenid="1" inputid="2" value="2015-01-01T00:00:00"/>
   <inputparamval scendefinitionid="3" scenid="1" inputid="3" value="2015-01-01T00:01:00"/>
 
-  <extparam prjid="2" defaultvalue="100" name="d" unitid="1" typeid="1"/>
+  <extparam extparamid="1" prjid="2" name="d" unitid="1" typeid="1"/>
+
+  <extparamval extparamvalid="1" extparamid="1" value="100"/>
+  <extparamvalsetcomp extparamvalsetid="1" extparamvalid="1"/>
 
   <metric metid="0" prjid="1" name="dummy" unitid="1" typeid="1" expression="C01.typ"/>
   <metric metid="1" prjid="2" name="symmetric" unitid="1" typeid="1" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>

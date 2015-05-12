@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-  <!-- The tables are listed in the order their data would be inserted. -->
+  <!-- The tables are listed in such an order that the data could be inserted
+       without breaking foreign key constraints. -->
   <Type/>
   <Unit/>
   <DataReliability/>
@@ -9,6 +10,7 @@
   <AppUser/>
   <UserGroup/>
   <SimulationModel/>
+  <ExtParamValSet/>
   <Project/>
   <UserGroupProject/>
   <Component/>
@@ -19,7 +21,6 @@
   <ExtParam/>
   <Metric/>
   <ExtParamVal/>
-  <ExtParamValSet/>
   <ExtParamValSetComp/>
   <ObjectiveFunction/>
   <OptConstraint/>

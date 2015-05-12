@@ -301,13 +301,14 @@ public class ScenarioGenerationService
     }
 
     public void saveOptimisationProblem(
-            OptimisationProblem problem, ScenarioGenerator scenarioGenerator) {
+            OptimisationProblem problem, ScenarioGenerator scenarioGenerator,
+            String extParamValSetName) {
         Namespace namespace = problem.getNamespace();
 
         List<Runnable> idUpdateList = new ArrayList<>();
         simulationService.saveExternalParameterValues(
                 scenarioGenerator.getProject(), problem.getExternalParameters(),
-                null, scenarioGenerator, idUpdateList);
+                extParamValSetName, null, scenarioGenerator, idUpdateList);
         Map<String, Map<String, InputParameter>> inputParameterMap =
                 getInputParameterMap(scenarioGenerator.getProject());
         saveDecisionVariables(

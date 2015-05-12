@@ -366,7 +366,8 @@ public class ImportExportService {
      *   with the same input files.
      *   The project must also have a SimulationModel with a defined time origin
      *   in the database.
-     * @param name name for the ScenarioGenerator row
+     * @param name name for the ScenarioGenerator row.  The same name is used for
+     *   the created ExtParamValSet.
      * @param problemFile defines the objectives and constraints
      * @param algorithmId identifies the optimisation algorithm.  May be left
      *   null, in which case the algorithm can be set in algorithm parameters.
@@ -421,7 +422,7 @@ public class ImportExportService {
                     scenarioGenerator, algorithm, algorithmParameters);
         }
 
-        scenarioGenerationService.saveOptimisationProblem(problem, scenarioGenerator);
+        scenarioGenerationService.saveOptimisationProblem(problem, scenarioGenerator, name);
         scenarioGeneratorRepository.flush();
         return scenarioGenerator.getScengenid();
     }
