@@ -313,8 +313,6 @@ CREATE TABLE ExtParam
 (
 	extParamID integer NOT NULL DEFAULT nextval(('extparam_extparamid_seq'::text)::regclass),
 	prjID integer,
-	defaultTimeSeries integer,
-	defaultValue varchar(50)	,
 	name varchar(50)	,
 	typeID integer,
 	unitID integer
@@ -845,9 +843,6 @@ ALTER TABLE ExtParam ADD CONSTRAINT UQ_ExtParam_extParamName UNIQUE (name,prjID)
 CREATE INDEX IXFK_ExtParam_Project ON ExtParam (prjID ASC)
 ;
 
-CREATE INDEX IXFK_ExtParam_TimeSeries ON ExtParam (defaultTimeSeries ASC)
-;
-
 CREATE INDEX IXFK_ExtParam_Type ON ExtParam (typeID ASC)
 ;
 
@@ -1262,10 +1257,6 @@ ALTER TABLE DecisionVariableResult ADD CONSTRAINT FK_DecisionVariableResult_Scen
 
 ALTER TABLE ExtParam ADD CONSTRAINT FK_ExtParam_Project
 	FOREIGN KEY (prjID) REFERENCES Project (prjID) ON DELETE No Action ON UPDATE No Action
-;
-
-ALTER TABLE ExtParam ADD CONSTRAINT FK_ExtParam_TimeSeries
-	FOREIGN KEY (defaultTimeSeries) REFERENCES TimeSeries (tSeriesID) ON DELETE No Action ON UPDATE No Action
 ;
 
 ALTER TABLE ExtParam ADD CONSTRAINT FK_ExtParam_Type

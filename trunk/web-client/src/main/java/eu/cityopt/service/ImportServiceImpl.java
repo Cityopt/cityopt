@@ -285,16 +285,16 @@ public class ImportServiceImpl implements ImportService {
 				ep.setProject(project);
 				Unit unit = unitRepository.findByNameLike(row.ExtParamUnitName);
 				ep.setUnit(unit);
-				ep.setDefaultvalue(row.ExtParamdefaultValue);
-				if(row.ExtParamdefaultTimeseriesId != null && row.ExtParamdefaultTimeseriesId != 0){
-					if(!tsMap.containsKey(row.ExtParamdefaultTimeseriesId)){
-						//time series used as default was not imported
-					}else{
-						TimeSeries ts = tsMap.get(row.ExtParamdefaultTimeseriesId);
-						ep.setTimeseries(ts);
-						ts.getExtparams().add(ep);
-					}
-				}
+//				ep.setDefaultvalue(row.ExtParamdefaultValue);
+//				if(row.ExtParamdefaultTimeseriesId != null && row.ExtParamdefaultTimeseriesId != 0){
+//					if(!tsMap.containsKey(row.ExtParamdefaultTimeseriesId)){
+//						//time series used as default was not imported
+//					}else{
+//						TimeSeries ts = tsMap.get(row.ExtParamdefaultTimeseriesId);
+//						ep.setTimeseries(ts);
+//						ts.getExtparams().add(ep);
+//					}
+//				}
 				
 				ep = extParamRepository.save(ep);
 				epMap.put(row.ExtParamName, ep);

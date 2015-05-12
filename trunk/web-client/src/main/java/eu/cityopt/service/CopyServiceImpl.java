@@ -309,9 +309,9 @@ public class CopyServiceImpl implements CopyService {
 			epC.setExtparamid(0);
 			epC.setProject(copyProject);
 			epC.setExtparamvals(null);
-			if(epC.getTimeseries() != null){
-				epC.setTimeseries(copyTimeSeries(epC.getTimeseries()));
-			}
+//			if(epC.getTimeseries() != null){
+//				epC.setTimeseries(copyTimeSeries(epC.getTimeseries()));
+//			}
 			epC = extParamRepository.save(epC);
 			for(ExtParamVal epv : ep.getExtparamvals()){
 				ExtParamVal epvC = epv.clone();
