@@ -10,25 +10,25 @@
 <type typeid="6" name="List of Double"/>
 <type typeid="7" name="List of Integer"/>
 
-<unit unitid="1" typeid="1" name="m2" />
-<unit unitid="2" typeid="1" name="W/m2K" />
-<unit unitid="3" typeid="1" name="m" />
-<unit unitid="4" typeid="1" name="mm" />
-<unit unitid="5" typeid="1" name="MJ/kg" />
-<unit unitid="6" typeid="1" name="kW" />
-<unit unitid="7" typeid="1" name="W/m2K2" />
-<unit unitid="8" typeid="1" name="kJ/kg" />
-<unit unitid="9" typeid="1" name="€/kW" />
-<unit unitid="10" typeid="1" name="kgCO2/kW" />
-<unit unitid="11" typeid="1" name="kWh/y" />
-<unit unitid="12" typeid="1" name="kWh/a" />
-<unit unitid="13" typeid="1" name="kgCO2/a" />
-<unit unitid="14" typeid="1" name="€" />
-<unit unitid="15" typeid="1" name="m3" />
-<unit unitid="16" typeid="1" name="°C" />
-<unit unitid="17" typeid="1" name="unknown" />
+<unit unitid="1" name="m2" />
+<unit unitid="2" name="W/m2K" />
+<unit unitid="3" name="m" />
+<unit unitid="4" name="mm" />
+<unit unitid="5" name="MJ/kg" />
+<unit unitid="6" name="kW" />
+<unit unitid="7" name="W/m2K2" />
+<unit unitid="8" name="kJ/kg" />
+<unit unitid="9" name="€/kW" />
+<unit unitid="10" name="kgCO2/kW" />
+<unit unitid="11" name="kWh/y" />
+<unit unitid="12" name="kWh/a" />
+<unit unitid="13" name="kgCO2/a" />
+<unit unitid="14" name="€" />
+<unit unitid="15" name="m3" />
+<unit unitid="16" name="°C" />
+<unit unitid="17" name="unknown" />
 
-<unit unitid="18" typeid="4" name="Unit/TimeSeries/step"/>
-<unit unitid="19" typeid="5" name="Unit/TimeSeries/linear"/>
+<unit unitid="18" name="Unit/TimeSeries/step"/>
+<unit unitid="19" name="Unit/TimeSeries/linear"/>
 
 </dataset>

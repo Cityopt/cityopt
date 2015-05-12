@@ -36,7 +36,7 @@
 <extparamval extparamvalid="2" extparamid="2" value="30" />
 <extparamval extparamvalid="3" extparamid="3" value="0.1" />
 
-<extparamvalset extparamvalsetid="1"/>
+<extparamvalset extparamvalsetid="1" name="epvs1" />
 <!-- pk not set -->
 <extparamvalsetcomp extparamvalsetid="1" extparamvalid="1"/>
 <extparamvalsetcomp extparamvalsetid="1" extparamvalid="2"/>

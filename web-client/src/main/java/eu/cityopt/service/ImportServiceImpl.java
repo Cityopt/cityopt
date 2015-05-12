@@ -8,10 +8,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
@@ -19,7 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
@@ -29,9 +34,15 @@ import eu.cityopt.model.ExtParamCSVModel;
 import eu.cityopt.model.ExtParamVal;
 import eu.cityopt.model.ExtParamValSet;
 import eu.cityopt.model.ExtParamValSetComp;
+import eu.cityopt.model.InputParamVal;
+import eu.cityopt.model.InputParameter;
+import eu.cityopt.model.Metric;
+import eu.cityopt.model.MetricVal;
 import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
+import eu.cityopt.model.ScenarioCSVModel;
+import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.model.SimResCSVModel;
 import eu.cityopt.model.SimulationModel;
 import eu.cityopt.model.SimulationResult;
@@ -41,14 +52,23 @@ import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.model.Type;
 import eu.cityopt.model.Unit;
 import eu.cityopt.opt.io.CsvTimeSeriesData;
+import eu.cityopt.opt.io.JacksonBinder;
+import eu.cityopt.opt.io.JacksonBinderScenario;
+import eu.cityopt.opt.io.JacksonCsvModule;
 import eu.cityopt.opt.io.TimeSeriesData;
+import eu.cityopt.opt.io.JacksonBinderScenario.ScenarioItem;
 import eu.cityopt.repository.ComponentRepository;
 import eu.cityopt.repository.ExtParamRepository;
 import eu.cityopt.repository.ExtParamValRepository;
 import eu.cityopt.repository.ExtParamValSetCompRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
+import eu.cityopt.repository.InputParamValRepository;
+import eu.cityopt.repository.InputParameterRepository;
+import eu.cityopt.repository.MetricRepository;
+import eu.cityopt.repository.MetricValRepository;
 import eu.cityopt.repository.OutputVariableRepository;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.repository.ScenarioMetricsRepository;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.SimulationResultRepository;
 import eu.cityopt.repository.TimeSeriesRepository;
@@ -57,6 +77,7 @@ import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.repository.UnitRepository;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Evaluator;
+import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.util.TimeUtils;
 import eu.cityopt.sim.service.ImportExportService;
 
@@ -96,6 +117,15 @@ public class ImportServiceImpl implements ImportService {
 	private ScenarioRepository scenarioRepository;
 	
 	@Autowired
+	private ScenarioMetricsRepository scenarioMetricsRepository;
+	
+	@Autowired
+	private MetricRepository metricRepository;
+	
+	@Autowired
+	private MetricValRepository metricValRepository;
+	
+	@Autowired
 	private SimulationResultRepository simulationResultRepository;
 	
 	@Autowired
@@ -103,6 +133,12 @@ public class ImportServiceImpl implements ImportService {
 	
 	@Autowired
 	private OutputVariableRepository outputVariableRepository;
+	
+	@Autowired
+	private InputParameterRepository inputParameterRepository;
+	
+	@Autowired
+	private InputParamValRepository inputParamValRepository;
 	
 	@Autowired
 	private ImportExportService importExportService;
@@ -193,7 +229,7 @@ public class ImportServiceImpl implements ImportService {
 			e1.printStackTrace();
 			//TODO throw something
 		}
-		Project project = projectRepository.findOne(1);
+		Project project = projectRepository.findOne(prjid);
 		if(project == null)
 			throw new EntityNotFoundException();
 		
@@ -315,6 +351,7 @@ public class ImportServiceImpl implements ImportService {
 	@Override
 	@Transactional
 	public void importSimulationResults(int scenid, File simResInput, 
+
 			File timeSeriesInput, int typeid)
 			throws EntityNotFoundException, ParseException{
 		
@@ -402,7 +439,241 @@ public class ImportServiceImpl implements ImportService {
 			ts.getSimulationresults().add(simRes);
 			scen.getSimulationresults().add(simRes);
 		}
+	}
+	
+	public void importScenarioDataS(int prjid, File scenarioInput, 
+			List<File> timeSeriesInput, int typeid)
+			throws EntityNotFoundException, ParseException{
+		
+		//get project
+		Project project = projectRepository.findOne(prjid);
+		if(project == null)
+			throw new EntityNotFoundException("Project not found");
+		
+		//get type
+		Type type = typeRepository.findOne(typeid);
+		if(type == null)
+			throw new EntityNotFoundException("Type not found");
+		
+		//get timeseries data
+        CsvTimeSeriesData tsd = importExportService.makeTimeSeriesReader(project);
+        
+        for(File tsinFile : timeSeriesInput){
+        	String tsName = tsinFile.getName();
+        	 
+            try {
+                tsd.read(new FileInputStream(tsinFile), tsName);
+            } catch(Exception ex) {
+            	log.error("Could not import TimeSeries", ex);
+            	//TODO: throw exception
+            }
+        }      
+        
+        
+        //read simulationResult csv
+		CsvMapper mapper = new CsvMapper();
+		CsvSchema schema = CsvSchema.builder()
+				.addColumn("type")
+				.addColumn("projectname")
+				.addColumn("scenarioname")
+				.addColumn("component")
+				.addColumn("name")
+				.addColumn("value")
+				.addColumn("eparamvalsetname").build();
+		schema = schema.withColumnSeparator(',').withHeader();
+		MappingIterator<ScenarioCSVModel> it = null;
+		
+		try {
+			it = mapper.reader(SimResCSVModel.class).with(schema).readValues(scenarioInput);
+		} catch (IOException e) {
+			log.error("could not read input file", e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//read csv line by line
+		while (it.hasNext()){
+			ScenarioCSVModel row = it.next();
+			
+			//get scenario 
+//			Scenario scen = scenarioRepository.findByName("");
+//			if(scen == null)
+//				throw new EntityNotFoundException("Scenario not found");
+
+		}
 		
 	}
 	
+	public JacksonBinderScenario getBinder(File file) throws JsonProcessingException, IOException{
+		ObjectReader reader = JacksonCsvModule.getScenarioProblemReader(JacksonCsvModule.getCsvMapper());
+		FileInputStream fis = new FileInputStream(file);
+		JacksonBinderScenario binder = new JacksonBinderScenario(reader, fis);
+		binder.getItems().forEach( i -> System.out.println(i.scenarioname));
+		return binder;
+	}
+	
+	/**
+	 * reads scenario parameters (currently inputparamval and metricval) from the given files and saves them in the database. 
+	 * the project structure needs to exist - if an inputparameter, metric or externalparamvalset is not found, an exception will be thrown
+	 * 
+	 * @param prjid defines the project for the data import
+	 * @param scenarioInput defines (scenario-specific) import file
+	 * @param timeSeriesInput multiple time series files can be used, they are linked according their name
+	 * @throws EntityNotFoundException
+	 */
+	@Transactional
+	public void importScenarioData(int prjid, File scenarioInput, 
+			List<File> timeSeriesInput) throws EntityNotFoundException{
+		
+		Project project = projectRepository.findOne(prjid);
+		if(project == null)
+			throw new EntityNotFoundException();
+		
+		//create project structure from import file
+//		try {
+//			importExportService.importSimulationStructure(prjid, scenarioInput.toPath());
+//		} catch (IOException | ParseException | ScriptException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+		
+		//import TS data
+		CsvTimeSeriesData tsd = importExportService.makeTimeSeriesReader(project);
+		if(timeSeriesInput != null){
+	        for(File tsinFile : timeSeriesInput){
+	        	String tsName = tsinFile.getName();
+	        	 
+	            try {
+	                tsd.read(new FileInputStream(tsinFile), tsName);
+	            } catch(Exception ex) {
+	            	log.error("Could not import TimeSeries", ex);
+	            	//TODO: throw exception
+	            }
+	        }
+		}
+        
+		
+		JacksonBinderScenario binder = null;
+		try {
+			binder = getBinder(scenarioInput);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		for(ScenarioItem it : binder.getItems()){
+			
+			if(it.scenarioname == null || it.scenarioname.equals("")) //cannot relate to scenario
+				continue;
+			
+		    Scenario scenario = scenarioRepository.findByNamePrjid(it.scenarioname, prjid);
+		    if(scenario == null){
+		    	//create by name and default values
+		    	scenario = new Scenario();
+		    	scenario.setName(it.scenarioname);
+		    	scenario.setCreatedon(Calendar.getInstance().getTime());
+		    	scenario.setUpdatedon(Calendar.getInstance().getTime());
+		    	scenario.setProject(project);
+		    	scenario = scenarioRepository.save(scenario);
+		    }
+		    
+		    //determine type
+		    switch(it.item.kind){
+		    	case IN:
+		    		JacksonBinder.Input input = (JacksonBinder.Input) it.item;
+		    		
+		    		Component component = componentRepository.findByNameAndProject(prjid, input.comp);
+		    		if(Namespace.CONFIG_COMPONENT.equals(input.comp) //configuration component
+		    				|| input.value == null || input.value.equals("") // no value
+		    				|| input.name == null || input.name.equals("")) //no name
+		    			break;
+		    		if(component == null){
+		    			throw new EntityNotFoundException();
+		    		}
+		    		
+		    		InputParameter iParameter = inputParameterRepository
+		    				.findByNameAndCompId(input.name, component.getComponentid());
+		    		if(iParameter == null){
+		    			throw new EntityNotFoundException();
+		    		}
+		    		
+		    		InputParamVal ipVal = new InputParamVal();
+		    		ipVal.setInputparameter(iParameter);
+		    		ipVal.setScenario(scenario);
+		    		ipVal.setValue(input.value);
+		    		ipVal.setUpdatedon(Calendar.getInstance().getTime());
+		    		ipVal.setCreatedon(Calendar.getInstance().getTime());
+		    		inputParamValRepository.save(ipVal);
+		    		
+		    		break;
+				case MET:
+					
+					JacksonBinder.Metric metricJack = (JacksonBinder.Metric) it.item;
+		    		
+					Metric metricDB = metricRepository.findByNameAndProject(prjid, metricJack.name);
+					
+		    		if(metricDB == null) //metric not existing
+		    			throw new EntityNotFoundException("Metric named " + metricJack.name + " does not exist on prjid: " + prjid);
+		    			
+		    		//get timeseries if type specifies a TS
+		    		TimeSeries ts = null;
+		    		if(metricJack.type.isTimeSeriesType()){
+		    			
+		    			Type typModel = typeRepository.findByNameLike(metricJack.type.name);
+		    			if(typModel == null)
+		    				throw new EntityNotFoundException("Type with name: \"" + metricJack.type.name + "\" not found.");
+		    			
+		    			Date timeOrigin = project.getSimulationmodel().getTimeorigin();
+		    			
+		    			try{
+		    				ts = saveTimeSeriesData(tsd.getSeriesData(metricJack.value), typModel, timeOrigin.toInstant());
+		    			}catch(Exception ex){
+		    				log.error("error saving timeSeries: " + metricJack.value, ex);
+		    				//TODO: throw?
+		    				continue;
+		    			}
+		    		} else {
+//		    			try{
+		    			if(metricJack.value == null || metricJack.value.equals("")) //no ts and no value..just metric definition?
+		    				break;
+		    			Double.parseDouble(metricJack.value);
+//		    			}catch(NumberFormatException ex){
+//		    				
+//		    			}
+		    		}
+		    		
+		    		//find extparamvalset for scenariometrics
+		    		ExtParamValSet epvs = extParamValSetRepository.findByNameAndProject(project.getPrjid(), it.extparamvalsetname);
+		    		if(epvs == null)
+		    			throw new EntityNotFoundException("ExtParamValSet with name \"" + it.extparamvalsetname + "\" not found.");
+		    		
+		    		//check if scenariometrics exist for this set
+		    		epvs.getScenariometricses();
+		    		ScenarioMetrics sm = scenarioMetricsRepository.findByScenidAndExtParamValSetid(scenario.getScenid(), epvs.getExtparamvalsetid());
+		    		
+		    		if(sm == null){
+		    			//create scenariometrics
+		    			sm = new ScenarioMetrics();
+		    			sm.setExtparamvalset(epvs);
+		    			sm.setScenario(scenario);
+		    			sm = scenarioMetricsRepository.saveAndFlush(sm);
+		    		}
+		    		
+		    		//create metric value
+		    		MetricVal mVal = new MetricVal();
+		    		mVal.setMetric(metricDB);
+		    		if(ts != null)
+		    			mVal.setTimeseries(ts);
+		    		else
+		    			mVal.setValue(metricJack.value);
+		    		
+		    		mVal.setScenariometrics(sm);
+		    		mVal = metricValRepository.save(mVal);	
+					
+					break;
+				default:
+					break;
+		    }
+		}
+	}
 }

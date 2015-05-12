@@ -123,7 +123,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<ScenarioDTO> findByName(String name) {
-		List<Scenario> scenarios = scenarioRepository.findByName(name);
+		List<Scenario> scenarios = scenarioRepository.findByNameContaining(name);
 		List<ScenarioDTO> result 
 			= modelMapper.map(scenarios, new TypeToken<List<ScenarioDTO>>() {}.getType());
 		return result;

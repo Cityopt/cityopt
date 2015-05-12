@@ -42,7 +42,7 @@ public class InputParameterServiceImpl implements InputParameterService {
 	
 	@Transactional(readOnly = true)
 	public List<InputParameterDTO> findByName(String name) {
-		List<InputParameter> iparams = inputParameterRepository.findByName(name);
+		List<InputParameter> iparams = inputParameterRepository.findByNameContaining(name);
 		List<InputParameterDTO> result 
 			= modelMapper.map(iparams, new TypeToken<List<InputParameterDTO>>() {}.getType());
 		return result;
