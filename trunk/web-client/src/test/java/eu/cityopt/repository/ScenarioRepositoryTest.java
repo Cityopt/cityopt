@@ -72,7 +72,7 @@ public class ScenarioRepositoryTest {
 	@Test
 	@Rollback(true)
 	public void findScenarioByName() {
-		List<Scenario> resList = scenarioRepository.findByName(testScenName);
+		List<Scenario> resList = scenarioRepository.findByNameContaining(testScenName);
 		Scenario result = resList.get(0);
 		assertNotNull(result);
 		assertEquals(testScenName, result.getName());
@@ -82,14 +82,14 @@ public class ScenarioRepositoryTest {
 	@Test
 	@Rollback(true)
 	public void updateScenario() {
-		List<Scenario> resList = scenarioRepository.findByName(testScenName);
+		List<Scenario> resList = scenarioRepository.findByNameContaining(testScenName);
 		Scenario result = resList.get(0);
 		
 		result.setDescription("this description is much better");
 		result.setUpdatedon(new Date());
 		scenarioRepository.saveAndFlush(result);
 		
-		resList = scenarioRepository.findByName(testScenName);
+		resList = scenarioRepository.findByNameContaining(testScenName);
 		Scenario result2 = resList.get(0);
 		assertEquals(result, result2);
 	}
@@ -97,12 +97,12 @@ public class ScenarioRepositoryTest {
 	@Test
 	@Rollback(true)
 	public void deleteScenario() {
-		List<Scenario> resList = scenarioRepository.findByName(testScenName);
+		List<Scenario> resList = scenarioRepository.findByNameContaining(testScenName);
 		Scenario result = resList.get(0);
 		
 		scenarioRepository.delete(result);
 		
-		resList = scenarioRepository.findByName(testScenName);
+		resList = scenarioRepository.findByNameContaining(testScenName);
 		assertTrue(resList.isEmpty());
 	}
 	

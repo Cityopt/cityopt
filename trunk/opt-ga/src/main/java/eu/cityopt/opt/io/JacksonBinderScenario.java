@@ -115,6 +115,7 @@ public class JacksonBinderScenario {
             		met.setType(type);
             		met.name = name;
             		met.kind = Kind.MET;
+            		met.value = value;
             		this.item = met;            		
             		break;
             	default:

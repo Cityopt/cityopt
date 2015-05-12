@@ -103,7 +103,7 @@ public class TestScenarioGenerationService extends SimulationTestBase {
     @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
     public void testImportedProblem() throws Exception {
         loadModel("Apros test model", "/testmodel.zip");
-        Project project = scenarioRepository.findByName("testscenario").get(0).getProject();
+        Project project = scenarioRepository.findByNameContaining("testscenario").get(0).getProject();
         Integer scId = null;
         try (TempDir tempDir = new TempDir("testimport")) {
             Path problemPath = copyResource("/test-problem.csv", tempDir);

@@ -247,8 +247,8 @@ public class JacksonBinder {
     }
     
     public static class Metric extends Var {
-        public String expression;
-
+        public String expression, value;
+        
         @Override
         public void addToNamespace(Namespace ns) {
             addToNSMap(ns.metrics);

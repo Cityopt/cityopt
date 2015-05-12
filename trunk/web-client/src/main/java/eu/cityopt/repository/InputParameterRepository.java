@@ -12,5 +12,9 @@ import eu.cityopt.model.InputParameter;
 @Repository
 public interface InputParameterRepository extends JpaRepository<InputParameter,Integer> { 
 	@Query("select i from InputParameter i where Lower(i.name) like CONCAT('%',Lower(:name),'%')")
-	List<InputParameter> findByName(@Param("name") String name);
+	List<InputParameter> findByNameContaining(@Param("name") String name);
+	
+	@Query("select i from InputParameter i where Lower(i.name) like Lower(:name)"
+			+ " and i.component.componentid = :compId")
+	InputParameter findByNameAndCompId(@Param("name") String name, @Param("compId") int compId);
 }

@@ -51,7 +51,7 @@ public class ExtParam implements java.io.Serializable {
 			Set<ExtParamVal> extparamvals) {
 		this.extparamid = extparamid;
 		this.type = type;
-		this.unit = this.unit;
+		this.unit = unit;
 		this.defaulttimeseries = timeseries;
 		this.project = project;
 		this.defaultvalue = defaultvalue;

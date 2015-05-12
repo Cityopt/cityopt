@@ -109,7 +109,7 @@ public class TestSimulationService extends SimulationTestBase {
     private void runSimulation() throws ParseException, IOException,
             ConfigurationException, InterruptedException,
             ExecutionException, ScriptException, Exception {
-        Scenario scenario = scenarioRepository.findByName("testscenario").get(0);
+        Scenario scenario = scenarioRepository.findByNameContaining("testscenario").get(0);
         Queue<Runnable> tasks = new ArrayDeque<>();
         Future<SimulationOutput> job = simulationService.startSimulation(
                 scenario.getScenid(), tasks::add);
@@ -120,7 +120,7 @@ public class TestSimulationService extends SimulationTestBase {
     }
 
     private void updateMetrics() throws ParseException, ScriptException {
-        Project project = scenarioRepository.findByName("testscenario").get(0).getProject();
+        Project project = scenarioRepository.findByNameContaining("testscenario").get(0).getProject();
         SimulationService.MetricUpdateStatus status =
                 simulationService.updateMetricValues(project.getPrjid(), null);
         System.out.println(status);
