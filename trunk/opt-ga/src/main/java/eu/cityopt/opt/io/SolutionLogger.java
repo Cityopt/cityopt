@@ -8,6 +8,8 @@ import java.nio.file.Path;
 
 import org.opt4j.core.optimizer.Optimizer;
 import org.opt4j.core.optimizer.OptimizerStateListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.cityopt.opt.ga.adapter.SolutionTransformer;
 
@@ -17,6 +19,8 @@ import eu.cityopt.opt.ga.adapter.SolutionTransformer;
  */
 public abstract class SolutionLogger
 implements OptimizerStateListener, Closeable {
+    /// For diagnostics when exceptions can't be thrown.
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
     protected OutputStream out = null;
     protected final SolutionTransformer solxform;
     protected final SolutionWriter writer;
@@ -47,8 +51,7 @@ implements OptimizerStateListener, Closeable {
         try {
             close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.warn("Error closing output file", e);
         }
     }
 

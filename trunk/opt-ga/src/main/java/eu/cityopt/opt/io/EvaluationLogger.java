@@ -37,8 +37,7 @@ implements IndividualStateListener {
                         solxform.makeSolutionFromIndividual(ind));
                 writer.flush();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                logger.warn("Error writing evaluation result", e);
             }
         }
     }
