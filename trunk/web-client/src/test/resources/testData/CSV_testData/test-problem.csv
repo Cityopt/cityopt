@@ -16,6 +16,8 @@ in,SAMPLE_DISTRICT,Heat_storage_tank_height,Double,15,,,,scenario1,
 in,SAMPLE_DISTRICT,Insulation_layer_factor,Double,1,,,,scenario1,
 in,SAMPLE_DISTRICT,Share_of_roof_area_occupied_by_PVpanels,Double,,,,panels,scenario1,
 in,SAMPLE_DISTRICT,Share_of_roof_area_occupied_by_THcollectors,Double,,,,collectors,scenario1,
+out,CHP_BOIL_TH_OUT,MULTIPLYER_OUTPUT,TimeSeries/linear,dummy,,,,scenario1,
+out,CHP_ELECT_PROD,MULTIPLYER_OUTPUT,TimeSeries/linear,fuel_cost,,,,scenario1,
 met,,fuelconsumption,Double,,,,FUEL_CONSUMPTION.MULTIPLYER_OUTPUT.values[-1],,
 met,,fuelconsumptionTS,TimeSeries/linear,dummy,,,FUEL_CONSUMPTION.TS_OUTPUT.values,testscenario2,myEPSet
 met,,fuelconsumption,Double,2,,,FUEL_CONSUMPTION.MULTIPLYER_OUTPUT.values[-1],testscenario3,myEPSet

@@ -199,6 +199,8 @@ public class JacksonBinder {
     }
     
     public static class Output extends CompVar {
+    	public String value;
+    	
         @Override
         public void addToNamespace(Namespace ns) {
             addToNSComp(ns, c -> c.outputs);
