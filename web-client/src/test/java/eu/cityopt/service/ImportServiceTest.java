@@ -164,6 +164,12 @@ public class ImportServiceTest extends SimulationTestBase {
     	for(InputParamVal val : vals)
     		System.out.println(val.getInputparameter().getName());
     	assertEquals(1,scen.getInputparamvals().stream().filter(i -> i.getInputparameter().getName().equals("Burner_efficiency")).count());
+    	
+    	List<SimulationResult> simResList = simulationResultRepository.findAll();
+    	assertEquals(2, simResList.size());
+    	for(SimulationResult sr : simResList){
+    		assertNotNull(sr.getTimeseries());
+    	}
 	}
 	
 }

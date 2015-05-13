@@ -83,9 +83,9 @@
   <timeseriesval tseriesid="1" tseriesvalid="1" time="1970-01-01 00:00:00" value="100.0"/>
   <timeseriesval tseriesid="1" tseriesvalid="2" time="2050-01-01 00:00:00" value="100.0"/>
 
-  <extparam extparamid="1" prjid="1" defaultvalue="dummy" defaultTimeSeries="1" name="fuel_cost" unitid="6" typeid="6"/>
-  <extparam extparamid="2" prjid="1" defaultvalue="100" name="x" unitid="1" typeid="1"/>
-  <extparam extparamid="3" prjid="1" defaultvalue="0.01" name="y"/>
+  <extparam extparamid="1" prjid="1" name="fuel_cost" unitid="6" typeid="6"/>
+  <extparam extparamid="2" prjid="1" name="x" unitid="1" typeid="1"/>
+  <extparam extparamid="3" prjid="1" name="y"/>
 
   <extparamval extparamvalid="1" extparamid="1" value="10"/>
   <extparamval extparamvalid="2" extparamid="2" value="20"/>

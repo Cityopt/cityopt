@@ -349,9 +349,7 @@ public class ImportServiceImpl implements ImportService {
 	
 	@Override
 	@Transactional
-	public void importSimulationResults(int scenid, File simResInput, 
-
-			File timeSeriesInput, int typeid)
+	public void importSimulationResults(int scenid, File simResInput, File timeSeriesInput, int typeid)
 			throws EntityNotFoundException, ParseException{
 		
         //get scenario 
@@ -449,8 +447,9 @@ public class ImportServiceImpl implements ImportService {
 	}
 	
 	/**
-	 * reads scenario parameters (currently inputparamval and metricval) from the given files and saves them in the database. 
-	 * the project structure needs to exist - if an inputparameter, metric or externalparamvalset is not found, an exception will be thrown
+	 * reads scenario parameters (currently inputparamval, simulationresults and metricval) from the given files and saves them in the database. 
+	 * the project structure needs to exist - if a component, inputparameter, outputvariable, metric 
+	 * or externalparamvalset is not found, an exception will be thrown
 	 * 
 	 * @param prjid defines the project for the data import
 	 * @param scenarioInput defines (scenario-specific) import file
@@ -473,6 +472,8 @@ public class ImportServiceImpl implements ImportService {
 //			e1.printStackTrace();
 //		}
 		
+		Date timeOrigin = null;
+		
 		//import TS data
 		CsvTimeSeriesData tsd = importExportService.makeTimeSeriesReader(project);
 		if(timeSeriesInput != null){
@@ -486,8 +487,9 @@ public class ImportServiceImpl implements ImportService {
 	            	//TODO: throw exception
 	            }
 	        }
-		}
-        
+	        //get origin if TS are used
+	        timeOrigin = project.getSimulationmodel().getTimeorigin();
+		}        
 		
 		JacksonBinderScenario binder = null;
 		try {
@@ -559,8 +561,6 @@ public class ImportServiceImpl implements ImportService {
 		    			if(typModel == null)
 		    				throw new EntityNotFoundException("Type with name: \"" + metricJack.type.name + "\" not found.");
 		    			
-		    			Date timeOrigin = project.getSimulationmodel().getTimeorigin();
-		    			
 		    			try{
 		    				ts = saveTimeSeriesData(tsd.getSeriesData(metricJack.value), typModel, timeOrigin.toInstant());
 		    			}catch(Exception ex){
@@ -605,6 +605,56 @@ public class ImportServiceImpl implements ImportService {
 		    		
 		    		mVal.setScenariometrics(sm);
 		    		mVal = metricValRepository.save(mVal);	
+					
+					break;
+					
+				case OUT:
+					JacksonBinder.Output outJack = (JacksonBinder.Output) it.item;
+					SimulationResult simRes = new SimulationResult();
+					
+					Component comp = componentRepository.findByNameAndProject(project.getPrjid(),
+							outJack.comp);
+					if(comp == null){
+						throw new EntityNotFoundException("component with name '"+ outJack.comp
+								+ "' not found. ");
+					}
+					
+					OutputVariable outVar = outputVariableRepository.findByComponentAndName(comp.getComponentid(), 
+							outJack.name);
+					if(outVar == null){
+						throw new EntityNotFoundException("outputVariable with name '"+ outJack.name
+								+ "' not found. ");
+					}
+					
+					TimeSeries simResTs = new TimeSeries();
+					
+					if(outJack.type.isTimeSeriesType()){
+		    			
+		    			Type typModel = typeRepository.findByNameLike(outJack.type.name);
+		    			if(typModel == null)
+		    				throw new EntityNotFoundException("Type with name: \"" + outJack.type.name + "\" not found.");
+		    			
+		    			try{
+		    				simResTs = saveTimeSeriesData(tsd.getSeriesData(outJack.value), typModel, timeOrigin.toInstant());
+		    			}catch(Exception ex){
+		    				log.error("error saving timeSeries: " + outJack.value, ex);
+		    				//TODO: throw?
+		    				continue;
+		    			}
+		    		} else {
+		    			//outvar must be a timeseries type
+		    			//TODO throw
+		    			break;
+		    		}
+					
+					simRes.setTimeseries(simResTs);
+					simRes.setScenario(scenario);
+					simRes.setOutputvariable(outVar);
+					
+					simRes = simulationResultRepository.save(simRes);
+					outVar.getSimulationresults().add(simRes);
+					simResTs.getSimulationresults().add(simRes);
+					scenario.getSimulationresults().add(simRes);
 					
 					break;
 				default:

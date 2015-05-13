@@ -118,6 +118,15 @@ public class JacksonBinderScenario {
             		met.value = value;
             		this.item = met;            		
             		break;
+            	case OUT: 
+            		Output out = new JacksonBinder.Output();
+            		out.setType(type);
+            		out.comp = component;
+            		out.name = name;
+            		out.kind = Kind.OUT;
+            		out.value = value;
+            		this.item = out;	
+            		break;
             	default:
             		this.item = null;
 //            		throw new IllegalArgumentException();
