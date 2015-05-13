@@ -48,6 +48,7 @@ import eu.cityopt.repository.ExtParamValRepository;
 import eu.cityopt.repository.ExtParamValSetCompRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.TimeSeriesRepository;
 import eu.cityopt.repository.TimeSeriesValRepository;
@@ -102,6 +103,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     @Autowired private ExtParamValSetCompRepository extParamValSetCompRepository;
     @Autowired private TimeSeriesRepository timeSeriesRepository;
     @Autowired private TimeSeriesValRepository timeSeriesValRepository;
+    @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository;
 
     @Autowired private ApplicationContext applicationContext;
     @Autowired private ExecutorService executorService;
@@ -311,10 +313,27 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     /**
      * Loads external parameters from either an external parameter value set, or
      * the project-specific default values.
+     * @param projectId
+     * @param extParamValSetId either an identifer of an external parameter value
+     *    set, or null, in which case the default values are read.
+     * @return object containing the external parameter values.
+     */
+    @Transactional
+    public ExternalParameters loadExternalParameters(int projectId, Integer extParamValSetId)
+                throws ParseException {
+        Project project = projectRepository.findOne(projectId);
+        Namespace namespace = makeProjectNamespace(project);
+        return loadExternalParameters(project, extParamValSetId, namespace);
+    }
+
+    /**
+     * Loads external parameters from either an external parameter value set, or
+     * the project-specific default values.
      * @param project
      * @param extParamValSetId either an identifer of an external parameter value
      *    set, or null, in which case the default values are read.
      * @param namespace the project namespace
+     * @return object containing the external parameter values.
      */
     public ExternalParameters loadExternalParameters(
             Project project, Integer extParamValSetId, Namespace namespace)
@@ -366,6 +385,19 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         return ts;
     }
 
+    /**
+     * Loads the simulation input parameter values of a scenario.
+     * @param scenarioId
+     * @param simExternals external parameter values to be used when evaluating expressions
+     * @return object containing the simulation input values
+     */
+    @Transactional
+    public SimulationInput loadSimulationInput(int scenarioId, ExternalParameters simExternals)
+            throws ParseException {
+        Scenario scenario = scenarioRepository.findOne(scenarioId);
+        return loadSimulationInput(scenario, simExternals);
+    }
+
     /** Loads the simulation input parameter values of a scenario. */
     public SimulationInput loadSimulationInput(Scenario scenario, ExternalParameters simExternals) 
             throws ParseException {
@@ -377,6 +409,20 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         }
         simInput.setScenarioId(scenario.getScenid());
         return simInput;
+    }
+
+    /**
+     * Loads the simulation result data of a scenario.
+     * @param scenarioId
+     * @param simInput corresponding input data to be used when evaluating expressions
+     * @return either a SimulationResults containing result data, or a SimulationFailure
+     *   containing error information
+     */
+    @Transactional
+    public SimulationOutput loadSimulationOutput(int scenarioId, SimulationInput simInput)
+            throws ParseException {
+        Scenario scenario = scenarioRepository.findOne(scenarioId);
+        return loadSimulationOutput(scenario, simInput);
     }
 
     /** Loads the simulation result data of a scenario. */
@@ -440,6 +486,30 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         Date timeOriginDate = simulationModel.getTimeorigin();
         return (timeOriginDate != null)
                 ? timeOriginDate.toInstant() : DEFAULT_TIME_ORIGIN;
+    }
+
+    /**
+     * Loads the names and types of named objects in a project: external parameters,
+     * input parameters, output variables and metrics.  The actual values are
+     * scenario specific, and they are ignored here.
+     */
+    @Transactional
+    public Namespace makeProjectNamespace(int projectId) {
+        return makeProjectNamespace(projectRepository.findOne(projectId));
+    }
+
+    /**
+     * Loads the names and types of named objects in a project: external parameters,
+     * decision variables, input parameters, output variables and metrics.  The actual
+     * values are ignored here.
+     * @param projectId
+     * @param scenGenId id of ScenarioGenerator instance from which names and types of
+     *   decision variables will be loaded 
+     */
+    @Transactional
+    public Namespace makeProjectNamespace(int projectId, int scenGenId) {
+        return makeProjectNamespace(projectRepository.findOne(projectId),
+                scenarioGeneratorRepository.findOne(scenGenId));
     }
 
     /**
