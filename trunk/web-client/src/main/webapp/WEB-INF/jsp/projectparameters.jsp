@@ -3,6 +3,7 @@
 <%--@elvariable id="selectedComponent" type="com.cityopt.DTO.ComponentDTO"--%>
 <%--@elvariable id="inputParam" type="com.cityopt.DTO.InputParameterDTO"--%>
 <%--@elvariable id="extParam" type="com.cityopt.DTO.ExtParamDTO"--%>
+<%--@elvariable id="extParamVal" type="com.cityopt.DTO.ExtParamValDTO"--%>
 <%--@elvariable id="selectedcompid" type="int"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -137,6 +138,16 @@
 							</tr>
 							<tr>
 								<td>
+									<b>External parameter set</b>
+									${project.extparamvalset.name} id ${project.extparamvalset.extparamvalsetid}
+									<br>
+									<table class="tablestyle">
+										
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td>
 									<b>External parameters</b>
 								</td>
 							</tr>
@@ -147,23 +158,23 @@
 											<td>
 												<table class="tablestyle" width="750">
 													<col style="width:200px">
-													<col style="width:50px">
+													<col style="width:200px">
 													<col style="width:100px">
 													<col style="width:50px">
 													<tr height="20">
 													    <th>Name</th>
-													    <th>Id</th>
-													    <th>Default value</th>
+													    <th>Comment</th>
+													    <th>Value</th>
 													    <th>Edit</th>
 													</tr>
 													
-													<c:forEach items="${extParams}" var="extParam">
+													<c:forEach items="${extParamVals}" var="extParamVal">
 													<tr>
-														<td>${extParam.name}</td>
-												    	<td>${extParam.extparamid}</td>
-												    	<td>${extParam.defaultvalue}</td>
+														<td>${extParamVal.extparam.name}</td>
+														<td>${extParamVal.comment}</td>
+												    	<td>${extParamVal.value}</td>
 												    	<td>
-															<a href="<c:url value='editextparam.html?extparamid=${extParam.extparamid}'/>">
+															<a href="<c:url value='editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}'/>">
 																<button align="right" type="button" value="Edit">Edit</button>
 															</a>
 														</td>
@@ -174,7 +185,7 @@
 										</tr>
 										<tr>
 											<td width="400" align="right">
-												<a href="createextparam.html"><button type="button">Create external parameter</button></a>
+												<a href="selectextparamset.html"><button type="button">Select external parameter set</button></a>
 											</td>
 											<td align="right">
 												<a href="editproject.html"><button type="button">Close</button></a>

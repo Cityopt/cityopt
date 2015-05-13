@@ -33,7 +33,7 @@
 								<td><form:input type="text" path="name" style="width:200px"/></td>
 								<td>Description:</td>
 								<td rowspan="2"><textarea id="description" rows="2" style="width: 300px"></textarea></td>
-								<td align="right"><input type="submit" value="Run search" style="width: 100px"></td>
+								<td align="right"><a href="databaseoptimization"><button type="button">Run search</button></a></td>
 							</tr>
 							<tr>						
 								<td>User:</td>

@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,6 +39,7 @@ import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ComponentInputParamDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
+import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
@@ -55,17 +57,22 @@ import eu.cityopt.DTO.TimeSeriesDTO;
 import eu.cityopt.DTO.TimeSeriesValDTO;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
+import eu.cityopt.model.OptSearchConst;
+import eu.cityopt.model.Project;
 import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.model.Type;
+import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AppUserServiceImpl;
 import eu.cityopt.service.AprosService;
 import eu.cityopt.service.ComponentInputParamDTOServiceImpl;
 import eu.cityopt.service.ComponentServiceImpl;
 import eu.cityopt.service.CopyServiceImpl;
+import eu.cityopt.service.DatabaseSearchOptimizationService;
 import eu.cityopt.service.DecisionVariableServiceImpl;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ExtParamServiceImpl;
 import eu.cityopt.service.ExtParamValServiceImpl;
+import eu.cityopt.service.ExtParamValSetServiceImpl;
 import eu.cityopt.service.InputParamValServiceImpl;
 import eu.cityopt.service.InputParameterServiceImpl;
 import eu.cityopt.service.MetricServiceImpl;
@@ -82,6 +89,8 @@ import eu.cityopt.service.TimeSeriesServiceImpl;
 import eu.cityopt.service.TypeServiceImpl;
 import eu.cityopt.service.UnitServiceImpl;
 import eu.cityopt.sim.eval.ConfigurationException;
+import eu.cityopt.sim.eval.ExternalParameters;
+import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.BarChartVisualization;
 import eu.cityopt.web.ScatterPlotVisualization;
@@ -95,6 +104,9 @@ public class ProjectController {
 	
 	@Autowired
 	ProjectServiceImpl projectService; 
+	
+	@Autowired
+	ProjectRepository projectRepository;
 	
 	@Autowired
 	ScenarioServiceImpl scenarioService;
@@ -120,6 +132,9 @@ public class ProjectController {
 	@Autowired
 	ExtParamValServiceImpl extParamValService;
 
+	@Autowired
+	ExtParamValSetServiceImpl extParamValSetService;
+	
 	@Autowired
 	MetricServiceImpl metricService;
 
@@ -161,6 +176,9 @@ public class ProjectController {
 	
 	@Autowired
 	DecisionVariableServiceImpl decisionVarService;
+	
+	@Autowired
+	DatabaseSearchOptimizationService dbOptService;
 	
 	@RequestMapping(value="createproject", method=RequestMethod.GET)
 	public String getCreateProject(Map<String, Object> model) {
@@ -821,7 +839,12 @@ public class ProjectController {
 			newFunc.setProject(project);
 			newFunc = objFuncService.save(newFunc);
 			optSet.setObjectivefunction(newFunc);
-			optSet = optSetService.save(optSet);
+			
+			try {
+				optSet = optSetService.update(optSet);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 
 		model.put("optimizationset", optSet);
@@ -987,6 +1010,32 @@ public class ProjectController {
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 		model.put("metrics", metrics);
 
+		return "editoptimizationset";
+	}
+	
+	@RequestMapping(value="databaseoptimization", method=RequestMethod.GET)
+	public String getDatabaseOptimization(Map<String, Object> model) {
+
+		OptimizationSetDTO optSet = null;
+		
+		if (model.containsKey("optimizationset"))
+		{
+			optSet = (OptimizationSetDTO) model.get("optimizationset");
+			model.put("optimizationset", optSet);
+		}
+		else
+		{
+			return "error";
+		}
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+
+		//dbOptService.
 		return "editoptimizationset";
 	}
 	
@@ -1167,7 +1216,7 @@ public class ProjectController {
 				e.printStackTrace();
 			}
 			
-			optSet = optSetService.save(optSet);
+			optSet = optSetService.update(optSet);
 		}
 
 		List<OptConstraintDTO> optSearchConstraints = null;
@@ -1183,14 +1232,63 @@ public class ProjectController {
 	}
 	
 	@RequestMapping(value="importobjfunction",method=RequestMethod.GET)
-	public String getImportObjFunction(Model model) {
-	
+	public String getImportObjFunction(Map<String, Object> model,
+		@RequestParam(value="objectivefunctionid", required=false) String selectedObjFuncId) {
+
+		if (selectedObjFuncId != null && !selectedObjFuncId.isEmpty())
+		{
+			int nSelectedObjFuncId = Integer.parseInt(selectedObjFuncId);
+			ObjectiveFunctionDTO objFunc = null;
+			
+			try {
+				objFunc = objFuncService.findByID(nSelectedObjFuncId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			OptimizationSetDTO optSet = null;
+			
+			if (model.containsKey("optimizationset"))
+			{
+				optSet = (OptimizationSetDTO) model.get("optimizationset");
+				
+				try {
+					optSet = optSetService.findByID(optSet.getOptid());
+				} catch (NumberFormatException | EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				return "error";
+			}
+			
+			if (optSet != null && objFunc != null)
+			{
+				optSet.setObjectivefunction(objFunc);
+
+				try {
+					optSet = optSetService.update(optSet);
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+				model.put("optimizationset", optSet);
+			}
+			
+			return "editoptimizationset";
+		}
+		List<ObjectiveFunctionDTO> objFuncs = objFuncService.findAll();
+		model.put("objFuncs", objFuncs);
+		
 		return "importobjfunction";
 	}
 
 	@RequestMapping(value="importsearchconstraint",method=RequestMethod.GET)
 	public String getImportSearchConstraint(Model model) {
 	
+		List<OptSearchConst> optSearchConstraints = optSearchService.findAll();
+		model.addAttribute("constraints", optSearchConstraints);
+		
 		return "importsearchconstraint";
 	}
 
@@ -1303,14 +1401,16 @@ public class ProjectController {
 
 	@RequestMapping(value="projectparameters", method=RequestMethod.GET)
 	public String getProjectParameters(Map<String, Object> model, 
-		@RequestParam(value="selectedcompid", required=false) String selectedCompId){
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		project = projectService.findByID(project.getPrjid());
 		
 		if (project == null)
 		{
 			return "error";
 		}
+		
+		project = projectService.findByID(project.getPrjid());
+		
 		
 		//Hibernate.initialize(project.getComponents());
 		//Set<Component> projectComponents = project.getComponents();
@@ -1351,11 +1451,13 @@ public class ProjectController {
 		if (selectedCompId != null)
 		{
 			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
 			try {
 				selectedComponent = componentService.findByID(nSelectedCompId);
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
+			
 			model.put("selectedcompid", selectedCompId);
 			//Hibernate.initialize(selectedComponent.getInputparameters());
 			//model.put("inputParams", selectedComponent.getInputparameters());
@@ -1365,12 +1467,74 @@ public class ProjectController {
 		}
 
 		model.put("project", project);
-		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
-		model.put("extParams", extParams);
+		List<ExtParamValDTO> extParamVals = null;
+		
+		if (project.getExtparamvalset() != null)
+		{
+			try {
+				extParamVals = extParamValSetService.getExtParamVals(project.getExtparamvalset().getExtparamvalsetid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		model.put("extParamVals", extParamVals);
+		
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
 		
 		return "projectparameters";
+	}
+	
+	@RequestMapping(value="selectextparamset", method=RequestMethod.GET)
+	public String getSelectExtParamSet(Map<String, Object> model, 
+		@RequestParam(value="selectedextparamsetid", required=false) String selectedExtParamSetId) {
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		project = projectService.findByID(project.getPrjid());
+		ExtParamValSetDTO selectedExtParamSet = null;
+		
+		if (selectedExtParamSetId != null)
+		{
+			int nSelectedExtParamSetId = Integer.parseInt(selectedExtParamSetId);
+			
+			try {
+				selectedExtParamSet = extParamValSetService.findByID(nSelectedExtParamSetId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+
+			project.setExtparamvalset(selectedExtParamSet);
+			project = projectService.save(project);
+			
+			model.put("selectedextparamsetid", nSelectedExtParamSetId);
+			model.put("selectedExtParamSet",  selectedExtParamSet);
+			List<ExtParamValDTO> extParamVals = null;
+
+			try {
+				extParamVals = extParamValSetService.getExtParamVals(nSelectedExtParamSetId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			model.put("extParamVals", extParamVals);
+			model.put("project", project);
+			
+			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+			model.put("components", components);
+			
+			return "projectparameters";
+		}
+
+		List<ExtParamValSetDTO> extParamValSets = extParamValSetService.findAll();
+		model.put("extParamValSets", extParamValSets);
+		model.put("project", project);
+		
+		return "selectextparamset";
 	}
 	
 	@RequestMapping(value="createcomponent", method=RequestMethod.GET)
@@ -1658,7 +1822,9 @@ public class ProjectController {
 		
 		ExtParamDTO newExtParam = new ExtParamDTO();
 		newExtParam.setName(extParam.getName());
-		newExtParam.setDefaultvalue(extParam.getDefaultvalue());
+		//TODO
+		//simService.loadExternalParameters(project, extParamValSetId, namespace)
+		//newExtParam.setDefaultvalue(extParam.getDefaultvalue());
 		
 		extParamService.save(newExtParam, project.getPrjid());
 
@@ -1714,11 +1880,12 @@ public class ProjectController {
 		try {
 			updatedExtParam = extParamService.findByID(nExtParamId);
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		updatedExtParam.setName(extParam.getName());
-		updatedExtParam.setDefaultvalue(extParam.getDefaultvalue());
+		
+		//simService.loadExternalParametersFromSet(extParamValSet, namespace)
+		//updatedExtParam.setDefaultvalue(extParam.getDefaultvalue());
 		extParamService.save(updatedExtParam, project.getPrjid());
 
 		model.put("project", project);
@@ -1781,6 +1948,96 @@ public class ProjectController {
 		return "editproject";
 	}
 
+	@RequestMapping(value="createextparamset", method=RequestMethod.GET)
+	public String getCreateExtParamSet(Map<String, Object> model) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		project = projectService.findByID(project.getPrjid());
+		
+		ExtParamValSetDTO extParamValSet = new ExtParamValSetDTO();
+		
+		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+		Set<ExtParamValDTO> extParamVals = new HashSet<ExtParamValDTO>();
+		Iterator<ExtParamDTO> iter = extParams.iterator();
+		Project oldProject = projectRepository.findOne(project.getPrjid());
+		Namespace namespace = simService.makeProjectNamespace(oldProject);
+		ExternalParameters contExtParams = null;
+		
+		try {
+			contExtParams = simService.loadExternalParameters(oldProject, project.getExtparamvalset().getExtparamvalsetid(), namespace);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		while (iter.hasNext())
+		{
+			ExtParamValDTO extParamVal = new ExtParamValDTO();
+			ExtParamDTO extParam = iter.next();
+			String defaultValue = (String) contExtParams.get(extParam.getName());
+			extParamVal.setValue(defaultValue);
+			extParamVals.add(extParamVal);
+		}
+		
+		extParamValSet = extParamValSetService.save(extParamValSet);
+		
+		try {
+			extParamValSetService.addExtParamVals(extParamValSet.getExtparamvalsetid(), extParamVals);
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		
+		project.setExtparamvalset(extParamValSet);
+		project = projectService.save(project);
+		model.put("project", project);
+		
+		model.put("extParamValSet", extParamValSet);
+		model.put("extParamVals", extParamVals);
+		
+		return "createextparamset";
+	}
+
+	@RequestMapping(value="createextparamset", method=RequestMethod.POST)
+	public String getCreateExtParamSetPost(ExtParamValSetDTO extParamValSet, Map<String, Object> model) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+
+		project = projectService.findByID(project.getPrjid());
+
+		String newName = extParamValSet.getName();
+		
+		try {
+			extParamValSet = extParamValSetService.findByID(project.getExtparamvalset().getExtparamvalsetid());
+		} catch (EntityNotFoundException e2) {
+			e2.printStackTrace();
+		}
+		extParamValSet.setName(newName);
+		extParamValSet = extParamValSetService.save(extParamValSet);
+		
+		model.put("project", project);
+		List<ExtParamValDTO> listExtParamVals = null;
+		
+		try {
+			listExtParamVals = extParamValSetService.getExtParamVals(extParamValSet.getExtparamvalsetid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		model.put("extParamVals", listExtParamVals);
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+		
+		return "projectparameters";
+	}
+	
 	@RequestMapping(value="metricdefinition",method=RequestMethod.GET)
 	public String getMetricDefinition(Map<String, Object> model,
 		@RequestParam(value="metricid", required=false) String metricid,
