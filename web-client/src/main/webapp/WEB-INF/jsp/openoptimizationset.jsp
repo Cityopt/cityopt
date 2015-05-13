@@ -17,7 +17,7 @@
 		<td><%@ include file="mainmenu.inc"%></td>
 		<td width="30"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:400px;width:600px;overflow:auto">
+			<div style="overflow:scroll;height:800px;width:600px;overflow:auto">
 			<h2>Open optimization set</h2>
 			<table class="tablestyle" width="500" border="1">
 				<col style="width: 250px">
