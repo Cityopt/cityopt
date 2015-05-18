@@ -14,15 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.script.ScriptException;
-
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
@@ -43,7 +39,6 @@ import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.model.SimResCSVModel;
-import eu.cityopt.model.SimulationModel;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesCSVModel;
@@ -53,9 +48,9 @@ import eu.cityopt.model.Unit;
 import eu.cityopt.opt.io.CsvTimeSeriesData;
 import eu.cityopt.opt.io.JacksonBinder;
 import eu.cityopt.opt.io.JacksonBinderScenario;
+import eu.cityopt.opt.io.JacksonBinderScenario.ScenarioItem;
 import eu.cityopt.opt.io.JacksonCsvModule;
 import eu.cityopt.opt.io.TimeSeriesData;
-import eu.cityopt.opt.io.JacksonBinderScenario.ScenarioItem;
 import eu.cityopt.repository.ComponentRepository;
 import eu.cityopt.repository.ExtParamRepository;
 import eu.cityopt.repository.ExtParamValRepository;
@@ -74,8 +69,6 @@ import eu.cityopt.repository.TimeSeriesRepository;
 import eu.cityopt.repository.TimeSeriesValRepository;
 import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.repository.UnitRepository;
-import eu.cityopt.sim.eval.EvaluationSetup;
-import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.util.TimeUtils;
 import eu.cityopt.sim.service.ImportExportService;
@@ -438,7 +431,7 @@ public class ImportServiceImpl implements ImportService {
 		}
 	}
 	
-	public JacksonBinderScenario getBinder(File file) throws JsonProcessingException, IOException{
+	public JacksonBinderScenario getBinder(File file) throws IOException {
 		ObjectReader reader = JacksonCsvModule.getScenarioProblemReader(JacksonCsvModule.getCsvMapper());
 		FileInputStream fis = new FileInputStream(file);
 		JacksonBinderScenario binder = new JacksonBinderScenario(reader, fis);
