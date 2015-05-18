@@ -7,7 +7,6 @@ import org.opt4j.core.Individual;
 import org.opt4j.core.IndividualSet;
 import org.opt4j.core.optimizer.Optimizer;
 import org.opt4j.core.start.Constant;
-import org.python.jline.internal.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -53,7 +52,7 @@ public class PopulationDumper extends SolutionLogger  {
                 }
                 close();
             } catch (IOException e) {
-                Log.error("Error writing population", e);
+                logger.error("Error writing population", e);
             }
         }
     }
