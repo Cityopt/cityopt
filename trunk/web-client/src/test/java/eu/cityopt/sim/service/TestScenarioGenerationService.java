@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.Future;
 
@@ -32,6 +33,7 @@ import eu.cityopt.model.Algorithm;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.repository.AlgorithmRepository;
+import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.sim.eval.util.TempDir;
@@ -59,6 +61,7 @@ public class TestScenarioGenerationService extends SimulationTestBase {
     @Inject ScenarioGeneratorRepository scenarioGeneratorRepository;
     @Inject AlgorithmRepository algorithmRepository;
     @Inject ImportExportService importExportService;
+    @Inject ProjectRepository projectRepository;
 
     @Test
     @DatabaseSetup("classpath:/testData/plumbing_scengen.xml")
@@ -100,15 +103,20 @@ public class TestScenarioGenerationService extends SimulationTestBase {
 
     @Test
     @Ignore("This can take a long time")
-    @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
+    @DatabaseSetup("classpath:/testData/empty_project.xml")
     public void testImportedProblem() throws Exception {
-        loadModel("Apros test model", "/testmodel.zip");
-        Project project = scenarioRepository.findByNameContaining("testscenario").get(0).getProject();
+        Project project = projectRepository.findByName("Empty test project").get(0);
+        byte[] modelData = getResourceBytes("/testmodel.zip");
+        importExportService.importSimulationModel(
+                project.getPrjid(), null, "test project",
+                modelData, "Apros-Combustion-5.13.06-64bit",
+                Instant.parse("2015-01-01T00:00:00Z"));
         Integer scId = null;
         try (TempDir tempDir = new TempDir("testimport")) {
             Path problemPath = copyResource("/test-problem.csv", tempDir);
             Path paramPath = copyResource("/ga.properties", tempDir);
             Path tsPath = copyResource("/timeseries.csv", tempDir);
+            importExportService.importSimulationStructure(project.getPrjid(), problemPath);
             scId = importExportService.importOptimisationProblem(
                     project.getPrjid(), "import optimisation test",
                     problemPath, null, paramPath, tsPath);
