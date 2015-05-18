@@ -41,6 +41,7 @@ import eu.cityopt.repository.OutputVariableRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.repository.SimulationModelRepository;
+import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.MetricExpression;
@@ -76,6 +77,7 @@ public class ImportExportService {
     @Inject private InputParameterRepository inputParameterRepository;
     @Inject private OutputVariableRepository outputVariableRepository;
     @Inject private MetricRepository metricRepository;
+    @Inject private TypeRepository typeRepository;
 
     /**
      * Creates a SimulationModel row in the database.
@@ -224,6 +226,7 @@ public class ImportExportService {
                 extParam = new ExtParam();
                 extParam.setName(entry.getKey());
                 extParam.setProject(project);
+                extParam.setType(typeRepository.findByNameLike(type.name));
                 project.getExtparams().add(extParam);
                 changed.add(extParam);
             }
@@ -278,6 +281,7 @@ public class ImportExportService {
                 inputParameter = new InputParameter();
                 inputParameter.setName(name);
                 inputParameter.setComponent(component);
+                inputParameter.setType(typeRepository.findByNameLike(type.name));
                 component.getInputparameters().add(inputParameter);
                 changedInputParameters.add(inputParameter);
             }
@@ -309,6 +313,7 @@ public class ImportExportService {
                 outputVariable = new OutputVariable();
                 outputVariable.setName(name);
                 outputVariable.setComponent(component);
+                outputVariable.setType(typeRepository.findByNameLike(type.name));
                 component.getOutputvariables().add(outputVariable);
                 changedOutputVariables.add(outputVariable);
             }
@@ -350,6 +355,7 @@ public class ImportExportService {
                 metric.setName(name);
                 metric.setExpression(expressionMap.get(name).getSource());
                 metric.setProject(project);
+                metric.setType(typeRepository.findByNameLike(type.name));
                 project.getMetrics().add(metric);
                 changedMetrics.add(metric);
             }
