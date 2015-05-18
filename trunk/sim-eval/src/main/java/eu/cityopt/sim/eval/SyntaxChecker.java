@@ -65,11 +65,12 @@ public class SyntaxChecker {
     private final Evaluator evaluator;
     private final PyObject _checkExpressionSyntax;
 
-    private final PyDictionary environmentWithExternals;
-    private final PyDictionary environmentWithDecisions;
-    private final PyDictionary environmentWithInputs;
-    private final PyDictionary environmentWithResults;
-    private final PyDictionary environmentWithMetrics;
+    private final PyDictionary envForExternalExpressions;
+    private final PyDictionary envForInputExpressions; // null if no decision variables
+    private final PyDictionary envForPreConstraints;
+    private final PyDictionary envForMetrics;
+    private final PyDictionary envForPostConstraints;
+    private final PyDictionary envForObjectives;
     private final boolean environmentsAreComplete;
 
     /**
@@ -99,22 +100,24 @@ public class SyntaxChecker {
             if (namespace.evaluator != evaluator) {
                 throw new IllegalArgumentException("Different evaluator in namespace");
             }
-            this.environmentWithExternals = new PyDictionary();
-            this.environmentWithDecisions =
-                    (namespace.decisions != null) ? new PyDictionary() : null;
-            this.environmentWithInputs= new PyDictionary();
-            this.environmentWithResults = new PyDictionary();
-            this.environmentWithMetrics = new PyDictionary();
+            this.envForExternalExpressions = new PyDictionary();
+            this.envForInputExpressions = (namespace.decisions != null)
+                    ? new PyDictionary() : null;
+            this.envForPreConstraints = new PyDictionary();
+            this.envForMetrics = new PyDictionary();
+            this.envForPostConstraints = new PyDictionary();
+            this.envForObjectives = new PyDictionary();
             fillEnvironments(namespace);
             this.environmentsAreComplete = namespaceComplete;
         } else {
             PyDictionary globalEnvironment = new PyDictionary();
             globalEnvironment.putAll(evaluator.copyGlobalBindings());
-            this.environmentWithExternals = globalEnvironment;
-            this.environmentWithDecisions = globalEnvironment;
-            this.environmentWithInputs = globalEnvironment;
-            this.environmentWithResults = globalEnvironment;
-            this.environmentWithMetrics = globalEnvironment;
+            this.envForExternalExpressions = globalEnvironment;
+            this.envForInputExpressions = globalEnvironment;
+            this.envForPreConstraints = globalEnvironment;
+            this.envForMetrics = globalEnvironment;
+            this.envForPostConstraints = globalEnvironment;
+            this.envForObjectives = globalEnvironment;
             this.environmentsAreComplete = false;
         }
 
@@ -138,10 +141,11 @@ public class SyntaxChecker {
         for (Map.Entry<String, Type> ee : namespace.externals.entrySet()) {
             externals.put(ee.getKey(), placeholders.get(ee.getValue()));
         }
-        environmentWithExternals.putAll(externals.toBindings());
+        envForExternalExpressions.putAll(externals.toBindings());
 
-        if (environmentWithDecisions != null) {
-            DecisionValues decisions = new DecisionValues(externals);
+        DecisionValues decisions = null;
+        if (namespace.decisions != null) {
+            decisions = new DecisionValues(externals);
             for (Map.Entry<String, Type> de : namespace.decisions.entrySet()) {
                 decisions.put(null, de.getKey(), placeholders.get(de.getValue()));
             }
@@ -150,7 +154,7 @@ public class SyntaxChecker {
                     decisions.put(ce.getKey(), de.getKey(), placeholders.get(de.getValue()));
                 }
             }
-            environmentWithDecisions.putAll(decisions.toBindings());
+            envForInputExpressions.putAll(decisions.toBindings());
         }
 
         SimulationInput input = new SimulationInput(externals);
@@ -159,7 +163,13 @@ public class SyntaxChecker {
                 input.put(ce.getKey(), ie.getKey(), placeholders.get(ie.getValue()));
             }
         }
-        environmentWithInputs.putAll(input.toBindings());
+        ConstraintContext preConstraintContext = null;
+        if (decisions != null) {
+            preConstraintContext = new ConstraintContext(decisions, input);
+            envForPreConstraints.putAll(preConstraintContext.toBindings());
+        } else {
+            envForPreConstraints.putAll(input.toBindings());
+        }
 
         SimulationResults results = new SimulationResults(input, "");
         for (Map.Entry<String, Namespace.Component> ce : namespace.components.entrySet()) {
@@ -167,8 +177,9 @@ public class SyntaxChecker {
                 results.put(ce.getKey(), oe.getKey(), placeholders.get(oe.getValue()));
             }
         }
-        environmentWithResults.putAll(results.toBindings());
+        envForMetrics.putAll(results.toBindings());
 
+        MetricValues metrics = null;
         try {
             List<MetricExpression> metricList = new ArrayList<MetricExpression>();
             for (Map.Entry<String, Type> me : namespace.metrics.entrySet()) {
@@ -176,11 +187,19 @@ public class SyntaxChecker {
                 String expression = type.toConstantExpression(placeholders.get(type), namespace);
                 metricList.add(new MetricExpression(0, me.getKey(), expression, evaluator));
             }
-            MetricValues metrics = new MetricValues(results, metricList);
-            environmentWithMetrics.putAll(metrics.toBindings());
+            metrics = new MetricValues(results, metricList);
         } catch (ScriptException e) {
             // Should not happen
             throw new RuntimeException(e);
+        }
+        envForObjectives.putAll(metrics.toBindings());
+
+        if (decisions != null) {
+            ConstraintContext postConstraintContext =
+                    new ConstraintContext(preConstraintContext, metrics);
+            envForPostConstraints.putAll(postConstraintContext.toBindings());
+        } else {
+            envForPostConstraints.putAll(metrics.toBindings());
         }
     }
 
@@ -333,11 +352,11 @@ public class SyntaxChecker {
      * @return null if no errors are detected, otherwise an error message
      */
     public Error checkExternalExpression(String source) {
-        return checkExpressionSyntax(source, environmentWithExternals);
+        return checkExpressionSyntax(source, envForExternalExpressions);
     }
 
     public Error checkExternalExpression(Expression expression) {
-        return checkExpressionSyntax(expression.getSource(), environmentWithExternals,
+        return checkExpressionSyntax(expression.getSource(), envForExternalExpressions,
                 expression::mungeErrorMessage);
     }
 
@@ -350,19 +369,19 @@ public class SyntaxChecker {
      *   decision variables.
      */
     public Error checkInputExpression(String source) {
-        if (environmentWithDecisions == null) {
+        if (envForInputExpressions == null) {
             throw new IllegalStateException(
                     "Cannot check input expressions because decision variables have not been defined");
         }
-        return checkExpressionSyntax(source, environmentWithDecisions);
+        return checkExpressionSyntax(source, envForInputExpressions);
     }
 
     public Error checkInputExpression(InputExpression inputExpression) {
-        if (environmentWithDecisions == null) {
+        if (envForInputExpressions == null) {
             throw new IllegalStateException(
                     "Cannot check input expressions because decision variables have not been defined");
         }
-        return checkExpressionSyntax(inputExpression.getSource(), environmentWithDecisions,
+        return checkExpressionSyntax(inputExpression.getSource(), envForInputExpressions,
                 inputExpression::mungeErrorMessage); 
     }
 
@@ -374,12 +393,12 @@ public class SyntaxChecker {
      * @see #checkConstraintExpression(String)
      */
     public Error checkPreConstraintExpression(String source) {
-        return checkExpressionSyntax(source, environmentWithInputs);
+        return checkExpressionSyntax(source, envForPreConstraints);
     }
 
     public Error checkPreConstraintExpression(Constraint preConstraint) {
         return checkExpressionSyntax(
-                preConstraint.getExpression().getSource(), environmentWithInputs,
+                preConstraint.getExpression().getSource(), envForPreConstraints,
                 preConstraint.getExpression()::mungeErrorMessage); 
     }
 
@@ -389,11 +408,11 @@ public class SyntaxChecker {
      * @return null if no errors are detected, otherwise an error message
      */
     public Error checkMetricExpression(String source) {
-        return checkExpressionSyntax(source, environmentWithResults);
+        return checkExpressionSyntax(source, envForMetrics);
     }
 
     public Error checkMetricExpression(MetricExpression metricExpression) {
-        return checkExpressionSyntax(metricExpression.getSource(), environmentWithResults,
+        return checkExpressionSyntax(metricExpression.getSource(), envForMetrics,
                 metricExpression::mungeErrorMessage); 
     }
 
@@ -406,12 +425,12 @@ public class SyntaxChecker {
      * @return null if no errors are detected, otherwise an error message
      */
     public Error checkConstraintExpression(String source) {
-        return checkExpressionSyntax(source, environmentWithMetrics);
+        return checkExpressionSyntax(source, envForPostConstraints);
     }
 
     public Error checkConstraintExpression(Constraint postConstraint) {
         return checkExpressionSyntax(
-                postConstraint.getExpression().getSource(), environmentWithMetrics,
+                postConstraint.getExpression().getSource(), envForPostConstraints,
                 postConstraint.getExpression()::mungeErrorMessage); 
     }
 
@@ -422,12 +441,12 @@ public class SyntaxChecker {
      * @return null if no errors are detected, otherwise an error message
      */
     public Error checkObjectiveExpression(String source) {
-        return checkExpressionSyntax(source, environmentWithMetrics);
+        return checkExpressionSyntax(source, envForObjectives);
     }
 
     public Error checkObjectiveExpression(ObjectiveExpression objectiveExpression) {
         return checkExpressionSyntax(
-                objectiveExpression.getSource(), environmentWithMetrics,
+                objectiveExpression.getSource(), envForObjectives,
                 objectiveExpression::mungeErrorMessage); 
     }
 
