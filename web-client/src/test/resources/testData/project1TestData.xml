@@ -28,13 +28,13 @@
 
 <!--<inputparameter inputid="14" componentid="4" unitid="6" name="Energy_demand_profile"  />-->
 
-<extparam extparamid="1" prjid="1" unitid="8" name="Specific_Heat_Water" defaultvalue="4" />
-<extparam extparamid="2" prjid="1" unitid="9" name="Cost_of_the_N_Gas" defaultvalue="3" />
-<extparam extparamid="3" prjid="1" unitid="10" name="Emissions_N_Gas" defaultvalue="2" />
+<extparam extparamid="1" prjid="1" unitid="8" name="Specific_Heat_Water"/>
+<extparam extparamid="2" prjid="1" unitid="9" name="Cost_of_the_N_Gas"/>
+<extparam extparamid="3" prjid="1" unitid="10" name="Emissions_N_Gas"/>
 
-<extparamval extparamvalid="1" extparamid="1" value="4.18" />
-<extparamval extparamvalid="2" extparamid="2" value="30" />
-<extparamval extparamvalid="3" extparamid="3" value="0.1" />
+<extparamval extparamvalid="1" extparamid="1" value="4.18"/>
+<extparamval extparamvalid="2" extparamid="2" value="30"/>
+<extparamval extparamvalid="3" extparamid="3" value="0.1"/>
 
 <extparamvalset extparamvalsetid="1" name="epvs1" />
 <!-- pk not set -->
@@ -50,10 +50,10 @@
 <metric metid="5" prjid="1" unitid="13" name="CO2_Emissions" expression="integrate(Emissions_N_Gas*Gas_boiler.Heating_Power, 0, INFINITY, 3600)" />
 <metric metid="6" prjid="1" unitid="14" name="Cost" expression="integrate(Cost_of_the_N_Gas*Gas_boiler.Heating_Power, 0, INFINITY, 3600)" />
 
-<outputvariable outvarid="1" componentid="1" unitid="18" name="heating_power"/>
-<outputvariable outvarid="2" componentid="2" unitid="18" name="Liquid_Volume_Output"/>
-<outputvariable outvarid="3" componentid="2" unitid="18" name="Liquid_Temperature"/>
-<outputvariable outvarid="4" componentid="3" unitid="18" name="Heating_Power"/>
+<outputvariable outvarid="1" componentid="1" unitid="18" typeid="4" name="heating_power"/>
+<outputvariable outvarid="2" componentid="2" unitid="18" typeid="4" name="Liquid_Volume_Output"/>
+<outputvariable outvarid="3" componentid="2" unitid="18" typeid="4" name="Liquid_Temperature"/>
+<outputvariable outvarid="4" componentid="3" unitid="18" typeid="4" name="Heating_Power"/>
 
 <!-- input parameter constraints -->
 <optconstraint optconstid="1" prjid="1" expression="Solar_thermal_panels.collector_area" lowerbound="0.1" upperbound="250" />

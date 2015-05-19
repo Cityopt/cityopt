@@ -74,7 +74,7 @@ public class TimeSeries implements java.io.Serializable {
 		this.tseriesid = tseriesid;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST})
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "typeid")
 	public Type getType() {
 		return this.type;
@@ -84,7 +84,7 @@ public class TimeSeries implements java.io.Serializable {
 		this.type = type;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries", cascade={CascadeType.PERSIST})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries")
 	public Set<TimeSeriesVal> getTimeseriesvals() {
 		return this.timeseriesvals;
 	}
@@ -93,7 +93,7 @@ public class TimeSeries implements java.io.Serializable {
 		this.timeseriesvals = timeseriesvals;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries", cascade={CascadeType.PERSIST})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries")
 	public Set<MetricVal> getMetricvals() {
 		return this.metricvals;
 	}
@@ -111,7 +111,7 @@ public class TimeSeries implements java.io.Serializable {
 		this.simulationresults = simulationresults;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries", cascade={CascadeType.PERSIST})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries")
 	public Set<ExtParamVal> getExtparamvals() {
 		return this.extparamvals;
 	}

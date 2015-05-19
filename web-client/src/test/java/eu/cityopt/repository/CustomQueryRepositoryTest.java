@@ -47,7 +47,7 @@ public class CustomQueryRepositoryTest {
 	}
 
 	@Test
-	public void test() throws SQLException {
+	public void testfindComponentsWithInputParams() throws SQLException {
 	 	List<ComponentInputParamDTO> list = cqrepo.findComponentsWithInputParams(1, 1);
 	 	for(ComponentInputParamDTO item : list) {
 	 		System.out.print(item.getComponentid() + " | ");
