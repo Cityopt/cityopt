@@ -327,38 +327,6 @@ public class ProjectServiceDTOTest {
 	    return ous.toByteArray();
 	}
 	
-	@Autowired CopyService copyService;
-	@Autowired ScenarioRepository scenarioRepository;
-	
-	@Test
-//	@Rollback(false)
-	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
-	public void copyProject() throws EntityNotFoundException{
-
-		try {
-			copyService.copyProject(1, "copy of p1");
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		assertEquals(projectService.findByName("copy of").size(),1);
-	}	
-	
-	@Test
-//	@Rollback(false)
-	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
-	public void copyScenario() throws EntityNotFoundException{
-		try {
-			copyService.copyScenario(1, "copy of s1", true, true, true, true);
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		assertEquals(scenarioService.findByName("copy of").size(),1);
-	}	
-	
 	@Test
 //	@Rollback(false)
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})

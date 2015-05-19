@@ -22,6 +22,7 @@ import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.model.AlgoParamVal;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.DecisionVariable;
+import eu.cityopt.model.DecisionVariableResult;
 import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.ExtParamVal;
 import eu.cityopt.model.ExtParamValSet;
@@ -32,7 +33,9 @@ import eu.cityopt.model.Metric;
 import eu.cityopt.model.MetricVal;
 import eu.cityopt.model.ModelParameter;
 import eu.cityopt.model.ObjectiveFunction;
+import eu.cityopt.model.ObjectiveFunctionResult;
 import eu.cityopt.model.OptConstraint;
+import eu.cityopt.model.OptConstraintResult;
 import eu.cityopt.model.OptSearchConst;
 import eu.cityopt.model.OptSetScenarios;
 import eu.cityopt.model.OptimizationSet;
@@ -40,6 +43,7 @@ import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.ScenGenObjectiveFunction;
 import eu.cityopt.model.ScenGenOptConstraint;
+import eu.cityopt.model.ScenGenResult;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.model.ScenarioMetrics;
@@ -49,6 +53,7 @@ import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.repository.AlgoParamValRepository;
 import eu.cityopt.repository.ComponentRepository;
 import eu.cityopt.repository.DecisionVariableRepository;
+import eu.cityopt.repository.DecisionVariableResultRepository;
 import eu.cityopt.repository.ExtParamRepository;
 import eu.cityopt.repository.ExtParamValRepository;
 import eu.cityopt.repository.ExtParamValSetCompRepository;
@@ -58,7 +63,9 @@ import eu.cityopt.repository.InputParameterRepository;
 import eu.cityopt.repository.MetricRepository;
 import eu.cityopt.repository.MetricValRepository;
 import eu.cityopt.repository.ObjectiveFunctionRepository;
+import eu.cityopt.repository.ObjectiveFunctionResultRepository;
 import eu.cityopt.repository.OptConstraintRepository;
+import eu.cityopt.repository.OptConstraintResultRepository;
 import eu.cityopt.repository.OptSearchConstRepository;
 import eu.cityopt.repository.OptSetScenariosRepository;
 import eu.cityopt.repository.OptimizationSetRepository;
@@ -66,6 +73,7 @@ import eu.cityopt.repository.OutputVariableRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenGenObjectiveFunctionRepository;
 import eu.cityopt.repository.ScenGenOptConstraintRepository;
+import eu.cityopt.repository.ScenGenResultRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.repository.ScenarioMetricsRepository;
 import eu.cityopt.repository.ScenarioRepository;
@@ -92,6 +100,9 @@ public class CopyServiceImpl implements CopyService {
 	private ComponentRepository componentRepository;
 	
 	@Autowired
+	private DecisionVariableResultRepository decisionVariableResultRepository;
+	
+	@Autowired
 	private ExtParamValRepository extParamValRepository;	
 	
 	@Autowired
@@ -116,6 +127,9 @@ public class CopyServiceImpl implements CopyService {
 	private SimulationResultRepository simulationResultRepository;
 	
 	@Autowired
+	private ScenGenResultRepository scenGenResultRepository;
+	
+	@Autowired
 	private TimeSeriesRepository timeSeriesRepository;
 	
 	@Autowired
@@ -134,7 +148,13 @@ public class CopyServiceImpl implements CopyService {
 	private OptSearchConstRepository optSearchConstRepository;
 	
 	@Autowired
+	private OptConstraintResultRepository optConstraintResultRepository;
+	
+	@Autowired
 	private ObjectiveFunctionRepository objectiveFunctionRepository;
+	
+	@Autowired
+	private ObjectiveFunctionResultRepository objectiveFunctionResultRepository;
 	
 	@Autowired
 	private DecisionVariableRepository decisionVariableRepository;
@@ -216,6 +236,7 @@ public class CopyServiceImpl implements CopyService {
 		copyScenario.setOptimizationsets(null);
 		copyScenario.setOptsetscenarioses(null);	
 		copyScenario.setSimulationresults(null);
+		copyScenario.setScengenresults(null);
 		copyScenario = scenarioRepository.save(copyScenario);
 		
 		if(copyInputParamVals){
@@ -298,6 +319,7 @@ public class CopyServiceImpl implements CopyService {
 		copyProject.setObjectivefunctions(null);
 		copyProject.setScenariogenerators(null);
 		copyProject.setOptconstraints(null);
+		copyProject.setOptimizationsets(null); //copy?
 		copyProject.setScenarios(null);
 		
 		copyProject = projectRepository.save(copyProject);
@@ -349,7 +371,7 @@ public class CopyServiceImpl implements CopyService {
 		//copy components
 		Set<InputParamVal> componentsInputParamValues = new HashSet<InputParamVal>();
 		Map<Integer, InputParameter> componentsInputParameter = new HashMap<Integer, InputParameter>();
-		Set<SimulationResult> copiedSimulationResults = new HashSet<SimulationResult>();
+		Map<Integer, SimulationResult> copiedSimulationResults = new HashMap<Integer, SimulationResult>();
 		//inputParamValues need to be aligned to the right scenario later...
 		for(Component c : project.getComponents()){
 			Component cC = c.clone();
@@ -385,7 +407,7 @@ public class CopyServiceImpl implements CopyService {
 					SimulationResult srC = copySimulationResult(sr);
 					srC.setOutputvariable(ovC);
 					srC = simulationResultRepository.save(srC);
-					copiedSimulationResults.add(srC);
+					copiedSimulationResults.put(sr.getSimresid(), srC);
 				}
 			}
 		}
@@ -404,14 +426,17 @@ public class CopyServiceImpl implements CopyService {
 		//copied objective functions might be needed, if there's a reference to scenariogenerator
 		Map<Integer, ObjectiveFunction> copiedOptFunctions = new HashMap<Integer, ObjectiveFunction>();
 		Map<Integer, OptimizationSet> copiedOptimizationSets = new HashMap<Integer, OptimizationSet>();
+		Map<Integer, ScenGenResult> copiedScenGenResults = new HashMap<Integer, ScenGenResult>();
+		
 		for(ObjectiveFunction of : project.getObjectivefunctions()){
 			ObjectiveFunction ofC = of.clone();
 			ofC.setObtfunctionid(0);
 			ofC.setOptimizationsets(null);
-			ofC.setScengenobjectivefunctions(null);			
+			ofC.setScengenobjectivefunctions(null);	
+			ofC.setObjectivefunctionresults(null);
 			ofC.setProject(copyProject);
-			
 			ofC = objectiveFunctionRepository.save(ofC);
+			
 			for(OptimizationSet os : of.getOptimizationsets()){
 				OptimizationSet osC = os.clone();
 				osC.setOptid(0);
@@ -421,18 +446,52 @@ public class CopyServiceImpl implements CopyService {
 				osC.setOptsetscenarioses(null);
 				osC = optimizationSetRepository.save(osC);
 				copiedOptimizationSets.put(os.getOptid(), osC);
-			}		
+			}
+			
+			for(ObjectiveFunctionResult ofr : of.getObjectivefunctionresults()){
+				//copy ScenGenResult:
+				ScenGenResult sgrC = null;
+				if(copiedScenGenResults.containsKey(ofr.getScengenresult().getScengenresultid())){
+					sgrC = copiedScenGenResults.get(ofr.getScengenresult().getScengenresultid());
+				}else{
+					sgrC = copyScenGenResult(ofr.getScengenresult());
+					copiedScenGenResults.put(ofr.getScengenresult().getScengenresultid(), sgrC);
+				}
+				
+				ObjectiveFunctionResult ofrC = ofr.clone();
+				ofrC.setObjectivefunctionresultid(0);
+				ofrC.setScengenresult(sgrC);
+				ofrC.setObjectivefunction(ofC);
+				ofrC = objectiveFunctionResultRepository.save(ofrC);
+			}	
 			
 			if(of.getScengenobjectivefunctions() != null && of.getScengenobjectivefunctions().size() > 0){
 				copiedOptFunctions.put(of.getObtfunctionid(), ofC);
-			}			
+			}
 		}
 		em.flush();
 		Map<Integer, ScenarioGenerator> copiedScenarioGenerators = new HashMap<Integer, ScenarioGenerator>();
 		for(ScenarioGenerator sg : project.getScenariogenerators()){
 			ScenarioGenerator sgC = sg.clone();
 			sgC.setScengenid(0);
+			sgC.setAlgoparamvals(null);
+			sgC.setDecisionvariables(null);
+			sgC.setExtparamvalset(null); 
+			sgC.setModelparameters(null); 
+			sgC.setScenarios(null); //TODO copy
+			sgC.setScengenobjectivefunctions(null);
 			sgC.setScengenoptconstraints(null);
+			sgC.setScengenresults(null);
+			sgC = scenarioGeneratorRepository.save(sgC);
+			
+			//copy all scengenresults
+			for(ScenGenResult sgr : sg.getScengenresults()){
+				if(!copiedScenGenResults.containsKey(sgr.getScengenresultid())){
+					ScenGenResult sgrC = copyScenGenResult(sgr);
+					sgrC.setScenariogenerator(sgC);
+					copiedScenGenResults.put(sgr.getScengenresultid(), sgrC);
+				}
+			}
 			
 			//set reference to previously copied objective functions
 			if(sg.getScengenobjectivefunctions() != null)
@@ -449,10 +508,23 @@ public class CopyServiceImpl implements CopyService {
 				DecisionVariable dvC = new DecisionVariable();
 				dvC.setDecisionvarid(0);
 				dvC.setScenariogenerator(sgC);
+				//copy decisionvariableresult
+				for(DecisionVariableResult dvr : dv.getDecisionvariableresults()){
+					DecisionVariableResult dvrC = dvr.clone();
+					dvrC.setDecvarresultid(0);
+					//get previously copied scengenresult
+					dvrC.setScengenresult(copiedScenGenResults.get(dvr.getScengenresult().getScengenresultid()));
+					decisionVariableResultRepository.save(dvrC);
+				}
+				
 				//set reference to inputParameter
 				InputParameter ip = componentsInputParameter.get(dv.getInputparameter().getInputid());
 				dvC.setInputparameter(ip);
 				decisionVariableRepository.save(dvC);
+			}
+			
+			if(sg.getExtparamvalset() != null){
+				sgC.setExtparamvalset(copiedEPVSets.get(sg.getExtparamvalset().getExtparamvalsetid()));
 			}
 			
 			if(sg.getModelparameters() != null)
@@ -471,7 +543,7 @@ public class CopyServiceImpl implements CopyService {
 				algoParamValRepository.save(apvC);
 			}
 			
-			sgC = scenarioGeneratorRepository.save(sgC);
+			
 			copiedScenarioGenerators.put(sg.getScengenid(), sgC);
 		}
 		em.flush();
@@ -481,7 +553,8 @@ public class CopyServiceImpl implements CopyService {
 			ocC.setProject(copyProject);
 			ocC.setScengenoptconstraints(null);
 			ocC.setOptsearchconsts(null);
-			optConstraintRepository.save(ocC);
+			ocC.setOptconstraintresults(null);
+			ocC = optConstraintRepository.save(ocC);
 			for(ScenGenOptConstraint sgoc : oc.getScengenoptconstraints()){
 				ScenGenOptConstraint sgocC = new ScenGenOptConstraint();
 				ScenarioGenerator sgC = copiedScenarioGenerators.get(sgoc.getScenariogenerator().getScengenid());
@@ -494,6 +567,13 @@ public class CopyServiceImpl implements CopyService {
 				oscC.setOptimizationset(copiedOptimizationSets.get(osc.getOptimizationset().getOptid()));
 				oscC.setOptconstraint(ocC);
 				optSearchConstRepository.save(oscC);
+			}
+			for(OptConstraintResult ocr : oc.getOptconstraintresults()){
+				OptConstraintResult ocrC = ocr.clone();
+				ocrC.setOptconstresultid(0);
+				//get previously copied scengenresult
+				ocrC.setScengenresult(copiedScenGenResults.get(ocrC.getScengenresult().getScengenresultid()));
+				optConstraintResultRepository.save(ocrC);
 			}
 		}
 		em.flush();
@@ -511,10 +591,21 @@ public class CopyServiceImpl implements CopyService {
 				optSetScenarioRepository.save(ossC);
 			}
 			
-			for(SimulationResult sr : copiedSimulationResults){
-				sr.setScenario(sC);
-				sr = simulationResultRepository.save(sr);
+			for(SimulationResult sr : s.getSimulationresults()){
+				SimulationResult srC = copiedSimulationResults.get(sr.getSimresid());
+				srC.setScenario(sC);
+				srC = simulationResultRepository.save(srC);
 			}
+			
+			if(s.getScenariogenerator() != null){
+				sC.setScenariogenerator(copiedScenarioGenerators.get(s.getScenariogenerator().getScengenid()));
+			}
+			
+			for(ScenGenResult sgr : s.getScengenresults()){
+				ScenGenResult sgrC = copiedScenGenResults.get(sgr.getScengenresultid());
+				sgrC.setScenario(sC);
+				scenGenResultRepository.save(sgrC);
+			} 
 			
 			for(MetricVal mv : mvM){
 				mv.setMetric(copiedMetrics.get(mv.getMetric().getMetid()));
@@ -538,6 +629,16 @@ public class CopyServiceImpl implements CopyService {
 		}
 		em.flush();
 		return copyProject;
+	}
+	
+	private ScenGenResult copyScenGenResult(ScenGenResult sgr){
+		ScenGenResult sgrC = sgr.copy();
+		sgrC.setObjectivefunctionresults(null);
+		sgrC.setDecisionvariableresults(null);
+		sgrC.setOptconstraintresults(null);
+		sgrC.setScenariogenerator(null);
+		sgrC.setScenario(null);
+		return scenGenResultRepository.save(sgrC);
 	}
 	
 	@Transactional
@@ -580,6 +681,7 @@ public class CopyServiceImpl implements CopyService {
 		tscopy = timeSeriesRepository.save(tscopy);
 		//copy values
 		Set<TimeSeriesVal> tsvCopies = copyTimeSeriesVals(tscopy, src.getTimeseriesvals());
+		tscopy.setTimeseriesvals(tsvCopies);
 //		timeSeriesValRepository.save(tsvCopies);
 //		tscopy.setTimeseriesvals(tsvCopies);
 //		tscopy = timeSeriesRepository.save(tscopy);
@@ -600,252 +702,5 @@ public class CopyServiceImpl implements CopyService {
 		
 		return tsvCopies;		
 	}
-	
-//	@Transactional
-//	private Object doCopy(Object src, Object caller) throws IllegalAccessException, IllegalArgumentException,
-//	InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException{
-//		
-//		if (src instanceof HibernateProxy) {  
-//			try {
-//				src = ((HibernateProxy)src).getHibernateLazyInitializer().getImplementation();
-////				caller = src.getClass().getName();
-//			}catch(NullPointerException e){
-//				log.error("could not copy object: " + src.getClass(), e);
-//				e.printStackTrace();
-//				return null;				
-//			}
-//		}
-//				
-//		Object target = src.getClass().newInstance();
-////		String gak = target.getClass().getName();
-////		String [] nameS = gak.split("\\.");
-////		String name = nameS[nameS.length-1];
-////		parents.put(name.toLowerCase(), target);
-//
-//		Reflections r = new Reflections(src.getClass().getName(), new MethodAnnotationsScanner());
-//		//get Identifier setter:
-//		Set<Method> identifier = r.getMethodsAnnotatedWith(javax.persistence.Id.class);
-//		//get column setters and n:1 relations
-//		Set<Method> columns = r.getMethodsAnnotatedWith(javax.persistence.Column.class);
-////		columns.addAll(r.getMethodsAnnotatedWith(javax.persistence.ManyToOne.class));
-//		Set<Method> manytoones = r.getMethodsAnnotatedWith(javax.persistence.ManyToOne.class);
-//		//get 1:n relation (collection) setters
-//		Set<Method> collections = r.getMethodsAnnotatedWith(javax.persistence.OneToMany.class);
-//
-//		String getName = null;
-//		String setName = null;
-//		for(Method m : columns){
-//			//method is in the right class
-//			if(m.getDeclaringClass().getName().equals(src.getClass().getName())){
-//				
-//				getName = m.getName();
-//				setName = getName.replaceFirst("get", "set");
-//				String parentName = getName.substring(3).toLowerCase();
-//				
-//				System.out.println("invoking: " + getName + " on " + m.getDeclaringClass());
-//				Object getterResult = m.invoke(src);
-//				System.out.println("invoke finished. return type: " + m.getReturnType());
-//				Class<?> types = m.getReturnType();
-//				if(identifier.contains(m)) //set id null
-//					getterResult = 0;
-//
-//				if(getterResult instanceof HibernateProxy){
-//					getterResult = doCopy(getterResult, src);
-//				}
-////				if(parents.containsKey(parentName))
-////					getterResult = parents.get(parentName);
-//				Method method = target.getClass().getMethod(setName, types);
-//
-//				if(caller.getClass().getName().equals(m.getReturnType().getName()))
-//					getterResult = caller;
-//				method.invoke(target, getterResult);
-//			}
-//		}
-//		
-//		for(Method m : manytoones){
-//			//method is in the right class
-//			if(m.getDeclaringClass().getName().equals(src.getClass().getName())){
-//				
-//				getName = m.getName();
-//				setName = getName.replaceFirst("get", "set");
-//				String parentName = getName.substring(3).toLowerCase();
-//				Object getterResult = null;
-//
-//				Class<?> types = m.getReturnType();
-//
-//				if(caller.getClass().getName().equals(m.getReturnType().getName()))
-//					getterResult = caller;
-//				else if(m.getReturnType().getName().toLowerCase().equals("eu.cityopt.model.unit")
-//						|| m.getReturnType().getName().toLowerCase().equals("eu.cityopt.model.type")
-//						|| m.getReturnType().getName().toLowerCase().equals("eu.cityopt.model.datareliability")){
-//					getterResult = m.invoke(src);
-//				}
-//
-//				Method method = target.getClass().getMethod(setName, types);
-//				
-//				System.out.println("src name: " + src.getClass().getName());
-//				System.out.println("return name: " + m.getReturnType().getName());
-//				
-//				method.invoke(target, getterResult);
-//			}
-//		}
-//		
-//		for(Method m : collections){
-//			//method is in the right class
-//			if(m.getDeclaringClass().getName().equals(src.getClass().getName())){
-//				getName = m.getName();
-//				setName = getName.replaceFirst("get", "set");
-//				System.out.println("invoking: " + getName + " on " + m.getDeclaringClass());
-//				
-//				Object getterResult = m.invoke(src);
-//				System.out.println("getter result is " + getterResult);
-//				System.out.println("invoke finished. return type: " + m.getReturnType());
-//				Collection<?> coll = (Collection<?>) getterResult;
-//				Collection<Object> coll2 = new HashSet<Object>(); 
-//				//does not work because its a hibernate specific collection implementation
-//				//(Collection<Object>) m.getReturnType().newInstance();
-//				
-//				//if type is list: instantiate list
-//				if(m.getReturnType() == java.util.List.class)
-//					coll2 = new ArrayList<Object>();
-//				
-//				System.out.println("type is: " + m.getReturnType());
-//				
-//				for(Object o : coll){
-//					Object result = doCopy(o, src);
-//					coll2.add(result);
-//				}
-//				
-//				Class<?> types = m.getReturnType();
-//				Method method = target.getClass().getMethod(setName, types);
-//				if(caller.equals(m.getReturnType().getName()))
-//					continue;
-//				method.invoke(target, coll2);
-//			}
-//		}
-//		
-//		return target;
-//}
-	
-//	@Transactional
-//	private <T> Set<T> copySet(Set<T> src, Map<String,Object> exchangeRelations, boolean keepManyToOnes) throws 
-//	InstantiationException, IllegalAccessException, IllegalArgumentException, 
-//	InvocationTargetException, NoSuchMethodException, SecurityException{
-//		
-//		Set<T> target = new HashSet<T>();
-//		
-//		for(Object o : src){
-//			Object result = copyColumns(o, exchangeRelations, keepManyToOnes);
-//			target.add((T)result);
-//		}			
-//		
-//		return target;
-//	}
-//	
-//	//copies all column annotated values from one entity, to a new entity
-//	//if keepManyToOnes is true, manytoOne relations are set to the same entity as the original
-//	//except a entity to change the relation to is specified 
-//	@Transactional
-//	private Object copyColumns(Object src, Map<String,Object> exchangeRelations, boolean keepManyToOnes) throws InstantiationException, 
-//	IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
-//	NoSuchMethodException, SecurityException{
-//		
-//		if (src instanceof HibernateProxy) {  
-//			try {
-//				src = ((HibernateProxy)src).getHibernateLazyInitializer().getImplementation();
-////				caller = src.getClass().getName();
-//			}catch(NullPointerException e){
-//				log.error("could not copy object: " + src.getClass(), e);
-//				e.printStackTrace();
-//				return null;				
-//			}
-//		}
-//		else if(src == null)
-//			return null;
-//				
-//		Object target = src.getClass().newInstance();
-//
-//		Reflections r = new Reflections(src.getClass().getName(), new MethodAnnotationsScanner());
-//		
-//		//get Identifier setter:
-//		Set<Method> identifier = r.getMethodsAnnotatedWith(javax.persistence.Id.class);
-//		
-//		//get column setters and n:1 relations
-//		Set<Method> columns = r.getMethodsAnnotatedWith(javax.persistence.Column.class);
-//		
-//		if(keepManyToOnes)
-//			columns.addAll(r.getMethodsAnnotatedWith(javax.persistence.ManyToOne.class));
-//
-//		//get column setters and n:1 relations
-////		Set<Method> collections =r.getMethodsAnnotatedWith(javax.persistence.ManyToOne.class);
-//		
-//		
-//		String getName = null;
-//		String setName = null;
-//		for(Method m : columns){
-//			//method is in the right class
-//			if(m.getDeclaringClass().getName().equals(src.getClass().getName())){
-//				
-//				getName = m.getName();
-//				setName = getName.replaceFirst("get", "set");
-////				String className = getName.substring(3).toLowerCase();
-//				String className = m.getReturnType().getTypeName();
-//				Object getterResult = null;
-//				
-//				if(exchangeRelations.containsKey(className))
-//					getterResult = exchangeRelations.get(className);
-//				else{
-//					System.out.println("invoking: " + getName + " on " + m.getDeclaringClass());
-//					getterResult = m.invoke(src);
-//					System.out.println("invoke finished. return type: " + m.getReturnType());
-//				}
-//				Class<?> types = m.getReturnType();
-//				
-//				if(identifier.contains(m)) //set id null
-//					continue;
-////					getterResult = 0;
-//
-//				Method method = target.getClass().getMethod(setName, types);
-//
-//				method.invoke(target, getterResult);
-//			}
-//		}		
-//		
-////		for(Method m : collections){
-////			//method is in the right class
-////			if(m.getDeclaringClass().getName().equals(src.getClass().getName())){
-////				getName = m.getName();
-////				setName = getName.replaceFirst("get", "set");
-////				System.out.println("invoking: " + getName + " on " + m.getDeclaringClass());
-////				
-////				Object getterResult = m.invoke(src);
-////				System.out.println("getter result is " + getterResult);
-////				System.out.println("invoke finished. return type: " + m.getReturnType());
-////				Collection<?> coll = (Collection<?>) getterResult;
-////				Collection<Object> coll2 = new HashSet<Object>(); 
-////				//does not work because its a hibernate specific collection implementation
-////				//(Collection<Object>) m.getReturnType().newInstance();
-////				
-////				//if type is list: instantiate list
-////				if(m.getReturnType() == java.util.List.class)
-////					coll2 = new ArrayList<Object>();
-////				
-////				System.out.println("type is: " + m.getReturnType());
-////				
-////				for(Object o : coll){
-////					Object result = doCopy(o, src);
-////					coll2.add(result);
-////				}
-////				
-////				Class<?> types = m.getReturnType();
-////				Method method = target.getClass().getMethod(setName, types);
-////				if(caller.equals(m.getReturnType().getName()))
-////					continue;
-////				method.invoke(target, coll2);
-////			}
-////		}
-//		
-//		return target;
-//	}
 	
 }

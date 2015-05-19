@@ -82,6 +82,7 @@ public class ProjectRepositoryTest {
 	{	
 		int sizeBefore = projectRepository.findAll().size();
 		Project project = new Project();
+
 		project.setName("Project 2");
 		project.setLocation("Vienna");
 		

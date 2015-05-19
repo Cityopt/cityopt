@@ -144,7 +144,7 @@ public class Project implements java.io.Serializable {
         this.extparamvalset = extparamvalset;
     }
 
-	@ManyToOne(fetch = FetchType.LAZY,cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@ManyToOne(fetch = FetchType.LAZY,cascade={CascadeType.REMOVE})
 	@JoinColumn(name = "modelid")
 	public SimulationModel getSimulationmodel() {
 		return this.simulationmodel;
@@ -238,7 +238,7 @@ public class Project implements java.io.Serializable {
 		this.updatedby = updatedby;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
 	public Set<ObjectiveFunction> getObjectivefunctions() {
 		return this.objectivefunctions;
 	}
@@ -247,7 +247,7 @@ public class Project implements java.io.Serializable {
 		this.objectivefunctions = objectivefunctions;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
 	public Set<Scenario> getScenarios() {
 		return this.scenarios;
 	}
@@ -256,7 +256,7 @@ public class Project implements java.io.Serializable {
 		this.scenarios = scenarios;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
 	public Set<ScenarioGenerator> getScenariogenerators() {
 		return this.scenariogenerators;
 	}
@@ -265,7 +265,7 @@ public class Project implements java.io.Serializable {
 		this.scenariogenerators = scenariogenerators;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
 	@OrderBy("componentid")
 	public List<Component> getComponents() {
 		return this.components;
@@ -275,7 +275,7 @@ public class Project implements java.io.Serializable {
 		this.components = components;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
 	public Set<OptConstraint> getOptconstraints() {
 		return this.optconstraints;
 	}
@@ -284,7 +284,7 @@ public class Project implements java.io.Serializable {
 		this.optconstraints = optconstraints;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
 	public Set<Metric> getMetrics() {
 		return this.metrics;
 	}
@@ -293,7 +293,7 @@ public class Project implements java.io.Serializable {
 		this.metrics = metrics;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
 	public Set<UserGroupProject> getUsergroupprojects() {
 		return this.usergroupprojects;
 	}
@@ -302,7 +302,7 @@ public class Project implements java.io.Serializable {
 		this.usergroupprojects = usergroupprojects;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
 	public Set<ExtParam> getExtparams() {
 		return this.extparams;
 	}

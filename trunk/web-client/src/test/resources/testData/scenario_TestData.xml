@@ -23,7 +23,7 @@
 <component name="testcomponent 12" prjid="2" componentid="12"/>
 
 <type typeid="1" name="myType"/>
-<unit unitid="1" name="myUnit" typeid="1"/>
+<unit unitid="1" name="myUnit"/>
 
 <metric name="myMetric" expression="my expression != bad" unitid="1" prjid="1"/>
 

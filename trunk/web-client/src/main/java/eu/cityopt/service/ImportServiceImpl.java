@@ -231,8 +231,6 @@ public class ImportServiceImpl implements ImportService {
 		CsvSchema schema = CsvSchema.builder()
 				.addColumn("ExtParamValSetName")
 				.addColumn("ExtParamUnitName")
-				.addColumn("ExtParamdefaultValue")
-				.addColumn("ExtParamdefaultTimeseriesId", CsvSchema.ColumnType.NUMBER)
 				.addColumn("ExtParamName")
 				.addColumn("ExtParamValValue")
 				.addColumn("ExtParamValTimeSeriesId", CsvSchema.ColumnType.NUMBER)
