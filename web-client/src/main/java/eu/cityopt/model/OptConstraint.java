@@ -33,6 +33,8 @@ public class OptConstraint implements java.io.Serializable {
 	private Set<ScenGenOptConstraint> scengenoptconstraints = new HashSet<ScenGenOptConstraint>(
 			0);
 	private Set<OptSearchConst> optsearchconsts = new HashSet<OptSearchConst>(0);
+	private Set<OptConstraintResult> optconstraintresults = new HashSet<OptConstraintResult>(
+			0);
 
 	public OptConstraint() {
 	}
@@ -44,7 +46,8 @@ public class OptConstraint implements java.io.Serializable {
 	public OptConstraint(int optconstid, Project project, String name,
 			String expression, String lowerbound, String upperbound,
 			Set<ScenGenOptConstraint> scengenoptconstraints,
-			Set<OptSearchConst> optsearchconsts) {
+			Set<OptSearchConst> optsearchconsts,
+			Set<OptConstraintResult> optconstraintresults) {
 		this.optconstid = optconstid;
 		this.project = project;
 		this.name = name;
@@ -53,6 +56,7 @@ public class OptConstraint implements java.io.Serializable {
 		this.upperbound = upperbound;
 		this.scengenoptconstraints = scengenoptconstraints;
 		this.optsearchconsts = optsearchconsts;
+		this.optconstraintresults = optconstraintresults;
 	}
 	
 	public OptConstraint clone() {
@@ -65,10 +69,12 @@ public class OptConstraint implements java.io.Serializable {
 		c.upperbound = this.upperbound;
 		c.scengenoptconstraints = this.scengenoptconstraints;
 		c.optsearchconsts = this.optsearchconsts;
+		c.optconstraintresults = this.optconstraintresults;
 		return c;
 	}
 
-	@SequenceGenerator(name="optconstraint_optconstid_seq",sequenceName="optconstraint_optconstid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="optconstraint_optconstid_seq")
+	@SequenceGenerator(name="optconstraint_optconstid_seq",sequenceName="optconstraint_optconstid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="optconstraint_optconstid_seq")
 	@Id
 	@Column(name = "optconstid", unique = true, nullable = false)
 	public int getOptconstid() {
@@ -142,6 +148,16 @@ public class OptConstraint implements java.io.Serializable {
 
 	public void setOptsearchconsts(Set<OptSearchConst> optsearchconsts) {
 		this.optsearchconsts = optsearchconsts;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "optconstraint")
+	public Set<OptConstraintResult> getOptconstraintresults() {
+		return this.optconstraintresults;
+	}
+
+	public void setOptconstraintresults(
+			Set<OptConstraintResult> optconstraintresults) {
+		this.optconstraintresults = optconstraintresults;
 	}
 
 }

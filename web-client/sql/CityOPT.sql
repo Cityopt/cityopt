@@ -830,9 +830,6 @@ ALTER TABLE DecisionVariableResult ADD CONSTRAINT PK_DecisionVariableResult
 	PRIMARY KEY (decVarResultID)
 ;
 
-CREATE UNIQUE INDEX UQ_DecisionVariableResult_scenGenResultID ON DecisionVariableResult (scenGenResultID ASC)
-;
-
 ALTER TABLE ExtParam ADD CONSTRAINT PK_ExternalParameter
 	PRIMARY KEY (extParamID)
 ;
@@ -976,9 +973,6 @@ ALTER TABLE ObjectiveFunctionResult ADD CONSTRAINT PK_ObjectiveFunctionResult
 	PRIMARY KEY (objectiveFunctionResultID)
 ;
 
-CREATE UNIQUE INDEX UQ_ObjectiveFunctionResult_scenGenResultID ON ObjectiveFunctionResult (scenGenResultID ASC)
-;
-
 CREATE INDEX IXFK_OptConstraints_Project ON OptConstraint (prjID ASC)
 ;
 
@@ -997,9 +991,6 @@ CREATE INDEX IXFK_OptConstraintResult_ScenGenResult ON OptConstraintResult (scen
 
 ALTER TABLE OptConstraintResult ADD CONSTRAINT PK_OptConstraintResult
 	PRIMARY KEY (optConstResultID)
-;
-
-CREATE UNIQUE INDEX UQ_OptConstraintResult_scenGenResultID ON OptConstraintResult (scenGenResultID ASC)
 ;
 
 CREATE INDEX IXFK_OptimizationSet_ExtParamValSet ON OptimizationSet (extParamValSetID ASC)
@@ -1143,9 +1134,6 @@ CREATE INDEX IXFK_ScenGenResult_ScenarioGenerator ON ScenGenResult (scenGenID AS
 
 ALTER TABLE ScenGenResult ADD CONSTRAINT PK_ScenarioGeneratorResult
 	PRIMARY KEY (scenGenResultID)
-;
-
-CREATE UNIQUE INDEX UQ_ScenarioGeneratorResult_ScenID_ScenGenID ON ScenGenResult (scenID ASC,scenGenID ASC)
 ;
 
 ALTER TABLE SimulationModel ADD CONSTRAINT PK_SimulationModel
