@@ -44,8 +44,7 @@ public class TestImportExportService extends SimulationTestBase {
         byte[] modelData = getResourceBytes("/testmodel.zip");
         importExportService.importSimulationModel(
                 projectId, null, "test project",
-                modelData, "Apros-Combustion-5.13.06-64bit",
-                Instant.parse("2015-01-01T00:00:00Z"));
+                modelData, null, null);
         importExportService.importModelInputsAndOutputs(projectId, 0);
         dumpTables("import_model", true);
     }

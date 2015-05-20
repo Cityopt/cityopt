@@ -1,4 +1,4 @@
-Apros simulation models in CityOPT
+Apros simulation models in CITYOPT
 ==================================
 
 Because Apros simulation server is still experimental, some manual work is
@@ -31,7 +31,7 @@ code.
 The simulation model zip file
 -----------------------------
 
-The zip file stored in modelBlob must include the following files:
+The zip file stored in database must include the following files:
 
 - uc_props.xml describes the user components of the Apros model,
   and their properties.  It is required for interfacing the sim-eval
@@ -52,21 +52,29 @@ The zip file may also include a configuration file cityopt.properties which is
 in the Java properties text format.  The cityopt.properties file may define
 the following properties:
 
+- aprosProfile is the name of the Apros simulation server profile that should
+  be used, for example "Apros-Combustion-5.13.06-64bit".  The profile is
+  essentially a special command line version of Apros.
+  The profile can also be specified while importing the model in the CITYOPT
+  tool; the profile specified in the user interface overrides the value in the
+  cityopt.properties file.
+
 - resultFiles is a semicolon-separated list of output file patterns,
   for example: "resultFiles = *.dat;myfile.out".  It defines which files
-  the Apros model outputs, and which are then read back to the CityOPT
+  the Apros model outputs, and which are then read back to the CITYOPT
   database.  The patterns must not include any model input files.  If the
   resultFiles property is not defined, the default value is "results.dat".
 
 - timeOrigin indicates the real-world time that corresponds to a simulation
   time of 0.  It is in ISO-8601 format, for example:
   "timeOrigin = 2014-04-23T04:30:45.123+01:00".
-  The field has no effect as of yet; it would be natural to read it
-  in the model import phase.
+  The value can also be given while importing the model in the CITYOPT tool;
+  the value given in the user interface overrides the value in the
+  cityopt.properties file. 
 
 Model result files can also be included in the zip file.  They will be used to
 find which model output variables are available, before performing any
-simulations in the CityOPT tool.  The result files are detected by file name:
+simulations in the CITYOPT tool.  The result files are detected by file name:
 see the description of resultFiles above.  The actual data values in the
 included result files do not matter: only the header lines defining the
 variables are read by the tool.
@@ -78,7 +86,7 @@ User component properties of an Apros model
 The XML file must be created manually in Apros by running the script
 SearchStructuralFormulas.scl in the SCL console.
 
-The script and usage instructions are in the misc project in the CityOPT
+The script and usage instructions are in the misc project in the CITYOPT
 Subversion repository.
 
 Content of sequence.scl
@@ -87,7 +95,7 @@ Content of sequence.scl
 A typical sequence.scl will
 
 - Load an Apros model snapshot (loadIC)
-- Call the CityOPT setup function to get the CityOPT input parameter values
+- Call the CITYOPT setup function to get the CITYOPT input parameter values
 - Open IO_SETs using relative file names (file names in Apros model are
   often absolute paths, which won't work in the server environment)
 - Set the stimulation time in seconds (setTime)

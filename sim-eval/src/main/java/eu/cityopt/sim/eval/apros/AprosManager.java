@@ -25,7 +25,6 @@ public class AprosManager implements SimulatorManager {
     static final String PROFILE_GLOB = "Apros-*";
 
     Path profileDir;
-    String profileName;
     Executor executor;
 
     /**
@@ -34,32 +33,29 @@ public class AprosManager implements SimulatorManager {
      * for concurrency.
      */
     public static void register(Path profileDir, Executor executor) throws IOException {
+        AprosManager manager = null;
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(profileDir, PROFILE_GLOB)) {
             for (Path entry : stream) {
-                if (Files.isDirectory(entry)) {
+                if (isProfileDirectory(entry)) {
                     String profileName = entry.getFileName().toString();
-                    SimulatorManagers.register(profileName,
-                            new AprosManager(profileDir, profileName, executor));
+                    if (manager == null) {
+                        manager = new AprosManager(profileDir, executor);
+                    }
+                    SimulatorManagers.register(profileName, manager);
                 }
             }
         }
     }
 
-    AprosManager(Path profileDir, String profileName, Executor executor) {
+    AprosManager(Path profileDir, Executor executor) {
         this.profileDir = profileDir;
-        this.profileName = profileName;
         this.executor = executor;
     }
 
     @Override
-    public String getSimulatorName() {
-        return profileName;
-    }
-
-    @Override
-    public SimulationModel parseModel(InputStream inputStream)
+    public SimulationModel parseModel(String simulatorName, InputStream inputStream)
             throws IOException, ConfigurationException {
-        return new AprosModel(inputStream, this);
+        return new AprosModel(simulatorName, inputStream, this);
     }
 
     @Override
@@ -67,7 +63,7 @@ public class AprosManager implements SimulatorManager {
             throws IOException, ConfigurationException {
         AprosModel aprosModel = (AprosModel) model;
         try {
-            return new AprosRunner(profileDir, profileName, executor,
+            return new AprosRunner(profileDir, aprosModel.profileName, executor,
                     namespace, aprosModel.uc_props, aprosModel.modelDir.getPath(),
                     aprosModel.resultFilePatterns);
         } catch (TransformerException e) {
@@ -78,5 +74,13 @@ public class AprosManager implements SimulatorManager {
 
     @Override
     public void close() throws IOException {
+    }
+
+    boolean checkProfile(String value) {
+        return isProfileDirectory(profileDir.resolve(value));
+    }
+
+    static boolean isProfileDirectory(Path path) {
+        return Files.isDirectory(path);
     }
 }

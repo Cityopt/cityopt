@@ -51,15 +51,17 @@ public class AprosModel implements SimulationModel {
     private static String MODEL_CONFIGURATION_FILENAME = "cityopt.properties";
 
     AprosManager manager;
+    String profileName;
     TempDir modelDir;
     String[] resultFilePatterns;
     final Document uc_props;
     Instant timeOrigin;
     List<String[]> modelOutputs;
 
-    AprosModel(InputStream inputStream, AprosManager manager)
+    AprosModel(String profileName, InputStream inputStream, AprosManager manager)
             throws IOException, ConfigurationException {
-        this.manager = manager; 
+        this.manager = manager;
+        this.profileName = profileName;
         modelDir = new TempDir("cityopt_model");
         resultFilePatterns = new String[] { "results.dat" };
         try {
@@ -71,6 +73,7 @@ public class AprosModel implements SimulationModel {
         }
     }
 
+    @SuppressWarnings("resource")
     Document extractModelFiles(InputStream inputStream, Path dir)
             throws IOException, ConfigurationException {
         Document ucs = null;
@@ -106,6 +109,10 @@ public class AprosModel implements SimulationModel {
             throw new ConfigurationException("No " + USER_COMPONENT_PROPERTIES_FILENAME
                     + " file found in zip package");
         }
+        if (profileName == null) {
+            throw new ConfigurationException(
+                    "No Apros profile specified in " + MODEL_CONFIGURATION_FILENAME);
+        }
         filterSampleOutputs(modelFiles);
         return ucs;
     }
@@ -136,6 +143,14 @@ public class AprosModel implements SimulationModel {
                 break;
             case "timeOrigin":
                 this.timeOrigin = TimeUtils.parseISO8601(value);
+                break;
+            case "aprosProfile":
+                if (this.profileName == null) {
+                    if (!manager.checkProfile(value)) {
+                        throw new ConfigurationException("Invalid Apros profile " + value);
+                    }
+                    this.profileName = value;
+                }
                 break;
             default:
                 throw new ConfigurationException(
@@ -185,6 +200,11 @@ public class AprosModel implements SimulationModel {
     @Override
     public SimulatorManager getSimulatorManager() {
         return manager;
+    }
+
+    @Override
+    public String getSimulatorName() {
+        return profileName;
     }
 
     @Override

@@ -1,8 +1,6 @@
 package eu.cityopt.sim.service;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -305,9 +303,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         String simulatorName = project.getSimulationmodel().getSimulator();
         SimulatorManager manager = SimulatorManagers.get(simulatorName);
         byte[] modelZipBytes = project.getSimulationmodel().getModelblob();
-        try (InputStream inputStream = new ByteArrayInputStream(modelZipBytes)) {
-            return manager.parseModel(inputStream);
-        }
+        return manager.parseModel(simulatorName, modelZipBytes);
     }
 
     /**
