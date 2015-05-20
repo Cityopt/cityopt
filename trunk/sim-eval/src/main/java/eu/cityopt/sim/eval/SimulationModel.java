@@ -7,13 +7,16 @@ import java.time.Instant;
 import org.w3c.dom.Document;
 
 /**
- * Generic simulator-agnostic handle to a simulation model.
+ * Simulator-agnostic handle to a simulation model.
  *
  * @author Hannu Rummukainen
  */
 public interface SimulationModel extends Closeable {
     /** Returns the associated SimulatorManager instance. */
     SimulatorManager getSimulatorManager();
+
+    /** Returns the name of the specific simulator variant to be used. */
+    String getSimulatorName();
 
     /** Returns origin of simulation time, or null if not known. */
     Instant getTimeOrigin();

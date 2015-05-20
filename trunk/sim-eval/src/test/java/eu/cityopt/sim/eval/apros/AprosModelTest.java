@@ -41,10 +41,10 @@ public class AprosModelTest extends AprosTestBase {
     }
 
     private Namespace findInputsAndOutputs(String modelResource) throws Exception {
-        try (SimulatorManager manager = new AprosManager(profileDir, profileName, 
-                Executors.newSingleThreadExecutor());
+        try (SimulatorManager manager = new AprosManager(
+                profileDir, Executors.newSingleThreadExecutor());
              InputStream in = getClass().getResourceAsStream(modelResource)) {
-            SimulationModel model = manager.parseModel(in);
+            SimulationModel model = manager.parseModel(profileName, in);
 
             Namespace ns = new Namespace(new Evaluator(), model.getTimeOrigin());
             ns.initConfigComponent();

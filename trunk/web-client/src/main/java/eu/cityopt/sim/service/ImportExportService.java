@@ -1,6 +1,5 @@
 package eu.cityopt.sim.service;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,10 +99,17 @@ public class ImportExportService {
             String description, byte[] modelData,
             String simulatorName, Instant overrideTimeOrigin)
                     throws ConfigurationException, IOException {
-        SimulatorManager manager = SimulatorManagers.get(simulatorName);
-        SimulationModel model;
-        try (ByteArrayInputStream in = new ByteArrayInputStream(modelData)) {
-            model = manager.parseModel(in);
+        SimulationModel model = null;
+        if (simulatorName == null) {
+            model = SimulatorManagers.detectSimulator(modelData);
+            if (model == null) {
+                throw new ConfigurationException(
+                        "Failed to detect simulator - please select a simulator explicitly");
+            }
+            simulatorName = model.getSimulatorName();
+        } else {
+            SimulatorManager manager = SimulatorManagers.get(simulatorName);
+            model = manager.parseModel(simulatorName, modelData);
         }
         Instant timeOrigin = (overrideTimeOrigin != null)
                 ? overrideTimeOrigin : model.getTimeOrigin();

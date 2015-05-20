@@ -7,12 +7,14 @@ import java.nio.file.Path;
 
 import javax.inject.Singleton;
 
+import org.opt4j.core.start.Constant;
+
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 
-import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.ConfigurationException;
+import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulatorManager;
 
 /**
@@ -26,10 +28,12 @@ public class ModelBlobLoader implements Provider<SimulationModel> {
 
     @Inject
     public ModelBlobLoader(SimulatorManager manager,
-                           @Named("model") Path file)
+            @Constant(value="simulator", namespace=SimulatorProvider.class)
+            String simulator,
+            @Named("model") Path file)
             throws IOException, ConfigurationException {
         try (InputStream stream = new FileInputStream(file.toFile())) {
-            model = manager.parseModel(stream);
+            model = manager.parseModel(simulator, stream);
         }
     }
     

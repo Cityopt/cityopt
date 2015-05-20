@@ -2,6 +2,7 @@ package eu.cityopt.sim.eval;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +40,27 @@ public class SimulatorManagers {
         return manager;
     }
 
+    /**
+     * Attempts to find a SimulatorManager instance that can run the given model.
+     * Returns null if the detection fails.
+     */
+    public static SimulationModel detectSimulator(byte[] modelData) {
+        // First find distinct SimulatorManager instances.
+        Set<SimulatorManager> distinctManagers = new HashSet<>();
+        for (SimulatorManager manager : simulatorManagers.values()) {
+            distinctManagers.add(manager);
+        }
+        // Then try to parse the model with each of them.
+        for (SimulatorManager manager: distinctManagers) {
+            try {
+                return manager.parseModel(null, modelData);
+            } catch (IOException | ConfigurationException e) {
+                logger.debug("While detecting simulator: No success with " + manager, e);
+            }
+        }
+        return null;
+    }
+
     /** Registers a new SimulatorManager instance. */
     public static void register(String simulatorName, SimulatorManager manager) {
         SimulatorManager oldManager = (manager != null)
@@ -69,5 +91,4 @@ public class SimulatorManagers {
             logger.warn("Failed to close SimulatorManager: " + e.getMessage());
         }
     }
-
 }
