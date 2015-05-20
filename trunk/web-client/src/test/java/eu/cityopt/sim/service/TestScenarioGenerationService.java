@@ -106,14 +106,14 @@ public class TestScenarioGenerationService extends SimulationTestBase {
     @DatabaseSetup("classpath:/testData/empty_project.xml")
     public void testImportedProblem() throws Exception {
         Project project = projectRepository.findByName("Empty test project").get(0);
-        byte[] modelData = getResourceBytes("/testmodel.zip");
+        byte[] modelData = getResourceBytes("/ost.zip");
         importExportService.importSimulationModel(
                 project.getPrjid(), null, "test project",
                 modelData, "Apros-Combustion-5.13.06-64bit",
                 Instant.parse("2015-01-01T00:00:00Z"));
         Integer scId = null;
         try (TempDir tempDir = new TempDir("testimport")) {
-            Path problemPath = copyResource("/test-problem.csv", tempDir);
+            Path problemPath = copyResource("/ost-problem.csv", tempDir);
             Path paramPath = copyResource("/ga.properties", tempDir);
             Path tsPath = copyResource("/timeseries.csv", tempDir);
             importExportService.importSimulationStructure(project.getPrjid(), problemPath);
