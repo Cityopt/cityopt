@@ -134,6 +134,8 @@ public class ImportExportService {
      * Creates input parameters and output variables from model data.
      * The required components are also created.  The types of the
      * inputs and outputs are set, but the units are left null.
+     * The artificial configuration component CITYOPT is also created
+     * if it does not already exist.
      *
      * @param projectId id of the project to be modified.  The project
      *   must already have a SimulationModel with a set time origin.
@@ -155,6 +157,7 @@ public class ImportExportService {
         Instant timeOrigin = simulationService.loadTimeOrigin(project.getSimulationmodel());
         Namespace namespace = new Namespace(simulationService.getEvaluator(), timeOrigin);
         String warnings = model.findInputsAndOutputs(namespace, detailLevel);
+        namespace.initConfigComponent();
         saveNamespaceComponents(project, namespace);
         projectRepository.save(project);
         return warnings;

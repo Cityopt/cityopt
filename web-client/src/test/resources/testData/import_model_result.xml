@@ -10,6 +10,7 @@
   <component name="SAMPLE_DISTRICT"/>
   <component name="CHP_BOIL_TH_OUT"/>
   <component name="FUEL_CONSUMPTION"/>
+  <component name="CITYOPT"/>
   <type name="Double"/>
   <type name="Integer"/>
   <type name="String"/>
@@ -37,6 +38,8 @@
   <inputparameter name="CHP_thermal_power_rating"/>
   <inputparameter name="Share_of_roof_area_occupied_by_THcollectors"/>
   <inputparameter name="Insulation_layer_factor"/>
+  <inputparameter name="simulation_start"/>
+  <inputparameter name="simulation_end"/>
   <algorithm description="grid search"/>
   <algorithm description="genetic algorithm"/>
   <scenariogenerator/>
