@@ -9,9 +9,9 @@ in,BIG,A2_Solarth_m2,Double,0,,,a2
 out,HOUR_HEAT,SP_VALUE,TimeSeries/linear,,,,
 out,HOUR_NET_COOL,SP_VALUE,TimeSeries/linear,,,,
 out,HOUR_NET_ELEC,SP_VALUE,TimeSeries/linear,,,,
-met,,heating,Double,,,,"integrate(HOUR_HEAT.SP_VALUE, 0, INFINITY) / 3600"
-met,,cooling,Double,,,,"integrate(HOUR_NET_COOL.SP_VALUE, 0, INFINITY) / 3600"
-met,,electric,Double,,,,"integrate(HOUR_NET_ELEC.SP_VALUE, 0, INFINITY) / 3600"
+met,,heating,Double,,,,"integrate(HOUR_HEAT.SP_VALUE, 0, Infinity) / 3600"
+met,,cooling,Double,,,,"integrate(HOUR_NET_COOL.SP_VALUE, 0, Infinity) / 3600"
+met,,electric,Double,,,,"integrate(HOUR_NET_ELEC.SP_VALUE, 0, Infinity) / 3600"
 obj,,heat,min,,,,heating
 obj,,cool,min,,,,cooling
 obj,,el,min,,,,electric

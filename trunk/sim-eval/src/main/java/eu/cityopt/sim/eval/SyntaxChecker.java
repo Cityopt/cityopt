@@ -52,7 +52,7 @@ public class SyntaxChecker {
         // from the standard datetime module
         "datetime", "timedelta",
         // from the cityopt module
-        "DAY_S", "HOUR_S", "INFINITY", "MINUTE_S", "TimeSeries",
+        "DAY_S", "HOUR_S", "Infinity", "MINUTE_S", "NaN", "TimeSeries",
         "integrate", "mean", "stdev", "todatetime", "tosimtime", "var",
         // module names
         "__builtin__", "math", "cmath", "cityopt", "itertools" 
