@@ -51,13 +51,13 @@
   <xsl:template match="@usergroupprojectid"/>
 
   <!-- Tables with only id fields cannot be compared now, so drop them. -->
-  <!-- N.B. For now some extparamval rows require manual handling. -->
   <xsl:template match="extparamvalsetcomp"/>
   <xsl:template match="scenariometrics"/>
   <xsl:template match="timeseries"/>
   <xsl:template match="simulationresult"/>
   <xsl:template match="scengenoptconstraint"/>
   <xsl:template match="scengenobjectivefunction"/>
+  <xsl:template match="optsearchconst"/>
 
   <!-- Also remove generated attributes that vary on every run. -->
   <xsl:template match="scenario/@name"/>
@@ -66,10 +66,18 @@
   <xsl:template match="scenario/@runstart"/>
   <xsl:template match="scenario/@runend"/>
   <xsl:template match="scenario/@log"/>
+  <xsl:template match="optimizationset/@createdon"/>
   <xsl:template match="scenariogenerator/@log"/>
   <xsl:template match="inputparamval/@createdon"/>
   <xsl:template match="simulationmodel/@createdon"/>
   <xsl:template match="simulationmodel/@modelblob"/>
+
+  <!-- Add an explicit null value to timeseries valued extparamval rows -->
+  <xsl:template match="extparamval[not(@value)]">
+    <extparamval value="[null]">
+      <xsl:apply-templates select="@*|node()"/>
+    </extparamval>
+  </xsl:template>
 
   <!-- Elements whose insertion order varies are removed,
        and then output separately in sorted order. -->
