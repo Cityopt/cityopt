@@ -8,7 +8,7 @@ from eu.cityopt.sim.eval.util import TimeUtils
 __all__ = ['TimeSeries', 'todatetime', 'tosimtime', 'integrate',
            'mean', 'stdev', 'var', 'min', 'max',
            'MINUTE_S', 'HOUR_S', 'DAY_S', 'INFINITY',
-           'inf', 'nan']
+           'Infinity', 'NaN']
 
 _epoch = datetime.fromtimestamp(0)
 
@@ -16,10 +16,8 @@ MINUTE_S = 60
 HOUR_S = 60 * MINUTE_S
 DAY_S = 24 * HOUR_S
 INFINITY = float('inf')
-
-# for constant expressions - may be shadowed by top-level names
-inf = float('inf')
-nan = float('nan')
+Infinity = float('inf')
+NaN = float('nan')
 
 # The time origin of the project for which the current evaluation is done.
 def _timeOrigin():
