@@ -36,7 +36,7 @@
   <scenario description="C01.typ = 1" status="SUCCESS"/>
   <scenario description="C01.typ = 2" status="SUCCESS"/>
   <optconstraint name="con1" expression="mean(PIP01.PI12_MIX_MASS_FLOW)" lowerbound="0.1" upperbound="1.0"/>
-  <objectivefunction name="obj1" expression="integrate(PIP01.PI12_MIX_MASS_FLOW * C01.typ, 0, INFINITY)" ismaximise="true"/>
+  <objectivefunction name="obj1" expression="integrate(PIP01.PI12_MIX_MASS_FLOW * C01.typ, 0, Infinity)" ismaximise="true"/>
   <optimizationset/>
   <optsearchconst/>
   <optsetscenarios/>
