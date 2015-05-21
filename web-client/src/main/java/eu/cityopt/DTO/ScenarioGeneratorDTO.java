@@ -20,7 +20,7 @@ public class ScenarioGeneratorDTO {
 
 	@Getter @Setter private int scengenid;
 	@Getter @Setter private AlgorithmDTO algorithm;
-//	@Getter @Setter private ProjectDTO project;
+	@Getter @Setter private ProjectDTO project;
 	@Getter @Setter private ExtParamValSetDTO extparamvalset;
 	@Getter @Setter private String status;
 	@Getter @Setter private String log;

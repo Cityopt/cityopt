@@ -1,5 +1,10 @@
+<%--@elvariable id="scengenerator" type="eu.cityopt.DTO.ScenarioGeneratorDTO"--%>
+<%--@elvariable id="constraint" type="eu.cityopt.DTO.OptConstraintDTO"--%>
+<%--@elvariable id="function" type="eu.cityopt.DTO.ObjectiveFunctionDTO"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -15,11 +20,11 @@
 		</td>
 		<td style="width: 30px"></td>
 		<td valign="top">
-			<form>
+			<form:form method="post" action="geneticalgorithm.html" modelAttribute="scengenerator">
 			<table style="width: 950px">
 				<col style="width: 400px;">
 				<col style="width: 450px;">
-				<tr><td colspan="2"><h2>Create genetic algorithm optimization set</h2></td></tr>
+				<tr><td colspan="2"><h2>Edit genetic algorithm optimization set</h2></td></tr>
 				<tr>
 					<td colspan="2">
 						<table>
@@ -30,7 +35,7 @@
 							<col style="width: 175px;">
 							<tr>
 								<td>Name:</td>
-								<td><input type="text" id="name" style="width:200px"></td>
+								<td><form:input type="text" path="name" style="width:200px"/></td>
 								<td>Description:</td>
 								<td rowspan="2"><textarea id="description" rows="2" style="width: 300px"></textarea></td>
 								<td align="right"><input type="submit" value="Abort GA generation" style="width: 150px"></td>
@@ -57,10 +62,13 @@
 											<th>Optimization sense</th>
 											<th>Expression</th>
 										</tr>
+										
+										<c:forEach items="${objFuncs}" var="function">
 										<tr>
-											<td>x</td>
-											<td>x</td>
-										</tr>
+											<td>${function.name}</td>
+											<td>${function.expression}</td>
+									   	</tr>
+										</c:forEach>
 									</table>
 								</td>
 							</tr>
@@ -106,15 +114,16 @@
 								<td>
 									<table class="tablestyle" style="width: 390px">
 										<tr>
+											<th>Name</th>
 											<th>Expression</th>
-											<th>Type</th>
-											<th>Unit</th>
 										</tr>
+										
+										<c:forEach items="${constraints}" var="constraint">
 										<tr>
-											<td>x</td>
-											<td>x</td>
-											<td>x</td>
-										</tr>
+											<td>${constraint.name}</td>
+											<td>${constraint.expression}</td>
+									   	</tr>
+										</c:forEach>
 									</table>
 								</td>
 							</tr>
@@ -127,7 +136,7 @@
 							</tr>
 							<tr height="10"></tr>
 							<tr>
-								<td><b>External parameter constraints</b></td>
+								<td><b>External parameter value set</b></td>
 							</tr>
 							<tr>
 								<td>
@@ -264,7 +273,7 @@
 					</td>
 				</tr>
 			</table>
-		</form>
+		</form:form>
 		</td>
 	</tr>
 </table>

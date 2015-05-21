@@ -1,4 +1,4 @@
-<%--@elvariable id="optimizationset" type="eu.cityopt.DTO.OptimizationSetDTO"--%>
+<%--@elvariable id="openoptimizationset" type="eu.cityopt.DTO.OpenOptimizationSetDTO"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -16,7 +16,7 @@
 	</td>
 	<td width="20"></td>
 	<td valign="top">
-		<form:form method="post" action="createoptimizationset.html" modelAttribute="optimizationset">
+		<form:form method="post" action="createoptimizationset.html" modelAttribute="openoptimizationset">
 		<table>
 			<col style="width: 400px;">
 			<col style="width: 450px;">
@@ -41,6 +41,17 @@
 							<td><input type="text" id="user" style="width:200px"></td>
 							<td></td>
 							<td align="right"></td>
+						</tr>
+						<tr>
+							<td>Type:</td>
+							<td>
+								<select name="type" id="type" size="1">
+									<option value="1" selected>Database search</option>
+									<option value="2">Genetic algorithm</option>
+								</select>
+							</td>
+							<td></td>
+							<td></td>
 						</tr>
 					</table>
 				</td>

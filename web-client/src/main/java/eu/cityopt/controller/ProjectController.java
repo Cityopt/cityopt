@@ -1,8 +1,12 @@
 package eu.cityopt.controller;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,7 +36,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
@@ -51,13 +57,17 @@ import eu.cityopt.DTO.OptSearchConstDTO;
 import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
+import eu.cityopt.DTO.ScenGenObjectiveFunctionDTO;
+import eu.cityopt.DTO.ScenGenOptConstraintDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.ScenarioGeneratorDTO;
 import eu.cityopt.DTO.SimulationResultDTO;
 import eu.cityopt.DTO.TimeSeriesDTO;
 import eu.cityopt.DTO.TimeSeriesValDTO;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.model.OptSearchConst;
+import eu.cityopt.model.OptimizationSet;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.model.Type;
@@ -78,11 +88,16 @@ import eu.cityopt.service.InputParameterServiceImpl;
 import eu.cityopt.service.MetricServiceImpl;
 import eu.cityopt.service.MetricValServiceImpl;
 import eu.cityopt.service.ObjectiveFunctionServiceImpl;
+import eu.cityopt.service.OptConstraintServiceImpl;
 import eu.cityopt.service.OptSearchConstServiceImpl;
 import eu.cityopt.service.OptSetScenariosImpl;
 import eu.cityopt.service.OptimizationSetServiceImpl;
 import eu.cityopt.service.OutputVariableServiceImpl;
 import eu.cityopt.service.ProjectServiceImpl;
+import eu.cityopt.service.ScenGenObjectiveFunctionService;
+import eu.cityopt.service.ScenGenObjectiveFunctionServiceImpl;
+import eu.cityopt.service.ScenGenOptConstraintServiceImpl;
+import eu.cityopt.service.ScenarioGeneratorServiceImpl;
 import eu.cityopt.service.ScenarioServiceImpl;
 import eu.cityopt.service.SimulationResultServiceImpl;
 import eu.cityopt.service.TimeSeriesServiceImpl;
@@ -91,6 +106,9 @@ import eu.cityopt.service.UnitServiceImpl;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.SimulatorManagers;
+import eu.cityopt.sim.service.ImportExportService;
+import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.BarChartVisualization;
 import eu.cityopt.web.ScatterPlotVisualization;
@@ -98,8 +116,12 @@ import eu.cityopt.web.TimeSeriesVisualization;
 import eu.cityopt.web.UnitForm;
 import eu.cityopt.web.UserSession;
 
+/**
+ * @author Olli Stenlund
+ *
+ */
 @Controller
-@SessionAttributes({"project", "scenario", "optimizationset", "usersession"})
+@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "usersession"})
 public class ProjectController {
 	
 	@Autowired
@@ -169,16 +191,31 @@ public class ProjectController {
 	ObjectiveFunctionServiceImpl objFuncService;
 	
 	@Autowired
+	OptConstraintServiceImpl optConstraintService;
+	
+	@Autowired
 	OptSearchConstServiceImpl optSearchService;
 	
 	@Autowired
 	OptSetScenariosImpl optSetScenarioService;
 	
 	@Autowired
+	ScenarioGeneratorServiceImpl scenGenService;
+	
+	@Autowired
+	ScenGenObjectiveFunctionServiceImpl scenGenFuncService;
+	
+	@Autowired
+	ScenGenOptConstraintServiceImpl scenGenConstraintService;
+	
+	@Autowired
 	DecisionVariableServiceImpl decisionVarService;
 	
 	@Autowired
 	DatabaseSearchOptimizationService dbOptService;
+
+	@Autowired
+	ImportExportService importExportService;
 	
 	@RequestMapping(value="createproject", method=RequestMethod.GET)
 	public String getCreateProject(Map<String, Object> model) {
@@ -189,9 +226,26 @@ public class ProjectController {
 
 	@RequestMapping(value="createproject", method=RequestMethod.POST)
 	public String getCreateProjectPost(Map<String, Object> model, ProjectDTO projectForm) {
-		projectService.save(projectForm);
-		model.put("project", projectForm);
-		return "editproject";
+		if (projectForm.getName() != null)
+		{
+			ProjectDTO project = new ProjectDTO();
+			project.setName(projectForm.getName());
+			String desc = projectForm.getDescription();
+			
+			if (desc != null && !desc.isEmpty())
+			{
+				project.setDescription(projectForm.getDescription());
+			}
+			
+			project = projectService.save(project);
+			model.put("project", project);
+			model.remove("scenario");
+			return "editproject";
+		}
+		else
+		{
+			return "error";
+		}
 	}
 
 	@RequestMapping(value="openproject", method=RequestMethod.GET)
@@ -226,37 +280,105 @@ public class ProjectController {
 		{
 			ProjectDTO newProject = new ProjectDTO();
 			model.put("project", newProject);
+			model.remove("scenario");
 			return "createproject";
 		}
 
 		return "editproject";
 	}
 
+	@RequestMapping(value = "uploadFile", method = RequestMethod.POST)
+	public String uploadFileHandler(Map<String, Object> model, @RequestParam(value="detailLevel", required=false) String detailLevel,
+	    @RequestParam("file") MultipartFile file) {
+	
+		if (!file.isEmpty()) {
+	        try {
+	            byte[] bytes = file.getBytes();
+
+	            // Creating the directory to store file
+	            /*ÄString rootPath = "~" + File.separator;//System.getProperty("java.home");
+	            File dir = new File(rootPath);// + File.separator + "modelFiles");
+	            
+	            //if (!dir.exists())
+	            //    dir.mkdirs();
+
+	            // Create the file on server
+	            File serverFile = new File(dir.getAbsolutePath()
+	                    + File.separator + file.getName());
+	            BufferedOutputStream stream = new BufferedOutputStream(
+	                    new FileOutputStream(serverFile));
+	            stream.write(bytes);
+	            stream.close();*/
+
+	            //logger.info("Server File Location="
+	            //        + serverFile.getAbsolutePath());
+
+	            ProjectDTO project = (ProjectDTO) model.get("project");
+				
+				if (project == null)
+				{
+					return "error";
+				}
+				
+				try {
+					project = projectService.findByID(project.getPrjid());
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				model.put("project", project);
+			
+				Set<String> simulatorNames = SimulatorManagers.getSimulatorNames();
+				String simulatorName = simulatorNames.iterator().next();
+				Instant timeOrigin =  Instant.parse("2015-01-01T00:00:00Z");
+
+				importExportService.importSimulationModel(project.getPrjid(), 0, "Imported evergy model " + Instant.now(), bytes, simulatorName, timeOrigin);
+				importExportService.importModelInputsAndOutputs(project.getPrjid(), 0);
+				
+				//return "You successfully uploaded file=" + name;
+	        } catch (Exception e) {
+	            return "You failed to upload => " + e.getMessage();
+	        }
+	    } else {
+	    }
+		return "editproject";
+	}
+	
 	@RequestMapping(value="editproject", method=RequestMethod.POST)
 	public String getEditProjectPost(ProjectDTO projectForm, Map<String, Object> model, 
 		@RequestParam(value="action", required=false) String action) {
-	
+		//@RequestParam(value="name", required=false) String name,
+        //@RequestParam(value="file", required=false) MultipartFile file) {
+
 		if (projectForm != null && action != null)
 		{
 			if (action.equals("create"))
 			{
+				ProjectDTO project = new ProjectDTO();
+				project.setName(projectForm.getName());
+				projectService.save(project);
+				model.put("project", project);
 			}
 			else if (action.equals("update"))
 			{
+				ProjectDTO project = (ProjectDTO) model.get("project");
+				
+				if (project == null)
+				{
+					return "error";
+				}
+				
+				try {
+					project = projectService.findByID(project.getPrjid());
+
+					project.setName(projectForm.getName());
+					project.setDescription(projectForm.getDescription());
+					
+					project = projectService.save(project);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				model.put("project", project);
 			}
-			
-			/*if (true) //project.getAprosFileName() != null)
-			{
-				AprosService aprosService = new AprosService();
-				String strFileName = "";//project.getAprosFileName();
-				aprosService.readDiagramFile(strFileName);
-			}*/
-			
-			ProjectDTO project = new ProjectDTO();
-			project.setName(projectForm.getName());
-			project.getPrjid();
-			projectService.save(project);
-			model.put("project", project);
 		}
 		return "editproject";
 	}
@@ -326,7 +448,14 @@ public class ProjectController {
 			scenario.setName(formScenario.getName());
 			scenario.setDescription(formScenario.getDescription());
 			scenario.getScenid();
-			scenarioService.save(scenario, project.getPrjid());
+			
+			scenario = scenarioService.save(scenario, project.getPrjid());
+			
+			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+			model.put("components", components);
+			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+			model.put("inputParamVals", inputParamVals);
+			
 			model.put("scenario", scenario);
 			return "editscenario";
 		}
@@ -452,8 +581,14 @@ public class ProjectController {
 			scenario.setName(formScenario.getName());
 			scenario.setDescription(formScenario.getDescription());
 			
-			scenarioService.save(scenario, project.getPrjid());
+			scenario = scenarioService.save(scenario, project.getPrjid());
 			model.put("scenario", scenario);
+			
+			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+			model.put("components", components);
+			
+			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+			model.put("inputParamVals", inputParamVals);
 		}
 		else
 		{
@@ -945,32 +1080,61 @@ public class ProjectController {
 	@RequestMapping(value="createoptimizationset",method=RequestMethod.GET)
 	public String getCreateOptimizationSet(Map<String, Object> model) {
 	
-		OptimizationSetDTO optSet = new OptimizationSetDTO();
-		model.put("optimizationset", optSet);
+		OpenOptimizationSetDTO openOptSet = new OpenOptimizationSetDTO();
+		model.put("openoptimizationset", openOptSet);
+		
+		Set<String> optSetTypes = new HashSet<String>();
+		optSetTypes.add("Database search");
+		optSetTypes.add("Genetic algorithm");
+		model.put("optimizationsettypes", optSetTypes);
 		
 		return "createoptimizationset";
 	}
 
 	@RequestMapping(value="createoptimizationset",method=RequestMethod.POST)
-	public String getCreateOptimizationSetPost(Map<String, Object> model, OptimizationSetDTO optSet) {
+	public String getCreateOptimizationSetPost(Map<String, Object> model, HttpServletRequest request, OpenOptimizationSetDTO openOptSet) {
 	
+		String type = request.getParameter("type");
+		int nType = Integer.parseInt(type);
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
 		if (project == null)
 		{
 			return "error";
 		}
+		project = projectService.findByID(project.getPrjid());
 		
-		if (optSet != null)
+		if (openOptSet != null)
 		{
-			optSet.setProject(project);
-			
-			optSetService.save(optSet);
+			if (nType == 1)
+			{
+				OptimizationSetDTO optSet = new OptimizationSetDTO();
+				optSet.setName(openOptSet.getName());
+				// Add description?
+				optSet.setProject(project);
+				
+				optSet = optSetService.save(optSet);
+				model.put("optimizationset", optSet);
+				return "editoptimizationset";
+			}
+			else if (nType == 2)
+			{
+				ScenarioGeneratorDTO scenGenerator = new ScenarioGeneratorDTO();
+				scenGenerator.setName(openOptSet.getName());
+				scenGenerator.setProject(project);
+				scenGenerator = scenGenService.save(scenGenerator);
+				model.put("scengenerator", scenGenerator);
+				return "geneticalgorithm";
+			}
+			else
+			{
+				return "createoptimizationset";
+			}
 		}
-		
-		model.put("optimizationset", optSet);
-		
-		return "editoptimizationset";
+		else
+		{
+			return "createoptimizationset";
+		}
 	}
 
 	@RequestMapping(value="editoptimizationset",method=RequestMethod.GET)
@@ -1209,6 +1373,7 @@ public class ProjectController {
 			OptConstraintDTO newOptConstraint = new OptConstraintDTO();
 			newOptConstraint.setName(constraint.getName());
 			newOptConstraint.setExpression(constraint.getExpression());
+			optConstraintService.save(newOptConstraint);
 			
 			try {
 				optSetService.addSearchConstraint(optSet.getOptid(), newOptConstraint);
@@ -1216,7 +1381,7 @@ public class ProjectController {
 				e.printStackTrace();
 			}
 			
-			optSet = optSetService.update(optSet);
+			//optSet = optSetService.update(optSet);
 		}
 
 		List<OptConstraintDTO> optSearchConstraints = null;
@@ -1654,38 +1819,40 @@ public class ProjectController {
 		inputParamService.save(updatedInputParam, updatedInputParam.getComponent().getComponentid(), unit.getUnitid());
 				
 		model.put("selectedcompid", updatedInputParam.getComponent().getComponentid());
+		
 		try {
 			model.put("selectedComponent", inputParamService.findByID(updatedInputParam.getComponent().getComponentid()));
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		model.put("project", project);
 		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
 		model.put("extParams", extParams);
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
+		Set<InputParameterDTO> inputParams = componentService.getInputParameters(updatedInputParam.getComponent().getComponentid());
+		model.put("inputParameters", inputParams);
 
 		return "projectparameters";
 	}
 
-	@RequestMapping(value="editinputparametervalue", method=RequestMethod.GET)
+	@RequestMapping(value="editinputparamvalue", method=RequestMethod.GET)
 	public String getEditInputParameterValue(Model model, @RequestParam(value="inputparamvalid", required=true) String inputvalid) {
 		int nInputValId = Integer.parseInt(inputvalid);
 		InputParamValDTO inputParamVal = null;
 		
 		try {
 			inputParamVal = inputParamValService.findByID(nInputValId);
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		model.addAttribute("inputParamVal", inputParamVal);
 		
-		return "editinputparametervalue";
+		return "editinputparamvalue";
 	}
 
-	@RequestMapping(value="editinputparametervalue", method=RequestMethod.POST)
+	@RequestMapping(value="editinputparamvalue", method=RequestMethod.POST)
 	public String getEditInputParamValPost(InputParamValDTO inputParamVal, Map<String, Object> model,
 		@RequestParam(value="inputparamvalid", required=true) String inputParamValId){
 		ProjectDTO project = (ProjectDTO) model.get("project");
@@ -1703,8 +1870,8 @@ public class ProjectController {
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
+		
 		updatedInputParamVal.setValue(inputParamVal.getValue());
-		UnitDTO unit = unitService.save(new UnitDTO());
 		inputParamValService.save(updatedInputParamVal);
 				
 		model.put("selectedcompid", updatedInputParamVal.getInputparameter().getComponent().getComponentid());
@@ -1712,7 +1879,6 @@ public class ProjectController {
 		try {
 			model.put("selectedComponent", inputParamService.findByID(updatedInputParamVal.getInputparameter().getComponent().getComponentid()));
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		model.put("project", project);
@@ -2257,6 +2423,15 @@ public class ProjectController {
 		String strFileName = request.getParameter("uploadFile");
 		int maxLevel = 2;//Integer.parseInt(request.getParameter("parameterLevel"));
 		aprosService.readDiagramFile(strFileName, maxLevel);
+		int userId = 0;
+		//java.nio.file.Files.readAllBytes(path);
+		Set<String> simulatorNames = SimulatorManagers.getSimulatorNames();
+		String simulatorName = simulatorNames.iterator().next();
+		//Instant timeOrigin = new Instant();
+		//importExportService.importSimulationModel(project.getPrjid(), userId, formProject.getDescription(), modelData, simulatorName, overrideTimeOrigin);
+
+		
+		
 		String strTest = "";
 		
 		for (int i = 0; i < aprosService.listNewComponents.size(); i++)
@@ -2372,6 +2547,9 @@ public class ProjectController {
 
 		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
 		model.put("extParamVals", extParamVals);
+		
+		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
+		model.put("scenarios", scenarios);
 		
 		return "viewchart";
 	}	
@@ -2952,8 +3130,41 @@ public class ProjectController {
 	}
 		
 	@RequestMapping(value="geneticalgorithm", method=RequestMethod.GET)
-	public String getGeneticAlgorithm(Map<String, Object> model)
-	{
+	public String getGeneticAlgorithm(Map<String, Object> model,
+		@RequestParam(value="optsetid", required=false) String optsetid,
+		@RequestParam(value="optsettype", required=false) String optsettype) {
+
+		ScenarioGeneratorDTO scenGen = null;
+		
+		if (model.containsKey("scengenerator"))
+		{
+			scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+			model.put("scengenerator", scenGen);
+		}
+		else
+		{
+			return "error";
+		}
+
+		@SuppressWarnings("unchecked")
+		List<ScenGenObjectiveFunctionDTO> gaFuncs = (List<ScenGenObjectiveFunctionDTO>) scenGen.getScengenobjectivefunctions();
+		model.put("functions", gaFuncs);
+		
+		@SuppressWarnings("unchecked")
+		List<ScenGenOptConstraintDTO> gaConstraints = (List<ScenGenOptConstraintDTO>) scenGen.getScengenoptconstraints();
+		model.put("constraints", gaConstraints);
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		project = projectService.findByID(project.getPrjid());
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+
 		return "geneticalgorithm";
 	}	
 	
