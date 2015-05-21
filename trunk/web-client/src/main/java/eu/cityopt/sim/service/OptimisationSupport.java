@@ -2,6 +2,7 @@ package eu.cityopt.sim.service;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import eu.cityopt.model.ExtParamValSet;
 import eu.cityopt.model.ObjectiveFunction;
 import eu.cityopt.model.OptConstraint;
 import eu.cityopt.model.OptSearchConst;
@@ -23,11 +25,14 @@ import eu.cityopt.model.ScenGenObjectiveFunction;
 import eu.cityopt.model.ScenGenOptConstraint;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
+import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.ObjectiveFunctionRepository;
 import eu.cityopt.repository.OptConstraintRepository;
 import eu.cityopt.repository.OptSearchConstRepository;
+import eu.cityopt.repository.OptimizationSetRepository;
 import eu.cityopt.repository.ScenGenObjectiveFunctionRepository;
 import eu.cityopt.repository.ScenGenOptConstraintRepository;
+import eu.cityopt.repository.TimeSeriesValRepository;
 import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.ConstraintStatus;
@@ -60,6 +65,9 @@ public class OptimisationSupport {
     private @Autowired OptConstraintRepository optConstraintRepository;
     private @Autowired ScenGenObjectiveFunctionRepository scenGenObjectiveFunctionRepository;
     private @Autowired ObjectiveFunctionRepository objectiveFunctionRepository;
+    private @Autowired OptimizationSetRepository optimizationSetRepository;
+    private @Autowired TimeSeriesValRepository timeSeriesValRepository;
+    private @Autowired ExtParamValSetRepository extParamValSetRepository;
 
     private @Autowired SimulationService simulationService;
     private @Autowired SyntaxCheckerService syntaxCheckerService;
@@ -234,6 +242,36 @@ public class OptimisationSupport {
                 objectiveFunction.getIsmaximise(), namespace.evaluator);
     }
 
+    public int saveOptimisationSet(Project project, Integer userId, String name,
+            OptimisationProblem problem) {
+        OptimizationSet optimizationSet = new OptimizationSet();
+        optimizationSet.setProject(project);
+        optimizationSet.setCreatedby(userId);
+        optimizationSet.setCreatedon(new Date());
+        optimizationSet.setName(name);
+
+        List<Runnable> idUpdateList = new ArrayList<>();
+        ExtParamValSet extParamValSet = simulationService.saveExternalParameterValues(
+                project, problem.getExternalParameters(), name, idUpdateList);
+        optimizationSet.setExtparamvalset(extParamValSet);
+
+        optimizationSet = optimizationSetRepository.save(optimizationSet);
+
+        saveConstraints(project, optimizationSet, problem.constraints, problem.getNamespace());
+
+        if (problem.objectives.size() >= 1) {
+            saveObjective(project, optimizationSet, problem.objectives.get(0));
+        }
+
+        optimizationSetRepository.flush();
+        timeSeriesValRepository.flush();
+        extParamValSetRepository.flush();
+        for (Runnable update : idUpdateList) {
+            update.run();
+        }
+        return optimizationSet.getOptid();
+    }
+
     public void saveConstraints(
             ScenarioGenerator scenarioGenerator,
             List<Constraint> constraints, EvaluationSetup setup) {
@@ -305,6 +343,8 @@ public class OptimisationSupport {
 
         objectiveFunction.getOptimizationsets().add(optimizationSet);
         optimizationSet.setObjectivefunction(objectiveFunction);
+
+        objectiveFunctionRepository.save(objectiveFunction);
     }
 
     private ObjectiveFunction saveObjective(Project project, ObjectiveExpression objective) {
