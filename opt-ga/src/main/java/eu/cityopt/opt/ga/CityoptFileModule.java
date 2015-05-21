@@ -10,6 +10,7 @@ import org.opt4j.core.problem.ProblemModule;
 import org.opt4j.core.start.Constant;
 
 import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
 import eu.cityopt.opt.io.JacksonCsvModule;
 import eu.cityopt.opt.io.TimeSeriesData;
@@ -17,7 +18,6 @@ import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.HashSimulationStorage;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationStorage;
-import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.opt.OptimisationProblem;
 
 /**
@@ -30,14 +30,14 @@ import eu.cityopt.sim.opt.OptimisationProblem;
 public class CityoptFileModule extends ProblemModule {
     @Info("Directory containing Apros profiles")
     @File
-    @Constant(value="aprosDir", namespace=SimulatorProvider.class)
+    @Constant(value="aprosDir", namespace=AprosFactory.class)
     private String aprosDir = "c:/apros/profiles";
 
-    @Info("Simulator name and version")
-    @Constant(value="simulator", namespace=SimulatorProvider.class)
+    @Info("Simulator name and version. If empty read from the zip file.")
+    @Constant(value="simulator", namespace=ModelProvider.class)
     private String simulator = "Apros-Combustion-5.13.06-64bit";
     
-    @Info("Time origin.  If empty read from the zip file.")
+    @Info("Time origin. If empty read from the zip file.")
     private String timeOrigin = "2015-01-01T00:00:00Z";
     
     @Info("The zip file containing the model")
@@ -56,9 +56,9 @@ public class CityoptFileModule extends ProblemModule {
     public void config() {
         install(new CityoptModule());
         install(new JacksonCsvModule());
-        bind(SimulatorManager.class).toProvider(SimulatorProvider.class);
-        bind(SimulationModel.class).toProvider(ModelBlobLoader.class);
-        addOptimizerStateListener(ModelBlobCleanup.class);
+        bind(ModelFactory.class).to(AprosFactory.class).in(SINGLETON);
+        bind(SimulationModel.class).toProvider(ModelProvider.class);
+        addOptimizerStateListener(ModelCleanup.class);
         bind(OptimisationProblem.class).toProvider(ProblemFromBinder.class);
         bind(Path.class).annotatedWith(Names.named("model")).toInstance(
                 Paths.get(modelFile));
@@ -67,8 +67,13 @@ public class CityoptFileModule extends ProblemModule {
         bind(TimeSeriesData.class).toProvider(TimeSeriesLoader.class);
         bind(String.class).annotatedWith(Names.named("timeseries")).toInstance(
                 timeSeriesFile);
-        bind(Instant.class).annotatedWith(Names.named("timeOrigin"))
+        if (timeOrigin.isEmpty()) {
+            bind(Instant.class).annotatedWith(Names.named("timeOrigin"))
+                .toProvider(Providers.of(null));
+        } else {
+            bind(Instant.class).annotatedWith(Names.named("timeOrigin"))
                 .toInstance(Instant.parse(timeOrigin));
+        }
         bind(SimulationStorage.class).to(HashSimulationStorage.class)
                 .in(SINGLETON);
         bind(Evaluator.class).in(SINGLETON);

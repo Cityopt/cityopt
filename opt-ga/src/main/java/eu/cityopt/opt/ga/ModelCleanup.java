@@ -14,26 +14,38 @@ import eu.cityopt.sim.eval.util.DelayedDeleter;
  *
  * @author Hannu Rummukainen
  */
-public class ModelBlobCleanup implements OptimizerStateListener {
-    volatile SimulationModel model;
-    volatile DelayedDeleter deleter;
+public class ModelCleanup implements OptimizerStateListener {
+    private SimulationModel model;
+    private ModelFactory factory;
+    private DelayedDeleter deleter;
 
     @Inject
-    public ModelBlobCleanup(SimulationModel model) {
+    public ModelCleanup(SimulationModel model, ModelFactory factory) {
         this.model = model;
+        this.factory = factory;
         this.deleter = DelayedDeleter.activate();
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     }
 
-    void shutdown() {
+    private synchronized void shutdown() {
         try {
             if (model != null) {
                 model.close();
-                model = null;
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            model = null;
+        }
+        try {
+            if (factory != null) {
+                factory.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            factory = null;
         }
         deleter.tryDelete();
     }

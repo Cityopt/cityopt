@@ -15,7 +15,6 @@ import com.google.inject.name.Named;
 
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.SimulationModel;
-import eu.cityopt.sim.eval.SimulatorManager;
 
 /**
  * Load a SimulationModel from file.
@@ -23,17 +22,18 @@ import eu.cityopt.sim.eval.SimulatorManager;
  * {@link #get()}.
  */
 @Singleton
-public class ModelBlobLoader implements Provider<SimulationModel> {
+public class ModelProvider implements Provider<SimulationModel> {
     private SimulationModel model;
 
     @Inject
-    public ModelBlobLoader(SimulatorManager manager,
-            @Constant(value="simulator", namespace=SimulatorProvider.class)
+    public ModelProvider(ModelFactory factory,
+            @Constant(value="simulator", namespace=ModelProvider.class)
             String simulator,
             @Named("model") Path file)
             throws IOException, ConfigurationException {
         try (InputStream stream = new FileInputStream(file.toFile())) {
-            model = manager.parseModel(simulator, stream);
+            model = factory.loadModel(simulator.isEmpty() ? null : simulator,
+                                      stream);
         }
     }
     
