@@ -1,7 +1,6 @@
 package eu.cityopt.sim.service;
 
 import java.nio.file.Path;
-import java.time.Instant;
 
 import javax.inject.Inject;
 
@@ -76,5 +75,20 @@ public class TestImportExportService extends SimulationTestBase {
             importExportService.importSimulationStructure(project.getPrjid(), problemPath);
         }
         dumpTables("import_structure");
+    }
+
+    @Test
+    @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
+    @ExpectedDatabase(value="classpath:/testData/import_optset_result.xml",
+        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testImportOptimisationSet() throws Exception {
+        Project project = scenarioRepository.findByNameContaining("testscenario").get(0).getProject();
+        try (TempDir tempDir = new TempDir("testimport")) {
+            Path problemPath = copyResource("/test-problem.csv", tempDir);
+            Path tsPath = copyResource("/timeseries.csv", tempDir);
+            importExportService.importOptimisationSet(
+                    project.getPrjid(), null, "testimport", problemPath, tsPath);
+        }
+        dumpTables("import_optset");
     }
 }

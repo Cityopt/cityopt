@@ -66,6 +66,7 @@ public class ImportExportService {
 
     @Inject private SimulationService simulationService;
     @Inject private ScenarioGenerationService scenarioGenerationService;
+    @Inject private OptimisationSupport optimisationSupport;
 
     @Inject private ProjectRepository projectRepository;
     @Inject private SimulationModelRepository simulationModelRepository;
@@ -420,6 +421,47 @@ public class ImportExportService {
                 OptimisationProblemIO.readProblemCsv(problemFile, timeSeriesData);
 
         return saveOptimisationProblem(project, name, problem, algorithm, algorithmParameters);
+    }
+
+    /** 
+     * Creates a new OptimizationSet row from text files.
+     * The file format is the same as supported by importOptimizationProblem,
+     * but any decision variables and input values/expressions are ignored. 
+     * If there are multiple objectives in the problem file, only one of them
+     * is stored.
+     * 
+     * @param projectId the associated project, which must have exactly the
+     *   same external parameters, input parameters, output variables and
+     *   metrics as the optimisation problem.  In an empty project they can
+     *   be set up by calling {@link #importSimulationStructure(int, Path, Path...)}
+     *   with the same input files.
+     *   The project must also have a SimulationModel with a defined time origin
+     *   in the database.
+     * @param name name for the OptimizationSet row.  The same name is used for
+     *   the created ExtParamValSet.
+     * @param problemFile defines the objective and constraints
+     * @param timeSeriesFiles paths of CSV files containing time series data
+     *   for external parameters
+     * @return id of created OptimizationSet row
+     * @throws IOException 
+     * @throws ParseException 
+     * @throws ScriptException 
+     */
+    @Transactional
+    public int importOptimisationSet(
+            int projectId, Integer userId,
+            String name, Path problemFile, Path... timeSeriesFiles) 
+                   throws IOException, ParseException, ScriptException
+    {
+        Project project = projectRepository.findOne(projectId);
+
+        TimeSeriesData timeSeriesData =
+                readTimeSeriesCsv(project, timeSeriesFiles);
+        //TODO should have a specific method for reading an optimization set
+        OptimisationProblem problem =
+                OptimisationProblemIO.readProblemCsv(problemFile, timeSeriesData);
+
+        return optimisationSupport.saveOptimisationSet(project, userId, name, problem);
     }
 
     public int saveOptimisationProblem(
