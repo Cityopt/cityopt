@@ -53,8 +53,8 @@ in the Java properties text format.  The cityopt.properties file may define
 the following properties:
 
 - aprosProfile is the name of the Apros simulation server profile that should
-  be used, for example "Apros-Combustion-5.13.06-64bit".  The profile is
-  essentially a special command line version of Apros.
+  be used, for example: "aprosProfile = Apros-Combustion-5.13.06-64bit".
+  An Apros profile is essentially a special command line version of Apros.
   The profile can also be specified while importing the model in the CITYOPT
   tool; the profile specified in the user interface overrides the value in the
   cityopt.properties file.
