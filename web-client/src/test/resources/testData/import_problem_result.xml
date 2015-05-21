@@ -47,13 +47,13 @@
   <scenario description="1st test scenario"/>
   <scenario description="2nd test scenario"/>
   <scenario description="3rd test scenario"/>
-  <optconstraint name="roof_space" expression="panels + collectors" lowerbound="-Infinity" upperbound="20.0"/>
+  <optconstraint name="roof_space" expression="panels + collectors" lowerbound="[null]" upperbound="20.0"/>
   <objectivefunction name="fuelconsumption" expression="fuelconsumption" ismaximise="false"/>
   <optimizationset/>
   <optsearchconst/>
   <optsetscenarios/>
-  <metric name="fuelconsumption" expression="integrate(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
-  <metric name="fuelcost" expression="integrate(x * y * fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
+  <metric name="fuelconsumption" expression="integrate(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, Infinity)"/>
+  <metric name="fuelcost" expression="integrate(x * y * fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, Infinity)"/>
   <decisionvariable name="panels" lowerbound="0.0" upperbound="20.0"/>
   <decisionvariable name="collectors" lowerbound="0.0" upperbound="20.0"/>
   <scengenresult/>

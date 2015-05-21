@@ -272,8 +272,12 @@ public class OptimisationSupport {
         OptConstraint optConstraint = new OptConstraint();
         optConstraint.setName(constraint.getName());
         optConstraint.setExpression(constraint.getExpression().getSource());
-        optConstraint.setLowerbound(Type.DOUBLE.format(constraint.getLowerBound(), setup));
-        optConstraint.setUpperbound(Type.DOUBLE.format(constraint.getUpperBound(), setup));
+        optConstraint.setLowerbound(
+                (constraint.getLowerBound() == Double.NEGATIVE_INFINITY)
+                ? null : Type.DOUBLE.format(constraint.getLowerBound(), setup));
+        optConstraint.setUpperbound(
+                (constraint.getUpperBound() == Double.POSITIVE_INFINITY)
+                ? null : Type.DOUBLE.format(constraint.getUpperBound(), setup));
         optConstraint.setProject(project);
         project.getOptconstraints().add(optConstraint);
         return optConstraintRepository.save(optConstraint);
