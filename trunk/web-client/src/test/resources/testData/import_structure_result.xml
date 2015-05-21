@@ -48,7 +48,7 @@
   <optimizationset/>
   <optsearchconst/>
   <optsetscenarios/>
-  <metric name="fuelcost" expression="integrate(fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
+  <metric name="fuelcost" expression="integrate(fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, Infinity)"/>
   <metric name="fuelconsumption" expression="FUEL_CONSUMPTION.MULTIPLYER_OUTPUT.values[-1]"/>
   <decisionvariable/>
   <scengenresult/>

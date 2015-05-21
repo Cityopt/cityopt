@@ -96,7 +96,7 @@ public class TestScenarioGenerationService extends SimulationTestBase {
             assertThat(e.getMessage(), StringContains.containsString(
                     "In constraint con1: name 'meanie' is not defined"));
             assertThat(e.getMessage(), StringContains.containsString(
-                    "In objective obj1: name 'INFINYTY' is not defined"));
+                    "In objective obj1: name 'Infinyty' is not defined"));
         }
         dumpTables("plumbing_scengen_error");
     }

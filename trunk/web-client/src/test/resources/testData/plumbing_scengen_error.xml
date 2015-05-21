@@ -64,7 +64,7 @@
   <metric prjid="1" name="dummy" unitid="1" typeid="1" expression="C01.typ"/>
   <metric prjid="2" name="symmetric" unitid="1" typeid="1" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>
 
-  <objectivefunction obtfunctionid="1" prjid="2" typeid="1" name="obj1" expression="integrate(symmetric * PIP01.PI12_MIX_MASS_FLOW * C01.typ, 0, INFINYTY)" ismaximise="true"/>
+  <objectivefunction obtfunctionid="1" prjid="2" typeid="1" name="obj1" expression="integrate(symmetric * PIP01.PI12_MIX_MASS_FLOW * C01.typ, 0, Infinyty)" ismaximise="true"/>
 
   <optconstraint optconstid="1" prjid="2" name="con1" expression="meanie(PIP01.PI12_MIX_MASS_FLOW)" lowerbound="0.1" upperbound="1.0"/>
 
