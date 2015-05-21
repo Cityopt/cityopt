@@ -16,13 +16,13 @@
 		<td width=30></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:1000px;overflow:auto">
-			<form:form method="post" action="editproject.html?action=save" modelAttribute="project" 
-				enctype="multipart/form-data">
 			<table style="width:900px">
 				<tr><td><h2>Edit project</h2></td></tr>
 				<tr>
 					<td>
 						<table>
+							<form:form method="post" action="editproject.html?action=save" modelAttribute="project" 
+								enctype="multipart/form-data">
 							<tr>
 								<td>Project name:</td>
 								<td><form:input type="text" path="name" style="width:250px"/></td>
@@ -39,37 +39,33 @@
 								<td>Description:</td>
 								<td><form:textarea type="text" rows="3" path="description" style="width:250px"></form:textarea></td>
 							</tr>
-							<tr>						
-								<td>Energy model:</td>
-								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
+							</form:form>
+							
+							<form:form method="POST" action="uploadFile.html" enctype="multipart/form-data">
+        					<tr>
+								<td>Energy model to upload: </td>
+								<td><input type="file" name="file"></td>
 							</tr>
 							<tr>
-								<td>
-									Parameter level:
-								</td>
-								<td>
-							 		<select name="parameterLevel">
-									  	<option value="1">1</option>
-									  	<option value="2">2</option>
-									  	<option value="3">3</option>
-									  	<option value="4">4</option>
-									</select>
-								</td> 
+								<td> 
+        							Detail level: 
+       							</td>
+        						<td>
+        							<input type="text" name="detailLevel"> 
+       							</td>
 							</tr>
-							<tr>						
-								<td></td>
-								<td><a href="uploaddiagram.html"><button type="button">Upload</button></a>
-								<!--<form:input type="submit" path="" value="Upload" style="width:120px"/>--></td>
-							</tr>
+       						<tr>	
+       							<td></td>
+        						<td>
+        							<input type="submit" value="Load file">
+       							</td>
+   							</tr>	
+    						</form:form>
 						</table>
 					</td>
 					<td align="right">
 						<img src="assets/img/test_map.jpg"/>
 					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td align="Right"><input type="button" id="upload" value="Upload" style="width:120px"/></td>
 				</tr>
 				<tr>
 					<td colspan="2">
@@ -85,13 +81,12 @@
 							<tr>
 								<td>Output variables</td>
 								<td><a href="outputvariables.html"><button type="button" style="width:120px">Set</button></a></td>
-								<td align="right"><form:input type="submit" path="" value="Save project" style="width:120px"/></td>
+								<td align="right"><!--  type="submit" path="" value="Save project" style="width:120px"--></td>
 							</tr>
 						</table>
 					</td>
 				</tr>
 			</table>
-			</form:form>
 			</div>
 		</td>
 	</tr>

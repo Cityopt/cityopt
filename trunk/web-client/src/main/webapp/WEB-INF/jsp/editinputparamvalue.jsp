@@ -20,9 +20,9 @@
 		</td>
 
 		<td width=30></td>
-		<td>
+		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="editinputparametervalue.html?inputparamvalid=${inputParamVal.inputid}" modelAttribute="inputParamVal">
+			<form:form method="post" action="editinputparamvalue.html?inputparamvalid=${inputParamVal.scendefinitionid}" modelAttribute="inputParamVal">
 			<h2>Edit input parameter value</h2>
 
 			<table align="center">
@@ -34,7 +34,7 @@
 						Name
 					</td>
 					<td>
-						<form:input style="width:300px" type="text" path="name"/>
+						${inputParamVal.inputparameter.name}
 					</td>
 				</tr>
 				<tr>

@@ -20,7 +20,7 @@
 		<td width=30></td>
 		<td valign="top">
 			<h3>Error</h3>
-			<p>Please open project first!</p>
+			<p>Please try again later!</p>
 		</td>
      </tr>
 </table>

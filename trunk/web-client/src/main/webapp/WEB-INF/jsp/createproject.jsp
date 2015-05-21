@@ -35,14 +35,6 @@
 								<td>Description:</td>
 								<td><form:textarea type="text" rows="3" path="description"></form:textarea></td>
 							</tr>
-							<tr>						
-								<td>Energy model:</td>
-								<td></td>
-							</tr>
-							<tr>						
-								<td></td>
-								<td><input type="button" id="upload" value="Upload"/></td>
-							</tr>
 						</table>
 					</td>
 					<td align="right">
@@ -67,7 +59,6 @@
 							</tr>
 						</table>
 					</td>
-					
 				</tr>
 			</table>
 		</td>

@@ -97,7 +97,7 @@
 									    	<td>${componentInputParamVal.inputid}</td>
 									    	<td>${componentInputParamVal.value}</td>
 											<td>
-												<a href="<c:url value='editinputparamvalue.html?componentid=${componentInputParamVal.componentid}'/>">
+												<a href="<c:url value='editinputparamvalue.html?inputparamvalid=${componentInputParamVal.inputid}'/>">
 													<button align="right" type="button" value="Edit">Edit</button>
 												</a>
 											</td>
