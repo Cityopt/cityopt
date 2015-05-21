@@ -31,13 +31,11 @@ import eu.cityopt.sim.eval.util.DelayedDeleter;
 public class AprosConfig implements InitializingBean, DisposableBean {
     private static final long DELETE_PERIOD_MINUTES = 60;
 
-    /**
-     * Apros profile directory names delimited by system path separator
-     * (semicolon on Windows).
-     */
+    /** Apros profile directory */
     @Value("${APROS_PROFILE_PATH}")
     private String profilePath;
 
+    /** Whether to check that the Apros profile directory is valid on start-up. */
     @Value("${APROS_PROFILE_CHECK:true}")
     private boolean checkProfile;
 
@@ -70,29 +68,20 @@ public class AprosConfig implements InitializingBean, DisposableBean {
                 TimeUnit.MINUTES.toMillis(DELETE_PERIOD_MINUTES));
         readSystemEnvironment();
         if (profilePath != null) {
-            String[] dirNames = profilePath.split(
-                    Pattern.quote(System.getProperty("path.separator"))); 
-            boolean valid = false;
-            for (String dirName : dirNames) {
-                Path dirPath = Paths.get(dirName);
-                if (Files.isDirectory(dirPath)) {
-                    try {
-                        AprosManager.register(dirPath, executor);
-                        valid = true;
-                    } catch (IOException e) {
-                        if (checkProfile) {
-                            throw new IOException(
-                                    "Invalid Apros profile directory: " + dirPath, e);
-                        }
-                    }
-                } else {
+            Path path = Paths.get(profilePath);
+            if (Files.isDirectory(path)) {
+                try {
+                    AprosManager.register(path, executor);
+                } catch (IOException e) {
                     if (checkProfile) {
-                        throw new IOException("Invalid Apros profile directory: " + dirPath);
+                        throw new IOException(
+                                "Invalid Apros profile directory: " + path, e);
                     }
                 }
-            }
-            if (checkProfile && !valid) {
-                throw new IOException("Invalid Apros profile path: " + profilePath);
+            } else {
+                if (checkProfile) {
+                    throw new IOException("Invalid Apros profile directory: " + path);
+                }
             }
         }
     }
