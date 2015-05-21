@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.DecisionVariable;
 import eu.cityopt.model.DecisionVariableResult;
+import eu.cityopt.model.ExtParamValSet;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.Metric;
@@ -149,11 +150,12 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     public void put(SimulationStorage.Put put) {
         cache.put(put.input, put.output);
         Scenario scenario = saveSimulationInput(put.input, put.name, put.description);
+        boolean newScenario = (put.input.getScenarioId() == null);
         if (put.output != null) {
             saveSimulationOutput(scenario, put.output);
         }
         if (put.metricValues != null) {
-            scenario = saveMetricValues(scenario, put.metricValues);
+            scenario = saveMetricValues(scenario, newScenario, put.metricValues);
         }
         if (scenGenId != null) {
             saveGeneratorScenarioData(
@@ -168,7 +170,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     public void updateMetricValues(MetricValues metricValues) {
         Scenario scenario = getScenario(metricValues.getResults().getInput());
         if (scenario != null) {
-            saveMetricValues(scenario, metricValues);
+            saveMetricValues(scenario, false, metricValues);
         }
     }
 
@@ -365,17 +367,26 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         return scenario;
     }
 
-    Scenario saveMetricValues(Scenario scenario, MetricValues metricValues) {
-        ScenarioMetrics scenarioMetrics = new ScenarioMetrics();
-        // TODO remove/update any existing ScenarioMetrics referring to the same
-        // Scenario and ExtParamValSet
-
+    Scenario saveMetricValues(Scenario scenario, boolean newScenario, MetricValues metricValues) {
         ExternalParameters simExternals =
                 metricValues.getResults().getInput().getExternalParameters();
         List<Runnable> idUpdateList = new ArrayList<Runnable>();
-        simulationService.saveExternalParameterValues(
-                scenario.getProject(), simExternals, null,
-                scenarioMetrics, null, idUpdateList);
+        ExtParamValSet extParamValSet = simulationService.saveExternalParameterValues(
+                scenario.getProject(), simExternals, null, idUpdateList);
+
+        if (!newScenario) {
+            ScenarioMetrics oldScenarioMetrics =
+                    scenarioMetricsRepository.findByScenidAndExtParamValSetid(
+                            scenario.getScenid(), extParamValSet.getExtparamvalsetid());
+            if (oldScenarioMetrics != null) {
+                scenarioMetricsRepository.delete(oldScenarioMetrics);
+            }
+            scenarioMetricsRepository.flush();
+        }
+        ScenarioMetrics scenarioMetrics = new ScenarioMetrics();
+        // Link to Scenario and ExtParamValSet in one direction only, JPA will do the rest.
+        scenarioMetrics.setScenario(scenario);
+        scenarioMetrics.setExtparamvalset(extParamValSet);
 
         Namespace namespace = metricValues.getResults().getNamespace();
         for (Metric metric : scenario.getProject().getMetrics()) {
@@ -399,10 +410,6 @@ public class DbSimulationStorage implements DbSimulationStorageI {
             } // else: ignore missing values
         }
 
-        scenarioMetrics.setScenario(scenario);
-        scenario.getScenariometricses().add(scenarioMetrics);
-
-        scenario = scenarioRepository.save(scenario);
         scenarioMetricsRepository.save(scenarioMetrics);
         metricValRepository.save(scenarioMetrics.getMetricvals());
 
