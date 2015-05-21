@@ -33,6 +33,7 @@ import eu.cityopt.model.AlgoParam;
 import eu.cityopt.model.AlgoParamVal;
 import eu.cityopt.model.Algorithm;
 import eu.cityopt.model.Component;
+import eu.cityopt.model.ExtParamValSet;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.ModelParameter;
 import eu.cityopt.model.Project;
@@ -306,9 +307,10 @@ public class ScenarioGenerationService
         Namespace namespace = problem.getNamespace();
 
         List<Runnable> idUpdateList = new ArrayList<>();
-        simulationService.saveExternalParameterValues(
+        ExtParamValSet extParamValSet = simulationService.saveExternalParameterValues(
                 scenarioGenerator.getProject(), problem.getExternalParameters(),
-                extParamValSetName, null, scenarioGenerator, idUpdateList);
+                extParamValSetName, idUpdateList);
+        scenarioGenerator.setExtparamvalset(extParamValSet);
         Map<String, Map<String, InputParameter>> inputParameterMap =
                 getInputParameterMap(scenarioGenerator.getProject());
         saveDecisionVariables(
