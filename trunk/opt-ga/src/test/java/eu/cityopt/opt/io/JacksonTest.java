@@ -104,8 +104,7 @@ public class JacksonTest {
             super.configure();
             bind(Evaluator.class).toInstance(evaluator);
             bind(TimeSeriesData.class).toProvider(TimeSeriesLoader.class);
-            bind(SimulationModel.class).toProvider(
-                    Providers.<SimulationModel>of(null));
+            bind(SimulationModel.class).toProvider(Providers.of(null));
         }
     }
 
