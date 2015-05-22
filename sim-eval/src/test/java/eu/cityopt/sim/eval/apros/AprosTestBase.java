@@ -5,6 +5,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
+import java.util.concurrent.Executors;
 
 import org.junit.BeforeClass;
 
@@ -26,5 +27,6 @@ public class AprosTestBase {
         profileDir = dataDir.resolve(
                 props.getProperty("profile_dir"));
         profileName = props.getProperty("profile");
+        AprosManager.register(profileDir, Executors.newSingleThreadExecutor());
     }
 }

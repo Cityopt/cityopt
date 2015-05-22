@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -34,6 +33,7 @@ import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
+import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
 
@@ -100,14 +100,14 @@ public class AprosRunnerTest extends AprosTestBase {
                 dataDir.resolve(props.getProperty("uc_props")).toFile());
         Path modelDir = dataDir.resolve(props.getProperty("model_dir"));
         String nodes = props.getProperty("nodes");
+        AprosManager mgr = (AprosManager)SimulatorManagers.get(profileName);
         if (nodes != null) {
-            AprosRunner.nodes = (new ObjectMapper()).readValue(
-                    nodes, new TypeReference<List<Map<String, String>>>() {});
+            mgr.setNodes((new ObjectMapper()).readValue(
+                    nodes, new TypeReference<List<Map<String, String>>>() {}));
         }
         
         return new AprosRunner(
-                profileDir, profileName,
-                Executors.newSingleThreadExecutor(),
+                mgr, profileName,
                 ns, ucs, modelDir,
                 props.getProperty("result_file"));
     }
