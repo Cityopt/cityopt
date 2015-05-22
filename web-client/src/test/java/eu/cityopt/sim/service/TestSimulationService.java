@@ -1,14 +1,17 @@
 package eu.cityopt.sim.service;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import javax.script.ScriptException;
 
@@ -91,6 +94,27 @@ public class TestSimulationService extends SimulationTestBase {
     }
 
     @Test
+    @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
+    public void testModel_cancel() throws Exception {
+        loadModel("Apros test model", "/testmodel.zip");
+        Scenario scenario = scenarioRepository.findByNameContaining("testscenario").get(0);
+        BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>();
+        Future<SimulationOutput> job = simulationService.startSimulation(
+                scenario.getScenid(), tasks::add);
+        job.cancel(true);
+        assertTrue(job.isCancelled());
+        // The cancellation queues the clean-up task, now run it.
+        tasks.take().run();
+        assertTrue(tasks.isEmpty());
+        Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+        assertTrue(tasks.isEmpty());
+        // There should be no updates to the database.
+        scenario = scenarioRepository.findByNameContaining("testscenario").get(0);
+        assertNull(scenario.getStatus());
+        dumpTables("cancel");
+    }
+
+    @Test
     @DatabaseSetup("classpath:/testData/testmodel_scenario_error.xml")
     public void testModel_SyntaxError() throws Exception {
         loadModel("Apros test model", "/testmodel.zip");
@@ -110,13 +134,13 @@ public class TestSimulationService extends SimulationTestBase {
             ConfigurationException, InterruptedException,
             ExecutionException, ScriptException, Exception {
         Scenario scenario = scenarioRepository.findByNameContaining("testscenario").get(0);
-        Queue<Runnable> tasks = new ArrayDeque<>();
+        BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>();
         Future<SimulationOutput> job = simulationService.startSimulation(
                 scenario.getScenid(), tasks::add);
-        job.get();
-        while (!tasks.isEmpty()) {
-            tasks.poll().run();
-        }
+        do {
+            tasks.take().run();
+        } while (!tasks.isEmpty());
+        assertTrue(job.isDone());
     }
 
     private void updateMetrics() throws ParseException, ScriptException {
