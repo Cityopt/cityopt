@@ -17,7 +17,17 @@ import eu.cityopt.sim.eval.SimulatorManagers;
  * another static method.  This class wraps those calls in dynamic objects:
  * simulators are registered by creating instances (of subclasses by simulator
  * type).  There is an instance counter: closing the last instance calls the
- * static shutdown method. 
+ * static shutdown method.
+ * <p>
+ * Things should work if you observe these practices:
+ * <ul>
+ * <li>Create all SimulationModels with ModelFactories.
+ * <li>Close all SimulationModels and ModelFactories when done with them.
+ * <li>Before closing a ModelFactory, close all SimulationModels created
+ * by it.
+ * <li>Do not create or close SimulationManager objects directly.
+ * They are shared.
+ * </ul>
  * 
  * @author ttekth
  */
@@ -39,21 +49,17 @@ public abstract class ModelFactory implements Closeable {
 
     /**
      * Load a simulation model from a stream.
-     * @param simulator simulator name or null to dis
+     * @param simulator simulator name or null to discover from in.
      * @param in input stream to read the model from
      */
     public SimulationModel loadModel(String simulator, InputStream in)
             throws IOException, ConfigurationException {
-        if (simulator != null) {
-            return SimulatorManagers.get(simulator).parseModel(simulator, in);
-        } else {
-            SimulationModel m = SimulatorManagers.detectSimulator(
-                    ByteStreams.toByteArray(in));
-            if (m == null) {
-                throw new ConfigurationException("Simulator detection failed");
-            }
-            return m;
+        SimulationModel m = SimulatorManagers.parseModel(
+                simulator, ByteStreams.toByteArray(in));
+        if (m == null) {
+            throw new ConfigurationException("Simulator detection failed");
         }
+        return m;
     }
 
     @Override
