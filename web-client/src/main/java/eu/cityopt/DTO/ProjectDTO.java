@@ -17,11 +17,12 @@ public class ProjectDTO {
 		@Getter @Setter private String description;
 		@Getter @Setter private SimulationModelDTO simulationmodel;
 		@Getter @Setter private String designtarget;
-		private Date timehorizon;
-		private Date createdon;
-		private Date updatedon;
-		private Integer createdby;
-		private Integer updatedby;
+		@Getter @Setter private Date timehorizon;
+		@Getter @Setter private Date createdon;
+		@Getter @Setter private Date updatedon;
+		@Getter @Setter private Integer createdby;
+		@Getter @Setter private Integer updatedby;
+		@Getter @Setter private int version;
 //		private Set<ObjectiveFunction> objectivefunctions = new HashSet<ObjectiveFunction>(
 //				0);
 		//@MappedBy(typeConverter = "scenarioToList")
