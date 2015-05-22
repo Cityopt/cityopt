@@ -196,44 +196,50 @@ public class ScenarioGenerationService
         AlgorithmParameters algorithmParameters = loadAlgorithmParameters(scenarioGenerator);
 
         OptimisationProblem problem = loadOptimisationProblem(project, scenarioGenerator);
-        final SimulationModel model = problem.model;
-
-        syntaxCheckerService.checkOptimisationProblem(problem);
-
-        DbSimulationStorageI storage = simulationService.makeDbSimulationStorage(
-                project.getPrjid(), problem.getExternalParameters(),
-                userId, scenarioGenerator.getScengenid());
-
-        Instant started = Instant.now();
-        Instant deadline = started.plus(algorithmParameters.getMaxRunTime());
-        Listener listener = new Listener(started, deadline);
-        CompletableFuture<OptimisationResults> optimisationJob = optimisationAlgorithm.start(
-                problem, algorithmParameters, storage,
-                runName, listener, deadline, executorService);
-        CompletableFuture<OptimisationResults> finishJob = optimisationJob.whenCompleteAsync(
-                (results, throwable) -> {
-                    String messages = listener.getMessages();
-                    if (throwable != null) {
-                        messages += "\nOptimisation terminated: " + throwable.getMessage();
-                    }
-                    storage.saveScenarioGeneratorResults(results, messages);
-                }, executorService);
-        jobManager.putJob(scenGenId, finishJob);
-        listeners.put(scenGenId, listener);
-        // If finishJob is cancelled, we need to cancel optimisationJob. 
-        finishJob.whenComplete((result, throwable) -> {
-            if (finishJob.isCancelled()) {
-                optimisationJob.cancel(true);
-            }
-            jobManager.removeJob(scenGenId, finishJob);
-            listeners.remove(scenGenId, listener);
-            try {
-                model.close();
-            } catch (IOException e) {
-                log.warn("Failed to clean up optimisation run: " + e.getMessage());
-            }
-        });
-        return finishJob;
+        final SimulationModel model = simulationService.loadSimulationModel(project);
+        problem.model = model;
+        boolean running = false;
+        try {
+            syntaxCheckerService.checkOptimisationProblem(problem);
+    
+            DbSimulationStorageI storage = simulationService.makeDbSimulationStorage(
+                    project.getPrjid(), problem.getExternalParameters(),
+                    userId, scenarioGenerator.getScengenid());
+    
+            Instant started = Instant.now();
+            Instant deadline = started.plus(algorithmParameters.getMaxRunTime());
+            Listener listener = new Listener(started, deadline);
+            CompletableFuture<OptimisationResults> optimisationJob = optimisationAlgorithm.start(
+                    problem, algorithmParameters, storage,
+                    runName, listener, deadline, executorService);
+            CompletableFuture<OptimisationResults> finishJob = optimisationJob.whenCompleteAsync(
+                    (results, throwable) -> {
+                        String messages = listener.getMessages();
+                        if (throwable != null) {
+                            messages += "\nOptimisation terminated: " + throwable.getMessage();
+                        }
+                        storage.saveScenarioGeneratorResults(results, messages);
+                    }, executorService);
+            jobManager.putJob(scenGenId, finishJob);
+            listeners.put(scenGenId, listener);
+            // If finishJob is cancelled, we need to cancel optimisationJob. 
+            finishJob.whenComplete((result, throwable) -> {
+                if (finishJob.isCancelled()) {
+                    optimisationJob.cancel(true);
+                }
+                jobManager.removeJob(scenGenId, finishJob);
+                listeners.remove(scenGenId, listener);
+                try {
+                    model.close();
+                } catch (IOException e) {
+                    log.warn("Failed to clean up optimisation run: " + e.getMessage());
+                }
+            });
+            running = true;
+            return finishJob;
+        } finally {
+            if (!running) model.close();
+        }
     }
 
     /**
@@ -288,11 +294,10 @@ public class ScenarioGenerationService
     OptimisationProblem loadOptimisationProblem(
             Project project, ScenarioGenerator scenarioGenerator)
                     throws ScriptException, ParseException, ConfigurationException, IOException {
-        SimulationModel model = simulationService.loadSimulationModel(project);
         Namespace namespace = simulationService.makeProjectNamespace(project, scenarioGenerator);
         ExternalParameters externals = simulationService.loadExternalParametersFromSet(
                 scenarioGenerator.getExtparamvalset(), namespace);
-        OptimisationProblem problem = new OptimisationProblem(model, externals);
+        OptimisationProblem problem = new OptimisationProblem(null, externals);
         problem.decisionVars = loadDecisionVariables(scenarioGenerator, namespace, externals);
         problem.inputExprs = loadInputExpressions(scenarioGenerator, namespace, problem.inputConst);
         problem.metrics = simulationService.loadMetricExpressions(project, namespace);

@@ -149,10 +149,10 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         SimulationStorage storage = makeDbSimulationStorage(project.getPrjid(), externals);
 
         SimulationModel model = loadSimulationModel(project);
-        List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
-        syntaxCheckerService.checkMetricExpressions(metricExpressions, namespace);
         boolean started = false;
         try {
+            List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
+            syntaxCheckerService.checkMetricExpressions(metricExpressions, namespace);
             SimulationRunner runner = model.getSimulatorManager().makeRunner(model, input.getNamespace());
             CompletableFuture<SimulationOutput> newJob = runner.start(input);
             started = true;
