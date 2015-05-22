@@ -504,6 +504,8 @@ CREATE TABLE Project
 )
 ;
 
+ALTER TABLE project ADD COLUMN version integer;
+
 CREATE TABLE Scenario
 (
 	scenID integer NOT NULL DEFAULT nextval(('scenario_scenid_seq'::text)::regclass),
