@@ -154,10 +154,10 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
             syntaxCheckerService.checkMetricExpressions(metricExpressions, namespace);
             SimulationRunner runner = model.getSimulatorManager().makeRunner(model, input.getNamespace());
-            CompletableFuture<SimulationOutput> newJob = runner.start(input);
+            CompletableFuture<SimulationOutput> simJob = runner.start(input);
             started = true;
-            jobManager.putJob(scenId, newJob);
-            newJob.whenCompleteAsync( // Store output & metric values
+            CompletableFuture<SimulationOutput> finishJob = simJob.whenCompleteAsync(
+                    // Store output & metric values
                     (output, throwable) -> {
                         if (output != null) {
                             SimulationStorage.Put put = new SimulationStorage.Put(input);
@@ -175,10 +175,16 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                             }
                             storage.put(put);
                         }
-                    }, executor)
-                .whenComplete( // Clean up
+                    }, executor);
+            jobManager.putJob(scenId, finishJob);
+            finishJob.whenComplete(
+                    // Clean up
                     (output, throwable) -> {
-                        jobManager.removeJob(scenId, newJob);
+                        // Propagate cancellation of finishJob back to simJob
+                        if (finishJob.isCancelled()) {
+                            simJob.cancel(true);
+                        }
+                        jobManager.removeJob(scenId, finishJob);
                         try {
                             try {
                                 runner.close();
@@ -189,7 +195,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                             log.warn("Failed to clean up simulation run: " + e.getMessage());
                         }
                     });
-            return newJob;
+            return finishJob;
         } finally {
             if (!started) model.close();
         }
