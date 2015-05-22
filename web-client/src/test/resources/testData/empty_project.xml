@@ -2,7 +2,7 @@
 
 <dataset>
 
-  <project prjid="1" name="Empty test project" location="Helsinki"/>
+  <project prjid="1" name="Empty test project" location="Helsinki" version="0"/>
 
   <algorithm algorithmid="1" description="grid search"/>
   <algoparam aparamsid="1" algorithmid="1" name="max runtime [minutes]" defaultValue="1000000"/>
