@@ -1,6 +1,7 @@
 package eu.cityopt.opt.ga;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -15,8 +16,8 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import eu.cityopt.sim.eval.ConfigurationException;
+import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.apros.AprosManager;
-import eu.cityopt.sim.eval.apros.AprosRunner;
 
 /**
  * Registers {@link AprosManager}s for all profiles in a directory
@@ -24,6 +25,8 @@ import eu.cityopt.sim.eval.apros.AprosRunner;
  * @author ttekth
  */
 public class AprosFactory extends ModelFactory {
+    private List<Map<String, String>> nodes = null;
+
     /**
      * @param aprosDir Apros profile directory to be registered.
      * @throws IOException if registration fails.
@@ -41,14 +44,29 @@ public class AprosFactory extends ModelFactory {
     
     /**
      * Sets the simulator node configuration.
+     * Because AprosManager is shared and static, this can work a bit
+     * unpredictably.  For reliable results you should call this either
+     * never or always after constructing a AprosFactory, always with the
+     * same file.  Fortunately that is what happens if you create your
+     * factories with Guice (unless you change the config file contents,
+     * so don't).
      * @param config node configuration file containing a JSON object array
      */
-    //TODO Do this right.
     @Inject(optional=true)
     public void setNodeConfig(@Named("nodeConfig") Path config)
             throws IOException {
-        AprosRunner.nodes = (new ObjectMapper()).readValue(
+        nodes = (new ObjectMapper()).readValue(
                 config.toFile(),
                 new TypeReference<List<Map<String, String>>>() {});
+    }
+
+    @Override
+    public SimulationModel loadModel(String simulator, InputStream in)
+            throws IOException, ConfigurationException {
+        SimulationModel model = super.loadModel(simulator, in);
+        if (nodes != null) {
+            ((AprosManager)model.getSimulatorManager()).setNodes(nodes);
+        }
+        return model;
     }
 }
