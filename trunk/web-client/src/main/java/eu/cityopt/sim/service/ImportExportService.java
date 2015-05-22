@@ -46,7 +46,6 @@ import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationModel;
-import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.AlgorithmParameters;
@@ -100,41 +99,31 @@ public class ImportExportService {
             String description, byte[] modelData,
             String simulatorName, Instant overrideTimeOrigin)
                     throws ConfigurationException, IOException {
-        SimulationModel model = null;
-        if (simulatorName == null) {
-            model = SimulatorManagers.detectSimulator(modelData);
-            if (model == null) {
-                throw new ConfigurationException(
-                        "Failed to detect simulator - please select a simulator explicitly");
+        try (SimulationModel model = SimulatorManagers.parseModel(simulatorName, modelData)) {
+            Instant timeOrigin = (overrideTimeOrigin != null)
+                    ? overrideTimeOrigin : model.getTimeOrigin();
+            if (timeOrigin == null) {
+                throw new ConfigurationException("No time origin provided");
             }
-            simulatorName = model.getSimulatorName();
-        } else {
-            SimulatorManager manager = SimulatorManagers.get(simulatorName);
-            model = manager.parseModel(simulatorName, modelData);
+    
+            eu.cityopt.model.SimulationModel simulationModel =
+                    new eu.cityopt.model.SimulationModel();
+            simulationModel.setCreatedby(userId);
+            simulationModel.setCreatedon(new Date());
+            simulationModel.setDescription(description);
+            simulationModel.setModelblob(modelData);
+            simulationModel.setSimulator(model.getSimulatorName());
+            simulationModel.setTimeorigin(Date.from(timeOrigin));
+            simulationModel = simulationModelRepository.save(simulationModel);
+    
+            if (projectId != null) {
+                Project project = projectRepository.findOne(projectId);
+                project.setSimulationmodel(simulationModel);
+                simulationModel.getProjects().add(project);
+                projectRepository.save(project);
+            }
+            return simulationModel.getModelid();
         }
-        Instant timeOrigin = (overrideTimeOrigin != null)
-                ? overrideTimeOrigin : model.getTimeOrigin();
-        if (timeOrigin == null) {
-            throw new ConfigurationException("No time origin provided");
-        }
-
-        eu.cityopt.model.SimulationModel simulationModel =
-                new eu.cityopt.model.SimulationModel();
-        simulationModel.setCreatedby(userId);
-        simulationModel.setCreatedon(new Date());
-        simulationModel.setDescription(description);
-        simulationModel.setModelblob(modelData);
-        simulationModel.setSimulator(simulatorName);
-        simulationModel.setTimeorigin(Date.from(timeOrigin));
-        simulationModel = simulationModelRepository.save(simulationModel);
-
-        if (projectId != null) {
-            Project project = projectRepository.findOne(projectId);
-            project.setSimulationmodel(simulationModel);
-            simulationModel.getProjects().add(project);
-            projectRepository.save(project);
-        }
-        return simulationModel.getModelid();
     }
 
     /**
@@ -160,14 +149,15 @@ public class ImportExportService {
     public String importModelInputsAndOutputs(
             int projectId, int detailLevel) throws ConfigurationException, IOException {
         Project project = projectRepository.findOne(projectId);
-        SimulationModel model = simulationService.loadSimulationModel(project);
-        Instant timeOrigin = simulationService.loadTimeOrigin(project.getSimulationmodel());
-        Namespace namespace = new Namespace(simulationService.getEvaluator(), timeOrigin);
-        String warnings = model.findInputsAndOutputs(namespace, detailLevel);
-        namespace.initConfigComponent();
-        saveNamespaceComponents(project, namespace);
-        projectRepository.save(project);
-        return warnings;
+        try (SimulationModel model = simulationService.loadSimulationModel(project)) {
+            Instant timeOrigin = simulationService.loadTimeOrigin(project.getSimulationmodel());
+            Namespace namespace = new Namespace(simulationService.getEvaluator(), timeOrigin);
+            String warnings = model.findInputsAndOutputs(namespace, detailLevel);
+            namespace.initConfigComponent();
+            saveNamespaceComponents(project, namespace);
+            projectRepository.save(project);
+            return warnings;
+        }
     }
 
     /**
