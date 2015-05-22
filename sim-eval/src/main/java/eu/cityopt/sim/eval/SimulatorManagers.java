@@ -42,7 +42,7 @@ public class SimulatorManagers {
 
     /**
      * Attempts to find a SimulatorManager instance that can run the given model.
-     * Returns null if the detection fails.
+     * Returns a parsed SimulationModel on success, and null if the detection fails.
      */
     public static SimulationModel detectSimulator(byte[] modelData) {
         // First find distinct SimulatorManager instances.
@@ -59,6 +59,35 @@ public class SimulatorManagers {
             }
         }
         return null;
+    }
+
+    /**
+     * Parse a model of any supported simulator.
+     *
+     * @param simulatorName the name of the simulator variant to be used,
+     *    or null if not known.  If null, then parsing will be attempted
+     *    using support code for all known simulators, and if all of them fail,
+     *    a ConfigurationException is thrown.
+     * @param modelData the raw model data
+     * @return handle to model structure
+     * @throws ConfigurationException if there is an error in the model data, or
+     *    a suitable simulator cannot be determined
+     * @throws IOException if the parsing fails 
+     */
+    public static SimulationModel parseModel(String simulatorName, byte[] modelData) 
+            throws IOException, ConfigurationException {
+        SimulationModel model = null;
+        if (simulatorName == null) {
+            model = detectSimulator(modelData);
+            if (model == null) {
+                throw new ConfigurationException(
+                        "Failed to detect simulator - please select a simulator explicitly");
+            }
+            return model;
+        } else {
+            SimulatorManager manager = get(simulatorName);
+            return manager.parseModel(simulatorName, modelData);
+        }
     }
 
     /** Registers a new SimulatorManager instance. */
