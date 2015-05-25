@@ -31,6 +31,7 @@ public class ProblemFromBinder implements Provider<OptimisationProblem> {
      * @param model the {@link SimulationModel}
      * @param t0 the time origin or null to retrieve from model.
      * @param binder the binder to create the problem data from.
+     * @param evaluator evaluator to create the problem data with.
      */
     @Inject
     public ProblemFromBinder(SimulationModel model,
