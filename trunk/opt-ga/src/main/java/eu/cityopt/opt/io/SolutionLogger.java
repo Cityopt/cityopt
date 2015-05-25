@@ -8,19 +8,20 @@ import java.nio.file.Path;
 
 import org.opt4j.core.optimizer.Optimizer;
 import org.opt4j.core.optimizer.OptimizerStateListener;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.cityopt.opt.ga.adapter.SolutionTransformer;
 
-/** Abstract base class for loogers using SolutionWriter.
+/** Abstract base class for loggers using SolutionWriter.
  * 
  * @author ttekth
  */
 public abstract class SolutionLogger
-implements OptimizerStateListener, Closeable {
+implements OptimizerStateListener, Closeable,
+        org.opt4j.core.common.logger.Logger {
     /// For diagnostics when exceptions can't be thrown.
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final org.slf4j.Logger
+            logger = LoggerFactory.getLogger(getClass());
     protected OutputStream out = null;
     protected final SolutionTransformer solxform;
     protected final SolutionWriter writer;
