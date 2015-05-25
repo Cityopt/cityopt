@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
@@ -87,6 +88,12 @@ public class JacksonCsvModule extends AbstractModule {
                 .with(CsvSchema.emptySchema().withHeader());
     }
     
+    private static final CsvSchema problemSchema = CsvSchema.builder()
+            .addColumn("kind").addColumn("component")
+            .addColumn("name").addColumn("type").addColumn("value")
+            .addColumn("lower").addColumn("upper").addColumn("expression")
+            .build();
+
     /**
      * Create a writer for problem definitions.
      * This uses a fixed schema: always the same columns in the same order.
@@ -99,13 +106,20 @@ public class JacksonCsvModule extends AbstractModule {
         /* Automatic schema creation does not appear to work for polymorphic
          * data.
          */
-        CsvSchema sch = CsvSchema.builder()
-                .addColumn("kind").addColumn("component")
-                .addColumn("name").addColumn("type").addColumn("value")
-                .addColumn("lower").addColumn("upper").addColumn("expression")
-                .addColumn("scenarioname").addColumn("extparamvalsetname")
-                .build().withHeader();
-        return mapper.writer(sch);
+        return mapper.writer(problemSchema.withHeader());
+    }
+    
+    /**
+     * Create a writer for scenario definitions.
+     */
+    @Provides
+    @Named("scenario")
+    public static ObjectWriter getScenarioWriter(CsvMapper mapper) {
+        //CsvSchema.Builder bld = CsvSchema.builder()
+        CsvSchema.Builder bld = problemSchema.rebuild()
+                .addColumn("scenarioname").addColumn("extparamvalsetname");
+        //problemSchema.forEach(c -> bld.addColumn(c));
+        return mapper.writer(bld.build().withHeader());
     }
     
     @Override

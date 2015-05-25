@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -147,11 +148,14 @@ public class ImportServiceTest extends SimulationTestBase {
 	@Test
 	@DatabaseSetup("classpath:/testData/testmodel_scenarios_scenProbCopy.xml")
 //	@Rollback(false)
-	public void testImportScenarioData() throws EntityNotFoundException, ParseException, IOException {
+	public void testImportScenarioData() throws Exception {
 
     	List<File> tseriesfile = new ArrayList<File>();
     	tseriesfile.add(new File("./src/test/resources/testData/CSV_testData/timeseries.csv"));
-    	importService.importScenarioData(1, new File("./src/test/resources/testData/CSV_testData/test-problem.csv"), tseriesfile);
+    	importService.importScenarioData(
+    	        1,
+    	        Paths.get(getClass().getResource("/test-scenario.csv").toURI()).toFile(),
+    	        tseriesfile);
     	em.flush();
     	em.clear();
     	

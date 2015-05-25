@@ -9,7 +9,6 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,8 +16,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringJoiner;
 import java.util.regex.Pattern;
-
-import javax.script.ScriptException;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
@@ -65,6 +62,7 @@ public class JacksonTest {
         Instant t0 = Instant.parse(props.getProperty("time_origin"));
         Path mfile = dataDir.resolve(props.getProperty("model_file"));
         Path pfile = dataDir.resolve(props.getProperty("problem_file"));
+        Path sfile = dataDir.resolve(props.getProperty("scenario_file"));
         List<Path> tsfiles = new ArrayList<>();
         String tspath;
 
@@ -91,6 +89,8 @@ public class JacksonTest {
                     .toInstance(mfile);
             bind(Path.class).annotatedWith(Names.named("problem"))
                     .toInstance(pfile);
+            bind(Path.class).annotatedWith(Names.named("scenario"))
+                    .toInstance(sfile);
             bind(String.class).annotatedWith(Names.named("timeseries"))
                     .toInstance(tspath);
         }
@@ -229,10 +229,11 @@ public class JacksonTest {
         JacksonBinderScenario binder = csv_inj.getInstance(JacksonBinderScenario.class);
         ObjectMapper json = new ObjectMapper();
         json.enable(SerializationFeature.INDENT_OUTPUT);
+        json.disable(SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS);
         json.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
         json.writeValue(System.out, binder);
         ObjectWriter wtr = csv_inj.getInstance(
-                Key.get(ObjectWriter.class, Names.named("problem")));
+                Key.get(ObjectWriter.class, Names.named("scenario")));
         wtr.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
                 .writeValue(System.out, binder);
 
