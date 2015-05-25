@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <dataset>
   <datareliability/>
+  <extparamvalset/>
   <simulationmodel description="test project" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="2015-01-01 00:00:00.0"/>
-  <project name="Empty test project" location="Helsinki"/>
+  <project name="Empty test project" location="Helsinki" version="1"/>
   <component name="PV_TOTAL_ENERGY"/>
   <component name="ETH_NETWORK"/>
   <component name="HEATING_LOAD"/>
@@ -29,17 +30,17 @@
   <unit name="Unit/List of Double"/>
   <unit name="Unit/List of Integer"/>
   <unit name="Unit/List of Timestamp"/>
-  <inputparameter name="Burner_efficiency"/>
-  <inputparameter name="CHP_electrical_power_rating"/>
-  <inputparameter name="Share_of_roof_area_occupied_by_PVpanels"/>
-  <inputparameter name="Heat_storage_tank_height"/>
-  <inputparameter name="Heat_storage_nominal_charge_or_discharge_capacity"/>
-  <inputparameter name="Burner_nominal_power"/>
-  <inputparameter name="CHP_thermal_power_rating"/>
-  <inputparameter name="Share_of_roof_area_occupied_by_THcollectors"/>
-  <inputparameter name="Insulation_layer_factor"/>
-  <inputparameter name="simulation_start"/>
-  <inputparameter name="simulation_end"/>
+  <inputparameter name="simulation_start" defaultvalue="2015-01-01T00:00:00Z"/>
+  <inputparameter name="simulation_end" defaultvalue="2016-01-01T00:00:00Z"/>
+  <inputparameter name="Burner_efficiency" defaultvalue="0.7"/>
+  <inputparameter name="Heat_storage_tank_height" defaultvalue="15.0"/>
+  <inputparameter name="Heat_storage_nominal_charge_or_discharge_capacity" defaultvalue="40.0"/>
+  <inputparameter name="Share_of_roof_area_occupied_by_PVpanels" defaultvalue="10.0"/>
+  <inputparameter name="CHP_electrical_power_rating" defaultvalue="2400.0"/>
+  <inputparameter name="Insulation_layer_factor" defaultvalue="1.0"/>
+  <inputparameter name="CHP_thermal_power_rating" defaultvalue="4000.0"/>
+  <inputparameter name="Burner_nominal_power" defaultvalue="17000.0"/>
+  <inputparameter name="Share_of_roof_area_occupied_by_THcollectors" defaultvalue="0.0"/>
   <algorithm description="grid search"/>
   <algorithm description="genetic algorithm"/>
   <scenariogenerator/>
@@ -47,14 +48,9 @@
   <optconstraint/>
   <objectivefunction/>
   <optimizationset/>
-  <optsearchconst/>
   <optsetscenarios/>
   <metric/>
   <decisionvariable/>
-  <scengenresult/>
-  <decisionvariableresult/>
-  <objectivefunctionresult/>
-  <optconstraintresult/>
   <outputvariable name="MULTIPLYER_OUTPUT"/>
   <outputvariable name="MULTIPLYER_OUTPUT"/>
   <outputvariable name="MULTIPLYER_OUTPUT"/>
@@ -62,14 +58,15 @@
   <outputvariable name="MULTIPLYER_OUTPUT"/>
   <outputvariable name="MULTIPLYER_OUTPUT"/>
   <extparam/>
-  <algoparam name="max runtime [minutes]" defaultValue="1000000"/>
-  <algoparam name="max scenarios" defaultValue="100"/>
-  <algoparam name="max runtime [minutes]" defaultValue="1000000"/>
-  <algoparam name="number of generations" defaultValue="100"/>
-  <algoparam name="population size" defaultValue="100"/>
-  <algoparam name="number of parents per generation" defaultValue="25"/>
-  <algoparam name="number of offspring per generation" defaultValue="25"/>
-  <algoparam name="seed of the random number generator" defaultValue="0.95"/>
+  <extparamval/>
+  <algoparam defaultvalue="1000000" name="max runtime [minutes]"/>
+  <algoparam defaultvalue="100" name="max scenarios"/>
+  <algoparam defaultvalue="1000000" name="max runtime [minutes]"/>
+  <algoparam defaultvalue="100" name="number of generations"/>
+  <algoparam defaultvalue="100" name="population size"/>
+  <algoparam defaultvalue="25" name="number of parents per generation"/>
+  <algoparam defaultvalue="25" name="number of offspring per generation"/>
+  <algoparam defaultvalue="0.95" name="seed of the random number generator"/>
   <algoparamval/>
   <appuser/>
   <usergroup/>
@@ -77,5 +74,9 @@
   <inputparamval/>
   <modelparameter/>
   <metricval/>
+  <scengenresult/>
+  <decisionvariableresult/>
+  <objectivefunctionresult/>
+  <optconstraintresult/>
   <timeseriesval/>
 </dataset>
