@@ -8,107 +8,61 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.google.inject.Singleton;
 
-import eu.cityopt.opt.io.JacksonBinder.Input;
 import eu.cityopt.opt.io.JacksonBinder.Kind;
-import eu.cityopt.opt.io.JacksonBinder.Metric;
-import eu.cityopt.opt.io.JacksonBinder.Output;
 
 @Singleton
 public class JacksonBinderScenario {
-	
-    public static class ScenarioItem {
-
+    @JsonTypeInfo(use=Id.NAME, include=As.PROPERTY, property="kind",
+            visible=true)
+    @JsonSubTypes({
+        @JsonSubTypes.Type(value=ExtParam.class, name="ext"),
+        @JsonSubTypes.Type(value=Input.class, name="in"),
+        @JsonSubTypes.Type(value=Output.class, name="out"),
+        @JsonSubTypes.Type(value=DecisionVar.class, name="dv"),
+        @JsonSubTypes.Type(value=Metric.class, name="met"),
+        @JsonSubTypes.Type(value=Constr.class, name="con"),
+        @JsonSubTypes.Type(value=Obj.class, name="obj")
+    })
+    public abstract static class ScenarioItem {
     	public String scenarioname;
     	public String extparamvalsetname;
     	
-    	@JsonIgnore
-    	public JacksonBinder.Item item;
-    	
-//    	@JsonUnwrapped
-//    	public JacksonBinder.Item item;    	 	
-//        @JsonCreator
-//        public ScenarioItem(
-//        		@JsonProperty("scenarioname") String scenarioname, 
-//        		@JsonProperty("extparamvalsetname") String extparamvalsetname,
-//        		@JsonUnwrapped JacksonBinder.Item item) {
-//        	this.scenarioname = scenarioname;
-//            this.extparamvalsetname = extparamvalsetname;
-//            this.item = item;
-//        }
-       
+    	public abstract JacksonBinder.Item getItem();
+        public Kind getKind() {return getItem().kind;}
+    }
 
-    	@JsonCreator
-    	public ScenarioItem(
-        		@JsonProperty("scenarioname") String scenarioname, 
-        		@JsonProperty("extparamvalsetname") String extparamvalsetname,
-        		@JsonProperty("kind") String kind, 
-        		@JsonProperty("component") String component, 
-        		@JsonProperty("name") String name,
-        		@JsonProperty("type") String type, 
-        		@JsonProperty("value") String value, 
-        		@JsonProperty("lower") String lower, 
-        		@JsonProperty("upper") String upper,
-        		@JsonProperty("expression") String expression) {
-        	this.scenarioname = scenarioname;
-            this.extparamvalsetname = extparamvalsetname;
+    public abstract static class Item<Type extends JacksonBinder.Item>
+    extends ScenarioItem {
+        @JsonUnwrapped
+        public Type item;
+        
+        @Override
+        public Type getItem() {return item;}
+    }
+    
+    public static class ExtParam extends Item<JacksonBinder.ExtParam> {}
+    public static class Input extends Item<JacksonBinder.Input> {}
+    public static class Output extends Item<JacksonBinder.Output> {}
+    public static class DecisionVar extends Item<JacksonBinder.DecisionVar> {}
+    public static class Metric extends Item<JacksonBinder.Metric> {}
+    public static class Constr extends Item<JacksonBinder.Constr> {}
+    public static class Obj extends Item<JacksonBinder.Obj> {}
 
-            Kind k = Kind.fromString(kind);
-            
-            switch(k){
-            	case IN: 
-            		Input in = new JacksonBinder.Input();
-            		in.value = value;
-            		in.expr = expression;
-            		in.comp = component;
-            		in.setType(type);
-            		in.kind = Kind.IN;
-            		in.name = name;
-            		this.item = in;            		
-            		break;
-            	case MET: 
-            		Metric met = new JacksonBinder.Metric();
-            		met.expression = expression;
-            		met.setType(type);
-            		met.name = name;
-            		met.kind = Kind.MET;
-            		met.value = value;
-            		this.item = met;            		
-            		break;
-            	case OUT: 
-            		Output out = new JacksonBinder.Output();
-            		out.setType(type);
-            		out.comp = component;
-            		out.name = name;
-            		out.kind = Kind.OUT;
-            		out.value = value;
-            		this.item = out;	
-            		break;
-            	default:
-            		this.item = null;
-//            		throw new IllegalArgumentException();
-            }
-    	}
-
-        public Kind getKind() {
-            return item.kind;
-        }
-
-        public JacksonBinder.Item getItem() {
-            return item;
-        }            
-    } 
-
-	@JsonIgnore
-	final private List<ScenarioItem> items;
+    @JsonIgnore
+    final private List<ScenarioItem> items;
     
     /**
      * Read from a file.
@@ -147,7 +101,8 @@ public class JacksonBinderScenario {
      * Sort items by kind (in place).
      */
     public void sort() {
-        Collections.sort(items, (x1, x2) -> x1.item.kind.compareTo(x2.item.kind));
+        Collections.sort(
+                items, (x1, x2) -> x1.getKind().compareTo(x2.getKind()));
     }
 
 }

@@ -119,7 +119,8 @@ public class JacksonCsvModule extends AbstractModule {
         CsvSchema.Builder bld = problemSchema.rebuild()
                 .addColumn("scenarioname").addColumn("extparamvalsetname");
         //problemSchema.forEach(c -> bld.addColumn(c));
-        return mapper.writer(bld.build().withHeader());
+        return mapper.writer(bld.build().withHeader()).without(
+                SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS);
     }
     
     @Override

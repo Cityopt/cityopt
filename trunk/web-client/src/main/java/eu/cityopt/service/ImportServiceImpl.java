@@ -507,9 +507,9 @@ public class ImportServiceImpl implements ImportService {
 		    }
 		    
 		    //determine type
-		    switch(it.item.kind){
+		    switch(it.getKind()){
 		    	case IN:
-		    		JacksonBinder.Input input = (JacksonBinder.Input) it.item;
+		    		JacksonBinder.Input input = (JacksonBinder.Input) it.getItem();
 		    		
 		    		Component component = componentRepository.findByNameAndProject(prjid, input.comp);
 		    		if(Namespace.CONFIG_COMPONENT.equals(input.comp) //configuration component
@@ -537,7 +537,7 @@ public class ImportServiceImpl implements ImportService {
 		    		break;
 				case MET:
 					
-					JacksonBinder.Metric metricJack = (JacksonBinder.Metric) it.item;
+					JacksonBinder.Metric metricJack = (JacksonBinder.Metric) it.getItem();
 		    		
 					Metric metricDB = metricRepository.findByNameAndProject(prjid, metricJack.name);
 					
@@ -600,7 +600,7 @@ public class ImportServiceImpl implements ImportService {
 					break;
 					
 				case OUT:
-					JacksonBinder.Output outJack = (JacksonBinder.Output) it.item;
+					JacksonBinder.Output outJack = (JacksonBinder.Output) it.getItem();
 					SimulationResult simRes = new SimulationResult();
 					
 					Component comp = componentRepository.findByNameAndProject(project.getPrjid(),
