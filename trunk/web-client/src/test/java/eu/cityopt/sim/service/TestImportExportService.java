@@ -44,7 +44,11 @@ public class TestImportExportService extends SimulationTestBase {
         importExportService.importSimulationModel(
                 projectId, null, "test project",
                 modelData, null, null);
-        importExportService.importModelInputsAndOutputs(projectId, 0);
+        String warnings = importExportService.importModelInputsAndOutputs(projectId, 0);
+        if (warnings != null) {
+            System.err.println("Warnings from import:");
+            System.err.println(warnings);
+        }
         dumpTables("import_model", true);
     }
 

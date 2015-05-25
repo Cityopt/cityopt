@@ -6,14 +6,17 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -36,8 +39,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import eu.cityopt.sim.eval.ConfigurationException;
+import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.Namespace.Component;
+import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.SyntaxChecker;
@@ -218,24 +223,25 @@ public class AprosModel implements SimulationModel {
     }
 
     @Override
-    public String findInputsAndOutputs(
-            Namespace newNamespace, int detailLevel) throws IOException {
+    public SimulationInput findInputsAndOutputs(
+            Namespace newNamespace, int detailLevel, Writer warningWriter)
+                    throws IOException {
         try {
             SyntaxChecker syntaxChecker = new SyntaxChecker(newNamespace.evaluator);
-            String inputWarnings = findInputs(
-                    uc_props, detailLevel, syntaxChecker, newNamespace);
-            String outputWarnings = findOutputs(syntaxChecker, newNamespace);
-            return inputWarnings + outputWarnings;
+            SimulationInput defaultValues = findInputs(
+                    uc_props, detailLevel, syntaxChecker, newNamespace, warningWriter);
+            findOutputs(syntaxChecker, newNamespace, warningWriter);
+            return defaultValues;
         } catch (ScriptException e) {
             throw new RuntimeException(e);
         }
     }
 
-    String findOutputs(SyntaxChecker syntaxChecker, Namespace newNamespace) {
-        String warnings = "";
+    void findOutputs(SyntaxChecker syntaxChecker, Namespace newNamespace, Writer warnings)
+            throws IOException {
         if (modelOutputs == null) {
-            warnings += "Cannot determine output variables: "
-                    + "No valid sample result files found in the zip package.\n";
+            warnings.write("Cannot determine output variables: "
+                    + "No valid sample result files found in the zip package.\n");
         } else {
             boolean validOutputsFound = false;
             List<String> invalidComponentNames = new ArrayList<>();
@@ -262,33 +268,34 @@ public class AprosModel implements SimulationModel {
             }
             if ( ! invalidComponentNames.isEmpty()) {
                 String s = (invalidComponentNames.size() == 1) ? "" : "s";
-                warnings += "Invalid output name"+s+": "
-                        + String.join(" ", invalidComponentNames) + "\n";
+                warnings.write("Invalid output name"+s+": "
+                        + String.join(" ", invalidComponentNames) + "\n");
             }
             if ( ! invalidOutputNames.isEmpty()) {
                 String s = (invalidOutputNames.size() == 1) ? "" : "s";
-                warnings += "Invalid output variable name"+s+": "
-                        + String.join(" ", invalidOutputNames) + "\n";
+                warnings.write("Invalid output variable name"+s+": "
+                        + String.join(" ", invalidOutputNames) + "\n");
             }
             if ( ! duplicateOutputNames.isEmpty()) {
                 String s = (duplicateOutputNames.size() == 1) ? "" : "s";
-                warnings += "Duplicate output parameter name"+s+": "
-                        + String.join(" ", duplicateOutputNames) + "\n";
+                warnings.write("Duplicate output parameter name"+s+": "
+                        + String.join(" ", duplicateOutputNames) + "\n");
             }
             if (!validOutputsFound) {
-                warnings += "No valid output parameters found.\n";
+                warnings.write("No valid output parameters found.\n");
             }
         }
-        return warnings.toString();
     }
 
-    private static String findInputs(
-            Node rootNode, int detailLevel,
-            SyntaxChecker syntaxChecker, Namespace newNamespace) {
+    private static SimulationInput findInputs(
+            Node rootNode, int detailLevel, SyntaxChecker syntaxChecker,
+            Namespace newNamespace, Writer warnings)
+                    throws IOException {
+        Map<String, Map<String, Double>> values = new HashMap<>();
         XPathFactory xPathFactory = XPathFactory.newInstance();
         XPath xpath = xPathFactory.newXPath();
         try {
-            XPathExpression propExpr = xpath.compile("property[@name]");
+            XPathExpression propExpr = xpath.compile("property[@type=\"constant\"]");
             int previousModuleCount = 0;
             int level = Math.max(0, detailLevel);
             while (true) {
@@ -310,17 +317,33 @@ public class AprosModel implements SimulationModel {
                     if (syntaxChecker.isValidTopLevelName(moduleName)) {
                         for (int j = 0; j < propNodes.getLength(); ++j) {
                             Node propNode = propNodes.item(j);
-                            String propName = propNode.getAttributes().getNamedItem(
-                                    "name").getNodeValue();
-                            if (syntaxChecker.isValidAttributeName(propName)) {
-                                Component component = newNamespace.getOrNew(moduleName);
-                                Type old = component.inputs.putIfAbsent(propName, Type.DOUBLE);
-                                if (old != null) {
-                                    duplicateInputNames.add(moduleName + "." + propName);
+                            Node propNameNode = propNode.getAttributes().getNamedItem("name");
+                            Node propValueNode = propNode.getAttributes().getNamedItem("value");
+                            if (propNameNode == null || propValueNode == null) {
+                                throw new IOException("Invalid property in module '" + moduleName 
+                                        + "' in " + USER_COMPONENT_PROPERTIES_FILENAME);
+                            }
+                            String propName = propNameNode.getNodeValue();
+                            String propValue = propValueNode.getNodeValue();
+                            try {
+                                double value = Double.valueOf(propValue);
+
+                                if (syntaxChecker.isValidAttributeName(propName)) {
+                                    Component component = newNamespace.getOrNew(moduleName);
+                                    Type old = component.inputs.putIfAbsent(propName, Type.DOUBLE);
+                                    if (old == null) {
+                                        values.computeIfAbsent(moduleName, k -> new HashMap<>())
+                                            .putIfAbsent(propName, value);
+                                    } else {
+                                        duplicateInputNames.add(moduleName + "." + propName);
+                                    }
+                                    validInputsFound = true;
+                                } else {
+                                    invalidInputNames.add(propName);
                                 }
-                                validInputsFound = true;
-                            } else {
-                                invalidInputNames.add(propName);
+                            } catch (NumberFormatException e) {
+                                // The value is not a floating point literal -
+                                // assume the input is not user-adjustable.
                             }
                         }
                     } else if (propNodes.getLength() > 0) {
@@ -333,30 +356,36 @@ public class AprosModel implements SimulationModel {
                 // Exit if there are any properties on this level, or if the number
                 // of module nodes is no longer increasing.
                 if (propertiesSeen || moduleNodes.getLength() <= previousModuleCount) {
-                    String warnings = "";
                     if (level > detailLevel) {
-                        warnings += "Increased detail level from "
-                                + detailLevel + " to " + level + ".\n";
+                        warnings.write("Increased detail level from "
+                                + detailLevel + " to " + level + ".\n");
                     }
                     if ( ! invalidComponentNames.isEmpty()) {
                         String s = (invalidComponentNames.size() == 1) ? "" : "s";
-                        warnings += "Invalid input component name"+s+": "
-                                + String.join(" ", invalidComponentNames) + "\n";
+                        warnings.write("Invalid input component name"+s+": "
+                                + String.join(" ", invalidComponentNames) + "\n");
                     }
                     if ( ! invalidInputNames.isEmpty()) {
                         String s = (invalidInputNames.size() == 1) ? "" : "s";
-                        warnings += "Invalid input parameter name"+s+": "
-                                + String.join(" ", invalidInputNames) + "\n";
+                        warnings.write("Invalid input parameter name"+s+": "
+                                + String.join(" ", invalidInputNames) + "\n");
                     }
                     if ( ! duplicateInputNames.isEmpty()) {
                         String s = (duplicateInputNames.size() == 1) ? "" : "s";
-                        warnings += "Duplicate input parameter name"+s+": "
-                                + String.join(" ", duplicateInputNames) + "\n";
+                        warnings.write("Duplicate input parameter name"+s+": "
+                                + String.join(" ", duplicateInputNames) + "\n");
                     }
                     if (!validInputsFound) {
-                        warnings += "No valid input parameters found.\n";
+                        warnings.write("No valid input parameters found.\n");
                     }
-                    return warnings;
+                    SimulationInput defaultInput = new SimulationInput(
+                            new ExternalParameters(newNamespace));
+                    for (Map.Entry<String, Map<String, Double>> ce : values.entrySet()) {
+                        for (Map.Entry<String, Double> ie : ce.getValue().entrySet()) {
+                            defaultInput.put(ce.getKey(), ie.getKey(), ie.getValue());
+                        }
+                    }
+                    return defaultInput;
                 }
                 previousModuleCount = moduleNodes.getLength();
                 ++level;

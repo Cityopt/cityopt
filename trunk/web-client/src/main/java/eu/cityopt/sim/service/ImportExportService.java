@@ -3,6 +3,7 @@ package eu.cityopt.sim.service;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.time.Instant;
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -45,6 +47,7 @@ import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.Type;
@@ -62,6 +65,9 @@ import eu.cityopt.sim.opt.SimulationStructure;
 @Singleton
 public class ImportExportService {
     public static final String KEY_ALGORITHM_NAME = "algorithm";
+
+    /** When importing a model, this is the default simulated period. */
+    static final long DEFAULT_SIMULATED_TIME_SECONDS = TimeUnit.DAYS.toSeconds(365); 
 
     @Inject private SimulationService simulationService;
     @Inject private ScenarioGenerationService scenarioGenerationService;
@@ -131,7 +137,9 @@ public class ImportExportService {
      * The required components are also created.  The types of the
      * inputs and outputs are set, but the units are left null.
      * The artificial configuration component CITYOPT is also created
-     * if it does not already exist.
+     * if it does not already exist.  The default values are read
+     * from the model as far as possible.  The default simulation
+     * period is 365 days starting from the model time origin.
      *
      * @param projectId id of the project to be modified.  The project
      *   must already have a SimulationModel with a set time origin.
@@ -152,11 +160,19 @@ public class ImportExportService {
         try (SimulationModel model = simulationService.loadSimulationModel(project)) {
             Instant timeOrigin = simulationService.loadTimeOrigin(project.getSimulationmodel());
             Namespace namespace = new Namespace(simulationService.getEvaluator(), timeOrigin);
-            String warnings = model.findInputsAndOutputs(namespace, detailLevel);
             namespace.initConfigComponent();
+            StringWriter warnings = new StringWriter();
+            SimulationInput defaultInput = model.findInputsAndOutputs(
+                    namespace, detailLevel, warnings);
+
+            defaultInput.put(Namespace.CONFIG_COMPONENT, Namespace.CONFIG_SIMULATION_START, 0.0);
+            defaultInput.put(Namespace.CONFIG_COMPONENT, Namespace.CONFIG_SIMULATION_END,
+                    (double) DEFAULT_SIMULATED_TIME_SECONDS);
+
             saveNamespaceComponents(project, namespace);
             projectRepository.save(project);
-            return warnings;
+            saveDefaultInput(project, defaultInput);
+            return warnings.toString();
         }
     }
 
@@ -361,6 +377,25 @@ public class ImportExportService {
             }
         }
         metricRepository.save(changedMetrics);
+    }
+
+    void saveDefaultInput(Project project, SimulationInput defaultInput) {
+        Namespace namespace = defaultInput.getNamespace();
+        List<InputParameter> changedInputs = new ArrayList<>();
+        for (Component component : project.getComponents()) {
+            for (InputParameter inputParameter : component.getInputparameters()) {
+                Type type = namespace.getInputType(component.getName(), inputParameter.getName());
+                if (type != null) {
+                    Object value = defaultInput.get(component.getName(), inputParameter.getName());
+                    if (value != null) {
+                        String text = type.format(value, namespace);
+                        inputParameter.setDefaultvalue(text);
+                        changedInputs.add(inputParameter);
+                    }
+                }
+            }
+        }
+        inputParameterRepository.save(changedInputs);
     }
 
     /** 

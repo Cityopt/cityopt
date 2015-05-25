@@ -2,6 +2,7 @@ package eu.cityopt.sim.eval;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.Writer;
 import java.time.Instant;
 
 import org.w3c.dom.Document;
@@ -27,15 +28,19 @@ public interface SimulationModel extends Closeable {
      *
      * @param newNamespace an empty Namespace to which new components,
      *   inputs and outputs will be created.  You will probably also need
-     *   to call {@link Namespace#initConfigComponent()}
+     *   to call {@link Namespace#initConfigComponent()} before entering
+     *   here.
      * @param detailLevel indicates how much of the available input
      *   parameters and output variables are to be included.  0 is minimal,
      *   larger numbers may provide more results.
-     * @return human-readable warning messages about possible problems,
-     *   e.g. if there are invalid component or variable names.
+     * @param warningWriter where to put human-readable warning messages
+     *   about any problems found, e.g. if there are invalid component or
+     *   variable names.
+     * @return default values for the input parameters.  Some or all values
+     *   may be left unset (null).
      */
-    String findInputsAndOutputs(
-            Namespace newNamespace, int detailLevel) throws IOException;
+    SimulationInput findInputsAndOutputs(Namespace newNamespace,
+            int detailLevel, Writer warningWriter) throws IOException;
 
     /** Access to Apros user component structure, or null if not available. */
     Document getAprosUserComponentStructure();
