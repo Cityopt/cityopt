@@ -3,59 +3,24 @@ package eu.cityopt.opt.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.text.ParseException;
-import java.time.Instant;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.script.ScriptException;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.google.inject.Singleton;
 
-import eu.cityopt.opt.io.JacksonBinder.CompVar;
-import eu.cityopt.opt.io.JacksonBinder.Constr;
-import eu.cityopt.opt.io.JacksonBinder.DecisionVar;
-import eu.cityopt.opt.io.JacksonBinder.ExtParam;
 import eu.cityopt.opt.io.JacksonBinder.Input;
-import eu.cityopt.opt.io.JacksonBinder.Item;
 import eu.cityopt.opt.io.JacksonBinder.Kind;
 import eu.cityopt.opt.io.JacksonBinder.Metric;
-import eu.cityopt.opt.io.JacksonBinder.Obj;
 import eu.cityopt.opt.io.JacksonBinder.Output;
-import eu.cityopt.opt.io.JacksonBinder.Var;
-import eu.cityopt.sim.eval.Constraint;
-import eu.cityopt.sim.eval.DecisionDomain;
-import eu.cityopt.sim.eval.DecisionVariable;
-import eu.cityopt.sim.eval.Evaluator;
-import eu.cityopt.sim.eval.ExternalParameters;
-import eu.cityopt.sim.eval.InputExpression;
-import eu.cityopt.sim.eval.MetricExpression;
-import eu.cityopt.sim.eval.Namespace;
-import eu.cityopt.sim.eval.NumericInterval;
-import eu.cityopt.sim.eval.ObjectiveExpression;
-import eu.cityopt.sim.eval.TimeSeriesI;
-import eu.cityopt.sim.eval.Type;
-import eu.cityopt.sim.opt.OptimisationProblem;
 
 @Singleton
 public class JacksonBinderScenario {
@@ -131,7 +96,15 @@ public class JacksonBinderScenario {
             		this.item = null;
 //            		throw new IllegalArgumentException();
             }
-    	}            
+    	}
+
+        public Kind getKind() {
+            return item.kind;
+        }
+
+        public JacksonBinder.Item getItem() {
+            return item;
+        }            
     } 
 
 	@JsonIgnore
@@ -143,7 +116,7 @@ public class JacksonBinderScenario {
     @Inject
     public JacksonBinderScenario(
             @Named("problemScen") ObjectReader reader,
-            @Named("problem") Path file)
+            @Named("scenario") Path file)
             throws JsonProcessingException, IOException {
         JacksonBinderScenario bd = reader.readValue(file.toFile());
         this.items = bd.getItems();
