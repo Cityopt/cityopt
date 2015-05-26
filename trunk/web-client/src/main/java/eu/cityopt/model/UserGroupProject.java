@@ -50,7 +50,7 @@ public class UserGroupProject implements java.io.Serializable {
 		this.usergroupprojectid = usergroupprojectid;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "usergroupid", nullable = false)
 	public UserGroup getUsergroup() {
 		return this.usergroup;
@@ -60,7 +60,7 @@ public class UserGroupProject implements java.io.Serializable {
 		this.usergroup = usergroup;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "prjid", nullable = false)
 	public Project getProject() {
 		return this.project;
@@ -70,7 +70,7 @@ public class UserGroupProject implements java.io.Serializable {
 		this.project = project;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "userid", nullable = false)
 	public AppUser getAppuser() {
 		return this.appuser;

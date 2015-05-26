@@ -168,7 +168,7 @@ public class SimulationModel implements java.io.Serializable {
 		this.timeorigin = timeorigin;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "simulationmodel",cascade=CascadeType.PERSIST)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "simulationmodel")
 	public Set<Project> getProjects() {
 		return this.projects;
 	}

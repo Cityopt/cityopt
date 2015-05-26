@@ -141,7 +141,7 @@ public class OutputVariable implements java.io.Serializable {
 		this.selected = selected;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "outputvariable", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "outputvariable", cascade={CascadeType.REMOVE})
 	public Set<SimulationResult> getSimulationresults() {
 		return this.simulationresults;
 	}

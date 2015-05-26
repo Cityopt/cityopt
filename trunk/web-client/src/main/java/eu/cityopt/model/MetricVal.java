@@ -78,7 +78,7 @@ public class MetricVal implements java.io.Serializable {
 		this.metric = metric;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scenmetricid", nullable = false)
 	public ScenarioMetrics getScenariometrics() {
 		return this.scenariometrics;
