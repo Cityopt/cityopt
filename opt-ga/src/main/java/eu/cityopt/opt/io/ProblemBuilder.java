@@ -8,16 +8,13 @@ import eu.cityopt.opt.io.JacksonBinder.Constr;
 import eu.cityopt.opt.io.JacksonBinder.DecisionVar;
 import eu.cityopt.opt.io.JacksonBinder.ExtParam;
 import eu.cityopt.opt.io.JacksonBinder.Input;
-import eu.cityopt.opt.io.JacksonBinder.Metric;
 import eu.cityopt.opt.io.JacksonBinder.Obj;
-import eu.cityopt.opt.io.JacksonBinder.Output;
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.DecisionDomain;
 import eu.cityopt.sim.eval.DecisionVariable;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.InputExpression;
-import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.NumericInterval;
 import eu.cityopt.sim.eval.ObjectiveExpression;
@@ -30,8 +27,7 @@ import eu.cityopt.sim.opt.OptimisationProblem;
  * A {@link JacksonBuilder} for an {@link OptimisationProblem}.
  * @author ttekth
  */
-public class ProblemBuilder extends AbstractBuilder<OptimisationProblem> {
-    private final Namespace ns = result.getNamespace();
+public class ProblemBuilder extends SimulationStructureBuilder {
     private final TimeSeriesData tsData;
 
     /** Modify a given problem.
@@ -48,12 +44,17 @@ public class ProblemBuilder extends AbstractBuilder<OptimisationProblem> {
         this(new OptimisationProblem(model, new ExternalParameters(ns)),
              tsdata);
     }
+    
+    @Override
+    public OptimisationProblem getResult() {
+        return (OptimisationProblem)super.getResult();
+    }
 
     @Override
     protected void add(ExtParam item) throws ParseException {
-        ExternalParameters ext = result.inputConst.getExternalParameters();
+        ExternalParameters ext = getResult().inputConst.getExternalParameters();
         if (item.type.isTimeSeriesType()) {
-            Evaluator ev = result.getNamespace().evaluator;
+            Evaluator ev = ns.evaluator;
             TimeSeriesData.Series sd = tsData.getSeriesData(item.name);
             if (sd == null) {
                 throw new IllegalArgumentException(
@@ -81,7 +82,7 @@ public class ProblemBuilder extends AbstractBuilder<OptimisationProblem> {
                            (Double)lb, (Double)ub)
                    : NumericInterval.makeIntInterval(
                            (Integer)lb, (Integer)ub));
-            result.decisionVars.add(
+            getResult().decisionVars.add(
                     new DecisionVariable(dv.comp, dv.name, dom));
             break;
         default:
@@ -97,19 +98,11 @@ public class ProblemBuilder extends AbstractBuilder<OptimisationProblem> {
                     "Either value or expr must be present"
                             + " on input %s,%s", in.comp, in.name));
         if (in.expr == null) {
-            result.inputConst.putString(in.comp, in.name, in.value);
+            getResult().inputConst.putString(in.comp, in.name, in.value);
         } else {
-            result.inputExprs.add(new InputExpression(
+            getResult().inputExprs.add(new InputExpression(
                     in.comp, in.name, in.expr, ns.evaluator));
         }
-    }
-
-    @Override
-    protected void add(Metric m) throws ScriptException {
-        if (m.expression == null)
-            throw new IllegalArgumentException("Missing expression");
-        result.metrics.add(new MetricExpression(
-                null, m.name, m.expression, ns.evaluator));
     }
 
     @Override
@@ -122,7 +115,7 @@ public class ProblemBuilder extends AbstractBuilder<OptimisationProblem> {
                                       : Double.NEGATIVE_INFINITY),
                 ub = (c.upper != null ? Double.valueOf(c.upper)
                                       : Double.POSITIVE_INFINITY);
-            result.constraints.add(new Constraint(
+            getResult().constraints.add(new Constraint(
                     null, c.name, c.expression, lb, ub, ns.evaluator));
         }
     }
@@ -136,7 +129,7 @@ public class ProblemBuilder extends AbstractBuilder<OptimisationProblem> {
         if (is_max == null)
             throw new IllegalArgumentException(
                     "Invalid objective type " + o.type);
-        result.objectives.add(new ObjectiveExpression(
+        getResult().objectives.add(new ObjectiveExpression(
                 null, o.name, o.expression, is_max,
                 ns.evaluator));
 

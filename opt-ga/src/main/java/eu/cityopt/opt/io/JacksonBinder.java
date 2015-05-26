@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectReader;
 
 import eu.cityopt.sim.eval.Evaluator;
-import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.Type;
@@ -143,14 +141,6 @@ public class JacksonBinder {
     
     public static class Metric extends Var {
         public String expression, value;
-        
-        public void addToCollection(Collection<MetricExpression> metrics,
-                Namespace ns) throws ScriptException {
-            if (expression == null)
-                throw new IllegalArgumentException("Missing expression");
-            metrics.add(new MetricExpression(
-                    null, name, expression, ns.evaluator));
-        } 
     }
     
     public static class Constr extends Item {
@@ -230,6 +220,16 @@ public class JacksonBinder {
     }
     
     /**
+     * Apply a builder.
+     */
+    public void buildWith(JacksonBuilder builder)
+            throws ParseException, ScriptException {
+        for (Item it : items) {
+            builder.add(it);
+        }
+    }
+    
+    /**
      * Create a {@link Namespace} and populate it with our items.
      * @param evaluator
      * @param timeOrigin time stamp corresponding to t = 0
@@ -254,25 +254,7 @@ public class JacksonBinder {
             OptimisationProblem prob)
                     throws ParseException, ScriptException {
         ProblemBuilder bld = new ProblemBuilder(prob, tsData);
-        for (Item item : items) {
-            bld.add(item);
-        }
-    }
-
-    /**
-     * Add metrics to a collection.
-     * 
-     * @param metrics the collection to modify
-     * @param namespace a namespace containing our items
-     * @see #makeNamespace(Evaluator, Instant)
-     */
-    public void addMetrics(Collection<MetricExpression> metrics,
-            Namespace namespace) throws ScriptException {
-        for (Item item : items) {
-            if (item instanceof Metric) {
-                ((Metric) item).addToCollection(metrics, namespace);
-            }
-        }
+        buildWith(bld);
     }
 
     //TODO OptimisationProblem -> JacksonBinder (serialisation)
