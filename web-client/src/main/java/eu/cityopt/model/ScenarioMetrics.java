@@ -87,7 +87,7 @@ public class ScenarioMetrics implements java.io.Serializable {
 		this.scenario = scenario;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariometrics", cascade={CascadeType.REMOVE, CascadeType.PERSIST})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariometrics", cascade={CascadeType.REMOVE})
 	public Set<MetricVal> getMetricvals() {
 		return this.metricvals;
 	}

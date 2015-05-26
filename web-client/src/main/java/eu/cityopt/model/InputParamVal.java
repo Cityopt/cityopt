@@ -99,7 +99,7 @@ public class InputParamVal implements java.io.Serializable {
 		this.datareliability = datareliability;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "inputid", nullable = false)
 	public InputParameter getInputparameter() {
 		return this.inputparameter;
@@ -109,7 +109,7 @@ public class InputParamVal implements java.io.Serializable {
 		this.inputparameter = inputparameter;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scenid", nullable = false)
 	public Scenario getScenario() {
 		return this.scenario;

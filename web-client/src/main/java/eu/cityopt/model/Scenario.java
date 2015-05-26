@@ -282,7 +282,7 @@ public class Scenario implements java.io.Serializable {
 		this.simulationresults = simulationresults;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade={CascadeType.PERSIST})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade={CascadeType.REMOVE})
 	public Set<OptSetScenarios> getOptsetscenarioses() {
 		return this.optsetscenarioses;
 	}

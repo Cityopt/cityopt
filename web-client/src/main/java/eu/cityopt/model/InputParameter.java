@@ -83,7 +83,7 @@ public class InputParameter implements java.io.Serializable {
 		this.inputid = inputid;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST})
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "typeid")
 	public Type getType() {
 		return this.type;
@@ -103,7 +103,7 @@ public class InputParameter implements java.io.Serializable {
 		this.unit = unit;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST})
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "componentid")
 	public Component getComponent() {
 		return this.component;
@@ -140,7 +140,7 @@ public class InputParameter implements java.io.Serializable {
 		this.defaultvalue = defaultvalue;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter", cascade={CascadeType.REMOVE})
 	public Set<ModelParameter> getModelparameters() {
 		return this.modelparameters;
 	}
@@ -149,7 +149,7 @@ public class InputParameter implements java.io.Serializable {
 		this.modelparameters = modelparameters;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter", cascade={CascadeType.REMOVE})
 	public Set<InputParamVal> getInputparamvals() {
 		return this.inputparamvals;
 	}

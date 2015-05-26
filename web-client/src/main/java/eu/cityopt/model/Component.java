@@ -81,7 +81,7 @@ public class Component implements java.io.Serializable {
 		this.componentid = componentid;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "prjid", nullable = false)
 	public Project getProject() {
 		return this.project;
@@ -118,7 +118,7 @@ public class Component implements java.io.Serializable {
 		this.geometryblob = geometryblob;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component", cascade={CascadeType.REMOVE})
 	public Set<InputParameter> getInputparameters() {
 		return this.inputparameters;
 	}
@@ -127,7 +127,7 @@ public class Component implements java.io.Serializable {
 		this.inputparameters = inputparameters;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component", cascade={CascadeType.REMOVE})
 	public Set<OutputVariable> getOutputvariables() {
 		return this.outputvariables;
 	}
