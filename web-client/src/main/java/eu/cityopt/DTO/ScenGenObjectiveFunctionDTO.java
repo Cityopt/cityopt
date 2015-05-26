@@ -7,6 +7,6 @@ public class ScenGenObjectiveFunctionDTO {
 
 	@Getter @Setter private Integer sgobfunctionid;
 	@Getter @Setter private ObjectiveFunctionDTO objectivefunction;
-//	@Getter @Setter private ScenarioGenerator scenariogenerator;
+	@Getter @Setter private ScenarioGeneratorDTO scenariogenerator;
 
 }

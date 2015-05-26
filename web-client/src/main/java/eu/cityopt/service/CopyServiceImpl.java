@@ -243,7 +243,7 @@ public class CopyServiceImpl implements CopyService {
 //			Set<InputParamVal> valuesC = new HashSet<InputParamVal>();
 			for(InputParamVal val : scenario.getInputparamvals()){
 				InputParamVal valC = val.clone();
-				valC.setScendefinitionid(0);
+				valC.setInputparamvalid(0);
 				valC.setScenario(copyScenario);
 //				valuesC.add(valC);
 				valC = inputparamvalRepository.save(valC);
@@ -390,7 +390,7 @@ public class CopyServiceImpl implements CopyService {
 				ipC = inputParameterRepository.save(ipC);
 				for(InputParamVal ipv : ip.getInputparamvals()){
 					InputParamVal ipvC = ipv.clone();
-					ipvC.setScendefinitionid(0);
+					ipvC.setInputparamvalid(0);
 					ipvC.setInputparameter(ipC);
 					ipvC = inputparamvalRepository.save(ipvC);
 					componentsInputParamValues.add(ipvC);

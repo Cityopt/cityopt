@@ -6,20 +6,21 @@ import lombok.Getter;
 import lombok.Setter;
 import eu.cityopt.model.ScenarioGenerator;
 
-//@Data
-//@DomainClass(domainClass = Scenario.class)
+
 public class ScenarioDTO {
-	//@MappedBy(readOnly = true)
 	@Getter @Setter private int scenid;
-//	@Getter @Setter private ProjectDTO project;
-	//@Getter @Setter private int prjid;
-	//@Getter @Setter private ScenarioGenerator scenariogenerator;
+	@Getter @Setter private ProjectDTO project;
+	@Getter @Setter private ScenarioGeneratorDTO scenariogenerator;
 	@Getter @Setter private String name;
 	@Getter @Setter private String description;
 	@Getter @Setter private Date createdon;
 	@Getter @Setter private Date updatedon;
 	@Getter @Setter private Integer createdby;
 	@Getter @Setter private Integer updatedby;
+	@Getter @Setter private Date runend;
+	@Getter @Setter private Date runstart;
+	@Getter @Setter private String status;
+	@Getter @Setter private String log;
 //	private Set<ScenarioMetrics> scenariometricses = new HashSet<ScenarioMetrics>(
 //			0);
 //	private Set<InputParamVal> inputparamvals = new HashSet<InputParamVal>(0);
