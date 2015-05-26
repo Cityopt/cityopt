@@ -2102,7 +2102,7 @@ public class ProjectController {
 		}
 		
 		updatedInputParamVal.setValue(inputParamVal.getValue());
-		updatedInputParamVal.setScendefinitionid(scenario.getScenid());
+		updatedInputParamVal.setScenario(scenario);
 		inputParamValService.save(updatedInputParamVal);
 				
 		model.put("selectedcompid", updatedInputParamVal.getInputparameter().getComponent().getComponentid());
