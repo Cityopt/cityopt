@@ -1,6 +1,6 @@
 <%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
 <%--@elvariable id="constraint" type="com.cityopt.DTO.OptSearchConstDTO"--%>
-<%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"--%>
+<%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -45,9 +45,9 @@
 							
 										<c:forEach items="${constraints}" var="constraint">
 											<tr>
-												<td><a href="<c:url value='importsearchconstraint.html?constraintid=${constraint.optsearchconstid}'/>">Select</a></td>
-												<td>${constraint.optconstraint.name}</td>
-										    	<td>${constraint.optconstraint.expression}</td>
+												<td><a href="<c:url value='importsearchconstraint.html?constraintid=${constraint.optconstid}'/>">Select</a></td>
+												<td>${constraint.name}</td>
+										    	<td>${constraint.expression}</td>
 										   	</tr>
 											</c:forEach>
 									</table>

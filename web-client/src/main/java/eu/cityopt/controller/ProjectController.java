@@ -455,6 +455,27 @@ public class ProjectController {
 			model.put("components", components);
 			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 			model.put("inputParamVals", inputParamVals);
+
+			// Create input param vals for all input params
+			for (int i = 0; i < components.size(); i++)
+			{
+				ComponentDTO component = components.get(i);
+				List<ComponentInputParamDTO> listComponentInputParams = componentInputParamService.findAllByComponentId(component.getComponentid());
+				
+				for (int j = 0; j < listComponentInputParams.size(); j++)
+				{
+					try {
+						InputParameterDTO inputParam = inputParamService.findByID(listComponentInputParams.get(j).getInputid());
+						InputParamValDTO inputParamVal = new InputParamValDTO();
+						inputParamVal.setInputparameter(inputParam);
+						inputParamVal.setValue(inputParam.getDefaultvalue());
+						inputParamVal.setScenario(scenario);
+						inputParamValService.save(inputParamVal);
+					} catch (EntityNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 			
 			model.put("scenario", scenario);
 			return "editscenario";
@@ -1009,11 +1030,11 @@ public class ProjectController {
 		
 		project = projectService.findByID(project.getPrjid());
 	
-		OptimizationSetDTO optSet = (OptimizationSetDTO) model.get("optimizationset");
+		ScenarioGeneratorDTO scenGenerator = (ScenarioGeneratorDTO) model.get("scengenerator");
 		
-		if (optSet == null)
+		if (scenGenerator == null)
 		{
-			optSet = new OptimizationSetDTO();
+			scenGenerator = new ScenarioGeneratorDTO();
 		}
 		
 		UserSession userSession = (UserSession) model.get("usersession");
@@ -1050,12 +1071,19 @@ public class ProjectController {
 
 	@RequestMapping(value="creategaobjfunction", method=RequestMethod.POST)
 	public String getCreateGAObjFunctionPost(ObjectiveFunctionDTO function, Map<String, Object> model) {
-		OptimizationSetDTO optSet = null;
-		
-		if (model.containsKey("optimizationset"))
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
 		{
-			optSet = (OptimizationSetDTO) model.get("optimizationset");
-			model.put("optimizationset", optSet);
+			return "error";
+		}
+
+		project = projectService.findByID(project.getPrjid());
+		ScenarioGeneratorDTO scenGenerator = null;
+		
+		if (model.containsKey("scengenerator"))
+		{
+			scenGenerator = (ScenarioGeneratorDTO) model.get("scengenerator");
 		}
 		else
 		{
@@ -1064,13 +1092,39 @@ public class ProjectController {
 		
 		if (function != null && function.getExpression() != null)
 		{
-			ObjectiveFunctionDTO newFunc = new ObjectiveFunctionDTO();
-			newFunc.setName(function.getName());
-			newFunc.setExpression(function.getExpression());
-			optSet.setObjectivefunction(newFunc);
-			optSetService.save(optSet);
+			ObjectiveFunctionDTO func = new ObjectiveFunctionDTO();
+			func.setName(function.getName());
+			func.setExpression(function.getExpression());
+			func.setIsmaximise(function.getIsmaximise());
+			func.setProject(project);
+			
+			ScenGenObjectiveFunctionDTO scenGenFunc = new ScenGenObjectiveFunctionDTO();
+			scenGenFunc.setObjectivefunction(func);
+			
+			// Needed?
+			//scenGenFuncService.save(scenGenFunc);
+			
+			try {
+				scenGenService.addObjectiveFunction(scenGenerator.getScengenid(), func);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+
+			scenGenerator = scenGenService.save(scenGenerator);
 		}
 
+		model.put("scengenerator", scenGenerator);
+
+		Set<ScenGenObjectiveFunctionDTO> gaFuncs = (Set<ScenGenObjectiveFunctionDTO>) scenGenerator.getScengenobjectivefunctions();
+		model.put("functions", gaFuncs);
+		
+		Set<ScenGenOptConstraintDTO> gaConstraints = (Set<ScenGenOptConstraintDTO>) scenGenerator.getScengenoptconstraints();
+		model.put("constraints", gaConstraints);
+
+		project = projectService.findByID(project.getPrjid());
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+		
 		//List<OptSearchConstDTO> optSearchConstraints = optSearchService.findAll();
 		//model.put("constraints", optSearchConstraints);
 
@@ -1267,6 +1321,42 @@ public class ProjectController {
 			}
 			else
 			{
+				ScenarioGeneratorDTO scenGen = null;
+				
+				if (optsetid != null)
+				{
+					int nOptSetId = Integer.parseInt(optsetid);
+					
+					try {
+						scenGen = (ScenarioGeneratorDTO) scenGenService.findByID(nOptSetId);
+					} catch (EntityNotFoundException e) {
+						e.printStackTrace();
+					}
+					
+					model.put("scengenerator", scenGen);
+				}
+				else
+				{
+					return "error";
+				}
+
+				Set<ScenGenObjectiveFunctionDTO> gaFuncs = (Set<ScenGenObjectiveFunctionDTO>) scenGen.getScengenobjectivefunctions();
+				model.put("objFuns", gaFuncs);
+				
+				Set<ScenGenOptConstraintDTO> gaConstraints = (Set<ScenGenOptConstraintDTO>) scenGen.getScengenoptconstraints();
+				model.put("constraints", gaConstraints);
+
+				ProjectDTO project = (ProjectDTO) model.get("project");
+
+				if (project == null)
+				{
+					return "error";
+				}
+				
+				project = projectService.findByID(project.getPrjid());
+				Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+				model.put("metrics", metrics);
+
 				return "geneticalgorithm";
 			}
 		}
@@ -1294,8 +1384,65 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="deleteoptimizationset",method=RequestMethod.GET)
-	public String getDeleteOptimizationSet(Model model){
-	
+	public String getDeleteOptimizationSet(Map<String, Object> model,
+		@RequestParam(value="optsetid", required=false) String optsetid,
+		@RequestParam(value="optsettype", required=false) String optsettype) {
+
+		if (optsettype != null)
+		{
+			if (optsettype.equals("db"))
+			{
+				if (optsetid != null)
+				{
+					int nOptSetId = Integer.parseInt(optsetid);
+					
+					try {
+						optSetService.delete(nOptSetId);
+					} catch (NumberFormatException | EntityNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+				else
+				{
+					return "error";
+				}
+			}
+			else
+			{
+				if (optsetid != null)
+				{
+					int nOptSetId = Integer.parseInt(optsetid);
+					
+					try {
+						scenGenService.delete(nOptSetId);
+					} catch (EntityNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+				else
+				{
+					return "error";
+				}
+			}
+		}
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		project = projectService.findByID(project.getPrjid());
+		Set<OpenOptimizationSetDTO> optSets = null;
+
+		try {
+			optSets = projectService.getSearchAndGAOptimizationSets(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		model.put("openoptimizationsets", optSets);
+
 		return "deleteoptimizationset";
 	}
 	
@@ -1440,6 +1587,15 @@ public class ProjectController {
 				model.put("optimizationset", optSet);
 			}
 			
+			List<OptConstraintDTO> optSearchConstraints = null;
+			
+			try {
+				optSearchConstraints = optSetService.getSearchConstraints(optSet.getOptid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			model.put("constraints", optSearchConstraints);
+			
 			return "editoptimizationset";
 		}
 		List<ObjectiveFunctionDTO> objFuncs = objFuncService.findAll();
@@ -1449,10 +1605,67 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="importsearchconstraint",method=RequestMethod.GET)
-	public String getImportSearchConstraint(Model model) {
-	
-		List<OptSearchConst> optSearchConstraints = optSearchService.findAll();
-		model.addAttribute("constraints", optSearchConstraints);
+	public String getImportSearchConstraint(Map<String, Object> model,
+		@RequestParam(value="constraintid", required=false) String selectedConstraintId) {
+
+		if (selectedConstraintId != null && !selectedConstraintId.isEmpty())
+		{
+			int nSelectedConstraintId = Integer.parseInt(selectedConstraintId);
+			OptConstraintDTO constraint = null;
+			
+			try {
+				constraint = optConstraintService.findByID(nSelectedConstraintId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			OptimizationSetDTO optSet = null;
+			
+			if (model.containsKey("optimizationset"))
+			{
+				optSet = (OptimizationSetDTO) model.get("optimizationset");
+				
+				try {
+					optSet = optSetService.findByID(optSet.getOptid());
+				} catch (NumberFormatException | EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				return "error";
+			}
+			
+			if (optSet != null && constraint != null)
+			{
+				try {
+					optSetService.addSearchConstraint(optSet.getOptid(), constraint);
+				} catch (EntityNotFoundException e1) {
+					e1.printStackTrace();
+				}
+
+				try {
+					optSet = optSetService.update(optSet);
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+				model.put("optimizationset", optSet);
+			}
+			
+			List<OptConstraintDTO> optSearchConstraints = null;
+			
+			try {
+				optSearchConstraints = optSetService.getSearchConstraints(optSet.getOptid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			model.put("constraints", optSearchConstraints);
+			
+			return "editoptimizationset";
+		}
+		
+		List<OptConstraintDTO> optSearchConstraints = optConstraintService.findAll();
+		model.put("constraints", optSearchConstraints);
 		
 		return "importsearchconstraint";
 	}
@@ -1719,7 +1932,8 @@ public class ProjectController {
 		{
 			return "error";
 		}
-
+		project = projectService.findByID(project.getPrjid());
+		
 		ComponentDTO component = new ComponentDTO();
 		component.setName(componentForm.getName());
 		componentService.save(component, project.getPrjid());
@@ -1757,7 +1971,8 @@ public class ProjectController {
 		{
 			return "error";
 		}
-
+		project = projectService.findByID(project.getPrjid());
+		
 		int nCompId = Integer.parseInt(componentid);
 		ComponentDTO oldComponent = null;
 		try {
@@ -1805,7 +2020,8 @@ public class ProjectController {
 		{
 			return "error";
 		}
-
+		project = projectService.findByID(project.getPrjid());
+		
 		int nInputParamId = Integer.parseInt(inputParamId);
 		InputParameterDTO updatedInputParam = null;
 		try {
@@ -1838,7 +2054,7 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="editinputparamvalue", method=RequestMethod.GET)
-	public String getEditInputParameterValue(Model model, @RequestParam(value="inputparamvalid", required=true) String inputvalid) {
+	public String getEditInputParameterValue(Map<String, Object> model, @RequestParam(value="inputparamvalid", required=true) String inputvalid) {
 		int nInputValId = Integer.parseInt(inputvalid);
 		InputParamValDTO inputParamVal = null;
 		
@@ -1847,7 +2063,7 @@ public class ProjectController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		model.addAttribute("inputParamVal", inputParamVal);
+		model.put("inputParamVal", inputParamVal);
 		
 		return "editinputparamvalue";
 	}
@@ -1861,7 +2077,21 @@ public class ProjectController {
 		{
 			return "error";
 		}
-
+		project = projectService.findByID(project.getPrjid());
+		
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		
+		if (scenario == null)
+		{
+			return "error";
+		}
+		
+		try {
+			scenario = scenarioService.findByID(scenario.getScenid());
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		
 		int nInputParamValId = Integer.parseInt(inputParamValId);
 		InputParamValDTO updatedInputParamVal = null;
 		
@@ -1872,6 +2102,7 @@ public class ProjectController {
 		}
 		
 		updatedInputParamVal.setValue(inputParamVal.getValue());
+		updatedInputParamVal.setScendefinitionid(scenario.getScenid());
 		inputParamValService.save(updatedInputParamVal);
 				
 		model.put("selectedcompid", updatedInputParamVal.getInputparameter().getComponent().getComponentid());
@@ -3146,12 +3377,10 @@ public class ProjectController {
 			return "error";
 		}
 
-		@SuppressWarnings("unchecked")
-		List<ScenGenObjectiveFunctionDTO> gaFuncs = (List<ScenGenObjectiveFunctionDTO>) scenGen.getScengenobjectivefunctions();
+		Set<ScenGenObjectiveFunctionDTO> gaFuncs = scenGen.getScengenobjectivefunctions();
 		model.put("functions", gaFuncs);
 		
-		@SuppressWarnings("unchecked")
-		List<ScenGenOptConstraintDTO> gaConstraints = (List<ScenGenOptConstraintDTO>) scenGen.getScengenoptconstraints();
+		Set<ScenGenOptConstraintDTO> gaConstraints = scenGen.getScengenoptconstraints();
 		model.put("constraints", gaConstraints);
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
