@@ -58,8 +58,9 @@ public class OptimisationProblemIO {
         ObjectReader reader = JacksonCsvModule.getProblemReader(JacksonCsvModule.getCsvMapper());
         JacksonBinder binder = new JacksonBinder(reader, structureStream, null);
         Namespace ns = binder.makeNamespace(setup.evaluator, setup.timeOrigin);
-        SimulationStructure structure = new SimulationStructure(null, ns);
-        binder.addMetrics(structure.metrics, ns);
-        return structure;
+        SimulationStructureBuilder bld = new SimulationStructureBuilder(
+                new SimulationStructure(null, ns));
+        binder.buildWith(bld);
+        return bld.getResult();
     }
 }
