@@ -7,11 +7,8 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 import javax.inject.Inject;
@@ -30,18 +27,10 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectReader;
 
-import eu.cityopt.sim.eval.Constraint;
-import eu.cityopt.sim.eval.DecisionDomain;
-import eu.cityopt.sim.eval.DecisionVariable;
 import eu.cityopt.sim.eval.Evaluator;
-import eu.cityopt.sim.eval.ExternalParameters;
-import eu.cityopt.sim.eval.InputExpression;
 import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.Namespace;
-import eu.cityopt.sim.eval.NumericInterval;
-import eu.cityopt.sim.eval.ObjectiveExpression;
 import eu.cityopt.sim.eval.SimulationModel;
-import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.OptimisationProblem;
 
@@ -86,19 +75,7 @@ public class JacksonBinder {
     public abstract static class Item {
         public Kind kind;
         public String name;
-
-        /**
-         * Add this item to a {@link Namespace}.
-         */
-        public abstract void addToNamespace(Namespace ns);
-        
-        /**
-         * Add this item to an {@link OptimisationProblem}.
-         */
-        public abstract void addToProblem(
-                OptimisationProblem prob, TimeSeriesData tsData)
-                throws ParseException, ScriptException;
-        
+       
         /**
          * Return the qualified name of this item.
          * Objects of the same kind must have unique qualified names.
@@ -107,6 +84,10 @@ public class JacksonBinder {
         @JsonIgnore
         public String getQName() {
             return name;
+        }
+
+        public Kind getKind() {
+            return kind;
         }
     }
     
@@ -125,7 +106,7 @@ public class JacksonBinder {
             }
         }
     }
-   
+
     public abstract static class CompVar extends Var {
         @JsonProperty("component")
         public String comp;
@@ -144,118 +125,25 @@ public class JacksonBinder {
     
     public static class ExtParam extends Var {
         public String value;
-
-        @Override
-        public void addToNamespace(Namespace ns) {
-            addToNSMap(ns.externals);
-        }
-
-        @Override
-        public void addToProblem(OptimisationProblem prob,
-                TimeSeriesData tsData) throws ParseException {
-            ExternalParameters ext = prob.inputConst.getExternalParameters();
-            if (type.isTimeSeriesType()) {
-                Evaluator ev = prob.getNamespace().evaluator;
-                TimeSeriesData.Series sd = tsData.getSeriesData(name);
-                if (sd == null) {
-                    throw new IllegalArgumentException(
-                            "No time series data for external parameter "
-                            + name);
-                }
-                TimeSeriesI ts = ev.makeTS(type, sd.times, sd.values);
-                ext.put(name, ts);
-            } else {
-                ext.putString(name, value);
-            }
-        }
     }
     
     public static class Input extends CompVar {
         public String value;
         @JsonProperty("expression")
         public String expr;
-
-        @Override
-        public void addToNamespace(Namespace ns) {
-            addToNSComp(ns, c -> c.inputs);
-        }
-
-        @Override
-        public void addToProblem(
-                OptimisationProblem prob, TimeSeriesData tsData)
-                        throws ParseException, ScriptException {
-            Namespace ns = prob.getNamespace();
-            if (value == null && expr == null)
-                throw new IllegalArgumentException(String.format(
-                        "Either value or expr must be present"
-                                + " on input %s,%s", comp, name));
-            if (expr == null) {
-                prob.inputConst.putString(comp, name, value);
-            } else {
-                prob.inputExprs.add(new InputExpression(
-                        comp, name, expr, ns.evaluator));
-            }
-        }
     }
     
     public static class Output extends CompVar {
     	public String value;
-    	
-        @Override
-        public void addToNamespace(Namespace ns) {
-            addToNSComp(ns, c -> c.outputs);
-        }
-
-        @Override
-        public void addToProblem(
-                OptimisationProblem prob, TimeSeriesData tsData) {}
     }
     
     public static class DecisionVar extends CompVar {
         public String lower, upper;
-
-        @Override
-        public void addToNamespace(Namespace ns) {
-            if (comp != null) {
-                addToNSComp(ns, c -> c.decisions);
-            } else {
-                addToNSMap(ns.decisions);
-            }
-        }
-
-        @Override
-        public void addToProblem(OptimisationProblem prob,
-                TimeSeriesData tsData) throws ParseException {
-            Namespace ns = prob.getNamespace();
-            switch (type) {
-            case DOUBLE:
-            case INTEGER:
-                Object
-                    lb = (lower == null ? null : type.parse(lower, ns)),
-                    ub = (upper == null ? null : type.parse(upper, ns));
-                DecisionDomain
-                dom = (type == Type.DOUBLE
-                       ? NumericInterval.makeRealInterval(
-                               (Double)lb, (Double)ub)
-                       : NumericInterval.makeIntInterval(
-                               (Integer)lb, (Integer)ub));
-                prob.decisionVars.add(new DecisionVariable(comp, name, dom));
-                break;
-            default:
-                throw new IllegalArgumentException(
-                        "Unsupported decision variable type " + type);
-            }
-        }
     }
     
     public static class Metric extends Var {
         public String expression, value;
         
-        @Override
-        public void addToNamespace(Namespace ns) {
-            addToNSMap(ns.metrics);
-        }
-
         public void addToCollection(Collection<MetricExpression> metrics,
                 Namespace ns) throws ScriptException {
             if (expression == null)
@@ -263,59 +151,14 @@ public class JacksonBinder {
             metrics.add(new MetricExpression(
                     null, name, expression, ns.evaluator));
         } 
-
-        @Override
-        public void addToProblem(OptimisationProblem prob,
-                TimeSeriesData tsData) throws ScriptException {
-            addToCollection(prob.metrics, prob.getNamespace());
-        } 
     }
     
     public static class Constr extends Item {
         public String expression, lower, upper;
-
-        @Override
-        public void addToNamespace(Namespace ns) {}
-
-        @Override
-        public void addToProblem(OptimisationProblem prob,
-                TimeSeriesData tsData) throws ScriptException {
-            if (expression == null)
-                throw new IllegalArgumentException("Missing expression");
-            else {
-                double
-                    lb = (lower != null ? Double.valueOf(lower)
-                                        : Double.NEGATIVE_INFINITY),
-                    ub = (upper != null ? Double.valueOf(upper)
-                                        : Double.POSITIVE_INFINITY);
-                prob.constraints.add(new Constraint(
-                        null, name, expression, lb, ub,
-                        prob.getNamespace().evaluator));
-            }
-        }
     }
     
     public static class Obj extends Item {
         public String expression, type;
-
-        @Override
-        public void addToNamespace(Namespace ns) {}
-
-        @Override
-        public void addToProblem(OptimisationProblem prob,
-                TimeSeriesData tsData) throws ScriptException {
-            Boolean is_max = isMaximize(type);
-            if (expression == null)
-                throw new IllegalArgumentException(
-                        "Missing objective expression");
-            if (is_max == null)
-                throw new IllegalArgumentException(
-                        "Invalid objective type " + type);
-            prob.objectives.add(new ObjectiveExpression(
-                    null, name, expression, is_max,
-                    prob.getNamespace().evaluator));
-
-        }
 
         public static Boolean isMaximize(String type) {
             if ("max".equalsIgnoreCase(type))
@@ -324,6 +167,9 @@ public class JacksonBinder {
                 return false;
             else return null;
         }
+        
+        @JsonIgnore
+        public Boolean isMaximize() {return isMaximize(type);}
     }
  
     @JsonIgnore
@@ -371,23 +217,16 @@ public class JacksonBinder {
      * @throws IllegalArgumentException on duplicate names
      */
     public void checkNames() {
-        Map<Kind, Set<String>> names = new HashMap<>();
-        for (Item it : items) {
-            Set<String> ns = names.computeIfAbsent(
-                    it.kind, k -> new HashSet<>());
-            String qn = it.getQName();
-            if (!ns.add(qn)) {
-                throw new IllegalArgumentException(
-                        "duplicate " + it.kind + " name " + qn);
-            }
-        }
+        NameChecker chk = new NameChecker();
+        items.forEach(chk::add);
     }        
 
     /**
      * Sort items by kind (in place).
      */
     public void sort() {
-        Collections.sort(items, (x1, x2) -> x1.kind.compareTo(x2.kind));
+        Collections.sort(items,
+                         (x1, x2) -> x1.getKind().compareTo(x2.getKind()));
     }
     
     /**
@@ -398,9 +237,9 @@ public class JacksonBinder {
      */
     public Namespace makeNamespace(Evaluator evaluator, Instant timeOrigin) {
         checkNames();
-        Namespace ns = new Namespace(evaluator, timeOrigin, true);
-        items.forEach(item -> item.addToNamespace(ns));
-        return ns;
+        NamespaceBuilder bld = new NamespaceBuilder(evaluator, timeOrigin);
+        items.forEach(bld::add);
+        return bld.getResult();
     }
     
     /**
@@ -414,8 +253,9 @@ public class JacksonBinder {
     public void addToProblem(
             OptimisationProblem prob)
                     throws ParseException, ScriptException {
+        ProblemBuilder bld = new ProblemBuilder(prob, tsData);
         for (Item item : items) {
-            item.addToProblem(prob, tsData);
+            bld.add(item);
         }
     }
 
