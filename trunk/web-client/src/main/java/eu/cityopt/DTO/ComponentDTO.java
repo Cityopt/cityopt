@@ -9,8 +9,7 @@ import lombok.Setter;
 
 public class ComponentDTO {
 	@Getter @Setter private int componentid;
-//	@Getter @Setter private ProjectDTO project;
-//	@Getter @Setter private int prjid;
+	@Getter @Setter private ProjectDTO project;
 	@Getter @Setter private String name;
 	@Getter @Setter private String alias;
 	@Getter @Setter private Serializable geometryblob;

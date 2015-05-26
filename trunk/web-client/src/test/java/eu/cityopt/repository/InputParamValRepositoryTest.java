@@ -71,7 +71,7 @@ public class InputParamValRepositoryTest {
 	    Date created = new Date();
 	    value.setCreatedon(created);
 	    
-	    InputParamVal newVal = ipvalRepository.findOne(value.getScendefinitionid());
+	    InputParamVal newVal = ipvalRepository.findOne(value.getInputparamvalid());
 	    assertEquals(value.getValue(), newVal.getValue());
 	    assertEquals(value.getCreatedon(), newVal.getCreatedon());
 	}

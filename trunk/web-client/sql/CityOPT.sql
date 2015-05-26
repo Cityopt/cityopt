@@ -37,7 +37,7 @@ DROP SEQUENCE IF EXISTS extparamvalsetcomp_id_seq
 DROP SEQUENCE IF EXISTS inputparameter_inputid_seq
 ;
 
-DROP SEQUENCE IF EXISTS inputparamval_scendefinitionid_seq
+DROP SEQUENCE IF EXISTS inputparamval_inputparamvalid_seq
 ;
 
 DROP SEQUENCE IF EXISTS metric_metid_seq
@@ -358,7 +358,7 @@ CREATE TABLE InputParameter
 
 CREATE TABLE InputParamVal
 (
-	scenDefinitionID integer NOT NULL DEFAULT nextval(('inputparamval_scendefinitionid_seq'::text)::regclass),
+	inputParamValID integer NOT NULL DEFAULT nextval(('inputparamval_inputparamvalid_seq'::text)::regclass),
 	scenID integer NOT NULL,
 	inputID integer NOT NULL,
 	value text NOT NULL,
@@ -680,7 +680,7 @@ CREATE SEQUENCE extparamvalsetcomp_id_seq INCREMENT 1 START 1
 CREATE SEQUENCE inputparameter_inputid_seq INCREMENT 1 START 1
 ;
 
-CREATE SEQUENCE inputparamval_scendefinitionid_seq INCREMENT 1 START 1
+CREATE SEQUENCE inputparamval_inputparamvalid_seq INCREMENT 1 START 1
 ;
 
 CREATE SEQUENCE metric_metid_seq INCREMENT 1 START 1
@@ -907,7 +907,7 @@ CREATE INDEX IXFK_ScenarioDefinition_Scenario ON InputParamVal (scenID ASC)
 ;
 
 ALTER TABLE InputParamVal ADD CONSTRAINT PK_ScenarioDefinition
-	PRIMARY KEY (scenDefinitionID)
+	PRIMARY KEY (inputParamValID)
 ;
 
 CREATE INDEX IXFK_Metric_Project ON Metric (prjID ASC)

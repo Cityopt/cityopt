@@ -7,7 +7,8 @@ import lombok.Setter;
 
 public class InputParamValDTO {
 
-	@Getter @Setter private Integer scendefinitionid;
+	@Getter @Setter private Integer inputparamvalid;
+	@Getter @Setter private DataReliabilityDTO datareliability;
 	@Getter @Setter private InputParameterDTO inputparameter;
 	@Getter @Setter private ScenarioDTO scenario;
 	@Getter @Setter private String value;
@@ -15,6 +16,5 @@ public class InputParamValDTO {
 	@Getter @Setter private Date updatedon;
 	@Getter @Setter private Integer createdby;
 	@Getter @Setter private Integer updatedby;
-	@Getter @Setter private Integer datarelid;
 
 }
