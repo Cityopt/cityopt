@@ -1,3 +1,4 @@
+<%--@elvariable id="openoptimizationset" type="eu.cityopt.DTO.OpenOptimizationSetDTO"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -11,47 +12,53 @@
 </head>
 
 <body>
-<%@ include file="mainmenu.inc"%>
-
-<%
-	//ArrayList<Book> b = new ArrayList<Book>();
-	//b = SqlSentencesList.showCatalog(); // this method returns an arrayList with all books
-%>
-
-<div style="overflow:scroll;height:400px;width:600px;overflow:auto">
-<form method="get" action="OptimizationController">
-<h2>Delete optimization set</h2>
-<table class="tablestyle" width="600" border="1">
-
-<tr height="20">
-    <th>Name</th>
-    <th>Type</th>
-    <th>User</th>
-    <th>Description</th>
-    <th>Creation date</th>
-    <th>Setting</th>
-    <th>Run</th>
-    <th>Delete</th>
-</tr>
-
-	<c:forEach items="${optsets}" var="optset">
-	<tr>
-		<td>${optset.getOptconstraint().name}</td>
-   	</tr>
-	</c:forEach>
-	
+<table cellspacing="0px" cellpadding="0px">
+		<tr>
+			<td><%@ include file="mainmenu.inc"%></td>
+			<td width="30"></td>
+			<td valign="top">
+			<div style="overflow:scroll;height:400px;width:600px;overflow:auto">
+			<form method="get" action="OptimizationController">
+			<h2>Delete optimization set</h2>
+			<table class="tablestyle" width="500" border="1">
+				<col style="width: 250px">
+				<col style="width: 150px">
+				<col style="width: 80px">
+			
+				<tr height="20">
+				    <th>Name</th>
+				    <th>Type</th>
+				    <th>Open</th>
+				</tr>
+			
+				<c:forEach items="${openoptimizationsets}" var="openoptimizationset">
+				<tr>
+					<td>${openoptimizationset.name}</td>
+						<c:choose>
+							<c:when test="${openoptimizationset.isDatabaseSearch()}">
+								<td>Database search</td>
+								<td>
+								<a href="<c:url value='deleteoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=db'/>">
+									<button align="right"  type="button" value="Delete">Delete</button>
+								</a>
+								</td>
+							</c:when>
+							<c:otherwise>
+								<td>Genetic algorithm</td>
+								<td>
+								<a href="<c:url value='deleteoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga'/>">
+									<button align="right"  type="button" value="Delete">Delete</button>
+								</a>
+								</td>
+							</c:otherwise>
+						</c:choose>
+			   	</tr>
+				</c:forEach>
+			</table>
+			</form>
+			</div>
+		</td>
+	</tr>
 </table>
-
-<table width="600">
-
-<tr>
-	<td align="right">
-		<input align="right" type="submit" value="Delete optimization set"/>
-    </td>
-</tr>
-      
-</table>
-</form>
-</div>
 </body>
 </html>

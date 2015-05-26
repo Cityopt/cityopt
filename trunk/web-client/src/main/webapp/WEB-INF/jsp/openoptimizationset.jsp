@@ -45,7 +45,7 @@
 							<c:otherwise>
 								<td>Genetic algorithm</td>
 								<td>
-								<a href="<c:url value='editoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga'/>">
+								<a href="<c:url value='openoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga'/>">
 									<button align="right"  type="button" value="Open">Open</button>
 								</a>
 								</td>

@@ -192,22 +192,32 @@
 <tr>
 	<td></td>
 	<td>
-		<a href="editoptimizationset.html">Edit optimization set</a>
+		<a href="editoptimizationset.html">Edit DB optimization set</a>
 	</td>
 </tr>
 <% } else { %>
 <tr>
 	<td></td>
 	<td>
-		Edit optimization set
+		Edit DB optimization set
 	</td>
 </tr>
 <% } %>
+<% if (request.getSession().getAttribute("scengenerator") != null) { %>
 <tr>
 	<td></td>
 	<td>
-		<a href="geneticalgorithm.html">Genetic algorithm</a>
-	</td></tr>
+		<a href="geneticalgorithm.html">Edit GA optimization set</a>
+	</td>
+</tr>
+<% } else { %>
+<tr>
+	<td></td>
+	<td>
+		Edit GA optimization set
+	</td>
+</tr>
+<% } %>
 <tr>
 	<td></td>
 	<td>

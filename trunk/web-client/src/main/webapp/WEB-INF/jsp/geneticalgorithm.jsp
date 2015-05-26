@@ -1,6 +1,5 @@
 <%--@elvariable id="scengenerator" type="eu.cityopt.DTO.ScenarioGeneratorDTO"--%>
 <%--@elvariable id="constraint" type="eu.cityopt.DTO.OptConstraintDTO"--%>
-<%--@elvariable id="function" type="eu.cityopt.DTO.ObjectiveFunctionDTO"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -38,13 +37,13 @@
 								<td><form:input type="text" path="name" style="width:200px"/></td>
 								<td>Description:</td>
 								<td rowspan="2"><textarea id="description" rows="2" style="width: 300px"></textarea></td>
-								<td align="right"><input type="submit" value="Abort GA generation" style="width: 150px"></td>
+								<td align="right"><input type="submit" value="Run GA generation" style="width: 150px"></td>
 							</tr>
 							<tr>						
 								<td>User:</td>
 								<td><input type="text" id="user" style="width:200px"></td>
 								<td></td>
-								<td align="right"><input type="submit" value="Run GA generation" style="width: 150px"></td>
+								<td align="right"></td>
 							</tr>
 						</table>
 					</td>
@@ -63,7 +62,7 @@
 											<th>Expression</th>
 										</tr>
 										
-										<c:forEach items="${objFuncs}" var="function">
+										<c:forEach items="${objFuncs}" var="scengenerator">
 										<tr>
 											<td>${function.name}</td>
 											<td>${function.expression}</td>
@@ -74,9 +73,9 @@
 							</tr>
 							<tr>
 								<td>
-									<input type="submit" value="Add" style="width: 100px">
-									<input type="submit" value="Delete" style="width: 100px">
-									<input type="submit" value="Import" style="width: 100px">
+									<a href="creategaobjfunction.html"><button type="button" style="width: 100px">Create</button></a>
+									<input type="submit" value="Delete"  style="width: 100px">
+									<a href="importgaobjfunction.html"><button type="button" style="width: 100px">Import</button></a>
 								</td>
 							</tr>
 							<tr height="10"></tr>
