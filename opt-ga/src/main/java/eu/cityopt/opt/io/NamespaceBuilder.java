@@ -8,19 +8,22 @@ import java.util.function.Function;
 import javax.script.ScriptException;
 
 import eu.cityopt.opt.io.JacksonBinder.CompVar;
-import eu.cityopt.opt.io.JacksonBinder.Constr;
 import eu.cityopt.opt.io.JacksonBinder.DecisionVar;
 import eu.cityopt.opt.io.JacksonBinder.ExtParam;
 import eu.cityopt.opt.io.JacksonBinder.Input;
 import eu.cityopt.opt.io.JacksonBinder.Item;
 import eu.cityopt.opt.io.JacksonBinder.Metric;
-import eu.cityopt.opt.io.JacksonBinder.Obj;
 import eu.cityopt.opt.io.JacksonBinder.Output;
 import eu.cityopt.opt.io.JacksonBinder.Var;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.Type;
 
+/**
+ * A {@link JacksonBuilder} for {@link Namespace}
+ * @author ttekth
+ *
+ */
 public class NamespaceBuilder extends AbstractBuilder<Namespace> {
     public NamespaceBuilder(Namespace initial) {
         super(initial);
