@@ -41,7 +41,7 @@ public class JacksonBinderScenario {
     	public String extparamvalsetname;
     	
     	public abstract JacksonBinder.Item getItem();
-        public Kind getKind() {return getItem().kind;}
+        public Kind getKind() {return getItem().getKind();}
     }
 
     public abstract static class Item<Type extends JacksonBinder.Item>
