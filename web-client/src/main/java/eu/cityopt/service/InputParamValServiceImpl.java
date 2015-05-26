@@ -51,7 +51,7 @@ public class InputParamValServiceImpl implements InputParamValService {
 	@Transactional
 	public InputParamValDTO update(InputParamValDTO toUpdate) throws EntityNotFoundException {
 		
-		if(inputParamValRepository.findOne(toUpdate.getScendefinitionid()) == null) {
+		if(inputParamValRepository.findOne(toUpdate.getInputparamvalid()) == null) {
 			throw new EntityNotFoundException();
 		}
 		
