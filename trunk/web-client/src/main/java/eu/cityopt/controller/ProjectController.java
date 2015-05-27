@@ -43,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ComponentInputParamDTO;
+import eu.cityopt.DTO.DecisionVariableDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
@@ -296,7 +297,7 @@ public class ProjectController {
 	            byte[] bytes = file.getBytes();
 
 	            // Creating the directory to store file
-	            /*ÄString rootPath = "~" + File.separator;//System.getProperty("java.home");
+	            /*String rootPath = "~" + File.separator;//System.getProperty("java.home");
 	            File dir = new File(rootPath);// + File.separator + "modelFiles");
 	            
 	            //if (!dir.exists())
@@ -772,12 +773,12 @@ public class ProjectController {
 				{
 					if (types.get(i).getName().equals(unitForm.getType()))
 					{
-						newUnit.setType(types.get(i));
+						//newUnit.setType(types.get(i));
 						break;
 					}
 				}
 				
-				System.out.println("unit " + newUnit.getName() + " type " + newUnit.getType());
+				//System.out.println("unit " + newUnit.getName() + " type " + newUnit.getType());
 				unitService.save(newUnit);
 			}
 		}
@@ -1130,7 +1131,108 @@ public class ProjectController {
 
 		return "geneticalgorithm";
 	}
+
+	@RequestMapping(value="createdecisionvariable", method=RequestMethod.GET)
+	public String getCreateDecisionVariables(Map<String, Object> model,
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		project = projectService.findByID(project.getPrjid());
 	
+		ScenarioGeneratorDTO scenGenerator = (ScenarioGeneratorDTO) model.get("scengenerator");
+		
+		if (scenGenerator == null)
+		{
+			scenGenerator = new ScenarioGeneratorDTO();
+		}
+		
+		UserSession userSession = (UserSession) model.get("usersession");
+		
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+		
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+		
+		if (selectedCompId != null && !selectedCompId.isEmpty())
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
+			if (nSelectedCompId > 0)
+			{
+				userSession.setComponentId(nSelectedCompId);
+				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				model.put("outputVars", outputVars);
+			}
+			model.put("selectedcompid", nSelectedCompId);
+		}
+		
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+
+		DecisionVariableDTO decVar = new DecisionVariableDTO();
+		model.put("decVar", decVar);
+		
+		return "creategaobjfunction";
+	}
+
+	@RequestMapping(value="createdecisionvariable", method=RequestMethod.POST)
+	public String getCreateDecisionVariablesPost(DecisionVariableDTO decVar, Map<String, Object> model) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+
+		project = projectService.findByID(project.getPrjid());
+		ScenarioGeneratorDTO scenGenerator = null;
+		
+		if (model.containsKey("scengenerator"))
+		{
+			scenGenerator = (ScenarioGeneratorDTO) model.get("scengenerator");
+		}
+		else
+		{
+			return "error";
+		}
+		
+		if (decVar != null && decVar.getExpression() != null)
+		{
+			DecisionVariableDTO newDecVar = new DecisionVariableDTO();
+			newDecVar.setName(decVar.getName());
+			newDecVar.setExpression(decVar.getExpression());
+			newDecVar.setLowerbound(decVar.getLowerbound());
+			newDecVar.setUpperbound(decVar.getUpperbound());
+			newDecVar.setScenariogenerator(scenGenerator);
+			
+			decisionVarService.save(newDecVar);
+
+			scenGenerator = scenGenService.save(scenGenerator);
+		}
+
+		model.put("scengenerator", scenGenerator);
+
+		Set<ScenGenObjectiveFunctionDTO> gaFuncs = (Set<ScenGenObjectiveFunctionDTO>) scenGenerator.getScengenobjectivefunctions();
+		model.put("functions", gaFuncs);
+		
+		Set<ScenGenOptConstraintDTO> gaConstraints = (Set<ScenGenOptConstraintDTO>) scenGenerator.getScengenoptconstraints();
+		model.put("constraints", gaConstraints);
+
+		project = projectService.findByID(project.getPrjid());
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+		
+		return "geneticalgorithm";
+	}
+
 	@RequestMapping(value="createoptimizationset",method=RequestMethod.GET)
 	public String getCreateOptimizationSet(Map<String, Object> model) {
 	
@@ -1239,6 +1341,12 @@ public class ProjectController {
 		if (model.containsKey("optimizationset"))
 		{
 			optSet = (OptimizationSetDTO) model.get("optimizationset");
+
+			try {
+				optSet = optSetService.findByID(optSet.getOptid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
 			model.put("optimizationset", optSet);
 		}
 		else
@@ -1253,7 +1361,19 @@ public class ProjectController {
 			return "error";
 		}
 
-		//dbOptService.
+		project = projectService.findByID(project.getPrjid());
+		model.put("project", project);
+		
+		try {
+			dbOptService.searchConstEval(project.getPrjid(), optSet.getOptid());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (ScriptException e) {
+			e.printStackTrace();
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+
 		return "editoptimizationset";
 	}
 	
@@ -2219,11 +2339,33 @@ public class ProjectController {
 		
 		ExtParamDTO newExtParam = new ExtParamDTO();
 		newExtParam.setName(extParam.getName());
-		//TODO
+		newExtParam.setProject(project);
+		extParamService.save(newExtParam, project.getPrjid());
+		
+		List<ExtParamValSetDTO> extParamSets = extParamValSetService.findAll();
+
+		// Add ext param val to all ext param val sets
+		for (int i = 0; i < extParamSets.size(); i++)
+		{
+			ExtParamValSetDTO extParamValSet = extParamSets.get(i);
+
+			ExtParamValDTO extParamVal = new ExtParamValDTO();
+			extParamVal.setValue("");
+			extParamVal.setExtparam(newExtParam);
+			
+			HashSet<ExtParamValDTO> setExtVals = new HashSet<ExtParamValDTO>();
+			setExtVals.add(extParamVal);
+			
+			try {
+				extParamValSetService.addExtParamVals(extParamValSet.getExtparamvalsetid(), setExtVals);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+
+		//TODO??
 		//simService.loadExternalParameters(project, extParamValSetId, namespace)
 		//newExtParam.setDefaultvalue(extParam.getDefaultvalue());
-		
-		extParamService.save(newExtParam, project.getPrjid());
 
 		model.put("project", project);
 		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
@@ -2359,7 +2501,25 @@ public class ProjectController {
 		ExtParamValSetDTO extParamValSet = new ExtParamValSetDTO();
 		
 		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+		Iterator<ExtParamDTO> iter = extParams.iterator();
 		Set<ExtParamValDTO> extParamVals = new HashSet<ExtParamValDTO>();
+		
+		while (iter.hasNext())
+		{
+			ExtParamDTO extParam = iter.next();
+			ExtParamValDTO extParamVal = new ExtParamValDTO();
+			extParamVal.setExtparam(extParam);
+			extParamVal.setValue("");
+			extParamVals.add(extParamVal);
+		}
+
+		try {
+			extParamValSetService.addExtParamVals(extParamValSet.getExtparamvalsetid(), extParamVals);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		/*Set<ExtParamValDTO> extParamVals = new HashSet<ExtParamValDTO>();
 		Iterator<ExtParamDTO> iter = extParams.iterator();
 		Project oldProject = projectRepository.findOne(project.getPrjid());
 		Namespace namespace = simService.makeProjectNamespace(oldProject);
@@ -2387,7 +2547,7 @@ public class ProjectController {
 		} catch (EntityNotFoundException e1) {
 			e1.printStackTrace();
 		}
-		
+		*/
 		project.setExtparamvalset(extParamValSet);
 		project = projectService.save(project);
 		model.put("project", project);
@@ -2984,7 +3144,7 @@ public class ProjectController {
 					TimeSeries timeSeries = new TimeSeries("Scenario metric values");
 
 					Set<Integer> scenarioIds = userSession.getScenarioIds();
-					Iterator scenIter = scenarioIds.iterator();
+					Iterator<Integer> scenIter = scenarioIds.iterator();
 					
 					while (scenIter.hasNext())
 					{
@@ -3130,7 +3290,7 @@ public class ProjectController {
 				//Set<MetricValDTO> metricVals2 = metricService.getMetricVals(metric2Id);
 				
 				Set<Integer> scenarioIds = userSession.getScenarioIds();
-				Iterator scenIter = scenarioIds.iterator();
+				Iterator<Integer> scenIter = scenarioIds.iterator();
 				//double[][] data = new double[2][userSession.getScenarioIds().size()];
 				int index = 0;
 				

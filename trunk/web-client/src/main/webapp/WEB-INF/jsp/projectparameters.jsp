@@ -193,6 +193,9 @@
 										</tr>
 									</table>
 								</td>
+								<td>
+									<a href="createextparam.html"><button type="button">Create external parameter</button></a>
+								</td>
 							</tr>
 						</table>
 					</td>
