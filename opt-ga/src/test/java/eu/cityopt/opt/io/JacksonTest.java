@@ -42,7 +42,6 @@ import eu.cityopt.opt.ga.CityoptFileModule;
 import eu.cityopt.opt.ga.TimeSeriesLoader;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Evaluator;
-import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.TimeSeriesI;
@@ -172,6 +171,7 @@ public class JacksonTest {
         JacksonCsvModule jm = new JacksonCsvModule();
         Injector csv_inj = Guice.createInjector(jm, tm);
         JacksonBinder binder = csv_inj.getInstance(JacksonBinder.class);
+        TimeSeriesData tsdata = csv_inj.getInstance(TimeSeriesData.class);
         ObjectMapper json = new ObjectMapper();
         json.enable(SerializationFeature.INDENT_OUTPUT);
         json.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
@@ -181,9 +181,8 @@ public class JacksonTest {
         wtr.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
                 .writeValue(System.out, binder);
         Namespace ns = binder.makeNamespace(tm.evaluator, tm.t0);
-        OptimisationProblem p = new OptimisationProblem(
-                null, new ExternalParameters(ns));
-        binder.addToProblem(p);
+        OptimisationProblem p = binder.buildWith(
+                new ProblemBuilder(null, ns, tsdata)).getResult();
         checkProblem(p);
         assertNull(p.model);
     }
