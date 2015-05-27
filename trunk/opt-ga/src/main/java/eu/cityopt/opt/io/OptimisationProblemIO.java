@@ -11,7 +11,6 @@ import javax.script.ScriptException;
 import com.fasterxml.jackson.databind.ObjectReader;
 
 import eu.cityopt.sim.eval.EvaluationSetup;
-import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.SimulationStructure;
@@ -35,13 +34,12 @@ public class OptimisationProblemIO {
             InputStream problemStream, TimeSeriesData timeSeriesData)
                     throws ParseException, ScriptException, IOException {
         ObjectReader reader = JacksonCsvModule.getProblemReader(JacksonCsvModule.getCsvMapper());
-        JacksonBinder binder = new JacksonBinder(reader, problemStream, timeSeriesData);
+        JacksonBinder binder = new JacksonBinder(reader, problemStream);
         EvaluationSetup setup = timeSeriesData.getEvaluationSetup();
         Namespace ns = binder.makeNamespace(setup.evaluator, setup.timeOrigin);
-        OptimisationProblem problem = new OptimisationProblem(
-                null, new ExternalParameters(ns));
-        binder.addToProblem(problem);
-        return problem;
+        return binder.buildWith(
+                new ProblemBuilder(null, ns, timeSeriesData))
+                .getResult();
     }
 
     public static SimulationStructure readStructureCsv(
@@ -56,7 +54,7 @@ public class OptimisationProblemIO {
             InputStream structureStream, EvaluationSetup setup)
                     throws ParseException, ScriptException, IOException {
         ObjectReader reader = JacksonCsvModule.getProblemReader(JacksonCsvModule.getCsvMapper());
-        JacksonBinder binder = new JacksonBinder(reader, structureStream, null);
+        JacksonBinder binder = new JacksonBinder(reader, structureStream);
         Namespace ns = binder.makeNamespace(setup.evaluator, setup.timeOrigin);
         SimulationStructureBuilder bld = new SimulationStructureBuilder(
                 new SimulationStructure(null, ns));

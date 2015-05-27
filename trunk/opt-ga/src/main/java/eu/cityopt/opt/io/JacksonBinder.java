@@ -165,38 +165,31 @@ public class JacksonBinder {
     @JsonIgnore
     final private List<Item> items;
 
-    @JsonIgnore
-    final private TimeSeriesData tsData;
-    
     /**
      * Read from a file.
      */
     @Inject
     public JacksonBinder(
             @Named("problem") ObjectReader reader,
-            @Named("problem") Path file,
-            TimeSeriesData tsData)
+            @Named("problem") Path file)
             throws JsonProcessingException, IOException {
         JacksonBinder bd = reader.readValue(file.toFile());
         this.items = bd.getItems();
-        this.tsData = tsData;
     }
 
     /**
      * Read from an input stream.
      */
     public JacksonBinder(
-            ObjectReader reader, InputStream stream, TimeSeriesData tsData)
+            ObjectReader reader, InputStream stream)
             throws JsonProcessingException, IOException {
         JacksonBinder bd = reader.readValue(stream);
         this.items = bd.getItems();
-        this.tsData = tsData;
     }
 
     @JsonCreator
     public JacksonBinder(List<Item> items) {
         this.items = items;
-        this.tsData = null;
     }
 
     @JsonValue
@@ -221,12 +214,15 @@ public class JacksonBinder {
     
     /**
      * Apply a builder.
+     * @return the builder
      */
-    public void buildWith(JacksonBuilder builder)
+    public <Builder extends JacksonBuilder>
+    Builder buildWith(Builder builder)
             throws ParseException, ScriptException {
         for (Item it : items) {
             builder.add(it);
         }
+        return builder;
     }
     
     /**
@@ -240,21 +236,6 @@ public class JacksonBinder {
         NamespaceBuilder bld = new NamespaceBuilder(evaluator, timeOrigin);
         items.forEach(bld::add);
         return bld.getResult();
-    }
-    
-    /**
-     * Add our items to an {@link OptimisationProblem}.
-     * The problem must have been constructed with a {@link Namespace}
-     * containing our items.
-     * 
-     * @param prob the problem to modify
-     * @see #makeNamespace
-     */
-    public void addToProblem(
-            OptimisationProblem prob)
-                    throws ParseException, ScriptException {
-        ProblemBuilder bld = new ProblemBuilder(prob, tsData);
-        buildWith(bld);
     }
 
     //TODO OptimisationProblem -> JacksonBinder (serialisation)
