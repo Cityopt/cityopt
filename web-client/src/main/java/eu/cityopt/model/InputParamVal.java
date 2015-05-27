@@ -27,7 +27,7 @@ import javax.persistence.UniqueConstraint;
 		"scenid", "inputid" }))
 public class InputParamVal implements java.io.Serializable {
 
-	private Integer inputparamvalid;
+	private int inputparamvalid;
 	private DataReliability datareliability;
 	private InputParameter inputparameter;
 	private Scenario scenario;
