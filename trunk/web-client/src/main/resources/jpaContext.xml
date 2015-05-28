@@ -24,7 +24,7 @@
 	<property name="dataSource" ref="dataSource"></property>
 	<property name="jpaVendorAdapter">
 		<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-			<property name="showSql" value="true"></property>					
+			<property name="showSql" value="false"></property>					
 		</bean>
 	</property>
 	<property name="jpaPropertyMap">
@@ -61,12 +61,6 @@
 <task:scheduler id="myScheduler" pool-size="2"/>
 
 <bean id="dbSimulationStorage" class="eu.cityopt.sim.service.DbSimulationStorage" scope="prototype"/>
-
-<!--
-<bean id="ProjectServiceTestThreadRunnable" class="eu.cityopt.service.ProjectServiceTestThreadRunnable"/>
-
-<bean id="ProjectServiceTestThread" class="eu.cityopt.service.ProjectServiceTestThread"/>
--->
 
 <bean id="ModelMapper" class="org.modelmapper.ModelMapper"></bean>
 

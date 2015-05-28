@@ -12,8 +12,8 @@ import eu.cityopt.model.SimulationModel;
 public interface SimulationModelService extends CityOptService<SimulationModelDTO>{
 	//void deleteAll();
 
-	public SimulationModelDTO save(SimulationModel model);
+	public SimulationModelDTO save(SimulationModelDTO model);
 
-	public SimulationModelDTO update(SimulationModel toUpdate) throws EntityNotFoundException;
+	public SimulationModelDTO update(SimulationModelDTO toUpdate) throws EntityNotFoundException;
 	
 }

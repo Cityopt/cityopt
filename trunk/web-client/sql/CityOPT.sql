@@ -40,6 +40,11 @@ DROP SEQUENCE IF EXISTS inputparameter_inputid_seq
 DROP SEQUENCE IF EXISTS inputparamval_inputparamvalid_seq
 ;
 
+DROP SEQUENCE IF EXISTS inputparamval_scendefinitionid_seq
+;
+
+DROP SEQUENCE IF EXISTS simulationresult_scenresid_seq;
+
 DROP SEQUENCE IF EXISTS metric_metid_seq
 ;
 

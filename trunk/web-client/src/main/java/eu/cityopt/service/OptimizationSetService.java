@@ -12,10 +12,25 @@ public interface OptimizationSetService extends CityOptService<OptimizationSetDT
 
 	OptimizationSetDTO save(OptimizationSetDTO u);
 
-	List<OptConstraintDTO> getSearchConstraints(int optimizationSetId)
+	List<OptConstraintDTO> getOptConstraints(int optimizationSetId)
 			throws EntityNotFoundException;
 
-	OptConstraintDTO addSearchConstraint(int optSetId, OptConstraintDTO ocDTO) 
+	/** 
+	 * adds an OptConstraint to the optimization set. OptConstraint is created, if not existing
+	 * @param optSetId
+	 * @param ocDTO
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	OptConstraintDTO addOptConstraint(int optSetId, OptConstraintDTO ocDTO) 
 			throws EntityNotFoundException;
-
+	
+	/**
+	 * Removes one OptConstraint from an OptimizationSet
+	 * @param optSetId
+	 * @param OptConstraintId
+	 * @throws EntityNotFoundException
+	 */
+	void removeOptConstraint(int optSetId, int OptConstraintId) 
+			throws EntityNotFoundException;
 }
