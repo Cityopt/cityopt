@@ -19,7 +19,7 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width=30></td>
-		<td>
+		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="createextparam.html" modelAttribute="extParam">
 			<h2>Create external parameter</h2>
@@ -34,14 +34,6 @@
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="name"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Default value
-					</td>
-					<td>
-						<form:input style="width:150px" type="text" path="defaultvalue"/>
 					</td>
 				</tr>
 				<tr height="10">

@@ -26,7 +26,7 @@
 		</td>
 		<td width="30"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:600px;width:900px;overflow:auto">
+			<div style="overflow:scroll;height:600px;width:1000px;overflow:auto">
 			<table>
 				<col style="width:30px">
 				<col style="width:750px">	
@@ -138,17 +138,12 @@
 							</tr>
 							<tr>
 								<td>
-									<b>External parameter set</b>
+									<b>Default external parameter set </b>
 									${project.extparamvalset.name}
 									<br>
 									<table class="tablestyle">
 										
 									</table>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b>External parameters</b>
 								</td>
 							</tr>
 							<tr>
@@ -182,19 +177,17 @@
 													</c:forEach>
 												</table>
 											</td>
+											<td valign="top">
+												<a href="createextparam.html"><button type="button" style="width: 150px">Create external parameter</button></a>
+											</td>
 										</tr>
 										<tr>
 											<td width="400" align="right">
 												<a href="selectextparamset.html"><button type="button">Select external parameter set</button></a>
-											</td>
-											<td align="right">
 												<a href="editproject.html"><button type="button">Close</button></a>
 											</td>
 										</tr>
 									</table>
-								</td>
-								<td>
-									<a href="createextparam.html"><button type="button">Create external parameter</button></a>
 								</td>
 							</tr>
 						</table>
