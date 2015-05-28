@@ -22,7 +22,7 @@
 			<table>
 				<tr>
 					<td>
-						<h2>Select external parameter sets</h2>
+						<h2>Select external parameter set</h2>
 					</td>
 				</tr>
 				<tr>
@@ -35,7 +35,7 @@
 							<tr>
 								<td><b>External parameter sets</b></td>
 								<td></td>
-								<td><b>External parameters</b></td>
+								<td></td>
 							</tr>
 							<tr>
 								<td valign="top">
@@ -64,21 +64,12 @@
 									</table>
 								</td>
 								<td></td>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:250px">
-										<tr>
-											<th>External parameter</th>
-										</tr>
-					
-									</table>
-								</td>
 							</tr>
 							<tr height="20"></tr>
 							<tr>
 								<td></td>
 								<td></td>
-								<td align="right"><a href="createextparamset.html"><button type="button">Create</button></a></td>
+								<td align="right"><a href="createextparamset.html"><button type="button">Create external parameter set</button></a></td>
 							</tr>
 						</table>
 					</td>
