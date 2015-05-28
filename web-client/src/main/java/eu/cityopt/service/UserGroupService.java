@@ -1,7 +1,15 @@
 package eu.cityopt.service;
 
-import eu.cityopt.model.UserGroup;
+import java.util.List;
 
-public interface UserGroupService extends CityOptService<UserGroup> {
+import eu.cityopt.DTO.UserGroupDTO;
+
+public interface UserGroupService extends CityOptService<UserGroupDTO> {
+
+	UserGroupDTO update(UserGroupDTO toUpdate) throws EntityNotFoundException;
+
+	UserGroupDTO save(UserGroupDTO u);
+
+	List<UserGroupDTO> findByGroupNameContaining(String userGroupName);
 
 }

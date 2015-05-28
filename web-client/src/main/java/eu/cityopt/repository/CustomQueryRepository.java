@@ -1,7 +1,10 @@
 package eu.cityopt.repository;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -16,22 +19,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.DTO.ComponentInputParamDTO;
 import eu.cityopt.model.TimeSeriesVal;
-import eu.cityopt.service.ProjectServiceImpl;
+import eu.cityopt.service.impl.ProjectServiceImpl;
 
 @Repository
 public class CustomQueryRepository {	
-	
-//	private DataSource dataSource;
-	
+
+	private DataSource dataSource;	
 	private JdbcTemplate template;
 	
 	static Logger log = Logger.getLogger(ProjectServiceImpl.class);
 	
 	@Autowired //constructor injection - so spring knows that the datasource is required
 	public CustomQueryRepository(DataSource dataSource) {
-//		this.dataSource = dataSource;
+		this.dataSource = dataSource;
 		template = new JdbcTemplate(dataSource);
 	}
+	
 	
 	@Transactional(readOnly=true)
 	public List<ComponentInputParamDTO> findComponentsWithInputParams(int prjid, int scenid){
@@ -40,7 +43,7 @@ public class CustomQueryRepository {
 				+ " inputparameter.inputid,"
 				+ " inputparameter.\"name\" inputParameterName,"
 				+ " inputparameter.defaultvalue,"
-				+ " inputparamval.scendefinitionid,"
+				+ " inputparamval.inputparamvalid,"
 				+ " inputparamval.\"value\","
 				+ " inputparamval.scenid scenarioID,"
 				+ " component.prjid"
@@ -62,6 +65,37 @@ public class CustomQueryRepository {
 		return components;
 	}
 
+	/** ugly function to update the sequence values when running unit tests with dbunit testdata
+	 * (because db unit doesn't even use the sequences when ids are omitted)
+	 * @throws SQLException
+	 */
+	@Transactional
+	public void updateSequences() throws SQLException{
+		Connection conn = dataSource.getConnection();
+		
+	    try {	
+	        // Select all sequence names	        
+	        Statement seqStmt = conn.createStatement();
+	        ResultSet rs = seqStmt.executeQuery("SELECT c.relname FROM pg_class c WHERE c.relkind = 'S';");
+	
+	        // ... and update the sequence to match max(id)+1.
+	        while (rs.next()) {
+	            String sequence = rs.getString("relname");
+	            String table = sequence.split("_")[0];
+	            String idColumn = sequence.split("_")[1];
+	            Statement updStmt = conn.createStatement();
+	            updStmt.executeQuery("SELECT SETVAL('" + sequence + "', (SELECT MAX(" + idColumn + ")+1 FROM " + table + "));");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            conn.close();
+	        } catch (SQLException e) {
+	        }
+	    }
+	}
+	
 	@Transactional(readOnly=true)
 	public List<ComponentInputParamDTO> findComponentsWithInputParamsByCompId(
 			int componentId) {
@@ -70,7 +104,7 @@ public class CustomQueryRepository {
 				+ " inputparameter.inputid,"
 				+ " inputparameter.\"name\" inputParameterName,"
 				+ " inputparameter.defaultvalue,"
-				+ " inputparamval.scendefinitionid,"
+				+ " inputparamval.inputparamvalid,"
 				+ " inputparamval.\"value\","
 				+ " inputparamval.scenid scenarioID,"
 				+ " component.prjid"

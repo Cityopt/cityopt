@@ -18,5 +18,10 @@ public interface OptSearchConstRepository extends JpaRepository<OptSearchConst, 
 			+ "where optID = :optid")
 	List<OptConstraint> findOptConstraintsforOptSet(@Param("optid") int optId);
 	
+	@Query("select o from OptSearchConst o "
+			+ " where optID = :optid"
+			+ " and optConstID = :ocid ")
+	OptSearchConst findByOptIdAndOptConstId(@Param("optid") int optId, @Param("ocid") int ocId);
+	
 }
 
