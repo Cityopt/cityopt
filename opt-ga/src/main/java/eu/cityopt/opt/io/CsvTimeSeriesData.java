@@ -6,9 +6,11 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
@@ -63,22 +65,27 @@ public class CsvTimeSeriesData implements TimeSeriesData {
         Map<String, Integer> dataIndices = new HashMap<>();
         int timeIndex = parseHeader(it.next(), streamName, 1, dataIndices);
         int nColumns = dataIndices.size() + 1;
-        List<double[]> data = new ArrayList<>();
+        List<Double[]> data = new ArrayList<>();
 
         for (int rowNumber = 2; it.hasNext(); ++rowNumber) {
             String[] row = it.next();
             if (row.length > 0) {
-                double[] rowData = parseRow(row, streamName, rowNumber,
+                Double[] rowData = parseRow(row, streamName, rowNumber,
                         nColumns, timeIndex); 
                 data.add(rowData);
             }
         }
 
-        double[] times = getColumn(data, timeIndex);
+        Double[] times = getColumn(data, timeIndex);
         for (Map.Entry<String, Integer> entry : dataIndices.entrySet()) {
+            Double[] col = getColumn(data, entry.getValue()); 
+            int[] rows = IntStream.range(0, col.length)
+                    .filter(i -> col[i] != null).toArray();
             Series sd = new Series();
-            sd.times = times;
-            sd.values = getColumn(data, entry.getValue());
+            sd.times = Arrays.stream(rows)
+                    .mapToDouble(i -> times[i]).toArray();
+            sd.values = Arrays.stream(rows)
+                    .mapToDouble(i -> col[i]).toArray();
             seriesDatas.put(entry.getKey(), sd);
         }
     }
@@ -88,9 +95,9 @@ public class CsvTimeSeriesData implements TimeSeriesData {
         return seriesDatas.get(seriesName);
     }
 
-    private double[] getColumn(List<double[]> rows, int column) {
+    private Double[] getColumn(List<Double[]> rows, int column) {
         int n = rows.size();
-        double[] data = new double[n];
+        Double[] data = new Double[n];
         for (int i = 0; i < n; ++i) {
             data[i] = rows.get(i)[column];
         }
@@ -120,14 +127,15 @@ public class CsvTimeSeriesData implements TimeSeriesData {
         return timeIndex;
     }
 
-    private double[] parseRow(String[] row, String streamName, int rowNumber,
+    private Double[] parseRow(String[] row, String streamName, int rowNumber,
             int nColumns, int timeIndex) throws ParseException {
-        if (row.length < nColumns) {
+        if (row.length <= timeIndex) {
             throw new ParseException(streamName + ":" + rowNumber 
-                    + ": Too few columns", 0);
+                    + ": missing time value", 0);
         }
-        double[] rowData = new double[nColumns];
-        for (int i = 0; i < nColumns; ++i) {
+        Double[] rowData = new Double[nColumns];
+        int n = Math.min(row.length, nColumns);
+        for (int i = 0; i < n; ++i) {
             if (i == timeIndex) {
                 try {
                     rowData[i] = (Double) Type.TIMESTAMP.parse(
@@ -138,12 +146,14 @@ public class CsvTimeSeriesData implements TimeSeriesData {
                             + "'", 0);
                 }
             } else {
-                try {
-                    rowData[i] = Double.valueOf(row[i]);
-                } catch (NumberFormatException e) {
-                    throw new ParseException(streamName + ":" + rowNumber
-                            + ": Invalid value '" + row[i]
-                            + "' in column " + (i+1), 0);
+                if (row[i] != null && !row[i].isEmpty()) {
+                    try {
+                        rowData[i] = Double.valueOf(row[i]);
+                    } catch (NumberFormatException e) {
+                        throw new ParseException(streamName + ":" + rowNumber
+                                + ": Invalid value '" + row[i]
+                                        + "' in column " + (i+1), 0);
+                    }
                 }
             }
         }
