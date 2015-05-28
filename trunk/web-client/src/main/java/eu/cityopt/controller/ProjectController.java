@@ -73,37 +73,36 @@ import eu.cityopt.model.Project;
 import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.model.Type;
 import eu.cityopt.repository.ProjectRepository;
-import eu.cityopt.service.AppUserServiceImpl;
+import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.AprosService;
-import eu.cityopt.service.ComponentInputParamDTOServiceImpl;
-import eu.cityopt.service.ComponentServiceImpl;
-import eu.cityopt.service.CopyServiceImpl;
+import eu.cityopt.service.ComponentInputParamDTOService;
+import eu.cityopt.service.ComponentService;
+import eu.cityopt.service.CopyService;
 import eu.cityopt.service.DatabaseSearchOptimizationService;
-import eu.cityopt.service.DecisionVariableServiceImpl;
+import eu.cityopt.service.DecisionVariableService;
 import eu.cityopt.service.EntityNotFoundException;
-import eu.cityopt.service.ExtParamServiceImpl;
-import eu.cityopt.service.ExtParamValServiceImpl;
-import eu.cityopt.service.ExtParamValSetServiceImpl;
-import eu.cityopt.service.InputParamValServiceImpl;
-import eu.cityopt.service.InputParameterServiceImpl;
-import eu.cityopt.service.MetricServiceImpl;
-import eu.cityopt.service.MetricValServiceImpl;
-import eu.cityopt.service.ObjectiveFunctionServiceImpl;
-import eu.cityopt.service.OptConstraintServiceImpl;
-import eu.cityopt.service.OptSearchConstServiceImpl;
-import eu.cityopt.service.OptSetScenariosImpl;
-import eu.cityopt.service.OptimizationSetServiceImpl;
-import eu.cityopt.service.OutputVariableServiceImpl;
-import eu.cityopt.service.ProjectServiceImpl;
+import eu.cityopt.service.ExtParamService;
+import eu.cityopt.service.ExtParamValService;
+import eu.cityopt.service.ExtParamValSetService;
+import eu.cityopt.service.InputParamValService;
+import eu.cityopt.service.InputParameterService;
+import eu.cityopt.service.MetricService;
+import eu.cityopt.service.MetricValService;
+import eu.cityopt.service.ObjectiveFunctionService;
+import eu.cityopt.service.OptConstraintService;
+import eu.cityopt.service.OptSearchConstService;
+import eu.cityopt.service.OptimizationSetService;
+import eu.cityopt.service.OutputVariableService;
+import eu.cityopt.service.ProjectService;
 import eu.cityopt.service.ScenGenObjectiveFunctionService;
-import eu.cityopt.service.ScenGenObjectiveFunctionServiceImpl;
-import eu.cityopt.service.ScenGenOptConstraintServiceImpl;
-import eu.cityopt.service.ScenarioGeneratorServiceImpl;
-import eu.cityopt.service.ScenarioServiceImpl;
-import eu.cityopt.service.SimulationResultServiceImpl;
-import eu.cityopt.service.TimeSeriesServiceImpl;
-import eu.cityopt.service.TypeServiceImpl;
-import eu.cityopt.service.UnitServiceImpl;
+import eu.cityopt.service.ScenGenObjectiveFunctionService;
+import eu.cityopt.service.ScenGenOptConstraintService;
+import eu.cityopt.service.ScenarioGeneratorService;
+import eu.cityopt.service.ScenarioService;
+import eu.cityopt.service.SimulationResultService;
+import eu.cityopt.service.TimeSeriesService;
+import eu.cityopt.service.TypeService;
+import eu.cityopt.service.UnitService;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
@@ -126,91 +125,82 @@ import eu.cityopt.web.UserSession;
 public class ProjectController {
 	
 	@Autowired
-	ProjectServiceImpl projectService; 
+	ProjectService projectService; 
 	
 	@Autowired
 	ProjectRepository projectRepository;
 	
 	@Autowired
-	ScenarioServiceImpl scenarioService;
+	ScenarioService scenarioService;
 	
 	@Autowired
-	AppUserServiceImpl userService;
+	AppUserService userService;
 	
 	@Autowired
-	ComponentServiceImpl componentService;
+	ComponentService componentService;
 
 	@Autowired
-	ComponentInputParamDTOServiceImpl componentInputParamService;
+	ComponentInputParamDTOService componentInputParamService;
 	
 	@Autowired
-	InputParameterServiceImpl inputParamService;
+	InputParameterService inputParamService;
 
 	@Autowired
-	InputParamValServiceImpl inputParamValService;
+	InputParamValService inputParamValService;
 
 	@Autowired
-	ExtParamServiceImpl extParamService;
+	ExtParamService extParamService;
 
 	@Autowired
-	ExtParamValServiceImpl extParamValService;
+	ExtParamValService extParamValService;
 
 	@Autowired
-	ExtParamValSetServiceImpl extParamValSetService;
+	ExtParamValSetService extParamValSetService;
 	
 	@Autowired
-	MetricServiceImpl metricService;
+	MetricService metricService;
 
 	@Autowired
-	MetricValServiceImpl metricValService;
+	MetricValService metricValService;
 
 	@Autowired
-	UnitServiceImpl unitService;
+	UnitService unitService;
 	
 	@Autowired
 	SimulationService simService;
 
 	@Autowired
-	SimulationResultServiceImpl simResultService;
+	SimulationResultService simResultService;
 
 	@Autowired
-	TimeSeriesServiceImpl timeSeriesService;
+	TimeSeriesService timeSeriesService;
 
 	@Autowired
-	OutputVariableServiceImpl outputVarService;
+	OutputVariableService outputVarService;
 	
 	@Autowired
-	TypeServiceImpl typeService;
+	TypeService typeService;
 
 	@Autowired
-	CopyServiceImpl copyService;
+	CopyService copyService;
 	
 	@Autowired
-	OptimizationSetServiceImpl optSetService;
+	OptimizationSetService optSetService;
 	
 	@Autowired
-	ObjectiveFunctionServiceImpl objFuncService;
+	ObjectiveFunctionService objFuncService;
 	
 	@Autowired
-	OptConstraintServiceImpl optConstraintService;
+	OptConstraintService optConstraintService;
 	
 	@Autowired
-	OptSearchConstServiceImpl optSearchService;
+	OptSearchConstService optSearchService;
 	
 	@Autowired
-	OptSetScenariosImpl optSetScenarioService;
+	ScenarioGeneratorService scenGenService;
 	
 	@Autowired
-	ScenarioGeneratorServiceImpl scenGenService;
-	
-	@Autowired
-	ScenGenObjectiveFunctionServiceImpl scenGenFuncService;
-	
-	@Autowired
-	ScenGenOptConstraintServiceImpl scenGenConstraintService;
-	
-	@Autowired
-	DecisionVariableServiceImpl decisionVarService;
+	DecisionVariableService decisionVarService;
 	
 	@Autowired
 	DatabaseSearchOptimizationService dbOptService;
@@ -266,6 +256,9 @@ public class ProjectController {
 			try {
 				project = projectService.findByID(Integer.parseInt(prjid));
 			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			model.put("project", project);
@@ -568,7 +561,12 @@ public class ProjectController {
 		}
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
 		if (scenario != null && scenario.getScenid() > 0)
@@ -596,7 +594,12 @@ public class ProjectController {
 		if (model.containsKey("project") && formScenario != null)
 		{
 			ProjectDTO project = (ProjectDTO) model.get("project");
-			project = projectService.findByID(project.getPrjid());
+			try {
+				project = projectService.findByID(project.getPrjid());
+			} catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 			
@@ -664,7 +667,12 @@ public class ProjectController {
 			return "error";
 		}
 
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		ComponentDTO selectedComponent = null;
 		int nSelectedCompId = 0;
@@ -713,7 +721,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		model.put("project", project);
 		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
@@ -903,7 +916,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
 		
@@ -920,7 +938,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	
 		OptimizationSetDTO optSet = (OptimizationSetDTO) model.get("optimizationset");
 		
@@ -970,7 +993,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		OptimizationSetDTO optSet = null;
 		
 		if (model.containsKey("optimizationset"))
@@ -1009,7 +1037,7 @@ public class ProjectController {
 		List<OptConstraintDTO> optSearchConstraints = null;
 		
 		try {
-			optSearchConstraints = optSetService.getSearchConstraints(optSet.getOptid());
+			optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -1029,7 +1057,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	
 		ScenarioGeneratorDTO scenGenerator = (ScenarioGeneratorDTO) model.get("scengenerator");
 		
@@ -1079,7 +1112,12 @@ public class ProjectController {
 			return "error";
 		}
 
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		ScenarioGeneratorDTO scenGenerator = null;
 		
 		if (model.containsKey("scengenerator"))
@@ -1122,7 +1160,12 @@ public class ProjectController {
 		Set<ScenGenOptConstraintDTO> gaConstraints = (Set<ScenGenOptConstraintDTO>) scenGenerator.getScengenoptconstraints();
 		model.put("constraints", gaConstraints);
 
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 		model.put("metrics", metrics);
 		
@@ -1142,7 +1185,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	
 		ScenarioGeneratorDTO scenGenerator = (ScenarioGeneratorDTO) model.get("scengenerator");
 		
@@ -1192,7 +1240,12 @@ public class ProjectController {
 			return "error";
 		}
 
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ScenarioGeneratorDTO scenGenerator = null;
 		
 		if (model.containsKey("scengenerator"))
@@ -1226,7 +1279,12 @@ public class ProjectController {
 		Set<ScenGenOptConstraintDTO> gaConstraints = (Set<ScenGenOptConstraintDTO>) scenGenerator.getScengenoptconstraints();
 		model.put("constraints", gaConstraints);
 
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 		model.put("metrics", metrics);
 		
@@ -1258,7 +1316,12 @@ public class ProjectController {
 		{
 			return "error";
 		}
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		if (openOptSet != null)
 		{
@@ -1313,7 +1376,7 @@ public class ProjectController {
 		List<OptConstraintDTO> optSearchConstraints = null;
 		
 		try {
-			optSearchConstraints = optSetService.getSearchConstraints(optSet.getOptid());
+			optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -1326,7 +1389,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 		model.put("metrics", metrics);
 
@@ -1361,7 +1429,12 @@ public class ProjectController {
 			return "error";
 		}
 
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		model.put("project", project);
 		
 		try {
@@ -1419,7 +1492,7 @@ public class ProjectController {
 				List<OptConstraintDTO> optSearchConstraints = null;
 				
 				try {
-					optSearchConstraints = optSetService.getSearchConstraints(optSet.getOptid());
+					optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
 				} catch (EntityNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -1433,7 +1506,12 @@ public class ProjectController {
 					return "error";
 				}
 				
-				project = projectService.findByID(project.getPrjid());
+				try {
+					project = projectService.findByID(project.getPrjid());
+				} catch (EntityNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 				model.put("metrics", metrics);
 		
@@ -1473,7 +1551,12 @@ public class ProjectController {
 					return "error";
 				}
 				
-				project = projectService.findByID(project.getPrjid());
+				try {
+					project = projectService.findByID(project.getPrjid());
+				} catch (EntityNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 				model.put("metrics", metrics);
 
@@ -1489,7 +1572,12 @@ public class ProjectController {
 				return "error";
 			}
 			
-			project = projectService.findByID(project.getPrjid());
+			try {
+				project = projectService.findByID(project.getPrjid());
+			} catch (EntityNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			Set<OpenOptimizationSetDTO> optSets = null;
 	
 			try {
@@ -1553,7 +1641,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		Set<OpenOptimizationSetDTO> optSets = null;
 
 		try {
@@ -1580,7 +1673,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		UserSession userSession = (UserSession) model.get("usersession");
 		
@@ -1643,7 +1741,7 @@ public class ProjectController {
 			optConstraintService.save(newOptConstraint);
 			
 			try {
-				optSetService.addSearchConstraint(optSet.getOptid(), newOptConstraint);
+				optSetService.addOptConstraint(optSet.getOptid(), newOptConstraint);
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -1654,7 +1752,7 @@ public class ProjectController {
 		List<OptConstraintDTO> optSearchConstraints = null;
 		
 		try {
-			optSearchConstraints = optSetService.getSearchConstraints(optSet.getOptid());
+			optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -1710,7 +1808,7 @@ public class ProjectController {
 			List<OptConstraintDTO> optSearchConstraints = null;
 			
 			try {
-				optSearchConstraints = optSetService.getSearchConstraints(optSet.getOptid());
+				optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -1759,7 +1857,7 @@ public class ProjectController {
 			if (optSet != null && constraint != null)
 			{
 				try {
-					optSetService.addSearchConstraint(optSet.getOptid(), constraint);
+					optSetService.addOptConstraint(optSet.getOptid(), constraint);
 				} catch (EntityNotFoundException e1) {
 					e1.printStackTrace();
 				}
@@ -1775,7 +1873,7 @@ public class ProjectController {
 			List<OptConstraintDTO> optSearchConstraints = null;
 			
 			try {
-				optSearchConstraints = optSetService.getSearchConstraints(optSet.getOptid());
+				optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -1807,7 +1905,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		UserSession userSession = (UserSession) model.get("usersession");
 		
@@ -1878,7 +1981,12 @@ public class ProjectController {
 	@RequestMapping(value="runmultiscenario",method=RequestMethod.GET)
 	public String getRunMultiScenario(Map<String, Object> model){
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		if (project == null)
 		{
@@ -1907,7 +2015,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		
 		//Hibernate.initialize(project.getComponents());
@@ -1994,7 +2107,12 @@ public class ProjectController {
 			return "error";
 		}
 
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		ExtParamValSetDTO selectedExtParamSet = null;
 		
 		if (selectedExtParamSetId != null)
@@ -2052,13 +2170,23 @@ public class ProjectController {
 		{
 			return "error";
 		}
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		ComponentDTO component = new ComponentDTO();
 		component.setName(componentForm.getName());
 		componentService.save(component, project.getPrjid());
 		
-		model.put("project", projectService.findByID(project.getPrjid()));
+		try {
+			model.put("project", projectService.findByID(project.getPrjid()));
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
 		model.put("extParams", extParams);
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
@@ -2091,7 +2219,12 @@ public class ProjectController {
 		{
 			return "error";
 		}
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		int nCompId = Integer.parseInt(componentid);
 		ComponentDTO oldComponent = null;
@@ -2107,7 +2240,12 @@ public class ProjectController {
 		model.put("selectedcompid", oldComponent.getComponentid());
 		model.put("selectedComponent",  oldComponent);
 
-		model.put("project", projectService.findByID(project.getPrjid()));
+		try {
+			model.put("project", projectService.findByID(project.getPrjid()));
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
 		model.put("extParams", extParams);
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
@@ -2140,7 +2278,12 @@ public class ProjectController {
 		{
 			return "error";
 		}
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		int nInputParamId = Integer.parseInt(inputParamId);
 		InputParameterDTO updatedInputParam = null;
@@ -2197,7 +2340,12 @@ public class ProjectController {
 		{
 			return "error";
 		}
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 		
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
@@ -2317,7 +2465,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		model.put("project", project);
 		
 		ExtParamDTO extParam = new ExtParamDTO();
@@ -2335,7 +2488,12 @@ public class ProjectController {
 			return "error";
 		}
 
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		ExtParamDTO newExtParam = new ExtParamDTO();
 		newExtParam.setName(extParam.getName());
@@ -2386,7 +2544,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		model.put("project", project);
 
 		int nExtParamId = Integer.parseInt(extparamid);
@@ -2412,7 +2575,12 @@ public class ProjectController {
 			return "error";
 		}
 
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		int nExtParamId = Integer.parseInt(extParamId);
 		ExtParamDTO updatedExtParam = null;
@@ -2442,7 +2610,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		model.put("project", project);
 
 		int nExtParamValId = Integer.parseInt(extparamvalid);
@@ -2468,7 +2641,12 @@ public class ProjectController {
 			return "error";
 		}
 
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		int nExtParamValId = Integer.parseInt(extParamValId);
 		ExtParamValDTO updatedExtParamVal = null;
@@ -2496,7 +2674,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		ExtParamValSetDTO extParamValSet = new ExtParamValSetDTO();
 		
@@ -2567,7 +2750,12 @@ public class ProjectController {
 			return "error";
 		}
 
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		String newName = extParamValSet.getName();
 		
@@ -2607,7 +2795,12 @@ public class ProjectController {
 			return "error";
 		}
 
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 		
 		if (action != null && metricid != null)
 		{
@@ -2645,7 +2838,12 @@ public class ProjectController {
 			}
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		model.put("project", project);
 	
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
@@ -2666,7 +2864,12 @@ public class ProjectController {
 	@RequestMapping(value="createmetric", method=RequestMethod.POST)
 	public String getCreateMetricPost(MetricDTO metricForm, Map<String, Object> model) {
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		if (project == null)
 		{
@@ -2679,7 +2882,12 @@ public class ProjectController {
 		metric.setProject (project);
 		metric = metricService.save(metric);
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		model.put("project", project);
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
@@ -2708,7 +2916,12 @@ public class ProjectController {
 		@RequestParam(value="metricid", required=true) String metricid) {
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		if (project == null)
 		{
@@ -2737,7 +2950,12 @@ public class ProjectController {
 	@RequestMapping(value="uploaddiagram", method=RequestMethod.GET)
 	public String getUploadDiagram(HttpServletRequest request, Map<String, Object> model){
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		/*File file ;
 		int maxFileSize = 5000 * 1024;
@@ -2914,7 +3132,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
@@ -3550,7 +3773,12 @@ public class ProjectController {
 			return "error";
 		}
 		
-		project = projectService.findByID(project.getPrjid());
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 		model.put("metrics", metrics);
 
