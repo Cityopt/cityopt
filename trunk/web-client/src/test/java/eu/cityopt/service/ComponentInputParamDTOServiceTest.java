@@ -50,7 +50,7 @@ public class ComponentInputParamDTOServiceTest {
 	 		System.out.print(item.getComponentname() + " | ");
 	 		System.out.print(item.getInputid() + " | ");
 	 		System.out.print(item.getInputparametername() + " | ");
-	 		System.out.print(item.getScendefinitionid() + " | ");
+	 		System.out.print(item.getInputparamvalid() + " | ");
 	 		System.out.print(item.getValue() + " | ");
 	 		System.out.print(item.getScenarioid() + " | ");
 	 		System.out.print(item.getPrjid() + " | ");

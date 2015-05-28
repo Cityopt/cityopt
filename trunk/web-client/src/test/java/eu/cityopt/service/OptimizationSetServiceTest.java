@@ -42,7 +42,7 @@ public class OptimizationSetServiceTest {
 	
 	@Test
 	public void testGetSearchConstraints() throws EntityNotFoundException {
-		List<OptConstraintDTO> optConst = optimizationSetService.getSearchConstraints(1);
+		List<OptConstraintDTO> optConst = optimizationSetService.getOptConstraints(1);
 
 		boolean cont1 = false;
 		boolean cont2 = false;

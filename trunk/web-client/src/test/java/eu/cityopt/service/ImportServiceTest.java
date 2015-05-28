@@ -71,6 +71,7 @@ import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.SimulationResultRepository;
 import eu.cityopt.repository.TimeSeriesRepository;
+import eu.cityopt.service.impl.ImportServiceImpl;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.service.SimulationTestBase;

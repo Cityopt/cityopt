@@ -63,6 +63,9 @@ public class ProjectServiceDTOTest {
 	ProjectService projectService;
 	
 	@Autowired
+	SimulationModelService simulationModelService;
+	
+	@Autowired
 	ScenarioService scenarioService;
 	
 	@PersistenceContext
@@ -271,7 +274,7 @@ public class ProjectServiceDTOTest {
 		model.setModelblob(tmpModelarr);
 		model.setSimulator("APROS");
 		model.setDescription("My second model");				
-		
+		model = simulationModelService.save(model);
 		project_2.setSimulationmodel(model);
 		
 		project_2 = projectService.save(project_2);

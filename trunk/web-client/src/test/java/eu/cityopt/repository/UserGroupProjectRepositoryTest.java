@@ -102,7 +102,7 @@ public class UserGroupProjectRepositoryTest {
 	public void CreateUserGroupRelation() {
 		
 		List<Project> projects = projectRepository.findByName("My test project");
-		List<UserGroup> groups = userGroupRepository.findByGroupName("Administrator");
+		List<UserGroup> groups = userGroupRepository.findByGroupNameContaining("Administrator");
 		List<AppUser> user = userRepository.findByUserName("Flo");
 		
 		UserGroupProject usergroupproject = new UserGroupProject();
@@ -141,6 +141,7 @@ public class UserGroupProjectRepositoryTest {
 		usergroupproject.setProject(project);		
 		usergroupproject.setUsergroup(usergroup);
 		
+		usergroupproject = userGroupProjectRepository.save(usergroupproject);
 		//Cascade is enable!
 		userGroupProjectRepository.saveAndFlush(usergroupproject);
 		
@@ -152,7 +153,7 @@ public class UserGroupProjectRepositoryTest {
 	public void UpdateUserGroupRelation2() {
 		
 		List<Project> projects = projectRepository.findByName("My test project");
-		List<UserGroup> groups = userGroupRepository.findByGroupName("Administrator");
+		List<UserGroup> groups = userGroupRepository.findByGroupNameContaining("Administrator");
 		List<AppUser> user = userRepository.findByUserName("Flo");
 		
 		UserGroupProject usergroupproject = new UserGroupProject();

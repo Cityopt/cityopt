@@ -5,21 +5,21 @@
 
 <scenario scenid="2" name="Sample Test case - SC2" createdon="2015-01-26" prjid="1" status="SUCCESS"/>
 
-<inputparamval scendefinitionid="14" scenid="2" inputid="1" value="50"/>
-<inputparamval scendefinitionid="15" scenid="2" inputid="2" value="15"/>
-<inputparamval scendefinitionid="16" scenid="2" inputid="3" value="30"/>
-<inputparamval scendefinitionid="17" scenid="2" inputid="4" value="0.6"/>
+<inputparamval inputparamvalid="14" scenid="2" inputid="1" value="50"/>
+<inputparamval inputparamvalid="15" scenid="2" inputid="2" value="15"/>
+<inputparamval inputparamvalid="16" scenid="2" inputid="3" value="30"/>
+<inputparamval inputparamvalid="17" scenid="2" inputid="4" value="0.6"/>
 
-<inputparamval scendefinitionid="18" scenid="2" inputid="5" value="5"/>
-<inputparamval scendefinitionid="19" scenid="2" inputid="6" value="8"/>
-<inputparamval scendefinitionid="20" scenid="2" inputid="7" value="3"/>
-<inputparamval scendefinitionid="21" scenid="2" inputid="8" value="3"/>
+<inputparamval inputparamvalid="18" scenid="2" inputid="5" value="5"/>
+<inputparamval inputparamvalid="19" scenid="2" inputid="6" value="8"/>
+<inputparamval inputparamvalid="20" scenid="2" inputid="7" value="3"/>
+<inputparamval inputparamvalid="21" scenid="2" inputid="8" value="3"/>
 
-<inputparamval scendefinitionid="22" scenid="2" inputid="9" value="47.14"/>
-<inputparamval scendefinitionid="23" scenid="2" inputid="10" value="80"/>
-<inputparamval scendefinitionid="24" scenid="2" inputid="11" value="15"/>
-<inputparamval scendefinitionid="25" scenid="2" inputid="12" value="0.9"/>
-<inputparamval scendefinitionid="26" scenid="2" inputid="13" value="0.98"/>
+<inputparamval inputparamvalid="22" scenid="2" inputid="9" value="47.14"/>
+<inputparamval inputparamvalid="23" scenid="2" inputid="10" value="80"/>
+<inputparamval inputparamvalid="24" scenid="2" inputid="11" value="15"/>
+<inputparamval inputparamvalid="25" scenid="2" inputid="12" value="0.9"/>
+<inputparamval inputparamvalid="26" scenid="2" inputid="13" value="0.98"/>
 
 <scenariometrics scenmetricid="2" scenid="2" extparamvalsetid="1"/>
 

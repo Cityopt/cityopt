@@ -2,6 +2,9 @@ package eu.cityopt.service;
 
 import static org.junit.Assert.*;
 
+import java.sql.SQLException;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
+import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.repository.ScenarioRepository;
 
 @Transactional
@@ -31,6 +35,8 @@ public class CopyServiceTest {
 	@Autowired ProjectService projectService;
 	@Autowired ScenarioService scenarioService;
 	@Autowired ScenarioRepository scenarioRepository;
+	@Autowired CustomQueryRepository customQueryRepository;
+	
 	
 	@Test
 //	@Rollback(false)
@@ -66,7 +72,8 @@ public class CopyServiceTest {
 //	@Rollback(false)
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
 		 "classpath:/testData/Sample Test case - SC1.xml"})
-	public void copyScenario() throws EntityNotFoundException{
+	public void copyScenario() throws EntityNotFoundException, SQLException{
+		customQueryRepository.updateSequences();
 		try {
 			copyService.copyScenario(1, "copy of s1", true, true, true, true);
 		} catch (EntityNotFoundException e) {

@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +41,9 @@ public class ComponentServiceTest {
 	@Autowired
 	ComponentService componentService;	
 	
+	@PersistenceContext
+	EntityManager em;
+	
 	@Before
 	public void setUp() throws Exception {
 	}
@@ -69,6 +75,7 @@ public class ComponentServiceTest {
 		long end = System.nanoTime();
 		
 		System.out.println("time of execution " + (end-start)/1000000);
+		em.flush();
 		
 		assertEquals(0, pjService.findByName("Project").size());	
 	}	

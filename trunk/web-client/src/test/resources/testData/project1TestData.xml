@@ -3,7 +3,7 @@
 <dataset>
 <simulationmodel modelid="1" description="Apros test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit"/>
 
-<project prjid="1" location="Helsinki" name="Sample Project" modelid="1" createdon="2010-07-31 10:00:00"/>
+<project prjid="1" location="Helsinki" name="Sample Project" modelid="1" createdon="2010-07-31 10:00:00" version="1"/>
 
 <component componentid="1" prjid="1" name="Solar_thermal_panels" />
 <component componentid="2" prjid="1" name="Storage_Vertical_tank_with_heat_structure" />

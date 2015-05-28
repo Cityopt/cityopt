@@ -4,8 +4,8 @@
 
 <simulationmodel modelblob="dGhpcyBpcyBhIHRlc3QgZmlsZSBmb3IgZGJ1bml0IGJsb2IgZGF0YS4=" simulator="APROS" description="model with Base64" modelID="1"/>
 
-<project prjid="1" name="Project 1" location="Vienna" description="this is a good description" modelid="1"/>
-<project prjid="2" name="Project 3" location="Helsinki"/>
+<project prjid="1" name="Project 1" location="Vienna" description="this is a good description" modelid="1" version="0"/>
+<project prjid="2" name="Project 3" location="Helsinki" version="0"/>
 
 <scenario name="test" description="this is a test" createdon="2014-12-02" updatedon="2014-12-01" prjid="1"/>
 

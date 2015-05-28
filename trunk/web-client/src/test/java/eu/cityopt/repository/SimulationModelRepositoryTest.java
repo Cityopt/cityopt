@@ -160,6 +160,7 @@ public class SimulationModelRepositoryTest {
 		model.setModelblob(tmpModelarr);
 		model.setSimulator("APROS");
 		model.setDescription("My third model");
+		model =simulationModelRepository.save(model);
 		
 		Project project = new Project();
 		project.setName("Project 10");
