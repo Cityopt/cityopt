@@ -39,6 +39,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
+import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.OpenOptimizationSetDTO;
 import eu.cityopt.DTO.ProjectDTO;
@@ -46,6 +47,7 @@ import eu.cityopt.DTO.ProjectScenariosDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.SimulationModelDTO;
 import eu.cityopt.model.Component;
+import eu.cityopt.model.ExtParamValSet;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.repository.ScenarioRepository;
 
@@ -169,6 +171,14 @@ public class ProjectServiceDTOTest {
 		
 		Set<ExtParamDTO> externals = projectService.getExtParams(item.getPrjid());
 		Assert.notNull(externals);
+	}
+	
+	@Test
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
+	public void getExtParamValSets() {
+		List<ExtParamValSetDTO> list = projectService.getExtParamValSets(1);
+		Assert.notNull(list);
+		assertTrue(list.size() == 1);
 	}
 	
 	@Test

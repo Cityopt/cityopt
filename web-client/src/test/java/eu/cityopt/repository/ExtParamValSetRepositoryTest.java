@@ -2,6 +2,8 @@ package eu.cityopt.repository;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.model.ExtParamValSet;
+import eu.cityopt.model.ExtParamValSetComp;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -42,6 +45,17 @@ public class ExtParamValSetRepositoryTest {
 		
 		epvs = extParamValSetRepository.findByNameAndProject(2, "epvs1");
 		assertNull(epvs);
+	}
+	
+	@Test
+	public void testFindByPrjid() {
+		List<ExtParamValSet> epvs = extParamValSetRepository.findByProject(1);
+		assertNotNull(epvs);
+		assertTrue(epvs.size() == 1);
+		assertTrue(epvs.iterator().next().getExtparamvalsetcomps().size() == 3);
+		
+		epvs = extParamValSetRepository.findByProject(4);
+		assertTrue(epvs.size() == 0);
 	}
 
 }

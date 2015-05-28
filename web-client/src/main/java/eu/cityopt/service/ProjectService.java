@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
+import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
 import eu.cityopt.DTO.OpenOptimizationSetDTO;
@@ -41,6 +42,8 @@ public interface ProjectService extends CityOptService<ProjectDTO> {
 	Set<ExtParamDTO> getExtParams(int prjid);
 	
 	Set<ExtParamValDTO> getExtParamVals(int prjid);
+	
+	List<ExtParamValSetDTO> getExtParamValSets(int prjid);
 	
 	Set<MetricDTO> getMetrics(int prjid);
 	
