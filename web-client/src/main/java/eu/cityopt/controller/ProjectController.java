@@ -2521,6 +2521,19 @@ public class ProjectController {
 			}
 		}
 
+		List<ExtParamValDTO> extParamVals = null;
+		
+		if (project.getExtparamvalset() != null)
+		{
+			try {
+				extParamVals = extParamValSetService.getExtParamVals(project.getExtparamvalset().getExtparamvalsetid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			model.put("extParamVals", extParamVals);
+		}
+		
 		model.put("project", project);
 		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
 		model.put("extParams", extParams);
