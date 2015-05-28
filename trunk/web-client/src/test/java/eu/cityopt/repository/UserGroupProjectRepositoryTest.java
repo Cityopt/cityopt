@@ -134,6 +134,7 @@ public class UserGroupProjectRepositoryTest {
 		
 		AppUser appuser = new AppUser();
 		appuser.setName("Detlef");		
+		appuser = userRepository.save(appuser);
 		
 		UserGroupProject usergroupproject = new UserGroupProject();
 		
