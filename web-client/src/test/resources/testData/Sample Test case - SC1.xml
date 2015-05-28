@@ -5,21 +5,21 @@
 
 <scenario scenid="1" name="Sample Test case - SC1" createdon="2015-01-26" prjid="1" status="SUCCESS"/>
 
-<inputparamval scendefinitionid="1" scenid="1" inputid="1" value="100"/>
-<inputparamval scendefinitionid="2" scenid="1" inputid="2" value="15"/>
-<inputparamval scendefinitionid="3" scenid="1" inputid="3" value="30"/>
-<inputparamval scendefinitionid="4" scenid="1" inputid="4" value="0.6"/>
+<inputparamval inputparamvalid="1" scenid="1" inputid="1" value="100"/>
+<inputparamval inputparamvalid="2" scenid="1" inputid="2" value="15"/>
+<inputparamval inputparamvalid="3" scenid="1" inputid="3" value="30"/>
+<inputparamval inputparamvalid="4" scenid="1" inputid="4" value="0.6"/>
 
-<inputparamval scendefinitionid="5" scenid="1" inputid="5" value="7"/>
-<inputparamval scendefinitionid="6" scenid="1" inputid="6" value="10"/>
-<inputparamval scendefinitionid="7" scenid="1" inputid="7" value="3"/>
-<inputparamval scendefinitionid="8" scenid="1" inputid="8" value="3"/>
+<inputparamval inputparamvalid="5" scenid="1" inputid="5" value="7"/>
+<inputparamval inputparamvalid="6" scenid="1" inputid="6" value="10"/>
+<inputparamval inputparamvalid="7" scenid="1" inputid="7" value="3"/>
+<inputparamval inputparamvalid="8" scenid="1" inputid="8" value="3"/>
 
-<inputparamval scendefinitionid="9" scenid="1" inputid="9" value="47.14"/>
-<inputparamval scendefinitionid="10" scenid="1" inputid="10" value="50"/>
-<inputparamval scendefinitionid="11" scenid="1" inputid="11" value="15"/>
-<inputparamval scendefinitionid="12" scenid="1" inputid="12" value="0.9"/>
-<inputparamval scendefinitionid="13" scenid="1" inputid="13" value="0.98"/>
+<inputparamval inputparamvalid="9" scenid="1" inputid="9" value="47.14"/>
+<inputparamval inputparamvalid="10" scenid="1" inputid="10" value="50"/>
+<inputparamval inputparamvalid="11" scenid="1" inputid="11" value="15"/>
+<inputparamval inputparamvalid="12" scenid="1" inputid="12" value="0.9"/>
+<inputparamval inputparamvalid="13" scenid="1" inputid="13" value="0.98"/>
 
 <scenariometrics scenmetricid="1" scenid="1" extparamvalsetid="1"/>
 

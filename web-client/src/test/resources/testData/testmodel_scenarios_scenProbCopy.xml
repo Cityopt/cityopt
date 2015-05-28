@@ -67,17 +67,17 @@
   <outputvariable outvarid="6" componentid="7" name="MULTIPLYER_OUTPUT" unitid="6" typeid="6"/>
 
   <scenario scenid="1" prjid="1" name="testscenario" description="1st test scenario"/>
-  <inputparamval scendefinitionid="1" scenid="1" inputid="1" value="2400.0"/>
-  <inputparamval scendefinitionid="2" scenid="1" inputid="2" value="0.7"/>
-  <inputparamval scendefinitionid="3" scenid="1" inputid="3" value="10.0"/>
-  <inputparamval scendefinitionid="4" scenid="1" inputid="4" value="4000.0"/>
-  <inputparamval scendefinitionid="5" scenid="1" inputid="5" value="1.0"/>
-  <inputparamval scendefinitionid="6" scenid="1" inputid="6" value="17000.0"/>
-  <inputparamval scendefinitionid="7" scenid="1" inputid="7" value="0.0"/>
-  <inputparamval scendefinitionid="8" scenid="1" inputid="8" value="40.0"/>
-  <inputparamval scendefinitionid="9" scenid="1" inputid="9" value="15.0"/>
-  <inputparamval scendefinitionid="10" scenid="1" inputid="10" value="2015-01-01T00:00:00Z"/>
-  <inputparamval scendefinitionid="11" scenid="1" inputid="11" value="2015-01-08T00:00:00Z"/>
+  <inputparamval inputparamvalid="1" scenid="1" inputid="1" value="2400.0"/>
+  <inputparamval inputparamvalid="2" scenid="1" inputid="2" value="0.7"/>
+  <inputparamval inputparamvalid="3" scenid="1" inputid="3" value="10.0"/>
+  <inputparamval inputparamvalid="4" scenid="1" inputid="4" value="4000.0"/>
+  <inputparamval inputparamvalid="5" scenid="1" inputid="5" value="1.0"/>
+  <inputparamval inputparamvalid="6" scenid="1" inputid="6" value="17000.0"/>
+  <inputparamval inputparamvalid="7" scenid="1" inputid="7" value="0.0"/>
+  <inputparamval inputparamvalid="8" scenid="1" inputid="8" value="40.0"/>
+  <inputparamval inputparamvalid="9" scenid="1" inputid="9" value="15.0"/>
+  <inputparamval inputparamvalid="10" scenid="1" inputid="10" value="2015-01-01T00:00:00Z"/>
+  <inputparamval inputparamvalid="11" scenid="1" inputid="11" value="2015-01-08T00:00:00Z"/>
 
   <timeseries tseriesid="1" typeid="5"/>
   <timeseriesval tseriesid="1" tseriesvalid="1" time="1970-01-01 00:00:00" value="100.0"/>
@@ -105,16 +105,16 @@
 
 
   <scenario scenid="3" prjid="1" name="testscenario3" description="3rd test scenario"/>
-  <inputparamval scendefinitionid="41" scenid="3" inputid="1" value="2500.0"/>
-  <inputparamval scendefinitionid="42" scenid="3" inputid="2" value="0.8"/>
-  <inputparamval scendefinitionid="43" scenid="3" inputid="3" value="11.0"/>
-  <inputparamval scendefinitionid="44" scenid="3" inputid="4" value="5000.0"/>
-  <inputparamval scendefinitionid="45" scenid="3" inputid="5" value="1.1"/>
-  <inputparamval scendefinitionid="46" scenid="3" inputid="6" value="18000.0"/>
-  <inputparamval scendefinitionid="47" scenid="3" inputid="7" value="0.0"/>
-  <inputparamval scendefinitionid="48" scenid="3" inputid="8" value="50.0"/>
-  <inputparamval scendefinitionid="49" scenid="3" inputid="9" value="16.0"/>
-  <inputparamval scendefinitionid="50" scenid="3" inputid="10" value="2015-01-01T00:00:00Z"/>
-  <inputparamval scendefinitionid="51" scenid="3" inputid="11" value="2015-01-08T00:00:00Z"/>
+  <inputparamval inputparamvalid="41" scenid="3" inputid="1" value="2500.0"/>
+  <inputparamval inputparamvalid="42" scenid="3" inputid="2" value="0.8"/>
+  <inputparamval inputparamvalid="43" scenid="3" inputid="3" value="11.0"/>
+  <inputparamval inputparamvalid="44" scenid="3" inputid="4" value="5000.0"/>
+  <inputparamval inputparamvalid="45" scenid="3" inputid="5" value="1.1"/>
+  <inputparamval inputparamvalid="46" scenid="3" inputid="6" value="18000.0"/>
+  <inputparamval inputparamvalid="47" scenid="3" inputid="7" value="0.0"/>
+  <inputparamval inputparamvalid="48" scenid="3" inputid="8" value="50.0"/>
+  <inputparamval inputparamvalid="49" scenid="3" inputid="9" value="16.0"/>
+  <inputparamval inputparamvalid="50" scenid="3" inputid="10" value="2015-01-01T00:00:00Z"/>
+  <inputparamval inputparamvalid="51" scenid="3" inputid="11" value="2015-01-08T00:00:00Z"/>
 
 </dataset>

@@ -38,6 +38,7 @@ import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.SimulationResultRepository;
 import eu.cityopt.repository.TimeSeriesRepository;
 import eu.cityopt.repository.TimeSeriesValRepository;
+import eu.cityopt.service.impl.DatabaseSearchOptimizationServiceImpl;
 import eu.cityopt.sim.service.OptimisationSupport;
 import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
 import eu.cityopt.sim.service.SimulationService;
@@ -88,7 +89,7 @@ public class DatabaseSearchOptimizationTest {
 	OptimisationSupport optSupport;
 	
 	@Autowired
-	DatabaseSearchOptimizationService dbSearchOptService;
+	DatabaseSearchOptimizationServiceImpl dbSearchOptService;
 
 	public static final String STATUS_SUCCESS = "SUCCESS";
     public static final String STATUS_MODEL_FAILURE = "MODEL_FAILURE";
