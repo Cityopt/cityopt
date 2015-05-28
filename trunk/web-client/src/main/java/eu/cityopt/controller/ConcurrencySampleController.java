@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ProjectService;
-import eu.cityopt.service.ProjectServiceImpl;
 
 @Controller
 @RequestMapping(value="ConcurrencySample")
