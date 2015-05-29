@@ -8,4 +8,6 @@ public interface InputParamValService extends CityOptService<InputParamValDTO> {
 
 	public InputParamValDTO update(InputParamValDTO toUpdate)  throws EntityNotFoundException;
 	
+	InputParamValDTO findByInputAndScenario(int inParamID, int scenID);
+	
 }

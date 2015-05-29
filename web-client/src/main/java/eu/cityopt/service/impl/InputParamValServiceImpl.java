@@ -27,12 +27,14 @@ public class InputParamValServiceImpl implements InputParamValService {
 	@Autowired
 	private InputParamValRepository inputParamValRepository;
 	
+	@Override
 	@Transactional(readOnly = true)
 	public List<InputParamValDTO> findAll() {
 		return modelMapper.map(inputParamValRepository.findAll(), 
 				new TypeToken<List<InputParamValDTO>>() {}.getType());
 	}
 
+	@Override
 	@Transactional
 	public InputParamValDTO save(InputParamValDTO u) {
 		InputParamVal paramVal = modelMapper.map(u, InputParamVal.class);
@@ -40,6 +42,7 @@ public class InputParamValServiceImpl implements InputParamValService {
 		return modelMapper.map(paramVal, InputParamValDTO.class);		
 	}
 
+	@Override
 	@Transactional
 	public void delete(int id) throws EntityNotFoundException {
 		
@@ -50,6 +53,7 @@ public class InputParamValServiceImpl implements InputParamValService {
 		inputParamValRepository.delete(id);
 	}
 	
+	@Override
 	@Transactional
 	public InputParamValDTO update(InputParamValDTO toUpdate) throws EntityNotFoundException {
 		
@@ -60,6 +64,7 @@ public class InputParamValServiceImpl implements InputParamValService {
 		return save(toUpdate);
 	}
 	
+	@Override
 	@Transactional(readOnly = true)
 	public InputParamValDTO findByID(int id) throws EntityNotFoundException {
 		
@@ -70,6 +75,14 @@ public class InputParamValServiceImpl implements InputParamValService {
 		}
 		
 		return modelMapper.map(iparVal, InputParamValDTO.class);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public InputParamValDTO findByInputAndScenario(int inParamID, int scenID) {
+		InputParamVal ipv = inputParamValRepository.findByInputIdAndScenId(inParamID, scenID);
+		
+		return ipv != null ? modelMapper.map(ipv, InputParamValDTO.class) : null;
 	}
 	
 }
