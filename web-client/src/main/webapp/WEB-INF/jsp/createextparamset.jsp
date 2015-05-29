@@ -85,7 +85,6 @@
 				<tr>
 					<td align="right">
 						<input type="submit" value="Ok">
-						<a href="createextparam.html"><button type="button">Create parameter</button></a>
 						<a href="projectparameters.html"><button type="button">Cancel</button></a>
 					</td>
 				</tr>

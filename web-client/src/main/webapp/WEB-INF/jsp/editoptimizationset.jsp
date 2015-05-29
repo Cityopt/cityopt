@@ -33,7 +33,7 @@
 								<td><form:input type="text" path="name" style="width:200px"/></td>
 								<td>Description:</td>
 								<td rowspan="2"><textarea id="description" rows="2" style="width: 300px"></textarea></td>
-								<td align="right"><a href="databaseoptimization"><button type="button">Run search</button></a></td>
+								<td align="right"><a href="databaseoptimization.html"><button type="button">Run search</button></a></td>
 							</tr>
 							<tr>						
 								<td>User:</td>
@@ -52,10 +52,26 @@
 							</tr>
 							<tr>
 								<td>
-									<table class="tablestyle" width="100%">
+									<table width="100%">
+										<col style="width: 20%;">
+										<col style="width: 80%;">
 										<tr>
+											<c:choose>
+												<c:when test="${optimizationset.objectivefunction.ismaximise}">
+													<td>Maximize</td>
+												</c:when>
+												<c:otherwise>
+													<td>Minimize</td>
+												</c:otherwise>
+											</c:choose>
 											<td>
-												${optimizationset.objectivefunction.expression}
+												<table class="tablestyle" width="100%">
+													<tr>
+														<td>
+															${optimizationset.objectivefunction.expression}
+														</td>
+													</tr>
+												</table>
 											</td>
 										</tr>
 									</table>
@@ -78,12 +94,16 @@
 										<tr>
 											<th>Name</th>
 											<th>Expression</th>
+											<th>Lower bound</th>
+											<th>Upper bound</th>
 										</tr>
 										
 										<c:forEach items="${constraints}" var="constraint">
 										<tr>
 											<td>${constraint.name}</td>
 											<td>${constraint.expression}</td>
+											<td>${constraint.lowerbound}</td>
+											<td>${constraint.upperbound}</td>
 									   	</tr>
 										</c:forEach>
 						

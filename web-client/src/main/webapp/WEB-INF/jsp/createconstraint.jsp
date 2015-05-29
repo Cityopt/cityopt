@@ -141,7 +141,7 @@
 							<tr>
 								<td></td>
 								<td>Lower bound</td>
-								<td><input style="width:400px" type="text"/></td>
+								<td><form:input style="width:400px" type="text" path="lowerbound"/></td>
 								<td></td>
 							</tr>
 							<tr height=10></tr>
@@ -155,7 +155,7 @@
 							<tr>
 								<td></td>
 								<td>Upper bound</td>
-								<td><input style="width:400px" type="text"/></td>
+								<td><form:input style="width:400px" type="text" path="upperbound"/></td>
 								<td></td>
 							</tr>
 							<tr>
