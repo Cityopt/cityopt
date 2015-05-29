@@ -84,5 +84,14 @@ public class InputParamValServiceImpl implements InputParamValService {
 		
 		return ipv != null ? modelMapper.map(ipv, InputParamValDTO.class) : null;
 	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<InputParamValDTO> findByComponentAndScenario(int componentID,
+			int scenID) {
+		List<InputParamVal> ipvList = inputParamValRepository.findByComponentAndScenario(componentID, scenID);
+		
+		return modelMapper.map(ipvList, new TypeToken<List<InputParamValDTO>>() {}.getType());
+	}
 	
 }
