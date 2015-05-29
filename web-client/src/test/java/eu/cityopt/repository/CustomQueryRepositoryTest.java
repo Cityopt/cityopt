@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -61,6 +62,9 @@ public class CustomQueryRepositoryTest {
 	 		System.out.println();
 	 	}
 	 	assertNotNull(list);
+	 	assertEquals(4, list.stream().filter(i -> i.getComponentname().equals("Solar_thermal_panels")).count());
+	 	assertEquals(4, list.stream().filter(i -> i.getComponentname().equals("Storage_Vertical_tank_with_heat_structure")).count());
+	 	assertEquals(5, list.stream().filter(i -> i.getComponentname().equals("Gas_boiler")).count());
 	}
 	
 	@Test

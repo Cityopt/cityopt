@@ -34,7 +34,7 @@ import eu.cityopt.repository.ScenarioRepository;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
-@DatabaseSetup("classpath:/testData/inputParameter_TestData.xml")
+
 public class InputParamValRepositoryTest {
 	
 	@Autowired
@@ -57,6 +57,7 @@ public class InputParamValRepositoryTest {
 
 	@Test
 	@Rollback(true)
+	@DatabaseSetup("classpath:/testData/inputParameter_TestData.xml")
 	public void FindAll() {
 	    List<InputParamVal> result = ipvalRepository.findAll();
 	    assertNotEquals(0, result.size());
@@ -64,6 +65,7 @@ public class InputParamValRepositoryTest {
 	
 	@Test
 	@Rollback(true)
+	@DatabaseSetup("classpath:/testData/inputParameter_TestData.xml")
 	public void UpdateIPVal() {
 	    List<InputParamVal> result = ipvalRepository.findAll();
 	    InputParamVal value = result.get(0);
@@ -78,6 +80,7 @@ public class InputParamValRepositoryTest {
 	
 	@Test
 	@Rollback(true)
+	@DatabaseSetup("classpath:/testData/inputParameter_TestData.xml")
 	public void DeleteIPVal() {
 	    List<InputParamVal> result = ipvalRepository.findAll();
 //	    int sizeBefore = result.size();
@@ -86,6 +89,7 @@ public class InputParamValRepositoryTest {
 	}
 	
 	@Test
+	@DatabaseSetup("classpath:/testData/inputParameter_TestData.xml")
 	public void testfindByInputIdAndScenId() {
 	
 	InputParamVal result = ipvalRepository.findByInputIdAndScenId(2, 1);
@@ -93,5 +97,18 @@ public class InputParamValRepositoryTest {
 	assertNotNull(result);
 	assertEquals("10",result.getValue());
 	}
+	
+	@Test
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
+	"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC1.xml"})
+	public void testfindByComponentAndScenario(){
+		
+		List<InputParamVal> result = ipvalRepository.findByComponentAndScenario(2, 1);
+		
+		assertNotNull(result);
+		assertEquals(4,result.size());
+		assertEquals(4,result.stream().filter(r -> r.getInputparameter()
+				.getComponent().getName().equals("Storage_Vertical_tank_with_heat_structure")).count());
+		}
 
 }
