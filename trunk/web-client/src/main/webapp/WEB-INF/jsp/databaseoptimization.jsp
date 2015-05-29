@@ -11,7 +11,7 @@
 <table>
 	<col style="width: 400px;">
 	<col style="width: 450px;">
-	<tr><td colspan="2"><h2>Create - database optimization set</h2></td></tr>
+	<tr><td colspan="2"><h2>Edit database optimization set</h2></td></tr>
 	<tr>
 		<td colspan="2">
 			<table>

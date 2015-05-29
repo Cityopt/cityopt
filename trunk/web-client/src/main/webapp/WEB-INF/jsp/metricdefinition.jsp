@@ -70,8 +70,6 @@
 				</tr>
 				<tr>
 					<td align="right">
-						<input type="submit" value="Upload the metrics"/>
-				
 						<a href="createmetric.html"><button type="button">Create metric</button></a>
 			   		</td>
 				</tr>
