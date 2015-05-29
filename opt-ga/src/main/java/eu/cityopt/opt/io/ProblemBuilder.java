@@ -55,7 +55,7 @@ public class ProblemBuilder extends SimulationStructureBuilder {
         ExternalParameters ext = getResult().inputConst.getExternalParameters();
         if (item.type.isTimeSeriesType()) {
             Evaluator ev = ns.evaluator;
-            TimeSeriesData.Series sd = tsData.getSeriesData(item.name);
+            TimeSeriesData.Series sd = tsData.getSeriesData(item.tsKey());
             if (sd == null) {
                 throw new IllegalArgumentException(
                         "No time series data for external parameter "

@@ -89,6 +89,13 @@ public class JacksonBinder {
         }
     }
     
+    /** For Items that may reference {@link TimeSeriesData} */
+    public interface TSRef {
+        /** Key to use in {@link TimeSeriesData#getSeriesData} */
+        @JsonIgnore
+        public String tsKey();
+    }
+    
     public abstract static class Var extends Item {
         public Type type;
         
@@ -121,8 +128,13 @@ public class JacksonBinder {
         }
     }
     
-    public static class ExtParam extends Var {
+    public static class ExtParam extends Var implements TSRef {
         public String value;
+
+        @Override
+        public String tsKey() {
+            return value != null ? value : name;
+        }
     }
     
     public static class Input extends CompVar {
@@ -131,16 +143,26 @@ public class JacksonBinder {
         public String expr;
     }
     
-    public static class Output extends CompVar {
+    public static class Output extends CompVar implements TSRef {
     	public String value;
+
+    	@Override
+        public String tsKey() {
+            return value != null ? value : getQName();
+        }
     }
     
     public static class DecisionVar extends CompVar {
         public String lower, upper;
     }
     
-    public static class Metric extends Var {
+    public static class Metric extends Var implements TSRef {
         public String expression, value;
+
+        @Override
+        public String tsKey() {
+            return value != null ? value : name;
+        }
     }
     
     public static class Constr extends Item {
