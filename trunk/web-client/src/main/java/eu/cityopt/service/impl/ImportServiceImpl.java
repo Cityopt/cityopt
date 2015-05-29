@@ -555,9 +555,9 @@ public class ImportServiceImpl implements ImportService {
 		    				throw new EntityNotFoundException("Type with name: \"" + metricJack.type.name + "\" not found.");
 		    			
 		    			try{
-		    				ts = saveTimeSeriesData(tsd.getSeriesData(metricJack.value), typModel, timeOrigin.toInstant());
+		    				ts = saveTimeSeriesData(tsd.getSeriesData(metricJack.tsKey()), typModel, timeOrigin.toInstant());
 		    			}catch(Exception ex){
-		    				log.error("error saving timeSeries: " + metricJack.value, ex);
+		    				log.error("error saving timeSeries: " + metricJack.tsKey(), ex);
 		    				//TODO: throw?
 		    				continue;
 		    			}
@@ -628,9 +628,9 @@ public class ImportServiceImpl implements ImportService {
 		    				throw new EntityNotFoundException("Type with name: \"" + outJack.type.name + "\" not found.");
 		    			
 		    			try{
-		    				simResTs = saveTimeSeriesData(tsd.getSeriesData(outJack.value), typModel, timeOrigin.toInstant());
+		    				simResTs = saveTimeSeriesData(tsd.getSeriesData(outJack.tsKey()), typModel, timeOrigin.toInstant());
 		    			}catch(Exception ex){
-		    				log.error("error saving timeSeries: " + outJack.value, ex);
+		    				log.error("error saving timeSeries: " + outJack.tsKey(), ex);
 		    				//TODO: throw?
 		    				continue;
 		    			}
