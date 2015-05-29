@@ -110,10 +110,4 @@ public class InputParameterServiceImpl implements InputParameterService {
 		return modelMapper.map(inputParamVals, new TypeToken<Set<InputParamValDTO>>() {}.getType());
 	}
 
-	@Override
-	public InputParamValDTO findByInputAndScenario(int inParamID, int scenID) {
-		InputParamVal ipv = inputParamValRepository.findByInputIdAndScenId(inParamID, scenID);
-		
-		return ipv != null ? modelMapper.map(ipv, InputParamValDTO.class) : null;
-	}
 }
