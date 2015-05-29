@@ -24,7 +24,7 @@ import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.OptimisationProblem;
 
 /**
- * A {@link JacksonBuilder} for an {@link OptimisationProblem}.
+ * An {@link ImportBuilder} for an {@link OptimisationProblem}.
  * @author ttekth
  */
 public class ProblemBuilder extends SimulationStructureBuilder {

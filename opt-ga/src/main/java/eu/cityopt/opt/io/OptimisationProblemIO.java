@@ -58,7 +58,6 @@ public class OptimisationProblemIO {
         Namespace ns = binder.makeNamespace(setup.evaluator, setup.timeOrigin);
         SimulationStructureBuilder bld = new SimulationStructureBuilder(
                 new SimulationStructure(null, ns));
-        binder.buildWith(bld);
-        return bld.getResult();
+        return binder.buildWith(bld).getResult();
     }
 }

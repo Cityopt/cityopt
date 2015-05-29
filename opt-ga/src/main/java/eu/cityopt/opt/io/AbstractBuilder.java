@@ -14,13 +14,13 @@ import eu.cityopt.opt.io.JacksonBinder.Obj;
 import eu.cityopt.opt.io.JacksonBinder.Output;
 
 /**
- * A template for a {@link JacksonBuilder}.
+ * A template for a {@link ImportBuilder}.
  * Concrete implementations typically extend this.
  * 
  * @author ttekth
  * @param <Result> The type of object constructed.
  */
-public abstract class AbstractBuilder<Result> implements JacksonBuilder {
+public abstract class AbstractBuilder<Result> implements ImportBuilder {
     protected final Result result; 
 
     /**

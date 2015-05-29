@@ -238,7 +238,7 @@ public class JacksonBinder {
      * Apply a builder.
      * @return the builder
      */
-    public <Builder extends JacksonBuilder>
+    public <Builder extends ImportBuilder>
     Builder buildWith(Builder builder)
             throws ParseException, ScriptException {
         for (Item it : items) {
