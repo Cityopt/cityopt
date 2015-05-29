@@ -84,5 +84,14 @@ public class InputParamValRepositoryTest {
 	    ipvalRepository.delete(result);
 	    assertEquals(0, ipvalRepository.findAll().size());
 	}
+	
+	@Test
+	public void testfindByInputIdAndScenId() {
+	
+	InputParamVal result = ipvalRepository.findByInputIdAndScenId(2, 1);
+	
+	assertNotNull(result);
+	assertEquals("10",result.getValue());
+	}
 
 }

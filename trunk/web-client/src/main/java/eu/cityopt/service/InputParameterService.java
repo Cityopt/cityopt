@@ -19,6 +19,8 @@ public interface InputParameterService extends CityOptService<InputParameterDTO>
 	
 	InputParameterDTO findByID(int id) throws EntityNotFoundException;
 	
+	InputParamValDTO findByInputAndScenario(int inParamID, int scenID);
+	
 	Set<InputParamValDTO> getInputParamVals(int id);
 	
 	List<InputParameterDTO> findByName(String name);
