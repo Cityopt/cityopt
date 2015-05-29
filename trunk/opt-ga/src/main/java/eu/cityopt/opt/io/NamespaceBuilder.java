@@ -20,7 +20,7 @@ import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.Type;
 
 /**
- * A {@link JacksonBuilder} for {@link Namespace}
+ * An {@link ImportBuilder} for {@link Namespace}
  * @author ttekth
  *
  */

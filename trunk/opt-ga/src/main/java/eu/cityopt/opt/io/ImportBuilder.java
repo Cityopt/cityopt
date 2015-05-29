@@ -6,12 +6,13 @@ import javax.script.ScriptException;
 
 /**
  * A builder interface for {@link JacksonBinder}.
- * Since JacksonBinder is just a list of Items, a GoF style Director
- * would be overkill.  Just loop over the list and call the builder.
- * Builders typically extend {@link AbstractBuilder}.
+ * Implementations make something from a JacksonBinder and are usually
+ * called via {@link JacksonBinder#buildWith}, which just loops over the
+ * items and calls {@link #add}.  Builders typically extend
+ * {@link AbstractBuilder}.
  * @author ttekth
  */
-public interface JacksonBuilder {
+public interface ImportBuilder {
     /**
      * Add a new item.  For future extensibility most implementers
      * should ignore items of unknown Kind.
