@@ -264,7 +264,7 @@ public class JacksonTest {
         try (InputStream is = getClass().getResourceAsStream(name)) {
             tsd.read(is, name);
         }
-        TimeSeriesData.Series sd = tsd.getSeriesData("fuel_cost");
+        TimeSeriesData.Series sd = tsd.getSeries("fuel_cost");
         System.out.println("times = " + Arrays.toString(sd.times));
         System.out.println("fuel_cost = " + Arrays.toString(sd.values));
         final double delta = 1e-12;

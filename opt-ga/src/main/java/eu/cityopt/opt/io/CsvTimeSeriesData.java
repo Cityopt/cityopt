@@ -28,14 +28,10 @@ import eu.cityopt.sim.eval.Type;
  *
  * @author Hannu Rummukainen
  */
-public class CsvTimeSeriesData implements TimeSeriesData {
-    static final String TIMESTAMP_KEY = "timestamp";
-
-    private Map<String, Series> seriesDatas = new HashMap<>();
-    private final EvaluationSetup evaluationSetup;
-
+//TODO This is just a builder.  The data should be a member, not a superclass. 
+public class CsvTimeSeriesData extends TimeSeriesData {
     public CsvTimeSeriesData(EvaluationSetup evaluationSetup) {
-        this.evaluationSetup = evaluationSetup;
+        super(evaluationSetup);
     }
 
     /**
@@ -86,13 +82,8 @@ public class CsvTimeSeriesData implements TimeSeriesData {
                     .mapToDouble(i -> times[i]).toArray();
             sd.values = Arrays.stream(rows)
                     .mapToDouble(i -> col[i]).toArray();
-            seriesDatas.put(entry.getKey(), sd);
+            seriesData.put(entry.getKey(), sd);
         }
-    }
-
-    @Override
-    public Series getSeriesData(String seriesName) {
-        return seriesDatas.get(seriesName);
     }
 
     private Double[] getColumn(List<Double[]> rows, int column) {
@@ -139,7 +130,7 @@ public class CsvTimeSeriesData implements TimeSeriesData {
             if (i == timeIndex) {
                 try {
                     rowData[i] = (Double) Type.TIMESTAMP.parse(
-                            row[i], evaluationSetup);
+                            row[i], getEvaluationSetup());
                 } catch (ParseException e) {
                     throw new ParseException(streamName + ":" + rowNumber
                             + ": Invalid timestamp '" + row[i]
@@ -158,10 +149,5 @@ public class CsvTimeSeriesData implements TimeSeriesData {
             }
         }
         return rowData;
-    }
-
-    @Override
-    public EvaluationSetup getEvaluationSetup() {
-        return evaluationSetup;
     }
 }
