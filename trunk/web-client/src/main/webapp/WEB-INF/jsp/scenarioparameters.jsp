@@ -56,11 +56,9 @@
 									<table class="tablestyle">
 										<col style="width:80px">
 										<col style="width:150px">
-										<col style="width:80px">
 										<tr>
 											<th>Select</th>
-											<th>Components</th>
-											<th>Id</th>
+											<th>Component</th>
 										</tr>
 										
 										<c:forEach items="${components}" var="component">
@@ -72,7 +70,6 @@
 											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
 										</c:if>
 											<td>${component.name}</td>
-									    	<td>${component.componentid}</td>
 									   	</tr>
 										</c:forEach>
 									</table>
@@ -83,10 +80,8 @@
 										<col style="width:150px">
 										<col style="width:60px">
 										<col style="width:60px">
-										<col style="width:60px">
 										<tr>
 											<th>Input parameter</th>
-											<th>Id</th>
 											<th>Value</th>
 											<th>Edit</th>
 										</tr>
@@ -94,7 +89,6 @@
 										<c:forEach items="${componentInputParamVals}" var="componentInputParamVal">
 										<tr>
 											<td>${componentInputParamVal.inputparametername}</td>
-									    	<td>${componentInputParamVal.inputid}</td>
 									    	<td>${componentInputParamVal.value}</td>
 											<td>
 												<a href="<c:url value='editinputparamvalue.html?inputparamvalid=${componentInputParamVal.inputparamvalid}'/>">

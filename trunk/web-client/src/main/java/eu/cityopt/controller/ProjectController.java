@@ -228,14 +228,16 @@ public class ProjectController {
 				project.setDescription(projectForm.getDescription());
 			}
 			
+			// Create default ext param val set
+			ExtParamValSetDTO extParamValSet = new ExtParamValSetDTO();
+			extParamValSet.setName("default set");
+			extParamValSet = extParamValSetService.save(extParamValSet);
+			
+			project.setExtparamvalset(extParamValSet);
 			project = projectService.save(project);
+			
 			model.put("project", project);
 			model.remove("scenario");
-			
-			// Create default ext param
-			/*ExtParamDTO extParam = new ExtParamDTO();
-			extParam.setName("temp");
-			extParamService.save(extParam, project.getPrjid());*/
 			
 			return "editproject";
 		}
@@ -2702,7 +2704,6 @@ public class ProjectController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -3165,7 +3166,6 @@ public class ProjectController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
