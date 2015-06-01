@@ -991,7 +991,7 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="createobjfunction", method=RequestMethod.POST)
-	public String getCreateObjFunctionPost(ObjectiveFunctionDTO function, Map<String, Object> model) {
+	public String getCreateObjFunctionPost(ObjectiveFunctionDTO function, HttpServletRequest request, Map<String, Object> model) {
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
 		if (project == null)
@@ -1002,7 +1002,6 @@ public class ProjectController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		OptimizationSetDTO optSet = null;
@@ -1022,11 +1021,24 @@ public class ProjectController {
 			return "error";
 		}
 		
+		String optSense = request.getParameter("optsense");
+		boolean isMaximize = false;
+		
+		if (optSense.equals("1"))
+		{
+			isMaximize = false;
+		}
+		else if (optSense.equals("2"))
+		{
+			isMaximize = true;
+		}
+		
 		if (function != null && function.getExpression() != null)
 		{
 			ObjectiveFunctionDTO newFunc = new ObjectiveFunctionDTO();
 			newFunc.setName(function.getName());
 			newFunc.setExpression(function.getExpression());
+			newFunc.setIsmaximise(isMaximize);
 			newFunc.setProject(project);
 			newFunc = objFuncService.save(newFunc);
 			optSet.setObjectivefunction(newFunc);
@@ -3186,7 +3198,7 @@ public class ProjectController {
 			}
 		}
 		
-		List<ComponentDTO> components = componentService.findAll();
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
 
 		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
@@ -3256,7 +3268,7 @@ public class ProjectController {
 			}
 		}
 		
-		List<ComponentDTO> components = componentService.findAll();
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
 
 		if (selectedCompId != null && !selectedCompId.isEmpty())
@@ -3639,7 +3651,7 @@ public class ProjectController {
 			return "error";
 		}
 		
-		List<ComponentDTO> components = componentService.findAll();
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
 
 		if (selectedCompId != null && !selectedCompId.isEmpty())
@@ -3695,7 +3707,7 @@ public class ProjectController {
 		
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
-		List<ComponentDTO> components = componentService.findAll();
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
 
 		if (selectedCompId != null && !selectedCompId.isEmpty())

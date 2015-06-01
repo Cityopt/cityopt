@@ -142,7 +142,12 @@
 							</tr>
 							<tr>
 								<td></td>
-								<td colspan="3">Optimization sense: <input type="radio">Maximize <input type="radio">Minimize</td>
+								<td colspan="3">Optimization sense: 
+									<select name="optsense" id="optsense" size="1">
+										<option value="1" selected>Minimize</option>
+										<option value="2">Maximize</option>
+									</select>
+								</td>
 								<td></td>
 							</tr>					
 							<tr>
