@@ -1065,6 +1065,66 @@ public class ProjectController {
 		return "editoptimizationset";
 	}
 	
+	@RequestMapping(value="deleteconstraint", method=RequestMethod.GET)
+	public String getDeleteConstraint(Map<String, Object> model, @RequestParam(value="constraintid", required=true) String constraintId) {
+		OptConstraintDTO constraint = null;
+		int nConstraintId = Integer.parseInt(constraintId);
+		
+		try {
+			constraint = optConstraintService.findByID(nConstraintId);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
+		OptimizationSetDTO optSet = null;
+				
+		if (model.containsKey("optimizationset"))
+		{
+			optSet = (OptimizationSetDTO) model.get("optimizationset");
+			model.put("optimizationset", optSet);
+		}
+		else
+		{
+			return "error";
+		}
+
+		try {
+			optSetService.removeOptConstraint(optSet.getOptid(), nConstraintId);
+			//optConstraintService.delete(constraint.getOptconstid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		List<OptConstraintDTO> optSearchConstraints = null;
+		
+		try {
+			optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		model.put("constraints", optSearchConstraints);
+		
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		model.put("project", project);
+
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+
+		return "editoptimizationset";
+	}
+
 	@RequestMapping(value="creategaobjfunction",method=RequestMethod.GET)
 	public String getCreateGAObjFunction(Map<String, Object> model,
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {

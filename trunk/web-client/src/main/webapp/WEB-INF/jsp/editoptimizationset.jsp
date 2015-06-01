@@ -80,7 +80,7 @@
 							<tr>
 								<td>
 									<a href="createobjfunction.html"><button type="button">Create</button></a>
-									<input type="submit" value="Delete">
+									<a href="editobjfunction.html"><button type="button">Edit</button></a>
 									<a href="importobjfunction.html"><button type="button">Import</button></a>
 								</td>
 							</tr>
@@ -92,7 +92,8 @@
 								<td>
 									<table class="tablestyle" style="width: 390px">
 										<col style="width: 20%;">
-										<col style="width: 60%;">
+										<col style="width: 50%;">
+										<col style="width: 10%;">
 										<col style="width: 10%;">
 										<col style="width: 10%;">
 										<tr>
@@ -100,6 +101,7 @@
 											<th>Expression</th>
 											<th>Lower bound</th>
 											<th>Upper bound</th>
+											<th>Delete</th>
 										</tr>
 										
 										<c:forEach items="${constraints}" var="constraint">
@@ -108,6 +110,7 @@
 											<td>${constraint.expression}</td>
 											<td>${constraint.lowerbound}</td>
 											<td>${constraint.upperbound}</td>
+											<td><a href="deleteconstraint.html?constraintid=${constraint.optconstid}"><button type="button">Delete</button></a>
 									   	</tr>
 										</c:forEach>
 						
@@ -117,7 +120,7 @@
 							<tr>
 								<td>
 									<a href="createconstraint.html"><button type="button">Create</button></a>
-									<input type="submit" value="Delete">
+									<a href="editconstraint.html"><button type="button">Edit</button></a>
 									<a href="importsearchconstraint.html"><button type="button">Import</button></a>
 								</td>
 							</tr>
