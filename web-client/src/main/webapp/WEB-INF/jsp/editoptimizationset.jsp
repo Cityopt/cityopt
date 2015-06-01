@@ -91,6 +91,10 @@
 							<tr>
 								<td>
 									<table class="tablestyle" style="width: 390px">
+										<col style="width: 20%;">
+										<col style="width: 60%;">
+										<col style="width: 10%;">
+										<col style="width: 10%;">
 										<tr>
 											<th>Name</th>
 											<th>Expression</th>
