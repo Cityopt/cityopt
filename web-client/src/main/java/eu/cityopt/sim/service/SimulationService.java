@@ -351,19 +351,21 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     public ExternalParameters loadExternalParametersFromSet(
             ExtParamValSet extParamValSet, Namespace namespace) throws ParseException {
         ExternalParameters simExternals = new ExternalParameters(namespace);
-        simExternals.setExternalId(extParamValSet.getExtparamvalsetid());
-        for (ExtParamValSetComp extParamValSetComp : extParamValSet.getExtparamvalsetcomps()) {
-            ExtParamVal extParamVal = extParamValSetComp.getExtparamval(); 
-            String extName = extParamVal.getExtparam().getName();
-            Type extType = namespace.externals.get(extName);
-            Object simValue;
-            if (extType.isTimeSeriesType()) {
-                simValue = loadTimeSeries(extParamVal.getTimeseries(), extType,
-                        namespace.evaluator, namespace.timeOrigin);
-            } else {
-                simValue = extType.parse(extParamVal.getValue(), namespace);
+        if (extParamValSet != null) {
+            simExternals.setExternalId(extParamValSet.getExtparamvalsetid());
+            for (ExtParamValSetComp extParamValSetComp : extParamValSet.getExtparamvalsetcomps()) {
+                ExtParamVal extParamVal = extParamValSetComp.getExtparamval(); 
+                String extName = extParamVal.getExtparam().getName();
+                Type extType = namespace.externals.get(extName);
+                Object simValue;
+                if (extType.isTimeSeriesType()) {
+                    simValue = loadTimeSeries(extParamVal.getTimeseries(), extType,
+                            namespace.evaluator, namespace.timeOrigin);
+                } else {
+                    simValue = extType.parse(extParamVal.getValue(), namespace);
+                }
+                simExternals.put(extName, simValue);
             }
-            simExternals.put(extName, simValue);
         }
         return simExternals;
     }
