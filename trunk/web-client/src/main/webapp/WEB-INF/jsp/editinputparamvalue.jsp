@@ -22,7 +22,7 @@
 		<td width=30></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="editinputparamvalue.html?inputparamvalid=${inputParamVal.scendefinitionid}" modelAttribute="inputParamVal">
+			<form:form method="post" action="editinputparamvalue.html?inputparamvalid=${inputParamVal.inputparamvalid}" modelAttribute="inputParamVal">
 			<h2>Edit input parameter value</h2>
 
 			<table align="center">

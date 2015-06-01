@@ -702,25 +702,8 @@ public class ProjectController {
 			//model.put("selectedcompid", selectedCompId);
 			model.put("selectedComponent",  selectedComponent);
 
-			//List<InputParamValDTO> inputParamVals = inputParamService.getInputParamVals()			
-			//List<ComponentInputParamDTO> componentInputParamVals = componentInputParamService.findAllByComponentId(nSelectedCompId);
-			//model.put("componentInputParamVals", componentInputParamVals);
-			//inputParamValService.findBy
-			
-			List<ComponentInputParamDTO> inputParamVals = componentInputParamService.findAllByPrjAndScenId(project.getPrjid(), scenario.getScenid());
-			List<ComponentInputParamDTO> componentInputParamVals = new ArrayList<ComponentInputParamDTO>();
-			
-	 		for (int i = 0; i < inputParamVals.size(); i++)
-			{
-	 			ComponentInputParamDTO compInputParamVal = inputParamVals.get(i);
-	 			int compId = compInputParamVal.getComponentid();
-	 			
-				if (compId == nSelectedCompId)
-				{
-					componentInputParamVals.add(inputParamVals.get(i));
-				}
-			}
-	 		model.put("componentInputParamVals", componentInputParamVals);
+			List<ComponentInputParamDTO> componentInputParamVals = componentInputParamService.findAllByComponentId(nSelectedCompId);
+			model.put("componentInputParamVals", componentInputParamVals);
 		}
 
 		model.put("project", project);
@@ -1529,7 +1512,6 @@ public class ProjectController {
 				try {
 					project = projectService.findByID(project.getPrjid());
 				} catch (EntityNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
@@ -1595,7 +1577,6 @@ public class ProjectController {
 			try {
 				project = projectService.findByID(project.getPrjid());
 			} catch (EntityNotFoundException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			Set<OpenOptimizationSetDTO> optSets = null;
@@ -1664,7 +1645,6 @@ public class ProjectController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		Set<OpenOptimizationSetDTO> optSets = null;
@@ -2339,7 +2319,8 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="editinputparamvalue", method=RequestMethod.GET)
-	public String getEditInputParameterValue(Map<String, Object> model, @RequestParam(value="inputparamvalid", required=true) String inputvalid) {
+	public String getEditInputParameterValue(Map<String, Object> model, 
+		@RequestParam(value="inputparamvalid", required=true) String inputvalid) {
 		int nInputValId = Integer.parseInt(inputvalid);
 		InputParamValDTO inputParamVal = null;
 		
@@ -2365,7 +2346,6 @@ public class ProjectController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e2) {
-			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
 		
@@ -2395,13 +2375,18 @@ public class ProjectController {
 		updatedInputParamVal.setScenario(scenario);
 		inputParamValService.save(updatedInputParamVal);
 				
-		model.put("selectedcompid", updatedInputParamVal.getInputparameter().getComponent().getComponentid());
+		int componentID = updatedInputParamVal.getInputparameter().getComponent().getComponentid();
+		model.put("selectedcompid", componentID);
 		
 		try {
-			model.put("selectedComponent", inputParamService.findByID(updatedInputParamVal.getInputparameter().getComponent().getComponentid()));
+			model.put("selectedComponent", componentService.findByID(componentID));
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+		List<ComponentInputParamDTO> componentInputParamVals = componentInputParamService.findAllByComponentId(componentID);
+		model.put("componentInputParamVals", componentInputParamVals);
+		
 		model.put("project", project);
 		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
 		model.put("extParams", extParams);
