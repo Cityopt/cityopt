@@ -413,7 +413,7 @@ public class ImportServiceImpl implements ImportService {
 			Date timeOrigin = scen.getProject().getSimulationmodel().getTimeorigin();
 			
 			try{
-				ts = saveTimeSeriesData(tsd.getSeriesData(row.TimeseriesName), type, timeOrigin.toInstant());
+				ts = saveTimeSeriesData(tsd.getSeries(row.TimeseriesName), type, timeOrigin.toInstant());
 			}catch(Exception ex){
 				log.error("error saving timeSeries: " + row.TimeseriesName, ex);
 				//TODO: throw?
@@ -555,7 +555,7 @@ public class ImportServiceImpl implements ImportService {
 		    				throw new EntityNotFoundException("Type with name: \"" + metricJack.type.name + "\" not found.");
 		    			
 		    			try{
-		    				ts = saveTimeSeriesData(tsd.getSeriesData(metricJack.tsKey()), typModel, timeOrigin.toInstant());
+		    				ts = saveTimeSeriesData(tsd.getSeries(metricJack.tsKey()), typModel, timeOrigin.toInstant());
 		    			}catch(Exception ex){
 		    				log.error("error saving timeSeries: " + metricJack.tsKey(), ex);
 		    				//TODO: throw?
@@ -628,7 +628,7 @@ public class ImportServiceImpl implements ImportService {
 		    				throw new EntityNotFoundException("Type with name: \"" + outJack.type.name + "\" not found.");
 		    			
 		    			try{
-		    				simResTs = saveTimeSeriesData(tsd.getSeriesData(outJack.tsKey()), typModel, timeOrigin.toInstant());
+		    				simResTs = saveTimeSeriesData(tsd.getSeries(outJack.tsKey()), typModel, timeOrigin.toInstant());
 		    			}catch(Exception ex){
 		    				log.error("error saving timeSeries: " + outJack.tsKey(), ex);
 		    				//TODO: throw?
