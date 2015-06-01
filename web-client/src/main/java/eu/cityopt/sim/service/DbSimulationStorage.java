@@ -269,6 +269,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         }
         scenario.setStatus(null);
         scenario.setProject(project);
+        scenario = scenarioRepository.save(scenario);
         project.getScenarios().add(scenario);
 
         Namespace namespace = simInput.getNamespace();
@@ -296,7 +297,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         }
         inputParamValRepository.save(scenario.getInputparamvals());
 
-        return scenarioRepository.save(scenario);
+        return scenario;
     }
 
     Scenario saveSimulationOutput(Scenario scenario, SimulationOutput simOutput) {
