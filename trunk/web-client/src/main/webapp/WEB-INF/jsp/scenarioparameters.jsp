@@ -86,12 +86,12 @@
 											<th>Edit</th>
 										</tr>
 										
-										<c:forEach items="${componentInputParamVals}" var="componentInputParamVal">
+										<c:forEach items="${inputParamVals}" var="inputParamVal">
 										<tr>
-											<td>${componentInputParamVal.inputparametername}</td>
-									    	<td>${componentInputParamVal.value}</td>
+											<td>${inputParamVal.inputparameter.name}</td>
+									    	<td>${inputParamVal.value}</td>
 											<td>
-												<a href="<c:url value='editinputparamvalue.html?inputparamvalid=${componentInputParamVal.inputparamvalid}'/>">
+												<a href="<c:url value='editinputparamvalue.html?inputparamvalid=${inputParamVal.inputparamvalid}'/>">
 													<button align="right" type="button" value="Edit">Edit</button>
 												</a>
 											</td>
