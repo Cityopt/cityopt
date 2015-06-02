@@ -409,7 +409,9 @@ public class CopyServiceImpl implements CopyService {
 				for(SimulationResult sr : ov.getSimulationresults()){
 					SimulationResult srC = copySimulationResult(sr);
 					srC.setOutputvariable(ovC);
-					srC = simulationResultRepository.save(srC);
+					srC.setScenario(null);
+//					srC = simulationResultRepository.save(srC);
+					//cannot be saved here, because there is no copy of the scenario yet
 					copiedSimulationResults.put(sr.getSimresid(), srC);
 				}
 			}

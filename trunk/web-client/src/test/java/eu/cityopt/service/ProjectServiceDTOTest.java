@@ -78,6 +78,13 @@ public class ProjectServiceDTOTest {
 	}
 
 	@Test
+	public void findAllEmpty() {
+		List<ProjectDTO> list = projectService.findAll();
+		Assert.notNull(list);
+		assertTrue(list.size() == 0);
+	}
+	
+	@Test
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
 	public void findAll() {
 		List<ProjectDTO> list = projectService.findAll();
@@ -88,7 +95,7 @@ public class ProjectServiceDTOTest {
 	@Test
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
 	public void findByNameTest() {
-		List<ProjectDTO> list = projectService.findByName("project");
+		List<ProjectDTO> list = projectService.findByNameContaining("project");
 		Assert.notNull(list);
 		assertTrue(list.size() == 1);
 	}
@@ -96,7 +103,7 @@ public class ProjectServiceDTOTest {
 	@Test
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
 	public void findByNameTest2() {
-		List<ProjectDTO> list = projectService.findByName("notAProjectName");
+		List<ProjectDTO> list = projectService.findByNameContaining("notAProjectName");
 		Assert.notNull(list);
 		assertTrue(list.size() == 0);
 	}

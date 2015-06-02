@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <dataset>
-	<appuser name="Michael" password="s1cher"/>
-	<appuser name="Michael2" password="s1ch3rer"/>
-	<appuser name="Flo"/>	
+	<simulationmodel modelid="1" description="Apros test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit"/>
+	<project prjid="1" location="Vienna" name="Sample Project Vienna" modelid="1" createdon="2010-07-31 10:00:00"/>
+	<project prjid="2" location="Helsinki" name="Sample Project Helsinki" modelid="1" createdon="2010-07-31 10:00:00"/>
 
-	<project prjid="1" name="My test project"/>
+	<appuser userid="1" name="Michael" password="s1cher"/>
+	<appuser userid="2" name="Michael2" password="s1ch3rer"/>
+	<appuser userid="3" name="Flo"/>	
+	<appuser userid="4" name="Sepp" password="Seppensicher"/>
 	
-	<usergroup name="Administrator"/>
+	<usergroup usergroupid="1" name="Administrator"/>
+	<usergroup usergroupid="2" name="Editor"/>
+	<usergroup usergroupid="3" name="Reader"/>
 	
-
+	<usergroupproject userid="1" usergroupid="1" prjid="1"/>
+	<usergroupproject userid="1" usergroupid="3" prjid="2"/>
+	<usergroupproject userid="3" usergroupid="1" prjid="1"/>
+	<usergroupproject userid="2" usergroupid="3" prjid="1"/>
+	<usergroupproject userid="2" usergroupid="3" prjid="2"/>
+	
 </dataset>
