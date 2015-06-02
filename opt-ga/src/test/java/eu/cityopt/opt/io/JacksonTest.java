@@ -271,6 +271,8 @@ public class JacksonTest {
         assertArrayEquals(new double[] { -t0.toEpochMilli()/1000, -1.0, 0.0 },
                 sd.times, delta);
         assertArrayEquals(new double[] { 10.0, 10.0, 10.0 }, sd.values, delta);
+        CsvTimeSeriesIO.write(
+                JacksonCsvModule.getCsvMapper(), tsd, System.out);
     }
 
     private CityoptFileModule getCityoptFileModule() {
