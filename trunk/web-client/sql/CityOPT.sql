@@ -1497,3 +1497,34 @@ ALTER TABLE UserGroupProject ADD CONSTRAINT FK_UserGroupProject_User
 ALTER TABLE UserGroupProject ADD CONSTRAINT FK_UserGroupProject_UserGroups
 	FOREIGN KEY (userGroupID) REFERENCES UserGroup (userGroupID) ON DELETE No Action ON UPDATE No Action
 ;
+
+INSERT INTO Algorithm (algorithmId, description) VALUES
+ (1, 'grid search'),
+ (2, 'genetic algorithm');
+INSERT INTO AlgoParam (algorithmID, name, defaultValue) VALUES
+ (1, 'max runtime [minutes]', '1000000'),
+ (1, 'max parallel evaluations', '100'),
+ (1, 'max scenarios', '10000'),
+ (2, 'max runtime [minutes]', '1000000'),
+ (2, 'max parallel evaluations', '100'),
+ (2, 'seed of the random number generator', '1'),
+ (2, 'number of generations', '10'),
+ (2, 'population size', '100'),
+ (2, 'number of parents per generation', '25'),
+ (2, 'number of offspring per generation', '25'),
+ (2, 'crossover rate', '0.95');
+ 
+INSERT INTO datareliability (datareldesc) VALUES ('Actual data'),('Technical report'),('Scientific bibliography'),('Expert opinion');
+
+INSERT INTO Type (typeID, name) VALUES
+ (1, 'Double'),
+ (2, 'Integer'),
+ (3, 'String'),
+ (4, 'Timestamp'),
+ (5, 'TimeSeries/step'),
+ (6, 'TimeSeries/linear'),
+ (7, 'List of Double'),
+ (8, 'List of Integer'),
+ (9, 'List of Timestamp');
+
+
