@@ -1,4 +1,1 @@
-INSERT INTO "datareliability" VALUES ('Actual data');
-INSERT INTO "datareliability" VALUES ('Technical report');
-INSERT INTO "datareliability" VALUES ('Scientific bibliography');
-INSERT INTO "datareliability" VALUES ('Expert opinion');
+INSERT INTO datareliability (datareldesc) VALUES ('Actual data'),('Technical report'),('Scientific bibliography'),('Expert opinion');
