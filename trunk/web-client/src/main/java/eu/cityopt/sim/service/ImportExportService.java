@@ -186,7 +186,7 @@ public class ImportExportService {
      *   parameters, input parameters, output variables and metrics
      *   will be overwritten in case of name clashes, and otherwise left
      *   untouched.
-     * @param structureFile path to file defining some or all of external
+     * @param structureStream CSV file defining some or all of external
      *   parameters, input parameters, output variables and/or metrics.
      *   The file format is compatible with the optimisation problem format
      *   of {@link #importOptimisationProblem(int, String, Path, Integer, Path, Path...)};
@@ -196,7 +196,7 @@ public class ImportExportService {
      * @throws ScriptException
      */
     @Transactional
-    public void importSimulationStructure(int projectId, Path structureFile)
+    public void importSimulationStructure(int projectId, InputStream structureStream)
             throws IOException, ParseException, ScriptException {
         Project project = projectRepository.findOne(projectId);
 
@@ -205,7 +205,7 @@ public class ImportExportService {
         EvaluationSetup setup =
                 new EvaluationSetup(simulationService.getEvaluator(), Instant.EPOCH);
         SimulationStructure structure =
-                OptimisationProblemIO.readStructureCsv(structureFile, setup);
+                OptimisationProblemIO.readStructureCsv(structureStream, setup);
 
         saveSimulationStructure(project, structure);
     }

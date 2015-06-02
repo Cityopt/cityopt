@@ -4,6 +4,7 @@ package eu.cityopt.sim.service;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Arrays;
@@ -116,7 +117,9 @@ public class TestScenarioGenerationService extends SimulationTestBase {
             Path problemPath = copyResource("/ost-problem.csv", tempDir);
             Path paramPath = copyResource("/ga.properties", tempDir);
             Path tsPath = copyResource("/timeseries.csv", tempDir);
-            importExportService.importSimulationStructure(project.getPrjid(), problemPath);
+            try (FileInputStream fis = new FileInputStream(problemPath.toFile())) {
+                importExportService.importSimulationStructure(project.getPrjid(), fis);
+            }
             scId = importExportService.importOptimisationProblem(
                     project.getPrjid(), "import optimisation test",
                     problemPath, null, paramPath, tsPath);
