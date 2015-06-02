@@ -67,7 +67,7 @@ public class ComponentServiceTest {
 	{		
 		long start= System.nanoTime();
 		
-		List<ProjectDTO> projects = pjService.findByName("Project");
+		List<ProjectDTO> projects = pjService.findByNameContaining("Project");
 		
 		for(ProjectDTO p : projects)
 			pjService.delete(p.getPrjid());
@@ -77,7 +77,7 @@ public class ComponentServiceTest {
 		System.out.println("time of execution " + (end-start)/1000000);
 		em.flush();
 		
-		assertEquals(0, pjService.findByName("Project").size());	
+		assertEquals(0, pjService.findByNameContaining("Project").size());	
 	}	
 
 }

@@ -5,11 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,20 +30,11 @@ import eu.cityopt.model.Component;
 import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.ExtParamVal;
 import eu.cityopt.model.ExtParamValSet;
-import eu.cityopt.model.ExtParamValSetComp;
-import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.Metric;
-import eu.cityopt.model.MetricVal;
-import eu.cityopt.model.ObjectiveFunction;
-import eu.cityopt.model.OptConstraint;
-import eu.cityopt.model.OptSearchConst;
 import eu.cityopt.model.OptimizationSet;
-import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
-import eu.cityopt.model.SimulationResult;
-import eu.cityopt.model.TimeSeries;
 import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.ProjectRepository;
@@ -92,7 +79,7 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 	
 	@Transactional(readOnly = true)
-	public List<ProjectDTO> findByName(String name) {
+	public List<ProjectDTO> findByNameContaining(String name) {
 		List<Project> projects = projectRepository.findByName(name);
 		List<ProjectDTO> result 
 			= modelMapper.map(projects, new TypeToken<List<ProjectDTO>>() {}.getType());

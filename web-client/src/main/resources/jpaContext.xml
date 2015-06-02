@@ -14,7 +14,7 @@
 
 <context:annotation-config/>
 
-<context:component-scan base-package="eu.cityopt.repository, eu.pluralsight.service, eu.cityopt.service, eu.cityopt.sim.service"/>
+<context:component-scan base-package="eu.cityopt.repository, eu.cityopt.service, eu.cityopt.sim.service"/>
 <jpa:repositories base-package="eu.cityopt.repository" />
 
 <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
