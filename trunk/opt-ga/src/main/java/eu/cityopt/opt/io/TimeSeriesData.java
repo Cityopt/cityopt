@@ -28,6 +28,10 @@ public class TimeSeriesData {
         this.evaluationSetup = evaluationSetup;
     }
 
+    /**
+     * Reserved key for labeling the time column.
+     * Do not use as a series name. 
+     */
     static final String TIMESTAMP_KEY = "timestamp";
 
     Map<String, Series> seriesData = new HashMap<>();
