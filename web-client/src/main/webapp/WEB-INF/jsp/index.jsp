@@ -25,10 +25,10 @@ pageEncoding="UTF-8"%>
 					</td>
 				</tr>
 				<tr>
-					<td><input class="login" id="j_username" name="j_username" type="text" value="Username" /></td>
+					<td><input class="login" id="username" name="username" type="text" value="Username" /></td>
 				</tr>
 				<tr>
-					<td><input class="login" id="j_password" name="j_password" type="password" value="Password" /></td>
+					<td><input class="login" id="password" name="password" type="password" value="Password" /></td>
 				</tr>
 
 				<tr height="10"></tr>
