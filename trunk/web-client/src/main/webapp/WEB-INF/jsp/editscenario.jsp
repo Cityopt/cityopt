@@ -31,7 +31,7 @@
 					<td>
 						<table>
 							<tr>
-								<td>Project name:</td>
+								<td>Scenario name:</td>
 								<td><form:input type="text" path="name" style="width:200px"/></td>
 							</tr>
 							<tr>						
@@ -97,8 +97,8 @@
 						<table>
 							<tr><td><input type="submit" value="Update scenario" style="width:200px"></td></tr>
 							<tr><td><a href="runscenario.html"><button type="button" style="width:200px">Run scenario</button></a></td></tr>
-							<tr><td><input type="submit" value="Abort run scenario" style="width:200px"></td></tr>
-							<tr><td><input type="submit" value="Clone scenario" style="width:200px"></td></tr>
+							<tr><td></td></tr>
+							<tr><td></td></tr>
 						</table>
 					</td>
 				</tr>

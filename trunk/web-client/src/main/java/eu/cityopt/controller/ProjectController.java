@@ -403,9 +403,19 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="start",method=RequestMethod.GET)
-	public String getStart(Model model){
+	public String getStart(Model model, HttpServletRequest request) {
 	
-		return "start";
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
+		
+		if (true)
+		{
+			return "start";
+		}
+		else
+		{
+			return "index";
+		}
 	}
 
 	@RequestMapping(value="deleteproject",method=RequestMethod.GET)
@@ -2462,8 +2472,8 @@ public class ProjectController {
 			e.printStackTrace();
 		}
 		
-		List<ComponentInputParamDTO> componentInputParamVals = componentInputParamService.findAllByComponentId(componentID);
-		model.put("componentInputParamVals", componentInputParamVals);
+		List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(componentID, scenario.getScenid());
+		model.put("inputParamVals", inputParamVals);
 		
 		model.put("project", project);
 		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
