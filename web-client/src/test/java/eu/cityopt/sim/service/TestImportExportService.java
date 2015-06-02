@@ -1,5 +1,6 @@
 package eu.cityopt.sim.service;
 
+import java.io.InputStream;
 import java.nio.file.Path;
 
 import javax.inject.Inject;
@@ -74,9 +75,8 @@ public class TestImportExportService extends SimulationTestBase {
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testImportProjectStructure() throws Exception {
         Project project = projectRepository.findByName("Empty test project").get(0);
-        try (TempDir tempDir = new TempDir("testimport")) {
-            Path problemPath = copyResource("/test-problem.csv", tempDir);
-            importExportService.importSimulationStructure(project.getPrjid(), problemPath);
+        try (InputStream in = getClass().getResource("/test-problem.csv").openStream()) {
+            importExportService.importSimulationStructure(project.getPrjid(), in);
         }
         dumpTables("import_structure");
     }
