@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -336,7 +337,8 @@ public class ProjectController {
 				importExportService.importSimulationModel(project.getPrjid(), 0, "Imported evergy model " + Instant.now(), bytes, simulatorName, timeOrigin);
 				importExportService.importModelInputsAndOutputs(project.getPrjid(), 0);
 				
-				//return "You successfully uploaded file=" + name;
+				//Path path = new Path(file.getOriginalFilename());
+				//importExportService.importSimulationStructure(project.getPrjid(), path);
 	        } catch (Exception e) {
 	            return "You failed to upload => " + e.getMessage();
 	        }
@@ -468,20 +470,21 @@ public class ProjectController {
 			for (int i = 0; i < components.size(); i++)
 			{
 				ComponentDTO component = components.get(i);
-				List<ComponentInputParamDTO> listComponentInputParams = componentInputParamService.findAllByComponentId(component.getComponentid());
+				//List<ComponentInputParamDTO> listComponentInputParams = componentInputParamService.findAllByComponentId(component.getComponentid());
 				
-				for (int j = 0; j < listComponentInputParams.size(); j++)
+				Set<InputParameterDTO> setInputParams = componentService.getInputParameters(component.getComponentid());
+				Iterator<InputParameterDTO> iter = setInputParams.iterator();
+				
+				while(iter.hasNext())
 				{
-					try {
-						InputParameterDTO inputParam = inputParamService.findByID(listComponentInputParams.get(j).getInputid());
-						InputParamValDTO inputParamVal = new InputParamValDTO();
-						inputParamVal.setInputparameter(inputParam);
-						inputParamVal.setValue(inputParam.getDefaultvalue());
-						inputParamVal.setScenario(scenario);
-						inputParamVal = inputParamValService.save(inputParamVal);
-					} catch (EntityNotFoundException e) {
-						e.printStackTrace();
-					}
+					InputParameterDTO inputParam = iter.next();
+					
+					//InputParameterDTO inputParam = inputParamService.findByID(setInputParams.get(j).getInputid());
+					InputParamValDTO inputParamVal = new InputParamValDTO();
+					inputParamVal.setInputparameter(inputParam);
+					inputParamVal.setValue(inputParam.getDefaultvalue());
+					inputParamVal.setScenario(scenario);
+					inputParamVal = inputParamValService.save(inputParamVal);
 				}
 			}
 			
@@ -704,8 +707,9 @@ public class ProjectController {
 			//model.put("selectedcompid", selectedCompId);
 			model.put("selectedComponent",  selectedComponent);
 
-			List<ComponentInputParamDTO> componentInputParamVals = componentInputParamService.findAllByComponentId(nSelectedCompId);
-			model.put("componentInputParamVals", componentInputParamVals);
+			List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
+			//List<ComponentInputParamDTO> componentInputParamVals = componentInputParamService.findAllByComponentId(nSelectedCompId);
+			model.put("inputParamVals", inputParamVals);
 		}
 
 		model.put("project", project);
