@@ -72,6 +72,16 @@ public class TestSimulationService extends SimulationTestBase {
     }
 
     @Test
+    @DatabaseSetup("classpath:/testData/plumbing_scenario_noext.xml")
+    @ExpectedDatabase(value="classpath:/testData/plumbing_noext_result.xml",
+        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testPlumbing_noExt() throws Exception {
+        loadModel("Plumbing test model", "/plumbing.zip");
+        runSimulation();
+        dumpTables("plumbing_noext");
+    }
+
+    @Test
     @DatabaseSetup("classpath:/testData/plumbing_scenario.xml")
     @ExpectedDatabase(value="classpath:/testData/plumbing_metrics_result.xml",
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)

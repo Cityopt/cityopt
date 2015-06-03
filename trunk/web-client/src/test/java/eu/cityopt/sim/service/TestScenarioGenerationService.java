@@ -85,6 +85,16 @@ public class TestScenarioGenerationService extends SimulationTestBase {
     }
 
     @Test
+    @DatabaseSetup("classpath:/testData/plumbing_scengen_noext.xml")
+    @ExpectedDatabase(value="classpath:/testData/plumbing_ga_noext_result.xml",
+        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testPlumbingGA_noExt() throws Exception {
+        loadModel("Plumbing test model", "/plumbing.zip");
+        runScenarioGeneration("genetic algorithm");
+        dumpTables("plumbing_ga_noext");
+    }
+
+    @Test
     @DatabaseSetup("classpath:/testData/plumbing_scengen_error.xml")
     public void testPumbingGA_SyntaxError() throws Exception {
         loadModel("Plumbing test model", "/plumbing.zip");
