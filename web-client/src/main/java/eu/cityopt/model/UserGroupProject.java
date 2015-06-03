@@ -39,7 +39,8 @@ public class UserGroupProject implements java.io.Serializable {
 		this.appuser = appuser;
 	}
 
-	@SequenceGenerator(name="usergroupproject_usergroupprojectid_seq",sequenceName="usergroupproject_usergroupprojectid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="usergroupproject_usergroupprojectid_seq")
+	@SequenceGenerator(name="usergroupproject_usergroupprojectid_seq",sequenceName="usergroupproject_usergroupprojectid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="usergroupproject_usergroupprojectid_seq")
 	@Id
 	@Column(name = "usergroupprojectid", unique = true, nullable = false)
 	public Integer getUsergroupprojectid() {

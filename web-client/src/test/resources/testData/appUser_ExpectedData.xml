@@ -2,12 +2,7 @@
 
 <dataset>
 	<appuser name="Michael" password="s1cher"/>
-
-	<appuser name="Florian" password="s3curity" />	
-
-	<project prjid="1" name="My test project"/>
-	
-	<usergroup name="Administrator"/>
-	
+	<appuser name="Florian" password="s3curity" />
+	<appuser name="Sepp" password="Seppensicher"/>	
 
 </dataset>

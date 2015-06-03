@@ -1,9 +1,9 @@
 package eu.cityopt.repository;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -67,30 +67,6 @@ public class UserGroupProjectRepositoryTest {
 
 	@Before
 	public void setUp() throws Exception {
-
-//		userGroupProjectRepository.deleteAll();
-//				
-//		userGroupRepository.deleteAll();
-//		
-//		userRepository.deleteAll();
-//		
-//		projectRepository.deleteAll();
-//		
-//		Project project = new Project();
-//		project.setName("My test project");
-//		
-//		projectRepository.save(project);
-//		
-//		UserGroup usergroup = new UserGroup();
-//		usergroup.setName("Administrator");
-//		
-//		userGroupRepository.save(usergroup);
-//		
-//		AppUser appuser = new AppUser();
-//		appuser.setName("Flo");		
-//		
-//		userRepository.save(appuser);
-		
 	}
 
 	@After
@@ -101,7 +77,7 @@ public class UserGroupProjectRepositoryTest {
 	@Rollback(true)
 	public void CreateUserGroupRelation() {
 		
-		List<Project> projects = projectRepository.findByName("My test project");
+		List<Project> projects = projectRepository.findByName("Sample Project Helsinki");
 		List<UserGroup> groups = userGroupRepository.findByGroupNameContaining("Administrator");
 		List<AppUser> user = userRepository.findByUserName("Flo");
 		
@@ -111,9 +87,10 @@ public class UserGroupProjectRepositoryTest {
 		usergroupproject.setProject(projects.get(0));		
 		usergroupproject.setUsergroup(groups.get(0));
 		
-		userGroupProjectRepository.saveAndFlush(usergroupproject);
+		usergroupproject = userGroupProjectRepository.saveAndFlush(usergroupproject);
 		
 		assertNotEquals((Integer) 0, usergroupproject.getUsergroupprojectid());
+		assertEquals(2, userGroupProjectRepository.findByUser(3).size());
 	}
 	
 	
@@ -153,25 +130,20 @@ public class UserGroupProjectRepositoryTest {
 	@Rollback(true)
 	public void UpdateUserGroupRelation2() {
 		
-		List<Project> projects = projectRepository.findByName("My test project");
+		List<Project> projects = projectRepository.findByName("Sample Project Helsinki");
 		List<UserGroup> groups = userGroupRepository.findByGroupNameContaining("Administrator");
 		List<AppUser> user = userRepository.findByUserName("Flo");
 		
-		UserGroupProject usergroupproject = new UserGroupProject();
+		Optional<UserGroupProject> ugp = userGroupProjectRepository.findByUser(3).stream().filter(i -> i.getProject().getPrjid() == 1).findFirst();
 		
-		usergroupproject.setAppuser(user.get(0));
-		usergroupproject.setProject(projects.get(0));		
-		usergroupproject.setUsergroup(groups.get(0));
+		assertTrue(ugp.isPresent());
+		UserGroupProject ugpI = ugp.get();
+		ugpI.setProject(projects.get(0));
 		
-		userGroupProjectRepository.saveAndFlush(usergroupproject);
+		userGroupProjectRepository.saveAndFlush(ugpI);
 		
-		Project project = new Project();
-		project.setName("New interesting project");
-		
-		String before = usergroupproject.getProject().getName();
-		usergroupproject.setProject(project);
-						
-		assertNotEquals(before,usergroupproject.getProject().getName());
+		ugp = userGroupProjectRepository.findByUser(3).stream().filter(i -> i.getProject().getPrjid() == 1).findFirst();
+		assertFalse(ugp.isPresent());
 	}
 	
 	

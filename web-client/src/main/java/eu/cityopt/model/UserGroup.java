@@ -5,6 +5,7 @@ package eu.cityopt.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -63,7 +64,7 @@ public class UserGroup implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usergroup")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usergroup", cascade=CascadeType.REMOVE)
 	public Set<UserGroupProject> getUsergroupprojects() {
 		return this.usergroupprojects;
 	}
