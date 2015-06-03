@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.inject.Inject;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SequenceWriter;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
@@ -21,6 +23,7 @@ public class CsvTimeSeriesWriter {
     private final CsvMapper mapper;
     private boolean numeric = false;
 
+    @Inject
     public CsvTimeSeriesWriter(CsvMapper mapper) {
         this.mapper = mapper;
     }
