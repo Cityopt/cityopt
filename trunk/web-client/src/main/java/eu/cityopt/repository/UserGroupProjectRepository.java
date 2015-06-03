@@ -15,14 +15,14 @@ public interface UserGroupProjectRepository extends JpaRepository<UserGroupProje
 
 	@Query("select u from UserGroupProject u "
 			+ " where u.usergroup.usergroupid = :groupId")
-	List<UserGroupProjectDTO> findByGroup(@Param("groupId") int groupId);
+	List<UserGroupProject> findByGroup(@Param("groupId") int groupId);
 
 	@Query("select u from UserGroupProject u "
 			+ " where u.project.prjid = :prjId")
-	List<UserGroupProjectDTO> findByProject(@Param("prjId") int prjId);
+	List<UserGroupProject> findByProject(@Param("prjId") int prjId);
 
 	@Query("select u from UserGroupProject u "
 			+ " where u.appuser.userid = :userId")
-	List<UserGroupProjectDTO> findByUser(@Param("userId") int userId);
+	List<UserGroupProject> findByUser(@Param("userId") int userId);
 	
 }

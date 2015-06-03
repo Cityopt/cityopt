@@ -85,15 +85,6 @@ public class AppUserRepositoryTest {
 	
 	@Test
 	@Rollback(true)
-	public void authenticateUser() {
-		AppUser appuser = appuserRepository.authenticateUser("Michael", "s1cher");
-		
-		assertNotNull(appuser);
-		assertNotNull(appuser.getUserid());
-	}
-	
-	@Test
-	@Rollback(true)
 	public void authenticateUser_WrongCredentials() {
 		AppUser appuser = appuserRepository.authenticateUser("Michael", "s1cherhe1t");
 		

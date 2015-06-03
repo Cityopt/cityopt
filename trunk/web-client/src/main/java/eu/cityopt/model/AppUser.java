@@ -5,6 +5,7 @@ package eu.cityopt.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -45,7 +46,8 @@ public class AppUser implements java.io.Serializable {
 		this.usergroupprojects = usergroupprojects;
 	}
 
-	@SequenceGenerator(name="appuser_userid_seq",sequenceName="appuser_userid_seq") @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="appuser_userid_seq")
+	@SequenceGenerator(name="appuser_userid_seq",sequenceName="appuser_userid_seq") 
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="appuser_userid_seq")
 	@Id
 	@Column(name = "userid", unique = true, nullable = false)
 	public int getUserid() {
@@ -74,7 +76,7 @@ public class AppUser implements java.io.Serializable {
 		this.password = password;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appuser")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appuser", cascade=CascadeType.REMOVE)
 	public Set<UserGroupProject> getUsergroupprojects() {
 		return this.usergroupprojects;
 	}
