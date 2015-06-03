@@ -39,6 +39,22 @@
 					<td>
 						<table>
 							<tr>
+								<td><i>Scenario simulation status: ${status}</i></td>
+							</tr>
+							<c:choose>
+								<c:when test="${error != null && !error.isEmpty()}">
+									<tr>
+										<td><i>Error in simulation: ${error}</i></td>
+									</tr>
+								</c:when>
+								<c:otherwise>
+								</c:otherwise>
+							</c:choose>
+				
+							<tr height="10">
+							</tr>
+							
+							<tr>
 								<td>
 									<b>Scenarios</b>
 								</td>
