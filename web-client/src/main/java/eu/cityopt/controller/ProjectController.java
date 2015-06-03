@@ -501,6 +501,10 @@ public class ProjectController {
 			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 			model.put("inputParamVals", inputParamVals);
 
+			UserSession userSession = (UserSession) model.get("usersession");
+			userSession = new UserSession();
+			model.put("usersession", userSession);
+
 			model.put("scenario", scenario);
 			return "editscenario";
 		}
@@ -539,6 +543,10 @@ public class ProjectController {
 			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 			model.put("inputParamVals", inputParamVals);
 		
+			UserSession userSession = (UserSession) model.get("usersession");
+			userSession = new UserSession();
+			model.put("usersession", userSession);
+			
 			return "editscenario";
 		}
 		else
@@ -978,6 +986,7 @@ public class ProjectController {
 		{
 			userSession = new UserSession();
 		}
+		model.put("usersession", userSession);
 		
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
@@ -1170,6 +1179,8 @@ public class ProjectController {
 			userSession = new UserSession();
 		}
 		
+		model.put("usersession", userSession);
+		
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
 		
@@ -1297,6 +1308,8 @@ public class ProjectController {
 		{
 			userSession = new UserSession();
 		}
+		
+		model.put("usersession", userSession);
 		
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
@@ -1774,6 +1787,8 @@ public class ProjectController {
 			userSession = new UserSession();
 		}
 
+		model.put("usersession", userSession);
+
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
 		
@@ -2007,6 +2022,8 @@ public class ProjectController {
 		{
 			userSession = new UserSession();
 		}
+
+		model.put("usersession", userSession);
 
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
@@ -3301,6 +3318,8 @@ public class ProjectController {
 			userSession = new UserSession();
 		}
 
+		model.put("usersession", userSession);
+
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
@@ -3545,8 +3564,14 @@ public class ProjectController {
 	public void renderChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
 		UserSession userSession = (UserSession) model.get("usersession");
 
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+		
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		int nScenId = scenario.getScenid();
 		
 		Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
 	    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
@@ -3557,7 +3582,7 @@ public class ProjectController {
 	    
 			try {
 				OutputVariableDTO outputVar = outputVarService.findByID(outputVarId);
-				SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, scenario.getScenid());
+				SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, nScenId);
 					
 				List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
 				TimeSeries timeSeries = new TimeSeries(outputVar.getName());
