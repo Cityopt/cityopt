@@ -20,7 +20,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "scengenobjectivefunction", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"scengenid", "optfunctionid" }))
-public class ScenGenObjectiveFunction implements java.io.Serializable {
+public class ScenGenObjectiveFunction extends VersionModel implements java.io.Serializable {
 
 	private Integer sgobfunctionid;
 	private ObjectiveFunction objectivefunction;

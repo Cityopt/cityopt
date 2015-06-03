@@ -25,7 +25,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "inputparamval", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"scenid", "inputid" }))
-public class InputParamVal implements java.io.Serializable {
+public class InputParamVal extends VersionModel implements java.io.Serializable {
 
 	private int inputparamvalid;
 	private DataReliability datareliability;

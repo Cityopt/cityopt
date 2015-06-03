@@ -19,7 +19,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "decisionvariableresult", schema = "public")
-public class DecisionVariableResult implements java.io.Serializable {
+public class DecisionVariableResult extends VersionModel implements java.io.Serializable {
 
 	private int decvarresultid;
 	private DecisionVariable decisionvariable;

@@ -7,7 +7,7 @@ import eu.cityopt.model.TimeSeriesVal;
 import lombok.Getter;
 import lombok.Setter;
 
-public class TimeSeriesDTO {
+public class TimeSeriesDTO extends BaseDTO {
 
 	@Getter @Setter private int tseriesid;
 	@Getter @Setter private TypeDTO type;

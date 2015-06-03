@@ -6,7 +6,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
-public class AlgorithmDTO {
+public class AlgorithmDTO  extends BaseDTO{
 
 	@Getter @Setter private int algorithmid;
 	@Getter @Setter private String description;

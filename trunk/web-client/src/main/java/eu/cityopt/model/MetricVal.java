@@ -19,7 +19,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "metricval", schema = "public")
-public class MetricVal implements java.io.Serializable {
+public class MetricVal extends VersionModel implements java.io.Serializable {
 
 	private long metricvalid;
 	private Metric metric;

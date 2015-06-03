@@ -28,7 +28,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "scenario", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"prjid", "name" }))
-public class Scenario implements java.io.Serializable {
+public class Scenario extends VersionModel implements java.io.Serializable {
 
 	private int scenid;
 	private Project project;

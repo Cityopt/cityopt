@@ -3,7 +3,7 @@ package eu.cityopt.DTO;
 import lombok.Getter;
 import lombok.Setter;
 
-public class OutputVariableDTO {
+public class OutputVariableDTO extends BaseDTO {
 
 	@Getter @Setter private int outvarid;
 	@Getter @Setter private ComponentDTO component;

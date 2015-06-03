@@ -3,7 +3,7 @@ package eu.cityopt.DTO;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ScenGenObjectiveFunctionDTO {
+public class ScenGenObjectiveFunctionDTO extends BaseDTO {
 
 	@Getter @Setter private Integer sgobfunctionid;
 	@Getter @Setter private ObjectiveFunctionDTO objectivefunction;

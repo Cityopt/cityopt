@@ -5,7 +5,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
-public class TypeDTO {
+public class TypeDTO extends BaseDTO {
 
 	@Getter @Setter private int typeid;
 	@Getter @Setter private String name;

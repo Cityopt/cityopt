@@ -3,7 +3,7 @@ package eu.cityopt.DTO;
 import lombok.Getter;
 import lombok.Setter;
 
-public class MetricDTO {
+public class MetricDTO  extends BaseDTO{
 	@Getter @Setter private int metid;
 	@Getter @Setter private UnitDTO unit;
 	@Getter @Setter private TypeDTO type;

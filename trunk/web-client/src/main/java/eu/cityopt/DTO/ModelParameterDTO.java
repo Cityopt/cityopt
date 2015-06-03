@@ -3,7 +3,7 @@ package eu.cityopt.DTO;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ModelParameterDTO {
+public class ModelParameterDTO  extends BaseDTO{
 
 	@Getter @Setter private int modelparamid;
 	@Getter @Setter private InputParameterDTO inputparameter;

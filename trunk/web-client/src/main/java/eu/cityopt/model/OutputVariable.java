@@ -23,7 +23,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "outputvariable", schema = "public")
-public class OutputVariable implements java.io.Serializable {
+public class OutputVariable extends VersionModel implements java.io.Serializable {
 
 	private int outvarid;
 	private Component component;

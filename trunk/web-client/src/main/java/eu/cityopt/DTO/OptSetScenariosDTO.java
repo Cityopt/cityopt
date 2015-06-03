@@ -3,7 +3,7 @@ package eu.cityopt.DTO;
 import lombok.Getter;
 import lombok.Setter;
 
-public class OptSetScenariosDTO {
+public class OptSetScenariosDTO extends BaseDTO {
 
 	@Getter @Setter private int optscenid;
 	@Getter @Setter private OptimizationSetDTO optimizationset;

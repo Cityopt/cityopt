@@ -8,7 +8,7 @@ import eu.cityopt.model.TimeSeries;
 import lombok.Getter;
 import lombok.Setter;
 
-public class SimulationResultDTO {
+public class SimulationResultDTO extends BaseDTO {
 
 	@Getter @Setter private int simresid;
 	@Getter @Setter private OutputVariableDTO outputvariable;

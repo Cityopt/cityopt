@@ -20,7 +20,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "modelparameter", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"scengenid", "inputid" }))
-public class ModelParameter implements java.io.Serializable {
+public class ModelParameter extends VersionModel implements java.io.Serializable {
 
 	private int modelparamid;
 	private InputParameter inputparameter;

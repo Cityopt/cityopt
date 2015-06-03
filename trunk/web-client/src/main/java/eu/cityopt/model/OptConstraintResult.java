@@ -19,7 +19,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "optconstraintresult", schema = "public")
-public class OptConstraintResult implements java.io.Serializable {
+public class OptConstraintResult extends VersionModel implements java.io.Serializable {
 
 	private int optconstresultid;
 	private OptConstraint optconstraint;

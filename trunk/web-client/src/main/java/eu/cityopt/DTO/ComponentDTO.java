@@ -7,7 +7,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ComponentDTO {
+public class ComponentDTO  extends BaseDTO{
 	@Getter @Setter private int componentid;
 	@Getter @Setter private ProjectDTO project;
 	@Getter @Setter private String name;

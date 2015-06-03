@@ -21,7 +21,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "type", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
-public class Type implements java.io.Serializable {
+public class Type extends VersionModel implements java.io.Serializable {
 
 	private int typeid;
 	private String name;

@@ -3,7 +3,7 @@ package eu.cityopt.DTO;
 import lombok.Getter;
 import lombok.Setter;
 
-public class AlgoParamValDTO {
+public class AlgoParamValDTO extends BaseDTO{
 
 	@Getter @Setter private int aparamvalid;
 	@Getter @Setter private ScenarioGeneratorDTO scenariogenerator;

@@ -26,7 +26,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "optimizationset", schema = "public")
-public class OptimizationSet implements java.io.Serializable {
+public class OptimizationSet extends VersionModel implements java.io.Serializable {
 
 	private int optid;
 	private ExtParamValSet extparamvalset;

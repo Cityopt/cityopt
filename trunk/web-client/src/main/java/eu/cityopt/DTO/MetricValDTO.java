@@ -3,7 +3,7 @@ package eu.cityopt.DTO;
 import lombok.Getter;
 import lombok.Setter;
 
-public class MetricValDTO {
+public class MetricValDTO  extends BaseDTO{
 
 	@Getter @Setter private int metricvalid;
 	@Getter @Setter private MetricDTO metric;

@@ -23,7 +23,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "scengenresult", schema = "public")
-public class ScenGenResult implements java.io.Serializable {
+public class ScenGenResult extends VersionModel implements java.io.Serializable {
 
 	private int scengenresultid;
 	private Scenario scenario;

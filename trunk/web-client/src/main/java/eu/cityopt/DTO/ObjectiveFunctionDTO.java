@@ -5,7 +5,7 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ObjectiveFunctionDTO {
+public class ObjectiveFunctionDTO  extends BaseDTO{
 
 	@Getter @Setter private int obtfunctionid;
 	@Getter @Setter private TypeDTO type;
