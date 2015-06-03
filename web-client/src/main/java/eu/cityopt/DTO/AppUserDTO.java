@@ -3,7 +3,7 @@ package eu.cityopt.DTO;
 import lombok.Getter;
 import lombok.Setter;
 
-public class AppUserDTO {
+public class AppUserDTO  extends BaseDTO{
 	@Getter @Setter private int userid;
 	@Getter @Setter private String name;
 	@Getter @Setter private String password;

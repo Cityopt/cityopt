@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import eu.cityopt.model.Type;
 
-public class UnitDTO {
+public class UnitDTO extends BaseDTO {
 	@Getter @Setter private int unitid;
 	@Getter @Setter private String name;
 //	@Getter @Setter private Set<ExtParam> extparams = new HashSet<ExtParam>(0);

@@ -10,7 +10,7 @@ import eu.cityopt.model.Scenario;
 import lombok.Getter;
 import lombok.Setter;
 
-public class OptimizationSetDTO {
+public class OptimizationSetDTO extends BaseDTO {
 
 	@Getter @Setter private int optid;
 	@Getter @Setter private ObjectiveFunctionDTO objectivefunction;

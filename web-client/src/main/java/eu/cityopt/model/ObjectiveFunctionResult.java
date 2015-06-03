@@ -19,7 +19,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "objectivefunctionresult", schema = "public")
-public class ObjectiveFunctionResult implements java.io.Serializable {
+public class ObjectiveFunctionResult extends VersionModel implements java.io.Serializable {
 
 	private int objectivefunctionresultid;
 	private ObjectiveFunction objectivefunction;

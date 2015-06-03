@@ -20,7 +20,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "extparamvalset", schema = "public")
-public class ExtParamValSet implements java.io.Serializable {
+public class ExtParamValSet extends VersionModel implements java.io.Serializable {
 
 	private int extparamvalsetid;
 	private String name;
@@ -71,7 +71,7 @@ public class ExtParamValSet implements java.io.Serializable {
 		this.name = name;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "extparamvalset")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "defaultextparamvalset")
 	public Set<Project> getProjects() {
 		return this.projects;
 	}

@@ -7,7 +7,7 @@ import eu.cityopt.model.ExtParamValSet;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ProjectDTO {
+public class ProjectDTO extends BaseDTO{
 
 		@Getter @Setter private int prjid;
 		@Getter @Setter private ExtParamValSetDTO extparamvalset;
@@ -22,7 +22,6 @@ public class ProjectDTO {
 		@Getter @Setter private Date updatedon;
 		@Getter @Setter private Integer createdby;
 		@Getter @Setter private Integer updatedby;
-		@Getter @Setter private int version;
 //		private Set<ObjectiveFunction> objectivefunctions = new HashSet<ObjectiveFunction>(
 //				0);
 		//@MappedBy(typeConverter = "scenarioToList")

@@ -24,7 +24,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "unit", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
-public class Unit implements java.io.Serializable {
+public class Unit extends VersionModel implements java.io.Serializable {
 
 	private int unitid;
 	private String name;

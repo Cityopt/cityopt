@@ -20,7 +20,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "extparamvalsetcomp", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"extparamvalsetid", "extparamvalid" }))
-public class ExtParamValSetComp implements java.io.Serializable {
+public class ExtParamValSetComp extends VersionModel implements java.io.Serializable {
 
 	private int id;
 	private ExtParamVal extparamval;

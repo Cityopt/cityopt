@@ -21,7 +21,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "simulationresult", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"scenid", "outvarid" }))
-public class SimulationResult implements java.io.Serializable {
+public class SimulationResult extends VersionModel implements java.io.Serializable {
 	
 	private int simresid;
 	private OutputVariable outputvariable;

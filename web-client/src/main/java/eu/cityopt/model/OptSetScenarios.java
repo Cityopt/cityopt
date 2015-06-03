@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "optsetscenarios", schema = "public")
-public class OptSetScenarios implements java.io.Serializable {
+public class OptSetScenarios extends VersionModel implements java.io.Serializable {
 
 	private int optscenid;
 	private OptimizationSet optimizationset;

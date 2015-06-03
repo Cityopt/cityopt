@@ -3,7 +3,7 @@ package eu.cityopt.DTO;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ScenarioMetricsDTO {
+public class ScenarioMetricsDTO extends BaseDTO {
 
 	@Getter @Setter private int scenmetricid;
 	@Getter @Setter private ScenarioDTO scenario;

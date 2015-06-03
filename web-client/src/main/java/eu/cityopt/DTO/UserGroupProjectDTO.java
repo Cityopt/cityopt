@@ -10,7 +10,7 @@ import lombok.Setter;
  * @author Michael
  *
  */
-public class UserGroupProjectDTO {
+public class UserGroupProjectDTO extends BaseDTO {
 
 	@Getter @Setter private Integer usergroupprojectid;
 	@Getter @Setter private UserGroupDTO usergroup;

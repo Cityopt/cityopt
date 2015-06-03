@@ -3,7 +3,7 @@ package eu.cityopt.DTO;
 import lombok.Getter;
 import lombok.Setter;
 
-public class OptConstraintDTO {
+public class OptConstraintDTO extends BaseDTO {
 
 	@Getter @Setter private int optconstid;
 	@Getter @Setter private ProjectDTO project;

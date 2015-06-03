@@ -248,7 +248,8 @@ CREATE TABLE AlgoParam
 	aParamsID integer NOT NULL DEFAULT nextval(('algoparam_aparamsid_seq'::text)::regclass),
 	algorithmID integer,
 	defaultValue text,
-	name varchar(50)	
+	name varchar(50)	,
+	version integer
 )
 ;
 
@@ -257,14 +258,16 @@ CREATE TABLE AlgoParamVal
 	aParamValID integer NOT NULL DEFAULT nextval(('algoparamval_aparamvalid_seq'::text)::regclass),
 	aParamsID integer NOT NULL,
 	aScenGenID integer NOT NULL,
-	value text
+	value text,
+	version integer
 )
 ;
 
 CREATE TABLE Algorithm
 (
 	algorithmID integer NOT NULL DEFAULT nextval(('algorithm_algorithmid_seq'::text)::regclass),
-	description text
+	description text,
+	version integer
 )
 ;
 
@@ -272,7 +275,8 @@ CREATE TABLE AppUser
 (
 	userID integer NOT NULL DEFAULT nextval(('appuser_userid_seq'::text)::regclass),
 	name varchar(50)	 NOT NULL,
-	password varchar(50)	
+	password varchar(50)	,
+	version integer
 )
 ;
 
@@ -282,14 +286,16 @@ CREATE TABLE Component
 	prjID integer NOT NULL,
 	name varchar(50)	 NOT NULL,
 	alias varchar(50)	,
-	geometryBlob geometry
+	geometryBlob geometry,
+	version integer
 )
 ;
 
 CREATE TABLE DataReliability
 (
 	dataRelID integer NOT NULL DEFAULT nextval(('datareliability_datarelid_seq'::text)::regclass),
-	dataRelDesc varchar(50)	
+	dataRelDesc varchar(50)	,
+	version integer
 )
 ;
 
@@ -301,7 +307,8 @@ CREATE TABLE DecisionVariable
 	lowerBound text,
 	upperBound text,
 	typeID integer,
-	inputID integer
+	inputID integer,
+	version integer
 )
 ;
 
@@ -310,7 +317,8 @@ CREATE TABLE DecisionVariableResult
 	decVarResultID integer NOT NULL DEFAULT nextval(('decisionvariableresult_decvarresultid_seq'::text)::regclass),
 	value text,
 	scenGenResultID integer NOT NULL,
-	decisionVarID integer
+	decisionVarID integer,
+	version integer
 )
 ;
 
@@ -320,7 +328,8 @@ CREATE TABLE ExtParam
 	prjID integer,
 	name varchar(50)	,
 	typeID integer,
-	unitID integer
+	unitID integer,
+	version integer
 )
 ;
 
@@ -330,14 +339,16 @@ CREATE TABLE ExtParamVal
 	extParamID integer,
 	value text,
 	comment text,
-	tSeriesID integer
+	tSeriesID integer,
+	version integer
 )
 ;
 
 CREATE TABLE ExtParamValSet
 (
 	extParamValSetID integer NOT NULL DEFAULT nextval(('extparamvalset_extparamvalsetid_seq'::text)::regclass),
-	name varchar(50)	
+	name varchar(50)	,
+	version integer
 )
 ;
 
@@ -345,7 +356,8 @@ CREATE TABLE extParamValSetComp
 (
 	id integer NOT NULL DEFAULT nextval(('extparamvalsetcomp_id_seq'::text)::regclass),
 	extParamValSetID integer,
-	extParamValID integer
+	extParamValID integer,
+	version integer
 )
 ;
 
@@ -357,7 +369,8 @@ CREATE TABLE InputParameter
 	componentID integer,
 	defaultValue text,
 	typeID integer,
-	unitID integer
+	unitID integer,
+	version integer
 )
 ;
 
@@ -371,7 +384,8 @@ CREATE TABLE InputParamVal
 	updatedOn timestamp,
 	createdBy integer,
 	updatedBy integer,
-	dataRelID integer
+	dataRelID integer,
+	version integer
 )
 ;
 
@@ -382,7 +396,8 @@ CREATE TABLE Metric
 	name varchar(50)	,
 	expression text,
 	typeID integer,
-	unitID integer
+	unitID integer,
+	version integer
 )
 ;
 
@@ -392,7 +407,8 @@ CREATE TABLE MetricVal
 	metID integer NOT NULL,
 	scenMetricID integer NOT NULL,
 	value text,
-	tSeriesID integer
+	tSeriesID integer,
+	version integer
 )
 ;
 
@@ -402,7 +418,8 @@ CREATE TABLE ModelParameter
 	scenGenID integer NOT NULL,
 	inputID integer NOT NULL,
 	expression text,
-	value text
+	value text,
+	version integer
 )
 ;
 
@@ -414,7 +431,8 @@ CREATE TABLE ObjectiveFunction
 	name varchar(50)	,
 	expression text,
 	isMaximise boolean,
-	executedAt timestamp
+	executedAt timestamp,
+	version integer
 )
 ;
 
@@ -423,7 +441,8 @@ CREATE TABLE ObjectiveFunctionResult
 	objectiveFunctionResultID integer NOT NULL DEFAULT nextval(('objectivefunctionresult_objectivefunctionresultid_seq'::text)::regclass),
 	scenGenResultID integer NOT NULL,
 	obtFunctionID integer,
-	value text
+	value text,
+	version integer
 )
 ;
 
@@ -434,7 +453,8 @@ CREATE TABLE OptConstraint
 	name varchar(50)	,
 	expression text,
 	lowerBound text,
-	upperBound text
+	upperBound text,
+	version integer
 )
 ;
 
@@ -443,7 +463,8 @@ CREATE TABLE OptConstraintResult
 	optConstResultID integer NOT NULL DEFAULT nextval(('optconstraintresult_optconstresultid_seq'::text)::regclass),
 	optConstID integer,
 	scenGenResultID integer NOT NULL,
-	infeasibility text
+	infeasibility text,
+	version integer
 )
 ;
 
@@ -459,7 +480,8 @@ CREATE TABLE OptimizationSet
 	optStart timestamp,
 	scenID integer,
 	extParamValSetID integer,
-	name varchar(50)	
+	name varchar(50)	,
+	version integer
 )
 ;
 
@@ -467,7 +489,8 @@ CREATE TABLE OptSearchConst
 (
 	optSearchConstID integer NOT NULL DEFAULT nextval(('optsearchconst_optsearchconstid_seq'::text)::regclass),
 	optID integer NOT NULL,
-	optConstID integer
+	optConstID integer,
+	version integer
 )
 ;
 
@@ -476,7 +499,8 @@ CREATE TABLE OptSetScenarios
 	optScenID integer NOT NULL DEFAULT nextval(('optsetscenarios_optscenid_seq'::text)::regclass),
 	optID integer,
 	value text,
-	scenID integer NOT NULL
+	scenID integer NOT NULL,
+	version integer
 )
 ;
 
@@ -488,7 +512,8 @@ CREATE TABLE OutputVariable
 	selected boolean,
 	componentID integer,
 	typeID integer,
-	unitID integer
+	unitID integer,
+	version integer
 )
 ;
 
@@ -505,11 +530,10 @@ CREATE TABLE Project
 	createdBy integer,
 	updatedBy integer,
 	description text,
-	defaultExtParamValSetID integer
+	defaultExtParamValSetID integer,
+	version integer
 )
 ;
-
-ALTER TABLE project ADD COLUMN version integer;
 
 CREATE TABLE Scenario
 (
@@ -525,7 +549,8 @@ CREATE TABLE Scenario
 	runStart timestamp,
 	runEnd timestamp,
 	status varchar(50)	,
-	log text
+	log text,
+	version integer
 )
 ;
 
@@ -537,7 +562,8 @@ CREATE TABLE ScenarioGenerator
 	extParamValSetID integer,
 	status varchar(50)	,
 	log text,
-	name varchar(50)	
+	name varchar(50)	,
+	version integer
 )
 ;
 
@@ -545,7 +571,8 @@ CREATE TABLE ScenarioMetrics
 (
 	scenMetricID integer NOT NULL DEFAULT nextval(('scenariometrics_scenmetricid_seq'::text)::regclass),
 	scenID integer,
-	extParamValSetID integer
+	extParamValSetID integer,
+	version integer
 )
 ;
 
@@ -553,7 +580,8 @@ CREATE TABLE ScenGenObjectiveFunction
 (
 	sgObFunctionID integer NOT NULL DEFAULT nextval(('scengenobjectivefunction_sgobfunctionid_seq'::text)::regclass),
 	scenGenID integer NOT NULL,
-	optFunctionID integer NOT NULL
+	optFunctionID integer NOT NULL,
+	version integer
 )
 ;
 
@@ -561,7 +589,8 @@ CREATE TABLE ScenGenOptConstraint
 (
 	sgOptConstraintID integer NOT NULL DEFAULT nextval(('scengenoptconstraint_sgoptconstraintid_seq'::text)::regclass),
 	scenGenID integer,
-	optConstID integer
+	optConstID integer,
+	version integer
 )
 ;
 
@@ -571,7 +600,8 @@ CREATE TABLE ScenGenResult
 	feasible boolean,
 	paretoOptimal boolean,
 	scenGenID integer NOT NULL,
-	scenID integer NOT NULL
+	scenID integer NOT NULL,
+	version integer
 )
 ;
 
@@ -587,7 +617,8 @@ CREATE TABLE SimulationModel
 	updatedOn timestamp,
 	createdBy integer,
 	updatedBy integer,
-	timeOrigin timestamp
+	timeOrigin timestamp,
+	version integer
 )
 ;
 
@@ -596,13 +627,15 @@ CREATE TABLE SimulationResult
 	simResID integer NOT NULL DEFAULT nextval(('simulationresult_simresid_seq'::text)::regclass),
 	scenID integer,
 	outVarID integer,
-	tSeriesID integer
+	tSeriesID integer,
+	version integer
 )
 ;
 
 CREATE TABLE TimeSeries
 (
 	tSeriesID integer NOT NULL DEFAULT nextval(('timeseries_tseriesid_seq'::text)::regclass),
+	version integer,
 	typeID integer
 )
 ;
@@ -612,28 +645,32 @@ CREATE TABLE TimeSeriesVal
 	tSeriesValID integer NOT NULL DEFAULT nextval(('timeseriesval_tseriesvalid_seq'::text)::regclass),
 	tSeriesID integer,
 	value varchar(50)	,
-	time timestamp
+	time timestamp,
+	version integer
 )
 ;
 
 CREATE TABLE Type
 (
 	typeID integer NOT NULL DEFAULT nextval(('type_typeid_seq'::text)::regclass),
-	name varchar(50)	
+	name varchar(50)	,
+	version integer
 )
 ;
 
 CREATE TABLE Unit
 (
 	unitID integer NOT NULL DEFAULT nextval(('unit_unitid_seq'::text)::regclass),
-	name varchar(50)	
+	name varchar(50)	,
+	version integer
 )
 ;
 
 CREATE TABLE UserGroup
 (
 	userGroupID integer NOT NULL DEFAULT nextval(('usergroup_usergroupid_seq'::text)::regclass),
-	name varchar(50)	 NOT NULL
+	name varchar(50)	 NOT NULL,
+	version integer
 )
 ;
 
@@ -642,7 +679,8 @@ CREATE TABLE UserGroupProject
 	usergroupprojectid integer NOT NULL DEFAULT nextval(('usergroupproject_usergroupprojectid_seq'::text)::regclass),
 	userGroupID integer NOT NULL,
 	prjID integer NOT NULL,
-	userID integer NOT NULL
+	userID integer NOT NULL,
+	version integer
 )
 ;
 

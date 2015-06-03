@@ -6,7 +6,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
-public class SimulationModelDTO {
+public class SimulationModelDTO extends BaseDTO {
 
 	@Getter @Setter private int modelid;
 	@Getter @Setter private byte[] modelblob;

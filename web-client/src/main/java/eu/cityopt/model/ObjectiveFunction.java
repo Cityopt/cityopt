@@ -26,7 +26,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "objectivefunction", schema = "public")
-public class ObjectiveFunction implements java.io.Serializable {
+public class ObjectiveFunction extends VersionModel implements java.io.Serializable {
 
 	private int obtfunctionid;
 	private Type type;

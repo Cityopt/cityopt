@@ -23,7 +23,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "metric", schema = "public")
-public class Metric implements java.io.Serializable {
+public class Metric extends VersionModel implements java.io.Serializable {
 
 	private int metid;
 	private Type type;

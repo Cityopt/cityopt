@@ -144,7 +144,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         Namespace namespace = makeProjectNamespace(project);
 
         ExternalParameters externals = loadExternalParametersFromSet(
-                project.getExtparamvalset(), namespace);
+                project.getDefaultextparamvalset(), namespace);
         SimulationInput input = loadSimulationInput(scenario, externals);
         SimulationStorage storage = makeDbSimulationStorage(project.getPrjid(), externals);
 
@@ -343,7 +343,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             ExtParamValSet extParamValSet = extParamValSetRepository.findOne(extParamValSetId);
             return loadExternalParametersFromSet(extParamValSet, namespace);
         } else {
-            return loadExternalParametersFromSet(project.getExtparamvalset(), namespace);
+            return loadExternalParametersFromSet(project.getDefaultextparamvalset(), namespace);
         }
     }
 

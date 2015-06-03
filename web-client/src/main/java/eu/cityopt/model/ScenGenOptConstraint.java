@@ -20,7 +20,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "scengenoptconstraint", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"scengenid", "optconstid" }))
-public class ScenGenOptConstraint implements java.io.Serializable {
+public class ScenGenOptConstraint extends VersionModel implements java.io.Serializable {
 
 	private int sgoptconstraintid;
 	private OptConstraint optconstraint;

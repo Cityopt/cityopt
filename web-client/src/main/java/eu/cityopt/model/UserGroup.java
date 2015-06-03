@@ -22,7 +22,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "usergroup", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
-public class UserGroup implements java.io.Serializable {
+public class UserGroup extends VersionModel implements java.io.Serializable {
 
 	private int usergroupid;
 	private String name;

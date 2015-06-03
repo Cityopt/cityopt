@@ -23,7 +23,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "inputparameter", schema = "public")
-public class InputParameter implements java.io.Serializable {
+public class InputParameter extends VersionModel implements java.io.Serializable {
 
 	private int inputid;
 	private Unit unit;

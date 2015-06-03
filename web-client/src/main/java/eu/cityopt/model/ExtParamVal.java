@@ -23,7 +23,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "extparamval", schema = "public")
-public class ExtParamVal implements java.io.Serializable {
+public class ExtParamVal extends VersionModel implements java.io.Serializable {
 
 	private int extparamvalid;
 	private TimeSeries timeseries;

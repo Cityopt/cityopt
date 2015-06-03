@@ -5,7 +5,7 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
-public class InputParamValDTO {
+public class InputParamValDTO  extends BaseDTO{
 
 	@Getter @Setter private Integer inputparamvalid;
 	@Getter @Setter private DataReliabilityDTO datareliability;

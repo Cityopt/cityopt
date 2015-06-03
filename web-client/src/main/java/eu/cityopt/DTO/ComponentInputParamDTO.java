@@ -3,7 +3,7 @@ package eu.cityopt.DTO;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ComponentInputParamDTO {
+public class ComponentInputParamDTO  extends BaseDTO{
 	@Getter @Setter private int componentid;
 	@Getter @Setter private String componentname;
 	@Getter @Setter private int inputid;

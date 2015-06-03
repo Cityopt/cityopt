@@ -24,7 +24,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "simulationmodel", schema = "public")
-public class SimulationModel implements java.io.Serializable {
+public class SimulationModel extends VersionModel implements java.io.Serializable {
 
 	private int modelid;
 	private byte[] modelblob;

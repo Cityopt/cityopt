@@ -34,10 +34,10 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "project", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
-public class Project implements java.io.Serializable {
+public class Project extends VersionModel implements java.io.Serializable {
 
 	private int prjid;
-	private ExtParamValSet extparamvalset;
+	private ExtParamValSet defaultextparamvalset;
 	private SimulationModel simulationmodel;
 	private String name;
 	private String description;
@@ -61,7 +61,6 @@ public class Project implements java.io.Serializable {
 	private Set<ExtParam> extparams = new HashSet<ExtParam>(0);
 	private Set<OptimizationSet> optimizationsets = new HashSet<OptimizationSet>(
 			0);	
-	private Integer version;
 	
 	public Project() {
 	}
@@ -71,7 +70,7 @@ public class Project implements java.io.Serializable {
 		this.name = name;
 	}
 
-	public Project(int prjid, SimulationModel simulationmodel, ExtParamValSet extparamvalset, String name,
+	public Project(int prjid, SimulationModel simulationmodel, ExtParamValSet defaultextparamvalset, String name,
 			String description, String designtarget, Date timehorizon, String location,
 			Date createdon, Date updatedon, Integer createdby,
 			Integer updatedby, Set<ObjectiveFunction> objectivefunctions,
@@ -80,7 +79,7 @@ public class Project implements java.io.Serializable {
 			Set<Metric> metrics, Set<UserGroupProject> usergroupprojects, 
 			Set<ExtParam> extparams, Set<OptimizationSet> optimizationsets, Integer version) {
 		this.prjid = prjid;
-		this.extparamvalset = extparamvalset;
+		this.defaultextparamvalset = defaultextparamvalset;
 		this.simulationmodel = simulationmodel;
 		this.name = name;
 		this.designtarget = designtarget;
@@ -106,6 +105,7 @@ public class Project implements java.io.Serializable {
 	public Project clone() {
 		Project c = new Project();
 		c.prjid = this.prjid;
+		c.defaultextparamvalset = this.defaultextparamvalset;
 		c.simulationmodel = this.simulationmodel;
 		c.name = this.name;
 		c.description = this.description;
@@ -140,23 +140,14 @@ public class Project implements java.io.Serializable {
 		this.prjid = prjid;
 	}
 	
-	@Version 
-	public Integer getVersion() {
-		return this.version;
-	}
-
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-	
 	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="defaultextparamvalsetid")
-    public ExtParamValSet getExtparamvalset() {
-        return this.extparamvalset;
+    public ExtParamValSet getDefaultextparamvalset() {
+        return this.defaultextparamvalset;
     }
     
-    public void setExtparamvalset(ExtParamValSet extparamvalset) {
-        this.extparamvalset = extparamvalset;
+    public void setDefaultextparamvalset(ExtParamValSet defaultextparamvalset) {
+        this.defaultextparamvalset = defaultextparamvalset;
     }
 
 	@ManyToOne(fetch = FetchType.LAZY,cascade={CascadeType.REMOVE})

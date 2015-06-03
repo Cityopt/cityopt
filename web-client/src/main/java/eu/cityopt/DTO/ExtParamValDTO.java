@@ -3,7 +3,7 @@ package eu.cityopt.DTO;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ExtParamValDTO implements java.io.Serializable {
+public class ExtParamValDTO  extends BaseDTO {
 
 	@Getter @Setter private int extparamvalid;
 	@Getter @Setter private TimeSeriesDTO timeseries;

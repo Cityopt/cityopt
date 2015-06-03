@@ -22,7 +22,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "optconstraint", schema = "public")
-public class OptConstraint implements java.io.Serializable {
+public class OptConstraint extends VersionModel implements java.io.Serializable {
 
 	private int optconstid;
 	private Project project;

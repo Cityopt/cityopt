@@ -27,7 +27,7 @@ import org.hibernate.annotations.Cascade;
 @Entity
 @Table(name = "extparam", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"name", "prjid" }))
-public class ExtParam implements java.io.Serializable {
+public class ExtParam extends VersionModel implements java.io.Serializable {
 
 	private int extparamid;
 	private Type type;

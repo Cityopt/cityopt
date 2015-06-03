@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-public class AlgoParamDTO {
+public class AlgoParamDTO extends BaseDTO{
 
 	@Getter @Setter private int aparamsid;
 	@Getter @Setter private AlgorithmDTO algorithm;

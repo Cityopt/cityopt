@@ -16,7 +16,7 @@ import eu.cityopt.model.Scenario;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ScenarioGeneratorDTO {
+public class ScenarioGeneratorDTO extends BaseDTO {
 
 	@Getter @Setter private int scengenid;
 	@Getter @Setter private AlgorithmDTO algorithm;

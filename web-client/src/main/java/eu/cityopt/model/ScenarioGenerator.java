@@ -23,7 +23,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "scenariogenerator", schema = "public")
-public class ScenarioGenerator implements java.io.Serializable {
+public class ScenarioGenerator extends VersionModel implements java.io.Serializable {
 
 	private int scengenid;
 	private Algorithm algorithm;
