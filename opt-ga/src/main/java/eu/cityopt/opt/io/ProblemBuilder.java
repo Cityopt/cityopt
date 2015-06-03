@@ -39,6 +39,13 @@ public class ProblemBuilder extends SimulationStructureBuilder {
         tsData = tsdata;
     }
     
+    /**
+     * Construct a new OptimisationProblem.
+     * @param model a simulation model reference
+     * @param ns a Namespace for the problem (must be completely populated)
+     * @param tsdata Time series data (must be completely populated).
+     * @see NamespaceBuilder
+     */
     public ProblemBuilder(SimulationModel model, Namespace ns,
                           TimeSeriesData tsdata) {
         this(new OptimisationProblem(model, new ExternalParameters(ns)),
