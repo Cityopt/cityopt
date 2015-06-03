@@ -3273,6 +3273,8 @@ public class ProjectController {
 		}
 		
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		String errorMsg = "";
+		String statusMsg = "";
 		
 		if (scenario != null && scenario.getScenid() > 0)
 		{
@@ -3280,14 +3282,29 @@ public class ProjectController {
 				simService.startSimulation(scenario.getScenid());
 			} catch (ParseException e) {
 				e.printStackTrace();
+				errorMsg = e.getMessage();
 			} catch (IOException e) {
 				e.printStackTrace();
+				errorMsg = e.getMessage();
 			} catch (ConfigurationException e) {
 				e.printStackTrace();
+				errorMsg = e.getMessage();
 			} catch (ScriptException e) {
 				e.printStackTrace();
+				errorMsg = e.getMessage();
 			}
 		}
+
+		try {
+			scenario = scenarioService.findByID(scenario.getScenid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		statusMsg = scenario.getStatus();
+		model.put("status", statusMsg);
+		
+		model.put("error", errorMsg);
 		
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
@@ -3421,6 +3438,8 @@ public class ProjectController {
 
 		if (action != null && action.equals("openwindow"))
 		{
+			System.setProperty("java.awt.headless", "true");
+			
 			Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
 		    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
 			
@@ -3562,6 +3581,7 @@ public class ProjectController {
 
 	@RequestMapping("chart.png")
 	public void renderChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
+		System.setProperty("java.awt.headless", "true");
 		UserSession userSession = (UserSession) model.get("usersession");
 
 		if (userSession == null)
