@@ -172,13 +172,4 @@ public class ProjectRepositoryTest {
 		
 		assertEquals(1, projects.size());
 	}
-	
-	@Test
-	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
-	public void findByName_CriteriaAPI_Test()
-	{	
-		Specification<Project> prjSpecification = ProjectSpecifications.projectNameContaining("Sample");
-		List<Project> projects = projectRepository.findAll(prjSpecification);		
-		assertEquals(1, projects.size());
-	}
 }
