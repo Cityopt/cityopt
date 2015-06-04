@@ -102,6 +102,7 @@ import eu.cityopt.service.ScenarioGeneratorService;
 import eu.cityopt.service.ScenarioService;
 import eu.cityopt.service.SimulationResultService;
 import eu.cityopt.service.TimeSeriesService;
+import eu.cityopt.service.TimeSeriesValService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.sim.eval.ConfigurationException;
@@ -176,6 +177,9 @@ public class ProjectController {
 	@Autowired
 	TimeSeriesService timeSeriesService;
 
+	@Autowired
+	TimeSeriesValService timeSeriesValService;
+	
 	@Autowired
 	OutputVariableService outputVarService;
 	
@@ -599,12 +603,13 @@ public class ProjectController {
 		}
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
+		
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
 		if (scenario != null && scenario.getScenid() > 0)
@@ -3446,7 +3451,7 @@ public class ProjectController {
 
 		if (action != null && action.equals("openwindow"))
 		{
-			System.setProperty("java.awt.headless", "true");
+			//System.setProperty("java.awt.headless", "true");
 			
 			Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
 		    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
@@ -3488,12 +3493,12 @@ public class ProjectController {
 					
 					if (timeSeriesDTO != null)
 					{
-						Set<TimeSeriesVal> timeSeriesVals = timeSeriesDTO.getTimeseriesvals();
+						List<TimeSeriesValDTO> timeSeriesVals = timeSeriesValService.findByTimeSeriesIdOrderedByTime(timeSeriesDTO.getTseriesid());
 						TimeSeries timeSeries = new TimeSeries(extVarVal.getExtparam().getName());
-						Iterator<TimeSeriesVal> timeSeriesIter = timeSeriesVals.iterator();
+						Iterator<TimeSeriesValDTO> timeSeriesIter = timeSeriesVals.iterator();
 						
 						while(timeSeriesIter.hasNext()) {
-							TimeSeriesVal timeSeriesVal = timeSeriesIter.next();
+							TimeSeriesValDTO timeSeriesVal = timeSeriesIter.next();
 							timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(timeSeriesVal.getValue()));
 						}
 		
@@ -3589,7 +3594,7 @@ public class ProjectController {
 
 	@RequestMapping("chart.png")
 	public void renderChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
-		System.setProperty("java.awt.headless", "true");
+		//System.setProperty("java.awt.headless", "true");
 		UserSession userSession = (UserSession) model.get("usersession");
 
 		if (userSession == null)
@@ -3641,12 +3646,12 @@ public class ProjectController {
 				
 				if (timeSeriesDTO != null)
 				{
-					Set<TimeSeriesVal> timeSeriesVals = timeSeriesDTO.getTimeseriesvals();
+					List<TimeSeriesValDTO> timeSeriesVals = timeSeriesValService.findByTimeSeriesIdOrderedByTime(timeSeriesDTO.getTseriesid());
 					TimeSeries timeSeries = new TimeSeries(extVarVal.getExtparam().getName());
-					Iterator<TimeSeriesVal> timeSeriesIter = timeSeriesVals.iterator();
+					Iterator<TimeSeriesValDTO> timeSeriesIter = timeSeriesVals.iterator();
 					
 					while(timeSeriesIter.hasNext()) {
-						TimeSeriesVal timeSeriesVal = timeSeriesIter.next();
+						TimeSeriesValDTO timeSeriesVal = timeSeriesIter.next();
 						timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(timeSeriesVal.getValue()));
 					}
 	
