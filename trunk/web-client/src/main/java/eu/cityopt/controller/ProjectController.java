@@ -230,11 +230,11 @@ public class ProjectController {
 			}
 			
 			// Create default ext param val set
-			ExtParamValSetDTO extParamValSet = new ExtParamValSetDTO();
+			/*ExtParamValSetDTO extParamValSet = new ExtParamValSetDTO();
 			extParamValSet.setName("default set");
 			extParamValSet = extParamValSetService.save(extParamValSet);
 			
-			project.setExtparamvalset(extParamValSet);
+			project.setExtparamvalset(extParamValSet);*/
 			project = projectService.save(project);
 			
 			model.put("project", project);
@@ -2550,7 +2550,6 @@ public class ProjectController {
 		try {
 			component = componentService.findByID(nSelectedCompId);
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -3344,6 +3343,15 @@ public class ProjectController {
 		{
 			return "error";
 		}
+		
+		try {
+			scenario = scenarioService.findByID(scenario.getScenid());
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		
+		String statusMsg = scenario.getStatus();
+		model.put("status", statusMsg);
 		
 		if (charttype != null)
 		{
