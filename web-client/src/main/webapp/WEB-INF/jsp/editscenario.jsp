@@ -47,6 +47,10 @@
 								<td><a href="scenariovariables.html"><button type="button" style="width:100px">Set</button></a></td>
 							</tr>
 							<tr>
+								<td>Scenario simulation status:</td>
+								<td>${scenario.status}</td>
+							</tr>
+							<tr>
 								<td>Dynamic simulation period from</td>
 								<td><input type="text" style="width:200px"/>to
 								<input type="text" style="width:200px"/></td>
