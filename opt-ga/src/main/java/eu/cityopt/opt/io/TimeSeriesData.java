@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eu.cityopt.sim.eval.EvaluationSetup;
+import eu.cityopt.sim.eval.TimeSeriesI;
 
 /**
  * Access to time series data by time series name.
@@ -40,6 +41,19 @@ public class TimeSeriesData {
     /** Returns the data for the named series, or null if not available. */
     public Series getSeries(String seriesName) {
         return seriesData.get(seriesName);
+    }
+    
+    /** Store data for a time series. */
+    public void put(String name, double[] times, double[] values) {
+        Series s = new Series();
+        s.times = times;
+        s.values = values;
+        seriesData.put(name, s);
+    }
+    
+    /** Store a time series. */
+    public void put(String name, TimeSeriesI series) {
+        put(name, series.getTimes(), series.getValues());
     }
 
     public EvaluationSetup getEvaluationSetup() {return evaluationSetup;}
