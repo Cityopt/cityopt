@@ -13,9 +13,20 @@ import org.opt4j.core.start.Constant;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.name.Names;
 
-@Info("Cityopt solution output")
+import eu.cityopt.sim.opt.OptimisationLog;
+
+@Info("Cityopt solution and diagnostic output")
 @Icon(Icons.TEXT)
 public class CityoptOutputModule extends OutputModule {
+    @Info("Error log file (empty for terse stderr output)")
+    @Constant(value="filename", namespace=FileOptLog.class)
+    @File(".log")
+    private String errorLogFile = "";
+    
+    @Info("Verbose error logging")
+    @Constant(value="verbose", namespace=FileOptLog.class)
+    private boolean verbose = true;
+    
     @Info("Archive output file (empty for no output)")
     @Constant(value="filename", namespace=PopulationDumper.class)
     @File(".csv")
@@ -34,6 +45,11 @@ public class CityoptOutputModule extends OutputModule {
         install(new FactoryModuleBuilder()
                 .implement(SolutionWriter.class, CSVSolutionWriter.class)
                 .build(SolutionWriterFactory.class));
+        if (!errorLogFile.isEmpty()) {
+            bind(FileOptLog.class).in(SINGLETON);
+            bind(OptimisationLog.class).to(FileOptLog.class);
+            addOptimizerStateListener(FileOptLog.class);
+        }
         if (!archiveFile.isEmpty()) {
             bind(IndividualSet.class).annotatedWith(Names.named("outputSet"))
                     .to(dumpAll ? Population.class : Archive.class);
@@ -45,6 +61,22 @@ public class CityoptOutputModule extends OutputModule {
             addOptimizerStateListener(EvaluationLogger.class);
             addIndividualStateListener(EvaluationLogger.class);
         }
+    }
+
+    public String getErrorLogFile() {
+        return errorLogFile;
+    }
+
+    public void setErrorLogFile(String logFile) {
+        errorLogFile = logFile;
+    }
+
+    public boolean isVerbose() {
+        return verbose;
+    }
+
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
     }
 
     public String getArchiveFile() {
