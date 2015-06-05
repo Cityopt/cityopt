@@ -10,7 +10,6 @@ import javax.script.ScriptException;
 import org.opt4j.core.optimizer.Optimizer;
 import org.opt4j.core.optimizer.OptimizerStateListener;
 import org.opt4j.core.start.Constant;
-import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
