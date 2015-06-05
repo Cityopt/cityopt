@@ -4,8 +4,9 @@
 <%--@elvariable id="selectedComponent" type="com.cityopt.DTO.ComponentDTO"--%>
 <%--@elvariable id="selectedcompid" type="int"--%>
 <%--@elvariable id="outputVar" type="com.cityopt.DTO.OutputVariableDTO"--%>
-<%--@elvariable id="listOutpuVarVals" type="List<Double>"--%>
-<%--@elvariable id="listOutpuVarTime" type="List<String>"--%>
+<%--@elvariable id="selectedOutputVar" type="com.cityopt.DTO.OutputVariableDTO"--%>
+<%--@elvariable id="listOutputVarVal" type="Double"--%>
+<%--@elvariable id="listOutputVarTime" type="String"--%>
 <%--@elvariable id="value" type="Double"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -27,7 +28,7 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width="30"></td>
-		<td>
+		<td valign="top">
 			<div style="overflow:scroll;height:600px;width:1130px;overflow:auto">
 			<table>
 				<col style="width:30px">
@@ -58,7 +59,7 @@
 											</td>
 											<td></td>
 											<td>
-												<b>External parameters</b>
+												
 											</td>
 										</tr>
 										<tr>						
@@ -92,36 +93,30 @@
 												<table class="tablestyle">
 													<col style="width:100px">
 													<col style="width:150px">
-													<col style="width:50px">
-													<col style="width:50px">
 													<tr>
 														<th>Draw</th>
 														<th>Output variable</th>
-														<th>Id</th>
-														<th>Type</th>
 													</tr>
 													<c:forEach items="${outputVars}" var="outputVar">
 														<c:choose>
-															<c:when test="${usersession.hasOutputVar(outputVar.outvarid)}">
+															<c:when test="${outputVar.outvarid == selectedOutputVar.outvarid}">
 																<tr style="background-color: rgb(140, 200, 200)">
-																<td>Added (<a href="viewtable.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Remove</a>)</td>
+																<td>Shown (<a href="writetable.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Remove</a>)</td>
 															</c:when>
 															<c:otherwise>
 																<tr>
-																<td><a href="viewtable.html?action=add&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Add to table</a></td>
+																<td><a href="writetable.html?action=add&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Show</a></td>
 															</c:otherwise>
 														</c:choose>
 													
 														<td>${outputVar.name}</td>
-												    	<td>${outputVar.outvarid}</td>
-												    	<td>${outputVar.typeid}</td>
 												   	</tr>
 													</c:forEach>
 												</table>
 											</td>
 											<td></td>
 											<td valign="top">
-												<table class="tablestyle" width="350">
+												<!-- <table class="tablestyle" width="350">
 													<col style="width:100px">
 													<col style="width:150px">
 													<col style="width:50px">
@@ -141,11 +136,11 @@
 														<c:choose>
 															<c:when test="${usersession.hasExtParam(extParamVal.extparamvalid)}">
 																<tr style="background-color: rgb(140, 200, 200)">
-																<td>Added (<a href="viewtable.html?action=remove&extparamid=${extParamVal.extparamvalid}">Remove</a>)</td>
+																<td>Shown (<a href="writetable.html?action=remove&extparamid=${extParamVal.extparamvalid}">Remove</a>)</td>
 															</c:when>
 															<c:otherwise>
 																<tr>
-																<td><a href="viewtable.html?action=add&extparamid=${extParamVal.extparamvalid}">Add to table</a></td>
+																<td><a href="writetable.html?action=add&extparamid=${extParamVal.extparamvalid}">Show</a></td>
 															</c:otherwise>
 														</c:choose>
 														
@@ -155,32 +150,60 @@
 												    	<td>${extParamVal.extparam.defaultvalue}</td>
 												   	</tr>
 													</c:forEach>
-												</table>
+												</table>-->
 											</td>
 										</tr>
 										<tr height="20"><td></td></tr>
 										<tr>
 											<td>
 												<table>
-													<tr height="20">
-													    <th>Value</th>
-													</tr>
-													<c:forEach items="${listOutpuVarVals}" var="value">
 													<tr>
-														<td>${value}</td>
-												   	</tr>
-													</c:forEach>
+														<td>Selected variable: ${selectedOutputVar.name}</td>
+													</tr>
+													<tr>
+														<td>
+															<table class="tablestyle" width="200">
+																<col style="width:200px">
+																		
+																<tr height="20">
+																    <th>Time</th>
+																</tr>
+																
+																<c:forEach items="${listOutputVarTimes}" var="listOutputVarTime">
+																<tr>
+																	<td>${listOutputVarTime}</td>
+															   	</tr>
+																</c:forEach>
+															</table>
+														</td>
+														<td>
+															<table class="tablestyle" width="100">
+																<col style="width:100px">
+																		
+																<tr height="20">
+																    <th>Value</th>
+																</tr>
+																
+																<c:forEach items="${listOutputVarVals}" var="listOutputVarVal">
+																<tr>
+																	<td>${listOutputVarVal}</td>
+															   	</tr>
+																</c:forEach>
+															</table>
+														</td>
+													</tr>
 												</table>
 											</td>
 											<td></td>
-											<td></td>
+											<td>
+											</td>
 											<td></td>
 											<td>
 												<table width="100%">
 													<tr>
 														<td></td>
 														<td align="right">
-															<a href="writetable.html"><button type="button">View table</button></a>
+															<!-- <a href="writetable.html"><button type="button">View table</button></a>-->
 														</td>
 													</tr>
 												</table>
