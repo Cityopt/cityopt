@@ -3823,6 +3823,7 @@ public class ProjectController {
 		@RequestParam(value="outputvarid", required=false) String outputvarid,
 		@RequestParam(value="extparamid", required=false) String extparamid) {
 
+		int nOutputVarId = Integer.parseInt(outputvarid);
 		UserSession userSession = (UserSession) model.get("usersession");
 		
 		if (userSession == null)
@@ -3855,9 +3856,8 @@ public class ProjectController {
 			model.put("selectedcompid", nSelectedCompId);
 		}
 		
-		Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
-	    List<Double> listOutputVarVals = new ArrayList<Double>();
-	    List<String> listOutputVarTime = new ArrayList<String>();
+		/*Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
+	    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
 		
 	    // Get output variable results
 		while(iterator.hasNext()) {
@@ -3865,22 +3865,49 @@ public class ProjectController {
 	    
 			try {
 				OutputVariableDTO outputVar = outputVarService.findByID(outputVarId);
-				SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, scenario.getScenid());
+				SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, nScenId);
 					
 				List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
-				
+				TimeSeries timeSeries = new TimeSeries(outputVar.getName());
+
 				for (int i = 0; i < timeSeriesVals.size(); i++)
 				{
 					TimeSeriesValDTO timeSeriesVal = timeSeriesVals.get(i);
-					listOutputVarVals.add(Double.parseDouble(timeSeriesVal.getValue()));
-					listOutputVarTime.add(timeSeriesVal.getTime().toString());
+					String value = timeSeriesVal.getValue();
+					value = value.replace(",", ".");
+					timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(value));
 				}
+				
+				timeSeriesCollection.addSeries(timeSeries);
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
-			break; // TODO
-	    }
-
+	    }*/
+		
+		Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
+	    List<Double> listOutputVarVals = new ArrayList<Double>();
+	    List<String> listOutputVarTimes = new ArrayList<String>();
+	    OutputVariableDTO outputVar = null;
+	    
+	    try {
+			outputVar = outputVarService.findByID(nOutputVarId);
+			SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(nOutputVarId, scenario.getScenid());
+			List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
+			
+			for (int i = 0; i < timeSeriesVals.size(); i++)
+			{
+				TimeSeriesValDTO timeSeriesVal = timeSeriesVals.get(i);
+				listOutputVarVals.add(Double.parseDouble(timeSeriesVal.getValue()));
+				listOutputVarTimes.add(timeSeriesVal.getTime().toString());
+			}
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+	
+	    model.put("listOutputVarVals", listOutputVarVals);
+	    model.put("listOutputVarTimes", listOutputVarTimes);
+		model.put("selectedOutputVar", outputVar);
+	    
 		/*iterator = userSession.getSelectedChartExtVarIds().iterator();
 		   
 		// Get external parameter time series
