@@ -25,6 +25,8 @@ import eu.cityopt.opt.io.JacksonBinder.Kind;
 
 @Singleton
 public class JacksonBinderScenario {
+    /* XXX @JsonUnwrapped does not work on polymorphic properties,
+       so we make ScenarioItem itself polymorphic. */
     @JsonTypeInfo(use=Id.NAME, include=As.PROPERTY, property="kind",
             visible=true)
     @JsonSubTypes({
@@ -53,6 +55,7 @@ public class JacksonBinderScenario {
         public Type getItem() {return item;}
     }
     
+    //XXX We need these for @JsonSubTypes above.
     public static class ExtParam extends Item<JacksonBinder.ExtParam> {}
     public static class Input extends Item<JacksonBinder.Input> {}
     public static class Output extends Item<JacksonBinder.Output> {}
@@ -62,7 +65,7 @@ public class JacksonBinderScenario {
     public static class Obj extends Item<JacksonBinder.Obj> {}
 
     @JsonIgnore
-    final private List<ScenarioItem> items;
+    private final List<ScenarioItem> items;
     
     /**
      * Read from a file.
@@ -88,9 +91,6 @@ public class JacksonBinderScenario {
     
     @JsonValue
     public List<ScenarioItem> getItems() {return items;}
-    
-//    @JsonIgnore
-//    final private TimeSeriesData tsData;
     
     @JsonCreator
     public JacksonBinderScenario(List<ScenarioItem> items) {

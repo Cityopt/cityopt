@@ -3,7 +3,6 @@ package eu.cityopt.opt.io;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
-import eu.cityopt.opt.io.JacksonBinder.Kind;
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.DecisionValues;
 import eu.cityopt.sim.eval.DecisionVariable;
@@ -24,7 +23,10 @@ import static eu.cityopt.opt.io.JacksonBinderScenario.*;
  * A builder for exporting sim-eval objects.
  * All data should be for a single project and, if applicable, a single
  * scenario generator.  Multiple scenarios and external parameter sets can
- * be included.
+ * be included.  Items appear in the binder in the order they are added,
+ * so either add them in the correct order or sort the binder later.
+ * If you add an item multiple times, it will appear multiple times, so
+ * don't do that.
  * @author ttekth
  */
 public class ExportBuilder {
@@ -63,7 +65,6 @@ public class ExportBuilder {
             ExtParam p = new ExtParam();
             p.extparamvalsetname = extSet;
             p.item = new JacksonBinder.ExtParam();
-            p.item.kind = Kind.EXT;
             p.item.name = nt.getKey();
             p.item.type = nt.getValue();
             if (p.item.type.isTimeSeriesType()) {
@@ -83,7 +84,6 @@ public class ExportBuilder {
     public void add(Type type, MetricExpression met) {
         Metric m = new Metric();
         m.item = new JacksonBinder.Metric();
-        m.item.kind = Kind.MET;
         m.item.name = met.getMetricName();
         m.item.type = type;
         m.item.expression = met.getSource();
@@ -107,7 +107,6 @@ public class ExportBuilder {
                 Input in = new Input();
                 in.scenarioname = scenario;
                 in.item = new JacksonBinder.Input();
-                in.item.kind = Kind.IN;
                 in.item.comp = comp.getKey();
                 in.item.name = nt.getKey();
                 in.item.type = nt.getValue();
@@ -134,7 +133,6 @@ public class ExportBuilder {
                 Output out = new Output();
                 out.scenarioname = scenario;
                 out.item = new JacksonBinder.Output();
-                out.item.kind = Kind.OUT;
                 out.item.comp = comp.getKey();
                 out.item.name = nt.getKey();
                 out.item.type = nt.getValue();
@@ -164,7 +162,6 @@ public class ExportBuilder {
             m.scenarioname = scenario;
             m.extparamvalsetname = extSet;
             m.item = new JacksonBinder.Metric();
-            m.item.kind = Kind.MET;
             m.item.name = nt.getKey();
             m.item.type = nt.getValue();
             if (m.item.type.isTimeSeriesType()) {

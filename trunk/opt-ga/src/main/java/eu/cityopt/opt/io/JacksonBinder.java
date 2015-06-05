@@ -59,8 +59,7 @@ public class JacksonBinder {
         }
     }
 
-    @JsonTypeInfo(use=Id.NAME, include=As.PROPERTY, property="kind",
-                  visible=true)
+    @JsonTypeInfo(use=Id.NAME, include=As.PROPERTY, property="kind")
     @JsonSubTypes({
         @JsonSubTypes.Type(value=ExtParam.class, name="ext"),
         @JsonSubTypes.Type(value=Input.class, name="in"),
@@ -71,7 +70,6 @@ public class JacksonBinder {
         @JsonSubTypes.Type(value=Obj.class, name="obj")
     })
     public abstract static class Item {
-        public Kind kind;
         public String name;
        
         /**
@@ -84,9 +82,7 @@ public class JacksonBinder {
             return name;
         }
 
-        public Kind getKind() {
-            return kind;
-        }
+        public abstract Kind getKind();
     }
     
     /** For Items that may reference {@link TimeSeriesData} */
@@ -107,7 +103,7 @@ public class JacksonBinder {
         protected void addToNSMap(Map<String, Type> map) {
             if (map.putIfAbsent(name, type) != null) {
                 throw new IllegalArgumentException(
-                        "duplicate " + kind + " name " + getQName());
+                        "duplicate " + getKind() + " name " + getQName());
             }
         }
     }
@@ -135,12 +131,22 @@ public class JacksonBinder {
         public String tsKey() {
             return value != null ? value : name;
         }
+
+        @Override
+        public Kind getKind() {
+            return Kind.EXT;
+        }
     }
     
     public static class Input extends CompVar {
         public String value;
         @JsonProperty("expression")
         public String expr;
+ 
+        @Override
+        public Kind getKind() {
+            return Kind.IN;
+        }
     }
     
     public static class Output extends CompVar implements TSRef {
@@ -150,10 +156,20 @@ public class JacksonBinder {
         public String tsKey() {
             return value != null ? value : getQName();
         }
+
+        @Override
+        public Kind getKind() {
+            return Kind.OUT;
+        }
     }
     
     public static class DecisionVar extends CompVar {
         public String lower, upper;
+
+        @Override
+        public Kind getKind() {
+            return Kind.DV;
+        }
     }
     
     public static class Metric extends Var implements TSRef {
@@ -163,10 +179,20 @@ public class JacksonBinder {
         public String tsKey() {
             return value != null ? value : name;
         }
+
+        @Override
+        public Kind getKind() {
+            return Kind.MET;
+        }
     }
     
     public static class Constr extends Item {
         public String expression, lower, upper;
+
+        @Override
+        public Kind getKind() {
+            return Kind.CON;
+        }
     }
     
     public static class Obj extends Item {
@@ -182,6 +208,11 @@ public class JacksonBinder {
         
         @JsonIgnore
         public Boolean isMaximize() {return isMaximize(type);}
+
+        @Override
+        public Kind getKind() {
+            return Kind.OBJ;
+        }
     }
  
     @JsonIgnore
@@ -259,6 +290,4 @@ public class JacksonBinder {
         items.forEach(bld::add);
         return bld.getResult();
     }
-
-    //TODO OptimisationProblem -> JacksonBinder (serialisation)
 }
