@@ -1,5 +1,6 @@
 <%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
 <%--@elvariable id="scenario" type="eu.cityopt.DTO.ScenarioDTO"--%>
+<%--@elvariable id="inputParamVal" type="eu.cityopt.DTO.InputParamValDTO"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -38,7 +39,7 @@
 							</tr>
 							<tr>						
 								<td>User:</td>
-								<td>${user.name}</td>
+								<td></td>
 								<td></td>
 								<td></td>
 							</tr>
@@ -88,21 +89,24 @@
 								<td></td>
 								<td valign="top">
 									<table class="tablestyle">
-										<col style="width:250px">
+										<col style="width:150px">
+										<col style="width:100px">
 										<tr>
 											<th>Input parameter</th>
+											<th>Value</th>
 										</tr>
 					
-										<c:forEach items="${inputParams}" var="inputParam">
+										<c:forEach items="${inputParamVals}" var="inputParamVal">
 										<tr>
-											<td>${inputParam.name}</td>
+											<td>${inputParamVal.name}</td>
+											<td>${inputParamVal.value}</td>
 										</tr>
 										</c:forEach>
 									</table>
 								</td>
 								<td></td>
 								<td valign="top">
-									<table class="tablestyle">
+									<!-- <table class="tablestyle">
 										<col style="width:250px">
 										<tr>
 											<th>Output variable</th>
@@ -113,11 +117,11 @@
 											<td>${outputVar.name}</td>
 										</tr>
 										</c:forEach>
-									</table>
+									</table>-->
 								</td>
 							</tr>
 							<tr height="20"></tr>
-							<tr>
+							<!-- <tr>
 								<td><b>Metrics</b></td>
 							</tr>
 							<tr>
@@ -136,7 +140,7 @@
 										</c:forEach>
 									</table>										
 								</td>
-							</tr>
+							</tr>-->
 							<tr height="10"></tr>
 							<tr>						
 								<td></td>

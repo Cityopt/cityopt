@@ -2,6 +2,8 @@
 <%--@elvariable id="scenario" type="eu.cityopt.DTO.ScenarioDTO"--%>
 <%--@elvariable id="component" type="com.cityopt.DTO.ComponentDTO"--%>
 <%--@elvariable id="inputParamVal" type="com.cityopt.DTO.InputParamValDTO"--%>
+<%--@elvariable id="simStart" type="java.lang.String"--%>
+<%--@elvariable id="simEnd" type="java.lang.String"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -20,7 +22,6 @@
 		<td style="width: 30px"></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:800px;width:1100px;overflow:auto">
-			<form:form method="post" action="editscenario.html?action=update" modelAttribute="scenario">
 			<table>
 				<tr>
 					<td>
@@ -30,13 +31,16 @@
 				<tr>
 					<td>
 						<table>
+							<form:form method="post" action="editscenario.html?action=update" modelAttribute="scenario">
 							<tr>
 								<td>Scenario name:</td>
 								<td><form:input type="text" path="name" style="width:200px"/></td>
+								<td><input type="submit" value="Update scenario" style="width:150px"></td>
 							</tr>
 							<tr>						
 								<td>Description:</td>
 								<td><form:textarea type="text" rows="3" path="description" style="width:200px"/></td>
+								<td valign="top"><a href="runscenario.html"><button type="button" style="width:150px">Run scenario</button></a></td>
 							</tr>
 							<tr>						
 								<td>Input parameters:</td>
@@ -50,11 +54,20 @@
 								<td>Scenario simulation status:</td>
 								<td>${scenario.status}</td>
 							</tr>
+							</form:form>
+							
+							<form:form method="post" action="setsimulationdate.html">
 							<tr>
 								<td>Dynamic simulation period from</td>
-								<td><input type="text" style="width:200px"/>to
-								<input type="text" style="width:200px"/></td>
+								<td><input name="simstart" type="text" style="width:180px" value="${simStart}"/>to
+								<input name="simend" type="text" style="width:180px" value="${simEnd}" /></td>
 							</tr>
+							<tr>
+								<td></td>
+								<td><input type="submit" value="Save dates" style="width:100px"/></td>
+							</tr>
+							</form:form>
+							
 							<tr height="10"></tr>
 							<tr>
 								<td><b>Components</b></td>
@@ -99,15 +112,12 @@
 					</td>
 					<td valign="top">
 						<table>
-							<tr><td><input type="submit" value="Update scenario" style="width:200px"></td></tr>
-							<tr><td><a href="runscenario.html"><button type="button" style="width:200px">Run scenario</button></a></td></tr>
 							<tr><td></td></tr>
 							<tr><td></td></tr>
 						</table>
 					</td>
 				</tr>
 			</table>
-			</form:form>
 			</div>
 		</td>
 	</tr>

@@ -1,5 +1,6 @@
 <%--@elvariable id="optimizationset" type="eu.cityopt.DTO.OptimizationSetDTO"--%>
 <%--@elvariable id="constraint" type="eu.cityopt.DTO.OptConstraintDTO"--%>
+<%--@elvariable id="resultScenario" type="eu.cityopt.DTO.ScenarioDTO"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -153,8 +154,8 @@
 							</tr>
 							<tr>
 								<td>Scenario name</td>
-								<td><input type="text" style="width:190px"></td>
-								<td align="right"><a href="showresults.html"><button type="button">Show results</button></a></td>
+								<td>${resultScenario.name}</td>
+								<td align="right"><a href="showresults.html?scenarioid=${resultScenario.scenid}"><button type="button">Show results</button></a></td>
 							</tr>
 							<tr>
 								<td>Objective function value</td>
