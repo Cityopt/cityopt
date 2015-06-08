@@ -5,6 +5,7 @@ package eu.cityopt.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -196,7 +197,7 @@ public class ScenarioGenerator extends VersionModel implements java.io.Serializa
 		this.scengenoptconstraints = scengenoptconstraints;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator", cascade=CascadeType.REMOVE)
 	public Set<Scenario> getScenarios() {
 		return this.scenarios;
 	}

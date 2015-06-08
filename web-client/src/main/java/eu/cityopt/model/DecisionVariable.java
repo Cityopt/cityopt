@@ -5,6 +5,7 @@ package eu.cityopt.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -127,7 +128,7 @@ public class DecisionVariable extends VersionModel implements java.io.Serializab
 		this.upperbound = upperbound;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "decisionvariable")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "decisionvariable", cascade=CascadeType.REMOVE)
 	public Set<DecisionVariableResult> getDecisionvariableresults() {
 		return this.decisionvariableresults;
 	}

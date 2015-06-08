@@ -2,50 +2,50 @@
 
 <dataset>
 
-  <simulationmodel modelid="1" description="Plumbing test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="2015-01-01 00:00:00"/>
+  <simulationmodel modelid="1" description="Plumbing test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="2015-01-01 00:00:00" version="1"/>
 
-  <project prjid="1" name="Project 1" location="dummy" modelid="1"/>
-  <project prjid="2" name="Plumbing test project" location="Helsinki" modelid="1"/>
+  <project prjid="1" name="Project 1" location="dummy" modelid="1" version="1"/>
+  <project prjid="2" name="Plumbing test project" location="Helsinki" modelid="1" version="1"/>
 
-  <type typeid="1" name="Double"/>
-  <type typeid="2" name="Integer"/>
-  <type typeid="3" name="String"/>
-  <type typeid="4" name="Timestamp"/>
-  <type typeid="5" name="TimeSeries/step"/>
-  <type typeid="6" name="TimeSeries/linear"/>
-  <type typeid="7" name="List of Double"/>
-  <type typeid="8" name="List of Integer"/>
-  <type typeid="9" name="List of Timestamp"/>
+  <type typeid="1" name="Double" version="1"/>
+  <type typeid="2" name="Integer" version="1"/>
+  <type typeid="3" name="String" version="1"/>
+  <type typeid="4" name="Timestamp" version="1"/>
+  <type typeid="5" name="TimeSeries/step" version="1"/>
+  <type typeid="6" name="TimeSeries/linear" version="1"/>
+  <type typeid="7" name="List of Double" version="1"/>
+  <type typeid="8" name="List of Integer" version="1"/>
+  <type typeid="9" name="List of Timestamp" version="1"/>
 
-  <unit unitid="1" name="Unit/Double"/>
-  <unit unitid="2" name="Unit/Integer"/>
-  <unit unitid="3" name="Unit/String"/>
-  <unit unitid="4" name="Unit/Timestamp"/>
-  <unit unitid="5" name="Unit/TimeSeries/step"/>
-  <unit unitid="6" name="Unit/TimeSeries/linear"/>
-  <unit unitid="7" name="Unit/List of Double"/>
-  <unit unitid="8" name="Unit/List of Integer"/>
-  <unit unitid="9" name="Unit/List of Timestamp"/>
+  <unit unitid="1" name="Unit/Double" version="1"/>
+  <unit unitid="2" name="Unit/Integer" version="1"/>
+  <unit unitid="3" name="Unit/String" version="1"/>
+  <unit unitid="4" name="Unit/Timestamp" version="1"/>
+  <unit unitid="5" name="Unit/TimeSeries/step" version="1"/>
+  <unit unitid="6" name="Unit/TimeSeries/linear" version="1"/>
+  <unit unitid="7" name="Unit/List of Double" version="1"/>
+  <unit unitid="8" name="Unit/List of Integer" version="1"/>
+  <unit unitid="9" name="Unit/List of Timestamp" version="1"/>
 
-  <component componentid="0" prjid="1" name="dummy"/>
-  <component componentid="1" prjid="2" name="C01"/>
-  <component componentid="2" prjid="2" name="PIP01"/>
-  <component componentid="3" prjid="2" name="CITYOPT"/>
+  <component componentid="0" prjid="1" name="dummy" version="1"/>
+  <component componentid="1" prjid="2" name="C01" version="1"/>
+  <component componentid="2" prjid="2" name="PIP01" version="1"/>
+  <component componentid="3" prjid="2" name="CITYOPT" version="1"/>
 
-  <inputparameter inputid="1" name="typ" unitid="2" typeid="2" componentid="1" defaultvalue="2"/>
-  <inputparameter inputid="2" componentid="3" name="simulation_start" unitid="4" typeid="4" defaultvalue="2015-01-01T00:00:00"/>
-  <inputparameter inputid="3" componentid="3" name="simulation_end" unitid="4" typeid="4" defaultvalue="2015-01-01T00:00:00"/>
+  <inputparameter inputid="1" name="typ" unitid="2" typeid="2" componentid="1" defaultvalue="2" version="1"/>
+  <inputparameter inputid="2" componentid="3" name="simulation_start" unitid="4" typeid="4" defaultvalue="2015-01-01T00:00:00" version="1"/>
+  <inputparameter inputid="3" componentid="3" name="simulation_end" unitid="4" typeid="4" defaultvalue="2015-01-01T00:00:00" version="1"/>
 
-  <outputvariable outvarid="1" name="PI12_MIX_MASS_FLOW" unitid="6" typeid="6" componentid="2"/>
+  <outputvariable outvarid="1" name="PI12_MIX_MASS_FLOW" unitid="6" typeid="6" componentid="2" version="1"/>
 
-  <scenario scenid="0" prjid="2" name="dummy" description="dummy scenario"/>
-  <scenario scenid="1" prjid="2" name="testscenario" description="test scenario"/>
-  <inputparamval inputparamvalid="1" scenid="1" inputid="1" value="3"/>
-  <inputparamval inputparamvalid="2" scenid="1" inputid="2" value="2015-01-01T00:00:00"/>
-  <inputparamval inputparamvalid="3" scenid="1" inputid="3" value="2015-01-01T00:01:00"/>
+  <scenario scenid="0" prjid="2" name="dummy" description="dummy scenario" version="1"/>
+  <scenario scenid="1" prjid="2" name="testscenario" description="test scenario" version="1"/>
+  <inputparamval inputparamvalid="1" scenid="1" inputid="1" value="3" version="1"/>
+  <inputparamval inputparamvalid="2" scenid="1" inputid="2" value="2015-01-01T00:00:00" version="1"/>
+  <inputparamval inputparamvalid="3" scenid="1" inputid="3" value="2015-01-01T00:01:00" version="1"/>
 
-  <metric metid="0" prjid="1" name="dummy" unitid="1" typeid="1" expression="C01.typ"/>
-  <metric metid="1" prjid="2" name="symmetric" unitid="1" typeid="1" expression="100 + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]"/>
-  <metric metid="2" prjid="2" name="seriesmetric" unitid="6" typeid="6" expression="100 + C01.typ + PIP01.PI12_MIX_MASS_FLOW"/>
+  <metric metid="0" prjid="1" name="dummy" unitid="1" typeid="1" expression="C01.typ" version="1"/>
+  <metric metid="1" prjid="2" name="symmetric" unitid="1" typeid="1" expression="100 + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]" version="1"/>
+  <metric metid="2" prjid="2" name="seriesmetric" unitid="6" typeid="6" expression="100 + C01.typ + PIP01.PI12_MIX_MASS_FLOW" version="1"/>
 
 </dataset>
