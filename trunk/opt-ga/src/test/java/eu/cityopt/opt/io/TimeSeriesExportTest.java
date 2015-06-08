@@ -17,7 +17,7 @@ import com.google.inject.Injector;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Evaluator;
 
-public class ExportTest {
+public class TimeSeriesExportTest {
     private TimeSeriesData.Series ts1 = new TimeSeriesData.Series();
     private TimeSeriesData.Series ts2 = new TimeSeriesData.Series();
     //Numeric comparison tolerance.
@@ -28,7 +28,7 @@ public class ExportTest {
     private String[] names = {"ts1", "ts2"};
     private final Injector inj;
     
-    public ExportTest() {
+    public TimeSeriesExportTest() {
         inj = Guice.createInjector(new JacksonCsvModule());
     }
     
