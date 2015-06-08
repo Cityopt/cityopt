@@ -39,7 +39,7 @@
 					<td>
 						<table>
 							<tr>
-								<td><i>Scenario simulation status: ${status}</i></td>
+								<td><i>Scenario ${scenario.name} simulation status: ${status}</i></td>
 							</tr>
 							<c:choose>
 								<c:when test="${error != null && !error.isEmpty()}">

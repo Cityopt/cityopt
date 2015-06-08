@@ -100,6 +100,7 @@ import eu.cityopt.service.ScenGenObjectiveFunctionService;
 import eu.cityopt.service.ScenGenOptConstraintService;
 import eu.cityopt.service.ScenarioGeneratorService;
 import eu.cityopt.service.ScenarioService;
+import eu.cityopt.service.SearchOptimizationResults;
 import eu.cityopt.service.SimulationResultService;
 import eu.cityopt.service.TimeSeriesService;
 import eu.cityopt.service.TimeSeriesValService;
@@ -505,6 +506,24 @@ public class ProjectController {
 			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 			model.put("inputParamVals", inputParamVals);
 
+			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
+			
+			// Get simulation start and end times
+			while(iter.hasNext())
+			{
+				InputParamValDTO inputParamVal = iter.next();
+				String inputName = inputParamVal.getInputparameter().getName();
+				
+				if (inputName.equals("simulation_start"))
+				{
+					model.put("simStart", inputParamVal.getValue());
+				}
+				else if (inputName.equals("simulation_end"))
+				{
+					model.put("simEnd", inputParamVal.getValue());
+				}
+			}
+
 			UserSession userSession = (UserSession) model.get("usersession");
 			userSession = new UserSession();
 			model.put("usersession", userSession);
@@ -551,6 +570,24 @@ public class ProjectController {
 			userSession = new UserSession();
 			model.put("usersession", userSession);
 			
+			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
+			
+			// Get simulatino start and end times
+			while(iter.hasNext())
+			{
+				InputParamValDTO inputParamVal = iter.next();
+				String inputName = inputParamVal.getInputparameter().getName();
+				
+				if (inputName.equals("simulation_start"))
+				{
+					model.put("simStart", inputParamVal.getValue());
+				}
+				else if (inputName.equals("simulation_end"))
+				{
+					model.put("simEnd", inputParamVal.getValue());
+				}
+			}
+			
 			return "editscenario";
 		}
 		else
@@ -595,7 +632,7 @@ public class ProjectController {
 		return "openscenario";
 	}
 	
-	@RequestMapping(value="editscenario",method=RequestMethod.GET)
+	@RequestMapping(value="editscenario", method=RequestMethod.GET)
 	public String getEditScenario (Map<String, Object> model) {
 		if (!model.containsKey("project"))
 		{
@@ -614,10 +651,33 @@ public class ProjectController {
 		
 		if (scenario != null && scenario.getScenid() > 0)
 		{
+			try {
+				scenario = scenarioService.findByID(scenario.getScenid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
+			
+			while(iter.hasNext())
+			{
+				InputParamValDTO inputParamVal = iter.next();
+				String inputName = inputParamVal.getInputparameter().getName();
+				
+				if (inputName.equals("simulation_start"))
+				{
+					model.put("simStart", inputParamVal.getValue());
+				}
+				else if (inputName.equals("simulation_end"))
+				{
+					model.put("simEnd", inputParamVal.getValue());
+				}
+			}
+			
 			model.put("scenario", scenario);
 			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 			model.put("components", components);
-			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 			model.put("inputParamVals", inputParamVals);
 		
 			return "editscenario";
@@ -664,6 +724,75 @@ public class ProjectController {
 			return "error";
 		}
 			
+		return "editscenario";
+	}
+	
+
+	@RequestMapping(value = "setsimulationdate", method = RequestMethod.POST)
+	public String setSimulationDatePost(Map<String, Object> model, 
+		@RequestParam(value="simstart", required=true) String simStart,
+		@RequestParam(value="simend", required=true) String simEnd) {
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+
+		if (scenario == null)
+		{
+			return "error";
+		}
+		
+		try {
+			scenario = scenarioService.findByID(scenario.getScenid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+		Iterator<InputParamValDTO> iter = inputParamVals.iterator();
+		
+		while(iter.hasNext())
+		{
+			InputParamValDTO inputParamVal = iter.next();
+			String inputName = inputParamVal.getInputparameter().getName();
+			
+			if (inputName.equals("simulation_start"))
+			{
+				inputParamVal.setValue(simStart);
+				inputParamVal = inputParamValService.save(inputParamVal);
+				
+				model.put("simStart", inputParamVal.getValue());
+			}
+			else if (inputName.equals("simulation_end"))
+			{
+				inputParamVal.setValue(simEnd);
+				inputParamVal = inputParamValService.save(inputParamVal);
+
+				model.put("simEnd", inputParamVal.getValue());
+			}
+		}
+		
+		model.put("scenario", scenario);
+		
+		model.put("simStart", simStart);
+		model.put("simEnd", simEnd);
+		
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+		
+		model.put("inputParamVals", inputParamVals);
+		
 		return "editscenario";
 	}
 	
@@ -1546,8 +1675,10 @@ public class ProjectController {
 		}
 		model.put("project", project);
 		
+		SearchOptimizationResults optResults = null;
+		
 		try {
-			dbOptService.searchConstEval(project.getPrjid(), optSet.getOptid());
+			optResults = dbOptService.searchConstEval(project.getPrjid(), optSet.getOptid());
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (ScriptException e) {
@@ -1556,6 +1687,18 @@ public class ProjectController {
 			e.printStackTrace();
 		}
 
+		UserSession userSession = (UserSession) model.get("usersession");
+		
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+
+		model.put("usersession", userSession);
+
+		ScenarioDTO resultScenario = (ScenarioDTO) optResults.getResultScenario();
+		userSession.setDBResultScenarioId(resultScenario.getScenid());
+		
 		return "editoptimizationset";
 	}
 	
@@ -2017,7 +2160,6 @@ public class ProjectController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -2025,10 +2167,19 @@ public class ProjectController {
 		
 		if (userSession == null)
 		{
-			userSession = new UserSession();
+			return "error";
 		}
 
-		model.put("usersession", userSession);
+		int nResultScenarioId = userSession.getDBResultScenarioId();
+		ScenarioDTO resultScenario = null;
+		
+		try {
+			resultScenario = scenarioService.findByID(nResultScenarioId);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		model.put("scenario", resultScenario);
 
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
@@ -2040,17 +2191,19 @@ public class ProjectController {
 			if (nSelectedCompId > 0)
 			{
 				userSession.setComponentId(nSelectedCompId);
-				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
-				model.put("outputVars", outputVars);
+				/*Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				model.put("outputVars", outputVars);*/
 				
-				Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
-				model.put("inputParams", inputParams);
+				List<InputParamValDTO> listInputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, nResultScenarioId);
+				model.put("inputParamVals", listInputParamVals);
 			}
 			model.put("selectedcompid", nSelectedCompId);
 		}
 		
-		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-		model.put("metrics", metrics);
+		//metricService.getMetricVals(metricId, scenId)
+		
+		//Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		//model.put("metrics", metrics);
 			
 		return "showresults";
 	}
@@ -3305,6 +3458,7 @@ public class ProjectController {
 			e.printStackTrace();
 		}
 		
+		model.put("scenario", scenario);
 		statusMsg = scenario.getStatus();
 		model.put("status", statusMsg);
 		
@@ -3355,6 +3509,7 @@ public class ProjectController {
 			e1.printStackTrace();
 		}
 		
+		model.put("scenario", scenario);
 		String statusMsg = scenario.getStatus();
 		model.put("status", statusMsg);
 		

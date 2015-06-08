@@ -7,6 +7,8 @@ public class UserSession {
 	private HashSet<Integer> selectedChartExtVarIds = new HashSet<Integer>();
 	private HashSet<Integer> selectedChartMetricIds = new HashSet<Integer>();
 	private HashSet<Integer> scenarioIds = new HashSet<Integer>();
+	private int nDBResultScenario;
+	private int nGAResultScenario;
 	private int nComponentId;
 	private int nChartType;
 
@@ -29,7 +31,27 @@ public class UserSession {
 	{
 		return scenarioIds.contains(id);
 	}
-	
+
+	public void setDBResultScenarioId(int id)
+	{
+		nDBResultScenario = id;
+	}
+
+	public int getDBResultScenarioId()
+	{
+		return nDBResultScenario;
+	}
+
+	public void setGAResultScenarioId(int id)
+	{
+		nGAResultScenario = id;
+	}
+
+	public int getGAResultScenarioId()
+	{
+		return nGAResultScenario;
+	}
+
 	public HashSet<Integer> getSelectedChartOutputVarIds() {
 		return selectedChartOutputVarIds;
 	}
