@@ -37,7 +37,7 @@ public class ProblemFromBinder implements Provider<OptimisationProblem> {
      * @param evaluator evaluator to create the problem data with
      */
     @Inject
-    public ProblemFromBinder(SimulationModel model,
+    public ProblemFromBinder(@Nullable SimulationModel model,
                              @Named("timeOrigin") @Nullable Instant t0,
                              JacksonBinder binder,
                              TimeSeriesData tsdata,
