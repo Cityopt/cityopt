@@ -47,7 +47,7 @@ import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.SimulationStructure;
 import eu.cityopt.test.TestResources;
 
-public class JacksonTest {
+public class ImportTest {
     private static TestResources res;
    
     @Rule
