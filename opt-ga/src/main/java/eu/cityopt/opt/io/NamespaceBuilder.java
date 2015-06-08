@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.function.Function;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.script.ScriptException;
 
 import eu.cityopt.opt.io.JacksonBinder.CompVar;
@@ -25,11 +27,18 @@ import eu.cityopt.sim.eval.Type;
  *
  */
 public class NamespaceBuilder extends AbstractBuilder<Namespace> {
+    /**
+     * Build on an existing Namespace.
+     * N.B.: Namespaces must not be changed when in use.
+     */
     public NamespaceBuilder(Namespace initial) {
         super(initial);
     }
     
-    public NamespaceBuilder(Evaluator evaluator, Instant timeOrigin) {
+    @Inject
+    public NamespaceBuilder(
+            Evaluator evaluator,
+            @Named("timeOrigin") Instant timeOrigin) {
         this(new Namespace(evaluator, timeOrigin, true));
     }
 
