@@ -1,14 +1,13 @@
 package eu.cityopt.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.text.ParseException;
 import java.util.Set;
 
 import javax.script.ScriptException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +51,7 @@ import eu.cityopt.sim.service.SimulationService.MetricUpdateStatus;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
-@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
-	"classpath:/testData/Sample Test case - SC1.xml", "classpath:/testData/Sample Test case - SC2.xml",
-	"classpath:/testData/Sample Test case - SC3.xml", "classpath:/testData/Sample Test case - SC4.xml",
-	"classpath:/testData/Sample Test case - SC5.xml"})
+@Ignore
 public class DatabaseSearchOptimizationTest {
 	
 	@Autowired
@@ -98,6 +94,10 @@ public class DatabaseSearchOptimizationTest {
 	@Test
 	@Rollback
 	@Transactional
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
+		"classpath:/testData/Sample Test case - SC1.xml", "classpath:/testData/Sample Test case - SC2.xml",
+		"classpath:/testData/Sample Test case - SC3.xml", "classpath:/testData/Sample Test case - SC4.xml",
+		"classpath:/testData/Sample Test case - SC5.xml"})
 	public void testMetricCalculation() throws Exception{
 		
 		Project project = projectRepository.findOne(1);		
@@ -119,6 +119,10 @@ public class DatabaseSearchOptimizationTest {
 	
 	@Test
 	@Transactional
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
+		"classpath:/testData/Sample Test case - SC1.xml", "classpath:/testData/Sample Test case - SC2.xml",
+		"classpath:/testData/Sample Test case - SC3.xml", "classpath:/testData/Sample Test case - SC4.xml",
+		"classpath:/testData/Sample Test case - SC5.xml"})
 	public void searchConstEval() throws ParseException, ScriptException{   	
 		Project project = projectRepository.findOne(1);
 		
@@ -143,6 +147,10 @@ public class DatabaseSearchOptimizationTest {
 	
 	@Test
 	@Transactional
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
+		"classpath:/testData/Sample Test case - SC1.xml", "classpath:/testData/Sample Test case - SC2.xml",
+		"classpath:/testData/Sample Test case - SC3.xml", "classpath:/testData/Sample Test case - SC4.xml",
+		"classpath:/testData/Sample Test case - SC5.xml"})
 	public void dbSearchOptTest() throws ParseException, ScriptException, 
 			EntityNotFoundException {	
 		
@@ -159,6 +167,10 @@ public class DatabaseSearchOptimizationTest {
 	@Test
 	@Rollback
 	@Transactional
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
+		"classpath:/testData/Sample Test case - SC1.xml", "classpath:/testData/Sample Test case - SC2.xml",
+		"classpath:/testData/Sample Test case - SC3.xml", "classpath:/testData/Sample Test case - SC4.xml",
+		"classpath:/testData/Sample Test case - SC5.xml"})
 	public void dbSearchOptTestIsMaximise() throws ParseException, ScriptException, 
 			EntityNotFoundException {   
 		long start = System.nanoTime();
@@ -177,6 +189,31 @@ public class DatabaseSearchOptimizationTest {
 		
 		assertNotNull(scen);
 		assertEquals(2, scen.getScenid());
+	}
+	
+	@Test
+	@Rollback
+	@Transactional
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
+		"classpath:/testData/Sample Test case - SC1.xml"})
+	public void dbSearchOptTestNoResult() throws ParseException, ScriptException, 
+			EntityNotFoundException {   
+		long start = System.nanoTime();
+		OptimizationSet os = optimizationSetRepository.findOne(1);
+		ObjectiveFunction of = os.getObjectivefunction();
+		of.setIsmaximise(true);
+		objectiveFunctionRepository.saveAndFlush(of);		
+		
+		dbSearchOptService.searchConstEval(1, 1);
+		
+		System.out.printf("time in millis: " + (System.nanoTime()- start)/1000000);
+		
+		os = optimizationSetRepository.findOne(1);
+		
+		Scenario scen = os.getScenario();
+		
+		assertNull(scen);
+//		assertEquals(0, scen.getScenid());
 	}
 	
 }

@@ -2,123 +2,123 @@
 
 <dataset>
 
-  <simulationmodel modelid="1" description="Apros test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="2015-01-01 00:00:00"/>
+  <simulationmodel modelid="1" description="Apros test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="2015-01-01 00:00:00" version="1"/>
 
-  <extparamvalset extparamvalsetid="1" name="externals"/>
-  <project prjid="1" name="Apros test project" location="Helsinki" modelid="1" defaultextparamvalsetid="1"/>
+  <extparamvalset extparamvalsetid="1" name="externals" version="1"/>
+  <project prjid="1" name="Apros test project" location="Helsinki" modelid="1" defaultextparamvalsetid="1" version="1"/>
 
-  <algorithm algorithmid="1" description="grid search"/>
-  <algoparam aparamsid="1" algorithmid="1" name="max runtime [minutes]" defaultValue="1000000"/>
-  <algoparam aparamsid="2" algorithmid="1" name="max scenarios" defaultValue="100"/>
+  <algorithm algorithmid="1" description="grid search" version="1"/>
+  <algoparam aparamsid="1" algorithmid="1" name="max runtime [minutes]" defaultValue="1000000" version="1"/>
+  <algoparam aparamsid="2" algorithmid="1" name="max scenarios" defaultValue="100" version="1"/>
 
-  <algorithm algorithmid="2" description="genetic algorithm"/>
-  <algoparam aparamsid="3" algorithmid="2" name="max runtime [minutes]" defaultValue="1000000"/>
-  <algoparam aparamsid="4" algorithmid="2" name="number of generations" defaultValue="100"/>
-  <algoparam aparamsid="5" algorithmid="2" name="population size" defaultValue="100"/>
-  <algoparam aparamsid="6" algorithmid="2" name="number of parents per generation" defaultValue="25"/>
-  <algoparam aparamsid="7" algorithmid="2" name="number of offspring per generation" defaultValue="25"/>
-  <algoparam aparamsid="8" algorithmid="2" name="seed of the random number generator" defaultValue="0.95"/>
+  <algorithm algorithmid="2" description="genetic algorithm" version="1"/>
+  <algoparam aparamsid="3" algorithmid="2" name="max runtime [minutes]" defaultValue="1000000" version="1"/>
+  <algoparam aparamsid="4" algorithmid="2" name="number of generations" defaultValue="100" version="1"/>
+  <algoparam aparamsid="5" algorithmid="2" name="population size" defaultValue="100" version="1"/>
+  <algoparam aparamsid="6" algorithmid="2" name="number of parents per generation" defaultValue="25" version="1"/>
+  <algoparam aparamsid="7" algorithmid="2" name="number of offspring per generation" defaultValue="25" version="1"/>
+  <algoparam aparamsid="8" algorithmid="2" name="seed of the random number generator" defaultValue="0.95" version="1"/>
 
-  <type typeid="1" name="Double"/>
-  <type typeid="2" name="Integer"/>
-  <type typeid="3" name="String"/>
-  <type typeid="4" name="Timestamp"/>
-  <type typeid="5" name="TimeSeries/step"/>
-  <type typeid="6" name="TimeSeries/linear"/>
-  <type typeid="7" name="List of Double"/>
-  <type typeid="8" name="List of Integer"/>
-  <type typeid="9" name="List of Timestamp"/>
+  <type typeid="1" name="Double" version="1"/>
+  <type typeid="2" name="Integer" version="1"/>
+  <type typeid="3" name="String" version="1"/>
+  <type typeid="4" name="Timestamp" version="1"/>
+  <type typeid="5" name="TimeSeries/step" version="1"/>
+  <type typeid="6" name="TimeSeries/linear" version="1"/>
+  <type typeid="7" name="List of Double" version="1"/>
+  <type typeid="8" name="List of Integer" version="1"/>
+  <type typeid="9" name="List of Timestamp" version="1"/>
 
-  <unit unitid="1" name="Unit/Double"/>
-  <unit unitid="2" name="Unit/Integer"/>
-  <unit unitid="3" name="Unit/String"/>
-  <unit unitid="4" name="Unit/Timestamp"/>
-  <unit unitid="5" name="Unit/TimeSeries/step"/>
-  <unit unitid="6" name="Unit/TimeSeries/linear"/>
-  <unit unitid="7" name="Unit/List of Double"/>
-  <unit unitid="8" name="Unit/List of Integer"/>
-  <unit unitid="9" name="Unit/List of Timestamp"/>
+  <unit unitid="1" name="Unit/Double" version="1"/>
+  <unit unitid="2" name="Unit/Integer" version="1"/>
+  <unit unitid="3" name="Unit/String" version="1"/>
+  <unit unitid="4" name="Unit/Timestamp" version="1"/>
+  <unit unitid="5" name="Unit/TimeSeries/step" version="1"/>
+  <unit unitid="6" name="Unit/TimeSeries/linear" version="1"/>
+  <unit unitid="7" name="Unit/List of Double" version="1"/>
+  <unit unitid="8" name="Unit/List of Integer" version="1"/>
+  <unit unitid="9" name="Unit/List of Timestamp" version="1"/>
 
-  <component componentid="1" prjid="1" name="SAMPLE_DISTRICT"/>
-  <component componentid="2" prjid="1" name="PV_TOTAL_ENERGY"/>
-  <component componentid="3" prjid="1" name="HEATING_LOAD"/>
-  <component componentid="4" prjid="1" name="CHP_ELECT_PROD"/>
-  <component componentid="5" prjid="1" name="ETH_NETWORK"/>
-  <component componentid="6" prjid="1" name="CHP_BOIL_TH_OUT"/>
-  <component componentid="7" prjid="1" name="FUEL_CONSUMPTION"/>
-  <component componentid="8" prjid="1" name="CITYOPT"/>
+  <component componentid="1" prjid="1" name="SAMPLE_DISTRICT" version="1"/>
+  <component componentid="2" prjid="1" name="PV_TOTAL_ENERGY" version="1"/>
+  <component componentid="3" prjid="1" name="HEATING_LOAD" version="1"/>
+  <component componentid="4" prjid="1" name="CHP_ELECT_PROD" version="1"/>
+  <component componentid="5" prjid="1" name="ETH_NETWORK" version="1"/>
+  <component componentid="6" prjid="1" name="CHP_BOIL_TH_OUT" version="1"/>
+  <component componentid="7" prjid="1" name="FUEL_CONSUMPTION" version="1"/>
+  <component componentid="8" prjid="1" name="CITYOPT" version="1"/>
 
-  <inputparameter inputid="1" componentid="1" name="CHP_electrical_power_rating" unitid="1" typeid="1" defaultvalue="2400.0"/>
-  <inputparameter inputid="2" componentid="1" name="Burner_efficiency" unitid="1" typeid="1" defaultvalue="0.7"/>
-  <inputparameter inputid="3" componentid="1" name="Share_of_roof_area_occupied_by_PVpanels" unitid="1" typeid="1" defaultvalue="10.0"/>
-  <inputparameter inputid="4" componentid="1" name="CHP_thermal_power_rating" unitid="1" typeid="1" defaultvalue="4000.0"/>
-  <inputparameter inputid="5" componentid="1" name="Insulation_layer_factor" unitid="1" typeid="1" defaultvalue="1.0"/>
-  <inputparameter inputid="6" componentid="1" name="Burner_nominal_power" unitid="1" typeid="1" defaultvalue="17000.0"/>
-  <inputparameter inputid="7" componentid="1" name="Share_of_roof_area_occupied_by_THcollectors" unitid="1" typeid="1" defaultvalue="0.0"/>
-  <inputparameter inputid="8" componentid="1" name="Heat_storage_nominal_charge_or_discharge_capacity" unitid="1" typeid="1" defaultvalue="40.0"/>
-  <inputparameter inputid="9" componentid="1" name="Heat_storage_tank_height" unitid="1" typeid="1" defaultvalue="15.0"/>
-  <inputparameter inputid="10" componentid="8" name="simulation_start" unitid="4" typeid="4" defaultvalue="2015-01-01T00:00:00"/>
-  <inputparameter inputid="11" componentid="8" name="simulation_end" unitid="4" typeid="4" defaultvalue="2015-01-01T00:00:00"/>
+  <inputparameter inputid="1" componentid="1" name="CHP_electrical_power_rating" unitid="1" typeid="1" defaultvalue="2400.0" version="1"/>
+  <inputparameter inputid="2" componentid="1" name="Burner_efficiency" unitid="1" typeid="1" defaultvalue="0.7" version="1"/>
+  <inputparameter inputid="3" componentid="1" name="Share_of_roof_area_occupied_by_PVpanels" unitid="1" typeid="1" defaultvalue="10.0" version="1"/>
+  <inputparameter inputid="4" componentid="1" name="CHP_thermal_power_rating" unitid="1" typeid="1" defaultvalue="4000.0" version="1"/>
+  <inputparameter inputid="5" componentid="1" name="Insulation_layer_factor" unitid="1" typeid="1" defaultvalue="1.0" version="1"/>
+  <inputparameter inputid="6" componentid="1" name="Burner_nominal_power" unitid="1" typeid="1" defaultvalue="17000.0" version="1"/>
+  <inputparameter inputid="7" componentid="1" name="Share_of_roof_area_occupied_by_THcollectors" unitid="1" typeid="1" defaultvalue="0.0" version="1"/>
+  <inputparameter inputid="8" componentid="1" name="Heat_storage_nominal_charge_or_discharge_capacity" unitid="1" typeid="1" defaultvalue="40.0" version="1"/>
+  <inputparameter inputid="9" componentid="1" name="Heat_storage_tank_height" unitid="1" typeid="1" defaultvalue="15.0" version="1"/>
+  <inputparameter inputid="10" componentid="8" name="simulation_start" unitid="4" typeid="4" defaultvalue="2015-01-01T00:00:00" version="1"/>
+  <inputparameter inputid="11" componentid="8" name="simulation_end" unitid="4" typeid="4" defaultvalue="2015-01-01T00:00:00" version="1"/>
 
-  <outputvariable outvarid="1" componentid="2" name="MULTIPLYER_OUTPUT" unitid="6" typeid="6"/>
-  <outputvariable outvarid="2" componentid="3" name="MULTIPLYER_OUTPUT" unitid="6" typeid="6"/>
-  <outputvariable outvarid="3" componentid="4" name="MULTIPLYER_OUTPUT" unitid="6" typeid="6"/>
-  <outputvariable outvarid="4" componentid="5" name="MULTIPLYER_OUTPUT" unitid="6" typeid="6"/>
-  <outputvariable outvarid="5" componentid="6" name="MULTIPLYER_OUTPUT" unitid="6" typeid="6"/>
-  <outputvariable outvarid="6" componentid="7" name="MULTIPLYER_OUTPUT" unitid="6" typeid="6"/>
+  <outputvariable outvarid="1" componentid="2" name="MULTIPLYER_OUTPUT" unitid="6" typeid="6" version="1"/>
+  <outputvariable outvarid="2" componentid="3" name="MULTIPLYER_OUTPUT" unitid="6" typeid="6" version="1"/>
+  <outputvariable outvarid="3" componentid="4" name="MULTIPLYER_OUTPUT" unitid="6" typeid="6" version="1"/>
+  <outputvariable outvarid="4" componentid="5" name="MULTIPLYER_OUTPUT" unitid="6" typeid="6" version="1"/>
+  <outputvariable outvarid="5" componentid="6" name="MULTIPLYER_OUTPUT" unitid="6" typeid="6" version="1"/>
+  <outputvariable outvarid="6" componentid="7" name="MULTIPLYER_OUTPUT" unitid="6" typeid="6" version="1"/>
 
-  <scenario scenid="1" prjid="1" name="testscenario" description="1st test scenario"/>
-  <inputparamval inputparamvalid="1" scenid="1" inputid="1" value="2400.0"/>
-  <inputparamval inputparamvalid="2" scenid="1" inputid="2" value="0.7"/>
-  <inputparamval inputparamvalid="3" scenid="1" inputid="3" value="10.0"/>
-  <inputparamval inputparamvalid="4" scenid="1" inputid="4" value="4000.0"/>
-  <inputparamval inputparamvalid="5" scenid="1" inputid="5" value="1.0"/>
-  <inputparamval inputparamvalid="6" scenid="1" inputid="6" value="17000.0"/>
-  <inputparamval inputparamvalid="7" scenid="1" inputid="7" value="0.0"/>
-  <inputparamval inputparamvalid="8" scenid="1" inputid="8" value="40.0"/>
-  <inputparamval inputparamvalid="9" scenid="1" inputid="9" value="15.0"/>
-  <inputparamval inputparamvalid="10" scenid="1" inputid="10" value="2015-01-01T00:00:00Z"/>
-  <inputparamval inputparamvalid="11" scenid="1" inputid="11" value="2015-01-08T00:00:00Z"/>
+  <scenario scenid="1" prjid="1" name="testscenario" description="1st test scenario" version="1"/>
+  <inputparamval inputparamvalid="1" scenid="1" inputid="1" value="2400.0" version="1"/>
+  <inputparamval inputparamvalid="2" scenid="1" inputid="2" value="0.7" version="1"/>
+  <inputparamval inputparamvalid="3" scenid="1" inputid="3" value="10.0" version="1"/>
+  <inputparamval inputparamvalid="4" scenid="1" inputid="4" value="4000.0" version="1"/>
+  <inputparamval inputparamvalid="5" scenid="1" inputid="5" value="1.0" version="1"/>
+  <inputparamval inputparamvalid="6" scenid="1" inputid="6" value="17000.0" version="1"/>
+  <inputparamval inputparamvalid="7" scenid="1" inputid="7" value="0.0" version="1"/>
+  <inputparamval inputparamvalid="8" scenid="1" inputid="8" value="40.0" version="1"/>
+  <inputparamval inputparamvalid="9" scenid="1" inputid="9" value="15.0" version="1"/>
+  <inputparamval inputparamvalid="10" scenid="1" inputid="10" value="2015-01-01T00:00:00Z" version="1"/>
+  <inputparamval inputparamvalid="11" scenid="1" inputid="11" value="2015-01-08T00:00:00Z" version="1"/>
 
-  <timeseries tseriesid="1" typeid="5"/>
-  <timeseriesval tseriesid="1" tseriesvalid="1" time="1970-01-01 00:00:00" value="100.0"/>
-  <timeseriesval tseriesid="1" tseriesvalid="2" time="2050-01-01 00:00:00" value="100.0"/>
+  <timeseries tseriesid="1" typeid="5" version="1"/>
+  <timeseriesval tseriesid="1" tseriesvalid="1" time="1970-01-01 00:00:00" value="100.0" version="1"/>
+  <timeseriesval tseriesid="1" tseriesvalid="2" time="2050-01-01 00:00:00" value="100.0" version="1"/>
 
-  <extparam extparamid="1" prjid="1" name="fuel_cost" unitid="6" typeid="6"/>
-  <extparam extparamid="2" prjid="1" name="x" unitid="1" typeid="1"/>
+  <extparam extparamid="1" prjid="1" name="fuel_cost" unitid="6" typeid="6" version="1"/>
+  <extparam extparamid="2" prjid="1" name="x" unitid="1" typeid="1" version="1"/>
 
-  <extparamval extparamvalid="1" extparamid="1" value="[null]" tseriesid="1"/>
-  <extparamval extparamvalid="2" extparamid="2" value="100"/>
-  <extparamvalsetcomp extparamvalsetid="1" extparamvalid="1"/>
-  <extparamvalsetcomp extparamvalsetid="1" extparamvalid="2"/>
+  <extparamval extparamvalid="1" extparamid="1" value="[null]" tseriesid="1" version="1"/>
+  <extparamval extparamvalid="2" extparamid="2" value="100" version="1"/>
+  <extparamvalsetcomp extparamvalsetid="1" extparamvalid="1" version="1"/>
+  <extparamvalsetcomp extparamvalsetid="1" extparamvalid="2" version="1"/>
 
-  <metric prjid="1" name="fuelconsumption" unitid="1" typeid="1" expression="integrat(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
-  <metric prjid="1" name="fuelcost" unitid="1" typeid="1" expression="integrate(fue_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)"/>
+  <metric prjid="1" name="fuelconsumption" unitid="1" typeid="1" expression="integrat(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)" version="1"/>
+  <metric prjid="1" name="fuelcost" unitid="1" typeid="1" expression="integrate(fue_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, INFINITY)" version="1"/>
 
-  <scenario scenid="2" prjid="1" name="testscenario2" description="2nd test scenario"/>
-  <inputparamval inputparamvalid="21" scenid="2" inputid="1" value="2300.0"/>
-  <inputparamval inputparamvalid="22" scenid="2" inputid="2" value="0.6"/>
-  <inputparamval inputparamvalid="23" scenid="2" inputid="3" value="9.0"/>
-  <inputparamval inputparamvalid="24" scenid="2" inputid="4" value="3000.0"/>
-  <inputparamval inputparamvalid="25" scenid="2" inputid="5" value="0.9"/>
-  <inputparamval inputparamvalid="26" scenid="2" inputid="6" value="16000.0"/>
-  <inputparamval inputparamvalid="27" scenid="2" inputid="7" value="0.0"/>
-  <inputparamval inputparamvalid="28" scenid="2" inputid="8" value="30.0"/>
-  <inputparamval inputparamvalid="29" scenid="2" inputid="9" value="14.0"/>
-  <inputparamval inputparamvalid="30" scenid="2" inputid="10" value="2015-01-01T00:00:00Z"/>
-  <inputparamval inputparamvalid="31" scenid="2" inputid="11" value="2015-01-08T00:00:00Z"/>
+  <scenario scenid="2" prjid="1" name="testscenario2" description="2nd test scenario" version="1"/>
+  <inputparamval inputparamvalid="21" scenid="2" inputid="1" value="2300.0" version="1"/>
+  <inputparamval inputparamvalid="22" scenid="2" inputid="2" value="0.6" version="1"/>
+  <inputparamval inputparamvalid="23" scenid="2" inputid="3" value="9.0" version="1"/>
+  <inputparamval inputparamvalid="24" scenid="2" inputid="4" value="3000.0" version="1"/>
+  <inputparamval inputparamvalid="25" scenid="2" inputid="5" value="0.9" version="1"/>
+  <inputparamval inputparamvalid="26" scenid="2" inputid="6" value="16000.0" version="1"/>
+  <inputparamval inputparamvalid="27" scenid="2" inputid="7" value="0.0" version="1"/>
+  <inputparamval inputparamvalid="28" scenid="2" inputid="8" value="30.0" version="1"/>
+  <inputparamval inputparamvalid="29" scenid="2" inputid="9" value="14.0" version="1"/>
+  <inputparamval inputparamvalid="30" scenid="2" inputid="10" value="2015-01-01T00:00:00Z" version="1"/>
+  <inputparamval inputparamvalid="31" scenid="2" inputid="11" value="2015-01-08T00:00:00Z" version="1"/>
 
-  <scenario scenid="3" prjid="1" name="testscenario3" description="3rd test scenario"/>
-  <inputparamval inputparamvalid="41" scenid="3" inputid="1" value="2500.0"/>
-  <inputparamval inputparamvalid="42" scenid="3" inputid="2" value="0.8"/>
-  <inputparamval inputparamvalid="43" scenid="3" inputid="3" value="11.0"/>
-  <inputparamval inputparamvalid="44" scenid="3" inputid="4" value="5000.0"/>
-  <inputparamval inputparamvalid="45" scenid="3" inputid="5" value="1.1"/>
-  <inputparamval inputparamvalid="46" scenid="3" inputid="6" value="18000.0"/>
-  <inputparamval inputparamvalid="47" scenid="3" inputid="7" value="0.0"/>
-  <inputparamval inputparamvalid="48" scenid="3" inputid="8" value="50.0"/>
-  <inputparamval inputparamvalid="49" scenid="3" inputid="9" value="16.0"/>
-  <inputparamval inputparamvalid="50" scenid="3" inputid="10" value="2015-01-01T00:00:00Z"/>
-  <inputparamval inputparamvalid="51" scenid="3" inputid="11" value="2015-01-08T00:00:00Z"/>
+  <scenario scenid="3" prjid="1" name="testscenario3" description="3rd test scenario" version="1"/>
+  <inputparamval inputparamvalid="41" scenid="3" inputid="1" value="2500.0" version="1"/>
+  <inputparamval inputparamvalid="42" scenid="3" inputid="2" value="0.8" version="1"/>
+  <inputparamval inputparamvalid="43" scenid="3" inputid="3" value="11.0" version="1"/>
+  <inputparamval inputparamvalid="44" scenid="3" inputid="4" value="5000.0" version="1"/>
+  <inputparamval inputparamvalid="45" scenid="3" inputid="5" value="1.1" version="1"/>
+  <inputparamval inputparamvalid="46" scenid="3" inputid="6" value="18000.0" version="1"/>
+  <inputparamval inputparamvalid="47" scenid="3" inputid="7" value="0.0" version="1"/>
+  <inputparamval inputparamvalid="48" scenid="3" inputid="8" value="50.0" version="1"/>
+  <inputparamval inputparamvalid="49" scenid="3" inputid="9" value="16.0" version="1"/>
+  <inputparamval inputparamvalid="50" scenid="3" inputid="10" value="2015-01-01T00:00:00Z" version="1"/>
+  <inputparamval inputparamvalid="51" scenid="3" inputid="11" value="2015-01-08T00:00:00Z" version="1"/>
 
 </dataset>
