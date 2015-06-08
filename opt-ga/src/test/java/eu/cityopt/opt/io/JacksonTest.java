@@ -2,13 +2,10 @@ package eu.cityopt.opt.io;
 
 import static org.junit.Assert.*;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,20 +45,20 @@ import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.SimulationStructure;
+import eu.cityopt.test.TestResources;
 
 public class JacksonTest {
-    private final static String propsName = "/test.properties";
-    private static Properties props;
-    private static Path dataDir;
-    
+    private static TestResources res;
+   
     @Rule
     public ExpectedException thrown = ExpectedException.none();
     
     public static class TestModule extends AbstractModule {
+        Properties props = res.properties;
         Instant t0 = Instant.parse(props.getProperty("time_origin"));
-        Path mfile = dataDir.resolve(props.getProperty("model_file"));
-        Path pfile = dataDir.resolve(props.getProperty("problem_file"));
-        Path sfile = dataDir.resolve(props.getProperty("scenario_file"));
+        Path mfile = res.getPath("model_file");
+        Path pfile = res.getPath("problem_file");
+        Path sfile = res.getPath("scenario_file");
         List<Path> tsfiles = new ArrayList<>();
         String tspath;
 
@@ -72,6 +69,7 @@ public class JacksonTest {
             String[] names = props.getProperty("ts_files").split(
                     Pattern.quote(sep));
             StringJoiner joiner = new StringJoiner(sep);
+            Path dataDir = res.getDir();
             for (String name : names) {
                 Path p = dataDir.resolve(name);
                 tsfiles.add(p);
@@ -109,12 +107,7 @@ public class JacksonTest {
 
     @BeforeClass
     public static void setupProps() throws Exception {
-        URL purl = JacksonTest.class.getResource(propsName);
-        props = new Properties();
-        try (InputStream str = purl.openStream()) {
-            props.load(str);
-        }
-        dataDir = Paths.get(purl.toURI()).getParent();
+        res = new TestResources();
     }
 
     @Test
@@ -192,7 +185,7 @@ public class JacksonTest {
         EvaluationSetup setup = new EvaluationSetup(
                 new Evaluator(), Instant.EPOCH);
         SimulationStructure s = OptimisationProblemIO.readStructureCsv(
-                dataDir.resolve("test-project.csv"), setup);
+                res.getDir().resolve("test-project.csv"), setup);
         assertNull(s.model);
         assertEquals(8, s.namespace.components.size());
 
@@ -214,9 +207,10 @@ public class JacksonTest {
     @Test
     public void readScenarioCSVwoGu() throws Exception {
     	ObjectReader reader = JacksonCsvModule.getScenarioProblemReader(JacksonCsvModule.getCsvMapper());
-    	FileInputStream fis = new FileInputStream(dataDir.resolve("test-problem.csv").toFile());
-    	JacksonBinderScenario binder = new JacksonBinderScenario(reader, fis);
-
+    	JacksonBinderScenario binder;
+    	try (InputStream fis = res.getStream("problem_file")) {
+    	    binder = new JacksonBinderScenario(reader, fis);
+    	}
     	binder.getItems().forEach( i -> System.out.println(i.scenarioname));
     }
     
@@ -304,7 +298,7 @@ public class JacksonTest {
     
     @Test
     public void graphCityoptFile() throws IOException {
-        String dotname = props.getProperty("dot_file");
+        String dotname = res.properties.getProperty("dot_file");
         if (dotname == null || dotname.isEmpty()) {
             System.out.println("Dependency graph output skipped.");
             return;
