@@ -208,7 +208,7 @@ public class ImportTest {
     public void readScenarioCSVwoGu() throws Exception {
     	ObjectReader reader = JacksonCsvModule.getScenarioProblemReader(JacksonCsvModule.getCsvMapper());
     	JacksonBinderScenario binder;
-    	try (InputStream fis = res.getStream("problem_file")) {
+    	try (InputStream fis = res.getStream("scenario_file")) {
     	    binder = new JacksonBinderScenario(reader, fis);
     	}
     	binder.getItems().forEach( i -> System.out.println(i.scenarioname));
