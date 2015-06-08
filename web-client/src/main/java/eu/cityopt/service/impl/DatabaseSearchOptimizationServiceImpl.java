@@ -101,9 +101,11 @@ public class DatabaseSearchOptimizationServiceImpl implements DatabaseSearchOpti
 			
 			//prevScenId is now the optimized scenario: save it
 			Scenario scen = scenarioRepository.findOne(prevScenId);
-			sor.setResultScenario(modelMapper.map(scen, ScenarioDTO.class));
-			optimizationSet.setScenario(scen);
-			optimizationSetRepository.save(optimizationSet);
+			if(scen != null){
+				sor.setResultScenario(modelMapper.map(scen, ScenarioDTO.class));
+				optimizationSet.setScenario(scen);
+				optimizationSetRepository.save(optimizationSet);
+			}
 		}	
 		
 		return sor;
