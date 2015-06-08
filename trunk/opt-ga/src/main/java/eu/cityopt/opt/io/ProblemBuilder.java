@@ -2,6 +2,8 @@ package eu.cityopt.opt.io;
 
 import java.text.ParseException;
 
+import javax.annotation.Nullable;
+import javax.inject.Inject;
 import javax.script.ScriptException;
 
 import eu.cityopt.opt.io.JacksonBinder.Constr;
@@ -46,7 +48,8 @@ public class ProblemBuilder extends SimulationStructureBuilder {
      * @param tsdata Time series data (must be completely populated).
      * @see NamespaceBuilder
      */
-    public ProblemBuilder(SimulationModel model, Namespace ns,
+    @Inject
+    public ProblemBuilder(@Nullable SimulationModel model, Namespace ns,
                           TimeSeriesData tsdata) {
         this(new OptimisationProblem(model, new ExternalParameters(ns)),
              tsdata);
