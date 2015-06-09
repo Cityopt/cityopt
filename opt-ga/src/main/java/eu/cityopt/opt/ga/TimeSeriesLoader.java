@@ -1,11 +1,9 @@
 package eu.cityopt.opt.ga;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.time.Instant;
-import java.util.regex.Pattern;
-
 import javax.annotation.Nullable;
 import javax.inject.Singleton;
 
@@ -28,19 +26,16 @@ public class TimeSeriesLoader implements Provider<TimeSeriesData> {
 
     @Inject
     public TimeSeriesLoader(
-            @Named("timeseries") String pathString,
             Evaluator evaluator,
             @Named("timeOrigin") @Nullable Instant t0,
-            @Nullable SimulationModel model)
+            @Nullable SimulationModel model,
+            @Named("timeseries") Path... paths)
                     throws IOException, ParseException {
         Instant timeOrigin = t0 != null ? t0 : model.getTimeOrigin();
         EvaluationSetup setup = new EvaluationSetup(evaluator, timeOrigin);
         CsvTimeSeriesData tsd = new CsvTimeSeriesData(setup);
-        String sep = Pattern.quote(System.getProperty("path.separator"));
-        if (!pathString.isEmpty()) {
-            for (String s : pathString.split(sep)) {
-                tsd.read(Paths.get(s));
-            }
+        for (Path p : paths) {
+            tsd.read(p);
         }
         this.tsData = tsd;
     }

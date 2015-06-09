@@ -5,7 +5,7 @@ package eu.cityopt.sim.eval;
  * @author ttekth
  */
 public class NumericInterval<T extends Number & Comparable<T>>
-extends DecisionDomain {
+extends NumberInterval {
     private T lowerBound, upperBound;    
     
     private NumericInterval(Type vt, T lb, T ub) {
@@ -17,10 +17,12 @@ extends DecisionDomain {
         upperBound = ub;
     }
 
+    @Override
     public T getLowerBound() {
         return lowerBound;
     }
 
+    @Override
     public T getUpperBound() {
         return upperBound;
     }

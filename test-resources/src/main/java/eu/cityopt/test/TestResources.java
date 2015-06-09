@@ -8,7 +8,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 
 /**
@@ -53,6 +55,19 @@ public class TestResources {
         return getDir().resolve(properties.getProperty(propname));
     }
     
+    /**
+     * Return the value of a property as an array of Paths.
+     * The system path separator is used for separating the entries,
+     * which are resolved with respect to {@link #getDir()}.  Empty
+     * entries are omitted. 
+     */
+    public Path[] getPaths(String propname) {
+        String sep = Pattern.quote(System.getProperty("path.separator"));
+        return Arrays.stream(properties.getProperty(propname).split(sep))
+                .filter(s -> !s.isEmpty())
+                .map(getDir()::resolve).toArray(Path[]::new);
+    }
+
     /**
      * Return an InputStream to a resource defined by a property.
      * The value of the property is resolved as a URL relative

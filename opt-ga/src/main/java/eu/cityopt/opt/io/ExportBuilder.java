@@ -11,7 +11,10 @@ import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.InputExpression;
 import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.MetricValues;
+import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.Symbol;
 import eu.cityopt.sim.eval.Namespace.Component;
+import eu.cityopt.sim.eval.NumberInterval;
 import eu.cityopt.sim.eval.ObjectiveExpression;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationResults;
@@ -89,6 +92,14 @@ public class ExportBuilder {
         m.item.expression = met.getSource();
         binder.getItems().add(m);
     }
+    
+    /**
+     * Add the definition of a metric.
+     * Look up the type in a Namespace.
+     */
+    public void add(MetricExpression met, Namespace ns) {
+        add(ns.metrics.get(met.getMetricName()), met);
+    }
 
     /**
      * Add input values for a scenario.
@@ -117,28 +128,44 @@ public class ExportBuilder {
     }
     
     /**
+     * Add output variables without values.
+     * @param ns
+     */
+    public void addOutputs(Namespace ns) {
+        addOutputs(ns, null, null);
+    }
+    
+    /**
      * Add output values for a scenario.
-     * This does not add the inputs.
+     * This does not add the inputs.  All outputs in the namespace
+     * are added, whether they have values or not.
      * @param res results to add
      * @param scenario name of the scenario
      */
     public void add(SimulationResults res, String scenario) {
+        addOutputs(res.getNamespace(), res, scenario);
+    }
+    
+    private void addOutputs(
+            Namespace ns, SimulationResults res, String scenario) {
         for (Map.Entry<String, Component> 
-                comp : res.getNamespace().components.entrySet()) {
+                comp : ns.components.entrySet()) {
             for (Map.Entry<String, Type>
                     nt : comp.getValue().outputs.entrySet()) {
-                TimeSeriesI val = res.getTS(comp.getKey(), nt.getKey());
-                if (val == null)
-                    continue;
+                TimeSeriesI val = res != null
+                                  ? res.getTS(comp.getKey(), nt.getKey())
+                                  : null;
                 Output out = new Output();
                 out.scenarioname = scenario;
                 out.item = new JacksonBinder.Output();
                 out.item.comp = comp.getKey();
                 out.item.name = nt.getKey();
                 out.item.type = nt.getValue();
-                String lbl = makeTSLabel(out.item.name, scenario, null);
-                tsd.put(lbl, val);
-                out.item.value = lbl;
+                if (val != null) {
+                    String lbl = makeTSLabel(out.item.name, scenario, null);
+                    tsd.put(lbl, val);
+                    out.item.value = lbl;
+                }
                 binder.getItems().add(out);
             }
         }
@@ -184,20 +211,73 @@ public class ExportBuilder {
         add(input, null);
     }
     
+    /**
+     * Add a decision variable.
+     */
     public void add(DecisionVariable dv) {
-        //TODO
+        DecisionVar v = new DecisionVar();
+        v.item = new JacksonBinder.DecisionVar();
+        v.item.comp = dv.componentName;
+        v.item.name = dv.name;
+        v.item.type = dv.domain.getValueType();
+        EvaluationSetup sup = tsd.getEvaluationSetup();
+        switch(v.item.type) {
+        case DOUBLE:
+        case INTEGER:
+            NumberInterval dom = (NumberInterval)dv.domain;
+            v.item.lower = v.item.type.format(dom.getLowerBound(), sup);
+            v.item.upper = v.item.type.format(dom.getUpperBound(), sup);
+            break;
+        default:
+            throw new IllegalArgumentException(
+                    "Unsupported decision variable type " + v.item.type);    
+        }
+        binder.getItems().add(v);
+    }
+
+    /**
+     * Add an input expression.
+     */
+    public void add(Type type, InputExpression ine) {
+        Input in = new Input();
+        in.item = new JacksonBinder.Input();
+        in.item.comp = ine.getInput().componentName;
+        in.item.name = ine.getInput().name;
+        in.item.type = type;
+        in.item.expr = ine.getSource();
+        binder.getItems().add(in);
+    }
+
+    /**
+     * Add an input expression.  Look up the type in a Namespace.
+     */
+    public void add(InputExpression ine, Namespace ns) {
+        Symbol in = ine.getInput();
+        add(ns.components.get(in.componentName).inputs.get(in.name), ine);
     }
     
-    public void add(InputExpression in) {
-        //TODO
-    }
-    
-    public void add(Constraint c) {
-        //TODO
+    public void add(Constraint con) {
+        Constr c = new Constr();
+        c.item = new JacksonBinder.Constr();
+        c.item.name = con.getName();
+        c.item.expression = con.getExpression().getSource();
+        double
+                lb = con.getLowerBound(),
+                ub = con.getUpperBound();
+        c.item.lower = lb == Double.NEGATIVE_INFINITY ? ""
+                                                      : Double.toString(lb);
+        c.item.upper = ub == Double.POSITIVE_INFINITY ? ""
+                                                      : Double.toString(ub);
+        binder.getItems().add(c);
     }
     
     public void add(ObjectiveExpression obj) {
-        //TODO
+        Obj o = new Obj();
+        o.item = new JacksonBinder.Obj();
+        o.item.name = obj.getName();
+        o.item.setMaximize(obj.isMaximize());
+        o.item.expression = obj.getSource();
+        binder.getItems().add(o);
     }
 
     /**

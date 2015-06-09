@@ -47,7 +47,11 @@ public class CsvTimeSeriesWriter {
         }
     }
 
-    public void write(TimeSeriesData tsd, OutputStream ostr)
+    /**
+     * Write time series data to a output stream.
+     * This does not close the stream.
+     */
+    public void write(OutputStream ostr, TimeSeriesData tsd)
             throws IOException {
         MergedTimeSeries merge = new MergedTimeSeries(tsd);
         try (SequenceWriter seq = mapper.writer()
