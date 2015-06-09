@@ -11,6 +11,7 @@ public interface DbSimulationStorageI extends SimulationStorage {
             Integer userId, Integer scenGenId);
 
     void loadCache();
+    void doPutTransaction(Put put);
 
     void saveScenarioGeneratorResults(
             OptimisationResults results, String messages);
