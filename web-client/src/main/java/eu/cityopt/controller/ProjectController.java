@@ -2344,10 +2344,10 @@ public class ProjectController {
 		model.put("project", project);
 		List<ExtParamValDTO> extParamVals = null;
 		
-		if (project.getExtparamvalset() != null)
+		if (project.getDefaultextparamvalset() != null)
 		{
 			try {
-				extParamVals = extParamValSetService.getExtParamVals(project.getExtparamvalset().getExtparamvalsetid());
+				extParamVals = extParamValSetService.getExtParamVals(project.getDefaultextparamvalset().getExtparamvalsetid());
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -2390,7 +2390,7 @@ public class ProjectController {
 				e.printStackTrace();
 			}
 
-			project.setExtparamvalset(selectedExtParamSet);
+			project.setDefaultextparamvalset(selectedExtParamSet);
 			project = projectService.save(project);
 			
 			model.put("selectedextparamsetid", nSelectedExtParamSetId);
@@ -2791,10 +2791,10 @@ public class ProjectController {
 
 		List<ExtParamValDTO> extParamVals = null;
 		
-		if (project.getExtparamvalset() != null)
+		if (project.getDefaultextparamvalset() != null)
 		{
 			try {
-				extParamVals = extParamValSetService.getExtParamVals(project.getExtparamvalset().getExtparamvalsetid());
+				extParamVals = extParamValSetService.getExtParamVals(project.getDefaultextparamvalset().getExtparamvalsetid());
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -2935,10 +2935,10 @@ public class ProjectController {
 
 		List<ExtParamValDTO> extParamVals = null;
 		
-		if (project.getExtparamvalset() != null)
+		if (project.getDefaultextparamvalset() != null)
 		{
 			try {
-				extParamVals = extParamValSetService.getExtParamVals(project.getExtparamvalset().getExtparamvalsetid());
+				extParamVals = extParamValSetService.getExtParamVals(project.getDefaultextparamvalset().getExtparamvalsetid());
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -3022,7 +3022,7 @@ public class ProjectController {
 			e1.printStackTrace();
 		}*/
 		
-		project.setExtparamvalset(extParamValSet);
+		project.setDefaultextparamvalset(extParamValSet);
 		project = projectService.save(project);
 		model.put("project", project);
 		
@@ -3051,7 +3051,7 @@ public class ProjectController {
 		String newName = extParamValSet.getName();
 		
 		try {
-			extParamValSet = extParamValSetService.findByID(project.getExtparamvalset().getExtparamvalsetid());
+			extParamValSet = extParamValSetService.findByID(project.getDefaultextparamvalset().getExtparamvalsetid());
 		} catch (EntityNotFoundException e2) {
 			e2.printStackTrace();
 		}
