@@ -65,7 +65,7 @@ public class ExportBuilderTest {
     public void printStuff() throws Exception {
         OptimisationProblem p = inj.getInstance(OptimisationProblem.class);
         ExportBuilder bld = new ExportBuilder(p.getNamespace());
-        ExportDirector.build(p, bld, null, null);
+        ExportDirectors.build(p, bld, null, null);
         ObjectWriter wtr = inj.getInstance(
                 Key.get(ObjectWriter.class, Names.named("scenario")));
         wtr.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET).writeValue(

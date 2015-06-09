@@ -7,7 +7,7 @@ import eu.cityopt.sim.opt.OptimisationProblem;
  * 
  * @author ttekth
  */
-public class ExportDirector {
+public class ExportDirectors {
     /**
      * Export an {@link OptimisationProblem}.
      * @param problem Problem to export
