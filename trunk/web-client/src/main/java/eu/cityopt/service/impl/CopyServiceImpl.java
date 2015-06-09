@@ -483,7 +483,7 @@ public class CopyServiceImpl implements CopyService {
 			sgC.setDecisionvariables(null);
 			sgC.setExtparamvalset(null); 
 			sgC.setModelparameters(null); 
-			sgC.setScenarios(null); //TODO copy
+			sgC.setScenarios(null);
 			sgC.setScengenobjectivefunctions(null);
 			sgC.setScengenoptconstraints(null);
 			sgC.setScengenresults(null);
@@ -647,7 +647,7 @@ public class CopyServiceImpl implements CopyService {
 	}
 	
 	@Transactional
-	private MetricDTO copyMetric (int id, String name) throws EntityNotFoundException{
+	public MetricDTO copyMetric (int id, String name) throws EntityNotFoundException{
 		
 		Metric metric = metricRepository.findOne(id);
 		

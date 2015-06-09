@@ -58,7 +58,6 @@ import eu.cityopt.repository.ScenarioRepository;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
-
 public class ProjectServiceDTOTest {
 
 	@Autowired
@@ -350,7 +349,7 @@ public class ProjectServiceDTOTest {
 	@Test
 //	@Rollback(false)
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
-	public void TestgetSearchAndGAOptimizationSets() throws EntityNotFoundException{
+	public void getSearchAndGAOptimizationSetsTest() throws EntityNotFoundException{
 		Set<OpenOptimizationSetDTO> oosDTOs = projectService.getSearchAndGAOptimizationSets(1);
 		
 		for(OpenOptimizationSetDTO oosd : oosDTOs){
@@ -358,6 +357,21 @@ public class ProjectServiceDTOTest {
 		}
 		
 		assertEquals(2, oosDTOs.size());
+	}
+	
+	@Test(expected=EntityNotFoundException.class)
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
+		"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC1.xml",
+		"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC2.xml"})
+	public void deleteProject() throws EntityNotFoundException {
+		try{
+			projectService.delete(1);
+		}catch(Exception ex){
+			fail("id 1 not found, check testdata");
+		}
+		em.flush();
+		
+		ProjectDTO p = projectService.findByID(1);
 	}
 	
 }
