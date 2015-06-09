@@ -3,6 +3,8 @@ package eu.cityopt.opt.ga;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.regex.Pattern;
 
 import org.opt4j.core.config.annotations.File;
 import org.opt4j.core.config.annotations.Info;
@@ -65,8 +67,12 @@ public class CityoptFileModule extends ProblemModule {
         bind(Path.class).annotatedWith(Names.named("problem")).toInstance(
                 Paths.get(problemFile));
         bind(TimeSeriesData.class).toProvider(TimeSeriesLoader.class);
-        bind(String.class).annotatedWith(Names.named("timeseries")).toInstance(
-                timeSeriesFile);
+        String sep = Pattern.quote(System.getProperty("path.separator"));
+        Path[] tspaths = Arrays.stream(timeSeriesFile.split(sep))
+                .filter(s -> !s.isEmpty()).map(Paths::get)
+                .toArray(Path[]::new);
+        bind(Path[].class).annotatedWith(Names.named("timeseries"))
+                .toInstance(tspaths);
         if (timeOrigin.isEmpty()) {
             bind(Instant.class).annotatedWith(Names.named("timeOrigin"))
                 .toProvider(Providers.of(null));

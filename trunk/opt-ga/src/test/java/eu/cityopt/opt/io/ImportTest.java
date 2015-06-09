@@ -7,12 +7,10 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.StringJoiner;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
@@ -53,30 +51,15 @@ public class ImportTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
     
-    public static class TestModule extends AbstractModule {
+    public class TestModule extends AbstractModule {
         Properties props = res.properties;
         Instant t0 = Instant.parse(props.getProperty("time_origin"));
         Path mfile = res.getPath("model_file");
         Path pfile = res.getPath("problem_file");
         Path sfile = res.getPath("scenario_file");
-        List<Path> tsfiles = new ArrayList<>();
-        String tspath;
+        Path[] tsfiles = res.getPaths("ts_files");
 
-        TestModule() {
-            // The paths in property ts_files are interpreted as relative to
-            // dataDir
-            String sep = System.getProperty("path.separator");
-            String[] names = props.getProperty("ts_files").split(
-                    Pattern.quote(sep));
-            StringJoiner joiner = new StringJoiner(sep);
-            Path dataDir = res.getDir();
-            for (String name : names) {
-                Path p = dataDir.resolve(name);
-                tsfiles.add(p);
-                joiner.add(p.toString());
-            }
-            tspath = joiner.toString();
-        }
+        TestModule() {}
 
         @Override
         protected void configure() {
@@ -88,12 +71,12 @@ public class ImportTest {
                     .toInstance(pfile);
             bind(Path.class).annotatedWith(Names.named("scenario"))
                     .toInstance(sfile);
-            bind(String.class).annotatedWith(Names.named("timeseries"))
-                    .toInstance(tspath);
+            bind(Path[].class).annotatedWith(Names.named("timeseries"))
+                    .toInstance(tsfiles);
         }
     }
 
-    public static class TsTestModule extends TestModule {
+    public class TsTestModule extends TestModule {
         Evaluator evaluator = new Evaluator();
 
         @Override
@@ -268,7 +251,7 @@ public class ImportTest {
         CsvTimeSeriesWriter
                 wtr = new CsvTimeSeriesWriter(JacksonCsvModule.getCsvMapper());
         //wtr.setNumeric(true);
-        wtr.write(tsd, System.out);
+        wtr.write(System.out, tsd);
     }
 
     private CityoptFileModule getCityoptFileModule() {
@@ -276,7 +259,10 @@ public class ImportTest {
         CityoptFileModule cfm = new CityoptFileModule();
         cfm.setModelFile(tm.mfile.toString());
         cfm.setProblemFile(tm.pfile.toString());
-        cfm.setTimeSeriesFile(tm.tspath);
+        String sep = System.getProperty("path.separator");
+        String p = Arrays.stream(tm.tsfiles)
+                .map(Path::toString).collect(Collectors.joining(sep));
+        cfm.setTimeSeriesFile(p);
         cfm.setTimeOrigin(tm.t0.toString());
         return cfm;
     }

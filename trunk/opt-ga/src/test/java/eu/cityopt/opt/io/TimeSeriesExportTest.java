@@ -67,7 +67,7 @@ public class TimeSeriesExportTest {
             throws IOException, ParseException {
         //wtr.write(tsd, System.out);
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        wtr.write(tsd, bout);
+        wtr.write(bout, tsd);
         CsvTimeSeriesData tsd2 = new CsvTimeSeriesData(evsup);
         tsd2.read(new ByteArrayInputStream(bout.toByteArray()), "<none>");
         assertArrayEquals(ts1.times, tsd2.getSeries(names[0]).times, delta);

@@ -208,6 +208,11 @@ public class JacksonBinder {
         
         @JsonIgnore
         public Boolean isMaximize() {return isMaximize(type);}
+        
+        @JsonIgnore
+        public void setMaximize(boolean isMax) {
+            type = isMax ? "max" : "min";
+        }
 
         @Override
         public Kind getKind() {
@@ -277,7 +282,16 @@ public class JacksonBinder {
         }
         return builder;
     }
-    
+
+    /**
+     * Apply a NamespaceBuilder.  Special case because they don't throw.
+     * @return the builder
+     */
+    public NamespaceBuilder buildWith(NamespaceBuilder builder) {
+        items.forEach(builder::add);
+        return builder;
+    }
+
     /**
      * Create a {@link Namespace} and populate it with our items.
      * @param evaluator
@@ -286,8 +300,7 @@ public class JacksonBinder {
      */
     public Namespace makeNamespace(Evaluator evaluator, Instant timeOrigin) {
         checkNames();
-        NamespaceBuilder bld = new NamespaceBuilder(evaluator, timeOrigin);
-        items.forEach(bld::add);
-        return bld.getResult();
+        return buildWith(new NamespaceBuilder(evaluator, timeOrigin))
+                .getResult();
     }
 }
