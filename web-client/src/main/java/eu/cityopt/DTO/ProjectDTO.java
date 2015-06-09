@@ -10,7 +10,7 @@ import lombok.Setter;
 public class ProjectDTO extends BaseDTO{
 
 		@Getter @Setter private int prjid;
-		@Getter @Setter private ExtParamValSetDTO extparamvalset;
+		@Getter @Setter private ExtParamValSetDTO defaultextparamvalset;
 		@Getter @Setter private String name;
 		@Getter @Setter private String location;
 		@Getter @Setter private String projectCreator;
