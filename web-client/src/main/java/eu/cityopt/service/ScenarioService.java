@@ -6,6 +6,7 @@ import java.util.Set;
 import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.InputParamValDTO;
+import eu.cityopt.DTO.MetricValDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioMetricsDTO;
 import eu.cityopt.DTO.SimulationResultDTO;
@@ -30,5 +31,5 @@ public interface ScenarioService extends CityOptService<ScenarioDTO>{
 	
 	Set<SimulationResultDTO> getSimulationResults(int scenId);
 
-	Set<ScenarioMetricsDTO> getMetricsValues(int scenId);
+	Set<MetricValDTO> getMetricsValues(int scenId);
 }

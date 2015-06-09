@@ -130,8 +130,10 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 	
 	@Transactional(readOnly = true)
-	public ProjectDTO findByID(int id) {
+	public ProjectDTO findByID(int id) throws EntityNotFoundException {
 		Project item = projectRepository.findOne(id);
+		if(item == null)
+			throw new EntityNotFoundException();
 		ProjectDTO itemDTO = modelMapper.map(item, ProjectDTO.class);
 		return itemDTO;
 	}

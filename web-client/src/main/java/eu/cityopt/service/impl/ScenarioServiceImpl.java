@@ -116,7 +116,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 	
 	@Override
 	@Transactional(readOnly=true)
-	public Set<ScenarioMetricsDTO> getMetricsValues(int scenId)	{
+	public Set<MetricValDTO> getMetricsValues(int scenId)	{
 		List<MetricVal> mvList = metricValRepository.findByScenId(scenId);
 		return modelMapper.map(mvList, 
 				new TypeToken<Set<MetricValDTO>>() {}.getType());
