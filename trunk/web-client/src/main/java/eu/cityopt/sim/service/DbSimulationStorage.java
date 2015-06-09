@@ -5,9 +5,11 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -18,6 +20,8 @@ import org.apache.log4j.Logger;
 import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.collect.Iterators;
 
 import eu.cityopt.model.Component;
 import eu.cityopt.model.DecisionVariable;
@@ -90,10 +94,22 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     private Integer userId;
     private Integer scenGenId;
 
+    /**
+     * Stored SimulationOutput instances are put inside Gate objects,
+     * which are locked to serialize database access to the corresponding
+     * Scenario rows in database.
+     */
+    private class Gate {
+        volatile SimulationOutput output;
+
+        Gate(SimulationOutput output) {
+            this.output = output;
+        }
+    }
+
     private volatile boolean cachePopulated = false;
     private Object cacheFillMutex = new Object();
-    private ConcurrentMap<SimulationInput, SimulationOutput> cache
-        = new ConcurrentHashMap<SimulationInput, SimulationOutput>();
+    private ConcurrentMap<SimulationInput, Gate> cache = new ConcurrentHashMap<>();
 
     @Autowired private SimulationService simulationService;
     @Autowired private ScenarioGenerationService scenarioGenerationService;
@@ -134,7 +150,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         if ( ! cachePopulated) {
             proxy.loadCache();
         }
-        return cache.values().iterator();
+        return Iterators.transform(cache.values().iterator(), gate -> gate.output);
     }
 
     @Override
@@ -142,13 +158,29 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         if ( ! cachePopulated) {
             proxy.loadCache();
         }
-        return cache.get(input);
+        Gate gate = cache.get(input);
+        return (gate != null) ? gate.output : null;
+    }
+
+    @Override
+    public void put(SimulationStorage.Put put) {
+        Gate gate = cache.computeIfAbsent(put.input, k -> new Gate(put.output));
+        synchronized (gate) {
+            if (gate.output != put.output && gate.output != null) {
+                Integer oldScenId = gate.output.getInput().getScenarioId();
+                if (oldScenId != null && put.input.getScenarioId() == null) {
+                    put.input.setScenarioId(oldScenId);
+                }
+            }
+            gate.output = put.output;
+
+            proxy.doPutTransaction(put);
+        }
     }
 
     @Override
     @Transactional
-    public void put(SimulationStorage.Put put) {
-        cache.put(put.input, put.output);
+    public void doPutTransaction(SimulationStorage.Put put) {
         Scenario scenario = saveSimulationInput(put.input, put.name, put.description);
         boolean newScenario = (put.input.getScenarioId() == null);
         if (put.output != null) {
@@ -194,7 +226,12 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                     simulationService.loadSimulationInput(scenario, externals);
             SimulationOutput output = 
                     simulationService.loadSimulationOutput(scenario, input);
-            cache.put(input, output);
+            Gate oldGate = cache.putIfAbsent(input, new Gate(output));
+            if (oldGate != null) {
+                synchronized (oldGate) {
+                    oldGate.output = output;
+                }
+            }
         } catch (ParseException e) {
             log.warn("Cannot load simulation input and output from scenario "
                     + scenario.getScenid() + ": " + e.getMessage());
@@ -219,7 +256,8 @@ public class DbSimulationStorage implements DbSimulationStorageI {
             if ( ! cachePopulated) {
                 loadCache();
             }
-            SimulationOutput output = cache.get(input);
+            Gate gate = cache.get(input);
+            SimulationOutput output = (gate != null) ? gate.output : null;
             if (output != null && output.getInput() != input) {
                 scenId = output.getInput().getScenarioId();
                 input.setScenarioId(scenId);
@@ -425,60 +463,98 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     public void saveGeneratorScenarioData(
             Scenario scenario, DecisionValues decisionValues,
             ConstraintStatus constraintStatus, ObjectiveStatus objectiveStatus) {
-        ScenarioGenerator scenarioGenerator = scenarioGeneratorRepository.findOne(scenGenId);
+        ScenGenResult scenGenResult = null;
+        ScenarioGenerator scenarioGenerator = null;
+        for (ScenGenResult sgr : scenario.getScengenresults()) {
+            if (sgr.getScenariogenerator().getScengenid() == scenGenId) {
+                scenGenResult = sgr;
+                scenarioGenerator = sgr.getScenariogenerator();
+            }
+        }
+        if (scenGenResult == null) {
+            scenarioGenerator = scenarioGeneratorRepository.findOne(scenGenId);
+            scenGenResult = new ScenGenResult();
+            scenGenResult.setScenario(scenario);
 
-        ScenGenResult scenGenResult = new ScenGenResult();
-        scenGenResult.setScenario(scenario);
+            scenGenResult.setScenariogenerator(scenarioGenerator);
+            scenarioGenerator.getScengenresults().add(scenGenResult);
+        }
+
         scenGenResult.setParetooptimal(null);
         scenGenResult.setFeasible(
                 (constraintStatus != null) ? constraintStatus.feasible : null);
-        scenGenResult.setScenariogenerator(scenarioGenerator);
-        scenarioGenerator.getScengenresults().add(scenGenResult);
         scenGenResult = scenGenResultRepository.save(scenGenResult);
 
         if (decisionValues != null) {
+            Map<Integer, DecisionVariableResult> oldDecisionVariableResults = new HashMap<>();
+            for (DecisionVariableResult dvr : scenGenResult.getDecisionvariableresults()) {
+                oldDecisionVariableResults.put(dvr.getDecisionvariable().getDecisionvarid(), dvr);
+            }
             for (DecisionVariable decisionVariable : scenarioGenerator.getDecisionvariables()) {
-                DecisionVariableResult decisionVariableResult = new DecisionVariableResult();
-                decisionVariableResult.setDecisionvariable(decisionVariable);
+                DecisionVariableResult decisionVariableResult =
+                        oldDecisionVariableResults.remove(decisionVariable.getDecisionvarid());
+                if (decisionVariableResult == null) {
+                    decisionVariableResult = new DecisionVariableResult();
+                    decisionVariableResult.setDecisionvariable(decisionVariable);
+                    decisionVariableResult.setScengenresult(scenGenResult);
+                    scenGenResult.getDecisionvariableresults().add(decisionVariableResult);
+                }
                 Symbol symbol = scenarioGenerationService.getDecisionVariableSymbol(decisionVariable);
                 String value = decisionValues.getString(symbol.componentName, symbol.name);
                 decisionVariableResult.setValue(value);
-                decisionVariableResult.setScengenresult(scenGenResult);
-                scenGenResult.getDecisionvariableresults().add(decisionVariableResult);
             }
             decisionVariableResultRepository.save(scenGenResult.getDecisionvariableresults());
+            decisionVariableResultRepository.delete(oldDecisionVariableResults.values());
         }
 
         if (constraintStatus != null) {
+            Map<Integer, OptConstraintResult> oldOptConstraintResults = new HashMap<>();
+            for (OptConstraintResult ocr : scenGenResult.getOptconstraintresults()) {
+                oldOptConstraintResults.put(ocr.getOptconstraint().getOptconstid(), ocr);
+            }
             int i = 0;
             for (Constraint constraint : constraintStatus.constraints) {
-                OptConstraintResult optConstraintResult = new OptConstraintResult();
-                OptConstraint optConstraint =
-                        optConstraintRepository.findOne(constraint.getConstraintId());
-                optConstraintResult.setOptconstraint(optConstraint);
+                OptConstraintResult optConstraintResult =
+                        oldOptConstraintResults.remove(constraint.getConstraintId());
+                if (optConstraintResult == null) {
+                    optConstraintResult = new OptConstraintResult();
+                    OptConstraint optConstraint =
+                            optConstraintRepository.findOne(constraint.getConstraintId());
+                    optConstraintResult.setOptconstraint(optConstraint);
+                    optConstraintResult.setScengenresult(scenGenResult);
+                    scenGenResult.getOptconstraintresults().add(optConstraintResult);
+                }
                 optConstraintResult.setInfeasibility(
                         Double.toString(constraintStatus.infeasibilities[i]));
-                optConstraintResult.setScengenresult(scenGenResult);
-                scenGenResult.getOptconstraintresults().add(optConstraintResult);
                 ++i;
             }
             optConstraintResultRepository.save(scenGenResult.getOptconstraintresults());
+            optConstraintResultRepository.delete(oldOptConstraintResults.values());
         }
 
         if (objectiveStatus != null) {
+            Map<Integer, ObjectiveFunctionResult> oldObjectiveFunctionResults = new HashMap<>();
+            for (ObjectiveFunctionResult ofr : scenGenResult.getObjectivefunctionresults()) {
+                oldObjectiveFunctionResults.put(ofr.getObjectivefunction().getObtfunctionid(), ofr);
+            }
             int i = 0;
             for (ObjectiveExpression objective : objectiveStatus.objectives) {
-                ObjectiveFunctionResult objectiveFunctionResult = new ObjectiveFunctionResult();
-                ObjectiveFunction objectiveFunction =
-                        objectiveFunctionRepository.findOne(objective.getObjectiveId());
-                objectiveFunctionResult.setObjectivefunction(objectiveFunction);
+                ObjectiveFunctionResult objectiveFunctionResult =
+                        oldObjectiveFunctionResults.remove(objective.getObjectiveId());
+                if (objectiveFunctionResult == null) {
+                    objectiveFunctionResult = new ObjectiveFunctionResult();
+                    ObjectiveFunction objectiveFunction =
+                            objectiveFunctionRepository.findOne(objective.getObjectiveId());
+                    objectiveFunctionResult.setObjectivefunction(objectiveFunction);
+                    objectiveFunctionResult.setScengenresult(scenGenResult);
+                    scenGenResult.getObjectivefunctionresults().add(objectiveFunctionResult);
+                }
                 objectiveFunctionResult.setValue(
                         Double.toString(objectiveStatus.objectiveValues[i]));
-                objectiveFunctionResult.setScengenresult(scenGenResult);
-                scenGenResult.getObjectivefunctionresults().add(objectiveFunctionResult);
                 ++i;
             }
             objectiveFunctionResultRepository.save(scenGenResult.getObjectivefunctionresults());
+            objectiveFunctionResultRepository.delete(oldObjectiveFunctionResults.values());
         }
     }
 
