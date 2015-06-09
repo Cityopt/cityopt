@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <dataset>
-  <datareliability/>
   <extparamvalset name="externals"/>
   <project name="Apros test project" location="Helsinki"/>
   <component name="SAMPLE_DISTRICT"/>
@@ -11,24 +10,6 @@
   <component name="CHP_BOIL_TH_OUT"/>
   <component name="FUEL_CONSUMPTION"/>
   <component name="CITYOPT"/>
-  <type name="Double"/>
-  <type name="Integer"/>
-  <type name="String"/>
-  <type name="Timestamp"/>
-  <type name="TimeSeries/step"/>
-  <type name="TimeSeries/linear"/>
-  <type name="List of Double"/>
-  <type name="List of Integer"/>
-  <type name="List of Timestamp"/>
-  <unit name="Unit/Double"/>
-  <unit name="Unit/Integer"/>
-  <unit name="Unit/String"/>
-  <unit name="Unit/Timestamp"/>
-  <unit name="Unit/TimeSeries/step"/>
-  <unit name="Unit/TimeSeries/linear"/>
-  <unit name="Unit/List of Double"/>
-  <unit name="Unit/List of Integer"/>
-  <unit name="Unit/List of Timestamp"/>
   <inputparameter name="CHP_electrical_power_rating" defaultvalue="2400.0"/>
   <inputparameter name="Burner_efficiency" defaultvalue="0.7"/>
   <inputparameter name="Share_of_roof_area_occupied_by_PVpanels" defaultvalue="10.0"/>
@@ -40,8 +21,6 @@
   <inputparameter name="Heat_storage_tank_height" defaultvalue="15.0"/>
   <inputparameter name="simulation_start" defaultvalue="2015-01-01T00:00:00"/>
   <inputparameter name="simulation_end" defaultvalue="2015-01-01T00:00:00"/>
-  <algorithm description="grid search"/>
-  <algorithm description="genetic algorithm"/>
   <scenariogenerator/>
   <scenario description="1st test scenario" status="SUCCESS"/>
   <scenario description="2nd test scenario"/>
@@ -70,14 +49,6 @@
   <extparamval value="[null]"/>
   <extparamval value="100"/>
   <extparamval value="0.01"/>
-  <algoparam name="max runtime [minutes]" defaultValue="1000000"/>
-  <algoparam name="max scenarios" defaultValue="100"/>
-  <algoparam name="max runtime [minutes]" defaultValue="1000000"/>
-  <algoparam name="number of generations" defaultValue="100"/>
-  <algoparam name="population size" defaultValue="100"/>
-  <algoparam name="number of parents per generation" defaultValue="25"/>
-  <algoparam name="number of offspring per generation" defaultValue="25"/>
-  <algoparam name="seed of the random number generator" defaultValue="0.95"/>
   <algoparamval/>
   <appuser/>
   <usergroup/>

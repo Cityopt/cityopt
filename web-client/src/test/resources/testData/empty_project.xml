@@ -3,7 +3,7 @@
 <dataset>
 
   <project prjid="1" name="Empty test project" location="Helsinki" version="1"/>
-
+<!-- 
   <algorithm algorithmid="1" description="grid search" version="1"/>
   <algoparam aparamsid="1" algorithmid="1" name="max runtime [minutes]" defaultValue="1000000" version="1"/>
   <algoparam aparamsid="2" algorithmid="1" name="max scenarios" defaultValue="100" version="1"/>
@@ -35,5 +35,5 @@
   <unit unitid="7" name="Unit/List of Double" version="1"/>
   <unit unitid="8" name="Unit/List of Integer" version="1"/>
   <unit unitid="9" name="Unit/List of Timestamp" version="1"/>
-
+ -->
 </dataset>

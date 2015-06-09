@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <dataset>
-  <datareliability/>
   <extparamvalset name="defaults"/>
   <extparamvalset name="scengentest"/>
   <project name="Project 1" location="dummy"/>
@@ -9,29 +8,9 @@
   <component name="C01"/>
   <component name="PIP01"/>
   <component name="CITYOPT"/>
-  <type name="Double"/>
-  <type name="Integer"/>
-  <type name="String"/>
-  <type name="Timestamp"/>
-  <type name="TimeSeries/step"/>
-  <type name="TimeSeries/linear"/>
-  <type name="List of Double"/>
-  <type name="List of Integer"/>
-  <type name="List of Timestamp"/>
-  <unit name="Unit/Double"/>
-  <unit name="Unit/Integer"/>
-  <unit name="Unit/String"/>
-  <unit name="Unit/Timestamp"/>
-  <unit name="Unit/TimeSeries/step"/>
-  <unit name="Unit/TimeSeries/linear"/>
-  <unit name="Unit/List of Double"/>
-  <unit name="Unit/List of Integer"/>
-  <unit name="Unit/List of Timestamp"/>
   <inputparameter name="typ" defaultvalue="2"/>
   <inputparameter name="simulation_start" defaultvalue="2015-01-01T00:00:00"/>
   <inputparameter name="simulation_end" defaultvalue="2015-01-01T00:00:00"/>
-  <algorithm description="grid search"/>
-  <algorithm description="genetic algorithm"/>
   <scenariogenerator status="COMPLETED_RESULTS : FEASIBLE" name="scengentest"/>
   <scenario description="C01.typ = 2" status="SUCCESS"/>
   <scenario description="C01.typ = 1" status="SUCCESS"/>
@@ -47,14 +26,6 @@
   <extparam name="d"/>
   <extparamval value="99"/>
   <extparamval value="100.0"/>
-  <algoparam name="max runtime [minutes]" defaultValue="1000000"/>
-  <algoparam name="max scenarios" defaultValue="100"/>
-  <algoparam name="max runtime [minutes]" defaultValue="1000000"/>
-  <algoparam name="number of generations" defaultValue="100"/>
-  <algoparam name="population size" defaultValue="100"/>
-  <algoparam name="number of parents per generation" defaultValue="25"/>
-  <algoparam name="number of offspring per generation" defaultValue="25"/>
-  <algoparam name="seed of the random number generator" defaultValue="0.95"/>
   <algoparamval value="1"/>
   <algoparamval value="1000"/>
   <algoparamval value="1"/>
