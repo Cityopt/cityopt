@@ -27,6 +27,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.InputParameterDTO;
+import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.repository.CustomQueryRepositoryImpl;
 import eu.cityopt.repository.ProjectRepository;
@@ -139,4 +140,35 @@ public class CopyServiceTest {
 		assertEquals(scenarioService.findByName("copy of").size(),1);
 	}	
 
+	@Test
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
+	public void copyMetric() throws EntityNotFoundException{
+
+		List<MetricDTO> metricsBefore = metricService.findAll();
+		
+		String metric1 = "copy of Energy_Supply2";
+		String metric2 = "copy of copy of Energy_Supply2";
+		String metric3 = "copy of Cost";
+		
+		MetricDTO metricid1Before = metricService.findByID(3);
+		MetricDTO metricid6Before = metricService.findByID(6);
+		
+		copyService.copyMetric(3, metric1);
+		copyService.copyMetric(3, metric2);
+		copyService.copyMetric(6, metric3);
+		
+		em.flush();
+		em.clear();
+		
+		List<MetricDTO> metricsAfter = metricService.findAll();
+		
+		assertEquals(metricsBefore.size()+3, metricsAfter.size());
+		assertEquals(1, metricsAfter.stream().filter(m -> m.getName().equals(metric1)).count());
+		assertEquals(1, metricsAfter.stream().filter(m -> m.getName().equals(metric2)).count());
+		assertEquals(1, metricsAfter.stream().filter(m -> m.getName().equals(metric3)).count());
+		MetricDTO metricid1After = metricsAfter.stream().filter(m -> m.getName().equals(metric1)).findFirst().get();
+		MetricDTO metricid6After = metricsAfter.stream().filter(m -> m.getName().equals(metric3)).findFirst().get();
+		assertEquals(metricid1Before.getExpression(), metricid1After.getExpression());
+		assertEquals(metricid6Before.getExpression(), metricid6After.getExpression());
+	}
 }
