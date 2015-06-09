@@ -141,7 +141,8 @@ public class TestScenarioGenerationService extends SimulationTestBase {
     private void runScenarioGeneration(String algorithmName) throws Exception {
         ScenarioGenerator scenarioGenerator =
                 scenarioGeneratorRepository.findAll().iterator().next();
-        scenarioGenerator.setAlgorithm(findAlgorithm(algorithmName));
+        scenarioGenerator.setAlgorithm(
+                algorithmRepository.save(findAlgorithm(algorithmName)));
         scenarioGeneratorRepository.save(scenarioGenerator);
         runScenarioGeneration(scenarioGenerator.getScengenid(), algorithmName);
     }

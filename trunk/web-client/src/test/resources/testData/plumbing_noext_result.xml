@@ -1,34 +1,14 @@
 <?xml version="1.0"?>
 <dataset>
-  <datareliability/>
   <project name="Project 1" location="dummy"/>
   <project name="Plumbing test project" location="Helsinki"/>
   <component name="dummy"/>
   <component name="C01"/>
   <component name="PIP01"/>
   <component name="CITYOPT"/>
-  <type name="Double"/>
-  <type name="Integer"/>
-  <type name="String"/>
-  <type name="Timestamp"/>
-  <type name="TimeSeries/step"/>
-  <type name="TimeSeries/linear"/>
-  <type name="List of Double"/>
-  <type name="List of Integer"/>
-  <type name="List of Timestamp"/>
-  <unit name="Unit/Double"/>
-  <unit name="Unit/Integer"/>
-  <unit name="Unit/String"/>
-  <unit name="Unit/Timestamp"/>
-  <unit name="Unit/TimeSeries/step"/>
-  <unit name="Unit/TimeSeries/linear"/>
-  <unit name="Unit/List of Double"/>
-  <unit name="Unit/List of Integer"/>
-  <unit name="Unit/List of Timestamp"/>
   <inputparameter name="typ" defaultvalue="2"/>
   <inputparameter name="simulation_start" defaultvalue="2015-01-01T00:00:00"/>
   <inputparameter name="simulation_end" defaultvalue="2015-01-01T00:00:00"/>
-  <algorithm/>
   <scenariogenerator/>
   <scenario description="dummy scenario"/>
   <scenario description="test scenario" status="SUCCESS"/>
@@ -42,7 +22,6 @@
   <metric name="seriesmetric" expression="100 + C01.typ + PIP01.PI12_MIX_MASS_FLOW"/>
   <decisionvariable/>
   <outputvariable name="PI12_MIX_MASS_FLOW"/>
-  <algoparam/>
   <algoparamval/>
   <appuser/>
   <usergroup/>
