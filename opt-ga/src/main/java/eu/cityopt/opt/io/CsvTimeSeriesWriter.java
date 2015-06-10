@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SequenceWriter;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 
@@ -20,12 +21,13 @@ import eu.cityopt.sim.eval.Type;
  * @author ttekth
  */
 public class CsvTimeSeriesWriter {
-    private final CsvMapper mapper;
+    private final ObjectWriter writer;
     private boolean numeric = false;
 
     @Inject
     public CsvTimeSeriesWriter(CsvMapper mapper) {
-        this.mapper = mapper;
+        writer = mapper.writer()
+                .without(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
     }
 
     private static <T> void writeRow(
@@ -43,7 +45,8 @@ public class CsvTimeSeriesWriter {
         } else {
             writeRow(seq, Type.TIMESTAMP.format(time, es),
                      Arrays.stream(values).map(
-                             x -> x != null ? Type.DOUBLE.format(x, es) : ""));
+                             x -> x == null ? null
+                                            : Type.DOUBLE.format(x, es)));
         }
     }
 
@@ -54,9 +57,7 @@ public class CsvTimeSeriesWriter {
     public void write(OutputStream ostr, TimeSeriesData tsd)
             throws IOException {
         MergedTimeSeries merge = new MergedTimeSeries(tsd);
-        try (SequenceWriter seq = mapper.writer()
-                    .without(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
-                    .writeValues(ostr)) {
+        try (SequenceWriter seq = writer.writeValuesAsArray(ostr)) {
             writeRow(seq, TimeSeriesData.TIMESTAMP_KEY,
                      merge.getNames().stream());
             Double[] values = new Double[merge.getNames().size()];
@@ -78,10 +79,25 @@ public class CsvTimeSeriesWriter {
         }
     }
 
+    /**
+     * Return whether numeric mode is on.
+     * @see #setNumeric
+     */
     public boolean isNumeric() {
         return numeric;
     }
 
+    /**
+     * Enable or disable numeric mode.
+     * In default mode (numeric = false) times and values are formatted
+     * with {@link Type#format} and passed as strings to Jackson.  Times
+     * appear as ISO 8601 timestamps.  In numeric mode (numeric = true)
+     * times and values are passed as numbers to Jackson, which formats them.
+     * Times appear as seconds from the origin defined by TimeSeriesData.
+     * <p>
+     * This method is not thread-safe: if you are going to share the writer,
+     * set the desired mode before sharing.
+     */
     public void setNumeric(boolean numeric) {
         this.numeric = numeric;
     }
