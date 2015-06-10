@@ -12,13 +12,12 @@ public class ExportDirectors {
      * Export an {@link OptimisationProblem}.
      * @param problem Problem to export
      * @param builder Builder to export with
-     * @param scenario Scenario name
      * @param extSet External parameter set name
      * @return the builder
      */
     public static ExportBuilder build(
             OptimisationProblem problem, ExportBuilder builder,
-            String scenario, String extSet) {
+            String extSet) {
         builder.add(problem.getExternalParameters(), extSet);
         builder.add(problem.inputConst);
         Namespace ns = problem.getNamespace();
