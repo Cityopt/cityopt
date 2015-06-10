@@ -52,7 +52,8 @@ public class TestResources {
      * @param propname name of the property containing the path
      */
     public Path getPath(String propname) {
-        return getDir().resolve(properties.getProperty(propname));
+        String prop = properties.getProperty(propname);
+        return prop == null ? null : getDir().resolve(prop);
     }
     
     /**
@@ -63,7 +64,8 @@ public class TestResources {
      */
     public Path[] getPaths(String propname) {
         String sep = Pattern.quote(System.getProperty("path.separator"));
-        return Arrays.stream(properties.getProperty(propname).split(sep))
+        String prop = properties.getProperty(propname);
+        return prop == null ? null : Arrays.stream(prop.split(sep))
                 .filter(s -> !s.isEmpty())
                 .map(getDir()::resolve).toArray(Path[]::new);
     }
@@ -72,11 +74,11 @@ public class TestResources {
      * Return an InputStream to a resource defined by a property.
      * The value of the property is resolved as a URL relative
      * to that of the property file.
-     * @param propname name of the property containing the URI.
      */
     public InputStream getStream(String propname)
             throws MalformedURLException, IOException {
-        return baseURI.resolve(properties.getProperty(propname))
-                .toURL().openStream();
+        String prop = properties.getProperty(propname);
+        return prop == null ? null
+                            : baseURI.resolve(prop).toURL().openStream();
     }
 }
