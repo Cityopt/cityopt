@@ -76,6 +76,7 @@ public class JacksonCsvModule extends AbstractModule {
      */
     @Provides
     @Named("problem")
+    @Singleton
     public static ObjectReader getProblemReader(CsvMapper mapper) {
         return mapper.reader(JacksonBinder.class)
                 .with(CsvSchema.emptySchema().withHeader());
@@ -83,6 +84,7 @@ public class JacksonCsvModule extends AbstractModule {
     
     @Provides
     @Named("problemScen")
+    @Singleton
     public static ObjectReader getScenarioProblemReader(CsvMapper mapper) {
         return mapper.reader(JacksonBinderScenario.class)
                 .with(CsvSchema.emptySchema().withHeader());
@@ -102,6 +104,7 @@ public class JacksonCsvModule extends AbstractModule {
      */
     @Provides
     @Named("problem")
+    @Singleton
     public static ObjectWriter getProblemWriter(CsvMapper mapper) {
         /* Automatic schema creation does not appear to work for polymorphic
          * data.
@@ -114,6 +117,7 @@ public class JacksonCsvModule extends AbstractModule {
      */
     @Provides
     @Named("scenario")
+    @Singleton
     public static ObjectWriter getScenarioWriter(CsvMapper mapper) {
         //CsvSchema.Builder bld = CsvSchema.builder()
         CsvSchema.Builder bld = problemSchema.rebuild()
