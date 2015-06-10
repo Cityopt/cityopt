@@ -282,6 +282,7 @@ public class ImportTest {
         }
     }
     
+    // dot -Tpdf -Grankdir=LR -O cfm-deps.dot
     @Test
     public void graphCityoptFile() throws IOException {
         String dotname = res.properties.getProperty("dot_file");
