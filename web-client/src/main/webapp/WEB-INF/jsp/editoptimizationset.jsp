@@ -93,7 +93,8 @@
 								<td>
 									<table class="tablestyle" style="width: 390px">
 										<col style="width: 20%;">
-										<col style="width: 50%;">
+										<col style="width: 40%;">
+										<col style="width: 10%;">
 										<col style="width: 10%;">
 										<col style="width: 10%;">
 										<col style="width: 10%;">
@@ -102,6 +103,7 @@
 											<th>Expression</th>
 											<th>Lower bound</th>
 											<th>Upper bound</th>
+											<th>Edit</th>
 											<th>Delete</th>
 										</tr>
 										
@@ -111,6 +113,7 @@
 											<td>${constraint.expression}</td>
 											<td>${constraint.lowerbound}</td>
 											<td>${constraint.upperbound}</td>
+											<td><a href="editconstraint.html?constraintid=${constraint.optconstid}"><button type="button">Edit</button></a>
 											<td><a href="deleteconstraint.html?constraintid=${constraint.optconstid}"><button type="button">Delete</button></a>
 									   	</tr>
 										</c:forEach>
@@ -121,7 +124,6 @@
 							<tr>
 								<td>
 									<a href="createconstraint.html"><button type="button">Create</button></a>
-									<a href="editconstraint.html"><button type="button">Edit</button></a>
 									<a href="importsearchconstraint.html"><button type="button">Import</button></a>
 								</td>
 							</tr>

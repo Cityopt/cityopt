@@ -1222,6 +1222,132 @@ public class ProjectController {
 		return "editoptimizationset";
 	}
 	
+	@RequestMapping(value="editobjfunction",method=RequestMethod.GET)
+	public String getEditObjFunction(Map<String, Object> model,
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+	
+		OptimizationSetDTO optSet = (OptimizationSetDTO) model.get("optimizationset");
+		
+		if (optSet == null)
+		{
+			optSet = new OptimizationSetDTO();
+		}
+		
+		UserSession userSession = (UserSession) model.get("usersession");
+		
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+		model.put("usersession", userSession);
+		
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+		
+		if (selectedCompId != null && !selectedCompId.isEmpty())
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
+			if (nSelectedCompId > 0)
+			{
+				userSession.setComponentId(nSelectedCompId);
+				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				model.put("outputVars", outputVars);
+			}
+			model.put("selectedcompid", nSelectedCompId);
+		}
+		
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+
+		ObjectiveFunctionDTO function = optSet.getObjectivefunction();
+		model.put("function", function);
+		
+		return "editobjfunction";
+	}
+
+	@RequestMapping(value="editobjfunction", method=RequestMethod.POST)
+	public String getEditObjFunctionPost(ObjectiveFunctionDTO function, HttpServletRequest request, Map<String, Object> model) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		OptimizationSetDTO optSet = null;
+		
+		if (model.containsKey("optimizationset"))
+		{
+			optSet = (OptimizationSetDTO) model.get("optimizationset");
+			
+			try {
+				optSet = optSetService.findByID(optSet.getOptid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			return "error";
+		}
+		
+		if (function != null && function.getExpression() != null)
+		{
+			ObjectiveFunctionDTO oldFunc = optSet.getObjectivefunction();
+			
+			oldFunc.setExpression(function.getExpression());
+			oldFunc.setName(function.getName());
+			oldFunc.setProject(project);
+			
+			try {
+				oldFunc = objFuncService.update(oldFunc);
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			
+			try {
+				optSet = optSetService.findByID(optSet.getOptid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			optSet.setObjectivefunction(oldFunc);
+			optSet = optSetService.save(optSet);
+		}
+
+		model.put("optimizationset", optSet);
+
+		List<OptConstraintDTO> optSearchConstraints = null;
+		
+		try {
+			optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		model.put("constraints", optSearchConstraints);
+
+		return "editoptimizationset";
+	}
+	
 	@RequestMapping(value="deleteconstraint", method=RequestMethod.GET)
 	public String getDeleteConstraint(Map<String, Object> model, @RequestParam(value="constraintid", required=true) String constraintId) {
 		OptConstraintDTO constraint = null;
@@ -1999,6 +2125,119 @@ public class ProjectController {
 			}
 			
 			//optSet = optSetService.update(optSet);
+		}
+
+		List<OptConstraintDTO> optSearchConstraints = null;
+		
+		try {
+			optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		model.put("constraints", optSearchConstraints);
+
+		return "editoptimizationset";
+	}
+	
+	@RequestMapping(value="editconstraint",method=RequestMethod.GET)
+	public String getEditConstraint(Map<String, Object> model,
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
+		@RequestParam(value="constraintid", required=false) String constraintId) {
+	
+		int nConstraintId = Integer.parseInt(constraintId);
+		
+		OptConstraintDTO constraint = null;
+		
+		try {
+			constraint = optConstraintService.findByID(nConstraintId);
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		
+		model.put("constraint", constraint);
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		UserSession userSession = (UserSession) model.get("usersession");
+		
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+
+		model.put("usersession", userSession);
+
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+		
+		if (selectedCompId != null && !selectedCompId.isEmpty())
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
+			if (nSelectedCompId > 0)
+			{
+				userSession.setComponentId(nSelectedCompId);
+				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				model.put("outputVars", outputVars);
+				
+				Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+				model.put("inputParams", inputParams);
+			}
+			model.put("selectedcompid", nSelectedCompId);
+		}
+		
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+
+		return "editconstraint";
+	}
+	
+	@RequestMapping(value="editconstraint", method=RequestMethod.POST)
+	public String getEditConstraintPost(OptConstraintDTO constraint, Map<String, Object> model) throws EntityNotFoundException {
+		OptimizationSetDTO optSet = null;
+		
+		if (model.containsKey("optimizationset"))
+		{
+			optSet = (OptimizationSetDTO) model.get("optimizationset");
+			
+			try {
+				optSet = optSetService.findByID(optSet.getOptid());
+			} catch (NumberFormatException | EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			model.put("optimizationset", optSet);
+		}
+		else
+		{
+			return "error";
+		}
+		
+		if (constraint != null && constraint.getExpression() != null)
+		{
+			String lowerbound = constraint.getLowerbound();
+			String upperbound = constraint.getUpperbound();
+			String name = constraint.getName();
+			String expression = constraint.getExpression();
+			
+			constraint = optConstraintService.findByID(constraint.getOptconstid());
+			constraint.setLowerbound(lowerbound);
+			constraint.setUpperbound(upperbound);
+			constraint.setName(name);
+			constraint.setExpression(expression);
+					
+			optConstraintService.update(constraint);
 		}
 
 		List<OptConstraintDTO> optSearchConstraints = null;
