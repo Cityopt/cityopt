@@ -40,6 +40,17 @@ public class OptConstraintServiceImpl implements OptConstraintService {
 	
 		return modelMapper.map(oc, OptConstraintDTO.class);
 	}
+	
+	@Override
+	@Transactional
+	public OptConstraintDTO update(OptConstraintDTO u) throws EntityNotFoundException {
+		
+		if(optConstraintRepository.findOne(u.getOptconstid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return save(u);
+	}
 
 	@Override
 	@Transactional
