@@ -20,6 +20,7 @@ import eu.cityopt.opt.ga.ProblemFromBinder;
 import eu.cityopt.opt.ga.TimeSeriesLoader;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.opt.OptimisationProblem;
+import eu.cityopt.sim.opt.SimulationStructure;
 import eu.cityopt.test.TestResources;
 
 public class ExportBuilderTest {
@@ -41,6 +42,7 @@ public class ExportBuilderTest {
             bind(TimeSeriesData.class).toProvider(TimeSeriesLoader.class);
             bind(OptimisationProblem.class)
                     .toProvider(ProblemFromBinder.class);
+            bind(SimulationStructure.class).to(OptimisationProblem.class);
         }
     }
     
@@ -62,16 +64,27 @@ public class ExportBuilderTest {
     }
 
     @Test
-    public void printStuff() throws Exception {
+    public void printProblem() throws Exception {
         OptimisationProblem p = inj.getInstance(OptimisationProblem.class);
         ExportBuilder bld = new ExportBuilder(p.getNamespace());
-        ExportDirectors.build(p, bld, null);
+        ExportDirectors.build(p, bld, "test_xps");
         ObjectWriter wtr = inj.getInstance(
                 Key.get(ObjectWriter.class, Names.named("scenario")));
         wtr.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET).writeValue(
-                System.out, bld.getBinder());
+                System.out, bld.getScenarioBinder());
         CsvTimeSeriesWriter tsw = inj.getInstance(CsvTimeSeriesWriter.class);
         tsw.write(System.out, bld.getTimeSeriesData());
     }
 
+    @Test
+    public void testSimulationStructure() throws Exception {
+        SimulationStructure s = inj.getInstance(SimulationStructure.class);
+        ExportBuilder bld = new ExportBuilder(s.getNamespace());
+        ExportDirectors.build(s, bld);
+        assertTrue(bld.getTimeSeriesData().seriesData.isEmpty());
+        ObjectWriter wtr = inj.getInstance(
+                Key.get(ObjectWriter.class, Names.named("problem")));
+        wtr.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET).writeValue(
+                System.out, bld.getBinder());
+    }
 }
