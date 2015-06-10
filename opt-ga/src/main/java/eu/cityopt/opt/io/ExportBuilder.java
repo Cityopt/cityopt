@@ -3,6 +3,8 @@ package eu.cityopt.opt.io;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.DecisionValues;
 import eu.cityopt.sim.eval.DecisionVariable;
@@ -100,6 +102,14 @@ public class ExportBuilder {
     public void add(MetricExpression met, Namespace ns) {
         add(ns.metrics.get(met.getMetricName()), met);
     }
+    
+    /**
+     * Add all input parameters without values.
+     * @param ns
+     */
+    public void addInputs(Namespace ns) {
+        addInputs(ns, null, null);
+    }
 
     /**
      * Add input values for a scenario.
@@ -107,24 +117,35 @@ public class ExportBuilder {
      * @param scenario scenario name
      */
     public void add(SimulationInput input, String scenario) {
+        addInputs(input.getNamespace(), input, scenario);
+    }
+    
+    private void addInputs(
+            Namespace ns, SimulationInput input, String scenario) {
         EvaluationSetup evs = tsd.getEvaluationSetup();
         for (Map.Entry<String, Component> 
-                comp : input.getNamespace().components.entrySet()) {
+                comp : ns.components.entrySet()) {
             for (Map.Entry<String, Type>
                     nt : comp.getValue().inputs.entrySet()) {
-                Object val = input.get(comp.getKey(), nt.getKey());
-                if (val == null)
-                    continue;
+                Object val = null;
+                if (input != null) {
+                    val = input.get(comp.getKey(), nt.getKey());
+                    if (val == null)
+                        continue;
+                }
                 Input in = new Input();
                 in.scenarioname = scenario;
                 in.item = new JacksonBinder.Input();
                 in.item.comp = comp.getKey();
                 in.item.name = nt.getKey();
                 in.item.type = nt.getValue();
-                in.item.value = in.item.type.format(val, evs);
+                if (val != null) {
+                    in.item.value = in.item.type.format(val, evs);
+                }
                 binder.getItems().add(in);
             }
         }
+
     }
     
     /**
@@ -287,8 +308,21 @@ public class ExportBuilder {
         //TODO
     }
     
-    public JacksonBinderScenario getBinder() {
+    public JacksonBinderScenario getScenarioBinder() {
         return binder;
+    }
+    
+    /**
+     * Convert our data into a JacksonBinder.
+     * Discard scenario and external parameter set labels.
+     * This can be used when the data contain at most one external
+     * parameter set and scenario.  Do not attempt to modify
+     * the returned JacksonBinder.
+     */
+    public JacksonBinder getBinder() {
+        return new JacksonBinder(
+                binder.getItems().stream().map(x -> x.getItem())
+                        .collect(Collectors.toList()));
     }
 
     public TimeSeriesData getTimeSeriesData() {
