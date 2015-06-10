@@ -65,7 +65,7 @@ public class TimeSeriesExportTest {
     
     private void reimport(CsvTimeSeriesWriter wtr)
             throws IOException, ParseException {
-        //wtr.write(tsd, System.out);
+        //wtr.write(System.out, tsd);
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         wtr.write(bout, tsd);
         CsvTimeSeriesData tsd2 = new CsvTimeSeriesData(evsup);
