@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SequenceWriter;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Type;
@@ -25,9 +25,8 @@ public class CsvTimeSeriesWriter {
     private boolean numeric = false;
 
     @Inject
-    public CsvTimeSeriesWriter(CsvMapper mapper) {
-        writer = mapper.writer()
-                .without(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+    public CsvTimeSeriesWriter(@Named("timeSeries") ObjectWriter writer) {
+        this.writer = writer.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
     }
 
     private static <T> void writeRow(

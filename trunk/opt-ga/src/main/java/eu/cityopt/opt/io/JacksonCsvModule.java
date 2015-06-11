@@ -69,6 +69,21 @@ public class JacksonCsvModule extends AbstractModule {
     }
     
     /**
+     * Create a mapper for time series.
+     */
+    @Provides
+    @Named("timeSeries")
+    @Singleton
+    public static CsvMapper getTsCsvMapper() {
+        CsvMapper m = new CsvMapper();
+        m.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+        m.enable(CsvParser.Feature.WRAP_AS_ARRAY);
+        //XXX Why this?  It only affects the header: the rest we trim anyway.
+        m.enable(CsvParser.Feature.TRIM_SPACES);
+        return m;
+    }
+    
+    /**
      * Create a reader for problem definitions.
      * A header row is required in the CSV.  Columns are identified by their
      * names in the header.  Column order is thus irrelevant.
@@ -83,7 +98,7 @@ public class JacksonCsvModule extends AbstractModule {
     }
     
     @Provides
-    @Named("problemScen")
+    @Named("scenario")
     @Singleton
     public static ObjectReader getScenarioProblemReader(CsvMapper mapper) {
         return mapper.reader(JacksonBinderScenario.class)
@@ -125,6 +140,28 @@ public class JacksonCsvModule extends AbstractModule {
         //problemSchema.forEach(c -> bld.addColumn(c));
         return mapper.writer(bld.build().withHeader()).without(
                 SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS);
+    }
+    
+    /**
+     * Create a reader for time series data.
+     */
+    @Provides
+    @Named("timeSeries")
+    @Singleton
+    public static ObjectReader getTsReader(
+            @Named("timeSeries") CsvMapper mapper) {
+        return mapper.reader(String[].class);
+    }
+    
+    /**
+     * Create a writer for time series data.
+     */
+    @Provides
+    @Named("timeSeries")
+    @Singleton
+    public static ObjectWriter getTsWriter(
+            @Named("timeSeries") CsvMapper mapper) {
+        return mapper.writer();
     }
     
     @Override

@@ -13,9 +13,7 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvParser;
-
+import com.fasterxml.jackson.databind.ObjectReader;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Type;
 
@@ -30,8 +28,29 @@ import eu.cityopt.sim.eval.Type;
  */
 //TODO This is just a builder.  The data should be a member, not a superclass. 
 public class CsvTimeSeriesData extends TimeSeriesData {
+    private ObjectReader reader;
+
     public CsvTimeSeriesData(EvaluationSetup evaluationSetup) {
-        super(evaluationSetup);
+        this(JacksonCsvModule.getTsReader(
+                JacksonCsvModule.getTsCsvMapper()),
+                evaluationSetup);
+    }
+
+    /**
+     * Construct with a custom {@link ObjectReader}. This allows reading
+     * variants of CSV, e.g., different column separators (although the decimal
+     * point cannot be changed).
+     * <p>
+     * In theory this should also allow completely different file formats,
+     * e.g., JSON, but non-CSV formats are untested. In any case the data
+     * structure is a table likely appropriate only for CSV:
+     * {@link ObjectReader#readValues(InputStream)} is expected to produce
+     * a sequence of string arrays. We parse the strings. The first
+     * array is the header and so on.
+     */
+    public CsvTimeSeriesData(ObjectReader reader, EvaluationSetup evsup) {
+        super(evsup);
+        this.reader = reader;
     }
 
     /**
@@ -50,11 +69,7 @@ public class CsvTimeSeriesData extends TimeSeriesData {
      */
     public void read(InputStream inputStream, String streamName)
             throws IOException, ParseException {
-        CsvMapper mapper = new CsvMapper();
-        mapper.enable(CsvParser.Feature.WRAP_AS_ARRAY);
-        mapper.enable(CsvParser.Feature.TRIM_SPACES);
-        MappingIterator<String[]> it =
-                mapper.reader(String[].class).readValues(inputStream);
+        MappingIterator<String[]> it = reader.readValues(inputStream);
         if (!it.hasNext()) {
             return;
         }

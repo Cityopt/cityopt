@@ -26,7 +26,14 @@ import eu.cityopt.sim.opt.SimulationStructure;
  * @author Hannu Rummukainen
  */
 public class OptimisationProblemIO {
-    private static CsvMapper mapper = JacksonCsvModule.getCsvMapper();
+    private static CsvMapper
+            mapper = JacksonCsvModule.getCsvMapper(),
+            tsMapper = JacksonCsvModule.getTsCsvMapper();
+    private static ObjectReader
+            reader = JacksonCsvModule.getProblemReader(mapper);
+    private static ObjectWriter
+            writer = JacksonCsvModule.getProblemWriter(mapper),
+            tsWriter = JacksonCsvModule.getTsWriter(tsMapper);
     
     public static OptimisationProblem readProblemCsv(
             Path path, TimeSeriesData timeSeriesData)
@@ -39,7 +46,6 @@ public class OptimisationProblemIO {
     public static OptimisationProblem readProblemCsv(
             InputStream problemStream, TimeSeriesData timeSeriesData)
                     throws ParseException, ScriptException, IOException {
-        ObjectReader reader = JacksonCsvModule.getProblemReader(mapper);
         JacksonBinder binder = new JacksonBinder(reader, problemStream);
         EvaluationSetup setup = timeSeriesData.getEvaluationSetup();
         Namespace ns = binder.makeNamespace(setup.evaluator, setup.timeOrigin);
@@ -59,7 +65,6 @@ public class OptimisationProblemIO {
     public static SimulationStructure readStructureCsv(
             InputStream structureStream, EvaluationSetup setup)
                     throws ParseException, ScriptException, IOException {
-        ObjectReader reader = JacksonCsvModule.getProblemReader(mapper);
         JacksonBinder binder = new JacksonBinder(reader, structureStream);
         Namespace ns = binder.makeNamespace(setup.evaluator, setup.timeOrigin);
         SimulationStructureBuilder bld = new SimulationStructureBuilder(
@@ -77,9 +82,9 @@ public class OptimisationProblemIO {
     public static void writeProblemCsv(
             OptimisationProblem problem,
             OutputStream problemOut, OutputStream tsOut) throws IOException {
-        ObjectWriter problem_wtr = JacksonCsvModule.getProblemWriter(mapper)
-                .without(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
-        CsvTimeSeriesWriter ts_wtr = new CsvTimeSeriesWriter(mapper);
+        ObjectWriter problem_wtr = writer.without(
+                JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        CsvTimeSeriesWriter ts_wtr = new CsvTimeSeriesWriter(tsWriter);
         ExportBuilder bld = new ExportBuilder(problem.getNamespace());
         ExportDirectors.build(problem, bld, null);
         problem_wtr.writeValue(problemOut, bld.getBinder());

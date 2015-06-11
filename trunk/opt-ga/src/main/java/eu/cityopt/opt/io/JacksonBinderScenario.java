@@ -72,7 +72,7 @@ public class JacksonBinderScenario {
      */
     @Inject
     public JacksonBinderScenario(
-            @Named("problemScen") ObjectReader reader,
+            @Named("scenario") ObjectReader reader,
             @Named("scenario") Path file)
             throws JsonProcessingException, IOException {
         JacksonBinderScenario bd = reader.readValue(file.toFile());
