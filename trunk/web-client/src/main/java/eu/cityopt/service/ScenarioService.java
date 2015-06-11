@@ -32,4 +32,14 @@ public interface ScenarioService extends CityOptService<ScenarioDTO>{
 	Set<SimulationResultDTO> getSimulationResults(int scenId);
 
 	Set<MetricValDTO> getMetricsValues(int scenId);
+
+	/**
+	 * saves the scenario s and creates default inputparametervalues for all components in the project
+	 * 
+	 * @param s
+	 * @param prjid
+	 * @return
+	 * @throws EntityNotFoundException 
+	 */
+	ScenarioDTO saveWithDefaultInputValues(ScenarioDTO s, int prjid) throws EntityNotFoundException;
 }

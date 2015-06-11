@@ -1,5 +1,6 @@
 package eu.cityopt.service.impl;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -13,17 +14,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.reflect.TypeToken;
 
+import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.InputParamValDTO;
+import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricValDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioMetricsDTO;
 import eu.cityopt.DTO.SimulationResultDTO;
+import eu.cityopt.model.Component;
 import eu.cityopt.model.InputParamVal;
+import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.MetricVal;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.model.SimulationResult;
+import eu.cityopt.repository.InputParamValRepository;
 import eu.cityopt.repository.MetricRepository;
 import eu.cityopt.repository.MetricValRepository;
 import eu.cityopt.repository.ProjectRepository;
@@ -45,6 +51,9 @@ public class ScenarioServiceImpl implements ScenarioService {
 	@Autowired 
 	private MetricValRepository metricValRepository;
 	
+	@Autowired
+	InputParamValRepository inputParamValRepository;
+	
 	@PersistenceContext
     private EntityManager em;
 	
@@ -62,6 +71,34 @@ public class ScenarioServiceImpl implements ScenarioService {
 		Project p = projectRepository.findOne(prjid);
 		scen.setProject(p);
 		scen = scenarioRepository.save(scen);
+		ScenarioDTO scenRet = modelMapper.map(scen, ScenarioDTO.class);
+		return scenRet;
+	}
+	
+	@Override
+	@Transactional
+	public ScenarioDTO saveWithDefaultInputValues(ScenarioDTO s, int prjid) throws EntityNotFoundException{
+		Scenario scen = modelMapper.map(s, Scenario.class);
+		Project p = projectRepository.findOne(prjid);
+		
+		if(p == null)
+			throw new EntityNotFoundException();
+		
+		scen.setProject(p);
+		scen = scenarioRepository.save(scen);
+		
+		// Create input param vals for all input params
+		for (Component c : p.getComponents()){
+
+			for(InputParameter i : c.getInputparameters()){
+				InputParamVal inputParamVal = new InputParamVal();
+				inputParamVal.setInputparameter(i);
+				inputParamVal.setValue(i.getDefaultvalue());
+				inputParamVal.setScenario(scen);
+				inputParamVal = inputParamValRepository.save(inputParamVal);
+			}
+		}
+					
 		ScenarioDTO scenRet = modelMapper.map(scen, ScenarioDTO.class);
 		return scenRet;
 	}
