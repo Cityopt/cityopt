@@ -43,7 +43,8 @@ public class NamespaceBuilder extends AbstractBuilder<Namespace> {
     }
 
     private static void addToNSMap(Var var, Map<String, Type> map) {
-        if (map.putIfAbsent(var.name, var.type) != null) {
+        Type old = map.putIfAbsent(var.name, var.type); 
+        if (old != null && old != var.type) {
             throw new IllegalArgumentException(
                     "duplicate " + var.getKind() + " name " + var.getQName());
         }
