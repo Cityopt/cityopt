@@ -248,8 +248,9 @@ public class ImportTest {
         assertArrayEquals(new double[] { -t0.toEpochMilli()/1000, -1.0, 0.0 },
                 sd.times, delta);
         assertArrayEquals(new double[] { 10.0, 10.0, 10.0 }, sd.values, delta);
+        Injector inj = Guice.createInjector(new JacksonCsvModule());
         CsvTimeSeriesWriter
-                wtr = new CsvTimeSeriesWriter(JacksonCsvModule.getCsvMapper());
+                wtr = inj.getInstance(CsvTimeSeriesWriter.class);
         //wtr.setNumeric(true);
         wtr.write(System.out, tsd);
     }
