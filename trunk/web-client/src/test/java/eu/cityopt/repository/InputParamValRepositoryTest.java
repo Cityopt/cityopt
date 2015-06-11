@@ -101,7 +101,7 @@ public class InputParamValRepositoryTest {
 	@Test
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
 	"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC1.xml"})
-	public void testfindByComponentAndScenario(){
+	public void findByComponentAndScenarioTest(){
 		
 		List<InputParamVal> result = ipvalRepository.findByComponentAndScenario(2, 1);
 		
@@ -109,6 +109,24 @@ public class InputParamValRepositoryTest {
 		assertEquals(4,result.size());
 		assertEquals(4,result.stream().filter(r -> r.getInputparameter()
 				.getComponent().getName().equals("Storage_Vertical_tank_with_heat_structure")).count());
-		}
+	}
+	
+	@Test
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
+	"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC1.xml",
+	"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC2.xml"})
+	public void findByNameAndScenarioTest(){
+		
+		List<InputParamVal> result = ipvalRepository.findByNameAndScenario("collector_area", 1);
+		
+		assertNotNull(result);
+		assertEquals(1,result.size());
+		assertEquals("100", result.iterator().next().getValue());
+		
+		result = ipvalRepository.findByNameAndScenario("Lower_heating_value", 2);
+		assertNotNull(result);
+		assertEquals(1,result.size());
+		assertEquals("47.14", result.iterator().next().getValue());
+	}
 
 }
