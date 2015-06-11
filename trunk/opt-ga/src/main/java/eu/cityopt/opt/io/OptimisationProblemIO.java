@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
+
 import javax.script.ScriptException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -89,6 +90,19 @@ public class OptimisationProblemIO {
         ExportDirectors.build(problem, bld, null);
         problem_wtr.writeValue(problemOut, bld.getBinder());
         ts_wtr.write(tsOut, bld.getTimeSeriesData());
+    }
+    
+    /**
+     * Export a SimulationStructure to a CSV file.
+     * The output stream is left open.
+     */
+    public static void writeStructureCsv(
+            SimulationStructure sim, OutputStream out) throws IOException {
+        ObjectWriter wtr = writer.without(
+                JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        ExportBuilder bld = new ExportBuilder(sim.getNamespace());
+        ExportDirectors.build(sim, bld);
+        wtr.writeValue(out, bld.getBinder());
     }
     
     /**

@@ -3,6 +3,7 @@ package eu.cityopt.sim.service;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -209,6 +210,25 @@ public class ImportExportService {
 
         saveSimulationStructure(project, structure);
     }
+    
+    /**
+     * Export external parameters, inputs, outputs and metrics.
+     * This is the inverse of importSimulationStructure.
+     * @param projectId project to export
+     * @param out output stream.
+     * @throws ScriptException 
+     * @throws IOException 
+     */
+    @Transactional(readOnly=true)
+    public void exportSimulationStructure(int projectId, OutputStream out)
+            throws ScriptException, IOException {
+        Project project = projectRepository.findOne(projectId);
+        Namespace ns = simulationService.makeProjectNamespace(project);
+        SimulationStructure sim = new SimulationStructure(null, ns);
+        sim.metrics = simulationService.loadMetricExpressions(project, ns);
+        OptimisationProblemIO.writeStructureCsv(sim, out);
+    }
+    
 
     public void saveSimulationStructure(
             Project project, SimulationStructure structure) {
