@@ -43,6 +43,10 @@ h2 {
 	font-family: 'blanchcaps', PT Sans, arial;
 }
 
+h2.error {
+    color: red;
+}
+
 h3 {
 	color: #B3B3B3;
 	font-family: 'blanchcaps', PT Sans, arial;
