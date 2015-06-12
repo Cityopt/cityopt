@@ -45,6 +45,7 @@ public class ExportDirectors {
     public static ExportBuilder build(
             SimulationStructure sim, ExportBuilder builder) {
         Namespace ns = sim.getNamespace();
+        builder.addExtParams(ns);
         builder.addInputs(ns);
         builder.addOutputs(ns);
         sim.metrics.forEach(me -> builder.add(me, ns));
