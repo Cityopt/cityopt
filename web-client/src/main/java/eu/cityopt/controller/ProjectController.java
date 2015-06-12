@@ -3904,8 +3904,6 @@ public class ProjectController {
 
 		if (action != null && action.equals("openwindow"))
 		{
-			//System.setProperty("java.awt.headless", "true");
-			
 			Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
 		    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
 			
@@ -3918,7 +3916,7 @@ public class ProjectController {
 					SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, scenario.getScenid());
 						
 					List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
-					TimeSeries timeSeries = new TimeSeries(outputVar.getName());
+					TimeSeries timeSeries = new TimeSeries(outputVar.getComponent().getName() + "." + outputVar.getName());
 
 					for (int i = 0; i < timeSeriesVals.size(); i++)
 					{
@@ -4006,12 +4004,12 @@ public class ProjectController {
 					if (userSession.getChartType() == 0) {
 						chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", metric1.getName(), metric2.getName());
 					} else if (userSession.getChartType() == 1) {
-						chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", metric1.getName(), metric2.getName());
+						chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", metric1.getName(), metric2.getName(), false);
 					}
 
 					if (timeSeriesCollection.getSeriesCount() > 0)
 					{
-						TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName() + " time series", timeSeriesCollection, "Time", "");
+						TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName(), timeSeriesCollection, "Time", "");
 					}
 				} catch (EntityNotFoundException e) {
 					e.printStackTrace();
@@ -4021,7 +4019,11 @@ public class ProjectController {
 			{
 				if (timeSeriesCollection.getSeriesCount() > 0)
 				{
-					TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName() + " time series", timeSeriesCollection, "Time", "");
+					if (userSession.getChartType() == 0) {
+						TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName(), timeSeriesCollection, "Time", "");
+					} else if (userSession.getChartType() == 1) {
+						ScatterPlotVisualization demo = new ScatterPlotVisualization(project.getName(), timeSeriesCollection, "Date", "Value", true);
+					}
 				}
 			}
 		}
@@ -4071,7 +4073,7 @@ public class ProjectController {
 				SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, nScenId);
 					
 				List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
-				TimeSeries timeSeries = new TimeSeries(outputVar.getName());
+				TimeSeries timeSeries = new TimeSeries(outputVar.getComponent().getName() + "." + outputVar.getName());
 
 				for (int i = 0; i < timeSeriesVals.size(); i++)
 				{
@@ -4125,7 +4127,68 @@ public class ProjectController {
 		iterator = userSession.getSelectedChartMetricIds().iterator();
 		   
 		// Get metrics time series (max 2 metrics)
-		if (userSession.getSelectedChartMetricIds().size() == 2)
+		if (userSession.getSelectedChartMetricIds().size() == 1)
+		{
+			timeSeriesCollection.removeAllSeries();
+			XYSeriesCollection collection = new XYSeriesCollection();
+			DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
+			DefaultPieDataset pieDataset = new DefaultPieDataset();
+
+			int metric1Id = iterator.next(); 
+		    int index = 0;
+		    
+			try {
+				MetricDTO metric1 = metricService.findByID(metric1Id);
+				
+				Set<Integer> scenarioIds = userSession.getScenarioIds();
+				Iterator<Integer> scenIter = scenarioIds.iterator();
+				
+				while (scenIter.hasNext())
+				{
+					Integer scenarioId = (Integer) scenIter.next();
+					int nScenarioId = (int)scenarioId;
+					ScenarioDTO scenarioTemp = scenarioService.findByID(nScenarioId);
+					MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
+					DefaultXYDataset dataset = new DefaultXYDataset();
+
+					if (userSession.getChartType() == 0)
+					{
+						userSession.setChartType(1);
+					}
+					else if (userSession.getChartType() == 2) 
+					{
+						categoryDataset.addValue(Double.parseDouble(metricVal1.getValue()), scenarioTemp.getName(), metric1.getName());
+					} 
+					else if (userSession.getChartType() == 3) 
+					{
+						pieDataset.setValue(scenarioTemp.getName(), Double.parseDouble(metricVal1.getValue()));
+					}
+					
+					index++;
+				}				
+			
+				JFreeChart chart = null;
+				
+				if (userSession.getChartType() == 0) {
+					// No time series type for metrics
+					userSession.setChartType(1);
+				}
+				
+				if (userSession.getChartType() == 2) {
+					chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "", "");
+				} else if (userSession.getChartType() == 3) {
+					chart = PieChartVisualization.createChart(pieDataset, "Pie chart", metric1.getName(), "");
+				}
+				
+				if (chart != null)
+				{
+					ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+				}
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		else if (userSession.getSelectedChartMetricIds().size() == 2)
 		{
 			timeSeriesCollection.removeAllSeries();
 			XYSeriesCollection collection = new XYSeriesCollection();
@@ -4155,25 +4218,32 @@ public class ProjectController {
 					MetricValDTO metricVal2 = metricService.getMetricVals(metric2Id, nScenarioId).get(0);
 					DefaultXYDataset dataset = new DefaultXYDataset();
 
-					if (userSession.getChartType() == 0) {
+					if (userSession.getChartType() == 0) 
+					{
 						TimeSeries timeSeries = new TimeSeries(scenarioTemp.getName());
 						timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
 						System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
 						timeSeriesCollection.addSeries(timeSeries);
-					} else if (userSession.getChartType() == 1) {
+					} 
+					else if (userSession.getChartType() == 1) 
+					{
 						XYSeries series = new XYSeries(scenarioTemp.getName());
 						series.add(Double.parseDouble(metricVal1.getValue()), Double.parseDouble(metricVal2.getValue()));
 						/*double[][] data = new double[2][1];
 						data[0][0] = Double.parseDouble(metricVal1.getValue());
 						data[1][0] = Double.parseDouble(metricVal2.getValue());
 					    dataset.addSeries(scenario.getName(), data);*/
-					    System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
+					    //System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
 						collection.addSeries(series);						
-					} else if (userSession.getChartType() == 2) {
+					} 
+					else if (userSession.getChartType() == 2) 
+					{
 						categoryDataset.addValue(Double.parseDouble(metricVal1.getValue()), scenarioTemp.getName(), metric1.getName());
 						categoryDataset.addValue(Double.parseDouble(metricVal2.getValue()), scenarioTemp.getName(), metric2.getName());
-					} else if (userSession.getChartType() == 3) {
-						pieDataset.setValue(scenarioTemp.getName(), Double.parseDouble(metricVal1.getValue() + metricVal2.getValue()));
+					} 
+					else if (userSession.getChartType() == 3) 
+					{
+						pieDataset.setValue(scenarioTemp.getName(), Double.parseDouble(metricVal1.getValue()));
 					}
 					
 					index++;
@@ -4187,14 +4257,17 @@ public class ProjectController {
 				}
 				
 				if (userSession.getChartType() == 1) {
-					chart = ScatterPlotVisualization.createChart(collection, "Scatter plot", metric1.getName(), metric2.getName());
+					chart = ScatterPlotVisualization.createChart(collection, "Scatter plot", metric1.getName(), metric2.getName(), false);
 				} else if (userSession.getChartType() == 2) {
-					chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", metric1.getName(), metric2.getName());
+					chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "", "");
 				} else if (userSession.getChartType() == 3) {
 					chart = PieChartVisualization.createChart(pieDataset, "Pie chart", metric1.getName(), metric2.getName());
 				}
 				
-				ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+				if (chart != null)
+				{
+					ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+				}
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -4203,24 +4276,16 @@ public class ProjectController {
 		{
 			JFreeChart chart = null;
 			
-			if (userSession.getChartType() == 0) {
-				chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", "Time", "");
-			} else if (userSession.getChartType() == 1) {
-				chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", "Time", "");
-			} else if (userSession.getChartType() == 2) {
-
-				DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
-				categoryDataset.addValue(1.0, "Row 1", "Column 1");
-				categoryDataset.addValue(5.0, "Row 1", "Column 2");
-				categoryDataset.addValue(3.0, "Row 1", "Column 3");
-				categoryDataset.addValue(2.0, "Row 2", "Column 1");
-				categoryDataset.addValue(3.0, "Row 2", "Column 2");
-				categoryDataset.addValue(2.0, "Row 2", "Column 3");
-						
-				chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "Time", "");
-			} else if (userSession.getChartType() == 3) {
-				//chart = PieChartVisualization.createChart(timeSeriesCollection, "Pie chart", "Time", "");
+			if (userSession.getChartType() > 1)
+			{
+				userSession.setChartType(0);
 			}
+			
+			if (userSession.getChartType() == 0) {
+				chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", "Date", "Value");
+			} else if (userSession.getChartType() == 1) {
+				chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", "Date", "Value", true);
+			} 
 			
 			ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
 		}

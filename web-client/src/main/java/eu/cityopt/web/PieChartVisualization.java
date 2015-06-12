@@ -12,6 +12,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
@@ -78,9 +79,9 @@ public class PieChartVisualization {
 		JFreeChart chart = ChartFactory.createPieChart3D(title, dataset, true, true, false);
 	
 		chart.setBackgroundPaint(Color.white);
-		XYPlot plot = (XYPlot) chart.getPlot();
+		PiePlot3D plot = (PiePlot3D) chart.getPlot();
 		plot.setBackgroundPaint(Color.lightGray);
-		plot.setDomainGridlinePaint(Color.white);
+		/*plot.setDomainGridlinePaint(Color.white);
 		plot.setRangeGridlinePaint(Color.white);
 		plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
 		plot.setDomainCrosshairVisible(true);
@@ -94,7 +95,7 @@ public class PieChartVisualization {
 		}
 		
 		DateAxis axis = (DateAxis) plot.getDomainAxis();
-		axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
+		axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));*/
 		return chart;
 	}
 		

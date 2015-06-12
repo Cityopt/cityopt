@@ -12,6 +12,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.DateTickMarkPosition;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -36,8 +37,8 @@ public class ScatterPlotVisualization {
 * @param title the frame title.
 */
 	
-	public ScatterPlotVisualization (String title, DefaultXYDataset dataset, String xAxisLabel, String yAxisLabel) {
-		JFreeChart chart = createChart(dataset, title, xAxisLabel, yAxisLabel);
+	public ScatterPlotVisualization (String title, XYDataset dataset, String xAxisLabel, String yAxisLabel, boolean isXDateAxis) {
+		JFreeChart chart = createChart(dataset, title, xAxisLabel, yAxisLabel, isXDateAxis);
 		ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
 		chartPanel.setMouseZoomable(true, false);
@@ -69,7 +70,7 @@ public class ScatterPlotVisualization {
 	*
 	* @return A chart.
 	*/
-	public static JFreeChart createChart(XYDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
+	public static JFreeChart createChart(XYDataset dataset, String title, String xAxisLabel, String yAxisLabel, boolean isXDateAxis) {
 		JFreeChart chart = ChartFactory.createScatterPlot(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
 	
 		chart.setBackgroundPaint(Color.white);
@@ -88,9 +89,17 @@ public class ScatterPlotVisualization {
 			renderer.setBaseShapesFilled(true);
 		}
 		
+		if (isXDateAxis)
+		{
+			DateAxis xAxis = new DateAxis("Date");
+	        xAxis.setTickMarkPosition(DateTickMarkPosition.MIDDLE);
+			xAxis.setDateFormatOverride(new SimpleDateFormat("dd-MM-yyyy"));//MMM-yyyy"));
+	        plot.setDomainAxis(xAxis);
+		}
+        //plot.setRangeAxis(new DateAxis("Time"));
 		//ValueAxis axis = (ValueAxis) plot.getDomainAxis();
-		//DateAxis axis = (DateAxis) plot.getDomainAxis();
-		//axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
+		
+        //ValueAxis axis = (ValueAxis) plot.getRangeAxis();//getDomainAxis();
 		return chart;
 	}
 		
