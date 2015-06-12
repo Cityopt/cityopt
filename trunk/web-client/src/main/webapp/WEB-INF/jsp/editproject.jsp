@@ -17,12 +17,16 @@
 		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:1000px;overflow:auto">
 			<table style="width:900px">
-				<tr><td><h2>Edit project</h2></td></tr>
+				<tr>
+					<td>
+						<h2 class="error">${errorMessage}</h2>
+						<h2>Edit project</h2>
+					</td>
+				</tr>
 				<tr>
 					<td>
 						<table>
-							<form:form method="post" action="editproject.html?action=save" modelAttribute="project" 
-								enctype="multipart/form-data">
+							<form:form method="post" action="editproject.html?action=update" modelAttribute="project">
 							<tr>
 								<td>Project name:</td>
 								<td><form:input type="text" path="name" style="width:250px"/></td>
@@ -38,6 +42,10 @@
 							<tr>						
 								<td>Description:</td>
 								<td><form:textarea type="text" rows="3" path="description" style="width:250px"></form:textarea></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td><input type="submit" value="Save project" style="width:120px"></td>
 							</tr>
 							</form:form>
 							
@@ -81,7 +89,7 @@
 							<tr>
 								<td>Output variables</td>
 								<td><a href="outputvariables.html"><button type="button" style="width:120px">Set</button></a></td>
-								<td align="right"><!--  type="submit" path="" value="Save project" style="width:120px"--></td>
+								<td align="right"></td>
 							</tr>
 						</table>
 					</td>

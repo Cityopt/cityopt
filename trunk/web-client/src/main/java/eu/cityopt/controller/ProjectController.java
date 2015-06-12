@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.time.Hour;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
@@ -32,8 +33,10 @@ import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -114,6 +117,7 @@ import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.BarChartVisualization;
+import eu.cityopt.web.PieChartVisualization;
 import eu.cityopt.web.ScatterPlotVisualization;
 import eu.cityopt.web.TimeSeriesVisualization;
 import eu.cityopt.web.UnitForm;
@@ -284,6 +288,19 @@ public class ProjectController {
 			//projectForm.setDate(project.getCreatedon().toString());
 			//projectForm.setDescription(project.getName());
 		}
+		else if (model.containsKey("project"))
+		{
+			ProjectDTO project = (ProjectDTO) model.get("project");
+			
+			try {
+				project = projectService.findByID(project.getPrjid());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			model.put("project", project);
+		}
 		else if (!model.containsKey("project"))
 		{
 			ProjectDTO newProject = new ProjectDTO();
@@ -377,12 +394,17 @@ public class ProjectController {
 				}
 				
 				try {
-					project = projectService.findByID(project.getPrjid());
+					//project = projectService.findByID(project.getPrjid());
 
 					project.setName(projectForm.getName());
 					project.setDescription(projectForm.getDescription());
+					project.setLocation(projectForm.getLocation());
+					project.setDesigntarget(projectForm.getDesigntarget());
 					
 					project = projectService.save(project);
+					
+				} catch(ObjectOptimisticLockingFailureException e) {
+					model.put("errorMessage", "This project has been updated in the meantime, please reload.");
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -424,7 +446,7 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="deleteproject",method=RequestMethod.GET)
-	public String getDeleteProject(Model model, @RequestParam(value="prjid", required=false) String prjid){
+	public String getDeleteProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid){
 		if (prjid != null)
 		{
 			ProjectDTO tempProject = null;
@@ -438,13 +460,14 @@ public class ProjectController {
 			try {
 				projectService.delete(tempProject.getPrjid());
 			} catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch(ObjectOptimisticLockingFailureException e) {
+				model.put("errorMessage", "This project has been updated in the meantime, please reload.");
 			}
 		}
 
 		List<ProjectDTO> projects = projectService.findAll();
-		model.addAttribute("projects",projects);
+		model.put("projects",projects);
 
 		return "deleteproject";
 	}
@@ -623,6 +646,8 @@ public class ProjectController {
 				e.printStackTrace();
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
+			} catch(ObjectOptimisticLockingFailureException e){
+				model.put("errorMessage", "This scenario has been updated in the meantime, please reload.");
 			}
 		}
 			
@@ -709,13 +734,35 @@ public class ProjectController {
 			scenario.setName(formScenario.getName());
 			scenario.setDescription(formScenario.getDescription());
 			
-			scenario = scenarioService.save(scenario, project.getPrjid());
+			try {
+				scenario = scenarioService.save(scenario, project.getPrjid());
+			} catch(ObjectOptimisticLockingFailureException e) {
+				model.put("errorMessage", "This scenario has been updated in the meantime, please reload.");
+			}
+			
+			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
+			
+			while(iter.hasNext())
+			{
+				InputParamValDTO inputParamVal = iter.next();
+				String inputName = inputParamVal.getInputparameter().getName();
+				
+				if (inputName.equals("simulation_start"))
+				{
+					model.put("simStart", inputParamVal.getValue());
+				}
+				else if (inputName.equals("simulation_end"))
+				{
+					model.put("simEnd", inputParamVal.getValue());
+				}
+			}
+			
 			model.put("scenario", scenario);
 			
 			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 			model.put("components", components);
 			
-			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 			model.put("inputParamVals", inputParamVals);
 		}
 		else
@@ -797,7 +844,7 @@ public class ProjectController {
 	}
 	
 	@RequestMapping(value="deletescenario",method=RequestMethod.GET)
-	public String getDeleteScenario(Model model, @RequestParam(value="scenarioid", required=false) String scenarioid){
+	public String getDeleteScenario(Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid){
 		//List<Scenario> scenarios = scenarioService.findAllScenarios();
 		//model.addAttribute("scenarios",scenarios);
 	
@@ -819,12 +866,14 @@ public class ProjectController {
 					scenarioService.delete(tempScenario.getScenid());
 				} catch (EntityNotFoundException e) {
 					e.printStackTrace();
+				} catch(ObjectOptimisticLockingFailureException e) {
+					model.put("errorMessage", "This scenario has been updated in the meantime, please reload.");
 				}
 			}
 		}
 
 		List<ScenarioDTO> scenarios = scenarioService.findAll();
-		model.addAttribute("scenarios", scenarios);
+		model.put("scenarios", scenarios);
 
 		return "deletescenario";
 	}
@@ -1330,7 +1379,12 @@ public class ProjectController {
 			}
 			
 			optSet.setObjectivefunction(oldFunc);
-			optSet = optSetService.save(optSet);
+
+			try {
+				optSet = optSetService.save(optSet);
+			} catch(ObjectOptimisticLockingFailureException e) {
+				model.put("errorMessage", "This optimization set has been updated in the meantime, please reload.");
+			}
 		}
 
 		model.put("optimizationset", optSet);
@@ -1984,7 +2038,10 @@ public class ProjectController {
 						optSetService.delete(nOptSetId);
 					} catch (NumberFormatException | EntityNotFoundException e) {
 						e.printStackTrace();
+					} catch(ObjectOptimisticLockingFailureException e){
+						model.put("errorMessage", "This optimization set has been updated in the meantime, please reload.");
 					}
+					
 				}
 				else
 				{
@@ -2001,6 +2058,8 @@ public class ProjectController {
 						scenGenService.delete(nOptSetId);
 					} catch (EntityNotFoundException e) {
 						e.printStackTrace();
+					} catch(ObjectOptimisticLockingFailureException e){
+						model.put("errorMessage", "This optimization set has been updated in the meantime, please reload.");
 					}
 				}
 				else
@@ -4070,7 +4129,9 @@ public class ProjectController {
 		{
 			timeSeriesCollection.removeAllSeries();
 			XYSeriesCollection collection = new XYSeriesCollection();
-			
+			DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
+			DefaultPieDataset pieDataset = new DefaultPieDataset();
+
 			int metric1Id = iterator.next(); 
 			int metric2Id = iterator.next(); 
 		    
@@ -4108,6 +4169,11 @@ public class ProjectController {
 					    dataset.addSeries(scenario.getName(), data);*/
 					    System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
 						collection.addSeries(series);						
+					} else if (userSession.getChartType() == 2) {
+						categoryDataset.addValue(Double.parseDouble(metricVal1.getValue()), scenarioTemp.getName(), metric1.getName());
+						categoryDataset.addValue(Double.parseDouble(metricVal2.getValue()), scenarioTemp.getName(), metric2.getName());
+					} else if (userSession.getChartType() == 3) {
+						pieDataset.setValue(scenarioTemp.getName(), Double.parseDouble(metricVal1.getValue() + metricVal2.getValue()));
 					}
 					
 					index++;
@@ -4116,9 +4182,16 @@ public class ProjectController {
 				JFreeChart chart = null;
 				
 				if (userSession.getChartType() == 0) {
-					chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", metric1.getName(), metric2.getName());
-				} else if (userSession.getChartType() == 1) {
+					// No time series type for metrics
+					userSession.setChartType(1);
+				}
+				
+				if (userSession.getChartType() == 1) {
 					chart = ScatterPlotVisualization.createChart(collection, "Scatter plot", metric1.getName(), metric2.getName());
+				} else if (userSession.getChartType() == 2) {
+					chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", metric1.getName(), metric2.getName());
+				} else if (userSession.getChartType() == 3) {
+					chart = PieChartVisualization.createChart(pieDataset, "Pie chart", metric1.getName(), metric2.getName());
 				}
 				
 				ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);

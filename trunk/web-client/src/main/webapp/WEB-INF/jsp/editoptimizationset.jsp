@@ -16,6 +16,7 @@
 		<td><%@ include file="mainmenu.inc"%></td>
 		<td width="30"></td>
 		<td valign="top">
+			<h2 class="error">${errorMessage}</h2>
 			<form:form method="post" action="editoptimizationset.html" modelAttribute="optimizationset">
 			<table>
 				<col style="width: 400px;">
