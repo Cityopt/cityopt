@@ -79,7 +79,7 @@ public class BarChartVisualization {
 	* @return A chart.
 	*/
 	public static JFreeChart createChart(CategoryDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
-		JFreeChart chart = ChartFactory.createBarChart3D(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.HORIZONTAL, true, true, false);
+		JFreeChart chart = ChartFactory.createBarChart3D(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
 	
 		chart.setBackgroundPaint(Color.white);
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();

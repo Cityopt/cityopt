@@ -72,6 +72,11 @@ public class TimeSeriesVisualization {
         f.setLocationRelativeTo(null);
         f.setDefaultCloseOperation(ApplicationFrame.HIDE_ON_CLOSE);
         f.setVisible(true);
+
+        XYPlot plot = (XYPlot) chart.getPlot();
+		
+        DateAxis axis = (DateAxis) plot.getDomainAxis();
+		axis.setDateFormatOverride(new SimpleDateFormat("dd-MM-yyyy"));
 	}
 	
 	/**
@@ -118,7 +123,7 @@ public class TimeSeriesVisualization {
 		}
 		
 		DateAxis axis = (DateAxis) plot.getDomainAxis();
-		axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
+		axis.setDateFormatOverride(new SimpleDateFormat("dd-MM-yyyy"));//MMM-yyyy"));
 		return chart;
 	}
 		
