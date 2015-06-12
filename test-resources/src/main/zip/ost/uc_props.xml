@@ -144,7 +144,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -422,7 +422,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -700,7 +700,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -978,7 +978,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -1256,7 +1256,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -1534,7 +1534,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -1812,7 +1812,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -2090,7 +2090,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -2368,7 +2368,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -2725,7 +2725,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -3003,7 +3003,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -3281,7 +3281,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -3641,7 +3641,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -4047,7 +4047,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -4264,30 +4264,73 @@
     </node>
   </node>
   <node name="Ostersundom_BIG" moduleName="OSTERSUNDOM_BIG" label="" isUC="True" type="GenericAprosComposite">
-    <node name="BIG" moduleName="BIG" label="" isUC="True" type="Ostersundom_BIG@1">
+    <node name="OSTERSUNDOM_BIG" moduleName="OSTERSUNDOM_BIG_1" label="" isUC="True" type="Ostersundom_BIG@1">
+      <property type="constant" name="A11_Storage_h" value="15.0"/>
+      <property type="constant" name="CHP_Th_Power" value="8000.0"/>
+      <property type="constant" name="A6_pipe_len" value="5000.0"/>
+      <property type="constant" name="A4_Storage_h" value="10.0"/>
+      <property type="constant" name="A2_pipe_len" value="5000.0"/>
+      <property type="constant" name="A9_pipe_len" value="5000.0"/>
+      <property type="constant" name="DHN_Tret" value="45.0"/>
+      <property type="constant" name="A14_Solarth_m2" value="0.0"/>
+      <property type="constant" name="A8_Storage_h" value="10.0"/>
       <property type="constant" name="A2Storage_h" value="15.0"/>
+      <property type="constant" name="A1_pipe_len" value="5000.0"/>
       <property type="constant" name="A2_Solarth_m2" value="0.0"/>
+      <property type="constant" name="A5_Solarth_m2" value="0.0"/>
+      <property type="constant" name="A6_Solarth_m2" value="0.0"/>
+      <property type="constant" name="A3_Solarth_m2" value="10000.0"/>
+      <property type="constant" name="COP_HPcool" value="2.0"/>
+      <property type="constant" name="A6_Storage_h" value="15.0"/>
+      <property type="constant" name="A5_Storage_h" value="15.0"/>
+      <property type="constant" name="A14_pipe_len" value="5000.0"/>
+      <property type="constant" name="A4_pipe_len" value="5000.0"/>
+      <property type="constant" name="A13_solarth_m2" value="0.0"/>
+      <property type="constant" name="DHN_Tsup" value="75.0"/>
+      <property type="constant" name="A11_Solarth_m2" value="0.0"/>
+      <property type="constant" name="A10_pipe_len" value="5000.0"/>
+      <property type="constant" name="A3_Storage_h" value="10.0"/>
+      <property type="constant" name="A3_pipe_len" value="5000.0"/>
+      <property type="constant" name="A8_Solarth_m2" value="0.0"/>
+      <property type="constant" name="A7_Storage_h" value="15.0"/>
+      <property type="constant" name="A12_Storage_h" value="15.0"/>
+      <property type="constant" name="A7_pipe_len" value="5000.0"/>
+      <property type="constant" name="A8_pipe_len" value="5000.0"/>
+      <property type="constant" name="A10_Solarth_m2" value="0.0"/>
+      <property type="constant" name="A7_Solarth_m2" value="0.0"/>
+      <property type="constant" name="A5_pipe_len" value="5000.0"/>
+      <property type="constant" name="A9_Solarth_m2" value="0.0"/>
+      <property type="constant" name="A11_pipe_len" value="5000.0"/>
+      <property type="constant" name="A13_Storage_h" value="10.0"/>
+      <property type="constant" name="A4_Solarth_m2" value="10000.0"/>
       <property type="constant" name="A1_Solarth_m2" value="0.0"/>
-      <property type="constant" name="Central_storage_h" value="80.0"/>
+      <property type="constant" name="A10_Storage_h" value="10.0"/>
+      <property type="constant" name="A9_Storage_h" value="20.0"/>
+      <property type="constant" name="A13_pipe_len" value="5000.0"/>
+      <property type="constant" name="CoolToHeat" value="false"/>
+      <property type="constant" name="A12_pipe_len" value="5000.0"/>
+      <property type="constant" name="Central_storage_h" value="120.0"/>
+      <property type="constant" name="A14_Storage_h" value="20.0"/>
       <property type="constant" name="A1_Storage_h" value="10.0"/>
+      <property type="constant" name="A12_Solarth_m2" value="0.0"/>
       <node name="531" moduleName="531" label="" isUC="True" type="CityOpt_District@1">
-        <property type="constant" name="Kerrostalo_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_min" value="60.0"/>
-        <property type="constant" name="Julkkiset_m2" value="1.0"/>
+        <property type="constant" name="Kerrostalo_m2" value="0.0"/>
+        <property type="constant" name="T_DHN_min" value="45.0"/>
+        <property type="constant" name="Julkkiset_m2" value="0.0"/>
         <property type="constant" name="AHU_Powercoefficient" value="0.3"/>
-        <property type="constant" name="KaupunkiPientalo_m2" value="1.0"/>
-        <property type="constant" name="Pientalot_m2" value="1.0"/>
-        <property type="constant" name="Connection_Pipe_diameter" value="0.5"/>
+        <property type="constant" name="KaupunkiPientalo_m2" value="0.0"/>
+        <property type="constant" name="Pientalot_m2" value="0.0"/>
+        <property type="constant" name="Connection_Pipe_diameter" value="5.0"/>
         <property type="constant" name="Tank_Pressure_constant" value="0.2"/>
-        <property type="constant" name="SolarTH_m2" value="0.0"/>
-        <property type="constant" name="Tank_height" value="8.0"/>
+        <property type="expression" name="SolarTH_m2" value="A10_Solarth_m2"/>
+        <property type="expression" name="Tank_height" value="A10_Storage_h"/>
         <property type="constant" name="SolarPV_m2" value="0.0"/>
-        <property type="constant" name="Elinkeino_m2" value="1.0"/>
-        <property type="constant" name="Liiketilat_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_max" value="120.0"/>
-        <property type="constant" name="SolarTH_temp_out_max" value="60.0"/>
+        <property type="constant" name="Elinkeino_m2" value="320000.0"/>
+        <property type="constant" name="Liiketilat_m2" value="0.0"/>
+        <property type="constant" name="T_DHN_max" value="85.0"/>
+        <property type="constant" name="SolarTH_temp_out_max" value="130.0"/>
         <property type="constant" name="T_Storage_max" value="120.0"/>
-        <property type="constant" name="T_Storage_min" value="20.0"/>
+        <property type="constant" name="T_Storage_min" value="35.0"/>
         <node name="285" moduleName="285_15" label="" isUC="True" type="B.Solar irradiation_mod@1">
           <property type="constant" name="PV_orientation" value="0.0"/>
           <property type="constant" name="TH_collector_tilt_angle" value="45.0"/>
@@ -4413,7 +4456,7 @@
           <property type="expression" name="Tank_height" value="Tank_height"/>
           <property type="constant" name="Heat_transfer_eff" value="93.0"/>
           <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-          <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+          <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
           <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
           <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
           <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -4550,7 +4593,7 @@
       </node>
       <node name="530" moduleName="530" label="" isUC="True" type="Transfer_losses_calculator@1">
         <property type="constant" name="Ins_ratio" value="2.0"/>
-        <property type="constant" name="Pip_Length" value="2000.0"/>
+        <property type="expression" name="Pip_Length" value="A10_pipe_len"/>
         <property type="constant" name="T_Ground" value="9.0"/>
         <property type="constant" name="Pip_Diamter" value="0.5"/>
         <property type="constant" name="Lambda" value="0.148"/>
@@ -4565,23 +4608,23 @@
         </node>
       </node>
       <node name="535" moduleName="535" label="" isUC="True" type="CityOpt_District@1">
-        <property type="constant" name="Kerrostalo_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_min" value="60.0"/>
-        <property type="constant" name="Julkkiset_m2" value="1.0"/>
+        <property type="constant" name="Kerrostalo_m2" value="0.0"/>
+        <property type="constant" name="T_DHN_min" value="45.0"/>
+        <property type="constant" name="Julkkiset_m2" value="10000.0"/>
         <property type="constant" name="AHU_Powercoefficient" value="0.3"/>
-        <property type="constant" name="KaupunkiPientalo_m2" value="1.0"/>
-        <property type="constant" name="Pientalot_m2" value="1.0"/>
-        <property type="constant" name="Connection_Pipe_diameter" value="0.5"/>
+        <property type="constant" name="KaupunkiPientalo_m2" value="142000.0"/>
+        <property type="constant" name="Pientalot_m2" value="6000.0"/>
+        <property type="constant" name="Connection_Pipe_diameter" value="5.0"/>
         <property type="constant" name="Tank_Pressure_constant" value="0.2"/>
-        <property type="constant" name="SolarTH_m2" value="0.0"/>
-        <property type="constant" name="Tank_height" value="8.0"/>
+        <property type="expression" name="SolarTH_m2" value="A8_Solarth_m2"/>
+        <property type="expression" name="Tank_height" value="A8_Storage_h"/>
         <property type="constant" name="SolarPV_m2" value="0.0"/>
-        <property type="constant" name="Elinkeino_m2" value="1.0"/>
-        <property type="constant" name="Liiketilat_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_max" value="120.0"/>
-        <property type="constant" name="SolarTH_temp_out_max" value="60.0"/>
+        <property type="constant" name="Elinkeino_m2" value="46000.0"/>
+        <property type="constant" name="Liiketilat_m2" value="0.0"/>
+        <property type="constant" name="T_DHN_max" value="85.0"/>
+        <property type="constant" name="SolarTH_temp_out_max" value="130.0"/>
         <property type="constant" name="T_Storage_max" value="120.0"/>
-        <property type="constant" name="T_Storage_min" value="20.0"/>
+        <property type="constant" name="T_Storage_min" value="35.0"/>
         <node name="285" moduleName="285_16" label="" isUC="True" type="B.Solar irradiation_mod@1">
           <property type="constant" name="PV_orientation" value="0.0"/>
           <property type="constant" name="TH_collector_tilt_angle" value="45.0"/>
@@ -4707,7 +4750,7 @@
           <property type="expression" name="Tank_height" value="Tank_height"/>
           <property type="constant" name="Heat_transfer_eff" value="93.0"/>
           <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-          <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+          <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
           <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
           <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
           <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -4843,23 +4886,23 @@
         </node>
       </node>
       <node name="534" moduleName="534" label="" isUC="True" type="CityOpt_District@1">
-        <property type="constant" name="Kerrostalo_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_min" value="60.0"/>
-        <property type="constant" name="Julkkiset_m2" value="1.0"/>
+        <property type="constant" name="Kerrostalo_m2" value="0.0"/>
+        <property type="constant" name="T_DHN_min" value="45.0"/>
+        <property type="constant" name="Julkkiset_m2" value="0.0"/>
         <property type="constant" name="AHU_Powercoefficient" value="0.3"/>
-        <property type="constant" name="KaupunkiPientalo_m2" value="1.0"/>
-        <property type="constant" name="Pientalot_m2" value="1.0"/>
-        <property type="constant" name="Connection_Pipe_diameter" value="0.5"/>
+        <property type="constant" name="KaupunkiPientalo_m2" value="0.0"/>
+        <property type="constant" name="Pientalot_m2" value="0.0"/>
+        <property type="constant" name="Connection_Pipe_diameter" value="5.0"/>
         <property type="constant" name="Tank_Pressure_constant" value="0.2"/>
-        <property type="constant" name="SolarTH_m2" value="0.0"/>
-        <property type="constant" name="Tank_height" value="8.0"/>
+        <property type="expression" name="SolarTH_m2" value="A13_solarth_m2"/>
+        <property type="expression" name="Tank_height" value="A13_Storage_h"/>
         <property type="constant" name="SolarPV_m2" value="0.0"/>
-        <property type="constant" name="Elinkeino_m2" value="1.0"/>
-        <property type="constant" name="Liiketilat_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_max" value="120.0"/>
-        <property type="constant" name="SolarTH_temp_out_max" value="60.0"/>
+        <property type="constant" name="Elinkeino_m2" value="0.0"/>
+        <property type="constant" name="Liiketilat_m2" value="0.0"/>
+        <property type="constant" name="T_DHN_max" value="85.0"/>
+        <property type="constant" name="SolarTH_temp_out_max" value="130.0"/>
         <property type="constant" name="T_Storage_max" value="120.0"/>
-        <property type="constant" name="T_Storage_min" value="20.0"/>
+        <property type="constant" name="T_Storage_min" value="35.0"/>
         <node name="285" moduleName="285_17" label="" isUC="True" type="B.Solar irradiation_mod@1">
           <property type="constant" name="PV_orientation" value="0.0"/>
           <property type="constant" name="TH_collector_tilt_angle" value="45.0"/>
@@ -4985,7 +5028,7 @@
           <property type="expression" name="Tank_height" value="Tank_height"/>
           <property type="constant" name="Heat_transfer_eff" value="93.0"/>
           <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-          <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+          <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
           <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
           <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
           <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -5122,7 +5165,7 @@
       </node>
       <node name="533" moduleName="533" label="" isUC="True" type="Transfer_losses_calculator@1">
         <property type="constant" name="Ins_ratio" value="2.0"/>
-        <property type="constant" name="Pip_Length" value="2000.0"/>
+        <property type="expression" name="Pip_Length" value="A14_pipe_len"/>
         <property type="constant" name="T_Ground" value="9.0"/>
         <property type="constant" name="Pip_Diamter" value="0.5"/>
         <property type="constant" name="Lambda" value="0.148"/>
@@ -5138,7 +5181,7 @@
       </node>
       <node name="532" moduleName="532" label="" isUC="True" type="Transfer_losses_calculator@1">
         <property type="constant" name="Ins_ratio" value="2.0"/>
-        <property type="constant" name="Pip_Length" value="2000.0"/>
+        <property type="expression" name="Pip_Length" value="A5_pipe_len"/>
         <property type="constant" name="T_Ground" value="9.0"/>
         <property type="constant" name="Pip_Diamter" value="0.5"/>
         <property type="constant" name="Lambda" value="0.148"/>
@@ -5153,23 +5196,23 @@
         </node>
       </node>
       <node name="539" moduleName="539" label="" isUC="True" type="CityOpt_District@1">
-        <property type="constant" name="Kerrostalo_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_min" value="60.0"/>
-        <property type="constant" name="Julkkiset_m2" value="1.0"/>
+        <property type="constant" name="Kerrostalo_m2" value="171000.0"/>
+        <property type="constant" name="T_DHN_min" value="45.0"/>
+        <property type="constant" name="Julkkiset_m2" value="30000.0"/>
         <property type="constant" name="AHU_Powercoefficient" value="0.3"/>
-        <property type="constant" name="KaupunkiPientalo_m2" value="1.0"/>
-        <property type="constant" name="Pientalot_m2" value="1.0"/>
-        <property type="constant" name="Connection_Pipe_diameter" value="0.5"/>
+        <property type="constant" name="KaupunkiPientalo_m2" value="240000.0"/>
+        <property type="constant" name="Pientalot_m2" value="43000.0"/>
+        <property type="constant" name="Connection_Pipe_diameter" value="5.0"/>
         <property type="constant" name="Tank_Pressure_constant" value="0.2"/>
-        <property type="constant" name="SolarTH_m2" value="0.0"/>
-        <property type="constant" name="Tank_height" value="8.0"/>
+        <property type="expression" name="SolarTH_m2" value="A4_Solarth_m2"/>
+        <property type="expression" name="Tank_height" value="A4_Storage_h"/>
         <property type="constant" name="SolarPV_m2" value="0.0"/>
-        <property type="constant" name="Elinkeino_m2" value="1.0"/>
-        <property type="constant" name="Liiketilat_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_max" value="120.0"/>
-        <property type="constant" name="SolarTH_temp_out_max" value="60.0"/>
+        <property type="constant" name="Elinkeino_m2" value="78000.0"/>
+        <property type="constant" name="Liiketilat_m2" value="20000.0"/>
+        <property type="constant" name="T_DHN_max" value="85.0"/>
+        <property type="constant" name="SolarTH_temp_out_max" value="130.0"/>
         <property type="constant" name="T_Storage_max" value="120.0"/>
-        <property type="constant" name="T_Storage_min" value="20.0"/>
+        <property type="constant" name="T_Storage_min" value="35.0"/>
         <node name="285" moduleName="285_18" label="" isUC="True" type="B.Solar irradiation_mod@1">
           <property type="constant" name="PV_orientation" value="0.0"/>
           <property type="constant" name="TH_collector_tilt_angle" value="45.0"/>
@@ -5295,7 +5338,7 @@
           <property type="expression" name="Tank_height" value="Tank_height"/>
           <property type="constant" name="Heat_transfer_eff" value="93.0"/>
           <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-          <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+          <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
           <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
           <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
           <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -5431,23 +5474,23 @@
         </node>
       </node>
       <node name="538" moduleName="538" label="" isUC="True" type="CityOpt_District@1">
-        <property type="constant" name="Kerrostalo_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_min" value="60.0"/>
-        <property type="constant" name="Julkkiset_m2" value="1.0"/>
+        <property type="constant" name="Kerrostalo_m2" value="69000.0"/>
+        <property type="constant" name="T_DHN_min" value="45.0"/>
+        <property type="constant" name="Julkkiset_m2" value="5000.0"/>
         <property type="constant" name="AHU_Powercoefficient" value="0.3"/>
-        <property type="constant" name="KaupunkiPientalo_m2" value="1.0"/>
-        <property type="constant" name="Pientalot_m2" value="1.0"/>
-        <property type="constant" name="Connection_Pipe_diameter" value="0.5"/>
+        <property type="constant" name="KaupunkiPientalo_m2" value="16000.0"/>
+        <property type="constant" name="Pientalot_m2" value="2000.0"/>
+        <property type="constant" name="Connection_Pipe_diameter" value="5.0"/>
         <property type="constant" name="Tank_Pressure_constant" value="0.2"/>
-        <property type="constant" name="SolarTH_m2" value="0.0"/>
-        <property type="constant" name="Tank_height" value="8.0"/>
+        <property type="expression" name="SolarTH_m2" value="A3_Solarth_m2"/>
+        <property type="expression" name="Tank_height" value="A3_Storage_h"/>
         <property type="constant" name="SolarPV_m2" value="0.0"/>
-        <property type="constant" name="Elinkeino_m2" value="1.0"/>
-        <property type="constant" name="Liiketilat_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_max" value="120.0"/>
-        <property type="constant" name="SolarTH_temp_out_max" value="60.0"/>
+        <property type="constant" name="Elinkeino_m2" value="151000.0"/>
+        <property type="constant" name="Liiketilat_m2" value="15000.0"/>
+        <property type="constant" name="T_DHN_max" value="85.0"/>
+        <property type="constant" name="SolarTH_temp_out_max" value="130.0"/>
         <property type="constant" name="T_Storage_max" value="120.0"/>
-        <property type="constant" name="T_Storage_min" value="20.0"/>
+        <property type="constant" name="T_Storage_min" value="35.0"/>
         <node name="285" moduleName="285_19" label="" isUC="True" type="B.Solar irradiation_mod@1">
           <property type="constant" name="PV_orientation" value="0.0"/>
           <property type="constant" name="TH_collector_tilt_angle" value="45.0"/>
@@ -5573,7 +5616,7 @@
           <property type="expression" name="Tank_height" value="Tank_height"/>
           <property type="constant" name="Heat_transfer_eff" value="93.0"/>
           <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-          <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+          <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
           <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
           <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
           <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -5709,23 +5752,23 @@
         </node>
       </node>
       <node name="536" moduleName="536" label="" isUC="True" type="CityOpt_District@1">
-        <property type="constant" name="Kerrostalo_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_min" value="60.0"/>
-        <property type="constant" name="Julkkiset_m2" value="1.0"/>
+        <property type="constant" name="Kerrostalo_m2" value="202000.0"/>
+        <property type="constant" name="T_DHN_min" value="45.0"/>
+        <property type="constant" name="Julkkiset_m2" value="30000.0"/>
         <property type="constant" name="AHU_Powercoefficient" value="0.3"/>
-        <property type="constant" name="KaupunkiPientalo_m2" value="1.0"/>
-        <property type="constant" name="Pientalot_m2" value="1.0"/>
-        <property type="constant" name="Connection_Pipe_diameter" value="0.5"/>
+        <property type="constant" name="KaupunkiPientalo_m2" value="230000.0"/>
+        <property type="constant" name="Pientalot_m2" value="23000.0"/>
+        <property type="constant" name="Connection_Pipe_diameter" value="5.0"/>
         <property type="constant" name="Tank_Pressure_constant" value="0.2"/>
-        <property type="constant" name="SolarTH_m2" value="0.0"/>
-        <property type="constant" name="Tank_height" value="8.0"/>
+        <property type="expression" name="SolarTH_m2" value="A9_Solarth_m2"/>
+        <property type="expression" name="Tank_height" value="A9_Storage_h"/>
         <property type="constant" name="SolarPV_m2" value="0.0"/>
-        <property type="constant" name="Elinkeino_m2" value="1.0"/>
-        <property type="constant" name="Liiketilat_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_max" value="120.0"/>
-        <property type="constant" name="SolarTH_temp_out_max" value="60.0"/>
+        <property type="constant" name="Elinkeino_m2" value="172000.0"/>
+        <property type="constant" name="Liiketilat_m2" value="90000.0"/>
+        <property type="constant" name="T_DHN_max" value="85.0"/>
+        <property type="constant" name="SolarTH_temp_out_max" value="130.0"/>
         <property type="constant" name="T_Storage_max" value="120.0"/>
-        <property type="constant" name="T_Storage_min" value="20.0"/>
+        <property type="constant" name="T_Storage_min" value="35.0"/>
         <node name="285" moduleName="285_20" label="" isUC="True" type="B.Solar irradiation_mod@1">
           <property type="constant" name="PV_orientation" value="0.0"/>
           <property type="constant" name="TH_collector_tilt_angle" value="45.0"/>
@@ -5851,7 +5894,7 @@
           <property type="expression" name="Tank_height" value="Tank_height"/>
           <property type="constant" name="Heat_transfer_eff" value="93.0"/>
           <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-          <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+          <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
           <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
           <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
           <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -5986,9 +6029,12 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="Julkkiset_m2"/>
         </node>
       </node>
+      <node name="SB05" moduleName="SB05" label="" isUC="False" type="SET_BINARY">
+        <property type="expression" name="SB_VALUE" value="CoolToHeat"/>
+      </node>
       <node name="542" moduleName="542" label="" isUC="True" type="Transfer_losses_calculator@1">
         <property type="constant" name="Ins_ratio" value="2.0"/>
-        <property type="constant" name="Pip_Length" value="2000.0"/>
+        <property type="expression" name="Pip_Length" value="A9_pipe_len"/>
         <property type="constant" name="T_Ground" value="9.0"/>
         <property type="constant" name="Pip_Diamter" value="0.5"/>
         <property type="constant" name="Lambda" value="0.148"/>
@@ -6003,23 +6049,23 @@
         </node>
       </node>
       <node name="544" moduleName="544" label="" isUC="True" type="CityOpt_District@1">
-        <property type="constant" name="Kerrostalo_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_min" value="60.0"/>
-        <property type="constant" name="Julkkiset_m2" value="1.0"/>
+        <property type="constant" name="Kerrostalo_m2" value="44000.0"/>
+        <property type="constant" name="T_DHN_min" value="45.0"/>
+        <property type="constant" name="Julkkiset_m2" value="10000.0"/>
         <property type="constant" name="AHU_Powercoefficient" value="0.3"/>
-        <property type="constant" name="KaupunkiPientalo_m2" value="1.0"/>
-        <property type="constant" name="Pientalot_m2" value="1.0"/>
-        <property type="constant" name="Connection_Pipe_diameter" value="0.5"/>
+        <property type="constant" name="KaupunkiPientalo_m2" value="110000.0"/>
+        <property type="constant" name="Pientalot_m2" value="0.0"/>
+        <property type="constant" name="Connection_Pipe_diameter" value="5.0"/>
         <property type="constant" name="Tank_Pressure_constant" value="0.2"/>
-        <property type="constant" name="SolarTH_m2" value="0.0"/>
-        <property type="constant" name="Tank_height" value="8.0"/>
+        <property type="expression" name="SolarTH_m2" value="A6_Solarth_m2"/>
+        <property type="expression" name="Tank_height" value="A6_Storage_h"/>
         <property type="constant" name="SolarPV_m2" value="0.0"/>
-        <property type="constant" name="Elinkeino_m2" value="1.0"/>
-        <property type="constant" name="Liiketilat_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_max" value="120.0"/>
-        <property type="constant" name="SolarTH_temp_out_max" value="60.0"/>
+        <property type="constant" name="Elinkeino_m2" value="16000.0"/>
+        <property type="constant" name="Liiketilat_m2" value="10000.0"/>
+        <property type="constant" name="T_DHN_max" value="85.0"/>
+        <property type="constant" name="SolarTH_temp_out_max" value="130.0"/>
         <property type="constant" name="T_Storage_max" value="120.0"/>
-        <property type="constant" name="T_Storage_min" value="20.0"/>
+        <property type="constant" name="T_Storage_min" value="35.0"/>
         <node name="285" moduleName="285_21" label="" isUC="True" type="B.Solar irradiation_mod@1">
           <property type="constant" name="PV_orientation" value="0.0"/>
           <property type="constant" name="TH_collector_tilt_angle" value="45.0"/>
@@ -6145,7 +6191,7 @@
           <property type="expression" name="Tank_height" value="Tank_height"/>
           <property type="constant" name="Heat_transfer_eff" value="93.0"/>
           <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-          <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+          <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
           <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
           <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
           <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -6281,23 +6327,23 @@
         </node>
       </node>
       <node name="543" moduleName="543" label="" isUC="True" type="CityOpt_District@1">
-        <property type="constant" name="Kerrostalo_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_min" value="60.0"/>
-        <property type="constant" name="Julkkiset_m2" value="1.0"/>
+        <property type="constant" name="Kerrostalo_m2" value="40000.0"/>
+        <property type="constant" name="T_DHN_min" value="45.0"/>
+        <property type="constant" name="Julkkiset_m2" value="40000.0"/>
         <property type="constant" name="AHU_Powercoefficient" value="0.3"/>
-        <property type="constant" name="KaupunkiPientalo_m2" value="1.0"/>
-        <property type="constant" name="Pientalot_m2" value="1.0"/>
-        <property type="constant" name="Connection_Pipe_diameter" value="0.5"/>
+        <property type="constant" name="KaupunkiPientalo_m2" value="120000.0"/>
+        <property type="constant" name="Pientalot_m2" value="458000.0"/>
+        <property type="constant" name="Connection_Pipe_diameter" value="5.0"/>
         <property type="constant" name="Tank_Pressure_constant" value="0.2"/>
-        <property type="constant" name="SolarTH_m2" value="0.0"/>
-        <property type="constant" name="Tank_height" value="8.0"/>
+        <property type="expression" name="SolarTH_m2" value="A11_Solarth_m2"/>
+        <property type="expression" name="Tank_height" value="A11_Storage_h"/>
         <property type="constant" name="SolarPV_m2" value="0.0"/>
-        <property type="constant" name="Elinkeino_m2" value="1.0"/>
-        <property type="constant" name="Liiketilat_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_max" value="120.0"/>
-        <property type="constant" name="SolarTH_temp_out_max" value="60.0"/>
+        <property type="constant" name="Elinkeino_m2" value="116000.0"/>
+        <property type="constant" name="Liiketilat_m2" value="10000.0"/>
+        <property type="constant" name="T_DHN_max" value="85.0"/>
+        <property type="constant" name="SolarTH_temp_out_max" value="130.0"/>
         <property type="constant" name="T_Storage_max" value="120.0"/>
-        <property type="constant" name="T_Storage_min" value="20.0"/>
+        <property type="constant" name="T_Storage_min" value="35.0"/>
         <node name="285" moduleName="285_22" label="" isUC="True" type="B.Solar irradiation_mod@1">
           <property type="constant" name="PV_orientation" value="0.0"/>
           <property type="constant" name="TH_collector_tilt_angle" value="45.0"/>
@@ -6423,7 +6469,7 @@
           <property type="expression" name="Tank_height" value="Tank_height"/>
           <property type="constant" name="Heat_transfer_eff" value="93.0"/>
           <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-          <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+          <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
           <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
           <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
           <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -6559,23 +6605,23 @@
         </node>
       </node>
       <node name="546" moduleName="546" label="" isUC="True" type="CityOpt_District@1">
-        <property type="constant" name="Kerrostalo_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_min" value="60.0"/>
-        <property type="constant" name="Julkkiset_m2" value="1.0"/>
+        <property type="constant" name="Kerrostalo_m2" value="0.0"/>
+        <property type="constant" name="T_DHN_min" value="45.0"/>
+        <property type="constant" name="Julkkiset_m2" value="20000.0"/>
         <property type="constant" name="AHU_Powercoefficient" value="0.3"/>
-        <property type="constant" name="KaupunkiPientalo_m2" value="1.0"/>
-        <property type="constant" name="Pientalot_m2" value="1.0"/>
-        <property type="constant" name="Connection_Pipe_diameter" value="0.5"/>
+        <property type="constant" name="KaupunkiPientalo_m2" value="50000.0"/>
+        <property type="constant" name="Pientalot_m2" value="277000.0"/>
+        <property type="constant" name="Connection_Pipe_diameter" value="5.0"/>
         <property type="constant" name="Tank_Pressure_constant" value="0.2"/>
-        <property type="constant" name="SolarTH_m2" value="0.0"/>
-        <property type="constant" name="Tank_height" value="8.0"/>
+        <property type="expression" name="SolarTH_m2" value="A12_Solarth_m2"/>
+        <property type="expression" name="Tank_height" value="A12_Storage_h"/>
         <property type="constant" name="SolarPV_m2" value="0.0"/>
-        <property type="constant" name="Elinkeino_m2" value="1.0"/>
-        <property type="constant" name="Liiketilat_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_max" value="120.0"/>
-        <property type="constant" name="SolarTH_temp_out_max" value="60.0"/>
+        <property type="constant" name="Elinkeino_m2" value="0.0"/>
+        <property type="constant" name="Liiketilat_m2" value="0.0"/>
+        <property type="constant" name="T_DHN_max" value="85.0"/>
+        <property type="constant" name="SolarTH_temp_out_max" value="130.0"/>
         <property type="constant" name="T_Storage_max" value="120.0"/>
-        <property type="constant" name="T_Storage_min" value="20.0"/>
+        <property type="constant" name="T_Storage_min" value="35.0"/>
         <node name="285" moduleName="285_23" label="" isUC="True" type="B.Solar irradiation_mod@1">
           <property type="constant" name="PV_orientation" value="0.0"/>
           <property type="constant" name="TH_collector_tilt_angle" value="45.0"/>
@@ -6701,7 +6747,7 @@
           <property type="expression" name="Tank_height" value="Tank_height"/>
           <property type="constant" name="Heat_transfer_eff" value="93.0"/>
           <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-          <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+          <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
           <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
           <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
           <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -6838,7 +6884,7 @@
       </node>
       <node name="545" moduleName="545" label="" isUC="True" type="Transfer_losses_calculator@1">
         <property type="constant" name="Ins_ratio" value="2.0"/>
-        <property type="constant" name="Pip_Length" value="2000.0"/>
+        <property type="expression" name="Pip_Length" value="A8_pipe_len"/>
         <property type="constant" name="T_Ground" value="9.0"/>
         <property type="constant" name="Pip_Diamter" value="0.5"/>
         <property type="constant" name="Lambda" value="0.148"/>
@@ -6854,7 +6900,7 @@
       </node>
       <node name="513" moduleName="513" label="" isUC="True" type="Transfer_losses_calculator@1">
         <property type="constant" name="Ins_ratio" value="2.0"/>
-        <property type="constant" name="Pip_Length" value="2000.0"/>
+        <property type="expression" name="Pip_Length" value="A3_pipe_len"/>
         <property type="constant" name="T_Ground" value="9.0"/>
         <property type="constant" name="Pip_Diamter" value="0.5"/>
         <property type="constant" name="Lambda" value="0.148"/>
@@ -6869,23 +6915,23 @@
         </node>
       </node>
       <node name="512" moduleName="512" label="" isUC="True" type="CityOpt_District@1">
-        <property type="constant" name="Kerrostalo_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_min" value="60.0"/>
-        <property type="constant" name="Julkkiset_m2" value="1.0"/>
+        <property type="constant" name="Kerrostalo_m2" value="234000.0"/>
+        <property type="constant" name="T_DHN_min" value="45.0"/>
+        <property type="constant" name="Julkkiset_m2" value="50000.0"/>
         <property type="constant" name="AHU_Powercoefficient" value="0.3"/>
-        <property type="constant" name="KaupunkiPientalo_m2" value="1.0"/>
-        <property type="constant" name="Pientalot_m2" value="1.0"/>
-        <property type="constant" name="Connection_Pipe_diameter" value="0.5"/>
+        <property type="constant" name="KaupunkiPientalo_m2" value="443000.0"/>
+        <property type="constant" name="Pientalot_m2" value="69000.0"/>
+        <property type="constant" name="Connection_Pipe_diameter" value="5.0"/>
         <property type="constant" name="Tank_Pressure_constant" value="0.2"/>
-        <property type="constant" name="SolarTH_m2" value="0.0"/>
-        <property type="constant" name="Tank_height" value="8.0"/>
+        <property type="expression" name="SolarTH_m2" value="A7_Solarth_m2"/>
+        <property type="expression" name="Tank_height" value="A7_Storage_h"/>
         <property type="constant" name="SolarPV_m2" value="0.0"/>
-        <property type="constant" name="Elinkeino_m2" value="1.0"/>
-        <property type="constant" name="Liiketilat_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_max" value="120.0"/>
-        <property type="constant" name="SolarTH_temp_out_max" value="60.0"/>
+        <property type="constant" name="Elinkeino_m2" value="124000.0"/>
+        <property type="constant" name="Liiketilat_m2" value="40000.0"/>
+        <property type="constant" name="T_DHN_max" value="85.0"/>
+        <property type="constant" name="SolarTH_temp_out_max" value="130.0"/>
         <property type="constant" name="T_Storage_max" value="120.0"/>
-        <property type="constant" name="T_Storage_min" value="20.0"/>
+        <property type="constant" name="T_Storage_min" value="35.0"/>
         <node name="285" moduleName="285_24" label="" isUC="True" type="B.Solar irradiation_mod@1">
           <property type="constant" name="PV_orientation" value="0.0"/>
           <property type="constant" name="TH_collector_tilt_angle" value="45.0"/>
@@ -7011,7 +7057,7 @@
           <property type="expression" name="Tank_height" value="Tank_height"/>
           <property type="constant" name="Heat_transfer_eff" value="93.0"/>
           <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-          <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+          <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
           <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
           <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
           <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -7148,7 +7194,7 @@
       </node>
       <node name="511" moduleName="511" label="" isUC="True" type="Transfer_losses_calculator@1">
         <property type="constant" name="Ins_ratio" value="2.0"/>
-        <property type="constant" name="Pip_Length" value="2000.0"/>
+        <property type="expression" name="Pip_Length" value="A7_pipe_len"/>
         <property type="constant" name="T_Ground" value="9.0"/>
         <property type="constant" name="Pip_Diamter" value="0.5"/>
         <property type="constant" name="Lambda" value="0.148"/>
@@ -7164,7 +7210,7 @@
       </node>
       <node name="515" moduleName="515" label="" isUC="True" type="Transfer_losses_calculator@1">
         <property type="constant" name="Ins_ratio" value="2.0"/>
-        <property type="constant" name="Pip_Length" value="2000.0"/>
+        <property type="expression" name="Pip_Length" value="A2_pipe_len"/>
         <property type="constant" name="T_Ground" value="9.0"/>
         <property type="constant" name="Pip_Diamter" value="0.5"/>
         <property type="constant" name="Lambda" value="0.148"/>
@@ -7259,7 +7305,7 @@
       </node>
       <node name="522" moduleName="522" label="" isUC="True" type="Transfer_losses_calculator@1">
         <property type="constant" name="Ins_ratio" value="2.0"/>
-        <property type="constant" name="Pip_Length" value="2000.0"/>
+        <property type="expression" name="Pip_Length" value="A13_pipe_len"/>
         <property type="constant" name="T_Ground" value="9.0"/>
         <property type="constant" name="Pip_Diamter" value="0.5"/>
         <property type="constant" name="Lambda" value="0.148"/>
@@ -7416,7 +7462,7 @@
           <property type="expression" name="Tank_height" value="Tank_height"/>
           <property type="constant" name="Heat_transfer_eff" value="93.0"/>
           <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-          <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+          <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
           <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
           <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
           <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -7553,7 +7599,7 @@
       </node>
       <node name="524" moduleName="524" label="" isUC="True" type="Transfer_losses_calculator@1">
         <property type="constant" name="Ins_ratio" value="2.0"/>
-        <property type="constant" name="Pip_Length" value="2000.0"/>
+        <property type="expression" name="Pip_Length" value="A4_pipe_len"/>
         <property type="constant" name="T_Ground" value="9.0"/>
         <property type="constant" name="Pip_Diamter" value="0.5"/>
         <property type="constant" name="Lambda" value="0.148"/>
@@ -7569,7 +7615,7 @@
       </node>
       <node name="523" moduleName="523" label="" isUC="True" type="Transfer_losses_calculator@1">
         <property type="constant" name="Ins_ratio" value="2.0"/>
-        <property type="constant" name="Pip_Length" value="2000.0"/>
+        <property type="expression" name="Pip_Length" value="A6_pipe_len"/>
         <property type="constant" name="T_Ground" value="9.0"/>
         <property type="constant" name="Pip_Diamter" value="0.5"/>
         <property type="constant" name="Lambda" value="0.148"/>
@@ -7584,23 +7630,23 @@
         </node>
       </node>
       <node name="520" moduleName="520" label="" isUC="True" type="CityOpt_District@1">
-        <property type="constant" name="Kerrostalo_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_min" value="60.0"/>
-        <property type="constant" name="Julkkiset_m2" value="1.0"/>
+        <property type="constant" name="Kerrostalo_m2" value="58000.0"/>
+        <property type="constant" name="T_DHN_min" value="45.0"/>
+        <property type="constant" name="Julkkiset_m2" value="20000.0"/>
         <property type="constant" name="AHU_Powercoefficient" value="0.3"/>
-        <property type="constant" name="KaupunkiPientalo_m2" value="1.0"/>
-        <property type="constant" name="Pientalot_m2" value="1.0"/>
-        <property type="constant" name="Connection_Pipe_diameter" value="0.5"/>
+        <property type="constant" name="KaupunkiPientalo_m2" value="25000.0"/>
+        <property type="constant" name="Pientalot_m2" value="225000.0"/>
+        <property type="constant" name="Connection_Pipe_diameter" value="5.0"/>
         <property type="constant" name="Tank_Pressure_constant" value="0.2"/>
-        <property type="constant" name="SolarTH_m2" value="0.0"/>
-        <property type="constant" name="Tank_height" value="8.0"/>
+        <property type="expression" name="SolarTH_m2" value="A5_Solarth_m2"/>
+        <property type="expression" name="Tank_height" value="A5_Storage_h"/>
         <property type="constant" name="SolarPV_m2" value="0.0"/>
-        <property type="constant" name="Elinkeino_m2" value="1.0"/>
-        <property type="constant" name="Liiketilat_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_max" value="120.0"/>
-        <property type="constant" name="SolarTH_temp_out_max" value="60.0"/>
+        <property type="constant" name="Elinkeino_m2" value="29000.0"/>
+        <property type="constant" name="Liiketilat_m2" value="15000.0"/>
+        <property type="constant" name="T_DHN_max" value="85.0"/>
+        <property type="constant" name="SolarTH_temp_out_max" value="130.0"/>
         <property type="constant" name="T_Storage_max" value="120.0"/>
-        <property type="constant" name="T_Storage_min" value="20.0"/>
+        <property type="constant" name="T_Storage_min" value="35.0"/>
         <node name="285" moduleName="285_26" label="" isUC="True" type="B.Solar irradiation_mod@1">
           <property type="constant" name="PV_orientation" value="0.0"/>
           <property type="constant" name="TH_collector_tilt_angle" value="45.0"/>
@@ -7726,7 +7772,7 @@
           <property type="expression" name="Tank_height" value="Tank_height"/>
           <property type="constant" name="Heat_transfer_eff" value="93.0"/>
           <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-          <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+          <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
           <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
           <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
           <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -7863,7 +7909,7 @@
       </node>
       <node name="529" moduleName="529" label="" isUC="True" type="Transfer_losses_calculator@1">
         <property type="constant" name="Ins_ratio" value="2.0"/>
-        <property type="constant" name="Pip_Length" value="2000.0"/>
+        <property type="expression" name="Pip_Length" value="A1_pipe_len"/>
         <property type="constant" name="T_Ground" value="9.0"/>
         <property type="constant" name="Pip_Diamter" value="0.5"/>
         <property type="constant" name="Lambda" value="0.148"/>
@@ -7879,7 +7925,7 @@
       </node>
       <node name="526" moduleName="526" label="" isUC="True" type="Transfer_losses_calculator@1">
         <property type="constant" name="Ins_ratio" value="2.0"/>
-        <property type="constant" name="Pip_Length" value="2000.0"/>
+        <property type="expression" name="Pip_Length" value="A12_pipe_len"/>
         <property type="constant" name="T_Ground" value="9.0"/>
         <property type="constant" name="Pip_Diamter" value="0.5"/>
         <property type="constant" name="Lambda" value="0.148"/>
@@ -7895,7 +7941,7 @@
       </node>
       <node name="528" moduleName="528" label="" isUC="True" type="Transfer_losses_calculator@1">
         <property type="constant" name="Ins_ratio" value="2.0"/>
-        <property type="constant" name="Pip_Length" value="2000.0"/>
+        <property type="expression" name="Pip_Length" value="A11_pipe_len"/>
         <property type="constant" name="T_Ground" value="9.0"/>
         <property type="constant" name="Pip_Diamter" value="0.5"/>
         <property type="constant" name="Lambda" value="0.148"/>
@@ -8052,7 +8098,7 @@
           <property type="expression" name="Tank_height" value="Tank_height"/>
           <property type="constant" name="Heat_transfer_eff" value="93.0"/>
           <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-          <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+          <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
           <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
           <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
           <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -8188,9 +8234,9 @@
         </node>
       </node>
       <node name="CHPICE02" moduleName="CHPICE02" label="" isUC="True" type="CHP microGT_Thermal_controlled@1">
-        <property type="constant" name="Minimum_Duty" value="5.0"/>
+        <property type="expression" name="Minimum_Duty" value="CHP_Th_Power*0,05"/>
         <property type="constant" name="Electrical_Power_Rating" value="100.0"/>
-        <property type="constant" name="Thermal_Power_Rating" value="2000.0"/>
+        <property type="expression" name="Thermal_Power_Rating" value="CHP_Th_Power"/>
         <property type="constant" name="Shutdown_Time" value="5.0"/>
         <property type="constant" name="Startup_Time" value="5.0"/>
         <property type="constant" name="Supply_hot_water_temperature" value="80.0"/>
@@ -8253,24 +8299,81 @@
           <property type="expression" name="MULTIPLYER_BIAS" value="Nominal_LHV"/>
         </node>
       </node>
+      <node name="PO70" moduleName="PO70" label="" isUC="False" type="POINT_QF_TH0">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tret"/>
+      </node>
+      <node name="MU53" moduleName="MU53" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="1/COP_HPcool"/>
+      </node>
+      <node name="PO36" moduleName="PO36" label="" isUC="False" type="POINT_QF_TH0">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tret"/>
+      </node>
+      <node name="PO40" moduleName="PO40" label="" isUC="False" type="POINT_QF">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tsup"/>
+      </node>
+      <node name="PO41" moduleName="PO41" label="" isUC="False" type="POINT_QF_TH0">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tret"/>
+      </node>
+      <node name="PO44" moduleName="PO44" label="" isUC="False" type="POINT_QF">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tsup"/>
+      </node>
+      <node name="PO23" moduleName="PO23" label="" isUC="False" type="POINT_QF">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tsup"/>
+      </node>
+      <node name="PO24" moduleName="PO24" label="" isUC="False" type="POINT_QF_TH0">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tret"/>
+      </node>
+      <node name="PO27" moduleName="PO27" label="" isUC="False" type="POINT_QF_TH0">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tret"/>
+      </node>
+      <node name="PO33" moduleName="PO33" label="" isUC="False" type="POINT_QF">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tsup"/>
+      </node>
+      <node name="PO32" moduleName="PO32" label="" isUC="False" type="POINT_QF">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tsup"/>
+      </node>
+      <node name="PO58" moduleName="PO58" label="" isUC="False" type="POINT_QF">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tsup"/>
+      </node>
+      <node name="PO59" moduleName="PO59" label="" isUC="False" type="POINT_QF">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tsup"/>
+      </node>
+      <node name="PO60" moduleName="PO60" label="" isUC="False" type="POINT_QF">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tsup"/>
+      </node>
+      <node name="PO45" moduleName="PO45" label="" isUC="False" type="POINT_QF">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tret"/>
+      </node>
+      <node name="PO55" moduleName="PO55" label="" isUC="False" type="POINT_QF_TH0">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tret"/>
+      </node>
+      <node name="PO54" moduleName="PO54" label="" isUC="False" type="POINT_QF">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tsup"/>
+      </node>
+      <node name="PO51" moduleName="PO51" label="" isUC="False" type="POINT_QF">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tsup"/>
+      </node>
+      <node name="PO50" moduleName="PO50" label="" isUC="False" type="POINT_QF">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tsup"/>
+      </node>
       <node name="505" moduleName="505" label="" isUC="True" type="CityOpt_District@1">
-        <property type="constant" name="Kerrostalo_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_min" value="60.0"/>
-        <property type="constant" name="Julkkiset_m2" value="1.0"/>
+        <property type="constant" name="Kerrostalo_m2" value="259000.0"/>
+        <property type="constant" name="T_DHN_min" value="45.0"/>
+        <property type="constant" name="Julkkiset_m2" value="50000.0"/>
         <property type="constant" name="AHU_Powercoefficient" value="0.3"/>
-        <property type="constant" name="KaupunkiPientalo_m2" value="1.0"/>
-        <property type="constant" name="Pientalot_m2" value="1.0"/>
-        <property type="constant" name="Connection_Pipe_diameter" value="0.5"/>
+        <property type="constant" name="KaupunkiPientalo_m2" value="375000.0"/>
+        <property type="constant" name="Pientalot_m2" value="172000.0"/>
+        <property type="constant" name="Connection_Pipe_diameter" value="5.0"/>
         <property type="constant" name="Tank_Pressure_constant" value="0.2"/>
-        <property type="constant" name="SolarTH_m2" value="0.0"/>
-        <property type="constant" name="Tank_height" value="8.0"/>
+        <property type="expression" name="SolarTH_m2" value="A14_Solarth_m2"/>
+        <property type="expression" name="Tank_height" value="A14_Storage_h"/>
         <property type="constant" name="SolarPV_m2" value="0.0"/>
-        <property type="constant" name="Elinkeino_m2" value="1.0"/>
-        <property type="constant" name="Liiketilat_m2" value="1.0"/>
-        <property type="constant" name="T_DHN_max" value="120.0"/>
-        <property type="constant" name="SolarTH_temp_out_max" value="60.0"/>
+        <property type="constant" name="Elinkeino_m2" value="130000.0"/>
+        <property type="constant" name="Liiketilat_m2" value="60000.0"/>
+        <property type="constant" name="T_DHN_max" value="85.0"/>
+        <property type="constant" name="SolarTH_temp_out_max" value="130.0"/>
         <property type="constant" name="T_Storage_max" value="120.0"/>
-        <property type="constant" name="T_Storage_min" value="20.0"/>
+        <property type="constant" name="T_Storage_min" value="35.0"/>
         <node name="285" moduleName="285_28" label="" isUC="True" type="B.Solar irradiation_mod@1">
           <property type="constant" name="PV_orientation" value="0.0"/>
           <property type="constant" name="TH_collector_tilt_angle" value="45.0"/>
@@ -8396,7 +8499,7 @@
           <property type="expression" name="Tank_height" value="Tank_height"/>
           <property type="constant" name="Heat_transfer_eff" value="93.0"/>
           <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-          <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+          <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
           <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
           <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
           <property type="constant" name="Tank_thickness_1" value="50.0"/>
@@ -8530,6 +8633,27 @@
         <node name="MU149" moduleName="MU149_28" label="" isUC="False" type="MULTIPLYER_QF2">
           <property type="expression" name="MULTIPLYER_GAIN" value="Julkkiset_m2"/>
         </node>
+      </node>
+      <node name="PO16" moduleName="PO16" label="" isUC="False" type="POINT_QF_TH0">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tret"/>
+      </node>
+      <node name="PO15" moduleName="PO15" label="" isUC="False" type="POINT_QF_TH0">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tret"/>
+      </node>
+      <node name="PO20" moduleName="PO20" label="" isUC="False" type="POINT_QF_TH0">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tret"/>
+      </node>
+      <node name="PO06" moduleName="PO06" label="" isUC="False" type="POINT_QF_TH0">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tret"/>
+      </node>
+      <node name="PO05" moduleName="PO05" label="" isUC="False" type="POINT_QF_TH0">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tret"/>
+      </node>
+      <node name="PO04" moduleName="PO04" label="" isUC="False" type="POINT_QF">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tsup"/>
+      </node>
+      <node name="PO03" moduleName="PO03" label="" isUC="False" type="POINT_QF_TH0">
+        <property type="expression" name="PO11_TEMPERATURE" value="DHN_Tret"/>
       </node>
     </node>
   </node>
@@ -8677,7 +8801,7 @@
         <property type="expression" name="Tank_height" value="Tank_height"/>
         <property type="constant" name="Heat_transfer_eff" value="93.0"/>
         <property type="expression" name="T_DHN_max" value="T_DHN_max"/>
-        <property type="expression" name="Nominal_HeatAndCool" value="2*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
+        <property type="expression" name="Nominal_HeatAndCool" value="4*(12.5*Pientalot_m2+53*KaupunkiPientalo_m2+35* Kerrostalo_m2+55*Liiketilat_m2+57*Elinkeino_m2+50*Julkkiset_m2)/1000"/>
         <property type="expression" name="T_Storage_max" value="T_Storage_max"/>
         <property type="expression" name="T_Storage_min" value="T_Storage_min"/>
         <property type="constant" name="Tank_thickness_1" value="50.0"/>
