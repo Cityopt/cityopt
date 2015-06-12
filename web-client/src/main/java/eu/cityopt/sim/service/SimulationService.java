@@ -486,7 +486,8 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
 
     /** Loads the time origin of a simulation model. */
     public Instant loadTimeOrigin(eu.cityopt.model.SimulationModel simulationModel) {
-        Date timeOriginDate = simulationModel.getTimeorigin();
+        Date timeOriginDate = (simulationModel != null)
+                ? simulationModel.getTimeorigin() : null;
         return (timeOriginDate != null)
                 ? timeOriginDate.toInstant() : DEFAULT_TIME_ORIGIN;
     }
