@@ -56,28 +56,45 @@ public class ExportBuilder {
     }
 
     /**
+     * Add all external parameters without values.
+     * @param ns
+     */
+    public void addExtParams(Namespace ns) {
+        addExtParams(ns, null, null);
+    }
+
+    /**
      * Add a set of external parameter values. 
      * @param ext values to add
      * @param extSet name of the set
      */
     public void add(ExternalParameters ext, String extSet) {
-        EvaluationSetup evs = tsd.getEvaluationSetup();
-        for (Map.Entry<String, Type>
-                nt : ext.getNamespace().externals.entrySet()) {
-            Object val = ext.get(nt.getKey());
-            if (val == null)
-                continue;
+        addExtParams(ext.getNamespace(), ext, extSet);
+    }
+    
+    private void addExtParams(
+            Namespace ns, ExternalParameters ext, String extSet) {
+        EvaluationSetup evs = ext == null ? null : tsd.getEvaluationSetup();
+        for (Map.Entry<String, Type> nt : ns.externals.entrySet()) {
+            Object val = null;
+            if (ext != null) {
+                val = ext.get(nt.getKey());
+                if (val == null)
+                    continue;
+            }
             ExtParam p = new ExtParam();
             p.extparamvalsetname = extSet;
             p.item = new JacksonBinder.ExtParam();
             p.item.name = nt.getKey();
             p.item.type = nt.getValue();
-            if (p.item.type.isTimeSeriesType()) {
-                String tslabel = makeTSLabel(p.item.name, null, extSet);
-                tsd.put(tslabel, ext.getTS(p.item.name));
-                p.item.value = tslabel;
-            } else {
-                p.item.value = p.item.type.format(val, evs);
+            if (val != null) {
+                if (p.item.type.isTimeSeriesType()) {
+                    String tslabel = makeTSLabel(p.item.name, null, extSet);
+                    tsd.put(tslabel, ext.getTS(p.item.name));
+                    p.item.value = tslabel;
+                } else {
+                    p.item.value = p.item.type.format(val, evs);
+                }
             }
             binder.getItems().add(p);
         }
@@ -122,7 +139,7 @@ public class ExportBuilder {
     
     private void addInputs(
             Namespace ns, SimulationInput input, String scenario) {
-        EvaluationSetup evs = tsd.getEvaluationSetup();
+        EvaluationSetup evs = input == null ? null : tsd.getEvaluationSetup();
         for (Map.Entry<String, Component> 
                 comp : ns.components.entrySet()) {
             for (Map.Entry<String, Type>

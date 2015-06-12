@@ -1,5 +1,7 @@
 package eu.cityopt.sim.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.file.Path;
 
@@ -80,6 +82,38 @@ public class TestImportExportService extends SimulationTestBase {
         }
         dumpTables("import_structure");
     }
+    
+    @Test
+    @DatabaseSetup("classpath:/testData/empty_project.xml")
+    @ExpectedDatabase(
+            value="classpath:/testData/import_structure_result.xml",
+            assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testReimportProjectStructure() throws Exception {
+        Project project = projectRepository
+                .findByName("Empty test project").get(0);
+        int pid = project.getPrjid();
+        try (InputStream
+                in = getClass().getResourceAsStream("/test-problem.csv")) {
+            importExportService.importSimulationStructure(pid, in);
+        }
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        importExportService.exportSimulationStructure(pid, System.out);
+        importExportService.exportSimulationStructure(pid, bout);
+        String name = project.getName(), loc = project.getLocation();
+        projectRepository.delete(pid);
+        //JPA workaround
+        projectRepository.flush();
+        Project pnew = new Project();
+        pnew.setName(name);
+        pnew.setLocation(loc);
+        pnew = projectRepository.save(pnew);
+        importExportService.importSimulationStructure(
+                pnew.getPrjid(), new ByteArrayInputStream(bout.toByteArray()));
+        //dumpTables workaround
+        projectRepository.flush();
+        dumpTables("reimport_structure");
+    }
+
 
     @Test
     @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
