@@ -1,11 +1,11 @@
 kind,component,name,type,value,lower,upper,expression
 in,CITYOPT,simulation_end,Timestamp,2016-01-01T00:00:00Z,,,
 in,CITYOPT,simulation_start,Timestamp,2015-01-01T00:00:00Z,,,
-in,BIG,Central_storage_h,Double,80,,,h0
-in,BIG,A1_Storage_h,Double,10,,,h1
-in,BIG,A1_Solarth_m2,Double,0,,,a1
-in,BIG,A2Storage_h,Double,15,,,h2
-in,BIG,A2_Solarth_m2,Double,0,,,a2
+in,OSTERSUNDOM_BIG_1,Central_storage_h,Double,80,,,h0
+in,OSTERSUNDOM_BIG_1,A1_Storage_h,Double,10,,,h1
+in,OSTERSUNDOM_BIG_1,A1_Solarth_m2,Double,0,,,a1
+in,OSTERSUNDOM_BIG_1,A2Storage_h,Double,15,,,h2
+in,OSTERSUNDOM_BIG_1,A2_Solarth_m2,Double,0,,,a2
 out,HOUR_HEAT,SP_VALUE,TimeSeries/linear,,,,
 out,HOUR_NET_COOL,SP_VALUE,TimeSeries/linear,,,,
 out,HOUR_NET_ELEC,SP_VALUE,TimeSeries/linear,,,,
