@@ -3972,6 +3972,9 @@ public class ProjectController {
 			// Get metrics time series (max 2 metrics)
 			if (userSession.getSelectedChartMetricIds().size() == 2)
 			{
+				XYSeriesCollection collection = new XYSeriesCollection();
+				DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
+				DefaultPieDataset pieDataset = new DefaultPieDataset();
 				timeSeriesCollection.removeAllSeries();
 				
 				int metric1Id = iterator.next(); 
@@ -3986,25 +3989,64 @@ public class ProjectController {
 
 					Set<Integer> scenarioIds = userSession.getScenarioIds();
 					Iterator<Integer> scenIter = scenarioIds.iterator();
-					
+					DefaultXYDataset dataset = new DefaultXYDataset();
+
 					while (scenIter.hasNext())
 					{
 						Integer integerScenarioId = (Integer) scenIter.next();
 						int nScenarioId = (int)integerScenarioId;
+						ScenarioDTO scenarioTemp = scenarioService.findByID(nScenarioId);
 						MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
 						MetricValDTO metricVal2 = metricService.getMetricVals(metric2Id, nScenarioId).get(0);
+					
+						//timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
 						
-						timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
+						
+						if (userSession.getChartType() == 0) 
+						{
+							/*TimeSeries timeSeries = new TimeSeries(scenarioTemp.getName());
+							timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
+							System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
+							timeSeriesCollection.addSeries(timeSeries);*/
+						} 
+						else if (userSession.getChartType() == 1) 
+						{
+							XYSeries series = new XYSeries(scenarioTemp.getName());
+							series.add(Double.parseDouble(metricVal1.getValue()), Double.parseDouble(metricVal2.getValue()));
+							/*double[][] data = new double[2][1];
+							data[0][0] = Double.parseDouble(metricVal1.getValue());
+							data[1][0] = Double.parseDouble(metricVal2.getValue());
+						    dataset.addSeries(scenario.getName(), data);*/
+						    //System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
+							collection.addSeries(series);						
+						} 
+						else if (userSession.getChartType() == 2) 
+						{
+							categoryDataset.addValue(Double.parseDouble(metricVal1.getValue()), scenarioTemp.getName(), metric1.getName());
+							categoryDataset.addValue(Double.parseDouble(metricVal2.getValue()), scenarioTemp.getName(), metric2.getName());
+						} 
+						else if (userSession.getChartType() == 3) 
+						{
+							pieDataset.setValue(scenarioTemp.getName(), Double.parseDouble(metricVal1.getValue()));
+						}
+						
+						//index++;
 					}				
 															
 					timeSeriesCollection.addSeries(timeSeries);
 				
-					JFreeChart chart = null;
-					
+					//JFreeChart chart = null;
+				
 					if (userSession.getChartType() == 0) {
-						chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", metric1.getName(), metric2.getName());
-					} else if (userSession.getChartType() == 1) {
-						chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", metric1.getName(), metric2.getName(), false);
+						userSession.setChartType(1);
+					}
+					
+					// TODO
+					if (userSession.getChartType() == 1) {
+						//ScatterPlotVisualization demo = new ScatterPlotVisualization("Scatter plot", dataset, "", "", false);
+						//chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", metric1.getName(), metric2.getName());
+					} else if (userSession.getChartType() == 2) {
+						//chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", metric1.getName(), metric2.getName(), false);
 					}
 
 					if (timeSeriesCollection.getSeriesCount() > 0)
@@ -4177,7 +4219,7 @@ public class ProjectController {
 				if (userSession.getChartType() == 2) {
 					chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "", "");
 				} else if (userSession.getChartType() == 3) {
-					chart = PieChartVisualization.createChart(pieDataset, "Pie chart", metric1.getName(), "");
+					chart = PieChartVisualization.createChart(pieDataset, "Pie chart " + metric1.getName(), "", "");
 				}
 				
 				if (chart != null)
