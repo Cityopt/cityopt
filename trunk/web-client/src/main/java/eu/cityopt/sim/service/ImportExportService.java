@@ -28,6 +28,7 @@ import eu.cityopt.model.Component;
 import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.Metric;
+import eu.cityopt.model.OptimizationSet;
 import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.ScenarioGenerator;
@@ -39,6 +40,7 @@ import eu.cityopt.repository.ComponentRepository;
 import eu.cityopt.repository.ExtParamRepository;
 import eu.cityopt.repository.InputParameterRepository;
 import eu.cityopt.repository.MetricRepository;
+import eu.cityopt.repository.OptimizationSetRepository;
 import eu.cityopt.repository.OutputVariableRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
@@ -84,6 +86,7 @@ public class ImportExportService {
     @Inject private OutputVariableRepository outputVariableRepository;
     @Inject private MetricRepository metricRepository;
     @Inject private TypeRepository typeRepository;
+    @Inject private OptimizationSetRepository optimizationSetRepository;
 
     /**
      * Creates a SimulationModel row in the database.
@@ -467,6 +470,14 @@ public class ImportExportService {
 
         return saveOptimisationProblem(project, name, problem, algorithm, algorithmParameters);
     }
+    
+    /*
+    @Transactional(readOnly=true)
+    public void exportOptimisationProblem(
+            int sgid, Path problemFile, Path timeSeriesFile) {
+        //TODO OptimisationProblem p = ???
+    }
+    */
 
     /** 
      * Creates a new OptimizationSet row from text files.
@@ -508,6 +519,19 @@ public class ImportExportService {
 
         return optimisationSupport.saveOptimisationSet(project, userId, name, problem);
     }
+    
+    @Transactional(readOnly=true)
+    public void exportOptimisationSet(
+            int optSetId, Path problemFile, Path timeSeriesFile)
+                    throws ParseException, ScriptException, IOException {
+        OptimizationSet os = optimizationSetRepository.findOne(optSetId);
+        Project proj = os.getProject();
+        OptimisationProblem prob = optimisationSupport.loadOptimisationProblem(
+                proj, os);
+        OptimisationProblemIO.writeProblemCsv(
+                prob, problemFile, timeSeriesFile);
+    }
+
 
     public int saveOptimisationProblem(
             Project project, String name, OptimisationProblem problem, 
