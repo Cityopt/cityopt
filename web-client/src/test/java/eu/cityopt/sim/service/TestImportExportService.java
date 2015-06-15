@@ -3,6 +3,7 @@ package eu.cityopt.sim.service;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import javax.inject.Inject;
@@ -23,6 +24,7 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import eu.cityopt.model.Project;
+import eu.cityopt.repository.OptimizationSetRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.sim.eval.util.TempDir;
 
@@ -36,6 +38,7 @@ import eu.cityopt.sim.eval.util.TempDir;
 public class TestImportExportService extends SimulationTestBase {
     @Inject ImportExportService importExportService;
     @Inject ProjectRepository projectRepository;
+    @Inject OptimizationSetRepository optimisationSetRepository;
 
     @Test
     @DatabaseSetup("classpath:/testData/empty_project.xml")
@@ -128,5 +131,26 @@ public class TestImportExportService extends SimulationTestBase {
                     project.getPrjid(), null, "testimport", problemPath, tsPath);
         }
         dumpTables("import_optset");
+    }
+    
+    @Test
+    @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
+    public void testExportedOptimisationSet() throws Exception {
+        Project project = scenarioRepository.findByNameContaining(
+                "testscenario").get(0).getProject();
+        try (TempDir tempDir = new TempDir("testimport")) {
+            Path problemPath = copyResource("/test-problem.csv", tempDir);
+            Path tsPath = copyResource("/timeseries.csv", tempDir);
+            int optSetId = importExportService.importOptimisationSet(
+                    project.getPrjid(), null, "testimport",
+                    problemPath, tsPath);
+            Path pout = tempDir.getPath().resolve("problem-out.csv");
+            Path tsout = tempDir.getPath().resolve("timeseries-out.csv");
+            importExportService.exportOptimisationSet(optSetId, pout, tsout);
+            //FIXME Maybe compare the files somehow loosely?
+            //Cleaning up for reimport is difficult.
+            Files.copy(pout, System.out);
+            Files.copy(tsout, System.out);
+        }
     }
 }
