@@ -2580,46 +2580,10 @@ public class ProjectController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
-		
-		//Hibernate.initialize(project.getComponents());
-		//Set<Component> projectComponents = project.getComponents();
-		
-		/*if (projectComponents != null && projectComponents.size() > 0)
-		{
-			model.put("components", projectComponents);
-		}*/
-	
-		/*Set<Component> setComponents = project.getComponents();
-		List<Component> listComponents = new ArrayList<Component>();
-        Iterator<Component> iterator = setComponents.iterator();
-        
-        while(iterator.hasNext())
-        {
-               Component cmp = iterator.next();
-               listComponents.add(cmp);
-               cmp.getName();
-        }
-
-		if (listComponents != null && listComponents.size() > 0)
-		{
-			model.put("components", listComponents);
-		}*/
-
 		ComponentDTO selectedComponent = null;
-		
-		// Select the first component if no component is selected
-		/*if (selectedCompId == null && projectComponents != null && projectComponents.size() > 0)
-		{
-			selectedComponent = projectComponents.iterator().next();
-			model.put("selectedCompId", selectedComponent.getComponentid());
-			//Hibernate.initialize(selectedComponent.getInputparameters());
-			//model.put("inputParams", selectedComponent.getInputparameters());
-			model.put("selectedComponent",  selectedComponent);
-		}*/
 		
 		if (selectedCompId != null)
 		{
@@ -2632,8 +2596,6 @@ public class ProjectController {
 			}
 			
 			model.put("selectedcompid", selectedCompId);
-			//Hibernate.initialize(selectedComponent.getInputparameters());
-			//model.put("inputParams", selectedComponent.getInputparameters());
 			model.put("selectedComponent",  selectedComponent);
 			Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
 			model.put("inputParameters", inputParams);
