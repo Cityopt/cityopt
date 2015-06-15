@@ -139,7 +139,7 @@
 							<tr>
 								<td>
 									<b>Default external parameter set </b>
-									${project.extparamvalset.name}
+									${project.defaultextparamvalset.name}
 									<br>
 									<table class="tablestyle">
 										
