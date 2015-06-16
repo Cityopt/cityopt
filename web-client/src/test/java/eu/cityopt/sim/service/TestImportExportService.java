@@ -73,6 +73,29 @@ public class TestImportExportService extends SimulationTestBase {
         }
         dumpTables("import_problem");
     }
+    
+    @Test
+    @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
+    @ExpectedDatabase(value="classpath:/testData/import_problem_result.xml",
+        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testExportOptimisationProblem() throws Exception {
+        Project project = scenarioRepository.findByNameContaining("testscenario").get(0).getProject();
+        try (TempDir tempDir = new TempDir("testimport")) {
+            Path problemPath = copyResource("/test-problem.csv", tempDir);
+            Path paramPath = copyResource("/ga.properties", tempDir);
+            Path tsPath = copyResource("/timeseries.csv", tempDir);
+            int sgid = importExportService.importOptimisationProblem(
+                    project.getPrjid(), "testygeneration", problemPath, null,
+                    paramPath, tsPath);
+            Path pout = tempDir.getPath().resolve("problem-out.csv");
+            Path tsout = tempDir.getPath().resolve("timeseries-out.csv");
+            importExportService.exportOptimisationProblem(sgid, pout, tsout);
+            //FIXME Maybe compare the files somehow loosely?
+            //Cleaning up for reimport is difficult.
+            Files.copy(pout, System.out);
+            Files.copy(tsout, System.out);
+        }
+    }
 
     @Test
     @DatabaseSetup("classpath:/testData/empty_project.xml")
@@ -135,7 +158,7 @@ public class TestImportExportService extends SimulationTestBase {
     
     @Test
     @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
-    public void testExportedOptimisationSet() throws Exception {
+    public void testExportOptimisationSet() throws Exception {
         Project project = scenarioRepository.findByNameContaining(
                 "testscenario").get(0).getProject();
         try (TempDir tempDir = new TempDir("testimport")) {
