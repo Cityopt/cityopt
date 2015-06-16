@@ -622,6 +622,22 @@ public class ProjectController {
 		return "openscenario";
 	}
 
+	@RequestMapping(value="showscenarios",method=RequestMethod.GET)
+	public String getShowScenarios (Map<String, Object> model)
+	{
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
+		model.put("scenarios", scenarios);
+
+		return "showscenarios";
+	}
+	
 	@RequestMapping(value="clonescenario",method=RequestMethod.GET)
 	public String getCloneScenario (Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid)
 	{
@@ -1023,6 +1039,65 @@ public class ProjectController {
 	public String getImportData(Model model){
 	
 		return "importdata";
+	}
+	
+	@RequestMapping(value="projectdata", method=RequestMethod.GET)
+	public String getProjectData(Map<String, Object> model, 
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
+		@RequestParam(value="selectedextparamvalsetid", required=false) String selectedExtParamValSetId) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		
+		ComponentDTO selectedComponent = null;
+		
+		if (selectedCompId != null)
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
+			try {
+				selectedComponent = componentService.findByID(nSelectedCompId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			model.put("selectedcompid", selectedCompId);
+			model.put("selectedComponent",  selectedComponent);
+			Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+			model.put("inputParameters", inputParams);
+		}
+
+		model.put("project", project);
+		
+		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
+		model.put("extParamValSets", extParamValSets);
+		
+		List<ExtParamValDTO> extParamVals = null;
+		
+		if (selectedExtParamValSetId != null)
+		{
+			try {
+				extParamVals = extParamValSetService.getExtParamVals(project.getDefaultextparamvalset().getExtparamvalsetid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			model.put("extParamVals", extParamVals);
+		}
+		
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+		
+		return "projectdata";
 	}
 	
 	@RequestMapping(value="createuser",method=RequestMethod.GET)

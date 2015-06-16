@@ -22,7 +22,6 @@
 		<td width=30></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:800px;width:1100px;overflow:auto">
-			<form:form method="post" action="editscenario.html?action=update" modelAttribute="project">
 			<table>
 				<col style="width:400px">	
 				<col style="width:400px">	
@@ -41,19 +40,31 @@
 						<table>
 							<tr>
 								<td>Project name:</td>
-								<td><form:input type="text" path="name" style="width:200px"/></td>
+								<td>
+									<c:if test="project != null">
+										${project.name}
+									</c:if>
+								</td>
 							</tr>
 							<tr>						
 								<td>Location:</td>
-								<td><form:input type="text" path="location" style="width:200px"/></td>
+								<td>
+									<c:if test="project != null">
+										${project.location}
+									</c:if>
+								</td>
 							</tr>
 							<tr>						
 								<td>Design target:</td>
-								<td><form:input type="text" path="designtarget" style="width:200px"/></td>
+								<td></td>
 							</tr>
 							<tr>						
 								<td>Description:</td>
-								<td><form:textarea type="text" rows="3" path="description" style="width:200px"></form:textarea></td>
+								<td>
+									<c:if test="project != null">
+										${project.description}
+									</c:if>
+								</td>
 							</tr>
 							<tr>						
 								<td>Energy model:</td>
@@ -74,8 +85,9 @@
 							</tr>
 							<tr>						
 								<td></td>
-								<td><a href="uploaddiagram.html"><button type="button">Upload</button></a>
-								<!--<form:input type="submit" path="" value="Upload" style="width:120px"/>--></td>
+								<td>
+									<a href="uploaddiagram.html"><button type="button">Upload</button></a>
+								</td>
 							</tr>
 							<tr>
 								<td>
@@ -100,8 +112,7 @@
 								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
 							</tr>
 							<tr>		
-								<br/>				
-								<td><a href=""><button>Visualize project data</button></a></td>
+								<td><a href="projectdata.html"><button>Show project data</button></a></td>
 								<td align="right"><a href=""><button>Import</button></a></td>
 							</tr>
 						</table>
@@ -125,20 +136,13 @@
 								<td>Import scenarios <a href=""><button>Import</button></a></td>
 							</tr>
 							<tr>						
-								<td><a href=""><button>Check scenario</button></a></td>
-							</tr>
-							<tr align="right">
-								<td>
-									<a href=""><button>Accept</button></a>
-									<a href=""><button>Cancel</button></a>
-								</td>
+								<td><a href="showscenarios.html"><button>Show scenarios</button></a></td>
 							</tr>
 						</table>
 					</td>
 					
 				</tr>
 			</table>
-			</form:form>
 			</div>
 		</td>
 		

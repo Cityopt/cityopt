@@ -55,6 +55,10 @@
 								<td>Scenario simulation status:</td>
 								<td>${scenario.status}</td>
 							</tr>
+							<tr>
+								<td>Remaining simulation time:</td>
+								<td></td>
+							</tr>
 							</form:form>
 							
 							<form:form method="post" action="setsimulationdate.html">
