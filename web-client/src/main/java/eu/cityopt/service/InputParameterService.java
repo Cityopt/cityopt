@@ -21,5 +21,7 @@ public interface InputParameterService extends CityOptService<InputParameterDTO>
 	
 	Set<InputParamValDTO> getInputParamVals(int id);
 	
+	int getComponentId(int inputParamId);
+	
 	List<InputParameterDTO> findByName(String name);
 }

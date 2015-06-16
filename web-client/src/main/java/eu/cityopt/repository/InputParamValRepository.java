@@ -31,8 +31,8 @@ public interface InputParamValRepository extends JpaRepository<InputParamVal,Int
 			@Param("scenid") int scenid);
 	
 	@Query("select i from InputParamVal i where "
-			+ " Lower(i.inputparameter.name) like CONCAT('%',Lower(:name),'%')"
+			+ " Lower(i.inputparameter.name) like :name"
 			+ " and i.scenario.scenid = :scenid")
-	List<InputParamVal> findByNameAndScenario(@Param("name") String name, @Param("scenid") int scenId);
+	InputParamVal findByNameAndScenario(@Param("name") String name, @Param("scenid") int scenId);
 	
 }

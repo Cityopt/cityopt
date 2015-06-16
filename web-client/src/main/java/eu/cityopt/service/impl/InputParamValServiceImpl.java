@@ -87,10 +87,10 @@ public class InputParamValServiceImpl implements InputParamValService {
 	
 	@Transactional(readOnly = true)
 	@Override
-	public List<InputParameterDTO> findByNameAndScenario(String name, int scenId) {
-		List<InputParamVal> iparams = inputParamValRepository.findByNameAndScenario(name, scenId);
-		List<InputParameterDTO> result 
-			= modelMapper.map(iparams, new TypeToken<List<InputParameterDTO>>() {}.getType());
+	public InputParamValDTO findByNameAndScenario(String name, int scenId) {
+		InputParamVal iparams = inputParamValRepository.findByNameAndScenario(name, scenId);
+		InputParamValDTO result 
+			= modelMapper.map(iparams, InputParamValDTO.class);
 		return result;
 	}
 

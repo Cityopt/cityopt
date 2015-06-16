@@ -14,6 +14,6 @@ public class ComponentDTO  extends BaseDTO{
 	@Getter @Setter private String alias;
 	@Getter @Setter private Serializable geometryblob;
 //	@Getter @Setter private Set<InputParameter> inputparameters = new HashSet<InputParameter>(0);
-	@Getter @Setter private Set<OutputVariableDTO> outputvariables = new HashSet<OutputVariableDTO>(0);
+//	@Getter @Setter private Set<OutputVariableDTO> outputvariables = new HashSet<OutputVariableDTO>(0);
 
 }
