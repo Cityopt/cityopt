@@ -110,4 +110,14 @@ public class InputParameterServiceImpl implements InputParameterService {
 		return modelMapper.map(inputParamVals, new TypeToken<Set<InputParamValDTO>>() {}.getType());
 	}
 
+	@Transactional(readOnly = true)
+	@Override
+	public int getComponentId(int inputParamId) {
+		InputParameter inparam = inputParameterRepository.findOne(inputParamId);
+		if(inputParameterRepository.findOne(inputParamId) == null) 
+			return 0;
+		
+		return inparam.getComponent().getComponentid();
+	}
+
 }

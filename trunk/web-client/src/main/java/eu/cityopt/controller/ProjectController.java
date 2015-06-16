@@ -20,6 +20,7 @@ import java.util.Set;
 
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -66,6 +67,7 @@ import eu.cityopt.DTO.ScenGenObjectiveFunctionDTO;
 import eu.cityopt.DTO.ScenGenOptConstraintDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioGeneratorDTO;
+import eu.cityopt.DTO.SimulationModelDTO;
 import eu.cityopt.DTO.SimulationResultDTO;
 import eu.cityopt.DTO.TimeSeriesDTO;
 import eu.cityopt.DTO.TimeSeriesValDTO;
@@ -244,7 +246,7 @@ public class ProjectController {
 			extParamValSet = extParamValSetService.save(extParamValSet);
 			
 			project.setExtparamvalset(extParamValSet);*/
-			project = projectService.save(project);
+			project = projectService.save(project, 0, 0);
 			
 			model.put("project", project);
 			model.remove("scenario");
@@ -381,7 +383,7 @@ public class ProjectController {
 			{
 				ProjectDTO project = new ProjectDTO();
 				project.setName(projectForm.getName());
-				projectService.save(project);
+				project = projectService.save(project,0,0);
 				model.put("project", project);
 			}
 			else if (action.equals("update"))
@@ -401,7 +403,8 @@ public class ProjectController {
 					project.setLocation(projectForm.getLocation());
 					project.setDesigntarget(projectForm.getDesigntarget());
 					
-					project = projectService.save(project);
+					project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()),
+							projectService.getDefaultExtParamSetId(project.getPrjid()));
 					
 				} catch(ObjectOptimisticLockingFailureException e) {
 					model.put("errorMessage", "This project has been updated in the meantime, please reload.");
@@ -480,6 +483,7 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="createscenario",method=RequestMethod.POST)
+	@Transactional
 	public String getCreateScenarioPost(ScenarioDTO formScenario, Map<String, Object> model) {
 
 		if (model.containsKey("project") && formScenario != null)
@@ -499,53 +503,61 @@ public class ProjectController {
 			scenario.setDescription(formScenario.getDescription());
 			scenario.getScenid();
 			
-			scenario = scenarioService.save(scenario, project.getPrjid());
+			try {
+				scenario = scenarioService.saveWithDefaultInputValues(scenario, project.getPrjid());
+			} catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 			model.put("components", components);
 
 			// Create input param vals for all input params
-			for (int i = 0; i < components.size(); i++)
-			{
-				ComponentDTO component = components.get(i);
-				//List<ComponentInputParamDTO> listComponentInputParams = componentInputParamService.findAllByComponentId(component.getComponentid());
-				
-				Set<InputParameterDTO> setInputParams = componentService.getInputParameters(component.getComponentid());
-				Iterator<InputParameterDTO> iter = setInputParams.iterator();
-				
-				while(iter.hasNext())
-				{
-					InputParameterDTO inputParam = iter.next();
-					
-					//InputParameterDTO inputParam = inputParamService.findByID(setInputParams.get(j).getInputid());
-					InputParamValDTO inputParamVal = new InputParamValDTO();
-					inputParamVal.setInputparameter(inputParam);
-					inputParamVal.setValue(inputParam.getDefaultvalue());
-					inputParamVal.setScenario(scenario);
-					inputParamVal = inputParamValService.save(inputParamVal);
-				}
-			}
+//			for (int i = 0; i < components.size(); i++)
+//			{
+//				ComponentDTO component = components.get(i);
+//				//List<ComponentInputParamDTO> listComponentInputParams = componentInputParamService.findAllByComponentId(component.getComponentid());
+//				
+//				Set<InputParameterDTO> setInputParams = componentService.getInputParameters(component.getComponentid());
+//				Iterator<InputParameterDTO> iter = setInputParams.iterator();
+//				
+//				while(iter.hasNext())
+//				{
+//					InputParameterDTO inputParam = iter.next();
+//					
+//					//InputParameterDTO inputParam = inputParamService.findByID(setInputParams.get(j).getInputid());
+//					InputParamValDTO inputParamVal = new InputParamValDTO();
+//					inputParamVal.setInputparameter(inputParam);
+//					inputParamVal.setValue(inputParam.getDefaultvalue());
+//					inputParamVal.setScenario(scenario);
+//					inputParamVal = inputParamValService.save(inputParamVal);
+//				}
+//			}
 			
 			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 			model.put("inputParamVals", inputParamVals);
 
-			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
-			
-			// Get simulation start and end times
-			while(iter.hasNext())
-			{
-				InputParamValDTO inputParamVal = iter.next();
-				String inputName = inputParamVal.getInputparameter().getName();
-				
-				if (inputName.equals("simulation_start"))
-				{
-					model.put("simStart", inputParamVal.getValue());
-				}
-				else if (inputName.equals("simulation_end"))
-				{
-					model.put("simEnd", inputParamVal.getValue());
-				}
-			}
+//			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
+			InputParamValDTO simStart = inputParamValService.findByNameAndScenario("simulation_start", scenario.getScenid());
+			InputParamValDTO simEnd = inputParamValService.findByNameAndScenario("simulation_start", scenario.getScenid());
+			model.put("simStart", simStart.getValue());
+			model.put("simEnd", simEnd.getValue());
+//			// Get simulation start and end times
+//			while(iter.hasNext())
+//			{
+//				InputParamValDTO inputParamVal = iter.next();
+//				String inputName = inputParamVal.getInputparameter().getName();
+//				
+//				if (inputName.equals("simulation_start"))
+//				{
+//					model.put("simStart", inputParamVal.getValue());
+//				}
+//				else if (inputName.equals("simulation_end"))
+//				{
+//					model.put("simEnd", inputParamVal.getValue());
+//				}
+//			}
 
 			UserSession userSession = (UserSession) model.get("usersession");
 			userSession = new UserSession();
@@ -2679,10 +2691,11 @@ public class ProjectController {
 		model.put("project", project);
 		List<ExtParamValDTO> extParamVals = null;
 		
-		if (project.getDefaultextparamvalset() != null)
+		int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+		if (defaultExtParamValSetId != 0)
 		{
 			try {
-				extParamVals = extParamValSetService.getExtParamVals(project.getDefaultextparamvalset().getExtparamvalsetid());
+				extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -2725,8 +2738,9 @@ public class ProjectController {
 				e.printStackTrace();
 			}
 
-			project.setDefaultextparamvalset(selectedExtParamSet);
-			project = projectService.save(project);
+//			project.setDefaultextparamvalset(selectedExtParamSet);
+			project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()), 
+					selectedExtParamSet.getExtparamvalsetid());
 			
 			model.put("selectedextparamsetid", nSelectedExtParamSetId);
 			model.put("selectedExtParamSet",  selectedExtParamSet);
@@ -2895,12 +2909,13 @@ public class ProjectController {
 		updatedInputParam.setName(inputParam.getName());
 		updatedInputParam.setDefaultvalue(inputParam.getDefaultvalue());
 		UnitDTO unit = unitService.save(new UnitDTO());
-		inputParamService.save(updatedInputParam, updatedInputParam.getComponent().getComponentid(), unit.getUnitid());
+		int componentId = inputParamService.getComponentId(updatedInputParam.getInputid());
+		inputParamService.save(updatedInputParam, componentId, unit.getUnitid());
 				
-		model.put("selectedcompid", updatedInputParam.getComponent().getComponentid());
+		model.put("selectedcompid", componentId);
 		
 		try {
-			model.put("selectedComponent", inputParamService.findByID(updatedInputParam.getComponent().getComponentid()));
+			model.put("selectedComponent", componentService.findByID(componentId));
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -2910,7 +2925,7 @@ public class ProjectController {
 		model.put("extParams", extParams);
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
-		Set<InputParameterDTO> inputParams = componentService.getInputParameters(updatedInputParam.getComponent().getComponentid());
+		Set<InputParameterDTO> inputParams = componentService.getInputParameters(componentId);
 		model.put("inputParameters", inputParams);
 
 		return "projectparameters";
@@ -2973,7 +2988,7 @@ public class ProjectController {
 		updatedInputParamVal.setScenario(scenario);
 		inputParamValService.save(updatedInputParamVal);
 				
-		int componentID = updatedInputParamVal.getInputparameter().getComponent().getComponentid();
+		int componentID =  inputParamService.getComponentId(updatedInputParamVal.getInputparameter().getInputid());
 		model.put("selectedcompid", componentID);
 		
 		try {
@@ -3021,7 +3036,7 @@ public class ProjectController {
 		InputParameterDTO newInputParameter = new InputParameterDTO();
 		UnitDTO unit = unitService.save(new UnitDTO());
 		newInputParameter.setUnit(unit);
-		newInputParameter.setComponent(component);
+//		newInputParameter.setComponent(component);
 		model.put("inputParam", newInputParameter);
 		model.put("selectedcompid", nSelectedCompId);
 		
@@ -3125,11 +3140,11 @@ public class ProjectController {
 		}
 
 		List<ExtParamValDTO> extParamVals = null;
-		
-		if (project.getDefaultextparamvalset() != null)
+		int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+		if (defaultExtParamValSetId != 0)
 		{
 			try {
-				extParamVals = extParamValSetService.getExtParamVals(project.getDefaultextparamvalset().getExtparamvalsetid());
+				extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -3270,10 +3285,11 @@ public class ProjectController {
 
 		List<ExtParamValDTO> extParamVals = null;
 		
-		if (project.getDefaultextparamvalset() != null)
+		int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+		if (defaultExtParamValSetId != 0)
 		{
 			try {
-				extParamVals = extParamValSetService.getExtParamVals(project.getDefaultextparamvalset().getExtparamvalsetid());
+				extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -3357,8 +3373,10 @@ public class ProjectController {
 			e1.printStackTrace();
 		}*/
 		
-		project.setDefaultextparamvalset(extParamValSet);
-		project = projectService.save(project);
+//		project.setDefaultextparamvalset(extParamValSet);
+		
+		int simModelId = projectService.getSimulationmodelId(project.getPrjid());
+		project = projectService.save(project, simModelId, extParamValSet.getExtparamvalsetid());
 		model.put("project", project);
 		
 		model.put("extParamValSet", extParamValSet);
@@ -3386,7 +3404,7 @@ public class ProjectController {
 		String newName = extParamValSet.getName();
 		
 		try {
-			extParamValSet = extParamValSetService.findByID(project.getDefaultextparamvalset().getExtparamvalsetid());
+			extParamValSet = extParamValSetService.findByID(projectService.getDefaultExtParamSetId(project.getPrjid()));
 		} catch (EntityNotFoundException e2) {
 			e2.printStackTrace();
 		}
@@ -3725,11 +3743,9 @@ public class ProjectController {
 			{*/
 				UnitDTO unit = unitService.save(new UnitDTO());
 				
-				if (inputParam.getComponent() != null)
+				if (inputParamService.getComponentId(inputParam.getInputid()) != 0)
 				{
-					ComponentDTO component = componentService.findByName(inputParam.getComponent().getName()).get(0);
-
-					inputParamService.save(inputParam, component.getComponentid(), unit.getUnitid());
+					inputParamService.save(inputParam, inputParamService.getComponentId(inputParam.getInputid()), unit.getUnitid());
 				}
 				else
 				{

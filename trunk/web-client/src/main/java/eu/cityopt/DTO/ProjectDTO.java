@@ -10,12 +10,12 @@ import lombok.Setter;
 public class ProjectDTO extends BaseDTO{
 
 		@Getter @Setter private int prjid;
-		@Getter @Setter private ExtParamValSetDTO defaultextparamvalset;
+//		@Getter @Setter private ExtParamValSetDTO defaultextparamvalset;
 		@Getter @Setter private String name;
 		@Getter @Setter private String location;
 		@Getter @Setter private String projectCreator;
 		@Getter @Setter private String description;
-		@Getter @Setter private SimulationModelDTO simulationmodel;
+//		@Getter @Setter private SimulationModelDTO simulationmodel;
 		@Getter @Setter private String designtarget;
 		@Getter @Setter private Date timehorizon;
 		@Getter @Setter private Date createdon;

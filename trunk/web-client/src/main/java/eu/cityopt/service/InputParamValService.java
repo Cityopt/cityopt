@@ -15,6 +15,6 @@ public interface InputParamValService extends CityOptService<InputParamValDTO> {
 	
 	List<InputParamValDTO> findByComponentAndScenario(int componentID, int scenID);
 
-	List<InputParameterDTO> findByNameAndScenario(String name, int scenId);
+	InputParamValDTO findByNameAndScenario(String name, int scenId);
 	
 }

@@ -62,7 +62,7 @@ public class ConcurrencySampleController {
 			}
 			
 			try{
-			project = projectService.save(project);
+			project = projectService.save(project,0,0);
 			}catch(ObjectOptimisticLockingFailureException e){
 				model.put("errorMessage", "This project has been updated in the meantime, please reload.");
 			}

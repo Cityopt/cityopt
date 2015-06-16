@@ -35,6 +35,8 @@ public class AprosService {
 	public List<ComponentDTO> listNewComponents = new ArrayList<ComponentDTO>();
 	public List<InputParameterDTO> listNewInputParams = new ArrayList<InputParameterDTO>(); 
 	
+	@Autowired InputParameterService inputparameterService;
+	
 	public void readDiagramFile(String xmlFile, int maxLevel) {
         try 
         {
@@ -86,7 +88,13 @@ public class AprosService {
             	
             	if (parentComponent != null)
             	{
-            		inputParam.setComponent(parentComponent);
+            		try {
+						inputparameterService.update(inputParam, parentComponent.getComponentid(), inputParam.getUnit().getUnitid());
+					} catch (EntityNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            		//inputParam.setComponent(parentComponent);
             	}
             	
             	inputParam.setName(name);

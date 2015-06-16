@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apache.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,7 @@ import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ProjectScenariosDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioGeneratorToOpenOptimizationSetDTOMap;
+import eu.cityopt.DTO.SimulationModelDTO;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.ExtParamVal;
@@ -35,9 +39,11 @@ import eu.cityopt.model.OptimizationSet;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
+import eu.cityopt.model.SimulationModel;
 import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.repository.SimulationModelRepository;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ProjectService;
 
@@ -49,7 +55,9 @@ public class ProjectServiceImpl implements ProjectService{
 	
 	@Autowired private ProjectRepository projectRepository;
 	@Autowired private CustomQueryRepository cqRepository;	
+	@Autowired private SimulationModelRepository simulationModelRepository;	
 	@Autowired private ExtParamValSetRepository extParamValSetRepository;
+	@PersistenceContext EntityManager em;
 	
 	static Logger log = Logger.getLogger(ProjectServiceImpl.class);
 
@@ -87,8 +95,12 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 
 	@Transactional
-	public ProjectDTO save(ProjectDTO projectDTO) {
+	public ProjectDTO save(ProjectDTO projectDTO, int simulationModelId, int extParamValSetId) {
 		Project result = modelMapper.map(projectDTO, Project.class);
+		SimulationModel sm = simulationModelRepository.findOne(simulationModelId);
+		ExtParamValSet epvs = extParamValSetRepository.findOne(extParamValSetId);
+		result.setSimulationmodel(sm);
+		result.setDefaultextparamvalset(epvs);
 		result = projectRepository.save(result);
 		projectDTO = modelMapper.map(result, ProjectDTO.class);
 		return projectDTO;
@@ -121,12 +133,12 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 	
 	@Transactional
-	public ProjectDTO update(ProjectDTO toUpdate) throws EntityNotFoundException {
+	public ProjectDTO update(ProjectDTO toUpdate, int simulationModelId, int extParamValSetId) throws EntityNotFoundException {
 		
 		if(projectRepository.findOne(toUpdate.getPrjid()) == null) {
 			throw new EntityNotFoundException();
 		}
-		return save(toUpdate);
+		return save(toUpdate, simulationModelId, extParamValSetId);
 	}
 	
 	@Transactional(readOnly = true)
@@ -236,6 +248,32 @@ public class ProjectServiceImpl implements ProjectService{
 		Project item = projectRepository.findOne(prjid);
 		Set<Metric> metrics = item.getMetrics(); 
 		return modelMapper.map(metrics, new TypeToken<Set<MetricDTO>>() {}.getType());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public int getSimulationmodelId(int prjid) {
+		Project p = projectRepository.findOne(prjid);
+		
+		if(p == null)
+			return 0;
+		
+		return p.getSimulationmodel() != null 
+				? p.getSimulationmodel().getModelid() 
+				: null;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public int getDefaultExtParamSetId(int prjid){
+		Project p = projectRepository.findOne(prjid);
+		
+		if(p == null)
+			return 0;
+		
+		return p.getDefaultextparamvalset() != null 
+				? p.getDefaultextparamvalset().getExtparamvalsetid()
+				: 0;
 	}
 }
 

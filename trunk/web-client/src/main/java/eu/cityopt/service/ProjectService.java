@@ -18,12 +18,13 @@ import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ProjectScenariosDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.SimulationModelDTO;
 import eu.cityopt.repository.ProjectRepository;
 
 //@Service
 public interface ProjectService extends CityOptService<ProjectDTO> {
 
-	ProjectDTO save(ProjectDTO projectDTO);
+	ProjectDTO save(ProjectDTO projectDTO, int simulationModelId, int extParamValSetId);
 
 	List<ProjectScenariosDTO> findAllWithScenarios();
 
@@ -31,7 +32,11 @@ public interface ProjectService extends CityOptService<ProjectDTO> {
 
 	void delete(int id) throws EntityNotFoundException;
 
-	ProjectDTO update(ProjectDTO toUpdate) throws EntityNotFoundException;
+	ProjectDTO update(ProjectDTO toUpdate, int simulationModelId, int extParamValSetId) throws EntityNotFoundException;
+	
+	int getSimulationmodelId(int prjid);
+	
+	int getDefaultExtParamSetId(int prjid);
 
 	Set<ScenarioDTO> getScenarios(int prjid);
 
