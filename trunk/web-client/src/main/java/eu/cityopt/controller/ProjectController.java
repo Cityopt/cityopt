@@ -1098,7 +1098,7 @@ public class ProjectController {
 		if (selectedExtParamValSetId != null)
 		{
 			try {
-				extParamVals = extParamValSetService.getExtParamVals(project.getDefaultextparamvalset().getExtparamvalsetid());
+				extParamVals = extParamValSetService.getExtParamVals(projectService.getDefaultExtParamSetId(project.getPrjid()));
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
