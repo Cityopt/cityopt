@@ -471,13 +471,18 @@ public class ImportExportService {
         return saveOptimisationProblem(project, name, problem, algorithm, algorithmParameters);
     }
     
-    /*
     @Transactional(readOnly=true)
     public void exportOptimisationProblem(
-            int sgid, Path problemFile, Path timeSeriesFile) {
-        //TODO OptimisationProblem p = ???
+            int sgid, Path problemFile, Path timeSeriesFile)
+                    throws ScriptException, ParseException,
+                            ConfigurationException, IOException {
+        ScenarioGenerator sg = scenarioGeneratorRepository.findOne(sgid);
+        OptimisationProblem
+                p = scenarioGenerationService.loadOptimisationProblem(
+                        sg.getProject(), sg);
+        OptimisationProblemIO.writeProblemCsv(p, problemFile, timeSeriesFile);
+        //TODO algorithm and parameters?
     }
-    */
 
     /** 
      * Creates a new OptimizationSet row from text files.
