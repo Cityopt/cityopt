@@ -1,5 +1,6 @@
 package eu.cityopt.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -71,6 +72,19 @@ public class TimeSeriesValServiceImpl implements TimeSeriesValService {
 		return modelMapper.map(val, TimeSeriesValDTO.class) ;
 	}
 	
+	@Transactional(readOnly=true)
+	private List<TimeSeriesValDTO> findByTimeSeriesIdOrderedByTimeOld(int timeSeriesId) throws EntityNotFoundException {
+		
+		List<TimeSeriesVal> tsValues = timeSeriesValRepository.findTimeSeriesValOrderedByTime(timeSeriesId);
+		
+		if(tsValues == null){
+			throw new EntityNotFoundException("no TimeSeries found on "
+					+ "SimulationResult with id: "+ timeSeriesId);
+		}
+		
+		return modelMapper.map(tsValues, new TypeToken<List<TimeSeriesValDTO>>(){}.getType());
+	}
+	
 	@Override
 	@Transactional(readOnly=true)
 	public List<TimeSeriesValDTO> findByTimeSeriesIdOrderedByTime(int timeSeriesId) throws EntityNotFoundException {
@@ -81,8 +95,16 @@ public class TimeSeriesValServiceImpl implements TimeSeriesValService {
 			throw new EntityNotFoundException("no TimeSeries found on "
 					+ "SimulationResult with id: "+ timeSeriesId);
 		}
-		
-		return modelMapper.map(tsValues, new TypeToken<List<TimeSeriesValDTO>>(){}.getType());
+
+		return convertCollection(tsValues);
+	}
+	
+	private List<TimeSeriesValDTO> convertCollection(List<TimeSeriesVal> tsVals){
+		List<TimeSeriesValDTO> tsValsD = new ArrayList<TimeSeriesValDTO>(); 
+		for(int i = 0; i < tsVals.size(); i++){
+			tsValsD.add(modelMapper.map(tsVals.get(i), TimeSeriesValDTO.class));
+		}
+		return tsValsD;
 	}
 	
 }

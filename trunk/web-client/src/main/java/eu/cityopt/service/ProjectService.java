@@ -32,6 +32,13 @@ public interface ProjectService extends CityOptService<ProjectDTO> {
 
 	void delete(int id) throws EntityNotFoundException;
 
+	/**
+	 * @param toUpdate
+	 * @param simulationModelId
+	 * @param extParamValSetId
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
 	ProjectDTO update(ProjectDTO toUpdate, int simulationModelId, int extParamValSetId) throws EntityNotFoundException;
 	
 	int getSimulationmodelId(int prjid);

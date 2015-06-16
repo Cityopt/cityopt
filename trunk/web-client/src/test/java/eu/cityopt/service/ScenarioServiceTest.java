@@ -2,6 +2,7 @@ package eu.cityopt.service;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -23,10 +24,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
+import eu.cityopt.DTO.ComponentDTO;
+import eu.cityopt.DTO.InputParamValDTO;
+import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricValDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioMetricsDTO;
 import eu.cityopt.DTO.SimulationResultDTO;
+import eu.cityopt.model.ObjectiveFunction;
+import eu.cityopt.model.OptimizationSet;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -42,6 +48,15 @@ public class ScenarioServiceTest {
 	
 	@Autowired
 	ScenarioService scenarioService;
+	
+	@Autowired
+	InputParameterService inputParameterService;
+	
+	@Autowired
+	ComponentService componentService;
+	
+	@Autowired
+	InputParamValService inputParamValService;
 	
 	@PersistenceContext
 	EntityManager em;
@@ -104,4 +119,47 @@ public class ScenarioServiceTest {
 		ScenarioMetricsDTO metScenMet = mv.getScenariometrics();
 		assertEquals(1,metScenMet.getScenario().getScenid());
 	}
+	
+	@Test
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
+	public void saveWithDefaultInputs() throws EntityNotFoundException {
+		
+		long start = System.nanoTime();		
+		
+		
+		ScenarioDTO scenario = new ScenarioDTO();
+		scenario.setName("test with default inputs");
+		scenario.getScenid();
+		
+		scenario = scenarioService.save(scenario, 1);
+		em.flush();
+		em.clear();
+		
+		List<ComponentDTO> components = projectService.getComponents(1);
+		
+		// Create input param vals for all input params
+		for (int i = 0; i < components.size(); i++)
+		{
+			ComponentDTO component = components.get(i);
+			//List<ComponentInputParamDTO> listComponentInputParams = componentInputParamService.findAllByComponentId(component.getComponentid());
+			
+			Set<InputParameterDTO> setInputParams = componentService.getInputParameters(component.getComponentid());
+			Iterator<InputParameterDTO> iter = setInputParams.iterator();
+
+			while(iter.hasNext())
+			{
+				InputParameterDTO inputParam = iter.next();
+				
+				//InputParameterDTO inputParam = inputParamService.findByID(setInputParams.get(j).getInputid());
+				InputParamValDTO inputParamVal = new InputParamValDTO();
+				inputParamVal.setInputparameter(inputParam);
+				inputParamVal.setValue(inputParam.getDefaultvalue());
+				inputParamVal.setScenario(scenario);
+				inputParamVal = inputParamValService.save(inputParamVal);
+			}
+		}
+		
+		System.out.printf("time in millis: " + (System.nanoTime()- start)/1000000);
+	}
+	
 }
