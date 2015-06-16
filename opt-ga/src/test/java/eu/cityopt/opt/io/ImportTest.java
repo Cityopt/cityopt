@@ -33,6 +33,7 @@ import com.google.inject.grapher.graphviz.GraphvizModule;
 import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 
+import eu.cityopt.opt.ga.CityoptDistributorModule;
 import eu.cityopt.opt.ga.CityoptFileModule;
 import eu.cityopt.opt.ga.TimeSeriesLoader;
 import eu.cityopt.sim.eval.EvaluationSetup;
@@ -285,13 +286,16 @@ public class ImportTest {
     
     // dot -Tpdf -Grankdir=LR -O cfm-deps.dot
     @Test
-    public void graphCityoptFile() throws IOException {
+    public void graphCityoptModules() throws IOException {
         String dotname = res.properties.getProperty("dot_file");
         if (dotname == null || dotname.isEmpty()) {
             System.out.println("Dependency graph output skipped.");
             return;
         }
-        Injector cf_inj = Guice.createInjector(getCityoptFileModule());
+        CityoptDistributorModule distr = new CityoptDistributorModule();
+        CityoptOutputModule output = new CityoptOutputModule();
+        Injector cf_inj = Guice.createInjector(
+                getCityoptFileModule(), distr, output);
         Injector gv_inj = Guice.createInjector(new GraphvizModule());
         GraphvizGrapher g = gv_inj.getInstance(GraphvizGrapher.class);
         try (PrintWriter out = new PrintWriter(dotname)) {
