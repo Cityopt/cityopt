@@ -149,7 +149,7 @@ public class ProjectServiceDTOTest {
 		item.setName("new project name");
 		item.setDescription("new project description");
 		
-		projectService.update(item);
+		projectService.update(item, projectService.getSimulationmodelId(item.getPrjid()), projectService.getDefaultExtParamSetId(item.getPrjid()));
 		ProjectDTO item2 = projectService.findByID(1);
 		assertNotNull(item2);
 		assertEquals("new project name", item2.getName());
@@ -291,12 +291,13 @@ public class ProjectServiceDTOTest {
 		model.setSimulator("APROS");
 		model.setDescription("My second model");				
 		model = simulationModelService.save(model);
-		project_2.setSimulationmodel(model);
+//		project_2.setSimulationmodel(model);
 		
-		project_2 = projectService.save(project_2);
+		project_2 = projectService.save(project_2, model.getModelid(), 0);
 		
 		ProjectDTO fproject = projectService.findByID(project_2.getPrjid());
-		SimulationModelDTO modact = fproject.getSimulationmodel();
+		int modactID = projectService.getSimulationmodelId(project_2.getPrjid());
+		SimulationModelDTO modact = simulationModelService.findByID(modactID);
 		String mydesc = modact.getDescription();
 		
 		assertEquals("My second model", modact.getDescription());
@@ -308,7 +309,8 @@ public class ProjectServiceDTOTest {
 		ProjectDTO item = projectService.findByID(1);
 		Assert.notNull(item);
 		
-		SimulationModelDTO model = item.getSimulationmodel();
+		int modelId = projectService.getSimulationmodelId(item.getPrjid());
+		SimulationModelDTO model = simulationModelService.findByID(modelId);
 		Assert.notNull(model);
 		
 		byte[] tmpModelarr = model.getModelblob();	

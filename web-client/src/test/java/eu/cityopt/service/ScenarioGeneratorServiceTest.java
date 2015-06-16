@@ -58,7 +58,7 @@ public class ScenarioGeneratorServiceTest {
 		
 		List<AlgoParamDTO> apDTO = algorithmService.getAlgoParams(2);
 		
-		assertEquals(6, apDTO.size());
+		assertEquals(8, apDTO.size());
 		for(AlgoParamDTO apvd : apDTO){
 			System.out.println("AlgoParam: \n name:" 
 					+ apvd.getName() + "\n descr:"
@@ -72,7 +72,7 @@ public class ScenarioGeneratorServiceTest {
 		
 		List<AlgoParamDTO> apDTO = scenarioGeneratorService.getAlgoParams(1);
 
-		assertEquals(2, apDTO.size());
+		assertEquals(3, apDTO.size());
 		for(AlgoParamDTO apvd : apDTO){
 			System.out.println("AlgoParam: \n name:" 
 					+ apvd.getName() + "\n descr:"

@@ -10,21 +10,21 @@
 <component componentid="3" prjid="1" name="Gas_boiler"  version="1" />
 <!--<component componentid="4" prjid="1" name="Building" />-->
 <!--  -->
-<inputparameter inputid="1" componentid="1" unitid="1" name="collector_area"   version="1" />
-<inputparameter inputid="2" componentid="1" unitid="2" name="Heat_loss_coefficient"  version="1" /> <!-- at (tm-ta) =0 -->
-<inputparameter inputid="3" componentid="1" unitid="7" name="Temperature_dependence_of_the_heat_losses"  version="1" />
-<inputparameter inputid="4" componentid="1" unitid="17" name="zero_loss_coefficient_for_total_or_global_radiation_at_normal_incidence"  version="1" />
+<inputparameter inputid="1" componentid="1" unitid="1" defaultvalue="1" name="collector_area"   version="1" />
+<inputparameter inputid="2" componentid="1" unitid="2" defaultvalue="1" name="Heat_loss_coefficient"  version="1" /> <!-- at (tm-ta) =0 -->
+<inputparameter inputid="3" componentid="1" unitid="7" defaultvalue="1" name="Temperature_dependence_of_the_heat_losses"  version="1" />
+<inputparameter inputid="4" componentid="1" unitid="17" defaultvalue="1" name="zero_loss_coefficient_for_total_or_global_radiation_at_normal_incidence"  version="1" />
 
-<inputparameter inputid="5" componentid="2" unitid="3" name="Height_of_tank"   version="1" />
-<inputparameter inputid="6" componentid="2" unitid="1" name="Cross_sectional_free_area_of_tank"  version="1" />
-<inputparameter inputid="7" componentid="2" unitid="3" name="Elevation_of_tank_bottom_from_reference_level"  version="1" />
-<inputparameter inputid="8" componentid="2" unitid="4" name="Thickness_of_the_first_layer"  version="1" />
+<inputparameter inputid="5" componentid="2" unitid="3" defaultvalue="1" name="Height_of_tank"   version="1" />
+<inputparameter inputid="6" componentid="2" unitid="1" defaultvalue="1" name="Cross_sectional_free_area_of_tank"  version="1" />
+<inputparameter inputid="7" componentid="2" unitid="3" defaultvalue="1" name="Elevation_of_tank_bottom_from_reference_level"  version="1" />
+<inputparameter inputid="8" componentid="2" unitid="4" defaultvalue="1" name="Thickness_of_the_first_layer"  version="1" />
 
-<inputparameter inputid="9" componentid="3" unitid="5" name="Lower_heating_value"   version="1" />
-<inputparameter inputid="10" componentid="3" unitid="6" name="Maximal_Power"  version="1" />
-<inputparameter inputid="11" componentid="3" unitid="6" name="Nominal_Power"  version="1" />
-<inputparameter inputid="12" componentid="3" unitid="17" name="Standby_efficiency"  version="1" />
-<inputparameter inputid="13" componentid="3" unitid="17" name="Standby_power_share_of_nominal_power"  version="1" />
+<inputparameter inputid="9" componentid="3" unitid="5" defaultvalue="1" name="Lower_heating_value"   version="1" />
+<inputparameter inputid="10" componentid="3" unitid="6" defaultvalue="1" name="Maximal_Power"  version="1" />
+<inputparameter inputid="11" componentid="3" unitid="6" defaultvalue="1" name="Nominal_Power"  version="1" />
+<inputparameter inputid="12" componentid="3" unitid="17" defaultvalue="1" name="Standby_efficiency"  version="1" />
+<inputparameter inputid="13" componentid="3" unitid="17" defaultvalue="1" name="Standby_power_share_of_nominal_power"  version="1" />
 
 <!--<inputparameter inputid="14" componentid="4" unitid="6" name="Energy_demand_profile"   version="1" />-->
 

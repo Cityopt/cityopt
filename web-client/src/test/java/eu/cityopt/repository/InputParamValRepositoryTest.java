@@ -117,16 +117,14 @@ public class InputParamValRepositoryTest {
 	"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC2.xml"})
 	public void findByNameAndScenarioTest(){
 		
-		List<InputParamVal> result = ipvalRepository.findByNameAndScenario("collector_area", 1);
+		InputParamVal result = ipvalRepository.findByNameAndScenario("collector_area", 1);
 		
 		assertNotNull(result);
-		assertEquals(1,result.size());
-		assertEquals("100", result.iterator().next().getValue());
+		assertEquals("100", result.getValue());
 		
 		result = ipvalRepository.findByNameAndScenario("Lower_heating_value", 2);
 		assertNotNull(result);
-		assertEquals(1,result.size());
-		assertEquals("47.14", result.iterator().next().getValue());
+		assertEquals("47.14", result.getValue());
 	}
 
 }

@@ -45,12 +45,13 @@ public class InputParamServiceTest {
 	public void findById() throws EntityNotFoundException {
 		InputParameterDTO iparam = inputParamService.findByID(1);
 		UnitDTO u = iparam.getUnit();
-		ComponentDTO c = iparam.getComponent();
+		
 //		int uid = iparam.getUnitID();
 //		int cid = iparam.getComponentID();
 		
-		assertEquals(u.getName(), "myUnit");
-		assertEquals(c.getName(), "myComponent");
+		assertEquals("myUnit", u.getName());
+		assertEquals("InputParameter 1", iparam.getName());
+		assertEquals(1, inputParamService.getComponentId(iparam.getInputid()));
 //		assertTrue(uid == 1);
 //		assertTrue(cid == 1);
 		

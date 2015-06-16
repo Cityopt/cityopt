@@ -80,8 +80,8 @@ public class CopyServiceTest {
 //	@Rollback(false)
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
 	 "classpath:/testData/Sample Test case - SC1.xml"})
-	public void copyProject() throws EntityNotFoundException{
-
+	public void copyProject() throws EntityNotFoundException, SQLException{
+		customQueryRepository.updateSequences();
 		try {
 			copyService.copyProject(1, "copy of p1");
 		} catch (EntityNotFoundException e) {

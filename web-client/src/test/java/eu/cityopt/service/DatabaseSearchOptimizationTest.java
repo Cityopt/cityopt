@@ -51,7 +51,7 @@ import eu.cityopt.sim.service.SimulationService.MetricUpdateStatus;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class,
     DbUnitTestExecutionListener.class })
-@Ignore
+//@Ignore
 public class DatabaseSearchOptimizationTest {
 	
 	@Autowired
