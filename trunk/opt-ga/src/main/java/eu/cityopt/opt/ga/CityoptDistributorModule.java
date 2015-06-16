@@ -13,7 +13,7 @@ import com.google.inject.name.Names;
 
 @Icon(Icons.PUZZLE_BLUE)
 @Info("Configure job distribution")
-public class DistributorModule extends Opt4JModule {
+public class CityoptDistributorModule extends Opt4JModule {
     @Info("Distributed node configuration")
     @File(".json")
     private String nodeFile = "";
