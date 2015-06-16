@@ -2649,8 +2649,76 @@ public class ProjectController {
 	}
 	
 	@RequestMapping(value="runmultioptimizationset",method=RequestMethod.GET)
-	public String getRunMultiOptimizationSet(Model model){
+	public String getRunMultiOptimizationSet(Map<String, Object> model,
+		@RequestParam(value="optsetid", required=false) String optsetid,
+		@RequestParam(value="optsettype", required=false) String optsettype,
+		@RequestParam(value="action", required=false) String action) {
+
+		if (optsettype != null && action != null)
+		{
+			if (optsettype.equals("db"))
+			{
+				UserSession userSession = (UserSession) model.get("usersession");
+				
+				if (userSession == null)
+				{
+					userSession = new UserSession();
+				}
+				
+				int nOptSetID = Integer.parseInt(optsetid);
+				
+				if (action.equals("add"))
+				{				
+					userSession.addSelectedOptSetId(nOptSetID);
+				}
+				else if (action.equals("remove"))
+				{
+					userSession.removeSelectedOptSetId(nOptSetID);
+				}
+				
+				model.put("usersession", userSession);
+			}
+			else
+			{
+				UserSession userSession = (UserSession) model.get("usersession");
+				
+				if (userSession == null)
+				{
+					userSession = new UserSession();
+				}
+
+				int nScenGenId = Integer.parseInt(optsetid);
+				
+				if (action.equals("add"))
+				{				
+					userSession.addSelectedScenGenId(nScenGenId);
+				}
+				else if (action.equals("remove"))
+				{
+					userSession.removeSelectedScenGenId(nScenGenId);
+				}
+				
+				model.put("usersession", userSession);
+
+			}
+		}
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
 	
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		Set<OpenOptimizationSetDTO> optSets = null;
+
+		try {
+			optSets = projectService.getSearchAndGAOptimizationSets(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		model.put("openoptimizationsets", optSets);
+			
 		return "runmultioptimizationset";
 	}
 
