@@ -7,10 +7,46 @@ public class UserSession {
 	private HashSet<Integer> selectedChartExtVarIds = new HashSet<Integer>();
 	private HashSet<Integer> selectedChartMetricIds = new HashSet<Integer>();
 	private HashSet<Integer> scenarioIds = new HashSet<Integer>();
+	private HashSet<Integer> selectedOptSetIds = new HashSet<Integer>();
+	private HashSet<Integer> selectedScenGenIds = new HashSet<Integer>();
 	private int nDBResultScenario;
 	private int nGAResultScenario;
 	private int nComponentId;
 	private int nChartType;
+
+	public HashSet<Integer> getSelectedOptSetIds() {
+		return selectedOptSetIds;
+	}
+
+	public void addSelectedOptSetId(int nSelectedOptSet) {
+		selectedOptSetIds.add(nSelectedOptSet);
+	}
+
+	public void removeSelectedOptSetId(int nSelectedOptSet) {
+		selectedOptSetIds.remove(nSelectedOptSet);
+	}
+
+	public boolean hasOptSetId(int nId)
+	{
+		return selectedOptSetIds.contains(nId);
+	}
+	
+	public HashSet<Integer> getSelectedScenGenIds() {
+		return selectedScenGenIds;
+	}
+
+	public void addSelectedScenGenId(int nSelectedScenGenId) {
+		selectedScenGenIds.add(nSelectedScenGenId);
+	}
+
+	public void removeSelectedScenGenId(int nSelectedScenGenId) {
+		selectedScenGenIds.remove(nSelectedScenGenId);
+	}
+
+	public boolean hasScenGenId(int nId)
+	{
+		return selectedScenGenIds.contains(nId);
+	}
 
 	public void addScenarioId(int id)
 	{
