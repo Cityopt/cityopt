@@ -84,8 +84,10 @@ public class DatabaseSearchOptimizationServiceImpl implements DatabaseSearchOpti
 				ObjectiveStatus other = er.feasible.get(scenId);
 				Double value = other.objectiveValues[0];				
 				
-				if(previous == null)
+				if(previous == null){
 					previous = other;
+					prevScenId = scenId;
+				}
 				else {
 					Integer compareRes = previous.compareTo(other);
 					if(compareRes != null && compareRes != 0 && compareRes > 0) 
