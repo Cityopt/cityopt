@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,7 @@ import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
+import eu.cityopt.DTO.TimeSeriesValDTO;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.InputParameter;
@@ -26,6 +29,8 @@ import eu.cityopt.service.EntityNotFoundException;
 
 @Service("ComponentService")
 public class ComponentServiceImpl implements ComponentService {
+	private static final int PAGE_SIZE = 50;
+	
 	@Autowired
 	private ModelMapper modelMapper;
 	
@@ -101,6 +106,16 @@ public class ComponentServiceImpl implements ComponentService {
 		Component comp = componentRepository.findOne(componentId);
 		Set<OutputVariable> inputParamVals = comp.getOutputvariables();
 		return modelMapper.map(inputParamVals, new TypeToken<Set<OutputVariableDTO>>() {}.getType());
+	}
+
+	@Override
+	public Page<ComponentDTO> findByProject(int prjid,int pageIndex) {
+		PageRequest request =
+	            new PageRequest(pageIndex,PAGE_SIZE);		
+		
+		Page<Component> components = componentRepository.findByProject(prjid, request);		
+		
+		return modelMapper.map(components, new TypeToken<Page<ComponentDTO>>() {}.getType());		
 	}
 	
 }

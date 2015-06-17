@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -35,7 +36,10 @@ import eu.cityopt.DTO.UnitDTO;
 @DatabaseSetup("classpath:/testData/inputParameter_TestData.xml")
 public class InputParamServiceTest {
 	@Autowired
-	InputParameterService inputParamService;	
+	InputParameterService inputParamService;
+	
+	@Autowired
+	InputParamValService inputParamValService;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -70,7 +74,17 @@ public class InputParamServiceTest {
 		List<InputParameterDTO> iparam = inputParamService.findByName("parameter");
 		assertNotNull(iparam);
 		assertTrue(iparam.size() == 2);
-
+	}
+	
+	@Test
+	public void findInputParameterValues() throws EntityNotFoundException {
+		
+		Page<InputParamValDTO> inputParamVal = inputParamValService.findByComponentAndScenario(1, 1,0);
+		
+		assertNotNull(inputParamVal);		
+		assertEquals(2,inputParamVal.getNumberOfElements());
+		assertEquals(1,inputParamVal.getTotalPages());
+		
 	}
 
 }

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,8 @@ import eu.cityopt.service.InputParamValService;
 
 @Service("InputParamValService")
 public class InputParamValServiceImpl implements InputParamValService {
+	private static final int PAGE_SIZE = 50;
+	
 	@Autowired
 	private ModelMapper modelMapper;
 	
@@ -101,6 +105,19 @@ public class InputParamValServiceImpl implements InputParamValService {
 		List<InputParamVal> ipvList = inputParamValRepository.findByComponentAndScenario(componentID, scenID);
 		
 		return modelMapper.map(ipvList, new TypeToken<List<InputParamValDTO>>() {}.getType());
+	}
+
+	@Override
+	public Page<InputParamValDTO> findByComponentAndScenario(int componentID,
+			int scenID, int pageIndex) {
+		
+		PageRequest request =
+	            new PageRequest(pageIndex,PAGE_SIZE);
+		
+		Page<InputParamVal> ipvList = inputParamValRepository.findByComponentAndScenario(componentID, scenID,request);		
+		
+		return modelMapper.map(ipvList, new TypeToken<Page<InputParamValDTO>>() {}.getType());		
+		
 	}
 	
 }
