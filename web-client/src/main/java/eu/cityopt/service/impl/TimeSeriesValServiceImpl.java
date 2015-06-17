@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,20 +112,20 @@ public class TimeSeriesValServiceImpl implements TimeSeriesValService {
 	}
 
 	@Override
-	public List<TimeSeriesValDTO> findByTimeSeriesIdOrderedByTime(
+	public Page<TimeSeriesValDTO> findByTimeSeriesIdOrderedByTime(
 			int timeSeriesId, int pageIndex) throws EntityNotFoundException {
 		
 		PageRequest request =
 	            new PageRequest(pageIndex,PAGE_SIZE);
 		
-		List<TimeSeriesVal> tsValues = timeSeriesValRepository.findTimeSeriesValOrderedByTime(timeSeriesId,request);
+		Page<TimeSeriesVal> tsValues =  timeSeriesValRepository.findTimeSeriesValOrderedByTime(timeSeriesId,request);
 		
 		if(tsValues == null){
 			throw new EntityNotFoundException("no TimeSeries found on "
 					+ "SimulationResult with id: "+ timeSeriesId);
 		}
-
-		return convertCollection(tsValues);
+		
+		return modelMapper.map(tsValues, new TypeToken<Page<TimeSeriesValDTO>>() {}.getType());		
 		
 	}
 	
