@@ -1,5 +1,5 @@
 <%--@elvariable id="openoptimizationset" type="eu.cityopt.DTO.OpenOptimizationSetDTO"--%>
-<%--@elvariable id="usersession" type="eu.cityopt.web.UserSession"--%>
+<%--@elvariable id="userSession" type="eu.cityopt.web.UserSession"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -26,7 +26,7 @@
 						<table class="tablestyle" width="500" border="1">
 							<col style="width: 250px">
 							<col style="width: 150px">
-							<col style="width: 80px">
+							<col style="width: 150px">
 						
 							<tr height="20">
 							    <th>Name</th>
@@ -41,9 +41,9 @@
 										<c:when test="${openoptimizationset.isDatabaseSearch()}">
 											<td>Database search</td>
 											<c:choose>
-												<c:when test="${userSession.hasOptSetId(openoptimizationset.id)}">
-													<td>Added (
-													<a href="<c:url value='runmultioptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=db&action=remove'/>">
+												<c:when test="${usersession.hasOptSetId(openoptimizationset.id) == true}">
+													<td>Added 
+													(<a href="<c:url value='runmultioptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=db&action=remove'/>">
 														<button align="right"  type="button" value="Open">Remove</button>
 													</a>)
 													</td>
@@ -60,9 +60,9 @@
 										<c:otherwise>
 											<td>Genetic algorithm</td>
 											<c:choose>
-												<c:when test="${userSession.hasScenGenId(openoptimizationset.id)}">
-													<td>Added (
-													<a href="<c:url value='runmultioptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga&action=remove'/>">
+												<c:when test="${usersession.hasScenGenId(openoptimizationset.id)}">
+													<td>Added 
+													(<a href="<c:url value='runmultioptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga&action=remove'/>">
 														<button align="right"  type="button" value="Open">Remove</button>
 													</a>)
 													</td>
