@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.cityopt.model.Algorithm;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.ExtParam;
+import eu.cityopt.model.ExtParamValSet;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.Metric;
 import eu.cityopt.model.OptimizationSet;
@@ -33,11 +34,13 @@ import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.opt.io.CsvTimeSeriesData;
+import eu.cityopt.opt.io.ExportBuilder;
 import eu.cityopt.opt.io.OptimisationProblemIO;
 import eu.cityopt.opt.io.TimeSeriesData;
 import eu.cityopt.repository.AlgorithmRepository;
 import eu.cityopt.repository.ComponentRepository;
 import eu.cityopt.repository.ExtParamRepository;
+import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.InputParameterRepository;
 import eu.cityopt.repository.MetricRepository;
 import eu.cityopt.repository.OptimizationSetRepository;
@@ -48,6 +51,7 @@ import eu.cityopt.repository.SimulationModelRepository;
 import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.EvaluationSetup;
+import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
@@ -87,6 +91,7 @@ public class ImportExportService {
     @Inject private MetricRepository metricRepository;
     @Inject private TypeRepository typeRepository;
     @Inject private OptimizationSetRepository optimizationSetRepository;
+    @Inject private ExtParamValSetRepository extParamValSetRepository;
 
     /**
      * Creates a SimulationModel row in the database.
@@ -537,6 +542,21 @@ public class ImportExportService {
                 prob, problemFile, timeSeriesFile);
     }
 
+    @Transactional(readOnly=true)
+    public void exportExtParamValSets(
+            Path problemFile, Path timeSeriesFile, int projectId,
+            int... setIds) throws ParseException, IOException {
+        Namespace ns = simulationService.makeProjectNamespace(projectId); 
+        ExportBuilder bld = new ExportBuilder(ns);
+        for (int setId : setIds) {
+            ExtParamValSet set = extParamValSetRepository.findOne(setId);
+            ExternalParameters ext = simulationService
+                    .loadExternalParametersFromSet(set, ns);
+            bld.add(ext, set.getName());
+        }
+        OptimisationProblemIO.write(bld, problemFile, timeSeriesFile);
+    }
+    
 
     public int saveOptimisationProblem(
             Project project, String name, OptimisationProblem problem, 
