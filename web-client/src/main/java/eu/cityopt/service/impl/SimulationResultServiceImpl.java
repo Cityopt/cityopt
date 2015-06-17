@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -108,7 +109,7 @@ public class SimulationResultServiceImpl implements SimulationResultService {
 	}
 	
 	@Override
-	public List<SimulationResultDTO> findAll(int pageIndex) {
+	public Page<SimulationResultDTO> findAll(int pageIndex) {
 		/*
 		PageRequest request =
 	            new PageRequest(pageIndex,PAGE_SIZE,new Sort(Sort.Direction.ASC,"simresid"));
@@ -116,7 +117,7 @@ public class SimulationResultServiceImpl implements SimulationResultService {
 		PageRequest request =
 	            new PageRequest(pageIndex,PAGE_SIZE);
 		return modelMapper.map(simulationResultRepository.findAll(request),
-				new TypeToken<List<SimulationResultDTO>>() {}.getType());		
+				new TypeToken<Page<SimulationResultDTO>>() {}.getType());		
 	}
 	
 }

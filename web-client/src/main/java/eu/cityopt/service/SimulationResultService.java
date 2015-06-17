@@ -2,6 +2,8 @@ package eu.cityopt.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import eu.cityopt.DTO.SimulationResultDTO;
 import eu.cityopt.DTO.TimeSeriesValDTO;
 import eu.cityopt.model.SimulationResult;
@@ -11,5 +13,5 @@ public interface SimulationResultService extends CityOptService<SimulationResult
 	
 	SimulationResultDTO findByOutVarIdScenId(int outVarId, int scenarioID) throws EntityNotFoundException;
 	
-	List<SimulationResultDTO> findAll(int pageSize);
+	Page<SimulationResultDTO> findAll(int pageSize);
 }
