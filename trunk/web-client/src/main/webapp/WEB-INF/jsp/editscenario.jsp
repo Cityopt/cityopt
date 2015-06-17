@@ -43,6 +43,7 @@
 								<td><form:textarea type="text" rows="3" path="description" style="width:200px"/></td>
 								<td valign="top"><a href="runscenario.html"><button type="button" style="width:150px">Run scenario</button></a></td>
 							</tr>
+							<tr height="15"></tr>
 							<tr>						
 								<td>Input parameters:</td>
 								<td><a href="scenarioparameters.html"><button type="button" style="width:100px">Set</button></a></td>
@@ -51,6 +52,11 @@
 								<td>External parameters:</td>
 								<td><a href="scenariovariables.html"><button type="button" style="width:100px">Set</button></a></td>
 							</tr>
+							<tr>						
+								<td>Multi-scenarios:</td>
+								<td><a href="setmultiscenario.html"><button type="button" style="width:100px">Set</button></a></td>
+							</tr>
+							<tr height="15"></tr>
 							<tr>
 								<td>Scenario simulation status:</td>
 								<td>${scenario.status}</td>
