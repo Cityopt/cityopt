@@ -802,7 +802,66 @@ public class ProjectController {
 		return "editscenario";
 	}
 	
+	@RequestMapping(value="setmultiscenario", method=RequestMethod.GET)
+	public String getSetMultiScenario (Map<String, Object> model) {
+		if (!model.containsKey("project"))
+		{
+			return "error";
+		}
 
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		/*try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		
+		if (scenario != null && scenario.getScenid() > 0)
+		{
+			try {
+				scenario = scenarioService.findByID(scenario.getScenid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
+			
+			while(iter.hasNext())
+			{
+				InputParamValDTO inputParamVal = iter.next();
+				String inputName = inputParamVal.getInputparameter().getName();
+				
+				if (inputName.equals("simulation_start"))
+				{
+					model.put("simStart", inputParamVal.getValue());
+				}
+				else if (inputName.equals("simulation_end"))
+				{
+					model.put("simEnd", inputParamVal.getValue());
+				}
+			}
+			
+			model.put("scenario", scenario);
+			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+			model.put("components", components);
+			model.put("inputParamVals", inputParamVals);
+		
+			return "editscenario";
+		}
+		else
+		{
+			scenario = new ScenarioDTO();
+			model.put("scenario", scenario);
+			return "createscenario";
+		}*/
+		
+		return "setmultiscenario";
+	}
+	
 	@RequestMapping(value = "setsimulationdate", method = RequestMethod.POST)
 	public String setSimulationDatePost(Map<String, Object> model, 
 		@RequestParam(value="simstart", required=true) String simStart,
@@ -1964,7 +2023,11 @@ public class ProjectController {
 		model.put("usersession", userSession);
 
 		ScenarioDTO resultScenario = (ScenarioDTO) optResults.getResultScenario();
-		userSession.setDBResultScenarioId(resultScenario.getScenid());
+
+		if (resultScenario != null)
+		{
+			userSession.setDBResultScenarioId(resultScenario.getScenid());
+		}
 		
 		return "editoptimizationset";
 	}
