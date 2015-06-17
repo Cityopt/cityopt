@@ -116,6 +116,7 @@ import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.service.ImportExportService;
+import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
 import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.BarChartVisualization;
@@ -2020,15 +2021,20 @@ public class ProjectController {
 			userSession = new UserSession();
 		}
 
-		model.put("usersession", userSession);
-
+		
 		ScenarioDTO resultScenario = (ScenarioDTO) optResults.getResultScenario();
 
 		if (resultScenario != null)
 		{
 			userSession.setDBResultScenarioId(resultScenario.getScenid());
+			model.put("resultScenario", resultScenario);
 		}
 		
+		EvaluationResults evResults = optResults.getEvaluationResult();
+		userSession.setOptResultString(evResults.toString());
+		
+		model.put("usersession", userSession);
+
 		return "editoptimizationset";
 	}
 	
