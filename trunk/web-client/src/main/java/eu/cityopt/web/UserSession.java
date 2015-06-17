@@ -10,6 +10,7 @@ public class UserSession {
 	private HashSet<Integer> selectedOptSetIds = new HashSet<Integer>();
 	private HashSet<Integer> selectedScenGenIds = new HashSet<Integer>();
 	private int nDBResultScenario;
+	private String strOptResultString;
 	private int nGAResultScenario;
 	private int nComponentId;
 	private int nChartType;
@@ -190,5 +191,13 @@ public class UserSession {
 	
 	public void setChartType(int type) {
 		nChartType = type;
+	}
+	
+	public String getOptResultString() {
+		return strOptResultString;
+	}
+	
+	public void setOptResultString(String str) {
+		strOptResultString = str;
 	}
 }

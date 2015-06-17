@@ -161,6 +161,10 @@
 								<td align="right"><a href="showresults.html?scenarioid=${resultScenario.scenid}"><button type="button">Show results</button></a></td>
 							</tr>
 							<tr>
+								<td>Optimization info</td>
+								<td colspan="2">${usersession.getOptResultString()}</td>
+							</tr>
+							<tr>
 								<td>Objective function value</td>
 								<td><input type="text" style="width:190px"></td>
 								<td></td>

@@ -30,7 +30,7 @@
 							<col style="width:100px">
 							<col style="width:200px">
 							<col style="width:100px">
-							<col style="width:200px">
+							<col style="width:300px">
 							<tr>
 								<td>Scenario name:</td>
 								<td>${scenario.name}</td>
@@ -98,7 +98,7 @@
 					
 										<c:forEach items="${inputParamVals}" var="inputParamVal">
 										<tr>
-											<td>${inputParamVal.name}</td>
+											<td>${inputParamVal.inputparameter.name}</td>
 											<td>${inputParamVal.value}</td>
 										</tr>
 										</c:forEach>

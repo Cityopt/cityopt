@@ -96,7 +96,12 @@
 				</tr>
 				<tr>
 					<td>Scenario name</td>
-					<td><input type="text" style="width:190px"></td>
+					<td>${resultScenario.name}</td>
+					<td align="right"><input type="submit" value="Show scenario"></td>
+				</tr>
+				<tr>
+					<td>Optimization info</td>
+					<td>${usersession.getOptResultString()}</td>
 					<td align="right"><input type="submit" value="Show scenario"></td>
 				</tr>
 				<tr>
