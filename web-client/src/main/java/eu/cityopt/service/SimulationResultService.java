@@ -10,4 +10,6 @@ public interface SimulationResultService extends CityOptService<SimulationResult
 	List<TimeSeriesValDTO> getTimeSeriesValsOrderedByTime(int scenResId) throws EntityNotFoundException;
 	
 	SimulationResultDTO findByOutVarIdScenId(int outVarId, int scenarioID) throws EntityNotFoundException;
+	
+	List<SimulationResultDTO> findAll(int pageSize);
 }
