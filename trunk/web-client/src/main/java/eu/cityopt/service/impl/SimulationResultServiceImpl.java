@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,7 @@ import eu.cityopt.service.SimulationResultService;
 @Service("SimulationResultService")
 @Transactional
 public class SimulationResultServiceImpl implements SimulationResultService {
+	private static final int PAGE_SIZE = 50;
 	
 	@Autowired
 	private SimulationResultRepository simulationResultRepository;
@@ -102,6 +105,18 @@ public class SimulationResultServiceImpl implements SimulationResultService {
 		}
 		
 		return modelMapper.map(simRes, SimulationResultDTO.class);
+	}
+	
+	@Override
+	public List<SimulationResultDTO> findAll(int pageIndex) {
+		/*
+		PageRequest request =
+	            new PageRequest(pageIndex,PAGE_SIZE,new Sort(Sort.Direction.ASC,"simresid"));
+	            */
+		PageRequest request =
+	            new PageRequest(pageIndex,PAGE_SIZE);
+		return modelMapper.map(simulationResultRepository.findAll(request),
+				new TypeToken<List<SimulationResultDTO>>() {}.getType());		
 	}
 	
 }
