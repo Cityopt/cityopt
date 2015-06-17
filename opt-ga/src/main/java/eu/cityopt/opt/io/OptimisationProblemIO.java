@@ -116,4 +116,23 @@ public class OptimisationProblemIO {
             writeProblemCsv(problem, pr, ts);
         }
     }
+    
+    public static void write(
+            ExportBuilder builder, OutputStream problemOut, OutputStream tsOut)
+                    throws IOException {
+        ObjectWriter wtr = writer.without(
+                JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        CsvTimeSeriesWriter ts_wtr = new CsvTimeSeriesWriter(tsWriter);
+        wtr.writeValue(problemOut, builder.getBinder());
+        ts_wtr.write(tsOut, builder.getTimeSeriesData());
+    }
+    
+    public static void write(
+            ExportBuilder builder, Path problemFile, Path tsFile)
+                    throws IOException {
+        try (OutputStream pr = Files.newOutputStream(problemFile);
+             OutputStream ts = Files.newOutputStream(tsFile)) {
+            write(builder, pr, ts);
+        }
+    }
 }
