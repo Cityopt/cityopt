@@ -2,6 +2,8 @@ package eu.cityopt.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,6 +31,15 @@ public interface InputParamValRepository extends JpaRepository<InputParamVal,Int
 			+ " and s.scenid = :scenid ")
 	List<InputParamVal> findByComponentAndScenario(@Param("componentid") int componentid, 
 			@Param("scenid") int scenid);
+	
+	@Query("select ipv from InputParamVal ipv "
+			+ " join ipv.inputparameter ip"
+			+ " join ip.component c"
+			+ " join ipv.scenario s"
+			+ " where c.componentid = :componentid"
+			+ " and s.scenid = :scenid ")
+	Page<InputParamVal> findByComponentAndScenario(@Param("componentid") int componentid, 
+			@Param("scenid") int scenid,Pageable pageable);
 	
 	@Query("select i from InputParamVal i where "
 			+ " Lower(i.inputparameter.name) like Lower(:name)"

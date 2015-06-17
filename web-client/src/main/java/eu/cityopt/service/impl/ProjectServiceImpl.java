@@ -11,6 +11,8 @@ import javax.persistence.PersistenceContext;
 import org.apache.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,7 @@ import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.model.SimulationModel;
+import eu.cityopt.repository.ComponentRepository;
 import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.ProjectRepository;
@@ -49,17 +52,20 @@ import eu.cityopt.service.ProjectService;
 
 @Service
 public class ProjectServiceImpl implements ProjectService{
+	private static final int PAGE_SIZE = 50;
+	
+	static Logger log = Logger.getLogger(ProjectServiceImpl.class);
 	
 	//constructor injected
 	private ModelMapper modelMapper;
-	
-	@Autowired private ProjectRepository projectRepository;
+	@Autowired private ProjectRepository projectRepository;	
 	@Autowired private CustomQueryRepository cqRepository;	
-	@Autowired private SimulationModelRepository simulationModelRepository;	
+	@Autowired private SimulationModelRepository simulationModelRepository;
 	@Autowired private ExtParamValSetRepository extParamValSetRepository;
-	@PersistenceContext EntityManager em;
 	
-	static Logger log = Logger.getLogger(ProjectServiceImpl.class);
+	@Autowired private ComponentRepository componentRepository;
+	
+	@PersistenceContext EntityManager em;
 
 	@Autowired
 	public ProjectServiceImpl(ModelMapper modelMapper) {
@@ -70,47 +76,6 @@ public class ProjectServiceImpl implements ProjectService{
 		modelMapper.addMappings(new ScenarioGeneratorToOpenOptimizationSetDTOMap());
 	}
 
-	@Transactional(readOnly = true)
-	public List<ProjectDTO> findAll() {
-		List<Project> projects = projectRepository.findAll();
-		List<ProjectDTO> result 
-			= modelMapper.map(projects, new TypeToken<List<ProjectDTO>>() {}.getType());
-		return result;
-	}
-	
-	@Transactional(readOnly = true)
-	public List<ProjectScenariosDTO> findAllWithScenarios() {
-		List<Project> projects = projectRepository.findAllWithScenarios();
-		List<ProjectScenariosDTO> result 
-			= modelMapper.map(projects, new TypeToken<List<ProjectScenariosDTO>>() {}.getType());
-		return result;
-	}
-	
-	@Transactional(readOnly = true)
-	public List<ProjectDTO> findByNameContaining(String name) {
-		List<Project> projects = projectRepository.findByName(name);
-		List<ProjectDTO> result 
-			= modelMapper.map(projects, new TypeToken<List<ProjectDTO>>() {}.getType());
-		return result;
-	}
-
-	@Transactional
-	public ProjectDTO save(ProjectDTO projectDTO, int simulationModelId, int extParamValSetId) {
-		Project result = modelMapper.map(projectDTO, Project.class);
-		SimulationModel sm = simulationModelRepository.findOne(simulationModelId);
-		ExtParamValSet epvs = extParamValSetRepository.findOne(extParamValSetId);
-		result.setSimulationmodel(sm);
-		result.setDefaultextparamvalset(epvs);
-		result = projectRepository.save(result);
-		projectDTO = modelMapper.map(result, ProjectDTO.class);
-		return projectDTO;
-	}
-
-	@Transactional
-	public void deleteAll() {
-		projectRepository.deleteAll();
-	}
-	
 	@Transactional
 	public void delete(int id) throws EntityNotFoundException {
 		Project project = projectRepository.findOne(id);
@@ -123,6 +88,11 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 	
 	@Transactional
+	public void deleteAll() {
+		projectRepository.deleteAll();
+	}
+	
+	@Transactional
 	public void deleteWR(int id) throws EntityNotFoundException {
 		
 		if(projectRepository.findOne(id) == null) {
@@ -131,14 +101,21 @@ public class ProjectServiceImpl implements ProjectService{
 		
 		projectRepository.delete(id);
 	}
-	
-	@Transactional
-	public ProjectDTO update(ProjectDTO toUpdate, int simulationModelId, int extParamValSetId) throws EntityNotFoundException {
-		
-		if(projectRepository.findOne(toUpdate.getPrjid()) == null) {
-			throw new EntityNotFoundException();
-		}
-		return save(toUpdate, simulationModelId, extParamValSetId);
+
+	@Transactional(readOnly = true)
+	public List<ProjectDTO> findAll() {
+		List<Project> projects = projectRepository.findAll();
+		List<ProjectDTO> result 
+			= modelMapper.map(projects, new TypeToken<List<ProjectDTO>>() {}.getType());
+		return result;
+	}
+
+	@Transactional(readOnly = true)
+	public List<ProjectScenariosDTO> findAllWithScenarios() {
+		List<Project> projects = projectRepository.findAllWithScenarios();
+		List<ProjectScenariosDTO> result 
+			= modelMapper.map(projects, new TypeToken<List<ProjectScenariosDTO>>() {}.getType());
+		return result;
 	}
 	
 	@Transactional(readOnly = true)
@@ -151,19 +128,11 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 	
 	@Transactional(readOnly = true)
-	public Set<ScenarioDTO> getScenarios(int prjid) {
-		Project item = projectRepository.findOne(prjid);
-		Set<Scenario> scenarios = item.getScenarios(); 
-		return modelMapper.map(scenarios, new TypeToken<Set<ScenarioDTO>>() {}.getType());
-	}
-	
-	@Transactional
-	public void setScenarios(int prjid, Set<ScenarioDTO> scenarios) {
-		Project item = projectRepository.findOne(prjid);
-		Set<Scenario> scen = modelMapper.map(scenarios, new TypeToken<Set<Scenario>>() {}.getType());
-		
-		item.setScenarios(scen);
-		projectRepository.saveAndFlush(item);
+	public List<ProjectDTO> findByNameContaining(String name) {
+		List<Project> projects = projectRepository.findByName(name);
+		List<ProjectDTO> result 
+			= modelMapper.map(projects, new TypeToken<List<ProjectDTO>>() {}.getType());
+		return result;
 	}
 	
 	@Transactional(readOnly = true)
@@ -171,6 +140,29 @@ public class ProjectServiceImpl implements ProjectService{
 		Project item = projectRepository.findOne(prjid);
 		List<Component> components = item.getComponents(); 
 		return modelMapper.map(components, new TypeToken<List<ComponentDTO>>() {}.getType());
+	}
+	
+	@Override
+	public Page<ComponentDTO> getComponents(int prjid, int pageIndex) {
+		
+		PageRequest request =
+	            new PageRequest(pageIndex,PAGE_SIZE);
+		
+		Page<Component> components = componentRepository.findByProject(prjid, request);				 
+		return modelMapper.map(components, new TypeToken<Page<ComponentDTO>>() {}.getType());
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public int getDefaultExtParamSetId(int prjid){
+		Project p = projectRepository.findOne(prjid);
+		
+		if(p == null)
+			return 0;
+		
+		return p.getDefaultextparamvalset() != null 
+				? p.getDefaultextparamvalset().getExtparamvalsetid()
+				: 0;
 	}
 	
 	@Transactional(readOnly = true)
@@ -191,7 +183,7 @@ public class ProjectServiceImpl implements ProjectService{
 		}
 		return modelMapper.map(extParamVals, new TypeToken<Set<ExtParamValDTO>>() {}.getType());
 	}
-
+	
 	@Override
 	@Transactional(readOnly = true)
 	public List<ExtParamValSetDTO> getExtParamValSets(int prjid) {
@@ -200,15 +192,29 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 	
 	@Transactional(readOnly = true)
+	public Set<MetricDTO> getMetrics(int prjid) {
+		Project item = projectRepository.findOne(prjid);
+		Set<Metric> metrics = item.getMetrics(); 
+		return modelMapper.map(metrics, new TypeToken<Set<MetricDTO>>() {}.getType());
+	}
+
+	@Transactional(readOnly = true)
 	@Override
-	public Set<OptimizationSetDTO> getSearchOptimizationSets(int prjid) throws EntityNotFoundException {
+	public Set<ObjectiveFunctionDTO> getObjectiveFunctions(int prjid) throws EntityNotFoundException {
 		Project p = projectRepository.findOne(prjid);
 		
 		if(p == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		return modelMapper.map(p.getOptimizationsets(), new TypeToken<Set<OptimizationSetDTO>>() {}.getType());
+		return modelMapper.map(p.getObjectivefunctions(), new TypeToken<Set<ObjectiveFunctionDTO>>() {}.getType());
+	}
+	
+	@Transactional(readOnly = true)
+	public Set<ScenarioDTO> getScenarios(int prjid) {
+		Project item = projectRepository.findOne(prjid);
+		Set<Scenario> scenarios = item.getScenarios(); 
+		return modelMapper.map(scenarios, new TypeToken<Set<ScenarioDTO>>() {}.getType());
 	}
 	
 	@Transactional(readOnly = true)
@@ -233,23 +239,16 @@ public class ProjectServiceImpl implements ProjectService{
 	
 	@Transactional(readOnly = true)
 	@Override
-	public Set<ObjectiveFunctionDTO> getObjectiveFunctions(int prjid) throws EntityNotFoundException {
+	public Set<OptimizationSetDTO> getSearchOptimizationSets(int prjid) throws EntityNotFoundException {
 		Project p = projectRepository.findOne(prjid);
 		
 		if(p == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		return modelMapper.map(p.getObjectivefunctions(), new TypeToken<Set<ObjectiveFunctionDTO>>() {}.getType());
+		return modelMapper.map(p.getOptimizationsets(), new TypeToken<Set<OptimizationSetDTO>>() {}.getType());
 	}
 	
-	@Transactional(readOnly = true)
-	public Set<MetricDTO> getMetrics(int prjid) {
-		Project item = projectRepository.findOne(prjid);
-		Set<Metric> metrics = item.getMetrics(); 
-		return modelMapper.map(metrics, new TypeToken<Set<MetricDTO>>() {}.getType());
-	}
-
 	@Override
 	@Transactional(readOnly = true)
 	public int getSimulationmodelId(int prjid) {
@@ -263,17 +262,34 @@ public class ProjectServiceImpl implements ProjectService{
 				: null;
 	}
 
-	@Override
-	@Transactional(readOnly = true)
-	public int getDefaultExtParamSetId(int prjid){
-		Project p = projectRepository.findOne(prjid);
+	@Transactional
+	public ProjectDTO save(ProjectDTO projectDTO, int simulationModelId, int extParamValSetId) {
+		Project result = modelMapper.map(projectDTO, Project.class);
+		SimulationModel sm = simulationModelRepository.findOne(simulationModelId);
+		ExtParamValSet epvs = extParamValSetRepository.findOne(extParamValSetId);
+		result.setSimulationmodel(sm);
+		result.setDefaultextparamvalset(epvs);
+		result = projectRepository.save(result);
+		projectDTO = modelMapper.map(result, ProjectDTO.class);
+		return projectDTO;
+	}
+
+	@Transactional
+	public void setScenarios(int prjid, Set<ScenarioDTO> scenarios) {
+		Project item = projectRepository.findOne(prjid);
+		Set<Scenario> scen = modelMapper.map(scenarios, new TypeToken<Set<Scenario>>() {}.getType());
 		
-		if(p == null)
-			return 0;
+		item.setScenarios(scen);
+		projectRepository.saveAndFlush(item);
+	}
+
+	@Transactional
+	public ProjectDTO update(ProjectDTO toUpdate, int simulationModelId, int extParamValSetId) throws EntityNotFoundException {
 		
-		return p.getDefaultextparamvalset() != null 
-				? p.getDefaultextparamvalset().getExtparamvalsetid()
-				: 0;
+		if(projectRepository.findOne(toUpdate.getPrjid()) == null) {
+			throw new EntityNotFoundException();
+		}
+		return save(toUpdate, simulationModelId, extParamValSetId);
 	}
 }
 

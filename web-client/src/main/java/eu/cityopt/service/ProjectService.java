@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import eu.cityopt.DTO.ComponentDTO;
@@ -50,6 +51,8 @@ public interface ProjectService extends CityOptService<ProjectDTO> {
 	void setScenarios(int prjid, Set<ScenarioDTO> scenarios);
 
 	List<ComponentDTO> getComponents(int prjid);
+	
+	Page<ComponentDTO> getComponents(int prjid,int pageIndex);
 	
 	Set<ExtParamDTO> getExtParams(int prjid);
 	
