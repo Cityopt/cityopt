@@ -32,6 +32,7 @@ import eu.cityopt.model.Metric;
 import eu.cityopt.model.OptimizationSet;
 import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
+import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.opt.io.CsvTimeSeriesData;
 import eu.cityopt.opt.io.ExportBuilder;
@@ -47,6 +48,7 @@ import eu.cityopt.repository.OptimizationSetRepository;
 import eu.cityopt.repository.OutputVariableRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
+import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.SimulationModelRepository;
 import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.sim.eval.ConfigurationException;
@@ -56,6 +58,8 @@ import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationModel;
+import eu.cityopt.sim.eval.SimulationOutput;
+import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.AlgorithmParameters;
@@ -92,6 +96,7 @@ public class ImportExportService {
     @Inject private TypeRepository typeRepository;
     @Inject private OptimizationSetRepository optimizationSetRepository;
     @Inject private ExtParamValSetRepository extParamValSetRepository;
+    @Inject private ScenarioRepository scenarioRepository;
 
     /**
      * Creates a SimulationModel row in the database.
@@ -542,9 +547,13 @@ public class ImportExportService {
                 prob, problemFile, timeSeriesFile);
     }
 
+    /**
+     * Export external parameter sets.
+     * All exported sets must be related to the same project.
+     */
     @Transactional(readOnly=true)
     public void exportExtParamValSets(
-            Path problemFile, Path timeSeriesFile, int projectId,
+            Path scenarioFile, Path timeSeriesFile, int projectId,
             int... setIds) throws ParseException, IOException {
         Namespace ns = simulationService.makeProjectNamespace(projectId); 
         ExportBuilder bld = new ExportBuilder(ns);
@@ -554,7 +563,38 @@ public class ImportExportService {
                     .loadExternalParametersFromSet(set, ns);
             bld.add(ext, set.getName());
         }
-        OptimisationProblemIO.write(bld, problemFile, timeSeriesFile);
+        OptimisationProblemIO.writeMulti(bld, scenarioFile);
+        OptimisationProblemIO.writeTimeSeries(bld, timeSeriesFile);
+    }
+    
+    /**
+     * Export scenario inputs and simulation results.
+     * All exported scenarios must be related to the same project.
+     * If no results are available for a scenario, only inputs are exported.
+     * timeSeriesFile can be left null if no time series are expected. 
+     */
+    @Transactional(readOnly=true)
+    public void exportSimulationResults(
+            Path scenarioFile, Path timeSeriesFile, int projectId,
+            int... scenIds) throws ParseException, IOException {
+        ExternalParameters ext = simulationService.loadExternalParameters(
+                projectId, null);
+        ExportBuilder bld = new ExportBuilder(ext.getEvaluationSetup());
+        for (int scenId : scenIds) {
+            Scenario scen = scenarioRepository.findOne(scenId);
+            SimulationInput in = simulationService.loadSimulationInput(
+                    scen, ext);
+            bld.add(in, scen.getName());
+            SimulationOutput out = simulationService.loadSimulationOutput(
+                    scen, in);
+            if (out instanceof SimulationResults) {
+                bld.add((SimulationResults)out, scen.getName());
+            }
+        }
+        OptimisationProblemIO.writeMulti(bld, scenarioFile);
+        if (timeSeriesFile != null) {
+            OptimisationProblemIO.writeTimeSeries(bld, timeSeriesFile);
+        }
     }
     
 

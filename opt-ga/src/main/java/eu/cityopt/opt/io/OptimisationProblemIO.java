@@ -33,8 +33,11 @@ public class OptimisationProblemIO {
     private static ObjectReader
             reader = JacksonCsvModule.getProblemReader(mapper);
     private static ObjectWriter
-            writer = JacksonCsvModule.getProblemWriter(mapper),
-            tsWriter = JacksonCsvModule.getTsWriter(tsMapper);
+            prwriter = JacksonCsvModule.getProblemWriter(mapper),
+            scwriter = JacksonCsvModule.getScenarioWriter(mapper);
+    private static CsvTimeSeriesWriter
+            tswriter = new CsvTimeSeriesWriter(
+                    JacksonCsvModule.getTsWriter(tsMapper));
     
     public static OptimisationProblem readProblemCsv(
             Path path, TimeSeriesData timeSeriesData)
@@ -83,13 +86,10 @@ public class OptimisationProblemIO {
     public static void writeProblemCsv(
             OptimisationProblem problem,
             OutputStream problemOut, OutputStream tsOut) throws IOException {
-        ObjectWriter problem_wtr = writer.without(
-                JsonGenerator.Feature.AUTO_CLOSE_TARGET);
-        CsvTimeSeriesWriter ts_wtr = new CsvTimeSeriesWriter(tsWriter);
         ExportBuilder bld = new ExportBuilder(problem.getNamespace());
         ExportDirectors.build(problem, bld, null);
-        problem_wtr.writeValue(problemOut, bld.getBinder());
-        ts_wtr.write(tsOut, bld.getTimeSeriesData());
+        writeSingle(bld, problemOut);
+        writeTimeSeries(bld, tsOut);
     }
     
     /**
@@ -98,7 +98,7 @@ public class OptimisationProblemIO {
      */
     public static void writeStructureCsv(
             SimulationStructure sim, OutputStream out) throws IOException {
-        ObjectWriter wtr = writer.without(
+        ObjectWriter wtr = prwriter.without(
                 JsonGenerator.Feature.AUTO_CLOSE_TARGET);
         ExportBuilder bld = new ExportBuilder(sim.getNamespace());
         ExportDirectors.buildStructure(sim, bld);
@@ -117,22 +117,62 @@ public class OptimisationProblemIO {
         }
     }
     
-    public static void write(
-            ExportBuilder builder, OutputStream problemOut, OutputStream tsOut)
-                    throws IOException {
-        ObjectWriter wtr = writer.without(
-                JsonGenerator.Feature.AUTO_CLOSE_TARGET);
-        CsvTimeSeriesWriter ts_wtr = new CsvTimeSeriesWriter(tsWriter);
-        wtr.writeValue(problemOut, builder.getBinder());
-        ts_wtr.write(tsOut, builder.getTimeSeriesData());
+    /**
+     * Write out multi-scenario data.
+     * Scenario and external parameter set names are included.  Does not
+     * close the stream.
+     */
+    public static void writeMulti(ExportBuilder builder, OutputStream out)
+            throws IOException {
+        scwriter.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
+                .writeValue(out, builder.getScenarioBinder());
     }
     
-    public static void write(
-            ExportBuilder builder, Path problemFile, Path tsFile)
-                    throws IOException {
-        try (OutputStream pr = Files.newOutputStream(problemFile);
-             OutputStream ts = Files.newOutputStream(tsFile)) {
-            write(builder, pr, ts);
+    /**
+     * Write out multi-scenario data.
+     * @see #writeMulti(ExportBuilder, OutputStream)
+     */
+    public static void writeMulti(ExportBuilder builder, Path outFile)
+            throws IOException {
+        scwriter.writeValue(outFile.toFile(), builder.getScenarioBinder());
+    }
+    
+    /**
+     * Write out single scenario data.
+     * Scenario and external parameter set names are not included, hence this
+     * should not be used on data containing multiple scenarios or external
+     * parameter sets.  Does not close the stream.
+     */
+    public static void writeSingle(ExportBuilder builder, OutputStream out)
+            throws IOException {
+        prwriter.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
+                .writeValue(out, builder.getBinder());
+    }
+
+    /**
+     * Write out single scenario data.
+     * @see #writeSingle(ExportBuilder, OutputStream)
+     */
+    public static void writeSingle(ExportBuilder builder, Path outFile)
+            throws IOException {
+        prwriter.writeValue(outFile.toFile(), builder.getBinder());
+    }
+    
+    /**
+     * Write out time series data.  Does not close the stream.
+     */
+    public static void writeTimeSeries(ExportBuilder builder, OutputStream out)
+            throws IOException {
+        tswriter.write(out, builder.getTimeSeriesData());
+    }
+    
+    /**
+     * Write out time series data.
+     */
+    public static void writeTimeSeries(ExportBuilder builder, Path outFile)
+            throws IOException {
+        try (OutputStream out = Files.newOutputStream(outFile)) {
+            tswriter.write(out, builder.getTimeSeriesData());
         }
     }
 }

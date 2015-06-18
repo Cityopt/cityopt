@@ -43,6 +43,8 @@ public class TimeSeriesData {
         return seriesData.get(seriesName);
     }
     
+    public boolean isEmpty() {return seriesData.isEmpty();}
+
     /** Store data for a time series. */
     public void put(String name, double[] times, double[] values) {
         Series s = new Series();
