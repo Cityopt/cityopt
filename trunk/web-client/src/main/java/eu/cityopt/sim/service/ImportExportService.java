@@ -611,7 +611,7 @@ public class ImportExportService {
     public void exportMetricValues(
             Path scenarioFile, Path timeSeriesFile, int projectId,
             Set<Integer> xpvSetIds, Set<Integer> scenIds)
-                    throws ParseException, ScriptException {
+                    throws ParseException, ScriptException, IOException {
         Project prj = projectRepository.findOne(projectId);
         Namespace ns = simulationService.makeProjectNamespace(prj);
         List<MetricExpression>
@@ -633,6 +633,8 @@ public class ImportExportService {
                 }
             }
         }
+        OptimisationProblemIO.writeMulti(bld, scenarioFile);
+        OptimisationProblemIO.writeTimeSeries(bld, timeSeriesFile);
     }
 
     public int saveOptimisationProblem(
