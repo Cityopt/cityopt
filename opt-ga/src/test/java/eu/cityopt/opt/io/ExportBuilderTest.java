@@ -80,7 +80,7 @@ public class ExportBuilderTest {
     public void testSimulationStructure() throws Exception {
         SimulationStructure s = inj.getInstance(SimulationStructure.class);
         ExportBuilder bld = new ExportBuilder(s.getNamespace());
-        ExportDirectors.build(s, bld);
+        ExportDirectors.buildStructure(s, bld);
         assertTrue(bld.getTimeSeriesData().seriesData.isEmpty());
         ObjectWriter wtr = inj.getInstance(
                 Key.get(ObjectWriter.class, Names.named("problem")));

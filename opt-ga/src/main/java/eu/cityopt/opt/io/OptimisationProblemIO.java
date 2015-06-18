@@ -101,7 +101,7 @@ public class OptimisationProblemIO {
         ObjectWriter wtr = writer.without(
                 JsonGenerator.Feature.AUTO_CLOSE_TARGET);
         ExportBuilder bld = new ExportBuilder(sim.getNamespace());
-        ExportDirectors.build(sim, bld);
+        ExportDirectors.buildStructure(sim, bld);
         wtr.writeValue(out, bld.getBinder());
     }
     
