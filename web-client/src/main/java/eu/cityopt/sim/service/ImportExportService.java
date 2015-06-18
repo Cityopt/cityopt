@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -55,6 +56,7 @@ import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.MetricExpression;
+import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationModel;
@@ -597,6 +599,41 @@ public class ImportExportService {
         }
     }
     
+    /**
+     * Write metric values.
+     * Neither external parameter nor input values are included in the output.
+     * Metric values for all available external parameter set and scenario
+     * combinations are output.  Absent results are silently omitted.  For
+     * now the metric values are computed, not fetched from the database,
+     * but that may change at some point.  
+     */
+    @Transactional(readOnly=true)
+    public void exportMetricValues(
+            Path scenarioFile, Path timeSeriesFile, int projectId,
+            Set<Integer> xpvSetIds, Set<Integer> scenIds)
+                    throws ParseException, ScriptException {
+        Project prj = projectRepository.findOne(projectId);
+        Namespace ns = simulationService.makeProjectNamespace(prj);
+        List<MetricExpression>
+                metrics = simulationService.loadMetricExpressions(prj, ns);
+        ExportBuilder bld = new ExportBuilder(ns);
+        for (Integer setId : xpvSetIds) {
+            ExtParamValSet xpvs = extParamValSetRepository.findOne(setId);
+            ExternalParameters ext = simulationService
+                    .loadExternalParametersFromSet(xpvs, ns);
+            for (int scenId : scenIds) {
+                Scenario scen = scenarioRepository.findOne(scenId);
+                SimulationInput
+                        in = simulationService.loadSimulationInput(scen, ext);
+                SimulationOutput out = simulationService.loadSimulationOutput(
+                        scen, in);
+                if (out instanceof SimulationResults) {
+                    bld.add(new MetricValues((SimulationResults)out, metrics),
+                            scen.getName(), xpvs.getName());
+                }
+            }
+        }
+    }
 
     public int saveOptimisationProblem(
             Project project, String name, OptimisationProblem problem, 
