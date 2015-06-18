@@ -98,7 +98,7 @@ extends AbstractCollection<MergedTimeSeries.Entry> {
     /**
      * Return an iterator that merges the input time series.
      * Iterating over all points is O(m log n) in time if there are
-     * n series and m points in total.. 
+     * n series and m points in total. 
      * @return
      */
     @Override
