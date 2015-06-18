@@ -42,7 +42,7 @@ public class ExportDirectors {
      * @param builder Builder to export with
      * @return the builder
      */
-    public static ExportBuilder build(
+    public static ExportBuilder buildStructure(
             SimulationStructure sim, ExportBuilder builder) {
         Namespace ns = sim.getNamespace();
         builder.addExtParams(ns);
