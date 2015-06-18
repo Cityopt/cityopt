@@ -2,18 +2,25 @@ package eu.cityopt.service.impl;
 
 import java.security.InvalidParameterException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.script.ScriptException;
-import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.ScenarioWithObjFuncValueDTO;
 import eu.cityopt.model.OptSetScenarios;
 import eu.cityopt.model.OptimizationSet;
 import eu.cityopt.model.Project;
@@ -54,7 +61,7 @@ public class DatabaseSearchOptimizationServiceImpl implements DatabaseSearchOpti
 	EntityManager em;
 	
 	@Transactional
-	public SearchOptimizationResults searchConstEval(int prjId, int optId) throws ParseException, ScriptException, EntityNotFoundException{   	
+	public SearchOptimizationResults searchConstEval(int prjId, int optId, int size) throws ParseException, ScriptException, EntityNotFoundException{   	
 		Project project = projectRepository.findOne(prjId);
 		
 		OptimizationSet optimizationSet = optimizationSetRepository.findOne(optId);
@@ -68,14 +75,17 @@ public class DatabaseSearchOptimizationServiceImpl implements DatabaseSearchOpti
 			throw new InvalidParameterException("optimization set is not part of the project" +optimizationSet);
 		
 		SearchOptimizationResults sor = new SearchOptimizationResults();
-		EvaluationResults er = optSupport.evaluateScenarios(project, optimizationSet);
+		EvaluationResults er = optSupport.evaluateScenarios(project, optimizationSet); 
 		sor.setEvaluationResult(er);
-
+		sor.resultScenarios = new ArrayList<ScenarioWithObjFuncValueDTO>();
+		
 		if(!er.feasible.isEmpty()){
-			ObjectiveStatus previous = null;
-			int prevScenId =0;
-			//Store OptSetScenarios
-			for(int scenId : er.feasible.keySet()){
+			
+			//sort evaluation results by value
+			Map<Integer, ObjectiveStatus> sortedMap = sortByValue(er.feasible);
+//			sortedMap.forEach((Integer i, ObjectiveStatus s) -> System.out.println(s.objectiveValues[0]));
+			
+			for(Integer scenId : sortedMap.keySet()){
 				OptSetScenarios oss = new OptSetScenarios();
 				oss.setOptimizationset(optimizationSet);
 				Scenario scen = em.getReference(Scenario.class, scenId);
@@ -84,33 +94,73 @@ public class DatabaseSearchOptimizationServiceImpl implements DatabaseSearchOpti
 				ObjectiveStatus other = er.feasible.get(scenId);
 				Double value = other.objectiveValues[0];				
 				
-				if(previous == null){
-					previous = other;
-					prevScenId = scenId;
-				}
-				else {
-					Integer compareRes = previous.compareTo(other);
-					if(compareRes != null && compareRes != 0 && compareRes > 0) 
-					{ 
-						//other dominates previous
-						previous = other;
-						prevScenId = scenId;
-					}
-				}
 				oss.setValue(String.format(Locale.ENGLISH, "%s", value));
 				optSetScenariosRepository.save(oss);
-			}
-			
-			//prevScenId is now the optimized scenario: save it
-			Scenario scen = scenarioRepository.findOne(prevScenId);
-			if(scen != null){
-				sor.setResultScenario(modelMapper.map(scen, ScenarioDTO.class));
-				optimizationSet.setScenario(scen);
-				optimizationSetRepository.save(optimizationSet);
-			}
+				
+				//add to result list, as long as desired size is not reached 
+				if(sor.resultScenarios.size() < size){	
+					ScenarioWithObjFuncValueDTO scenWV= modelMapper.map(scen, ScenarioWithObjFuncValueDTO.class);
+					scenWV.setValue(value);
+					sor.resultScenarios.add(scenWV);
+				}				
+			}			
 		}	
 		
 		return sor;
 	}
+		
+	@Transactional
+	@Override
+	public void saveSearchOptimizationResult(int optId, int scenId) 
+			throws EntityNotFoundException{
+		OptimizationSet optimizationSet = optimizationSetRepository.findOne(optId);
+		Scenario scen = null;
+		
+		if(optimizationSet == null)
+			throw new EntityNotFoundException("could not find optId: "+ optId);
+		
+		if(scenId > 0){
+			scen = scenarioRepository.findOne(scenId);
+			if(scen == null)
+				throw new EntityNotFoundException("could not find scenario with scenId: "+ scenId);
+		}
+		
+		optimizationSet.setScenario(scen);
+		optimizationSetRepository.save(optimizationSet);
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public ScenarioDTO getSearchOptimizationResult(int optId) 
+			throws EntityNotFoundException{
+		OptimizationSet optimizationSet = optimizationSetRepository.findOne(optId);
+		
+		if(optimizationSet == null)
+			throw new EntityNotFoundException("could not find optId: "+ optId);
+		
+		Scenario scen = optimizationSet.getScenario();
+		
+		return modelMapper.map(scen, ScenarioDTO.class);
+	}
 
+	/**
+	 * sorts objectiveStatus map by value, starting with the optimal scenario
+	 * @param map
+	 * @return
+	 */
+	private <K,T> Map<K, ObjectiveStatus> sortByValue( Map<K, ObjectiveStatus> map )
+	{
+	     Map<K,ObjectiveStatus> result = new LinkedHashMap<>();
+	     Stream <Entry<K,ObjectiveStatus>> st = map.entrySet().stream();
+	     
+	     st.sorted(new Comparator<Entry<K,ObjectiveStatus>>(){
+				@Override
+				public int compare(Entry<K, ObjectiveStatus> arg0,
+						Entry<K, ObjectiveStatus> arg1) {
+					return arg0.getValue().compareTo(arg1.getValue());
+				}
+			}).forEach(e ->result.put(e.getKey(),e.getValue()));
+	
+	     return result;
+	}
 }
