@@ -55,7 +55,7 @@
 <outputvariable outvarid="3" componentid="2" unitid="18" typeid="4" name="Liquid_Temperature" version="1" />
 <outputvariable outvarid="4" componentid="3" unitid="18" typeid="4" name="Heating_Power" version="1" />
 
-<!-- input parameter constraints -->
+<!-- input parameter constraints id: 1,5,6-->
 <optconstraint optconstid="1" prjid="1" expression="Solar_thermal_panels.collector_area" lowerbound="0.1" upperbound="250"  version="1" />
 <optconstraint optconstid="2" prjid="1" expression="Storage_Vertical_tank_with_heat_structure.Height_of_tank" lowerbound="1" upperbound="11"  version="1" />
 <optconstraint optconstid="3" prjid="1" expression="Storage_Vertical_tank_with_heat_structure.Cross_sectional_free_area_of_tank" lowerbound="0.3" upperbound="11"  version="1" />
