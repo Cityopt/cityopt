@@ -95,10 +95,18 @@
 									<b>Import project data</b>
 								</td>
 							</tr>
-							<tr>						
-								<td>Components</td>
-								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
-							</tr>
+							<form:form method="POST" action="importcomponents.html" enctype="multipart/form-data">
+	        					<tr>
+									<td>Components</td>
+									<td><input id="uploadFile" name="uploadFile" type="file"/></td>
+								</tr>
+								<tr>	
+	       							<td></td>
+	        						<td>
+	        							<input type="submit" value="Load component file">
+	       							</td>
+	   							</tr>	
+    						</form:form>
 							<tr>						
 								<td>Input parameters</td>
 								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
