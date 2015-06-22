@@ -157,16 +157,40 @@
 							</tr>
 							<tr>
 								<td>Scenario name</td>
-								<td>${resultScenario.name}</td>
+								<td>
+									<table class="tablestyle" width="100%">
+										<tr>
+											<td>
+												${usersession.getDBResultScenarioName()}
+											</td>
+										</tr>
+									</table>
+								</td>
 								<td align="right"><a href="showresults.html?scenarioid=${resultScenario.scenid}"><button type="button">Show results</button></a></td>
 							</tr>
 							<tr>
 								<td>Optimization info</td>
-								<td colspan="2">${usersession.getOptResultString()}</td>
+								<td colspan="2">
+									<table class="tablestyle" width="100%">
+										<tr>
+											<td>
+												${usersession.getOptResultString()}
+											</td>
+										</tr>
+									</table>
+								</td>
 							</tr>
 							<tr>
 								<td>Objective function value</td>
-								<td><input type="text" style="width:190px"></td>
+								<td>
+									<table class="tablestyle" width="100%">
+										<tr>
+											<td>
+												${usersession.getObjFunctionValue()}
+											</td>
+										</tr>
+									</table>
+								</td>
 								<td></td>
 							</tr>
 							<tr><td><br></td></tr>
@@ -196,7 +220,7 @@
 							<col style="width: 220px;">
 							<col style="width: 220px;">
 							<tr>
-								<td><input type="submit" value="Clone database optimization set"></td>
+								<td><a href="exportoptimizationresults.html"><button type="button">Export optimization results</button></a></td>
 								<td align="right"><input type="submit" value="Create database optimization" style="width: 200px"></td>
 							</tr>
 							<tr>

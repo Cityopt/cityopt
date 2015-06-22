@@ -10,6 +10,8 @@ public class UserSession {
 	private HashSet<Integer> selectedOptSetIds = new HashSet<Integer>();
 	private HashSet<Integer> selectedScenGenIds = new HashSet<Integer>();
 	private int nDBResultScenario;
+	private String strDBResultScenarioName;
+	private String strObjFuncValue;
 	private String strOptResultString;
 	private int nGAResultScenario;
 	private int nComponentId;
@@ -79,6 +81,26 @@ public class UserSession {
 		return nDBResultScenario;
 	}
 
+	public String getDBResultScenarioName()
+	{
+		return strDBResultScenarioName;
+	}
+
+	public void setDBResultScenarioName(String name)
+	{
+		strDBResultScenarioName = name;
+	}
+
+	public String getObjFunctionValue()
+	{
+		return strObjFuncValue;
+	}
+
+	public void setObjFunctionValue(String value)
+	{
+		strObjFuncValue = value;
+	}
+	
 	public void setGAResultScenarioId(int id)
 	{
 		nGAResultScenario = id;
