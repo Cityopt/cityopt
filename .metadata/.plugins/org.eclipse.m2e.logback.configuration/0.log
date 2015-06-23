@@ -1,7 +1,0 @@
-2015-06-23 09:19:45,596 [Start Help Server] INFO  org.eclipse.jetty.server.Server - jetty-8.1.16.v20140903
-2015-06-23 09:19:45,666 [Start Help Server] INFO  o.e.jetty.server.AbstractConnector - Started SelectChannelConnector@127.0.0.1:63437
-2015-06-23 09:19:50,477 [qtp1576821042-58] WARN  o.eclipse.jetty.http.HttpGenerator - Ignoring extra content 
-
-
-
-2015-06-23 09:23:03,949 [Stop Help Server] INFO  o.e.j.server.handler.ContextHandler - stopped o.e.j.s.ServletContextHandler{/help,null}
