@@ -73,7 +73,7 @@ import eu.cityopt.web.TimeSeriesVisualization;
 import eu.cityopt.web.UserSession;
 
 @Controller
-@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "usersession"})
+@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession"})
 public class VisualizationController {
 	
 	@Autowired

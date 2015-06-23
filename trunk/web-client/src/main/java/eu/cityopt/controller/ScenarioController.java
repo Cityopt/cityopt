@@ -1,86 +1,31 @@
 package eu.cityopt.controller;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Path;
 import java.text.ParseException;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.script.ScriptException;
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
-import org.jfree.chart.ChartUtilities;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.data.time.Hour;
-import org.jfree.data.time.Minute;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.xy.DefaultXYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.multipart.MultipartFile;
 
-import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
-import eu.cityopt.DTO.ComponentInputParamDTO;
-import eu.cityopt.DTO.DecisionVariableDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
-import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParamValDTO;
-import eu.cityopt.DTO.InputParameterDTO;
-import eu.cityopt.DTO.MetricDTO;
-import eu.cityopt.DTO.MetricValDTO;
-import eu.cityopt.DTO.ObjectiveFunctionDTO;
-import eu.cityopt.DTO.OpenOptimizationSetDTO;
-import eu.cityopt.DTO.OptConstraintDTO;
-import eu.cityopt.DTO.OptSearchConstDTO;
-import eu.cityopt.DTO.OptimizationSetDTO;
-import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
-import eu.cityopt.DTO.ScenGenObjectiveFunctionDTO;
-import eu.cityopt.DTO.ScenGenOptConstraintDTO;
 import eu.cityopt.DTO.ScenarioDTO;
-import eu.cityopt.DTO.ScenarioGeneratorDTO;
-import eu.cityopt.DTO.SimulationModelDTO;
-import eu.cityopt.DTO.SimulationResultDTO;
-import eu.cityopt.DTO.TimeSeriesDTO;
-import eu.cityopt.DTO.TimeSeriesValDTO;
-import eu.cityopt.DTO.TypeDTO;
-import eu.cityopt.DTO.UnitDTO;
-import eu.cityopt.model.OptSearchConst;
-import eu.cityopt.model.OptimizationSet;
-import eu.cityopt.model.Project;
-import eu.cityopt.model.TimeSeriesVal;
-import eu.cityopt.model.Type;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AppUserService;
-import eu.cityopt.service.AprosService;
 import eu.cityopt.service.ComponentInputParamDTOService;
 import eu.cityopt.service.ComponentService;
 import eu.cityopt.service.CopyService;
@@ -100,30 +45,16 @@ import eu.cityopt.service.OptSearchConstService;
 import eu.cityopt.service.OptimizationSetService;
 import eu.cityopt.service.OutputVariableService;
 import eu.cityopt.service.ProjectService;
-import eu.cityopt.service.ScenGenObjectiveFunctionService;
-import eu.cityopt.service.ScenGenObjectiveFunctionService;
-import eu.cityopt.service.ScenGenOptConstraintService;
 import eu.cityopt.service.ScenarioGeneratorService;
 import eu.cityopt.service.ScenarioService;
-import eu.cityopt.service.SearchOptimizationResults;
 import eu.cityopt.service.SimulationResultService;
 import eu.cityopt.service.TimeSeriesService;
 import eu.cityopt.service.TimeSeriesValService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.sim.eval.ConfigurationException;
-import eu.cityopt.sim.eval.ExternalParameters;
-import eu.cityopt.sim.eval.Namespace;
-import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.service.ImportExportService;
-import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
-import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
-import eu.cityopt.web.BarChartVisualization;
-import eu.cityopt.web.PieChartVisualization;
-import eu.cityopt.web.ScatterPlotVisualization;
-import eu.cityopt.web.TimeSeriesVisualization;
-import eu.cityopt.web.UnitForm;
 import eu.cityopt.web.UserSession;
 
 /**
@@ -131,7 +62,7 @@ import eu.cityopt.web.UserSession;
  *
  */
 @Controller
-@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "usersession"})
+@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession"})
 public class ScenarioController {
 	
 	@Autowired
