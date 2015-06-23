@@ -79,7 +79,7 @@
 											</c:if>
 											<c:if test="${selectedcompid != component.componentid}">
 												<tr>
-												<td><a href="<c:url value='showresults.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+												<td><a href="<c:url value='showresults.html?selectedcompid=${component.componentid}&scenarioid=${scenario.scenid}'/>">Select</a></td>
 											</c:if>
 												<td>${component.name}</td>
 									   	</tr>

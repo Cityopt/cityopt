@@ -1,6 +1,9 @@
 <%--@elvariable id="optimizationset" type="eu.cityopt.DTO.OptimizationSetDTO"--%>
 <%--@elvariable id="constraint" type="eu.cityopt.DTO.OptConstraintDTO"--%>
 <%--@elvariable id="resultScenario" type="eu.cityopt.DTO.ScenarioDTO"--%>
+<%--@elvariable id="scenarioWithValue" type="eu.cityopt.DTO.ScenarioWithObjFuncValueDTO"--%>
+<%--@elvariable id="usersession" type="eu.cityopt.web.UserSession"--%>
+<%--@elvariable id="optresults" type="eu.cityopt.service.SearchOptimizationResults"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -147,51 +150,44 @@
 					</td>
 					<td>
 						<table style="width: 440px">
-							<col style="width: 120px;">
-							<col style="width: 180px;">
-							<col style="width: 140px;">
+							<col style="width: 100%;">
 							<tr>
 								<td><b>Results</b></td>
-								<td></td>
-								<td></td>
 							</tr>
 							<tr>
-								<td>Scenario name</td>
 								<td>
-									<table class="tablestyle" width="100%">
+									<table class="tablestyle">
+										<col style="width: 290px;">
+										<col style="width: 100px;">
+										<col style="width: 50px;">
 										<tr>
-											<td>
-												${usersession.getDBResultScenarioName()}
-											</td>
+											<th>Scenario</th>
+											<th>Function value</th>
+											<th>Show</th>
 										</tr>
+								
+										<c:forEach items="${resultScenariosWithValue}" var="scenarioWithValue">
+											<tr>
+												<td>${scenarioWithValue.name}</td>
+												<td>${scenarioWithValue.value}</td>
+												<td><a href="showresults.html?scenarioid=${scenarioWithValue.scenid}"><button type="button">Show</button></a></td>
+										   	</tr>
+										</c:forEach>
 									</table>
 								</td>
-								<td align="right"><a href="showresults.html?scenarioid=${resultScenario.scenid}"><button type="button">Show results</button></a></td>
 							</tr>
 							<tr>
-								<td>Optimization info</td>
-								<td colspan="2">
-									<table class="tablestyle" width="100%">
-										<tr>
-											<td>
-												${usersession.getOptResultString()}
-											</td>
-										</tr>
-									</table>
-								</td>
-							</tr>
-							<tr>
-								<td>Objective function value</td>
 								<td>
-									<table class="tablestyle" width="100%">
+									<table>
+										<col style="width: 140px;">
+										<col style="width: 300px;">
+										
 										<tr>
-											<td>
-												${usersession.getObjFunctionValue()}
-											</td>
+											<td valign="top">Optimization info:</td>
+											<td>${usersession.getOptResultString()}</td>
 										</tr>
 									</table>
 								</td>
-								<td></td>
 							</tr>
 							<tr><td><br></td></tr>
 							<tr><td><b>Metrics</b></td></tr>
