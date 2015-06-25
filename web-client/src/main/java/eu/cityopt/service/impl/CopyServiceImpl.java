@@ -410,7 +410,7 @@ public class CopyServiceImpl implements CopyService {
 					InputParamVal ipvC = ipv.clone();
 					ipvC.setInputparamvalid(0);
 					ipvC.setInputparameter(ipC);
-					ipvC = inputparamvalRepository.save(ipvC);
+					//ipvC = inputparamvalRepository.save(ipvC);
 					componentsInputParamValues.add(ipvC);
 				}
 				componentsInputParameter.put(ip.getInputid(), ipC);
