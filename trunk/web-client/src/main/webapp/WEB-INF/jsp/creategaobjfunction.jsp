@@ -152,6 +152,16 @@
 								<td colspan="3"><form:input style="width:520px" type="text" path="expression"/></td>
 								<td></td>
 							</tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="3">Optimization sense: 
+                                    <select name="optsense" id="optsense" size="1">
+                                        <option value="min" selected>Minimize</option>
+                                        <option value="max">Maximize</option>
+                                    </select>
+                                </td>
+                                <td></td>
+                            </tr>                   
 							<tr>
 								<td></td>
 								<td></td>

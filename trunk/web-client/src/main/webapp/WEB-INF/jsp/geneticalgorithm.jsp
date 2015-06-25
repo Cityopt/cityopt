@@ -64,7 +64,12 @@
 										
 										<c:forEach items="${objFuncs}" var="function">
 										<tr>
-											<td>${function.name}</td>
+                                            <td>
+                                                 <c:choose>
+                                                     <c:when test="${function.ismaximise}">Maximize</c:when>
+                                                     <c:otherwise>Minimize</c:otherwise>
+                                                 </c:choose>
+                                            </td>
 											<td>${function.expression}</td>
 									   	</tr>
 										</c:forEach>
