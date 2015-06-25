@@ -11,6 +11,7 @@ import javax.script.ScriptException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -342,11 +343,37 @@ public class ScenarioController {
 			ScenarioDTO scenario = null;
 			int nScenarioId = Integer.parseInt(scenarioid);
 			
-			try {
+			try {						
+				//This function will keep created clone names intact.
+				//author@: Markus Turunen
+				//date: 24.6.2015
+				//ToDO: test&improve
+				//Implement cloneNamer
+								
+				scenario = scenarioService.findByID(nScenarioId);					
+				String name = scenario.getName();
+				List<ScenarioDTO> list =scenarioService.findByName(name);	
+				String clonename=null;
+					for(int i=0;list.size()>i;i++){		
+						 clonename= name+"("+i+")";			
+					}
+				ScenarioDTO cloneScenario = copyService.copyScenario(nScenarioId, clonename, true, false, true, false);
+				
+				/*
 				scenario = scenarioService.findByID(nScenarioId);
-
-				ScenarioDTO cloneScenario = copyService.copyScenario(nScenarioId, scenario.getName() + " clone", true, false, true, false);
+				String clonename= scenario.getName()+"(copy)";
+				List<ScenarioDTO> clonelist =scenarioService.findByName(clonename);
+				if (clonelist.isEmpty()){				
+				ScenarioDTO cloneScenario = copyService.copyScenario(nScenarioId, clonename, true, false, true, false);		
+				}
+				*/
+				
+				//original
+				//ScenarioDTO cloneScenario = copyService.copyScenario(nScenarioId, scenario.getName() + " clone", true, false, true, false);
+				
+				
 				scenarioService.save(cloneScenario, project.getPrjid());
+				
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (EntityNotFoundException e) {
