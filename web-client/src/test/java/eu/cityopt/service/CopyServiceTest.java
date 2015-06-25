@@ -102,7 +102,8 @@ public class CopyServiceTest {
 	
 	@Test
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
-	 "classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC1.xml"})
+	 "classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC1.xml",
+	 "classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC2.xml"})
 	 @ExpectedDatabase(value="classpath:/testData/project1TestData_projectCopyResult.xml",
      assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	@DirtiesContext
