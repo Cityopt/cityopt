@@ -62,7 +62,7 @@
 											<th>Expression</th>
 										</tr>
 										
-										<c:forEach items="${objFuncs}" var="scengenerator">
+										<c:forEach items="${objFuncs}" var="function">
 										<tr>
 											<td>${function.name}</td>
 											<td>${function.expression}</td>
