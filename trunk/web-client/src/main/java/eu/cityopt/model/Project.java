@@ -317,7 +317,7 @@ public class Project extends VersionModel implements java.io.Serializable {
 		this.extparams = extparams;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
 	public Set<OptimizationSet> getOptimizationsets() {
 		return this.optimizationsets;
 	}
