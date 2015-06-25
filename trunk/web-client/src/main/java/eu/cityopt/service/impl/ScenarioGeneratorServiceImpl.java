@@ -169,7 +169,7 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 		scenGenOptConstraintRepository.delete(scenGenOptConst);
 	}
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	@Override
 	public List<OptConstraintDTO> getOptConstraints(int scenGenId) throws EntityNotFoundException {
 		ScenarioGenerator sg = scenarioGeneratorRepository.findOne(scenGenId);
@@ -184,7 +184,7 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 
 	}
 
-	@Transactional
+	@Transactional(readOnly=true)
 	@Override
 	public List<ObjectiveFunctionDTO> getObjectiveFunctions(int scenGenId)
 			throws EntityNotFoundException {
@@ -199,7 +199,7 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 		return modelMapper.map(ofList, new TypeToken<List<ObjectiveFunctionDTO>>() {}.getType());
 	}
 	
-	@Transactional(readOnly=true)
+	@Transactional
 	@Override
 	public ObjectiveFunctionDTO addObjectiveFunction(int scenGenId, ObjectiveFunctionDTO obtFuncDTO) 
 			throws EntityNotFoundException {
@@ -207,7 +207,6 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 		if(sg == null) {
 			throw new EntityNotFoundException();
 		}
-		
 		ObjectiveFunction obtFunc = modelMapper.map(obtFuncDTO, ObjectiveFunction.class);
 		obtFunc = objectiveFunctionRepository.save(obtFunc);
 		ScenGenObjectiveFunction sgof = new ScenGenObjectiveFunction();
