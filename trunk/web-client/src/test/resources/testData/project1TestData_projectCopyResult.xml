@@ -199,5 +199,53 @@
 <metricval value="569399.35"  />
 
 
+<!-- scenario 2 copy result -->
+<scenario name="Sample Test case - SC2" createdon="2015-01-26" status="SUCCESS" />
+
+<inputparamval value="50"  />
+<inputparamval value="15"  />
+<inputparamval value="30"  />
+<inputparamval value="0.6"  />
+
+<inputparamval value="5"  />
+<inputparamval value="8"  />
+<inputparamval value="3"  />
+<inputparamval value="3"  />
+
+<inputparamval value="47.14"  />
+<inputparamval value="80"  />
+<inputparamval value="15"  />
+<inputparamval value="0.9"  />
+<inputparamval value="0.98"  />
+
+<metricval value="32992.14" />
+<metricval value="29254.43" />
+<metricval value="83542.94" />
+<metricval value="8354.29" />
+<metricval value="2506288.20" />
+
+<scenario name="Sample Test case - SC2" createdon="2015-01-26" status="SUCCESS" />
+
+<inputparamval value="50"  />
+<inputparamval value="15"  />
+<inputparamval value="30"  />
+<inputparamval value="0.6"  />
+
+<inputparamval value="5"  />
+<inputparamval value="8"  />
+<inputparamval value="3"  />
+<inputparamval value="3"  />
+
+<inputparamval value="47.14"  />
+<inputparamval value="80"  />
+<inputparamval value="15"  />
+<inputparamval value="0.9"  />
+<inputparamval value="0.98"  />
+
+<metricval value="32992.14" />
+<metricval value="29254.43" />
+<metricval value="83542.94" />
+<metricval value="8354.29" />
+<metricval value="2506288.20" />
 
 </dataset>

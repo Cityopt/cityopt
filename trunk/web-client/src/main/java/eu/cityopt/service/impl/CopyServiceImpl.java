@@ -2,6 +2,7 @@ package eu.cityopt.service.impl;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -637,7 +638,10 @@ public class CopyServiceImpl implements CopyService {
 					scenarioMetricsRepository.save(sm);
 				}
 			
-			for(InputParamVal ipv : componentsInputParamValues){
+			//only consider inputparamvals of the current scenario s
+			Iterator<InputParamVal> ipvIter = componentsInputParamValues.stream().filter(i -> i.getScenario().getScenid() == s.getScenid()).iterator();
+			while(ipvIter.hasNext()){
+				InputParamVal ipv = ipvIter.next();
 				ipv.setScenario(sC);
 				ipv = inputparamvalRepository.save(ipv);
 			}
