@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dataset>
+<simulationmodel modelid="1" description="Apros test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit"  />
+
+<project location="Helsinki" name="Sample Project" modelid="1" createdon="2010-07-31 10:00:00" />
+
+<component name="Solar_thermal_panels"   />
+<component name="Storage_Vertical_tank_with_heat_structure"   />
+<component name="Gas_boiler"   />
+<!--<component componentid="4" name="Building" />-->
+<!--  -->
+<inputparameter unitid="1" defaultvalue="1" name="collector_area"    />
+<inputparameter unitid="2" defaultvalue="1" name="Heat_loss_coefficient"   /> <!-- at (tm-ta) =0 -->
+<inputparameter unitid="7" defaultvalue="1" name="Temperature_dependence_of_the_heat_losses"   />
+<inputparameter unitid="17" defaultvalue="1" name="zero_loss_coefficient_for_total_or_global_radiation_at_normal_incidence"   />
+
+<inputparameter unitid="3" defaultvalue="1" name="Height_of_tank"    />
+<inputparameter unitid="1" defaultvalue="1" name="Cross_sectional_free_area_of_tank"   />
+<inputparameter unitid="3" defaultvalue="1" name="Elevation_of_tank_bottom_from_reference_level"   />
+<inputparameter unitid="4" defaultvalue="1" name="Thickness_of_the_first_layer"   />
+
+<inputparameter unitid="5" defaultvalue="1" name="Lower_heating_value"    />
+<inputparameter unitid="6" defaultvalue="1" name="Maximal_Power"   />
+<inputparameter unitid="6" defaultvalue="1" name="Nominal_Power"   />
+<inputparameter unitid="17" defaultvalue="1" name="Standby_efficiency"   />
+<inputparameter unitid="17" defaultvalue="1" name="Standby_power_share_of_nominal_power"   />
+
+<!--<inputparameter inputid="14" componentid="4" unitid="6" name="Energy_demand_profile"    />-->
+
+<extparam unitid="8" name="Specific_Heat_Water"  />
+<extparam unitid="9" name="Cost_of_the_N_Gas"  />
+<extparam unitid="10" name="Emissions_N_Gas"  />
+
+<extparamval value="4.18"  />
+<extparamval value="30"  />
+<extparamval value="0.1"  />
+
+<extparamvalset name="epvs1"   />
+
+
+<metric unitid="11" name="Energy_Supply1" expression="integrate(Solar_thermal_panels.heating_power, 0, INFINITY, 3600)"   />
+<!--<metric unitid="18" name="Power_Supply" expression="Specific_Heat_Water*Storage_Vertical_tank_with_heat_structure.Liquid_Volume_Output/Storage_Vertical_tank_with_heat_structure.Liquid_Temperature"   />
+-->
+<metric unitid="12" name="Energy_Supply2" expression="integrate(Specific_Heat_Water*Storage_Vertical_tank_with_heat_structure.Liquid_Volume_Output*Storage_Vertical_tank_with_heat_structure.Liquid_Temperature, 0, INFINITY, 3600)"   />
+<metric unitid="12" name="Energy_Supply3" expression="integrate(Gas_boiler.Heating_Power, 0, INFINITY, 3600)"   />
+<metric unitid="13" name="CO2_Emissions" expression="integrate(Emissions_N_Gas*Gas_boiler.Heating_Power, 0, INFINITY, 3600)"   />
+<metric unitid="14" name="Cost" expression="integrate(Cost_of_the_N_Gas*Gas_boiler.Heating_Power, 0, INFINITY, 3600)"   />
+
+<outputvariable unitid="18" typeid="4" name="heating_power"  />
+<outputvariable unitid="18" typeid="4" name="Liquid_Volume_Output"  />
+<outputvariable unitid="18" typeid="4" name="Liquid_Temperature"  />
+<outputvariable unitid="18" typeid="4" name="Heating_Power"  />
+
+<!-- input parameter constraints id: 1,5,6-->
+<optconstraint expression="Solar_thermal_panels.collector_area" lowerbound="0.1" upperbound="250"   />
+<optconstraint expression="Storage_Vertical_tank_with_heat_structure.Height_of_tank" lowerbound="1" upperbound="11"   />
+<optconstraint expression="Storage_Vertical_tank_with_heat_structure.Cross_sectional_free_area_of_tank" lowerbound="0.3" upperbound="11"   />
+<!-- output parameter constraints -->
+<optconstraint expression="Solar_thermal_panels.heating_power" lowerbound="0" upperbound="80"   />
+<optconstraint expression="Storage_Vertical_tank_with_heat_structure.Liquid_Temperature" lowerbound="0" upperbound="90"   />
+<optconstraint expression="Gas_boiler.Heating_Power" lowerbound="0" upperbound="100"   />
+<!-- metric value constraints -->
+<optconstraint expression="Energy_Supply2" lowerbound="0" upperbound="90000"   />
+
+
+<objectivefunction typeid="1" expression="CO2_Emissions + Cost" ismaximise="false" />
+
+<optimizationset name="Optimization Set 1"   />
+
+<scenariogenerator name="test name"   />
+
+
+
+
+
+<project location="Helsinki" name="copy of Sample Project" modelid="1" createdon="2010-07-31 10:00:00" />
+
+<component name="Solar_thermal_panels"   />
+<component name="Storage_Vertical_tank_with_heat_structure"   />
+<component name="Gas_boiler"   />
+<!--<component componentid="4" name="Building" />-->
+<!--  -->
+<inputparameter unitid="1" defaultvalue="1" name="collector_area"    />
+<inputparameter unitid="2" defaultvalue="1" name="Heat_loss_coefficient"   /> <!-- at (tm-ta) =0 -->
+<inputparameter unitid="7" defaultvalue="1" name="Temperature_dependence_of_the_heat_losses"   />
+<inputparameter unitid="17" defaultvalue="1" name="zero_loss_coefficient_for_total_or_global_radiation_at_normal_incidence"   />
+
+<inputparameter unitid="3" defaultvalue="1" name="Height_of_tank"    />
+<inputparameter unitid="1" defaultvalue="1" name="Cross_sectional_free_area_of_tank"   />
+<inputparameter unitid="3" defaultvalue="1" name="Elevation_of_tank_bottom_from_reference_level"   />
+<inputparameter unitid="4" defaultvalue="1" name="Thickness_of_the_first_layer"   />
+
+<inputparameter unitid="5" defaultvalue="1" name="Lower_heating_value"    />
+<inputparameter unitid="6" defaultvalue="1" name="Maximal_Power"   />
+<inputparameter unitid="6" defaultvalue="1" name="Nominal_Power"   />
+<inputparameter unitid="17" defaultvalue="1" name="Standby_efficiency"   />
+<inputparameter unitid="17" defaultvalue="1" name="Standby_power_share_of_nominal_power"   />
+
+<!--<inputparameter inputid="14" componentid="4" unitid="6" name="Energy_demand_profile"    />-->
+
+<extparam unitid="8" name="Specific_Heat_Water"  />
+<extparam unitid="9" name="Cost_of_the_N_Gas"  />
+<extparam unitid="10" name="Emissions_N_Gas"  />
+
+<extparamval value="4.18"  />
+<extparamval value="30"  />
+<extparamval value="0.1"  />
+
+<extparamvalset name="epvs1"   />
+
+
+<metric unitid="11" name="Energy_Supply1" expression="integrate(Solar_thermal_panels.heating_power, 0, INFINITY, 3600)"   />
+<!--<metric unitid="18" name="Power_Supply" expression="Specific_Heat_Water*Storage_Vertical_tank_with_heat_structure.Liquid_Volume_Output/Storage_Vertical_tank_with_heat_structure.Liquid_Temperature"   />
+-->
+<metric unitid="12" name="Energy_Supply2" expression="integrate(Specific_Heat_Water*Storage_Vertical_tank_with_heat_structure.Liquid_Volume_Output*Storage_Vertical_tank_with_heat_structure.Liquid_Temperature, 0, INFINITY, 3600)"   />
+<metric unitid="12" name="Energy_Supply3" expression="integrate(Gas_boiler.Heating_Power, 0, INFINITY, 3600)"   />
+<metric unitid="13" name="CO2_Emissions" expression="integrate(Emissions_N_Gas*Gas_boiler.Heating_Power, 0, INFINITY, 3600)"   />
+<metric unitid="14" name="Cost" expression="integrate(Cost_of_the_N_Gas*Gas_boiler.Heating_Power, 0, INFINITY, 3600)"   />
+
+<outputvariable unitid="18" typeid="4" name="heating_power"  />
+<outputvariable unitid="18" typeid="4" name="Liquid_Volume_Output"  />
+<outputvariable unitid="18" typeid="4" name="Liquid_Temperature"  />
+<outputvariable unitid="18" typeid="4" name="Heating_Power"  />
+
+<!-- input parameter constraints id: 1,5,6-->
+<optconstraint expression="Solar_thermal_panels.collector_area" lowerbound="0.1" upperbound="250"   />
+<optconstraint expression="Storage_Vertical_tank_with_heat_structure.Height_of_tank" lowerbound="1" upperbound="11"   />
+<optconstraint expression="Storage_Vertical_tank_with_heat_structure.Cross_sectional_free_area_of_tank" lowerbound="0.3" upperbound="11"   />
+<!-- output parameter constraints -->
+<optconstraint expression="Solar_thermal_panels.heating_power" lowerbound="0" upperbound="80"   />
+<optconstraint expression="Storage_Vertical_tank_with_heat_structure.Liquid_Temperature" lowerbound="0" upperbound="90"   />
+<optconstraint expression="Gas_boiler.Heating_Power" lowerbound="0" upperbound="100"   />
+<!-- metric value constraints -->
+<optconstraint expression="Energy_Supply2" lowerbound="0" upperbound="90000"   />
+
+
+<objectivefunction typeid="1" expression="CO2_Emissions + Cost" ismaximise="false" />
+
+<optimizationset name="Optimization Set 1"   />
+
+<scenariogenerator name="test name"   />
+
+
+
+<!-- scenario 1 copy result -->
+
+
+<scenario name="Sample Test case - SC1" createdon="2015-01-26" status="SUCCESS" />
+
+<inputparamval value="100" />
+<inputparamval value="15" />
+<inputparamval value="30" />
+<inputparamval value="0.6" />
+
+<inputparamval value="7" />
+<inputparamval value="10" />
+<inputparamval value="3" />
+<inputparamval value="3" />
+
+<inputparamval value="47.14" />
+<inputparamval value="50" />
+<inputparamval value="15" />
+<inputparamval value="0.9" />
+<inputparamval value="0.98" />
+
+
+<!--<metricval value=""  />--><!-- time series -->
+<metricval value="65984.28"  />
+<metricval value="61787.37"  />
+<metricval value="18979.98"  />
+<metricval value="1898.00"  />
+<metricval value="569399.35"  />
+
+<scenario name="Sample Test case - SC1" createdon="2015-01-26" status="SUCCESS" />
+
+<inputparamval value="100" />
+<inputparamval value="15" />
+<inputparamval value="30" />
+<inputparamval value="0.6" />
+
+<inputparamval value="7" />
+<inputparamval value="10" />
+<inputparamval value="3" />
+<inputparamval value="3" />
+
+<inputparamval value="47.14" />
+<inputparamval value="50" />
+<inputparamval value="15" />
+<inputparamval value="0.9" />
+<inputparamval value="0.98" />
+
+
+<!--<metricval value=""  />--><!-- time series -->
+<metricval value="65984.28"  />
+<metricval value="61787.37"  />
+<metricval value="18979.98"  />
+<metricval value="1898.00"  />
+<metricval value="569399.35"  />
+
+
+
+</dataset>

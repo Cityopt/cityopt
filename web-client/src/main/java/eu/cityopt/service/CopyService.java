@@ -1,8 +1,11 @@
 package eu.cityopt.service;
 
+import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.MetricDTO;
+import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.ScenarioGeneratorDTO;
 
 /**
  * 
@@ -43,4 +46,38 @@ public interface CopyService {
 	 * @throws EntityNotFoundException
 	 */
 	MetricDTO copyMetric(int id, String name) throws EntityNotFoundException;
+
+	/**
+	 * copies the extparamvalset specified by the ID. Sets the name of the copied set to newName. 
+	 * ExtParamValSet is copied on project level, together with ExtParamValSetComps and their ExtParamValues. 
+	 * @return the copy result
+	 * @throws EntityNotFoundException 
+	 */
+	ExtParamValSetDTO copyExtParamValSet(int extParamValSetId, String newName)
+			throws EntityNotFoundException;
+
+	
+	/**
+	 * copies an optimizationSet specified by the ID. The name of the copied OptimizationSet is set to newName.
+	 * 
+	 * @param optSetId
+	 * @param newName
+	 * @param copyOptSetScen - flag indicating if the search optimization results (constraint evaluation and ObtFunc value) shall be copied
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	OptimizationSetDTO copyOptimizationSet(int optSetId, String newName,
+			boolean copyOptSetScen) throws EntityNotFoundException;
+
+	/**
+	 * copies a ScenarioGenerator specified by the Id. Method does not copy ScenarioGeneratorResults (and it's dependencies) 
+	 * as they are not shown in the UI. 1:n relations of ScenarioGenerator (ScenGenOptConstraint, ScenGenObjectiveFunction, 
+	 * DecisionVariable, ModelParameter, AlgoParamVal) are copied
+	 * @param scenGenId
+	 * @param newName
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	ScenarioGeneratorDTO copyScenarioGenerator(int scenGenId, String newName)
+			throws EntityNotFoundException;
 }

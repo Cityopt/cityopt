@@ -83,6 +83,7 @@ public class ScenarioGenerator extends VersionModel implements java.io.Serializa
 		c.project = this.project;
 		c.status = this.status;
 		c.log = this.log;
+		c.name = this.name;
 		c.decisionvariables = this.decisionvariables;
 		c.modelparameters = this.modelparameters;
 		c.scengenoptconstraints = this.scengenoptconstraints;
