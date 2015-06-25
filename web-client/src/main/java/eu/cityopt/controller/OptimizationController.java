@@ -28,8 +28,6 @@ import eu.cityopt.DTO.OptConstraintDTO;
 import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
-import eu.cityopt.DTO.ScenGenObjectiveFunctionDTO;
-import eu.cityopt.DTO.ScenGenOptConstraintDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioGeneratorDTO;
 import eu.cityopt.DTO.ScenarioWithObjFuncValueDTO;
@@ -577,8 +575,8 @@ public class OptimizationController {
 			func.setIsmaximise(function.getIsmaximise());
 			func.setProject(project);
 			
-			ScenGenObjectiveFunctionDTO scenGenFunc = new ScenGenObjectiveFunctionDTO();
-			scenGenFunc.setObjectivefunction(func);
+			//ScenGenObjectiveFunctionDTO scenGenFunc = new ScenGenObjectiveFunctionDTO();
+			//scenGenFunc.setObjectivefunction(func);
 			
 			// Needed?
 			//scenGenFuncService.save(scenGenFunc);
@@ -592,16 +590,18 @@ public class OptimizationController {
 			scenGenerator = scenGenService.save(scenGenerator);
 		}
 
+		//TODO optSense
+
 		model.put("scengenerator", scenGenerator);
 
-		Set<ScenGenObjectiveFunctionDTO> gaFuncs = (Set<ScenGenObjectiveFunctionDTO>) scenGenerator.getScengenobjectivefunctions();
-		model.put("functions", gaFuncs);
-		
-		Set<ScenGenOptConstraintDTO> gaConstraints = (Set<ScenGenOptConstraintDTO>) scenGenerator.getScengenoptconstraints();
-		model.put("constraints", gaConstraints);
+                try {
+			List<ObjectiveFunctionDTO> gaFuncs = scenGenService.getObjectiveFunctions(scenGenerator.getScengenid());
+                        model.put("objFuncs",  gaFuncs);
 
-		try {
-			project = projectService.findByID(project.getPrjid());
+                        List<OptConstraintDTO> gaConstraints = scenGenService.getOptConstraints(scenGenerator.getScengenid());
+                        model.put("constraints", gaConstraints);
+
+                        project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -715,17 +715,19 @@ public class OptimizationController {
 
 		model.put("scengenerator", scenGenerator);
 
-		Set<ScenGenObjectiveFunctionDTO> gaFuncs = (Set<ScenGenObjectiveFunctionDTO>) scenGenerator.getScengenobjectivefunctions();
-		model.put("functions", gaFuncs);
-		
-		Set<ScenGenOptConstraintDTO> gaConstraints = (Set<ScenGenOptConstraintDTO>) scenGenerator.getScengenoptconstraints();
-		model.put("constraints", gaConstraints);
-
 		try {
-			project = projectService.findByID(project.getPrjid());
+
+			List<ObjectiveFunctionDTO> gaFuncs = scenGenService.getObjectiveFunctions(scenGenerator.getScengenid());
+                        model.put("objFuncs",  gaFuncs);
+
+                        List<OptConstraintDTO> gaConstraints = scenGenService.getOptConstraints(scenGenerator.getScengenid());
+                        model.put("constraints", gaConstraints);
+
+                        project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return "error";
 		}
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 		model.put("metrics", metrics);
@@ -1006,12 +1008,7 @@ public class OptimizationController {
 				{
 					return "error";
 				}
-
-				Set<ScenGenObjectiveFunctionDTO> gaFuncs = (Set<ScenGenObjectiveFunctionDTO>) scenGen.getScengenobjectivefunctions();
-				model.put("objFuns", gaFuncs);
-				
-				Set<ScenGenOptConstraintDTO> gaConstraints = (Set<ScenGenOptConstraintDTO>) scenGen.getScengenoptconstraints();
-				model.put("constraints", gaConstraints);
+				//TODO model parameters, decision variables
 
 				ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1021,7 +1018,13 @@ public class OptimizationController {
 				}
 				
 				try {
-					project = projectService.findByID(project.getPrjid());
+		                        List<ObjectiveFunctionDTO> gaFuncs = scenGenService.getObjectiveFunctions(scenGen.getScengenid());
+		                        model.put("objFuncs",  gaFuncs);
+
+		                        List<OptConstraintDTO> gaConstraints = scenGenService.getOptConstraints(scenGen.getScengenid());
+		                        model.put("constraints", gaConstraints);
+
+		                        project = projectService.findByID(project.getPrjid());
 				} catch (EntityNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -1631,12 +1634,6 @@ public class OptimizationController {
 			return "error";
 		}
 
-		Set<ScenGenObjectiveFunctionDTO> gaFuncs = scenGen.getScengenobjectivefunctions();
-		model.put("functions", gaFuncs);
-		
-		Set<ScenGenOptConstraintDTO> gaConstraints = scenGen.getScengenoptconstraints();
-		model.put("constraints", gaConstraints);
-
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
 		if (project == null)
@@ -1645,10 +1642,17 @@ public class OptimizationController {
 		}
 		
 		try {
-			project = projectService.findByID(project.getPrjid());
+			List<ObjectiveFunctionDTO> gaFuncs = scenGenService.getObjectiveFunctions(scenGen.getScengenid());
+			model.put("objFuncs",  gaFuncs);
+
+			List<OptConstraintDTO> gaConstraints = scenGenService.getOptConstraints(scenGen.getScengenid());
+			model.put("constraints", gaConstraints);
+
+                        project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return "error";
 		}
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 		model.put("metrics", metrics);
