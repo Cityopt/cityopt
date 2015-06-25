@@ -59,6 +59,19 @@ public class DecisionVariable extends VersionModel implements java.io.Serializab
 		this.decisionvariableresults = decisionvariableresults;
 	}
 
+	public DecisionVariable clone() {
+		DecisionVariable d = new DecisionVariable();
+		d.decisionvarid = this.decisionvarid;
+		d.inputparameter = this.inputparameter;
+		d.scenariogenerator = this.scenariogenerator;
+		d.type = this.type;
+		d.name = this.name;
+		d.lowerbound = this.lowerbound;
+		d.upperbound = this.upperbound;
+		d.decisionvariableresults = this.decisionvariableresults;
+		return d;
+	}
+	
 	@SequenceGenerator(name="decisionvariable_decisionvarid_seq",sequenceName="decisionvariable_decisionvarid_seq") 
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="decisionvariable_decisionvarid_seq")
 	@Id

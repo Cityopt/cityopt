@@ -9,11 +9,15 @@ import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.sql.DataSource;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,18 +28,26 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DbUnitConfiguration;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ProjectDTO;
+import eu.cityopt.DTO.ScenarioGeneratorDTO;
+import eu.cityopt.model.ScenarioGenerator;
+import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.repository.CustomQueryRepositoryImpl;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.repository.ScenarioRepository;
+import eu.cityopt.sim.service.NullReplacementDataSetLoader;
 import eu.cityopt.sim.service.SimulationService;
 
-@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
+@Transactional
 @ContextConfiguration(locations={"classpath:/jpaContext.xml", "classpath:/test-context.xml"})
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
@@ -44,7 +56,7 @@ import eu.cityopt.sim.service.SimulationService;
 public class CopyServiceTest {
 	
 	@Autowired ScenarioRepository scenarioRepository;
-	@Autowired CustomQueryRepositoryImpl customQueryRepository;
+	@Autowired CustomQueryRepository customQueryRepository;
 	
 	@Autowired ProjectService projectService; 	
 	@Autowired ScenarioService scenarioService;	
@@ -70,14 +82,62 @@ public class CopyServiceTest {
 	@Autowired OptConstraintService optConstraintService;	
 	@Autowired OptSearchConstService optSearchService;	
 	@Autowired ScenarioGeneratorService scenGenService;	
+	@Autowired ScenarioGeneratorRepository scenarioGeneratorRepository;
 	@Autowired DecisionVariableService decisionVarService;	
 	
 	@PersistenceContext
 	private EntityManager em;
 	
+	@Autowired DataSource ds;
+	
+	@Before
+	public void setUp(){
+		
+	}
+	
+	@After
+	public void tearDown(){
+		
+	}
 	
 	@Test
-//	@Rollback(false)
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
+	 "classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC1.xml"})
+	 @ExpectedDatabase(value="classpath:/testData/project1TestData_projectCopyResult.xml",
+     assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+	@DirtiesContext
+	//for some reason the use of @ExpectedDatabase annotation prevents rolling back the transaction. 
+	//Therefore @DirtiesContext is used, to reload the context after the test case which ensures a clear state 
+	public void copyProject3() throws EntityNotFoundException, SQLException{
+		customQueryRepository.updateSequences();
+		try {
+			copyService.copyProject(1, "copy of Sample Project");
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		em.clear();
+		
+		List<ProjectDTO> pList = projectService.findByNameContaining("copy of");
+		
+		assertEquals(1, pList.size());
+		ProjectDTO p = pList.get(0);
+		
+		List<ComponentDTO> compList = projectService.getComponents(p.getPrjid()); 
+		assertEquals(3, compList.size());
+		ComponentDTO[] comps = compList.stream().filter(c -> c.getName().equals("Solar_thermal_panels")).toArray(size -> new ComponentDTO[size]);
+		assertNotNull(comps);
+		Set<InputParameterDTO> ipSet = componentService.getInputParameters(comps[0].getComponentid());
+		assertEquals(1, ipSet.stream().filter(i -> i.getName().equals("collector_area")).count());
+		assertEquals(1, ipSet.stream().filter(i -> i.getName().equals("Heat_loss_coefficient")).count());
+		assertEquals(1, ipSet.stream().filter(i -> i.getName().equals("Temperature_dependence_of_the_heat_losses")).count());
+		assertEquals(1, ipSet.stream().filter(i -> i.getName().equals("zero_loss_coefficient_for_total_or_global_radiation_at_normal_incidence")).count());
+	
+	}
+	
+	@Test
+	@DirtiesContext
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
 	 "classpath:/testData/Sample Test case - SC1.xml"})
 	public void copyProject() throws EntityNotFoundException, SQLException{
@@ -105,12 +165,11 @@ public class CopyServiceTest {
 		assertEquals(1, ipSet.stream().filter(i -> i.getName().equals("Heat_loss_coefficient")).count());
 		assertEquals(1, ipSet.stream().filter(i -> i.getName().equals("Temperature_dependence_of_the_heat_losses")).count());
 		assertEquals(1, ipSet.stream().filter(i -> i.getName().equals("zero_loss_coefficient_for_total_or_global_radiation_at_normal_incidence")).count());
-		
 	
 	}
 	
 	@Test
-//	@Rollback(false)
+	@DirtiesContext
 	@DatabaseSetup({"classpath:/testData/plumbing_scengen.xml"})
 	public void copyProject2() throws EntityNotFoundException{
 
@@ -125,7 +184,7 @@ public class CopyServiceTest {
 	}	
 	
 	@Test
-//	@Rollback(false)
+	@DirtiesContext
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
 		 "classpath:/testData/Sample Test case - SC1.xml"})
 	public void copyScenario() throws EntityNotFoundException, SQLException{
@@ -141,6 +200,7 @@ public class CopyServiceTest {
 	}	
 
 	@Test
+	@DirtiesContext
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
 	public void copyMetric() throws EntityNotFoundException{
 
@@ -170,5 +230,29 @@ public class CopyServiceTest {
 		MetricDTO metricid6After = metricsAfter.stream().filter(m -> m.getName().equals(metric3)).findFirst().get();
 		assertEquals(metricid1Before.getExpression(), metricid1After.getExpression());
 		assertEquals(metricid6Before.getExpression(), metricid6After.getExpression());
+	}
+	
+	@Test
+	@DirtiesContext
+	@DatabaseSetup("classpath:/testData/plumbing_scengen_copy.xml")
+    @ExpectedDatabase(value="classpath:/testData/plumbing_scengen_scenGenCopyResult.xml",
+        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+	public void copyScengen() throws EntityNotFoundException, SQLException{
+		customQueryRepository.updateSequences();
+		ScenarioGeneratorDTO sgd = copyService.copyScenarioGenerator(1, "copy of scengentest");
+		em.flush();
+		em.clear();
+	}
+	
+	@Test
+	@DirtiesContext
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml","classpath:/testData/project1TestData.xml"})
+    @ExpectedDatabase(value="classpath:/testData/project1TestData_optSetCopyResult.xml",
+        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+	public void copyOptSet() throws EntityNotFoundException, SQLException{
+		customQueryRepository.updateSequences();
+		copyService.copyOptimizationSet(1, "copy of Optimization Set 1", false);
+		em.flush();
+		em.clear();
 	}
 }

@@ -16,9 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.MetricDTO;
+import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.ScenarioGeneratorDTO;
 import eu.cityopt.model.AlgoParamVal;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.DecisionVariable;
@@ -62,6 +65,7 @@ import eu.cityopt.repository.InputParamValRepository;
 import eu.cityopt.repository.InputParameterRepository;
 import eu.cityopt.repository.MetricRepository;
 import eu.cityopt.repository.MetricValRepository;
+import eu.cityopt.repository.ModelParameterRepository;
 import eu.cityopt.repository.ObjectiveFunctionRepository;
 import eu.cityopt.repository.ObjectiveFunctionResultRepository;
 import eu.cityopt.repository.OptConstraintRepository;
@@ -178,6 +182,9 @@ public class CopyServiceImpl implements CopyService {
 	
 	@Autowired
 	private MetricRepository metricRepository;
+	
+	@Autowired
+	private ModelParameterRepository modelParameterRepository;
 	
 	@PersistenceContext
 	private EntityManager em;
@@ -308,7 +315,16 @@ public class CopyServiceImpl implements CopyService {
 		return copyScenario;
 	}
 	
-	@Transactional
+	/**
+	 * generates a deep copy of a given project (with all its references) and saves it in the database. Circular references (like ScengenObjectiveFunction, 
+	 * which is referenced by ScenarioGenerator and ObjectiveFuncten (which again are both referenced by project)) are temporarily stored in maps,
+	 * to be able to reference the same copy at a later point. Therefore the source's identity key always maps to the copied instance
+	 * 
+	 * @param project
+	 * @param name
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
 	private Project copyProject(Project project, String name) throws EntityNotFoundException{
 		
 		Project copyProject = project.clone();
@@ -334,9 +350,7 @@ public class CopyServiceImpl implements CopyService {
 			epC.setExtparamid(0);
 			epC.setProject(copyProject);
 			epC.setExtparamvals(null);
-//			if(epC.getTimeseries() != null){
-//				epC.setTimeseries(copyTimeSeries(epC.getTimeseries()));
-//			}
+
 			epC = extParamRepository.save(epC);
 			for(ExtParamVal epv : ep.getExtparamvals()){
 				ExtParamVal epvC = epv.clone();
@@ -634,6 +648,170 @@ public class CopyServiceImpl implements CopyService {
 		}
 		em.flush();
 		return copyProject;
+	}
+	
+	@Override
+	@Transactional
+	public ScenarioGeneratorDTO copyScenarioGenerator(int scenGenId, String newName) throws EntityNotFoundException{
+		ScenarioGenerator sg = scenarioGeneratorRepository.findOne(scenGenId);
+		if(sg == null)
+			throw new EntityNotFoundException("No ExtParamValSet found for id: " + scenGenId);
+		
+		ScenarioGenerator sgC = copyScenarioGenerator(sg, newName);
+		return modelMapper.map(sgC, ScenarioGeneratorDTO.class);
+	}
+	
+	private ScenarioGenerator copyScenarioGenerator(ScenarioGenerator sg, String newName) throws EntityNotFoundException{
+		ScenarioGenerator sgC = sg.clone();
+		sgC.setScengenid(0);
+		sgC.setName(newName);
+		sgC.setAlgoparamvals(null);
+		sgC.setDecisionvariables(null);
+		sgC.setModelparameters(null);
+		sgC.setScenarios(null);
+		sgC.setScengenobjectivefunctions(null);
+		sgC.setScengenoptconstraints(null);
+		sgC.setScengenresults(null);
+		sgC = scenarioGeneratorRepository.save(sgC);
+		
+		//set reference to objective functions
+		if(sg.getScengenobjectivefunctions() != null)
+		for(ScenGenObjectiveFunction sgof : sg.getScengenobjectivefunctions()){
+			ScenGenObjectiveFunction sgofC = new ScenGenObjectiveFunction();
+			sgofC.setObjectivefunction(sgof.getObjectivefunction());
+			sgofC.setScenariogenerator(sgC);
+			scenGenObjectiveFunctionRepository.save(sgofC);
+		}
+		
+		for(ScenGenOptConstraint sgoc : sg.getScengenoptconstraints()){
+			ScenGenOptConstraint sgocC = new ScenGenOptConstraint();
+			sgocC.setOptconstraint(sgoc.getOptconstraint());
+			sgocC.setScenariogenerator(sgC);
+			sgocC = scenGenOptConstraintRepository.save(sgocC);
+		}
+		
+		if(sg.getDecisionvariables() != null)
+		for(DecisionVariable dv : sg.getDecisionvariables()){
+			DecisionVariable dvC = dv.clone();
+			dvC.setDecisionvarid(0);
+			dvC.setScenariogenerator(sgC);
+			dvC.setDecisionvariableresults(null);
+			decisionVariableRepository.save(dvC);
+		}
+		
+		if(sg.getModelparameters() != null)
+		for(ModelParameter mp : sg.getModelparameters()){
+			ModelParameter mpC = mp.clone();
+			mpC.setScenariogenerator(sgC);
+			mpC.setModelparamid(0);
+			mpC = modelParameterRepository.save(mpC); 
+		}
+		
+		if(sg.getAlgoparamvals() != null)
+		for(AlgoParamVal apv : sg.getAlgoparamvals()){
+			AlgoParamVal apvC = apv.clone();
+			apvC.setAparamvalid(0);
+			apvC.setScenariogenerator(sgC);
+			algoParamValRepository.save(apvC);
+		}
+		
+		for(Scenario s : sg.getScenarios()){
+			Set<MetricVal> mvM = new HashSet<MetricVal>();
+			
+			Scenario sC = copyScenario(s.getScenid(), "copy of " + s.getName(), 
+					true, true, false, false, mvM);
+			
+			sC.setScenariogenerator(sgC);
+			
+			for(OptSetScenarios oss : s.getOptsetscenarioses()){
+				OptSetScenarios ossC = oss.clone();
+				ossC.setScenario(sC);
+				optSetScenarioRepository.save(ossC);
+			}
+			
+			for(MetricVal mv : mvM){
+				mv = metricValRepository.save(mv);
+			}		
+		}
+		
+		return sgC;
+	}
+	
+	@Override
+	@Transactional
+	public OptimizationSetDTO copyOptimizationSet(int optSetId, String newName, boolean copyOptSetScen) throws EntityNotFoundException{
+		
+		OptimizationSet os = optimizationSetRepository.findOne(optSetId);
+		
+		if(os == null)
+			throw new EntityNotFoundException("No ExtParamValSet found for id: " + optSetId);
+		
+		OptimizationSet osC = copyOptimizationSet(os, newName, copyOptSetScen);
+		
+		return modelMapper.map(osC, OptimizationSetDTO.class);
+	}
+
+	private OptimizationSet copyOptimizationSet(OptimizationSet os, String newName, boolean copyOptSetScen) throws EntityNotFoundException{
+		OptimizationSet osC = os.clone();
+		osC.setOptid(0);
+		osC.setOptsearchconsts(null);
+		osC.setOptsetscenarioses(null);
+		osC.setName(newName);
+		osC = optimizationSetRepository.save(osC);
+		
+		for(OptSearchConst osc : os.getOptsearchconsts()){
+			OptSearchConst oscC = new OptSearchConst();
+			oscC.setOptimizationset(osC);
+			oscC.setOptconstraint(osc.getOptconstraint()); //same optconstraint as source
+			oscC = optSearchConstRepository.save(oscC);
+		}
+		
+		if(copyOptSetScen){
+			for(OptSetScenarios oss : os.getOptsetscenarioses()){
+				OptSetScenarios ossC = oss.clone();
+				ossC.setOptscenid(0);
+			}
+		}
+		
+		return osC;
+	}
+	
+	@Override
+	@Transactional
+	public ExtParamValSetDTO copyExtParamValSet(int extParamValSetId, String newName) throws EntityNotFoundException{
+		ExtParamValSet epvs = extParamValSetRepository.findOne(extParamValSetId);
+		if(epvs == null)
+			throw new EntityNotFoundException("No ExtParamValSet found for id: " + extParamValSetId);
+		
+		ExtParamValSet epvsC = copyExtParamValSet(epvs, newName);
+		return modelMapper.map(epvsC, ExtParamValSetDTO.class);
+	}
+	
+	private ExtParamValSet copyExtParamValSet(ExtParamValSet epvs, String newName) throws EntityNotFoundException{
+		
+		ExtParamValSet epvsC = new ExtParamValSet();
+		epvsC.setName(newName);
+		epvsC = extParamValSetRepository.saveAndFlush(epvsC);		
+		
+		for(ExtParamValSetComp epvsc : epvs.getExtparamvalsetcomps()){
+			ExtParamValSetComp epvscC = new ExtParamValSetComp();
+			epvscC.setExtparamvalset(epvsC);
+			
+			//ExtParamVal
+			ExtParamVal epvC = epvsc.getExtparamval().clone();
+			epvC.setExtparamvalid(0);
+			epvC.setExtparamvalsetcomps(null);
+			if(epvC.getTimeseries() != null){
+				epvC.setTimeseries(copyTimeSeries(epvC.getTimeseries()));
+			}
+			epvC = extParamValRepository.save(epvC);
+			
+			epvscC.setExtparamval(epvC);
+			
+			extParamValSetCompRepository.save(epvscC);
+		}
+		
+		return epvs;
 	}
 	
 	private ScenGenResult copyScenGenResult(ScenGenResult sgr){
