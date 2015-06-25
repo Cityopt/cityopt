@@ -21,7 +21,6 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import eu.cityopt.DTO.AlgoParamDTO;
 import eu.cityopt.DTO.AlgoParamValDTO;
 import eu.cityopt.DTO.AlgorithmDTO;
-import eu.cityopt.DTO.ScenGenObjectiveFunctionDTO;
 import eu.cityopt.DTO.ScenarioGeneratorDTO;
 
 @Transactional
