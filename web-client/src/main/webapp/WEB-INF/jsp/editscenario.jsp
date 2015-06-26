@@ -41,7 +41,7 @@
 							<tr>						
 								<td>Description:</td>
 								<td><form:textarea type="text" rows="3" path="description" style="width:200px"/></td>
-								<td valign="top"><a href="runscenario.html"><button type="button" style="width:150px">Run scenario</button></a></td>
+								<td valign="top"><a href="runscenario.html"><button type="button" style="width:150px">Simulate scenario</button></a></td>
 							</tr>
 							<tr height="15"></tr>
 							<tr>						

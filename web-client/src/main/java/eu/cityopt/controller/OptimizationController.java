@@ -2,6 +2,7 @@ package eu.cityopt.controller;
 
 import java.text.ParseException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,6 +10,8 @@ import java.util.Set;
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.xy.DefaultXYDataset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
@@ -22,6 +25,7 @@ import eu.cityopt.DTO.DecisionVariableDTO;
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
+import eu.cityopt.DTO.MetricValDTO;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
 import eu.cityopt.DTO.OpenOptimizationSetDTO;
 import eu.cityopt.DTO.OptConstraintDTO;
@@ -811,9 +815,6 @@ public class OptimizationController {
 			return "error";
 		}
 
-		SearchOptimizationResults optResults = (SearchOptimizationResults) model.get("optresults");
-		model.put("optresults", optResults);
-		
 		List<OptConstraintDTO> optSearchConstraints = null;
 		
 		try {
@@ -835,6 +836,15 @@ public class OptimizationController {
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+		SearchOptimizationResults optResults = (SearchOptimizationResults) model.get("optresults");
+		
+		if (optResults != null)
+		{
+			List<ScenarioWithObjFuncValueDTO> resultScenariosWithValue = (List<ScenarioWithObjFuncValueDTO>) optResults.resultScenarios;
+			model.put("resultScenariosWithValue", resultScenariosWithValue);
+		}
+		
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 		model.put("metrics", metrics);
 
@@ -897,8 +907,6 @@ public class OptimizationController {
 			e.printStackTrace();
 		}
 
-		model.put("optresults", optResults);
-		
 		UserSession userSession = (UserSession) model.get("usersession");
 		
 		if (userSession == null)
@@ -906,8 +914,12 @@ public class OptimizationController {
 			userSession = new UserSession();
 		}
 		
-		List<ScenarioWithObjFuncValueDTO> resultScenariosWithValue = (List<ScenarioWithObjFuncValueDTO>) optResults.resultScenarios;
-		model.put("resultScenariosWithValue", resultScenariosWithValue);
+		if (optResults != null)
+		{
+			List<ScenarioWithObjFuncValueDTO> resultScenariosWithValue = (List<ScenarioWithObjFuncValueDTO>) optResults.resultScenarios;
+			model.put("resultScenariosWithValue", resultScenariosWithValue);
+			model.put("optresults", optResults);
+		}
 		
 		EvaluationResults evResults = optResults.getEvaluationResult();
 		userSession.setOptResultString(evResults.toString());
@@ -1499,6 +1511,9 @@ public class OptimizationController {
 			return "error";
 		}
 
+		SearchOptimizationResults optResults = (SearchOptimizationResults) model.get("optresults");
+		model.put("optresults", optResults);
+
 		int nResultScenarioId = Integer.parseInt(scenarioId);
 		ScenarioDTO resultScenario = null;
 		
@@ -1521,8 +1536,8 @@ public class OptimizationController {
 			if (nSelectedCompId > 0)
 			{
 				userSession.setComponentId(nSelectedCompId);
-				/*Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
-				model.put("outputVars", outputVars);*/
+				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				model.put("outputVars", outputVars);
 				
 				List<InputParamValDTO> listInputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, nResultScenarioId);
 				model.put("inputParamVals", listInputParamVals);
@@ -1532,9 +1547,28 @@ public class OptimizationController {
 		
 		//metricService.getMetricVals(metricId, scenId)
 		
-		//Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-		//model.put("metrics", metrics);
-			
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		
+		/*MetricDTO metric1 = metricService.findByID(metric1Id);
+		MetricDTO metric2 = metricService.findByID(metric2Id);
+		//Set<MetricValDTO> metricVals1 = metricService.getMetricVals(metric1Id);
+		//Set<MetricValDTO> metricVals2 = metricService.getMetricVals(metric2Id);
+		TimeSeries timeSeries = new TimeSeries("Scenario metric values");
+
+		Set<Integer> scenarioIds = userSession.getScenarioIds();
+		Iterator<Integer> scenIter = scenarioIds.iterator();
+		DefaultXYDataset dataset = new DefaultXYDataset();
+
+		while (scenIter.hasNext())
+		{
+			Integer integerScenarioId = (Integer) scenIter.next();
+			int nScenarioId = (int)integerScenarioId;
+			ScenarioDTO scenarioTemp = scenarioService.findByID(nScenarioId);
+			MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
+		}*/
+		
+		model.put("metrics", metrics);
+		
 		return "showresults";
 	}
 	

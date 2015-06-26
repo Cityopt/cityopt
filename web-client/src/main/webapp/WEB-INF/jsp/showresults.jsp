@@ -106,7 +106,7 @@
 								</td>
 								<td></td>
 								<td valign="top">
-									<!-- <table class="tablestyle">
+									<table class="tablestyle">
 										<col style="width:250px">
 										<tr>
 											<th>Output variable</th>
@@ -117,11 +117,11 @@
 											<td>${outputVar.name}</td>
 										</tr>
 										</c:forEach>
-									</table>-->
+									</table>
 								</td>
 							</tr>
 							<tr height="20"></tr>
-							<!-- <tr>
+							<tr>
 								<td><b>Metrics</b></td>
 							</tr>
 							<tr>
@@ -140,7 +140,7 @@
 										</c:forEach>
 									</table>										
 								</td>
-							</tr>-->
+							</tr>
 							<tr height="10"></tr>
 							<tr>						
 								<td></td>
