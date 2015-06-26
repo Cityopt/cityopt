@@ -197,8 +197,8 @@ public class VisualizationController {
 		}
 		
 		model.put("scenario", scenario);
-		String statusMsg = scenario.getStatus();
-		model.put("status", statusMsg);
+		String status = scenario.getStatus();
+		model.put("status", status);
 		
 		if (charttype != null)
 		{
@@ -291,7 +291,7 @@ public class VisualizationController {
 			}
 		}
 
-		if (action != null && action.equals("openwindow"))
+		if (action != null && action.equals("openwindow") && status != null && !status.isEmpty())
 		{
 			Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
 		    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
@@ -304,18 +304,21 @@ public class VisualizationController {
 					OutputVariableDTO outputVar = outputVarService.findByID(outputVarId);
 					SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, scenario.getScenid());
 						
-					List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
-					TimeSeries timeSeries = new TimeSeries(outputVar.getComponent().getName() + "." + outputVar.getName());
-
-					for (int i = 0; i < timeSeriesVals.size(); i++)
+					if (simResult != null)
 					{
-						TimeSeriesValDTO timeSeriesVal = timeSeriesVals.get(i);
-						String value = timeSeriesVal.getValue();
-						value = value.replace(",", ".");
-						timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(value));
+						List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
+						TimeSeries timeSeries = new TimeSeries(outputVar.getComponent().getName() + "." + outputVar.getName());
+	
+						for (int i = 0; i < timeSeriesVals.size(); i++)
+						{
+							TimeSeriesValDTO timeSeriesVal = timeSeriesVals.get(i);
+							String value = timeSeriesVal.getValue();
+							value = value.replace(",", ".");
+							timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(value));
+						}
+						
+						timeSeriesCollection.addSeries(timeSeries);
 					}
-					
-					timeSeriesCollection.addSeries(timeSeries);
 				} catch (EntityNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -480,7 +483,6 @@ public class VisualizationController {
 
 	@RequestMapping("chart.png")
 	public void renderChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
-		//System.setProperty("java.awt.headless", "true");
 		UserSession userSession = (UserSession) model.get("usersession");
 
 		if (userSession == null)
@@ -488,9 +490,15 @@ public class VisualizationController {
 			userSession = new UserSession();
 		}
 		
-		ProjectDTO project = (ProjectDTO) model.get("project");
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		int nScenId = scenario.getScenid();
+		
+		String status = scenario.getStatus();
+		
+		if (status == null || status.isEmpty())
+		{
+			return;
+		}
 		
 		Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
 	    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
@@ -503,18 +511,21 @@ public class VisualizationController {
 				OutputVariableDTO outputVar = outputVarService.findByID(outputVarId);
 				SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, nScenId);
 					
-				List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
-				TimeSeries timeSeries = new TimeSeries(outputVar.getComponent().getName() + "." + outputVar.getName());
-
-				for (int i = 0; i < timeSeriesVals.size(); i++)
+				if (simResult != null)
 				{
-					TimeSeriesValDTO timeSeriesVal = timeSeriesVals.get(i);
-					String value = timeSeriesVal.getValue();
-					value = value.replace(",", ".");
-					timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(value));
+					List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
+					TimeSeries timeSeries = new TimeSeries(outputVar.getComponent().getName() + "." + outputVar.getName());
+	
+					for (int i = 0; i < timeSeriesVals.size(); i++)
+					{
+						TimeSeriesValDTO timeSeriesVal = timeSeriesVals.get(i);
+						String value = timeSeriesVal.getValue();
+						value = value.replace(",", ".");
+						timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(value));
+					}
+					
+					timeSeriesCollection.addSeries(timeSeries);
 				}
-				
-				timeSeriesCollection.addSeries(timeSeries);
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
