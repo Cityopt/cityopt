@@ -150,7 +150,7 @@ public class Project extends VersionModel implements java.io.Serializable {
         this.defaultextparamvalset = defaultextparamvalset;
     }
 
-	@ManyToOne(fetch = FetchType.LAZY,cascade={CascadeType.REMOVE})
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "modelid")
 	public SimulationModel getSimulationmodel() {
 		return this.simulationmodel;
