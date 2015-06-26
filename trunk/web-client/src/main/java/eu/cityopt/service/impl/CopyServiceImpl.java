@@ -472,7 +472,8 @@ public class CopyServiceImpl implements CopyService {
 			for(OptimizationSet os : of.getOptimizationsets()){
 				OptimizationSet osC = os.clone();
 				osC.setOptid(0);
-				osC.setExtparamvalset(copiedEPVSets.get(osC.getExtparamvalset().getExtparamvalsetid()));
+				if(os.getExtparamvalset() != null)
+					osC.setExtparamvalset(copiedEPVSets.get(os.getExtparamvalset().getExtparamvalsetid()));
 				osC.setObjectivefunction(ofC);
 				osC.setOptsearchconsts(null);
 				osC.setOptsetscenarioses(null);
@@ -639,6 +640,7 @@ public class CopyServiceImpl implements CopyService {
 			log.info("copying optsetscenarios");
 			for(OptSetScenarios oss : s.getOptsetscenarioses()){
 				OptSetScenarios ossC = oss.clone();
+				ossC.setOptscenid(0);
 				OptimizationSet osC = copiedOptimizationSets.get(oss.getOptimizationset().getOptid());
 				ossC.setOptimizationset(osC);
 				ossC.setScenario(sC);
