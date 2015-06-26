@@ -11,12 +11,17 @@
 </tr>
 <tr height=10>
 	<td></td>
+	<td><p>Version 26.6.2015</p></td>
 </tr>
 <tr>
 	<td>
 		<img src="assets/img/icon_project_black.jpg"/>
 	</td>
+<% if (request.getSession().getAttribute("project") != null) { %>
+	<td><b>Project</b> (${project.name})</td>
+<% } else { %>
 	<td><b>Project</b></td>
+<% } %>
 </tr>
 <tr>
 	<td></td>
@@ -81,7 +86,11 @@
 	<td>
 		<img src="assets/img/icon_scenario_black.jpg"/>
 	</td>
+<% if (request.getSession().getAttribute("scenario") != null) { %>
+	<td><b>Scenario</b> (${scenario.name})</td>
+<% } else { %>
 	<td><b>Scenario</b></td>
+<% } %>
 </tr>
 <% if (request.getSession().getAttribute("project") != null) { %>
 <tr>
