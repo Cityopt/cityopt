@@ -346,6 +346,7 @@ public class CopyServiceImpl implements CopyService {
 		
 		//save copied extparamvalsets to set references later...
 		Map<Integer, ExtParamValSet> copiedEPVSets = new HashMap<Integer, ExtParamValSet>();
+		log.info("copying external parameters");
 		for(ExtParam ep : project.getExtparams()){
 			ExtParam epC = ep.clone();
 			epC.setExtparamid(0);
@@ -353,6 +354,7 @@ public class CopyServiceImpl implements CopyService {
 			epC.setExtparamvals(null);
 
 			epC = extParamRepository.save(epC);
+			log.info("copying external parameter values of extparamid: " + ep.getExtparamid());
 			for(ExtParamVal epv : ep.getExtparamvals()){
 				ExtParamVal epvC = epv.clone();
 				epvC.setExtparamvalid(0);
@@ -360,11 +362,13 @@ public class CopyServiceImpl implements CopyService {
 				epvC.setExtparamvalsetcomps(null);
 				
 				if(epvC.getTimeseries() != null){
+					log.info("copying timeseries of extparamvalid: " + epv.getExtparamvalid());
 					epvC.setTimeseries(copyTimeSeries(epvC.getTimeseries()));
 				}
 				
 				epvC = extParamValRepository.save(epvC);
 				
+				log.info("creating extparamvalsetcomp relations for extparam " + ep.getExtparamid());
 				//n:n relation is a bit tricky: it has to be checked if the epvSet has already been copied
 				for(ExtParamValSetComp epvsc : epv.getExtparamvalsetcomps()){
 					ExtParamValSetComp epvscC = new ExtParamValSetComp();
@@ -386,10 +390,12 @@ public class CopyServiceImpl implements CopyService {
 			}
 		}		
 		em.flush();
+		log.info("finished copying external parameters");
 		//copy components
 		Set<InputParamVal> componentsInputParamValues = new HashSet<InputParamVal>();
 		Map<Integer, InputParameter> componentsInputParameter = new HashMap<Integer, InputParameter>();
 		Map<Integer, SimulationResult> copiedSimulationResults = new HashMap<Integer, SimulationResult>();
+		log.info("copying components");
 		//inputParamValues need to be aligned to the right scenario later...
 		for(Component c : project.getComponents()){
 			Component cC = c.clone();
@@ -399,6 +405,7 @@ public class CopyServiceImpl implements CopyService {
 			cC.setOutputvariables(null);
 			cC = componentRepository.save(cC);
 			//outvars, inputparam
+			log.info("copying inputparameters of component id " + c.getComponentid());
 			for(InputParameter ip : c.getInputparameters()){
 				InputParameter ipC = ip.clone();
 				ipC.setInputid(0);
@@ -415,6 +422,7 @@ public class CopyServiceImpl implements CopyService {
 				}
 				componentsInputParameter.put(ip.getInputid(), ipC);
 			}
+			log.info("copying outputvariables of component id " + c.getComponentid());
 			for(OutputVariable ov : c.getOutputvariables()){
 				OutputVariable ovC = ov.clone();
 				ovC.setOutvarid(0);
@@ -432,6 +440,8 @@ public class CopyServiceImpl implements CopyService {
 			}
 		}
 		em.flush();
+		log.info("finished copying components");
+		log.info("copying metrics");
 		HashMap<Integer, Metric> copiedMetrics = new HashMap<Integer, Metric>();
 		for(Metric m : project.getMetrics()){
 			Metric mC = m.clone();
@@ -443,11 +453,12 @@ public class CopyServiceImpl implements CopyService {
 			copiedMetrics.put(m.getMetid(), mC);
 		}
 		em.flush();
+		log.info("finished copying metrics");
 		//copied objective functions might be needed, if there's a reference to scenariogenerator
 		Map<Integer, ObjectiveFunction> copiedOptFunctions = new HashMap<Integer, ObjectiveFunction>();
 		Map<Integer, OptimizationSet> copiedOptimizationSets = new HashMap<Integer, OptimizationSet>();
 		Map<Integer, ScenGenResult> copiedScenGenResults = new HashMap<Integer, ScenGenResult>();
-		
+		log.info("copying objective functions");
 		for(ObjectiveFunction of : project.getObjectivefunctions()){
 			ObjectiveFunction ofC = of.clone();
 			ofC.setObtfunctionid(0);
@@ -457,6 +468,7 @@ public class CopyServiceImpl implements CopyService {
 			ofC.setProject(copyProject);
 			ofC = objectiveFunctionRepository.save(ofC);
 			
+			log.info("copying optimizationsets of objective function id " + of.getObtfunctionid());
 			for(OptimizationSet os : of.getOptimizationsets()){
 				OptimizationSet osC = os.clone();
 				osC.setOptid(0);
@@ -468,6 +480,7 @@ public class CopyServiceImpl implements CopyService {
 				copiedOptimizationSets.put(os.getOptid(), osC);
 			}
 			
+			log.info("copying objective function results of objective function id " + of.getObtfunctionid());
 			for(ObjectiveFunctionResult ofr : of.getObjectivefunctionresults()){
 				//copy ScenGenResult:
 				ScenGenResult sgrC = null;
@@ -485,12 +498,15 @@ public class CopyServiceImpl implements CopyService {
 				ofrC = objectiveFunctionResultRepository.save(ofrC);
 			}	
 			
+			log.info("copying scengenobjective functions of objective function id " + of.getObtfunctionid());
 			if(of.getScengenobjectivefunctions() != null && of.getScengenobjectivefunctions().size() > 0){
 				copiedOptFunctions.put(of.getObtfunctionid(), ofC);
 			}
 		}
+		log.info("finished copying objective functions");
 		em.flush();
 		Map<Integer, ScenarioGenerator> copiedScenarioGenerators = new HashMap<Integer, ScenarioGenerator>();
+		log.info("copying scenario generator");
 		for(ScenarioGenerator sg : project.getScenariogenerators()){
 			ScenarioGenerator sgC = sg.clone();
 			sgC.setScengenid(0);
@@ -505,6 +521,7 @@ public class CopyServiceImpl implements CopyService {
 			sgC = scenarioGeneratorRepository.save(sgC);
 			
 			//copy all scengenresults
+			log.info("copying scengenresults of scenariogeneratorid: " + sg.getScengenid());
 			for(ScenGenResult sgr : sg.getScengenresults()){
 				if(!copiedScenGenResults.containsKey(sgr.getScengenresultid())){
 					ScenGenResult sgrC = copyScenGenResult(sgr);
@@ -514,59 +531,70 @@ public class CopyServiceImpl implements CopyService {
 			}
 			
 			//set reference to previously copied objective functions
-			if(sg.getScengenobjectivefunctions() != null)
-			for(ScenGenObjectiveFunction sgof : sg.getScengenobjectivefunctions()){
-				ScenGenObjectiveFunction sgofC = new ScenGenObjectiveFunction();
-				sgofC.setScenariogenerator(sgC);
-				ObjectiveFunction of = copiedOptFunctions.get(sgof.getSgobfunctionid());
-				sgofC.setObjectivefunction(of);
-				scenGenObjectiveFunctionRepository.save(sgofC);
+			if(sg.getScengenobjectivefunctions() != null){
+				log.info("creating scengenobjective function relations for scenariogeneratorid: " + sg.getScengenid());
+				for(ScenGenObjectiveFunction sgof : sg.getScengenobjectivefunctions()){
+					ScenGenObjectiveFunction sgofC = new ScenGenObjectiveFunction();
+					sgofC.setScenariogenerator(sgC);
+					ObjectiveFunction of = copiedOptFunctions.get(sgof.getSgobfunctionid());
+					sgofC.setObjectivefunction(of);
+					scenGenObjectiveFunctionRepository.save(sgofC);
+				}
 			}
 			
-			if(sg.getDecisionvariables() != null)
-			for(DecisionVariable dv : sg.getDecisionvariables()){
-				DecisionVariable dvC = new DecisionVariable();
-				dvC.setDecisionvarid(0);
-				dvC.setScenariogenerator(sgC);
-				//copy decisionvariableresult
-				for(DecisionVariableResult dvr : dv.getDecisionvariableresults()){
-					DecisionVariableResult dvrC = dvr.clone();
-					dvrC.setDecvarresultid(0);
-					//get previously copied scengenresult
-					dvrC.setScengenresult(copiedScenGenResults.get(dvr.getScengenresult().getScengenresultid()));
-					decisionVariableResultRepository.save(dvrC);
+			if(sg.getDecisionvariables() != null){
+				log.info("copying decisionvariables for scenariogeneratorid: " + sg.getScengenid());
+				for(DecisionVariable dv : sg.getDecisionvariables()){
+					DecisionVariable dvC = new DecisionVariable();
+					dvC.setDecisionvarid(0);
+					dvC.setScenariogenerator(sgC);
+					//copy decisionvariableresult
+					for(DecisionVariableResult dvr : dv.getDecisionvariableresults()){
+						DecisionVariableResult dvrC = dvr.clone();
+						dvrC.setDecvarresultid(0);
+						//get previously copied scengenresult
+						dvrC.setScengenresult(copiedScenGenResults.get(dvr.getScengenresult().getScengenresultid()));
+						decisionVariableResultRepository.save(dvrC);
+					}
+					
+					//set reference to inputParameter
+					InputParameter ip = componentsInputParameter.get(dv.getInputparameter().getInputid());
+					dvC.setInputparameter(ip);
+					decisionVariableRepository.save(dvC);
 				}
-				
-				//set reference to inputParameter
-				InputParameter ip = componentsInputParameter.get(dv.getInputparameter().getInputid());
-				dvC.setInputparameter(ip);
-				decisionVariableRepository.save(dvC);
 			}
 			
 			if(sg.getExtparamvalset() != null){
+				log.info("setting extparamvalset relation for scenariogeneratorid: " + sg.getScengenid()
+						+ " to copy of extparamvalsetid: " + sg.getExtparamvalset().getExtparamvalsetid());
 				sgC.setExtparamvalset(copiedEPVSets.get(sg.getExtparamvalset().getExtparamvalsetid()));
 			}
 			
-			if(sg.getModelparameters() != null)
-			for(ModelParameter mp : sg.getModelparameters()){
-				ModelParameter mpC = mp.clone();
-				mpC.setModelparamid(0);
-				InputParameter ip = componentsInputParameter.get(mp.getInputparameter().getInputid());
-				mpC.setInputparameter(ip);
+			if(sg.getModelparameters() != null){
+				log.info("copying modelparameters");
+				for(ModelParameter mp : sg.getModelparameters()){
+					ModelParameter mpC = mp.clone();
+					mpC.setModelparamid(0);
+					InputParameter ip = componentsInputParameter.get(mp.getInputparameter().getInputid());
+					mpC.setInputparameter(ip);
+				}
 			}
 			
-			if(sg.getAlgoparamvals() != null)
-			for(AlgoParamVal apv : sg.getAlgoparamvals()){
-				AlgoParamVal apvC = apv.clone();
-				apvC.setAparamvalid(0);
-				apvC.setScenariogenerator(sgC);
-				algoParamValRepository.save(apvC);
+			if(sg.getAlgoparamvals() != null){
+				log.info("copying algoparamvalues");
+				for(AlgoParamVal apv : sg.getAlgoparamvals()){
+					AlgoParamVal apvC = apv.clone();
+					apvC.setAparamvalid(0);
+					apvC.setScenariogenerator(sgC);
+					algoParamValRepository.save(apvC);
+				}
 			}
-			
 			
 			copiedScenarioGenerators.put(sg.getScengenid(), sgC);
 		}
 		em.flush();
+		log.info("finished copying scenariogenerator");
+		log.info("copying optconstraints");
 		for(OptConstraint oc : project.getOptconstraints()){
 			OptConstraint ocC = oc.clone();
 			ocC.setOptconstid(0);
@@ -575,6 +603,7 @@ public class CopyServiceImpl implements CopyService {
 			ocC.setOptsearchconsts(null);
 			ocC.setOptconstraintresults(null);
 			ocC = optConstraintRepository.save(ocC);
+			log.info("copying scengenoptconstraint for optconstraintid:" + oc.getOptconstid());
 			for(ScenGenOptConstraint sgoc : oc.getScengenoptconstraints()){
 				ScenGenOptConstraint sgocC = new ScenGenOptConstraint();
 				ScenarioGenerator sgC = copiedScenarioGenerators.get(sgoc.getScenariogenerator().getScengenid());
@@ -582,12 +611,14 @@ public class CopyServiceImpl implements CopyService {
 				sgocC.setOptconstraint(ocC);
 				scenGenOptConstraintRepository.save(sgocC);
 			}
+			log.info("copying optsearchconst for optconstraintid:" + oc.getOptconstid());
 			for(OptSearchConst osc : oc.getOptsearchconsts()){
 				OptSearchConst oscC = new OptSearchConst();
 				oscC.setOptimizationset(copiedOptimizationSets.get(osc.getOptimizationset().getOptid()));
 				oscC.setOptconstraint(ocC);
 				optSearchConstRepository.save(oscC);
 			}
+			log.info("copying optconstraintresult for optconstraintid:" + oc.getOptconstid());
 			for(OptConstraintResult ocr : oc.getOptconstraintresults()){
 				OptConstraintResult ocrC = ocr.clone();
 				ocrC.setOptconstresultid(0);
@@ -597,12 +628,15 @@ public class CopyServiceImpl implements CopyService {
 			}
 		}
 		em.flush();
+		log.info("finished copying optconstraints");
+		log.info("copying scenarios");
 		for(Scenario s : project.getScenarios()){
 			Set<MetricVal> mvM = new HashSet<MetricVal>();
 			
 			Scenario sC = copyScenario(s.getScenid(), "copy of " + s.getName(), 
 					false, true, false, false, mvM);
 			
+			log.info("copying optsetscenarios");
 			for(OptSetScenarios oss : s.getOptsetscenarioses()){
 				OptSetScenarios ossC = oss.clone();
 				OptimizationSet osC = copiedOptimizationSets.get(oss.getOptimizationset().getOptid());
@@ -611,6 +645,7 @@ public class CopyServiceImpl implements CopyService {
 				optSetScenarioRepository.save(ossC);
 			}
 			
+			log.info("setting simulationresult references");
 			for(SimulationResult sr : s.getSimulationresults()){
 				SimulationResult srC = copiedSimulationResults.get(sr.getSimresid());
 				srC.setScenario(sC);
@@ -621,23 +656,27 @@ public class CopyServiceImpl implements CopyService {
 				sC.setScenariogenerator(copiedScenarioGenerators.get(s.getScenariogenerator().getScengenid()));
 			}
 			
+			log.info("setting scengenresult references");
 			for(ScenGenResult sgr : s.getScengenresults()){
 				ScenGenResult sgrC = copiedScenGenResults.get(sgr.getScengenresultid());
 				sgrC.setScenario(sC);
 				scenGenResultRepository.save(sgrC);
 			} 
 			
+			log.info("setting metricval->metric references");
 			for(MetricVal mv : mvM){
 				mv.setMetric(copiedMetrics.get(mv.getMetric().getMetid()));
 				mv = metricValRepository.save(mv);
 			}
 			
+			log.info("setting scenariometric references");
 			if(sC.getScenariometricses() != null)
 				for(ScenarioMetrics sm : sC.getScenariometricses()){
 					sm.setExtparamvalset(copiedEPVSets.get(sm.getExtparamvalset().getExtparamvalsetid()));
 					scenarioMetricsRepository.save(sm);
 				}
 			
+			log.info("setting inputparamval references");
 			//only consider inputparamvals of the current scenario s
 			Iterator<InputParamVal> ipvIter = componentsInputParamValues.stream().filter(i -> i.getScenario().getScenid() == s.getScenid()).iterator();
 			while(ipvIter.hasNext()){
@@ -651,6 +690,7 @@ public class CopyServiceImpl implements CopyService {
 			
 		}
 		em.flush();
+		log.info("finished copying scenarios");
 		return copyProject;
 	}
 	

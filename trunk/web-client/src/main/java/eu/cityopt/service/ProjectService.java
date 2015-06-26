@@ -63,6 +63,8 @@ public interface ProjectService extends CityOptService<ProjectDTO> {
 	Set<MetricDTO> getMetrics(int prjid);
 	
 	List<ProjectDTO> findByNameContaining(String name);
+	
+	ProjectDTO findByName(String name);
 
 	Set<OptimizationSetDTO> getSearchOptimizationSets(int prjid) throws EntityNotFoundException;
 

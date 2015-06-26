@@ -116,7 +116,7 @@ public class TestScenarioGenerationService extends SimulationTestBase {
     @Ignore("This can take a long time")
     @DatabaseSetup("classpath:/testData/empty_project.xml")
     public void testImportedProblem() throws Exception {
-        Project project = projectRepository.findByName("Empty test project").get(0);
+        Project project = projectRepository.findByNameContaining("Empty test project").get(0);
         byte[] modelData = getResourceBytes("/ost.zip");
         importExportService.importSimulationModel(
                 project.getPrjid(), null, "test project",

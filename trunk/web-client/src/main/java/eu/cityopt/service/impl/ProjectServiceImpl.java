@@ -84,6 +84,13 @@ public class ProjectServiceImpl implements ProjectService{
 			throw new EntityNotFoundException();
 		}
 
+		SimulationModel sm = project.getSimulationmodel();
+		if(sm.getProjects().size() == 1){
+			//this is the simulationmodel's last project, delete the model
+			projectRepository.delete(project.getPrjid());
+			simulationModelRepository.delete(sm.getModelid());
+		}
+		
 		projectRepository.delete(project.getPrjid());
 	}
 	
@@ -129,10 +136,19 @@ public class ProjectServiceImpl implements ProjectService{
 	
 	@Transactional(readOnly = true)
 	public List<ProjectDTO> findByNameContaining(String name) {
-		List<Project> projects = projectRepository.findByName(name);
+		List<Project> projects = projectRepository.findByNameContaining(name);
 		List<ProjectDTO> result 
 			= modelMapper.map(projects, new TypeToken<List<ProjectDTO>>() {}.getType());
 		return result;
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public ProjectDTO findByName(String name) {
+		Project projects = projectRepository.findByName(name);
+		if(projects != null)
+			return modelMapper.map(projects, ProjectDTO.class);
+		return null;
 	}
 	
 	@Transactional(readOnly = true)
