@@ -348,8 +348,7 @@ public class ScenarioController {
 				//author@: Markus Turunen
 				//date: 24.6.2015
 				//ToDO: test&improve
-				//Implement cloneNamer
-								
+				//Implement cloneNamer								
 				scenario = scenarioService.findByID(nScenarioId);					
 				String name = scenario.getName();
 				List<ScenarioDTO> list =scenarioService.findByName(name);	
