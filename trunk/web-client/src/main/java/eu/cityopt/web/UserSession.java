@@ -2,6 +2,8 @@ package eu.cityopt.web;
 
 import java.util.HashSet;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class UserSession {
 	private HashSet<Integer> selectedChartOutputVarIds = new HashSet<Integer>();
 	private HashSet<Integer> selectedChartExtVarIds = new HashSet<Integer>();
@@ -16,7 +18,7 @@ public class UserSession {
 	private int nGAResultScenario;
 	private int nComponentId;
 	private int nChartType;
-
+	
 	public HashSet<Integer> getSelectedOptSetIds() {
 		return selectedOptSetIds;
 	}
