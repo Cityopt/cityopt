@@ -36,6 +36,7 @@
 			    <th>Location</th>
 			    <th>Description</th>
 			    <th>Open</th>
+			    <th>Clone</th>
 			</tr>
 			
 			<c:forEach items="${projects}" var="project">
@@ -48,6 +49,12 @@
 					<td>
 						<a href="<c:url value='editproject.html?prjid=${project.prjid}'/>">
 							<button align="right"  type="button" value="Open">Open</button>
+						</a>
+					</td>
+					
+					<td>
+						<a href="<c:url value='cloneproject.html?projectid=${project.prjid}'/>">
+							<button align="right" type="button" value="Clone">Clone</button>
 						</a>
 					</td>
 			   	</tr>
