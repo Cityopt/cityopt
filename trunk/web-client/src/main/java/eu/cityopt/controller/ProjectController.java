@@ -28,6 +28,7 @@ import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ProjectDTO;
+import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.repository.ProjectRepository;
@@ -453,6 +454,37 @@ public class ProjectController {
 		return "deleteproject";
 	}
 	
+	// @author Markus Turunen
+	// date: 25.6.2015
+	// This method handles project cloning.	
+	@RequestMapping(value="cloneproject", method=RequestMethod.GET)
+	public String CloneScenario(Map<String, Object> model, @RequestParam(value = "projectid") String projectid) {
+		
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		int nProjectId = Integer.parseInt(projectid);
+		try {
+			project = projectService.findByID(nProjectId);
+		} catch (EntityNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		//Random number is to make clone crash temp. solution.
+		//ToDo: Fix the issue:
+		String clonename = project.getName()+"(clone)"+Math.random()*1000;
+		try {
+			ProjectDTO ProjectCloner = copyService.copyProject(nProjectId,clonename);
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		List<ProjectDTO> projects = projectService.findAll();
+		model.put("projects", projects);
+		return "openproject";
+				// ;(projectid, clonename, true, false, true, false);
+		}
+
+	
 	@RequestMapping(value="usermanagement", method=RequestMethod.GET)
 	public String getUserManagement(Model model){
 		List<AppUserDTO> users = userService.findAll();
@@ -862,6 +894,7 @@ public class ProjectController {
 		model.put("extParams", extParams);
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
+		
 		
 		return "projectparameters";
 	}
