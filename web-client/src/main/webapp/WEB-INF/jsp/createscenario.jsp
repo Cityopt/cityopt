@@ -21,6 +21,7 @@
 				<tr>
 					<td>
 						<h2>Create scenario</h2>
+																								
 					</td>
 				</tr>
 				<tr>
@@ -38,6 +39,7 @@
 								<td></td>
 								<td></td>
 							</tr>
+							<element><h2 class="error"></element>${errorMessage}</h2>
 							<tr>						
 								<td>Description:</td>
 								<td><form:textarea type="text" rows="3" path="description" style="width: 200px"></form:textarea></td>
