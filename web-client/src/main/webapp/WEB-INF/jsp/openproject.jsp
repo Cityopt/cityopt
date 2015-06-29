@@ -3,11 +3,12 @@
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Open project</title>
+<title>CityOpt <spring:message code="openproject"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -21,8 +22,8 @@
 
 		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:500px;width:600px;overflow:auto">
-			<h2>Open project</h2>
+			<div style="overflow:scroll;height:700px;width:900px;overflow:auto">
+			<h2><spring:message code="openproject"/></h2>
 			<table class="tablestyle" width="600" border="1">
 				<col style="width:150px">	
 				<col style="width:50px">	
@@ -31,12 +32,12 @@
 				<col style="width:50px">	
 				
 			<tr height="20">
-			    <th>Name</th>
+			    <th><spring:message code="name"/></th>
 			    <th>Id</th>
-			    <th>Location</th>
-			    <th>Description</th>
-			    <th>Open</th>
-			    <th>Clone</th>
+			    <th><spring:message code="location"/></th>
+			    <th><spring:message code="description"/></th>
+			    <th><spring:message code="open"/></th>
+			    <th><spring:message code="clone"/></th>
 			</tr>
 			
 			<c:forEach items="${projects}" var="project">
@@ -48,13 +49,13 @@
 					
 					<td>
 						<a href="<c:url value='editproject.html?prjid=${project.prjid}'/>">
-							<button align="right"  type="button" value="Open">Open</button>
+							<button align="right"  type="button" value="Open"><spring:message code="open"/></button>
 						</a>
 					</td>
 					
 					<td>
 						<a href="<c:url value='cloneproject.html?projectid=${project.prjid}'/>">
-							<button align="right" type="button" value="Clone">Clone</button>
+							<button align="right" type="button" value="Clone"><spring:message code="clone"/></button>
 						</a>
 					</td>
 			   	</tr>
