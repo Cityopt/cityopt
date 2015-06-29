@@ -174,19 +174,39 @@ public class ScenarioController {
 				e1.printStackTrace();
 			}
 			
+			
+			
 			model.put("project", project);
 			
 			ScenarioDTO scenario = new ScenarioDTO();
-			scenario.setName(formScenario.getName());
-			scenario.setDescription(formScenario.getDescription());
-			scenario.getScenid();
 			
-			try {
-				scenario = scenarioService.saveWithDefaultInputValues(scenario, project.getPrjid());
-			} catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			
+			//Fix #10457 By:Markus Turunen Checking no other entries.			
+			List<ScenarioDTO> elements = scenarioService.findByName(formScenario.getName());
+			if (elements.size()==0){			
+				scenario.setName(formScenario.getName());
+				scenario.setDescription(formScenario.getDescription());
+				scenario.getScenid();
+				
+				try {
+					scenario = scenarioService.saveWithDefaultInputValues(scenario, project.getPrjid());
+				} catch (EntityNotFoundException e) {
+					// TODO Auto-generated catch block
+					
+					e.printStackTrace();
+				}
+				
+				
 			}
+			else
+			{
+				model.put("scenario", formScenario);
+				model.put("errorMessage", "This Scenario allready exist, please create another name.");
+				return "createscenario";
+				
+				
+			}
+			
 			
 			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 			model.put("components", components);
@@ -387,6 +407,7 @@ public class ScenarioController {
 
 		return "openscenario";
 	}
+	
 	
 	@RequestMapping(value="editscenario", method=RequestMethod.GET)
 	public String getEditScenario (Map<String, Object> model) {
