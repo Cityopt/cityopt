@@ -238,7 +238,7 @@ public class ScenarioController {
 
 //			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
 			InputParamValDTO simStart = inputParamValService.findByNameAndScenario("simulation_start", scenario.getScenid());
-			InputParamValDTO simEnd = inputParamValService.findByNameAndScenario("simulation_start", scenario.getScenid());
+			InputParamValDTO simEnd = inputParamValService.findByNameAndScenario("simulation_end", scenario.getScenid());
 			model.put("simStart", simStart.getValue());
 			model.put("simEnd", simEnd.getValue());
 //			// Get simulation start and end times
