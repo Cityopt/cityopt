@@ -4,6 +4,8 @@
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -22,7 +24,11 @@
 		<td width=30></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:600px;overflow:auto">
-			<h2>Open scenario</h2>
+			
+			<!-- Open scenario -->
+			<h2> <spring:message code="open_scenario"/></h2>
+		
+			
 			<table class="tablestyle" width="600" border="1">
 				<col style="width:200px">	
 				<col style="width:50px">
@@ -31,11 +37,16 @@
 				<col style="width:50px">
 																									
 				<tr height="20">
-				    <th>Name</th>
-				    <th>Id</th>
-				    <th>Description</th>
-				    <th>Open</th>
-				    <th>Clone</th>
+					<!--Name-->
+				    <th><spring:message code="name"/></th>
+				    <!-- Id -->				    
+				    <th><spring:message code="id"/></th>
+				    <!--Description-->
+				    <th><spring:message code="description"/></th>
+				    <!--Open-->    
+				    <th><spring:message code="open"/></th>
+				    <!-- Clone-->				
+				    <th><spring:message code="clone"/></th>
 				</tr>
 								
 				<c:forEach items="${scenarios}" var="scenario">
@@ -45,12 +56,13 @@
 					<td>${scenario.description}</td>			
 					<td>
 						<a href="<c:url value='openscenario.html?scenarioid=${scenario.scenid}'/>">
-							<button align="right" type="button" value="Open">Open</button>
+							<button align="right" type="button" value="Open"><spring:message code="open"/>
+							</button>
 						</a>
 					</td>
 					<td>
 						<a href="<c:url value='clonescenario.html?scenarioid=${scenario.scenid}'/>">
-							<button align="right" type="button" value="Clone">Clone</button>
+							<button align="right" type="button" value="Clone"><spring:message code="clone"/></button>
 						</a>
 					</td>
 			   	</tr>
