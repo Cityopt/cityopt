@@ -45,6 +45,8 @@ h2 {
 
 h2.error {
     color: red;
+    font-size: 12px;
+    font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 }
 
 h3 {
