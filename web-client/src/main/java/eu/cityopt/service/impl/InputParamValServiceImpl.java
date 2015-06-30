@@ -93,6 +93,8 @@ public class InputParamValServiceImpl implements InputParamValService {
 	@Override
 	public InputParamValDTO findByNameAndScenario(String name, int scenId) {
 		InputParamVal iparams = inputParamValRepository.findByNameAndScenario(name, scenId);
+		if(iparams == null)
+			return null;
 		InputParamValDTO result 
 			= modelMapper.map(iparams, InputParamValDTO.class);
 		return result;

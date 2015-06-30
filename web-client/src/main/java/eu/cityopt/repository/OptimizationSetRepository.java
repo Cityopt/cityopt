@@ -8,5 +8,6 @@ import eu.cityopt.model.OptimizationSet;
 @Repository
 public interface OptimizationSetRepository extends JpaRepository<OptimizationSet, Integer> {
 
+	OptimizationSet findByName(String name);
 }
 

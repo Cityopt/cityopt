@@ -65,7 +65,7 @@ public class ProjectServiceImpl implements ProjectService{
 	
 	@Autowired private ComponentRepository componentRepository;
 	
-	@PersistenceContext EntityManager em;
+	
 
 	@Autowired
 	public ProjectServiceImpl(ModelMapper modelMapper) {
@@ -90,8 +90,8 @@ public class ProjectServiceImpl implements ProjectService{
 			projectRepository.delete(project.getPrjid());
 			simulationModelRepository.delete(sm.getModelid());
 		}
-		
-		projectRepository.delete(project.getPrjid());
+		else
+			projectRepository.delete(project.getPrjid());
 	}
 	
 	@Transactional
