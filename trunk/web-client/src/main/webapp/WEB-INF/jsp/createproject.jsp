@@ -16,24 +16,29 @@
 		<td width=20></td>
 		<td>
 			<table style="width:900px">
-				<tr><td><h2>Create project</h2></td></tr>
+				<!-- create project -->
+				<tr><td><h2><spring:message code="createproject"/></h2></td></tr>
 				<tr>
 					<td>
 						<table>
 							<tr>
-								<td>Project name:</td>
+								<!--Project name:-->
+								<td><spring:message code="project_name"/>:</td>
 								<td><form:input type="text" path="name"/></td>
 							</tr>
-							<tr>						
-								<td>Location:</td>
+							<tr>
+								<!--Location:-->						
+								<td><spring:message code="location"/>:</td>
 								<td><form:input type="text" path="location"/></td>
 							</tr>
-							<tr>						
-								<td>Design target:</td>
+							<tr>
+								<!--Design target:-->						
+								<td><spring:message code="design_target"/>:</td>
 								<td><form:input type="text" path="designtarget"/></td>
 							</tr>
-							<tr>						
-								<td>Description:</td>
+							<tr>
+								<!--Description -->						
+								<td><spring:message code="description"/>:</td>
 								<td><form:textarea type="text" rows="3" path="description"></form:textarea></td>
 							</tr>
 						</table>
@@ -43,8 +48,9 @@
 					</td>
 				</tr>
 				<tr>
+					<!--Upload diagram-->
 					<td colspan="2" align="Right">
-						<input type="button" id="uploadDiagram" value="Upload diagram" style="width:120px"/>
+						<input type="button" id="uploadDiagram" value=<spring:message code="upload_diagram"/> style="width:120px"/>
 					</td>
 				</tr>
 				<tr>
@@ -56,7 +62,8 @@
 							<tr>
 								<td></td>
 								<td></td>
-								<td align="right"><input type="submit" value="Create a project" style="width:120px"></td>
+								<!-- Create project -->
+								<td align="right"><input type="submit" value=<spring:message code="create_project"/> style="width:120px"></td>
 							</tr>
 						</table>
 					</td>
