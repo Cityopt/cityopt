@@ -64,6 +64,7 @@ import eu.cityopt.service.TimeSeriesService;
 import eu.cityopt.service.TimeSeriesValService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
+import eu.cityopt.service.impl.OptimizationSetServiceImpl;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
 import eu.cityopt.sim.service.SimulationService;
@@ -289,6 +290,7 @@ public class OptimizationController {
 			optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
+			
 		}
 		
 		model.put("constraints", optSearchConstraints);
@@ -352,6 +354,78 @@ public class OptimizationController {
 		return "editobjfunction";
 	}
 
+	// @author Markus Turunen
+		// date: 26.6.2015
+		// This method handles Optimizer cloning.
+		// 30.6.2015
+		// ToDo add a identifier tag to clone of the clones
+		 
+		@RequestMapping(value="cloneoptimizer", method=RequestMethod.GET)
+		public String CloneOptimizer(Map<String, Object> model, @RequestParam(value = "optimizerid") String optimizerid) {
+		
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		int noptimizerid = Integer.parseInt(optimizerid);		
+		OptimizationSetDTO optimizer = null;
+		try {
+			optimizer = (OptimizationSetDTO) optSetService.findByID(noptimizerid);
+		} catch (EntityNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}		
+		Set<OpenOptimizationSetDTO> optSets=null;		
+		if (optSetService.findByName(optimizerid)==null){			
+			String name = optimizer.getName();
+			String clonename = name+"(copy)";			
+				try {
+					//clones
+					OptimizationSetDTO cloneoptimisation = copyService.copyOptimizationSet(noptimizerid, clonename, false);
+					cloneoptimisation=optSetService.save(cloneoptimisation);
+					
+				
+				} catch (EntityNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}	
+		
+		try {
+			
+			optSets = projectService.getSearchAndGAOptimizationSets(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		model.put("openoptimizationsets", optSets);
+		}
+		return "openoptimizationset";
+		}
+		
+			/*
+			ProjectDTO project = (ProjectDTO) model.get("project");
+			int nProjectId = Integer.parseInt(projectid);
+			try {
+				project = projectService.findByID(nProjectId);
+			} catch (EntityNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			//Random number is to make clone crash temp. solution.
+			//ToDo: Fix the issue:
+			String clonename = project.getName()+"(clone)"+Math.random()*1000;
+			try {
+				ProjectDTO ProjectCloner = copyService.copyProject(nProjectId,clonename);
+			} catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			List<ProjectDTO> projects = projectService.findAll();
+			model.put("projects", projects);
+			return "openproject";
+					// ;(projectid, clonename, true, false, true, false);
+			}
+*/
+	
+	
+	
 	@RequestMapping(value="editobjfunction", method=RequestMethod.POST)
 	public String getEditObjFunctionPost(ObjectiveFunctionDTO function, HttpServletRequest request, Map<String, Object> model) {
 		ProjectDTO project = (ProjectDTO) model.get("project");
