@@ -23,7 +23,8 @@
 			<div style="overflow:scroll;height:400px;width:1000px;overflow:auto">
 			<table>
 				<tr>
-					<td><h2>Project metrics</h2></td>
+				<!-- Project metrics -->
+					<td><h2><spring:message code="project_metrics"/></h2></td>
 				</tr>
 				<tr>
 					<td>
@@ -36,12 +37,18 @@
 							<col style="width: 100px">
 
 							<tr height="20">
-							    <th>Name</th>
-							    <th>Id</th>
-							    <th>Expression</th>
-							    <th>Clone</th>
-							    <th>Edit</th>
-							    <th>Delete</th>
+							<!-- Name -->
+							    <th><spring:message code="name"/></th>
+							<!-- Id -->
+							    <th><spring:message code="id"/></th>
+						    <!-- Expressions -->
+							    <th><spring:message code="expressions"/></th>
+							<!-- Clone -->
+							     <th><spring:message code="clone"/></th>
+							<!-- Edit -->
+							     <th><spring:message code="edit"/></th>
+							<!-- Delete -->
+							     <th><spring:message code="delete"/></th>
 							</tr>
 							
 							<c:forEach items="${metrics}" var="metric">
@@ -50,18 +57,24 @@
 						    	<td>${metric.metid}</td>
 						    	<td>${metric.expression}</td>
 								<td>
+									<!-- Clone button -->
 									<a href="<c:url value='metricdefinition.html?metricid=${metric.metid}&action=clone'/>">
-										<button align="right" type="button" value="Clone">Clone</button>
+										<button align="right" type="button" value="Clone">
+										<spring:message code="clone"/></button>
 									</a>
 								</td>
 								<td>
+									<!-- Edit button -->
 									<a href="<c:url value='editmetric.html?metricid=${metric.metid}'/>">
-										<button align="right" type="button" value="Edit">Edit</button>
+										<button align="right" type="button" value="Edit">
+										<spring:message code="edit"/></button>
 									</a>
 								</td>
 								<td>
+									<!-- Delete button -->
 									<a href="<c:url value='metricdefinition.html?metricid=${metric.metid}&action=delete'/>" onclick="return confirm('Are you sure you want to delete metric')">
-										<button align="right" type="button" value="Delete">Delete</button>
+										<button align="right" type="button" value="Delete">
+										<spring:message code="delete"/></button>
 									</a>
 								</td>
 						   	</tr>
@@ -70,8 +83,9 @@
 					</td>
 				</tr>
 				<tr>
+				<!--Create metric-->
 					<td align="right">
-						<a href="createmetric.html"><button type="button">Create metric</button></a>
+						<a href="createmetric.html"><button type="button"><spring:message code="create_metric"/></button></a>
 			   		</td>
 				</tr>
 			</table>
