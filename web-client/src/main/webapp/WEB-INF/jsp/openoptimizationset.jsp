@@ -19,16 +19,23 @@
 		<td width="30"></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:800px;width:600px;overflow:auto">
-			<h2>Open optimization set</h2>
+			
+			<!-- Open optimization set -->
+			<h2><spring:message code="open_optimization_set"/></h2>
 			<table class="tablestyle" width="500" border="1">
 				<col style="width: 250px">
 				<col style="width: 150px">
 				<col style="width: 80px">
 			
 				<tr height="20">
-				    <th>Name</th>
-				    <th>Type</th>
-				    <th>Open</th>
+					<!-- name -->
+				    <th><spring:message code="name"/></th>
+				    <!-- type -->
+				    <th><spring:message code="type"/></th>
+				    <!-- open -->
+				    <th><spring:message code="open"/></th>
+				    <!-- clone -->
+				    <th><spring:message code="clone"/></th>
 				</tr>
 			
 				<c:forEach items="${openoptimizationsets}" var="openoptimizationset">
@@ -39,10 +46,17 @@
 								<td>Database search</td>
 								<td>
 								<a href="<c:url value='openoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=db'/>">
-									<button align="right"  type="button" value="Open">Open</button>
+									<button align="right"  type="button" value="Open">
+									<spring:message code="open"/></button>
 								</a>
 								</td>
-							</c:when>
+									<td><a
+											href="<c:url value='cloneoptimizer.html?optimizerid=${openoptimizationset.id}'/>">
+												<button align="right" type="button" value="Clone">
+												<spring:message code="clone"/></button>
+									</a></td>
+
+									</c:when>
 							<c:otherwise>
 								<td>Genetic algorithm</td>
 								<td>
