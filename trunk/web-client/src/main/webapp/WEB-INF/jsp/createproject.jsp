@@ -63,7 +63,7 @@
 								<td></td>
 								<td></td>
 								<!-- Create project -->
-								<td align="right"><input type="submit" value="<spring:message code="create_project"/>" style="width:120px"></td>
+								<td align="right"><input type="submit" value="<spring:message code="createproject"/>" style="width:120px"></td>
 							</tr>
 						</table>
 					</td>
