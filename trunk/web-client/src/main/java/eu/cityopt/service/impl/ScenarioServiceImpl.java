@@ -1,6 +1,5 @@
 package eu.cityopt.service.impl;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -14,9 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.reflect.TypeToken;
 
-import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.InputParamValDTO;
-import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricValDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioMetricsDTO;
@@ -30,7 +27,6 @@ import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.repository.InputParamValRepository;
-import eu.cityopt.repository.MetricRepository;
 import eu.cityopt.repository.MetricValRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioRepository;
@@ -161,11 +157,20 @@ public class ScenarioServiceImpl implements ScenarioService {
 	
 	@Override
 	@Transactional(readOnly=true)
-	public List<ScenarioDTO> findByName(String name) {
+	public List<ScenarioDTO> findByNameContaining(String name) {
 		List<Scenario> scenarios = scenarioRepository.findByNameContaining(name);
 		List<ScenarioDTO> result 
 			= modelMapper.map(scenarios, new TypeToken<List<ScenarioDTO>>() {}.getType());
 		return result;
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public ScenarioDTO findByName(String name) {
+		Scenario scen = scenarioRepository.findByName(name);
+		if(scen != null)
+			return modelMapper.map(scen, ScenarioDTO.class);
+		return null;
 	}
 	
 	@Override

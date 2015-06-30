@@ -95,13 +95,13 @@ public class ScenarioServiceTest {
 		"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC2.xml",
 		"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC3.xml"})
 	public void findByName() throws EntityNotFoundException {
-		List<ScenarioDTO> scen = scenarioService.findByName("sam");
+		List<ScenarioDTO> scen = scenarioService.findByNameContaining("sam");
 		assertNotNull(scen);
 		assertEquals(3, scen.size());
-		scen = scenarioService.findByName("sc1");
+		scen = scenarioService.findByNameContaining("sc1");
 		assertNotNull(scen);
 		assertEquals(1, scen.size());
-		scen = scenarioService.findByName("scen sc1");
+		scen = scenarioService.findByNameContaining("scen sc1");
 		assertNotNull(scen);
 		assertEquals(0, scen.size());
 	}

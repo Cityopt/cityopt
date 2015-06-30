@@ -197,7 +197,7 @@ public class CopyServiceTest {
 			e.printStackTrace();
 		}
 		
-		assertEquals(scenarioService.findByName("copy of").size(),1);
+		assertEquals(scenarioService.findByNameContaining("copy of").size(),1);
 	}	
 
 	@Test

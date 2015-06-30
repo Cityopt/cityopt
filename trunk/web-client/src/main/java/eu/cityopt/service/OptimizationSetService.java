@@ -11,6 +11,8 @@ public interface OptimizationSetService extends CityOptService<OptimizationSetDT
 			throws EntityNotFoundException;
 
 	OptimizationSetDTO save(OptimizationSetDTO u);
+	
+	OptimizationSetDTO findByName(String name);
 
 	List<OptConstraintDTO> getOptConstraints(int optimizationSetId)
 			throws EntityNotFoundException;
@@ -33,4 +35,6 @@ public interface OptimizationSetService extends CityOptService<OptimizationSetDT
 	 */
 	void removeOptConstraint(int optSetId, int OptConstraintId) 
 			throws EntityNotFoundException;
+	
+	
 }

@@ -182,7 +182,7 @@ public class ScenarioController {
 			
 			
 			//Fix #10457 By:Markus Turunen Checking no other entries.			
-			List<ScenarioDTO> elements = scenarioService.findByName(formScenario.getName());
+			List<ScenarioDTO> elements = scenarioService.findByNameContaining(formScenario.getName());
 			if (elements.size()==0){			
 				scenario.setName(formScenario.getName());
 				scenario.setDescription(formScenario.getDescription());
@@ -371,7 +371,7 @@ public class ScenarioController {
 				//Implement cloneNamer								
 				scenario = scenarioService.findByID(nScenarioId);					
 				String name = scenario.getName();
-				List<ScenarioDTO> list =scenarioService.findByName(name);	
+				List<ScenarioDTO> list =scenarioService.findByNameContaining(name);	
 				String clonename=null;
 					for(int i=0;list.size()>i;i++){		
 						 clonename= name+"("+i+")";			

@@ -14,9 +14,11 @@ import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.OptConstraintDTO;
 import eu.cityopt.DTO.OptimizationSetDTO;
+import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.model.OptConstraint;
 import eu.cityopt.model.OptSearchConst;
 import eu.cityopt.model.OptimizationSet;
+import eu.cityopt.model.Scenario;
 import eu.cityopt.repository.OptConstraintRepository;
 import eu.cityopt.repository.OptSearchConstRepository;
 import eu.cityopt.repository.OptimizationSetRepository;
@@ -88,6 +90,15 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 		}
 		
 		return modelMapper.map(os, OptimizationSetDTO.class);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public OptimizationSetDTO findByName(String name) {
+		OptimizationSet os = optimizationSetRepository.findByName(name);
+		if(os != null)
+			return modelMapper.map(os, OptimizationSetDTO.class);
+		return null;
 	}
 	
 	@Transactional(readOnly=true)
