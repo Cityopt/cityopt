@@ -11,7 +11,7 @@
 </tr>
 <tr>
 	<td></td>
-	<td><p>Version 26.6.2015 <br>
+	<td><p>Version: <%= request.getSession().getAttribute("version") %><br>
 	<spring:message code="language"/>:
    		<a href="openproject.html?lang=en">en</a> 
 	    <a href="openproject.html?lang=es">es</a>

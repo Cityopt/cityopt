@@ -27,10 +27,11 @@ import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
+import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
-import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
+import eu.cityopt.config.AppMetadata;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.AprosService;
@@ -64,14 +65,18 @@ import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.UnitForm;
+import eu.cityopt.web.UserSession;
 
 /**
  * @author Olli Stenlund
  *
  */
 @Controller
-@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession"})
+@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession", "version"})
 public class ProjectController {
+	
+	@Autowired
+	AppMetadata appMetaData;
 	
 	@Autowired
 	ProjectService projectService; 
@@ -179,6 +184,9 @@ public class ProjectController {
 			{
 				project.setDescription(projectForm.getDescription());
 			}
+			
+			project.setLocation(projectForm.getLocation());
+			project.setDesigntarget(projectForm.getDesigntarget());
 			
 			// Create default ext param val set
 			/*ExtParamValSetDTO extParamValSet = new ExtParamValSetDTO();
@@ -412,8 +420,11 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="start",method=RequestMethod.GET)
-	public String getStart(Model model, HttpServletRequest request) {
+	public String getStart(Map<String, Object> model, HttpServletRequest request) {
 	
+		String version = appMetaData.getVersion();
+		model.put("version", version);
+		
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		
@@ -1509,11 +1520,48 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="createmetric", method=RequestMethod.GET)
-	public String getCreateMetric(Model model) {
+	public String getCreateMetric(Map<String, Object> model,
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
 
-		MetricDTO newMetric = new MetricDTO();
-		model.addAttribute("metric", newMetric);
+		ProjectDTO project = (ProjectDTO) model.get("project");
 		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		UserSession userSession = (UserSession) model.get("usersession");
+		
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+		
+		if (selectedCompId != null && !selectedCompId.isEmpty())
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
+			if (nSelectedCompId > 0)
+			{
+				userSession.setComponentId(nSelectedCompId);
+				
+				Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+				model.put("inputParameters", inputParams);
+				
+				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				model.put("outputVars", outputVars);
+			}
+			model.put("selectedcompid", nSelectedCompId);
+		}
+		MetricDTO newMetric = new MetricDTO();
+		model.put("metric", newMetric);
+		
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+
 		return "createmetric";
 	}
 
