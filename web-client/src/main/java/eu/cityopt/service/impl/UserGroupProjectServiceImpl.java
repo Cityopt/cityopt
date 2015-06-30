@@ -92,4 +92,12 @@ public class UserGroupProjectServiceImpl implements UserGroupProjectService {
 				new TypeToken<List<UserGroupProjectDTO>>() {}.getType());
 	}
 	
+	@Override
+	public UserGroupProjectDTO findByUserAndProject(int userId, int projectId) {
+		UserGroupProject ugp = userGroupProjectRepository.findByUserAndProject(userId, projectId);
+		if(ugp == null)
+			return null;
+		return modelMapper.map(ugp, UserGroupProjectDTO.class);
+	}
+	
 }

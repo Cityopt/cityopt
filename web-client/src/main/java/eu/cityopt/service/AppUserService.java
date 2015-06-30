@@ -8,5 +8,7 @@ public interface AppUserService extends CityOptService<AppUserDTO>{
 	AppUserDTO save(AppUserDTO u);
 	
 	AppUserDTO update(AppUserDTO toUpdate)  throws EntityNotFoundException;
+
+	void addToUserGroupProject(int userId, int groupId, int projectId) throws EntityNotFoundException;
 	
 }

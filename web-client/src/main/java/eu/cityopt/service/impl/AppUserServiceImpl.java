@@ -11,7 +11,13 @@ import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.model.AppUser;
+import eu.cityopt.model.Project;
+import eu.cityopt.model.UserGroup;
+import eu.cityopt.model.UserGroupProject;
 import eu.cityopt.repository.AppUserRepository;
+import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.repository.UserGroupProjectRepository;
+import eu.cityopt.repository.UserGroupRepository;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.EntityNotFoundException;
 
@@ -23,13 +29,24 @@ public class AppUserServiceImpl implements AppUserService {
 	@Autowired
 	private AppUserRepository appuserRepository;
 	
+	@Autowired 
+	private UserGroupProjectRepository userGroupProjectRepository;
+	
+	@Autowired 
+	private UserGroupRepository userGroupRepository;
+	
+	@Autowired 
+	private ProjectRepository projectRepository;
+	
 	@Transactional(readOnly = true)
+	@Override
 	public List<AppUserDTO> findAll() {
 		return modelMapper.map(appuserRepository.findAll(), 
 				new TypeToken<List<AppUserDTO>>() {}.getType());
 	}
 
 	@Transactional
+	@Override
 	public AppUserDTO save(AppUserDTO u) {
 		AppUser user = modelMapper.map(u, AppUser.class);
 		user = appuserRepository.save(user);
@@ -42,6 +59,7 @@ public class AppUserServiceImpl implements AppUserService {
 	}
 	
 	@Transactional
+	@Override
 	public void delete(int id) throws EntityNotFoundException {
 		
 		if(appuserRepository.findOne(id) == null) {
@@ -52,6 +70,7 @@ public class AppUserServiceImpl implements AppUserService {
 	}
 	
 	@Transactional
+	@Override
 	public AppUserDTO update(AppUserDTO toUpdate) throws EntityNotFoundException {
 		
 		if(appuserRepository.findOne(toUpdate.getUserid()) == null) {
@@ -62,6 +81,7 @@ public class AppUserServiceImpl implements AppUserService {
 	}
 	
 	@Transactional(readOnly = true)
+	@Override
 	public AppUserDTO findByID(int id) throws EntityNotFoundException {
 		if(appuserRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
@@ -69,5 +89,33 @@ public class AppUserServiceImpl implements AppUserService {
 		
 		return modelMapper.map(appuserRepository.findOne(id), AppUserDTO.class);
 	}	
+	
+	@Transactional
+	@Override
+	public void addToUserGroupProject(int userId, int groupId, int projectId) throws EntityNotFoundException {
+		AppUser user = appuserRepository.findOne(userId);
+		UserGroup group = userGroupRepository.findOne(groupId);
+		Project project = projectRepository.findOne(projectId);
+		
+		if(user == null) {
+			throw new EntityNotFoundException("user with id: "
+					+ userId + " not found");
+		}
+		if(group == null) {
+			throw new EntityNotFoundException("group with id: "
+					+ groupId + " not found");
+		}
+		if(project == null) {
+			throw new EntityNotFoundException("project with id: "
+					+ projectId + " not found");
+		}
+		
+		UserGroupProject ugp = new UserGroupProject();
+		ugp.setAppuser(user);
+		ugp.setProject(project);
+		ugp.setUsergroup(group);		
+		ugp = userGroupProjectRepository.save(ugp);
+		
+	}
 	
 }

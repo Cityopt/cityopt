@@ -25,4 +25,9 @@ public interface UserGroupProjectRepository extends JpaRepository<UserGroupProje
 			+ " where u.appuser.userid = :userId")
 	List<UserGroupProject> findByUser(@Param("userId") int userId);
 	
+	@Query("select u from UserGroupProject u "
+			+ " where u.appuser.userid = :userId"
+			+ " and  u.project.prjid = :prjId")
+	UserGroupProject findByUserAndProject(@Param("userId") int userId, @Param("prjId") int prjId);
+	
 }
