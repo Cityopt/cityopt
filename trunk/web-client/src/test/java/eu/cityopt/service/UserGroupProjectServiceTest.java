@@ -36,6 +36,9 @@ public class UserGroupProjectServiceTest {
 	@Autowired
 	UserGroupProjectService userGroupProjectService;
 	
+	@Autowired
+	AppUserService userService;
+	
 	@PersistenceContext
 	EntityManager em;
 	
@@ -69,6 +72,13 @@ public class UserGroupProjectServiceTest {
 		assertEquals(3, ugpList.size());
 		assertEquals(3, ugpList.stream().filter(u -> u.getUsergroup().getName().equals("Reader")).count());
 	}
+
+	@Test
+	public void findByGroup2() {
+		List<UserGroupProjectDTO> ugpList = userGroupProjectService.findByGroup(34);
+		assertNotNull(ugpList);
+		assertEquals(0, ugpList.size());
+	}
 	
 	@Test
 	public void findByProject() {
@@ -83,4 +93,18 @@ public class UserGroupProjectServiceTest {
 		assertEquals(0, ugpList.size());
 	}
 
+	@Test
+	public void findByUserAndProject() {
+		UserGroupProjectDTO ugp = userGroupProjectService.findByUserAndProject(1, 1);
+		assertNotNull(ugp);
+		assertEquals(1, ugp.getUsergroup().getUsergroupid());
+	}
+	
+	@Test
+	public void addUserToGroupAndProject() throws EntityNotFoundException {
+		userService.addToUserGroupProject(4, 1, 2);
+		UserGroupProjectDTO ugp = userGroupProjectService.findByUserAndProject(4, 2);
+		assertNotNull(ugp);
+		assertEquals(1, ugp.getUsergroup().getUsergroupid());
+	}
 }

@@ -18,5 +18,7 @@ public interface UserGroupProjectService extends CityOptService<UserGroupProject
 	List<UserGroupProjectDTO> findByProject(int prjId);
 	
 	List<UserGroupProjectDTO> findByUser(int userId);
+
+	UserGroupProjectDTO findByUserAndProject(int userId, int projectId);
 	
 }
