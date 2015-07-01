@@ -21,15 +21,21 @@
 				<div
 					style="overflow: scroll; height: 500px; width: 500px; overflow: auto">
 					<form:form method="post" action="deleteproject.html">
-						<h2>Delete project</h2>
+						<!-- Delete Project -->
+						<h2><spring:message code="delete_project"/></h2>
 						<table class="tablestyle" width="400" border="1">
 
 							<tr height="20">
-								<th>Name</th>
-								<th>Id</th>
-								<th>Location</th>
-								<th>Description</th>
-								<th>Delete</th>
+								<!-- Name -->
+								<th><spring:message code="name"/></th>
+								<!-- ID -->
+								<th><spring:message code="id"/></th>
+								<!-- Location -->
+								<th><spring:message code="location"/></th>
+								<!-- Description -->
+								<th><spring:message code="description"/></th>
+								<!-- Delete -->
+								<th><spring:message code="delete"/></th>
 							</tr>
 
 							<c:forEach items="${projects}" var="project">
@@ -38,9 +44,11 @@
 									<td>${project.prjid}</td>
 									<td>${project.location}</td>
 									<td></td>
-									<td><a
+									<td><a										
 										href="<c:url value='deleteproject.html?prjid=${project.prjid}'/>">
-											<button type="button" value="Delete">Delete</button>
+											<button type="button" value="Delete">
+											<!-- Delete button -->
+											<spring:message code="delete"/></button>
 									</a></td>
 								</tr>
 							</c:forEach>

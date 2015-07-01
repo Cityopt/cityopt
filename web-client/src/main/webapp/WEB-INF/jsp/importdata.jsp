@@ -29,51 +29,63 @@
 			
 				<tr>
 					<td>
-						<h2>Import data</h2>
+						<!-- Import data -->
+						<h2><spring:message code="import_data"/></h2>
 					</td>
-					<td align="right">
-						<p>Download project templates<a href=""><button>Download</button></a></p>
-						<p>Download scenario templates<a href=""><button>Download</button></a></p>
+					<td align="right">						
+						<!-- Download project templates & download button -->
+						<p><spring:message code="download_project_templates"/><a href="">						
+						<button><spring:message code="download"/></button></a></p>
+						
+						<!-- Download scenario templates & download button -->
+						<p><spring:message code="download_scenario_templates"/><a href="">
+						<button><spring:message code="download"/></button></a></p>
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<table>
 							<tr>
-								<td>Project name:</td>
+								<!-- Project name: -->
+								<td><spring:message code="project_name"/>:</td>
 								<td>
 									<c:if test="project != null">
 										${project.name}
 									</c:if>
 								</td>
 							</tr>
-							<tr>						
-								<td>Location:</td>
+							<tr>
+								<!-- Location: -->						
+								<td><spring:message code="location"/>:</td>
 								<td>
 									<c:if test="project != null">
 										${project.location}
 									</c:if>
 								</td>
 							</tr>
-							<tr>						
-								<td>Design target:</td>
+							<tr>
+								<!-- Design target: -->						
+								<td><spring:message code="design_target"/>t:</td>
 								<td></td>
 							</tr>
-							<tr>						
-								<td>Description:</td>
+							<tr>
+								<!-- Description: -->						
+								<td><spring:message code="description"/>:</td>
 								<td>
 									<c:if test="project != null">
 										${project.description}
 									</c:if>
 								</td>
 							</tr>
-							<tr>						
-								<td>Energy model:</td>
+							<tr>
+								<!-- Energy model -->						
+								<td><spring:message code="energy_model"/>:</td>
 								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
 							</tr>
 							<tr>
 								<td>
-									Parameter level:
+								<!-- Parameter level: -->
+									<spring:message code="parameter_level"/>:
 								</td>
 								<td>
 							 		<select name="parameterLevel">
@@ -87,18 +99,22 @@
 							<tr>						
 								<td></td>
 								<td>
-									<a href="uploaddiagram.html"><button type="button">Upload</button></a>
+									<!-- Upload button -->
+									<a href="uploaddiagram.html"><button type="button">
+									<spring:message code="upload"/></button></a>
 								</td>
 							</tr>
 							<tr>
 								<td>
 									<br>
-									<b>Import project data</b>
+									<!-- Import Project data -->
+									<b><spring:message code="import_project_data"/></b>
 								</td>
 							</tr>
 							<form:form method="POST" action="importcomponents.html" enctype="multipart/form-data">
 	        					<tr>
-									<td>Components</td>
+	        						<!--Components-->
+									<td><spring:message code="components"/></td>
 									<td><input id="uploadFile" name="uploadFile" type="file"/></td>
 								</tr>
 								<tr>	
@@ -108,21 +124,27 @@
 	       							</td>
 	   							</tr>	
     						</form:form>
-							<tr>						
-								<td>Input parameters</td>
+							<tr>
+								<!-- Input parameters -->						
+								<td><spring:message code="input_parameters"/></td>
 								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
 							</tr>
-							<tr>						
-								<td>Output variables</td>
+							<tr>
+								<!-- Output variables -->						
+								<td><spring:message code="output_variables"/></td>
 								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
 							</tr>
-							<tr>						
-								<td>External parameter sets</td>
+							<tr>
+								<!-- External parameter sets -->						
+								<td><spring:message code="external_parameter_sets"/></td>
 								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
 							</tr>
-							<tr>		
-								<td><a href="projectdata.html"><button>Show project data</button></a></td>
-								<td align="right"><a href=""><button>Import</button></a></td>
+							<tr>
+								<!-- Show project data & Import buttons -->		
+								<td><a href="projectdata.html"><button>
+								<spring:message code="show_project_data"/></button></a></td>
+								<td align="right"><a href=""><button>
+								<spring:message code="import"/></button></a></td>
 							</tr>
 						</table>
 					</td>
@@ -134,18 +156,24 @@
 								</td>
 							</tr>
 							<tr align="right">
-								<td><a href="uploaddiagram.html"><button type="button">Upload diagram</button></a></td>
+								<!-- Upload diagram -->
+								<td><a href="uploaddiagram.html"><button type="button">
+								<spring:message code="upload_diagram"/></button></a></td>
 							</tr>
 							<tr>
-								<td>					
-									<b>Import scenarios</b>
+								<td>
+								<!-- Import scenarios -->					
+									<b><spring:message code="import_scenarios"/></b>
 								</td>
 							</tr>
-							<tr>						
-								<td>Import scenarios <a href=""><button>Import</button></a></td>
+							<tr>
+								<!-- Import scenarios -->						
+								<td><spring:message code="import_scenarios"/><a href=""><button>
+								<spring:message code="import"/></button></a></td>
 							</tr>
 							<tr>						
-								<td><a href="showscenarios.html"><button>Show scenarios</button></a></td>
+								<td><a href="showscenarios.html"><button>
+								<spring:message code="show_scenarios"/></button></a></td>
 							</tr>
 						</table>
 					</td>
