@@ -100,68 +100,86 @@
 <tr>
 	<td></td>
 	<td>
-		<a href="createscenario.html">Create scenario</a>
+		<!-- Create scenario link -->
+		<a href="createscenario.html">
+		<spring:message code="create_scenario"/></a>
 	</td>
 </tr>
 <tr>
 	<td></td>
 	<td>
-		<a href="openscenario.html">Open scenario</a>
+		<!-- Open scenario link -->
+		<a href="openscenario.html">
+		<spring:message code="open_scenario"/></a>
 	</td></tr>
 <% if (request.getSession().getAttribute("scenario") != null) { %>
 <tr>
 	<td></td>
 	<td>
-		<a href="editscenario.html">Edit scenario</a>
+		<!-- Edit scenario with a link -->
+		<a href="editscenario.html">
+		<spring:message code="edit_scenario"/></a>
 	</td>
 </tr>
 <% } else { %>
 <tr>
 	<td></td>
 	<td>
-		Edit scenario
+		<!-- Edit scenario without link -->
+		<spring:message code="edit_scenario"/>
 	</td>
 </tr> 
 <% } %>
 <tr>
 	<td></td>
 	<td>
-		<a href="deletescenario.html">Delete scenario</a>
+		<!-- Delete scenario link -->
+		<a href="deletescenario.html">
+		<spring:message code="delete_scenario"/></a>
 	</td>
 </tr>
 <tr>
 	<td></td>
 	<td>
-		<a href="runmultiscenario.html">Run multi-scenario</a>
+		<!-- Run multi-scenario link -->
+		<a href="runmultiscenario.html">
+		<spring:message code="run_multi_scenario"/></a>
 	</td>
 </tr>
 <% } else { %>
 <tr>
 	<td></td>
 	<td>
-		Create scenario
+		<!--Create scenario  -->
+		<spring:message code="create_scenario"/>
+		
 	</td>
 </tr>
 <tr>
 	<td></td>
 	<td>
-		Open scenario
+		<!-- Open scenario -->
+		<spring:message code="open_scenario"/>
+		
 	</td></tr>
 <tr>
 	<td></td>
 	<td>
-		Edit scenario
+		<!-- Edit scenario -->
+		<spring:message code="edit_scenario"/>
 	</td>
 </tr>
 <tr>
 	<td></td>
 	<td>
-		Delete scenario
+		<!-- Delete scenario -->
+		<spring:message code="delete_scenario"/>		
 	</td></tr>
 <tr>
 	<td></td>
 	<td>
-		Run multi-scenario
+		<!--Run multi-scenario-->
+		<spring:message code="run_multi_scenario"/>
 	</td></tr>
 <% } %>
 <tr height=10>
@@ -174,30 +192,37 @@
 	<td>
 		<img src="assets/img/icon_optimization_black.jpg"/>
 	</td>
-	<td><b>Optimization</b></td>
+	<!-- Optimization title -->
+	<td><b><spring:message code="optimization"/></b></td>
 </tr>
 <% if (request.getSession().getAttribute("project") != null) { %>
 <tr>
 	<td></td>
 	<td>
-		<a href="createoptimizationset.html">Create optimization set</a>
+		<!-- Create optimization with a link -->
+		<a href="createoptimizationset.html">
+		<spring:message code="create_optimization_set"/></a>
 	</td></tr>
 <tr>
 	<td></td>
 	<td>
-		<a href="openoptimizationset.html">Open optimization set</a>
+		<!-- Open optimization with a link -->
+		<a href="openoptimizationset.html">
+		<spring:message code="open_optimization_set"/></a>
 	</td></tr>
 <% } else { %>
 <tr>
 	<td></td>
 	<td>
-		Create optimization set
+		<!-- Create Optimization set with out link -->
+		<spring:message code="create_optimization_set"/>
 	</td>
 </tr>
 <tr>
 	<td></td>
 	<td>
-		Open optimization set
+		<!-- Open Optimization set with out link -->
+		<spring:message code="open_optimization_set"/>		
 	</td>
 </tr>
 <% } %>
@@ -205,14 +230,16 @@
 <tr>
 	<td></td>
 	<td>
-		<a href="editoptimizationset.html">Edit DB optimization set</a>
+		<a href="editoptimizationset.html">
+		<spring:message code="edit_DB_optimization_set"/></a>
 	</td>
 </tr>
 <% } else { %>
 <tr>
 	<td></td>
 	<td>
-		Edit DB optimization set
+		<!-- Edit DB optimization set -->
+		<spring:message code="edit_DB_optimization_set"/>
 	</td>
 </tr>
 <% } %>
@@ -220,26 +247,31 @@
 <tr>
 	<td></td>
 	<td>
-		<a href="geneticalgorithm.html">Edit GA optimization set</a>
+		<a href="geneticalgorithm.html">
+		<spring:message code="edit_GA_optimization_set"/></a>
 	</td>
 </tr>
 <% } else { %>
 <tr>
 	<td></td>
 	<td>
-		Edit GA optimization set
+		<spring:message code="edit_GA_optimization_set"/>
 	</td>
 </tr>
 <% } %>
 <tr>
 	<td></td>
 	<td>
-		<a href="deleteoptimizationset.html">Delete optimization set</a>
+		<!-- Delete optimization set -->
+		<a href="deleteoptimizationset.html">
+		<spring:message code="delete_optimization_set"/></a>
 	</td></tr>
 <tr>
 	<td></td>
 	<td>
-		<a href="runmultioptimizationset.html">Run multi-optimization set</a>
+		<!-- Run multi-optimization set -->
+		<a href="runmultioptimizationset.html">
+		<spring:message code="run_multi_optimization_set"/></a>
 	</td></tr>
 <tr height=10>
 	<td>
@@ -250,17 +282,20 @@
 	<td>
 		<img src="assets/img/icon_Visualization_black.jpg"/>
 	</td>
-	<td><b>Visualization</b></td>
+	<!--  -->
+	<td><b><spring:message code="visualization"/></b></td>
 </tr>
 <tr>
 	<td></td>
 	<td>
-		<a href="viewchart.html">Chart</a>
+		<a href="viewchart.html">
+		<spring:message code="chart"/></a>
 	</td></tr>
 <tr>
 	<td></td>
 	<td>
-		<a href="viewtable.html">Table</a>
+		<a href="viewtable.html">
+		<spring:message code="table"/></a>
 	</td>
 </tr>
 <tr height=10>
@@ -272,24 +307,31 @@
 	<td>
 		<img src="assets/img/icon_users_black.jpg"/>
 	</td>
-	<td><b>Users</b></td>
+	<!-- Users -->
+	<td><b><spring:message code="users"/></b></td>
 </tr>
 <tr>
 	<td></td>
 	<td>
-		<a href="usermanagement.html">User management</a>
+		<!-- User management-->
+		<a href="usermanagement.html">
+		<spring:message code="user_management"/></a>
 	</td>
 </tr>
 <tr>
 	<td></td>
 	<td>
-		<a href="units.html">Units</a>
+		<!-- Units -->
+		<a href="units.html">
+		<spring:message code="units"/></a>
 	</td>
 </tr>
 <tr>
 	<td></td>
 	<td>
-		<a href="paramreliability.html">Parameter reliability</a>
+		<!--Parameter reliability-->
+		<a href="paramreliability.html">
+		<spring:message code="parameter_reliability"/></a>
 	</td>
 </tr>
 </table>
