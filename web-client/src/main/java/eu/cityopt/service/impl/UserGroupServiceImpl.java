@@ -53,6 +53,15 @@ public class UserGroupServiceImpl implements UserGroupService {
 				new TypeToken<List<UserGroupDTO>>() {}.getType());
 	}
 	
+	@Transactional(readOnly=true)
+	@Override
+	public List<UserGroupDTO> findByGroupName(String userGroupName) {
+		List<UserGroup> ug = userGroupRepository.findByGroupName(userGroupName);
+		
+		return  modelMapper.map(ug,
+				new TypeToken<List<UserGroupDTO>>() {}.getType());
+	}
+	
 	@Transactional
 	@Override
 	public UserGroupDTO save(UserGroupDTO u) {

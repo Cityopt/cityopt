@@ -1,7 +1,7 @@
+<%--@elvariable id="user" type="com.cityopt.DTO.AppUserDTO"--%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
- 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -9,9 +9,11 @@ pageEncoding="UTF-8"%>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Virtual City Login</title>
+<link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
+
 <body>
-<form action="../../j_spring_security_check" method="post" >
+<form:form action="index.html" method="post" modelAttribute="user">
 <table height="600px" align="center">
 	<tr height="200px">
 	</tr>
@@ -25,17 +27,21 @@ pageEncoding="UTF-8"%>
 					</td>
 				</tr>
 				<tr>
-					<td><input class="login" id="username" name="username" type="text" value="Username" /></td>
+					<td>
+						<h2 align="center" class="error">${errorMsg}</h2>
+					</td>
 				</tr>
 				<tr>
-					<td><input class="login" id="password" name="password" type="password" value="Password" /></td>
+					<td align="center"><form:input class="login" id="name" path="name" type="text" value="admin" style="width: 100px"/></td>
+				</tr>
+				<tr>
+					<td align="center"><form:input class="login" id="password" path="password" type="password" value="admin" style="width: 100px"/></td>
 				</tr>
 
 				<tr height="10"></tr>
 				<tr>
 					<td align="center">
-					<a href="start.html">Log in</a>
-					<!--<input type="submit" value="Login"/>-->       
+						<input type="submit" style="width: 100px" value="Login"/>       
 					</td>
 				</tr>
 			</table>
@@ -43,8 +49,7 @@ pageEncoding="UTF-8"%>
 		</td>
 	</tr>
 </table>	
-<div id="login-error">${error}</div>
-</form>
+</form:form>
 </body>
 </html>
 

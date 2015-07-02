@@ -4,6 +4,7 @@
 <%--@elvariable id="inputParam" type="com.cityopt.DTO.InputParameterDTO"--%>
 <%--@elvariable id="extParam" type="com.cityopt.DTO.ExtParamDTO"--%>
 <%--@elvariable id="extParamVal" type="com.cityopt.DTO.ExtParamValDTO"--%>
+<%--@elvariable id="extParamValSet" type="com.cityopt.DTO.ExtParamValSetDTO"--%>
 <%--@elvariable id="selectedcompid" type="int"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -71,21 +72,24 @@
 													</tr>
 													
 													<c:forEach items="${components}" var="component">
-													<c:if test="${selectedcompid == component.componentid}">
-														<tr style="background-color: #D4D4D4"><td>Selected</td>
-													</c:if>
-													<c:if test="${selectedcompid != component.componentid}">
-														<tr>
-															<td><a href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
-													</c:if>
-														<td>${component.name}</td>
-												    	<td>${component.componentid}</td>
-														<td>
-															<a href="<c:url value='editcomponent.html?componentid=${component.componentid}'/>">
-																<button align="right" type="button" value="Edit">Edit</button>
-															</a>
-														</td>
-												   	</tr>
+														<c:choose>
+															<c:when test="${selectedcompid == component.componentid}">
+																<tr style="background-color: #D4D4D4">
+																	<td>Selected</td>
+															</c:when>
+															<c:otherwise>
+																<tr>
+																	<td><a href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+															</c:otherwise>
+														</c:choose>
+															<td>${component.name}</td>
+													    	<td>${component.componentid}</td>
+															<td>
+																<a href="<c:url value='editcomponent.html?componentid=${component.componentid}'/>">
+																	<button align="right" type="button" value="Edit">Edit</button>
+																</a>
+															</td>
+													   	</tr>
 													</c:forEach>
 												</table>
 											</td>
@@ -140,7 +144,7 @@
 							<tr>
 								<td>
 									<b>Default external parameter set </b>
-									${project.defaultextparamvalset.name}
+									${extParamValSet.name}
 									<br>
 									<table class="tablestyle">
 										

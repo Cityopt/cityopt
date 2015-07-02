@@ -11,5 +11,5 @@ public interface UserGroupService extends CityOptService<UserGroupDTO> {
 	UserGroupDTO save(UserGroupDTO u);
 
 	List<UserGroupDTO> findByGroupNameContaining(String userGroupName);
-
+	List<UserGroupDTO> findByGroupName(String userGroupName);	
 }

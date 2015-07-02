@@ -1,6 +1,6 @@
 <table class="menustyle" height=800 align="left">
 <col style="width: 60px">
-<col style="width: 144px">
+<col style="width: 150px">
 <tr>
 	<td>
 		<img src="assets/img/icon_logo_small.jpg"/>
@@ -11,11 +11,22 @@
 </tr>
 <tr>
 	<td></td>
-	<td><p>Version: <%= request.getSession().getAttribute("version") %><br>
-	<spring:message code="language"/>:
-   		<a href="openproject.html?lang=en">en</a> 
-	    <a href="openproject.html?lang=es">es</a>
-	    <a href="openproject.html?lang=fi">fi</a></p></td>
+	<td>
+		<table cellpadding="0" cellspacing="0">
+			<tr>
+				<td>Version: </td><td><%= request.getSession().getAttribute("version") %></td>
+			</tr>
+			<tr>
+				<td>User: </td><td>${user.name}</td>
+			</tr>
+			<tr>
+				<td><spring:message code="language"/>:&nbsp;</td>
+				   		<td><a href="?lang=en">en</a> 
+					    <a href="?lang=es">es</a>
+					    <a href="?lang=fi">fi</a></td>
+			</tr>
+		</table>
+	</td>	
 </tr>
 <tr>
 	<td>

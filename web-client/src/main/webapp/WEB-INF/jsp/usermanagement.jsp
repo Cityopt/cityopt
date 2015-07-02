@@ -95,22 +95,16 @@
 			      	<td valign="top">
 			      		<table>
 			      			<tr>
-			      				<td><h2>User definition</h2></td>
+			      				<td><h2>Users</h2></td>
 			   				</tr>
 			      			<tr>
 			      			   	<td>
 				      			   	<table class="tablestyle" border="1">
-							      		<tr>
+							      		<col style="width:250px">	
+										<col style="width:50px">	
+										<col style="width:50px">	
+											<tr>
 							      			<th>Name</th>
-							      			<th>Id</th>
-							      			<th>User name</th>
-							      			<th>Password</th>
-							      			<th>Email</th>
-							      			<th>Company</th>
-							      			<th>User role</th>
-							      			<th>Start rights</th>
-							      			<th>Finish projects</th>
-							      			<th>Project</th>
 							      			<th>Edit</th>
 							      			<th>Delete</th>
 							   			</tr>
@@ -118,17 +112,7 @@
 						   				<c:forEach items="${users}" var="user">
 										<tr>
 											<td>${user.name}</td>
-									    	<td>${user.userid}</td>
-											<td></td>			
-											<td></td>
-											<td></td>			
-											<td></td>			
-											<td></td>			
-											<td></td>			
-											<td></td>			
 											<td>
-											</td>
-			   								<td>
 												<a href="<c:url value='edituser.html?userid=${user.userid}'/>">
 													<button align="right" type="button" value="Edit">Edit</button>
 												</a>
