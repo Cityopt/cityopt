@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.DecisionVariableDTO;
 import eu.cityopt.DTO.InputParamValDTO;
@@ -75,7 +76,7 @@ import eu.cityopt.web.UserSession;
  *
  */
 @Controller
-@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession"})
+@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession", "user"})
 public class OptimizationController {
 	
 	@Autowired
@@ -1011,6 +1012,18 @@ public class OptimizationController {
 		@RequestParam(value="optsetid", required=false) String optsetid,
 		@RequestParam(value="optsettype", required=false) String optsettype) {
 
+		AppUserDTO user = (AppUserDTO) model.get("user");
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		// TODO
+		if (user != null && project != null)
+		{
+			//if (hasStandardRights(user.getUserid()))
+			{
+			
+			}
+		}
+
 		if (optsettype != null)
 		{
 			if (optsettype.equals("db"))
@@ -1055,7 +1068,7 @@ public class OptimizationController {
 				
 				model.put("constraints", optSearchConstraints);
 				
-				ProjectDTO project = (ProjectDTO) model.get("project");
+				project = (ProjectDTO) model.get("project");
 		
 				if (project == null)
 				{
@@ -1094,7 +1107,7 @@ public class OptimizationController {
 				}
 				//TODO model parameters, decision variables
 
-				ProjectDTO project = (ProjectDTO) model.get("project");
+				project = (ProjectDTO) model.get("project");
 
 				if (project == null)
 				{
@@ -1121,7 +1134,7 @@ public class OptimizationController {
 		}
 		else
 		{
-			ProjectDTO project = (ProjectDTO) model.get("project");
+			project = (ProjectDTO) model.get("project");
 	
 			if (project == null)
 			{

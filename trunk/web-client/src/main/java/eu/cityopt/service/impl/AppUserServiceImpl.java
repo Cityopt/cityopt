@@ -90,6 +90,16 @@ public class AppUserServiceImpl implements AppUserService {
 		return modelMapper.map(appuserRepository.findOne(id), AppUserDTO.class);
 	}	
 	
+	@Transactional(readOnly = true)
+	@Override
+	public AppUserDTO findByNameAndPassword(String name, String password) throws EntityNotFoundException {
+		if(appuserRepository.authenticateUser(name, password) == null) {
+			throw new EntityNotFoundException();
+		}
+		
+		return modelMapper.map(appuserRepository.authenticateUser(name, password), AppUserDTO.class);
+	}	
+	
 	@Transactional
 	@Override
 	public void addToUserGroupProject(int userId, int groupId, int projectId) throws EntityNotFoundException {

@@ -23,6 +23,7 @@
 		<td width=30></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:700px;width:900px;overflow:auto">
+			<h2 class="error">${error}</h2>
 			<h2><spring:message code="openproject"/></h2>
 			<table class="tablestyle" width="600" border="1">
 				<col style="width:150px">	

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.MetricDTO;
@@ -73,7 +74,7 @@ import eu.cityopt.web.TimeSeriesVisualization;
 import eu.cityopt.web.UserSession;
 
 @Controller
-@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession"})
+@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession", "user"})
 public class VisualizationController {
 	
 	@Autowired
@@ -190,6 +191,17 @@ public class VisualizationController {
 			return "error";
 		}
 		
+		AppUserDTO user = (AppUserDTO) model.get("user");
+
+		// TODO
+		if (user != null && project != null)
+		{
+			//if (hasStandardRights(user.getUserid()))
+			{
+			
+			}
+		}
+
 		try {
 			scenario = scenarioService.findByID(scenario.getScenid());
 		} catch (EntityNotFoundException e1) {

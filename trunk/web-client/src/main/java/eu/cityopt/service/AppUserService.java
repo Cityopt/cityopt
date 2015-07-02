@@ -11,4 +11,6 @@ public interface AppUserService extends CityOptService<AppUserDTO>{
 
 	void addToUserGroupProject(int userId, int groupId, int projectId) throws EntityNotFoundException;
 	
+	AppUserDTO findByNameAndPassword(String name, String password) throws EntityNotFoundException;
+	
 }

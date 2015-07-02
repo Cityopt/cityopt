@@ -1,4 +1,5 @@
-<%--@elvariable id="userForm" type="eu.cityopt.controller.UserForm"--%>
+<%--@elvariable id="user" type="eu.cityopt.DTO.AppUserDTO"--%>
+<%--@elvariable id="userRole" type="eu.cityopt.DTO.UserGroupProjectDTO"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -19,104 +20,72 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-
-<%
-	//ArrayList<Book> b = new ArrayList<Book>();
-	//b = SqlSentencesList.showCatalog(); // this method returns an arrayList with all books
-%>
 		<td width=30></td>
 		<td>
-			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="edituser.html?action=save&userid=${userForm.userid}" modelAttribute="userForm">
+			<div style="overflow:scroll;height:800px;width:800px;overflow:auto">
 			<h2>Edit user</h2>
 
-			<table align="center">
-				<col style="width:150px">
-				<col style="width:300px">
+			<table>
 				<tr>
 					<td>
-						Name
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="name"/>
+						<table align="left">
+							<col style="width:80px">
+							<col style="width:250px">
+							<tr>
+								<td>
+									Name
+								</td>
+								<td>
+									${user.name}
+								</td>
+							</tr>
+							<tr height="10">
+								<td>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Company
+						<b>User roles</b>
 					</td>
 					<td>
-						<form:input style="width:300px" type="text" path="company"/>
+						
 					</td>
 				</tr>
 				<tr>
 					<td>
-						User name
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="userName"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Password
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="password"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Email
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="email"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						User role
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="userRole"/>
+						<table class="tablestyle" width="600">
+							<col style="width:100px">	
+							<col style="width:150px">	
+							<col style="width:50px">	
+							
+							<tr height="20">
+							    <th>Role</th>
+							    <th><spring:message code="project"/></th>
+							    <th>Remove</th>
+							</tr>
+							
+							<c:forEach items="${projectRoles}" var="projectRole">
+								<tr>
+							    	<td>${projectRole.usergroup.name}</td>
+									<td>${projectRole.project.name}</td>
+									<td>
+										<a href="<c:url value='removerole.html?roleid=${projectRole.usergroup.id}'/>">
+											<button align="right" type="button"><spring:message code="remove"/></button>
+										</a>
+									</td>
+							   	</tr>
+							</c:forEach>
+						</table>
 					</td>
 				</tr>
 				<tr>
-					<td>
-						Start rights
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="startRights"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Finish rights
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="finishRights"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						Project
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="project"/>
-					</td>
-				</tr>
-				<tr height="10">
-					<td>
-					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td align="right"><input style="width:100px" type="submit" value="Update"/>
-					<a href="usermanagement.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<td align="right"><a href="createrole.html?userid=${user.userid}"><button style="width:100px" type="button" value="Create">Create role</button></a>
+					<a href="usermanagement.html"><button style="width:100px" type="button" value="Back">Back</button></a></td>
 				</tr>
 			</table>
-			
-			</form:form>
 			</div>
 		</td>
      </tr>

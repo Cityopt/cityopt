@@ -13,4 +13,7 @@ import eu.cityopt.model.UserGroup;
 public interface UserGroupRepository extends JpaRepository<UserGroup, Integer> {
 	@Query("select u from UserGroup u where Lower(u.name) like CONCAT('%',Lower(:userGroupName),'%')")
 	List<UserGroup> findByGroupNameContaining(@Param("userGroupName") String userGroupName);
+	
+	@Query("select u from UserGroup u where Lower(u.name) = Lower(:userGroupName)")
+	List<UserGroup> findByGroupName(@Param("userGroupName") String userGroupName);
 }

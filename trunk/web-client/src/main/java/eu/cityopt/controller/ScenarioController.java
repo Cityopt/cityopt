@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
@@ -63,7 +64,7 @@ import eu.cityopt.web.UserSession;
  *
  */
 @Controller
-@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession"})
+@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession", "user"})
 public class ScenarioController {
 	
 	@Autowired
@@ -155,6 +156,19 @@ public class ScenarioController {
 	
 	@RequestMapping(value="createscenario",method=RequestMethod.GET)
 	public String getCreateScenario(Map<String, Object> model) {
+		
+		AppUserDTO user = (AppUserDTO) model.get("user");
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		// TODO
+		if (user != null && project != null)
+		{
+			//if (hasStandardRights(user.getUserid()))
+			{
+			
+			}
+		}
+		
 		ScenarioDTO scenario = new ScenarioDTO();
 		model.put("scenario", scenario);
 		return "createscenario";

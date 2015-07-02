@@ -1,4 +1,4 @@
-<%--@elvariable id="user" type="eu.cityopt.DTO.AppUser"--%>
+<%--@elvariable id="user" type="eu.cityopt.DTO.AppUserDTO"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -14,6 +14,7 @@
 </head>
 
 <body>
+<form:form method="post" action="createrole.html?userid=${user.userid}">
 <table cellspacing="0px" cellpadding="0px">
 	<tr>
 		<td>
@@ -21,33 +22,50 @@
 		</td>
 		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:800px;width:800px;overflow:auto">
+			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" modelAttribute="user">
-			<h2>Create user</h2>
+			<h2>Create role</h2>
 
 			<table align="center">
-				<col style="width:150px">
+				<col style="width:100px">
 				<col style="width:300px">
 				<tr>
 					<td>
-						Name
+						User
 					</td>
 					<td>
-						<form:input style="width:300px" type="text" path="name"/>
+						${user.name}
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Password
+						Role
 					</td>
 					<td>
-						<form:input style="width:300px" type="text" path="password"/>
+						<select name="roleType" id="roleType" size="1">
+							<option value="Guest" selected>Guest</option>
+							<option value="Standard">Standard</option>
+							<option value="Expert">Expert</option>
+							<option value="Administrator">Administrator</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Project
+					</td>
+					<td>
+						<select name="roleProjectId" id="roleProjectId" size="1">
+							<c:forEach items="${projects}" var="project">
+								<option value="${project.prjid}">${project.name}</option>
+							</c:forEach>	
+						</select>
 					</td>
 				</tr>
 				<tr>
 					<td></td>
-					<td align="right"><input style="width:100px" type="submit" value="Create"/>
-					<a href="usermanagement.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<td align="right"><input style="width:100px" type="submit" value="Create role"/>
+					<a href="edituser.html?userid=${user.userid}"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
 				</tr>
 			</table>
 			
@@ -56,5 +74,6 @@
 		</td>
      </tr>
 </table>
+</form:form>
 </body>
 </html>

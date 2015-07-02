@@ -31,7 +31,10 @@ import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
+import eu.cityopt.DTO.UserGroupDTO;
+import eu.cityopt.DTO.UserGroupProjectDTO;
 import eu.cityopt.config.AppMetadata;
+import eu.cityopt.model.AppUser;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.AprosService;
@@ -61,6 +64,8 @@ import eu.cityopt.service.TimeSeriesService;
 import eu.cityopt.service.TimeSeriesValService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
+import eu.cityopt.service.UserGroupProjectService;
+import eu.cityopt.service.UserGroupService;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
@@ -72,7 +77,7 @@ import eu.cityopt.web.UserSession;
  *
  */
 @Controller
-@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession", "version"})
+@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession", "user", "version"})
 public class ProjectController {
 	
 	@Autowired
@@ -89,6 +94,12 @@ public class ProjectController {
 	
 	@Autowired
 	AppUserService userService;
+
+	@Autowired
+	UserGroupService userGroupService;
+	
+	@Autowired
+	UserGroupProjectService userGroupProjectService;
 	
 	@Autowired
 	ComponentService componentService;
@@ -169,6 +180,10 @@ public class ProjectController {
 	public String getCreateProject(Map<String, Object> model) {
 		ProjectDTO newProject = new ProjectDTO();
 		model.put("project", newProject);
+		
+		AppUserDTO user = (AppUserDTO) model.get("user");
+		model.put("user", user);
+		
 		return "createproject";
 	}
 
@@ -194,17 +209,25 @@ public class ProjectController {
 			extParamValSet = extParamValSetService.save(extParamValSet);			
 			project.setExtparamvalset(extParamValSet);*/
 			
-			
-			if (projectService.findByNameContaining(project.getName())==null){
-			
-			project = projectService.save(project, 0, 0);			
-			model.put("project", project);
-			model.remove("scenario");
-			
-			return "editproject";
-			}else{
+			if (projectService.findByName(project.getName()) == null) {
+				project = projectService.save(project, 0, 0);			
 				model.put("project", project);
-				model.put("errorMessage", "This Project allready exist, please create another name.");
+				model.remove("scenario");
+				
+				AppUserDTO user = (AppUserDTO) model.get("user");
+				
+				UserGroupProjectDTO userGroupProject = new UserGroupProjectDTO();
+				userGroupProject.setAppuser(user);
+				userGroupProject.setProject(project);
+	
+				UserGroupDTO userGroup = userGroupService.findByGroupName("Administrator").get(0);
+				userGroupProject.setUsergroup(userGroup);
+				userGroupProject = userGroupProjectService.save(userGroupProject);
+			
+				return "editproject";
+			} else {
+				model.put("project", project);
+				model.put("errorMessage", "This project already exists, please create it with another name.");
 				return "createproject";
 			}
 			
@@ -220,7 +243,7 @@ public class ProjectController {
 	{
 		List<ProjectDTO> projects = projectService.findAll();
 		model.put("projects", projects);
-	
+		
 		return "openproject";
 	}	
 
@@ -228,23 +251,32 @@ public class ProjectController {
 	public String getEditProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid) {
 		if (prjid != null)
 		{
-			ProjectDTO project = null;
-			try {
-				project = projectService.findByID(Integer.parseInt(prjid));
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			} catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			AppUserDTO user = (AppUserDTO) model.get("user");
+			
+			int nProjectId = Integer.parseInt(prjid);
+			
+			if (true)//userGroupProjectService.findByUserAndProject(user.getUserid(), nProjectId) != null)
+			{				
+				ProjectDTO project = null;
+				try {
+					project = projectService.findByID(nProjectId);
+					
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+				model.put("project", project);
 			}
-			model.put("project", project);
-
-			//projectForm = new ProjectForm();
-			//projectForm.setProjectName(project.getName());
-			//projectForm.setProjectCreator("" + project.getCreatedby());
-			//projectForm.setLocation(project.getLocation());
-			//projectForm.setDate(project.getCreatedon().toString());
-			//projectForm.setDescription(project.getName());
+			else
+			{
+				model.put("error", "User " + user.getName() + " doesn't have rights to open project.");
+				
+				List<ProjectDTO> projects = projectService.findAll();
+				model.put("projects", projects);
+				
+				return "openproject";
+			}
 		}
 		else if (model.containsKey("project"))
 		{
@@ -421,27 +453,40 @@ public class ProjectController {
 		return "start";
 	}	
 
-	@RequestMapping(value="index",method=RequestMethod.GET)
-	public String getIndex(Model model) {
+	@RequestMapping(value="index", method=RequestMethod.GET)
+	public String getIndex(Map<String, Object> model) {
 	
+		AppUserDTO user = new AppUserDTO();
+		model.put("user", user);
+		
 		return "index";
 	}
 
-	@RequestMapping(value="start",method=RequestMethod.GET)
-	public String getStart(Map<String, Object> model, HttpServletRequest request) {
+	@RequestMapping(value="index", method=RequestMethod.POST)
+	public String getIndexPost(Map<String, Object> model, AppUserDTO userForm) {
 	
 		String version = appMetaData.getVersion();
 		model.put("version", version);
 		
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
+		String username = userForm.getName();
+		String password = userForm.getPassword();
+		AppUserDTO user = null;
 		
-		if (true)
+		try {
+			user = userService.findByNameAndPassword(username, password);
+		} catch (EntityNotFoundException e) {
+			System.out.println("User " + username + " not found");
+		}
+		
+		if (user != null)
 		{
+			model.put("user", user);
 			return "start";
 		}
 		else
 		{
+			model.put("errorMsg", "Login error");
+			model.put("user",  new AppUserDTO());
 			return "index";
 		}
 	}
@@ -505,11 +550,26 @@ public class ProjectController {
 
 	
 	@RequestMapping(value="usermanagement", method=RequestMethod.GET)
-	public String getUserManagement(Model model){
-		List<AppUserDTO> users = userService.findAll();
-		model.addAttribute("users", users);
-	
-		return "usermanagement";
+	public String getUserManagement(Map<String, Object> model) {
+		
+		AppUserDTO user = (AppUserDTO) model.get("user");
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		// TODO
+		if (user != null && project != null)
+		{
+			//if (hasAdminRights(user.getUserid()))
+			{
+				List<AppUserDTO> users = userService.findAll();
+				model.put("users", users);
+				return "usermanagement";
+			}
+		}
+		else
+		{
+			
+		}
+		return "error";
 	}
 
 	@RequestMapping(value="units", method=RequestMethod.GET)
@@ -644,20 +704,20 @@ public class ProjectController {
 	
 	@RequestMapping(value="createuser",method=RequestMethod.GET)
 	public String getCreateUser(Map<String, Object> model) {
-		UserForm userForm = new UserForm();
-		model.put("userForm", userForm);
+		AppUserDTO user = new AppUserDTO();
+		model.put("user", user);
 	
 		return "createuser";
 	}
 
 	@RequestMapping(value="createuser", method=RequestMethod.POST)
-	public String getCreateUserPost(UserForm userForm, Map<String, Object> model) {
+	public String getCreateUserPost(AppUserDTO userForm, Map<String, Object> model) {
 		if (userForm.getName() != null)
 		{
 			AppUserDTO user = new AppUserDTO();
 			user.setName(userForm.getName());
-			user.getUserid();
-			userService.save(user);
+			user.setPassword(userForm.getPassword());
+			user = userService.save(user);
 		}
 
 		List<AppUserDTO> users = userService.findAll();
@@ -667,23 +727,28 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="edituser",method=RequestMethod.GET)
-	public String getEditUser(Model model, @RequestParam(value="userid", required=true) String userid) {
-		int nUserId = Integer.parseInt(userid);
+	public String getEditUser(Map<String, Object> model, 
+		@RequestParam(value="userid", required=true) String userid) {
 		
+		int nUserId = 0;
 		AppUserDTO user = null;
+		
+		nUserId = Integer.parseInt(userid);
+
 		try {
 			user = userService.findByID(nUserId);
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
-		UserForm userForm = new UserForm();
-		userForm.setName(user.getName());
-		model.addAttribute("userForm", userForm);
-
+		
+		model.put("user", user);
+		List<UserGroupProjectDTO> listUserGroupProjects = userGroupProjectService.findByUser(nUserId);
+		model.put("userRoles", listUserGroupProjects);
+		
 		return "edituser";
 	}
 
-	@RequestMapping(value="edituser", method=RequestMethod.POST)
+	/*@RequestMapping(value="edituser", method=RequestMethod.POST)
 	public String getEditUserPost(UserForm userForm, Map<String, Object> model,
 		@RequestParam(value="userid", required=true) String userId) {
 
@@ -705,6 +770,114 @@ public class ProjectController {
 		List<AppUserDTO> users = userService.findAll();
 		model.put("users", users);
 
+		return "usermanagement";
+	}*/
+
+	@RequestMapping(value="createrole", method=RequestMethod.GET)
+	public String getAddRole(Map<String, Object> model, 
+		@RequestParam(value="userid", required=true) String userid) {
+		int nUserId = Integer.parseInt(userid);
+		
+		AppUserDTO user = null;
+		
+		try {
+			user = userService.findByID(nUserId);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		/*UserGroupDTO userGroup = new UserGroupDTO();
+		userGroup.setName("Administrator");
+		
+		UserGroupDTO userGroup2 = new UserGroupDTO();
+		userGroup2.setName("Expert");
+		
+		UserGroupDTO userGroup3 = new UserGroupDTO();
+		userGroup3.setName("Standard");
+		
+		UserGroupDTO userGroup4 = new UserGroupDTO();
+		userGroup4.setName("Guest");
+		
+		userGroupService.save(userGroup);
+		userGroupService.save(userGroup2);
+		userGroupService.save(userGroup3);
+		userGroupService.save(userGroup4);*/
+		
+		List<ProjectDTO> projects = projectService.findAll();
+		model.put("projects", projects);
+
+		model.put("user", user);
+		
+		UserGroupProjectDTO role = new UserGroupProjectDTO();
+		model.put("role",  role);
+		
+		return "createrole";
+	}
+	
+	@RequestMapping(value="createrole", method=RequestMethod.POST)
+	public String getCreateRolePost(Map<String, Object> model, HttpServletRequest request, 
+		@RequestParam(value="userid", required=true) String userid) {
+		int nUserId = Integer.parseInt(userid);
+		
+		AppUserDTO user = null;
+		
+		try {
+			user = userService.findByID(nUserId);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		model.put("user", user);
+
+		String role = request.getParameter("roleType");
+		UserGroupDTO userGroup = null;
+		
+		// TODO Change hard coded strings to final strings for the controller 
+		if (role.equals("Administrator")) {
+			List<UserGroupDTO> userGroups = userGroupService.findByGroupNameContaining("Administrator");
+			userGroup = userGroups.get(0);
+		} else if (role.equals("Expert")) {
+			List<UserGroupDTO> userGroups = userGroupService.findByGroupNameContaining("Expert");
+			userGroup = userGroups.get(0);
+		} else if (role.equals("Standard")) {
+			List<UserGroupDTO> userGroups = userGroupService.findByGroupNameContaining("Standard");
+			userGroup = userGroups.get(0);
+		} else if (role.equals("Guest")) {
+			List<UserGroupDTO> userGroups = userGroupService.findByGroupNameContaining("Guest");
+			userGroup = userGroups.get(0);
+		}
+		
+		String roleProjectId = request.getParameter("roleProjectId");
+		int nProjectId = Integer.parseInt(roleProjectId);
+		ProjectDTO project = null;
+		
+		try {
+			project = projectService.findByID(nProjectId);
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		String errorMsg = "";
+		
+		if (user == null) {
+			errorMsg = "User null";
+		}
+		
+		if (userGroup == null) {
+			errorMsg += "User group null";
+		}
+		
+		if (project == null) {
+			errorMsg = "Project null";
+		}
+		
+		model.put("errorMsg", errorMsg);
+		
+		try {
+			userService.addToUserGroupProject(user.getUserid(), userGroup.getUsergroupid(), project.getPrjid());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return "usermanagement";
 	}
 	
@@ -800,8 +973,16 @@ public class ProjectController {
 		List<ExtParamValDTO> extParamVals = null;
 		
 		int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+		
 		if (defaultExtParamValSetId != 0)
 		{
+			try {
+				ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
+				model.put("extParamValSet", extParamValSet);
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			
 			try {
 				extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
 			} catch (EntityNotFoundException e) {
@@ -1837,4 +2018,62 @@ public class ProjectController {
 	{
 		return "error";
 	}	
+	
+	public boolean hasAdminRights(int nUserId, int nProjectId) {
+		UserGroupProjectDTO userGroupProject = userGroupProjectService.findByUserAndProject(nUserId, nProjectId);
+			
+		if (userGroupProject != null && userGroupProject.getUsergroup().getName().equals("Administrator"))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public boolean hasExpertRights(int nUserId, int nProjectId) {
+		UserGroupProjectDTO userGroupProject = userGroupProjectService.findByUserAndProject(nUserId, nProjectId);
+			
+		if (userGroupProject != null)
+		{
+			if (userGroupProject.getUsergroup().getName().equals("Administrator")
+				|| userGroupProject.getUsergroup().getName().equals("Expert"))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean hasStandardRights(int nUserId, int nProjectId) {
+		UserGroupProjectDTO userGroupProject = userGroupProjectService.findByUserAndProject(nUserId, nProjectId);
+			
+		if (userGroupProject != null)
+		{
+			if (userGroupProject.getUsergroup().getName().equals("Administrator")
+				|| userGroupProject.getUsergroup().getName().equals("Expert")
+				|| userGroupProject.getUsergroup().getName().equals("Standard"))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean hasGuestRights(int nUserId, int nProjectId) {
+		UserGroupProjectDTO userGroupProject = userGroupProjectService.findByUserAndProject(nUserId, nProjectId);
+			
+		if (userGroupProject != null)
+		{
+			if (userGroupProject.getUsergroup().getName().equals("Administrator")
+				|| userGroupProject.getUsergroup().getName().equals("Expert")
+				|| userGroupProject.getUsergroup().getName().equals("Standard")
+				|| userGroupProject.getUsergroup().getName().equals("Guest"))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }
