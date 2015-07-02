@@ -27,7 +27,8 @@
 			<table>
 				<tr>
 					<td>
-						<h2>Edit scenario</h2>
+					<!-- Edit Scenario -->
+						<h2><spring:message code="edit_scenario"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -35,55 +36,73 @@
 						<table>
 							<form:form method="post" action="editscenario.html?action=update" modelAttribute="scenario">
 							<tr>
-								<td>Scenario name:</td>
+								<!-- Scenario name -->
+								<td><spring:message code="scenario_name"/>:</td>
 								<td><form:input type="text" path="name" style="width:200px"/></td>
-								<td><input type="submit" value="Update scenario" style="width:150px"></td>
+								<!-- Update Scenario -->
+								<td><input type="submit" value="<spring:message code="update_scenario"/>" style="width:150px"></td>
 							</tr>
-							<tr>						
-								<td>Description:</td>
+							<tr>
+								<!-- Description -->						
+								<td><spring:message code="description"/>:</td>
 								<td><form:textarea type="text" rows="3" path="description" style="width:200px"/></td>
-								<td valign="top"><a href="runscenario.html"><button type="button" style="width:150px">Simulate scenario</button></a></td>
-							</tr>
-							<tr height="15"></tr>
-							<tr>						
-								<td>Input parameters:</td>
-								<td><a href="scenarioparameters.html"><button type="button" style="width:100px">Set</button></a></td>
-							</tr>
-							<tr>						
-								<td>External parameters:</td>
-								<td><a href="scenariovariables.html"><button type="button" style="width:100px">Set</button></a></td>
-							</tr>
-							<tr>						
-								<td>Multi-scenarios:</td>
-								<td><a href="setmultiscenario.html"><button type="button" style="width:100px">Set</button></a></td>
+								<!-- Simulate scenario -->
+								<td valign="top"><a href="runscenario.html"><button type="button" style="width:150px">
+								<spring:message code="simulate_scenario"/></button></a></td>
 							</tr>
 							<tr height="15"></tr>
 							<tr>
-								<td>Scenario simulation status:</td>
+								<!-- Input parameter & set button -->						
+								<td><spring:message code="input_parameters"/>:</td>
+								<td><a href="scenarioparameters.html"><button type="button" style="width:100px">
+								<spring:message code="set"/></button></a></td>
+							</tr>
+							<tr>
+								<!-- External parameters & set button -->						
+								<td><spring:message code="external_parameters"/>:</td>
+								<td><a href="scenariovariables.html"><button type="button" style="width:100px">
+								<spring:message code="set"/></button></a></td>
+							</tr>
+							<tr>
+								<!-- Multi scenarios -->					
+								<td>Multi-scenarios:</td>
+								<td><a href="setmultiscenario.html"><button type="button" style="width:100px">
+								<spring:message code="set"/></button></a></td>
+							</tr>
+							<tr height="15"></tr>
+							<tr>
+								<!-- Scenario simulation status -->
+								<td><spring:message code="scenario_simulation_status"/>:</td>
 								<td>${scenario.status}</td>
 							</tr>
 							<tr>
-								<td>Remaining simulation time:</td>
+								<!-- Remaining simulation time -->
+								<td><spring:message code="remaining_simulation_time"/>:</td>
 								<td></td>
 							</tr>
 							</form:form>
 							
 							<form:form method="post" action="setsimulationdate.html">
 							<tr>
-								<td>Dynamic simulation period from</td>
-								<td><input name="simstart" type="text" style="width:180px" value="${simStart}"/>to
+								<!--Dynamic simulation period from-->
+								<td><spring:message code="dynamic_simulation_period_from"/></td>
+								<td><input name="simstart" type="text" style="width:180px" value="${simStart}"/>
+								<spring:message code="to"/>
 								<input name="simend" type="text" style="width:180px" value="${simEnd}" /></td>
 							</tr>
 							<tr>
 								<td></td>
-								<td><input type="submit" value="Save dates" style="width:100px"/></td>
+								<!-- Save dates -->
+								<td><input type="submit" value="<spring:message code="save_dates"/>" style="width:100px"/></td>
 							</tr>
 							</form:form>
 							
 							<tr height="10"></tr>
 							<tr>
-								<td><b>Components</b></td>
-								<td><b>Input parameter values</b></td>
+								<!-- Components -->
+								<td><b><spring:message code="components"/></b></td>
+								<!-- Input parameter values -->
+								<td><b><spring:message code="input_parameter_values"/></b></td>
 							</tr>
 							<tr>						
 								<td valign="top">
@@ -91,8 +110,9 @@
 										<col style="width:150px">
 										<col style="width:50px">
 										<tr>
-											<th>Component</th>
-											<th>Id</th>
+											<!-- Component & Id -->
+											<th><spring:message code="component"/></th>
+											<th><spring:message code="id"/></th>
 										</tr>
 
 										<c:forEach items="${components}" var="component">
@@ -107,9 +127,11 @@
 									<table class="tablestyle" border="1">
 										<col style="width:150px">
 										<col style="width:50px">
-										<tr>
-											<th>Parameter name</th>
-											<th>Value</th>
+										
+										<!-- Parameter names & values -->
+										<tr>			
+											<th><spring:message code="parameter_name"/></th>
+											<th><spring:message code="value"/></th>
 										</tr>
 										<c:forEach items="${inputParamVals}" var="inputParamVal">
 										<tr>
