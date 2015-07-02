@@ -15,9 +15,9 @@
 	<tr>
 		<td width=20></td>
 		<td>
-			<table style="width:900px">
+			<table style="width:900px">			
 				<!-- create project -->
-				<tr><td><h2><spring:message code="createproject"/></h2></td></tr>
+				<tr><td><h2><spring:message code="createproject"/></h2></td></tr>	
 				<tr>
 					<td>
 						<table>
@@ -42,6 +42,10 @@
 								<td><form:textarea type="text" rows="3" path="description"></form:textarea></td>
 							</tr>
 						</table>
+						
+				<!-- error message if error -->				
+				<element><h2 class="error"></element>${errorMessage}</h2><element>	
+						
 					</td>
 					<td align="right">
 						<img src="assets/img/test_map.jpg"/>
