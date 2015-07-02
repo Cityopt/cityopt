@@ -21,15 +21,16 @@
 			<table>
 				<tr>
 					<td>
-						<h2>Create scenario</h2>
-																								
+						<!-- Create scenario -->
+						<h2><spring:message code="create_scenario"/></h2>																								
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<table>
 							<tr>
-								<td>Scenario name:</td>
+								<!-- Scenario name -->
+								<td><spring:message code="scenario_name"/>:</td>
 								<td><form:input type="text" path="name"  style="width: 200px"/></td>
 								<td></td>
 								<td></td>
@@ -41,8 +42,9 @@
 								<td></td>
 							</tr>
 							<element><h2 class="error"></element>${errorMessage}</h2>
-							<tr>						
-								<td>Description:</td>
+							<tr>
+								<!-- Description -->						
+								<td><spring:message code="description"/>:</td>
 								<td><form:textarea type="text" rows="3" path="description" style="width: 200px"></form:textarea></td>
 								<td></td>
 								<td></td>
@@ -50,7 +52,8 @@
 							<tr height="10"></tr>
 							<tr>						
 								<td></td>
-								<td align="right"><input type="submit" value="Create scenario" style="width:120px"></td>
+								<!-- Create scenario button -->
+								<td align="right"><input type="submit" value="<spring:message code="create_scenario"/>" style="width:120px"></td>
 								<td></td>
 								<td></td>
 							</tr>
