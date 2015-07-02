@@ -1565,4 +1565,12 @@ INSERT INTO Type (typeID, name) VALUES
  (8, 'List of Integer'),
  (9, 'List of Timestamp');
 
+INSERT INTO AppUser VALUES (1, 'admin', 'admin', 0);
+INSERT INTO AppUser VALUES (2, 'expert', 'expert', 0);
+INSERT INTO AppUser VALUES (3, 'standard', 'standard', 0);
+INSERT INTO AppUser VALUES (4, 'guest', 'guest', 0);
 
+INSERT INTO UserGroup VALUES (1, 'Administrator', 0);
+INSERT INTO UserGroup VALUES (2, 'Expert', 0);
+INSERT INTO UserGroup VALUES (3, 'Standard', 0);
+INSERT INTO UserGroup VALUES (4, 'Guest', 0);
