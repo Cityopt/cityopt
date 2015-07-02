@@ -191,15 +191,23 @@ public class ProjectController {
 			// Create default ext param val set
 			/*ExtParamValSetDTO extParamValSet = new ExtParamValSetDTO();
 			extParamValSet.setName("default set");
-			extParamValSet = extParamValSetService.save(extParamValSet);
-			
+			extParamValSet = extParamValSetService.save(extParamValSet);			
 			project.setExtparamvalset(extParamValSet);*/
-			project = projectService.save(project, 0, 0);
 			
+			
+			if (projectService.findByNameContaining(project.getName())==null){
+			
+			project = projectService.save(project, 0, 0);			
 			model.put("project", project);
 			model.remove("scenario");
 			
 			return "editproject";
+			}else{
+				model.put("project", project);
+				model.put("errorMessage", "This Project allready exist, please create another name.");
+				return "createproject";
+			}
+			
 		}
 		else
 		{

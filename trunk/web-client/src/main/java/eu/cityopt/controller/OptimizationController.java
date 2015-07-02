@@ -373,9 +373,14 @@ public class OptimizationController {
 			e2.printStackTrace();
 		}		
 		Set<OpenOptimizationSetDTO> optSets=null;		
-		if (optSetService.findByName(optimizerid)==null){			
+		
 			String name = optimizer.getName();
-			String clonename = name+"(copy)";			
+			String clonename = name+"(copy)";
+			if (optSetService.findByName(clonename)==null){}else{
+				//List<OptimizationSetDTO> list = optSetService.findByNameContaining(clonename);
+				
+			}
+			
 				try {
 					//clones
 					OptimizationSetDTO cloneoptimisation = copyService.copyOptimizationSet(noptimizerid, clonename, false);
@@ -385,16 +390,14 @@ public class OptimizationController {
 				} catch (EntityNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}	
-		
+				}				
 		try {
 			
 			optSets = projectService.getSearchAndGAOptimizationSets(project.getPrjid());
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
-		model.put("openoptimizationsets", optSets);
-		}
+		model.put("openoptimizationsets", optSets);		
 		return "openoptimizationset";
 		}
 		
