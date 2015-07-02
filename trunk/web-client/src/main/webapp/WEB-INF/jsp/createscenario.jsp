@@ -41,7 +41,7 @@
 								<td></td>
 								<td></td>
 							</tr>
-							<element><h2 class="error"></element>${errorMessage}</h2>
+							
 							<tr>
 								<!-- Description -->						
 								<td><spring:message code="description"/>:</td>
@@ -58,6 +58,8 @@
 								<td></td>
 							</tr>
 						</table>
+						<!-- error message if error -->
+						<element><h2 class="error"></element>${errorMessage}</h2><element>
 					</td>
 				</tr>
 			</table>
