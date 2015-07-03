@@ -191,8 +191,9 @@ public class ScenarioController {
 			ScenarioDTO scenario = new ScenarioDTO();			
 			
 			//Fix #10457 By:Markus Turunen Checking no other entries. Too wide			
-			List<ScenarioDTO> elements = scenarioService.findByNameContaining(formScenario.getName());
-			if (elements.size()==0){			
+			//List<ScenarioDTO> elements = scenarioService.findByNameContaining(formScenario.getName());
+			
+			if (scenarioService.findByName(formScenario.getName())==null){			
 				scenario.setName(formScenario.getName());
 				scenario.setDescription(formScenario.getDescription());
 				scenario.getScenid();		
