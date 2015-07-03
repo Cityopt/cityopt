@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -187,10 +190,14 @@ public class ProjectController {
 		return "createproject";
 	}
 
-	@RequestMapping(value="createproject", method=RequestMethod.POST)
-	public String getCreateProjectPost(Map<String, Object> model, ProjectDTO projectForm) {
-		if (projectForm.getName() != null)
-		{
+	@RequestMapping(value = "createproject", method = RequestMethod.POST)
+	public String getCreateProjectPost(Map<String, Object> model,
+			@Validated @ModelAttribute("project") ProjectDTO projectForm, BindingResult bindingResult) {
+
+		if (bindingResult.hasErrors()) {
+			return "createproject";
+		} else {
+
 			ProjectDTO project = new ProjectDTO();
 			project.setName(projectForm.getName());
 			String desc = projectForm.getDescription();
@@ -231,10 +238,6 @@ public class ProjectController {
 				return "createproject";
 			}
 			
-		}
-		else
-		{
-			return "error";
 		}
 	}
 

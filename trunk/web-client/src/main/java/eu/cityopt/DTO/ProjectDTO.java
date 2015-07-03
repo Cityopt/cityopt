@@ -3,6 +3,11 @@ package eu.cityopt.DTO;
 import java.util.Date;
 import java.util.Set;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 import eu.cityopt.model.ExtParamValSet;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,11 +16,15 @@ public class ProjectDTO extends BaseDTO{
 
 		@Getter @Setter private int prjid;
 //		@Getter @Setter private ExtParamValSetDTO defaultextparamvalset;
+	    @Size(min=1,max=50)
 		@Getter @Setter private String name;
-		@Getter @Setter private String location;
+	    @NotEmpty
+	    @Getter @Setter private String location;
 		@Getter @Setter private String projectCreator;
+		@Size(min=5,message="At least 5 characters")
 		@Getter @Setter private String description;
 //		@Getter @Setter private SimulationModelDTO simulationmodel;
+		@NotEmpty
 		@Getter @Setter private String designtarget;
 		@Getter @Setter private Date timehorizon;
 		@Getter @Setter private Date createdon;
