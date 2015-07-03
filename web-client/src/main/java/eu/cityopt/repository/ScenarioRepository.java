@@ -12,7 +12,7 @@ import eu.cityopt.model.Scenario;
 
 @Repository
 public interface ScenarioRepository extends JpaRepository<Scenario,Integer>{
-	@Query("select s from Scenario s where Lower(s.name) like CONCAT('%',Lower(:scenName),'%')")
+	@Query("select s from Scenario s where Lower(s.name) like CONCAT('%',Lower(:scenName),'%') order by s.name")
 	List<Scenario> findByNameContaining(@Param("scenName") String scenName);
 	
 	Scenario findByName(String scenName);
@@ -21,6 +21,6 @@ public interface ScenarioRepository extends JpaRepository<Scenario,Integer>{
 			+ " and s.project.prjid = :prjid")
 	Scenario findByNamePrjid(@Param("scenName") String scenName, @Param("prjid") int prjid);
 	
-	@Query("select s from Scenario s where s.createdon between :dateLower and :dateUpper")
+	@Query("select s from Scenario s where s.createdon between :dateLower and :dateUpper order by s.name")
 	List<Scenario> findByCreationDate(@Param("dateLower") Date dateLower, @Param("dateUpper") Date dateUpper);
 }

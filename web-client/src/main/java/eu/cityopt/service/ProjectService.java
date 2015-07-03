@@ -25,9 +25,15 @@ import eu.cityopt.repository.ProjectRepository;
 //@Service
 public interface ProjectService extends CityOptService<ProjectDTO> {
 
+	public enum SortBy{
+		name, id, description
+	}
+	
 	ProjectDTO save(ProjectDTO projectDTO, int simulationModelId, int extParamValSetId);
 
 	List<ProjectScenariosDTO> findAllWithScenarios();
+	
+	List<ProjectDTO> findAll(SortBy col);
 
 	void deleteAll();
 

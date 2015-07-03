@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -111,7 +112,17 @@ public class ProjectServiceImpl implements ProjectService{
 
 	@Transactional(readOnly = true)
 	public List<ProjectDTO> findAll() {
-		List<Project> projects = projectRepository.findAll();
+		List<Project> projects = projectRepository.findAll(new Sort(Sort.Direction.ASC, SortBy.name.toString()));
+		
+		List<ProjectDTO> result 
+			= modelMapper.map(projects, new TypeToken<List<ProjectDTO>>() {}.getType());
+		return result;
+	}
+	
+	@Transactional(readOnly = true)
+	public List<ProjectDTO> findAll(SortBy col) {
+		List<Project> projects = projectRepository.findAll(new Sort(Sort.Direction.ASC, col.toString()));
+		
 		List<ProjectDTO> result 
 			= modelMapper.map(projects, new TypeToken<List<ProjectDTO>>() {}.getType());
 		return result;
@@ -120,6 +131,7 @@ public class ProjectServiceImpl implements ProjectService{
 	@Transactional(readOnly = true)
 	public List<ProjectScenariosDTO> findAllWithScenarios() {
 		List<Project> projects = projectRepository.findAllWithScenarios();
+		
 		List<ProjectScenariosDTO> result 
 			= modelMapper.map(projects, new TypeToken<List<ProjectScenariosDTO>>() {}.getType());
 		return result;
@@ -137,6 +149,7 @@ public class ProjectServiceImpl implements ProjectService{
 	@Transactional(readOnly = true)
 	public List<ProjectDTO> findByNameContaining(String name) {
 		List<Project> projects = projectRepository.findByNameContaining(name);
+		
 		List<ProjectDTO> result 
 			= modelMapper.map(projects, new TypeToken<List<ProjectDTO>>() {}.getType());
 		return result;
