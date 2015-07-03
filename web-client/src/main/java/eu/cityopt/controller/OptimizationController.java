@@ -373,35 +373,41 @@ public class OptimizationController {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}		
-		Set<OpenOptimizationSetDTO> optSets=null;		
-		
-			String name = optimizer.getName();
-			String clonename = name+"(copy)";
-			if (optSetService.findByName(clonename)==null){}else{
-				//List<OptimizationSetDTO> list = optSetService.findByNameContaining(clonename);
+		Set<OpenOptimizationSetDTO> optSets=null;
+		try {			
+			optSets = projectService.getSearchAndGAOptimizationSets(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+			
+			String name = optimizer.getName();			
+			String clonename = name+"(copy)";				
+				int i=0;
+				while(optSetService.findByName(clonename)!=null){					
+					i++;
+					clonename=name+"(copy)("+i+")";				
+				}
 				
-			}
 			
 				try {
 					//clones
-					OptimizationSetDTO cloneoptimisation = copyService.copyOptimizationSet(noptimizerid, clonename, false);
-					cloneoptimisation=optSetService.save(cloneoptimisation);
-					
+					OptimizationSetDTO cloneoptimisation = copyService.copyOptimizationSet(noptimizerid, clonename, true);
+					cloneoptimisation=optSetService.save(cloneoptimisation);					
 				
 				} catch (EntityNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}				
-		try {
-			
-			optSets = projectService.getSearchAndGAOptimizationSets(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			e.printStackTrace();
-		}
+		
 		model.put("openoptimizationsets", optSets);		
 		return "openoptimizationset";
+						
 		}
 		
+		
+		
+		
+		//List<OptimizationSetDTO> list = optSetService.findByNameContaining(clonename);
 			/*
 			ProjectDTO project = (ProjectDTO) model.get("project");
 			int nProjectId = Integer.parseInt(projectid);
