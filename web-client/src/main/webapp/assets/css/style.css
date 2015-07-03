@@ -553,3 +553,9 @@ form {
 	margin: 0;
 	padding: 0;
 }
+
+.error {
+    color: #ff0000;
+    font-style: italic;
+    font-weight: bold;
+}

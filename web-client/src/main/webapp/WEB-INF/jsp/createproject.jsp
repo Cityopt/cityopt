@@ -2,6 +2,7 @@
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -25,21 +26,25 @@
 								<!--Project name:-->
 								<td><spring:message code="project_name"/>:</td>
 								<td><form:input type="text" path="name"/></td>
+								<td><form:errors path="name" cssClass="error"/></td>
 							</tr>
 							<tr>
 								<!--Location:-->						
 								<td><spring:message code="location"/>:</td>
 								<td><form:input type="text" path="location"/></td>
+								<td><form:errors path="location" cssClass="error"/></td>
 							</tr>
 							<tr>
 								<!--Design target:-->						
 								<td><spring:message code="design_target"/>:</td>
 								<td><form:input type="text" path="designtarget"/></td>
+								<td><form:errors path="designtarget" cssClass="error"/></td>
 							</tr>
 							<tr>
 								<!--Description -->						
 								<td><spring:message code="description"/>:</td>
 								<td><form:textarea type="text" rows="3" path="description"></form:textarea></td>
+							    <td><form:errors path="description" cssClass="error"/></td>
 							</tr>
 						</table>
 						
