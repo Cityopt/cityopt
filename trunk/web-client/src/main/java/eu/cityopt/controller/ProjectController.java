@@ -221,7 +221,7 @@ public class ProjectController {
 				model.put("project", project);
 				model.remove("scenario");
 				
-				AppUserDTO user = (AppUserDTO) model.get("user");
+				/*AppUserDTO user = (AppUserDTO) model.get("user");
 				
 				UserGroupProjectDTO userGroupProject = new UserGroupProjectDTO();
 				userGroupProject.setAppuser(user);
@@ -229,7 +229,7 @@ public class ProjectController {
 	
 				UserGroupDTO userGroup = userGroupService.findByGroupName("Administrator").get(0);
 				userGroupProject.setUsergroup(userGroup);
-				userGroupProject = userGroupProjectService.save(userGroupProject);
+				userGroupProject = userGroupProjectService.save(userGroupProject);*/
 			
 				return "editproject";
 			} else {
