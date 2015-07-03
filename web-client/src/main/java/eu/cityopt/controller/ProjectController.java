@@ -220,25 +220,32 @@ public class ProjectController {
 				project = projectService.save(project, 0, 0);			
 				model.put("project", project);
 				model.remove("scenario");
-				
-				/*AppUserDTO user = (AppUserDTO) model.get("user");
-				
+				/*
+				AppUserDTO user = (AppUserDTO) model.get("user");				
 				UserGroupProjectDTO userGroupProject = new UserGroupProjectDTO();
 				userGroupProject.setAppuser(user);
 				userGroupProject.setProject(project);
 	
 				UserGroupDTO userGroup = userGroupService.findByGroupName("Administrator").get(0);
 				userGroupProject.setUsergroup(userGroup);
-				userGroupProject = userGroupProjectService.save(userGroupProject);*/
+				userGroupProject = userGroupProjectService.save(userGroupProject);
+				*/
+			if (projectService.findByName(project.getName())==null){
 			
-				return "editproject";
-			} else {
+			project = projectService.save(project, 0, 0);			
+			model.put("project", project);
+			model.remove("scenario");
+			
+			return "editproject";
+			}
+			else{
 				model.put("project", project);
 				model.put("errorMessage", "This project already exists, please create it with another name.");
 				return "createproject";
 			}
-			
+			}
 		}
+		return "error";
 	}
 
 	@RequestMapping(value="openproject", method=RequestMethod.GET)
@@ -534,17 +541,19 @@ public class ProjectController {
 		} catch (EntityNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
-		//Random number is to make clone crash temp. solution.
-		//ToDo: Fix the issue:
-		String clonename = project.getName()+"(clone)"+Math.random()*1000;
+		}		
+		String clonename = project.getName()+"(copy)";
+		int i=0;
+		while(projectService.findByName(clonename)!=null){
+			i++;
+			clonename = project.getName()+"(copy)("+i+")";
+		}	
 		try {
 			ProjectDTO ProjectCloner = copyService.copyProject(nProjectId,clonename);
 		} catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+		}		
 		List<ProjectDTO> projects = projectService.findAll();
 		model.put("projects", projects);
 		return "openproject";
