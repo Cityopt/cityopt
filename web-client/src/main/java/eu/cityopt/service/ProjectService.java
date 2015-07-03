@@ -26,7 +26,7 @@ import eu.cityopt.repository.ProjectRepository;
 public interface ProjectService extends CityOptService<ProjectDTO> {
 
 	public enum SortBy{
-		name, id, description
+		name, prjid, description
 	}
 	
 	ProjectDTO save(ProjectDTO projectDTO, int simulationModelId, int extParamValSetId);
