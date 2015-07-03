@@ -186,103 +186,66 @@ public class ScenarioController {
 				project = projectService.findByID(project.getPrjid());
 			} catch (EntityNotFoundException e1) {
 				e1.printStackTrace();
-			}
+			}			
+			model.put("project", project);			
+			ScenarioDTO scenario = new ScenarioDTO();			
 			
-			
-			
-			model.put("project", project);
-			
-			ScenarioDTO scenario = new ScenarioDTO();
-			
-			
-			//Fix #10457 By:Markus Turunen Checking no other entries.			
+			//Fix #10457 By:Markus Turunen Checking no other entries. Too wide			
 			List<ScenarioDTO> elements = scenarioService.findByNameContaining(formScenario.getName());
 			if (elements.size()==0){			
 				scenario.setName(formScenario.getName());
 				scenario.setDescription(formScenario.getDescription());
-				scenario.getScenid();
-				
+				scenario.getScenid();		
+				List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+				model.put("components", components);
 				try {
 					scenario = scenarioService.saveWithDefaultInputValues(scenario, project.getPrjid());
 				} catch (EntityNotFoundException e) {
 					// TODO Auto-generated catch block
-					
 					e.printStackTrace();
 				}
-				
-				
 			}
-			else
-			{
+			else{
 				model.put("scenario", formScenario);
 				model.put("errorMessage", "This Scenario allready exist, please create another name.");
+				return "createscenario";				
+				}			
+				
+				
+			//Bugfix #10543 author: Markus Turunen Check if energy models exist
+			if(scenarioService.getInputParamVals(scenario.getScenid())!=null){
+				Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+				model.put("inputParamVals", inputParamVals);
+	//			Iterator<InputParamValDTO> iter = inputParamVals.iterator();			
+				InputParamValDTO simStart = inputParamValService.findByNameAndScenario("simulation_start", scenario.getScenid());
+				InputParamValDTO simEnd = inputParamValService.findByNameAndScenario("simulation_end", scenario.getScenid());			
+				if(simStart!=null&&simEnd!=null){				
+					model.put("simStart", simStart.getValue());
+					model.put("simEnd", simEnd.getValue());//						
+					UserSession userSession = (UserSession) model.get("usersession");
+					userSession = new UserSession();
+					model.put("usersession", userSession);
+					model.put("scenario", scenario);					
+					return "editscenario";				
+				}else{
+					model.put("scenario", formScenario);				
+					model.put("errorMessage", "Project lack simulation definition, please define them.");
+					return "createscenario";
+				}			
+			}else{	
+				model.put("scenario", formScenario);				
+				model.put("errorMessage", "Project lack input parameter values can't create a scenario,  please define them.");
 				return "createscenario";
-				
-				
 			}
-			
-			
-			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-			model.put("components", components);
-
-			// Create input param vals for all input params
-//			for (int i = 0; i < components.size(); i++)
-//			{
-//				ComponentDTO component = components.get(i);
-//				//List<ComponentInputParamDTO> listComponentInputParams = componentInputParamService.findAllByComponentId(component.getComponentid());
-//				
-//				Set<InputParameterDTO> setInputParams = componentService.getInputParameters(component.getComponentid());
-//				Iterator<InputParameterDTO> iter = setInputParams.iterator();
-//				
-//				while(iter.hasNext())
-//				{
-//					InputParameterDTO inputParam = iter.next();
-//					
-//					//InputParameterDTO inputParam = inputParamService.findByID(setInputParams.get(j).getInputid());
-//					InputParamValDTO inputParamVal = new InputParamValDTO();
-//					inputParamVal.setInputparameter(inputParam);
-//					inputParamVal.setValue(inputParam.getDefaultvalue());
-//					inputParamVal.setScenario(scenario);
-//					inputParamVal = inputParamValService.save(inputParamVal);
-//				}
-//			}
-			
-			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
-			model.put("inputParamVals", inputParamVals);
-
-//			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
-			InputParamValDTO simStart = inputParamValService.findByNameAndScenario("simulation_start", scenario.getScenid());
-			InputParamValDTO simEnd = inputParamValService.findByNameAndScenario("simulation_end", scenario.getScenid());
-			model.put("simStart", simStart.getValue());
-			model.put("simEnd", simEnd.getValue());
-//			// Get simulation start and end times
-//			while(iter.hasNext())
-//			{
-//				InputParamValDTO inputParamVal = iter.next();
-//				String inputName = inputParamVal.getInputparameter().getName();
-//				
-//				if (inputName.equals("simulation_start"))
-//				{
-//					model.put("simStart", inputParamVal.getValue());
-//				}
-//				else if (inputName.equals("simulation_end"))
-//				{
-//					model.put("simEnd", inputParamVal.getValue());
-//				}
-//			}
-
-			UserSession userSession = (UserSession) model.get("usersession");
-			userSession = new UserSession();
-			model.put("usersession", userSession);
-
-			model.put("scenario", scenario);
-			return "editscenario";
 		}
 		else
-		{
+			{
+			model.put("scenario", formScenario);				
+			model.put("errorMessage", "There's no project selected please select one.");
+			return "createscenario";
 			//project null
-			return "error";
-		}
+			//return "error";
+			}		
 	}
 	
 	@RequestMapping(value="openscenario",method=RequestMethod.GET)
