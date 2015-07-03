@@ -356,10 +356,9 @@ public class OptimizationController {
 	}
 
 	// @author Markus Turunen
-		// date: 26.6.2015
+		// date: 26.6.2015 -3.7.2015
 		// This method handles Optimizer cloning.
-		// 30.6.2015
-		// ToDo add a identifier tag to clone of the clones
+		// 
 		 
 		@RequestMapping(value="cloneoptimizer", method=RequestMethod.GET)
 		public String CloneOptimizer(Map<String, Object> model, @RequestParam(value = "optimizerid") String optimizerid) {
@@ -378,17 +377,14 @@ public class OptimizationController {
 			optSets = projectService.getSearchAndGAOptimizationSets(project.getPrjid());
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
-		}
-			
+		}			
 			String name = optimizer.getName();			
 			String clonename = name+"(copy)";				
 				int i=0;
 				while(optSetService.findByName(clonename)!=null){					
 					i++;
 					clonename=name+"(copy)("+i+")";				
-				}
-				
-			
+				}			
 				try {
 					//clones
 					OptimizationSetDTO cloneoptimisation = copyService.copyOptimizationSet(noptimizerid, clonename, true);
@@ -397,8 +393,7 @@ public class OptimizationController {
 				} catch (EntityNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}				
-		
+				}			
 		model.put("openoptimizationsets", optSets);		
 		return "openoptimizationset";
 						
