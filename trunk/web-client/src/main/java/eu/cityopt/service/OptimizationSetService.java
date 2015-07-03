@@ -35,6 +35,8 @@ public interface OptimizationSetService extends CityOptService<OptimizationSetDT
 	 */
 	void removeOptConstraint(int optSetId, int OptConstraintId) 
 			throws EntityNotFoundException;
+
+	
 	
 	
 }
