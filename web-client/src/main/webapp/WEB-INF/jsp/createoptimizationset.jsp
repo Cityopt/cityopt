@@ -21,7 +21,9 @@
 		<table>
 			<col style="width: 400px;">
 			<col style="width: 450px;">
-			<tr><td colspan="2"><h2>Create database optimization set</h2></td></tr>
+									
+			<!--Title Create database optimization set-->
+			<tr><td colspan="2"><h2><spring:message code="create_database_optimization_set"/></h2></td></tr>
 			<tr>
 				<td colspan="2">
 					<table>
@@ -31,24 +33,30 @@
 						<col style="width: 300px;">
 						<col style="width: 175px;">
 						<tr>
-							<td>Name:</td>
+							<!-- Name -->
+							<td><spring:message code="name"/>:</td>
 							<td><form:input type="text" id="name" path="name" style="width:200px"/></td>
-							<td>Description:</td>
+							<!-- Description -->
+							<td><spring:message code="description"/>:</td>
 							<td rowspan="2"><textarea id="description" rows="2" style="width: 300px"></textarea></td>
 							<td align="right"><input type="submit" value="Create" style="width: 100px"></td>
 						</tr>
-						<tr>						
-							<td>User:</td>
+						<tr>
+						<!-- User -->						
+							<td><spring:message code="user"/>:</td>
 							<td><input type="text" id="user" style="width:200px"></td>
 							<td></td>
 							<td align="right"></td>
 						</tr>
 						<tr>
-							<td>Type:</td>
+						<!-- Type -->
+							<td><spring:message code="type"/>:</td>
 							<td>
 								<select name="type" id="type" size="1">
-									<option value="1" selected>Database search</option>
-									<option value="2">Genetic algorithm</option>
+									<!-- option Database search -->
+									<option value="1" selected><spring:message code="database_search"/></option>
+									<!-- Genetic algorithm -->
+									<option value="2"><spring:message code="genetic_algorithm"/></option>
 								</select>
 							</td>
 							<td></td>
