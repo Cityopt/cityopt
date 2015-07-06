@@ -134,11 +134,11 @@
 				<col style="width: 220px;">
 				<tr>
 					<td><input type="submit" value="Clone database optimization set"></td>
-					<td align="right"><input type="submit" value="Create database optimization" style="width: 200px"></td>
+					<td align="right"></td>
 				</tr>
 				<tr>
 					<td></td>
-					<td align="right"><input type="submit" value="Cancel" style="width: 200px"></td>
+					<td align="right"></td>
 				</tr>
 			</table>
 		</td>

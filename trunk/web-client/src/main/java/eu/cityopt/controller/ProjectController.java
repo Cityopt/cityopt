@@ -1761,6 +1761,28 @@ public class ProjectController {
 			}
 			model.put("selectedcompid", nSelectedCompId);
 		}
+		
+		List<ExtParamValDTO> extParamVals = null;
+		int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+		
+		if (defaultExtParamValSetId != 0)
+		{
+			try {
+				ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
+				model.put("extParamValSet", extParamValSet);
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			
+			try {
+				extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			model.put("extParamVals", extParamVals);
+		}
+		
 		MetricDTO newMetric = new MetricDTO();
 		model.put("metric", newMetric);
 		

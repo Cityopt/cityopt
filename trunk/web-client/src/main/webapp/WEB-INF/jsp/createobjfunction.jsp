@@ -33,6 +33,7 @@
 							<col style="width:20px">
 							<col style="width:250px">
 							<col style="width:80px">
+							<col style="width:250px">
 
 							<tr>
 								<td></td>
@@ -41,9 +42,12 @@
 								</td>
 								<td></td>
 								<td>
-									Output variables
+									Input parameters
 								</td>
 								<td></td>
+								<td>
+									Output variables
+								</td>
 							</tr>
 							<tr>
 								<td></td>
@@ -73,6 +77,27 @@
 								<td></td>
 								<td valign="top">
 									<table class="tablestyle">
+										<col style="width:150px">
+										<col style="width:60px">
+										<col style="width:150px">
+										<tr>
+											<th>Input parameter</th>
+											<th>Id</th>
+											<th>Default value</th>
+										</tr>
+										
+										<c:forEach items="${inputParameters}" var="inputParam">
+										<tr>
+											<td>${inputParam.name}</td>
+									    	<td>${inputParam.inputid}</td>
+									    	<td>${inputParam.defaultvalue}</td>
+									   	</tr>
+										</c:forEach>
+									</table>
+								</td>
+								<td></td>
+								<td valign="top">
+									<table class="tablestyle">
 										<col style="width:250px">
 										<tr>
 											<th>Output variable</th>
@@ -85,7 +110,6 @@
 										</c:forEach>
 									</table>
 								</td>
-								<td></td>
 							</tr>
 							<tr height="20">
 							</tr>
@@ -95,7 +119,7 @@
 									Metrics
 								</td>
 								<td></td>
-								<td></td>
+								<td>External parameters</td>
 								<td></td>
 							</tr>
 							<tr>
@@ -103,6 +127,10 @@
 								<td>
 									<table class="tablestyle">
 										<col style="width:250px">
+										
+										<tr>
+											<th>Metric name</th>
+										</tr>
 										
 										<c:forEach items="${metrics}" var="metric">
 										<tr>
@@ -112,7 +140,21 @@
 									</table>										
 								</td>
 								<td></td>
-								<td></td>
+								<td valign="top">
+									<table class="tablestyle" width="450">
+										<col style="width:200px">
+												
+										<tr height="20">
+										    <th>Name</th>
+										</tr>
+										
+										<c:forEach items="${extParamVals}" var="extParamVal">
+										<tr>
+											<td>${extParamVal.extparam.name}</td>
+									    </tr>
+										</c:forEach>
+									</table>
+								</td>
 								<td></td>
 							</tr>
 							<tr height="20">
