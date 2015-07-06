@@ -49,7 +49,10 @@
 						</table>
 						
 				<!-- error message if error -->				
-				<element><h2 class="error"></element>${errorMessage}</h2><element>	
+				<element><element><h2 class="error"></element></element>${errorMessage}</h2><element>
+				
+				<!-- success message if succesful creation -->				
+				<element><element><h2 class="successful"></element></element>${successful}</h2><element>
 						
 					</td>
 					<td align="right">
