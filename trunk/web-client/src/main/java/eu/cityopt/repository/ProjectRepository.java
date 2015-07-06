@@ -15,9 +15,11 @@ import eu.cityopt.model.Project;
 @Repository
 public interface ProjectRepository extends JpaRepository<Project,Integer>,
 		JpaSpecificationExecutor<Project> {
-	@Query("select distinct p from Project p where Lower(p.name) like CONCAT('%',Lower(:prjName),'%') order by p.name")
-	List<Project> findByNameContaining(@Param("prjName") String prjname);
-		
+
+	List<Project> findByNameContainingIgnoreCase(String prjname,Sort sort);
+	
+	List<Project> findByNameContainingIgnoreCase(String prjname);
+	
 	Project findByName(String prjname);
 		
 	List<Project> findByNameLikeIgnoreCase(String prjname,Sort sort);

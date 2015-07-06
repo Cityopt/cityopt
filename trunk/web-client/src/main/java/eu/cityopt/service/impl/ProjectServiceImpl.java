@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -148,7 +149,7 @@ public class ProjectServiceImpl implements ProjectService{
 	
 	@Transactional(readOnly = true)
 	public List<ProjectDTO> findByNameContaining(String name) {
-		List<Project> projects = projectRepository.findByNameContaining(name);
+		List<Project> projects = projectRepository.findByNameContainingIgnoreCase(name,new Sort(Direction.ASC,SortBy.name.toString()));
 		
 		List<ProjectDTO> result 
 			= modelMapper.map(projects, new TypeToken<List<ProjectDTO>>() {}.getType());
