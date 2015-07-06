@@ -87,7 +87,7 @@ public class ProjectServiceImpl implements ProjectService{
 		}
 
 		SimulationModel sm = project.getSimulationmodel();
-		if(sm.getProjects().size() == 1){
+		if(sm!=null && sm.getProjects().size() == 1){
 			//this is the simulationmodel's last project, delete the model
 			projectRepository.delete(project.getPrjid());
 			simulationModelRepository.delete(sm.getModelid());

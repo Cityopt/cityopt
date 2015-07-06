@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.AssertThrows;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -374,6 +375,22 @@ public class ProjectServiceDTOTest {
 		em.flush();
 		
 		ProjectDTO p = projectService.findByID(1);
+	}
+	
+	@Test
+	public void CreateDeleteProject() throws EntityNotFoundException
+	{
+		ProjectDTO projectDTO = new ProjectDTO();
+		projectDTO.setName("TestProject Flo");
+		
+		projectDTO = projectService.save(projectDTO, 0, 0);
+		
+		assertNotNull(projectService.findByName("TestProject Flo"));
+		
+		projectService.delete(projectDTO.getPrjid());
+		
+		assertNull(projectService.findByName("TestProject Flo"));
+		
 	}
 	
 }
