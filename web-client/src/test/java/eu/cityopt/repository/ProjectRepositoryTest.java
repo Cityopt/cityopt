@@ -99,7 +99,7 @@ public class ProjectRepositoryTest {
 	public void UpdateProject()
 	{	
 		String location;
-		List<Project> projects = projectRepository.findByNameContaining("Project 1");
+		List<Project> projects = projectRepository.findByNameContainingIgnoreCase("Project 1");
 		
 		Project fproject = projects.get(0);
 		location = fproject.getLocation();
@@ -113,7 +113,7 @@ public class ProjectRepositoryTest {
 	public void getProjectDescription()
 	{	
 		String location;
-		List<Project> projects = projectRepository.findByNameContaining("Project 1");
+		List<Project> projects = projectRepository.findByNameContainingIgnoreCase("Project 1");
 		Project fproject = projects.get(0);
 		assertEquals("this is a good description",fproject.getDescription());	
 	}	
@@ -130,13 +130,13 @@ public class ProjectRepositoryTest {
 	@DatabaseSetup("classpath:/testData/scenario_TestData.xml")
 	public void findByName() {
 	
-		List<Project> projects = projectRepository.findByNameContaining("Project 1");
+		List<Project> projects = projectRepository.findByNameContainingIgnoreCase("Project 1");
 		assertEquals(1, projects.size());	
 		
-		projects = projectRepository.findByNameContaining("Project");
+		projects = projectRepository.findByNameContainingIgnoreCase("Project");
 		assertEquals(2, projects.size());
 		
-		projects = projectRepository.findByNameContaining("Projedsct");
+		projects = projectRepository.findByNameContainingIgnoreCase("Projedsct");
 		assertEquals(0, projects.size());
 	}
 	
@@ -145,7 +145,7 @@ public class ProjectRepositoryTest {
 	"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC1.xml"})
 	public void DeleteProject()
 	{		
-		List<Project> projects = projectRepository.findByNameContaining("Project");
+		List<Project> projects = projectRepository.findByNameContainingIgnoreCase("project");
 		
 		//delete projects components to be able to delete project if no cascadetype is set
 //		for(Iterator<Project> p = projects.iterator(); p.hasNext();){
@@ -158,7 +158,7 @@ public class ProjectRepositoryTest {
 		
 		projectRepository.delete(projects);
 		
-		assertEquals(0, projectRepository.findByNameContaining("Project").size());	
+		assertEquals(0, projectRepository.findByNameContainingIgnoreCase("project").size());	
 	}	
 
 	

@@ -45,7 +45,7 @@ public class TestImportExportService extends SimulationTestBase {
     @ExpectedDatabase(value="classpath:/testData/import_model_result.xml",
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testImportModel() throws Exception {
-        int projectId = projectRepository.findByNameContaining("Empty test project").get(0).getPrjid();
+        int projectId = projectRepository.findByNameContainingIgnoreCase("Empty test project").get(0).getPrjid();
         byte[] modelData = getResourceBytes("/testmodel.zip");
         importExportService.importSimulationModel(
                 projectId, null, "test project",
@@ -102,7 +102,7 @@ public class TestImportExportService extends SimulationTestBase {
     @ExpectedDatabase(value="classpath:/testData/import_structure_result.xml",
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testImportProjectStructure() throws Exception {
-        Project project = projectRepository.findByNameContaining("Empty test project").get(0);
+        Project project = projectRepository.findByNameContainingIgnoreCase("Empty test project").get(0);
         try (InputStream in = getClass().getResource("/test-problem.csv").openStream()) {
             importExportService.importSimulationStructure(project.getPrjid(), in);
         }
@@ -116,7 +116,7 @@ public class TestImportExportService extends SimulationTestBase {
             assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testReimportProjectStructure() throws Exception {
         Project project = projectRepository
-                .findByNameContaining("Empty test project").get(0);
+                .findByNameContainingIgnoreCase("Empty test project").get(0);
         int pid = project.getPrjid();
         try (InputStream
                 in = getClass().getResourceAsStream("/test-problem.csv")) {

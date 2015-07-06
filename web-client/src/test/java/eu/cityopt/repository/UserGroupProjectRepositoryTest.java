@@ -77,7 +77,7 @@ public class UserGroupProjectRepositoryTest {
 	@Rollback(true)
 	public void CreateUserGroupRelation() {
 		
-		List<Project> projects = projectRepository.findByNameContaining("Sample Project Helsinki");
+		List<Project> projects = projectRepository.findByNameContainingIgnoreCase("Sample Project Helsinki");
 		List<UserGroup> groups = userGroupRepository.findByGroupNameContaining("Administrator");
 		List<AppUser> user = userRepository.findByUserName("Flo");
 		
@@ -130,7 +130,7 @@ public class UserGroupProjectRepositoryTest {
 	@Rollback(true)
 	public void UpdateUserGroupRelation2() {
 		
-		List<Project> projects = projectRepository.findByNameContaining("Sample Project Helsinki");
+		List<Project> projects = projectRepository.findByNameContainingIgnoreCase("Sample Project Helsinki");
 		List<UserGroup> groups = userGroupRepository.findByGroupNameContaining("Administrator");
 		List<AppUser> user = userRepository.findByUserName("Flo");
 		
