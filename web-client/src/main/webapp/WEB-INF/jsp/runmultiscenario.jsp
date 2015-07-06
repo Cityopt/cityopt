@@ -24,17 +24,20 @@
 	<td valign="top">
 		<div style="overflow:scroll;height:400px;width:600px;overflow:auto">
 		<form method="post" action="runmultiscenario.html">
-		<h2>Run Multi-scenario</h2>
+		<!-- Run Muli -scenario -->
+		<h2><spring:message code="run_multi_scenario"/></h2>
 		<table class="tablestyle" width="600" border="1">
-			<tr height="20">
-			    <th>Name</th>
-			    <th>Id</th>
-			    <th>Description</th>
-			    <th>User</th>
-			    <th>Creation date</th>
-			    <th>Setting</th>
-			    <th>Run</th>
-			    <th>Select</th>
+		
+			<!-- Table(Name,Id,Description,Users,Creation Date,Setting,Run,Select) -->
+			<tr height="20">				
+			    <th><spring:message code="name"/></th>
+			    <th><spring:message code="id"/></th>
+			    <th><spring:message code="description"/></th>
+			    <th><spring:message code="users"/></th>
+			    <th><spring:message code="creation_date"/></th>
+			    <th><spring:message code="setting"/></th>
+			    <th><spring:message code="run"/></th>
+			    <th><spring:message code="select"/></th>
 			</tr>
 
 		<c:forEach items="${scenarios}" var="scenario">
@@ -54,7 +57,7 @@
 		<table width="600">
 			<tr>
 				<td align="right">
-					<input align="right" type="submit" value="Run Multi-scenario"/>
+					<input align="right" type="submit" value="<spring:message code="run_multi_scenario"/>"/>
 			    </td>
 			</tr>
       	</table>
