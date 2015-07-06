@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.DecisionVariableDTO;
+import eu.cityopt.DTO.ExtParamValDTO;
+import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
@@ -179,7 +181,6 @@ public class OptimizationController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	
@@ -210,8 +211,32 @@ public class OptimizationController {
 				userSession.setComponentId(nSelectedCompId);
 				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
 				model.put("outputVars", outputVars);
+				
+				Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+				model.put("inputParameters", inputParams);
 			}
 			model.put("selectedcompid", nSelectedCompId);
+		}
+		
+		List<ExtParamValDTO> extParamVals = null;
+		int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+		
+		if (defaultExtParamValSetId != 0)
+		{
+			try {
+				ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
+				model.put("extParamValSet", extParamValSet);
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			
+			try {
+				extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			model.put("extParamVals", extParamVals);
 		}
 		
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
@@ -998,10 +1023,10 @@ public class OptimizationController {
 			List<ScenarioWithObjFuncValueDTO> resultScenariosWithValue = (List<ScenarioWithObjFuncValueDTO>) optResults.resultScenarios;
 			model.put("resultScenariosWithValue", resultScenariosWithValue);
 			model.put("optresults", optResults);
+
+			EvaluationResults evResults = optResults.getEvaluationResult();
+			userSession.setOptResultString(evResults.toString());
 		}
-		
-		EvaluationResults evResults = optResults.getEvaluationResult();
-		userSession.setOptResultString(evResults.toString());
 		
 		model.put("usersession", userSession);
 

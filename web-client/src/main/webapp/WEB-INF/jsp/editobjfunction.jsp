@@ -103,6 +103,10 @@
 								<td>
 									<table class="tablestyle">
 										<col style="width:250px">
+
+										<tr>
+											<th>Metric name</th>
+										</tr>
 										
 										<c:forEach items="${metrics}" var="metric">
 										<tr>

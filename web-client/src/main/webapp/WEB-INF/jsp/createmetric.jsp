@@ -53,7 +53,7 @@
 							</tr>
 							<tr>
 								<td></td>
-								<td>
+								<td valign="top">
 									<table class="tablestyle">
 										<col style="width:60px">
 										<col style="width:190px">
@@ -145,20 +145,14 @@
 								<td valign="top">
 									<table class="tablestyle" width="450">
 										<col style="width:200px">
-										<col style="width:100px">
-										<col style="width:100px">
 												
 										<tr height="20">
 										    <th>Name</th>
-										    <th>Id</th>
-											<th>Value</th>
 										</tr>
 										
 										<c:forEach items="${extParamVals}" var="extParamVal">
 										<tr>
 											<td>${extParamVal.extparam.name}</td>
-									    	<td>${extParamVal.extparamvalid}</td>
-									    	<td>${extParamVal.value}</td>
 									    </tr>
 										</c:forEach>
 									</table>

@@ -390,7 +390,6 @@ public class ScenarioController {
 		return "openscenario";
 	}
 	
-	
 	@RequestMapping(value="editscenario", method=RequestMethod.GET)
 	public String getEditScenario (Map<String, Object> model) {
 		if (!model.containsKey("project"))
