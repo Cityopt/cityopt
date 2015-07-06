@@ -230,22 +230,21 @@ public class ProjectController {
 				userGroupProject.setUsergroup(userGroup);
 				userGroupProject = userGroupProjectService.save(userGroupProject);
 				*/
-			if (projectService.findByName(project.getName())==null){
-			
+						
 			project = projectService.save(project, 0, 0);			
 			model.put("project", project);
 			model.remove("scenario");
-			
-			return "editproject";
+			model.put("successful", "Project succesfully created.");			
+			return "createproject";
+			//return "editproject";
 			}
 			else{
-				model.put("project", project);
+				model.put("project", project);				
 				model.put("errorMessage", "This project already exists, please create it with another name.");
 				return "createproject";
-			}
-			}
+			}	
+			//return "error";
 		}
-		return "error";
 	}
 
 	@RequestMapping(value="openproject", method=RequestMethod.GET)

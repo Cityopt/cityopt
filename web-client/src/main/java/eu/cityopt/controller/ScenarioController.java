@@ -187,6 +187,7 @@ public class ScenarioController {
 			} catch (EntityNotFoundException e1) {
 				e1.printStackTrace();
 			}			
+			
 			model.put("project", project);			
 			ScenarioDTO scenario = new ScenarioDTO();			
 			
@@ -196,7 +197,8 @@ public class ScenarioController {
 			if (scenarioService.findByName(formScenario.getName())==null){			
 				scenario.setName(formScenario.getName());
 				scenario.setDescription(formScenario.getDescription());
-				scenario.getScenid();		
+				scenario.getScenid();
+				model.put("successful", "Scenario succesfully created.");
 				List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 				model.put("components", components);
 				try {
@@ -205,6 +207,7 @@ public class ScenarioController {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
 			}
 			else{
 				model.put("scenario", formScenario);
@@ -226,8 +229,9 @@ public class ScenarioController {
 					UserSession userSession = (UserSession) model.get("usersession");
 					userSession = new UserSession();
 					model.put("usersession", userSession);
+					model.put("Succesful", "Scenario succesfully created");
 					model.put("scenario", scenario);					
-					return "editscenario";				
+					return "createscenario";				
 				}else{
 					model.put("scenario", formScenario);				
 					model.put("errorMessage", "Project lack simulation definition, please define them.");
