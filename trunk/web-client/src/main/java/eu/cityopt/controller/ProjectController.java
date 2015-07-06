@@ -1024,27 +1024,26 @@ public class ProjectController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		ExtParamValSetDTO selectedExtParamSet = null;
+		ExtParamValSetDTO selectedExtParamValSet = null;
 		
 		if (selectedExtParamSetId != null)
 		{
 			int nSelectedExtParamSetId = Integer.parseInt(selectedExtParamSetId);
 			
 			try {
-				selectedExtParamSet = extParamValSetService.findByID(nSelectedExtParamSetId);
+				selectedExtParamValSet = extParamValSetService.findByID(nSelectedExtParamSetId);
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
 
 //			project.setDefaultextparamvalset(selectedExtParamSet);
 			project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()), 
-					selectedExtParamSet.getExtparamvalsetid());
+					selectedExtParamValSet.getExtparamvalsetid());
 			
 			model.put("selectedextparamsetid", nSelectedExtParamSetId);
-			model.put("selectedExtParamSet",  selectedExtParamSet);
+			model.put("extParamValSet", selectedExtParamValSet);
 			List<ExtParamValDTO> extParamVals = null;
 
 			try {
@@ -1489,7 +1488,6 @@ public class ProjectController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -1512,6 +1510,13 @@ public class ProjectController {
 		int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 		if (defaultExtParamValSetId != 0)
 		{
+			try {
+				ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
+				model.put("extParamValSet", extParamValSet);
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			
 			try {
 				extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
 			} catch (EntityNotFoundException e) {
@@ -1560,7 +1565,7 @@ public class ProjectController {
 			extParamVals.add(extParamVal);
 		}
 
-		extParamValSet.setName("temp");
+		extParamValSet.setName("New set");
 		extParamValSet = extParamValSetService.save(extParamValSet);
 		
 		try {
@@ -1621,7 +1626,6 @@ public class ProjectController {
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -1644,6 +1648,7 @@ public class ProjectController {
 			e.printStackTrace();
 		}
 		
+		model.put("extParamValSet", extParamValSet);
 		model.put("extParamVals", listExtParamVals);
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);

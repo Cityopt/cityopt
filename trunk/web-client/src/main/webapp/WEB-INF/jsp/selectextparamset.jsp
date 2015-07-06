@@ -68,12 +68,12 @@
 							</tr>
 							<tr height="20"></tr>
 							<tr>
-								<td></td>
-								<td></td>
 								<td align="right">
 									<a href="createextparamset.html"><button type="button">Create external parameter set</button></a>
 									<a href="editproject.html"><button type="button">Back</button></a>
 								</td>
+								<td></td>
+								<td></td>
 							</tr>
 						</table>
 					</td>

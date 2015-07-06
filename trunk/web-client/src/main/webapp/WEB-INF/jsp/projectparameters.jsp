@@ -143,7 +143,7 @@
 							</tr>
 							<tr>
 								<td>
-									<b>Default external parameter set </b>
+									<b>Selected external parameter set:</b>  
 									${extParamValSet.name}
 									<br>
 									<table class="tablestyle">
