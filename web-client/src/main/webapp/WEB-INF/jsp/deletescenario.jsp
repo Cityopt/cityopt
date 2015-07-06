@@ -19,20 +19,26 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width="30"></td>
-		<td valign="top">	
+		<td valign="top">
+			<!--Delete scenario title-->	
 			<div style="overflow:scroll;height:400px;width:600px;overflow:auto">
-			<form:form method="post" action="deletescenario.html">
-			<h2>Delete scenario</h2>
+			<form:form method="post" action="deletescenario.html">			
+			<h2><spring:message code="delete_scenario"/></h2>
 			<table class="tablestyle" width="600" border="1">
 				<col style="width:200px">	
 				<col style="width:50px">
 				<col style="width:300px">
 				<col style="width:50px">
+				
 				<tr height="20">
-				    <th>Name</th>
-				    <th>Id</th>
-				    <th>Description</th>
-				    <th>Delete</th>
+					<!-- Name -->
+				    <th><spring:message code="name"/></th>
+				    <!-- ID -->
+				    <th><spring:message code="id"/></th>
+				    <!-- Description -->
+				    <th><spring:message code="description"/></th>
+				    <!-- Delete -->
+				    <th><spring:message code="delete"/></th>
 				</tr>
 				
 			<c:forEach items="${scenarios}" var="scenario">
@@ -41,8 +47,10 @@
 					<td>${scenario.scenid}</td>			
 					<td>${scenario.description}</td>
 			    	<td>
+			    		<!-- delete button -->
 						<a href="<c:url value='deletescenario.html?scenarioid=${scenario.scenid}'/>">
-							<button align="right"  type="button" value="Delete">Delete</button>
+							<button align="right"  type="button" value="Delete">
+							<spring:message code="delete"/></button>
 						</a>
 					</td>
 			   	</tr>
