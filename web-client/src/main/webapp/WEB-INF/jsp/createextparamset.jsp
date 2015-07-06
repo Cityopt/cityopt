@@ -58,22 +58,22 @@
 						<table class="tablestyle" width="400px">
 							<col style="width:250px">
 							<col style="width:100px">
-							<col style="width:50px">
+							<!--<col style="width:50px">-->
 							<tr height="20">
 							    <th>Name</th>
 							    <th>Value</th>
-							    <th>Edit</th>
+							    <!-- <th>Edit</th>-->
 							</tr>
 							
 							<c:forEach items="${extParamVals}" var="extParamVal">
 							<tr>
 								<td>${extParamVal.extparam.name}</td>
 						    	<td>${extParamVal.value}</td>
-						    	<td>
+						    	<!-- <td>
 									<a href="<c:url value='editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}'/>">
 										<button align="right" type="button" value="Edit">Edit</button>
 									</a>
-								</td>
+								</td>-->
 						   	</tr>
 							</c:forEach>
 						</table>
@@ -85,8 +85,8 @@
 				</tr>
 				<tr>
 					<td align="right">
-						<input type="submit" value="Ok">
-						<a href="projectparameters.html"><button type="button">Cancel</button></a>
+						<input type="submit" value="Save">
+						<!-- <a href="projectparameters.html"><button type="button">Cancel</button></a>-->
 					</td>
 				</tr>
 			</table>
