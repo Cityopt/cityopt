@@ -16,6 +16,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
@@ -164,11 +166,11 @@ public class ProjectRepositoryTest {
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
 	public void findByName_QueryByMethodName_Test()
 	{		
-		List<Project> projects = projectRepository.findByNameLikeIgnoreCase("Project");
+		List<Project> projects = projectRepository.findByNameLikeIgnoreCase("Project",new Sort(Direction.ASC,"name"));
 		
 		assertEquals(0, projects.size());
 		
-		projects = projectRepository.findByNameLikeIgnoreCase("sample Project");
+		projects = projectRepository.findByNameLikeIgnoreCase("sample Project",new Sort(Direction.ASC,"name"));
 		
 		assertEquals(1, projects.size());
 	}
