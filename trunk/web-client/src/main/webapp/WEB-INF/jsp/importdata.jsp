@@ -136,7 +136,14 @@
 	        							<input type="submit" value="Import file">
 	       							</td>
 	   							</tr>	
+	   							
     						</form:form>
+    						<tr>
+        						<td>Export external parameter sets file (CSV)</td>
+								<td>
+									<a href="exportextparamsets.html"><button>Export</button></a>
+								</td>
+							</tr>
 							<tr>
 								<!-- Show project data & Import buttons -->		
 								<td><a href="projectdata.html"><button>
@@ -178,18 +185,12 @@
 				       							</td>
 				   							</tr>	
 			    						</form:form>
-			    						<form:form method="POST" action="exportscenarios.html" enctype="multipart/form-data">
-				        					<tr>
-				        						<td>Export scenarios (CSV)</td>
-												<td><input id="file" name="file" type="file"/></td>
-											</tr>
-											<tr>	
-				       							<td></td>
-				        						<td>
-				        							<input type="submit" value="Export file">
-				       							</td>
-				   							</tr>	
-			    						</form:form>
+			    						<tr>
+			        						<td>Export scenarios file (CSV)</td>
+											<td>
+												<a href="exportscenarios.html"><button>Export</button></a>
+											</td>
+										</tr>
 										<tr>						
 											<td><a href="showscenarios.html"><button>
 											<spring:message code="show_scenarios"/></button></a></td>
