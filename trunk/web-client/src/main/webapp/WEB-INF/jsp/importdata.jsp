@@ -43,7 +43,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>
+					<td valign="top">
 						<table>
 							<tr>
 								<!-- Project name: -->
@@ -77,33 +77,29 @@
 									</c:if>
 								</td>
 							</tr>
-							<tr>
-								<!-- Energy model -->						
-								<td><spring:message code="energy_model"/>:</td>
-								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
-							</tr>
-							<tr>
-								<td>
-								<!-- Parameter level: -->
-									<spring:message code="parameter_level"/>:
-								</td>
-								<td>
-							 		<select name="parameterLevel">
-									  	<option value="1">1</option>
-									  	<option value="2">2</option>
-									  	<option value="3">3</option>
-									  	<option value="4">4</option>
-									</select>
-								</td> 
-							</tr>
-							<tr>						
-								<td></td>
-								<td>
-									<!-- Upload button -->
-									<a href="uploaddiagram.html"><button type="button">
-									<spring:message code="upload"/></button></a>
-								</td>
-							</tr>
+							
+							<form:form method="POST" action="uploadFile.html" enctype="multipart/form-data">
+	        					<tr>
+	        						<!-- Energy model to upload: -->
+									<td><spring:message code="energy_model_to_upload"/>:</td>
+									<td><input type="file" name="file"></td>
+								</tr>
+								<tr>
+									<!-- Detail level -->
+									<td><spring:message code="detail_level"/>:</td>
+	        						<td>
+	        							<input type="text" name="detailLevel"> 
+	       							</td>
+								</tr>
+	       						<tr>	
+	       							<td></td>
+	        						<td>
+	        						<!-- Load File -->
+	        							<input type="submit" value="<spring:message code="load_file"/>">
+	       							</td>
+	   							</tr>	
+   							</form:form>
+							
 							<tr>
 								<td>
 									<br>
@@ -111,40 +107,41 @@
 									<b><spring:message code="import_project_data"/></b>
 								</td>
 							</tr>
-							<form:form method="POST" action="importcomponents.html" enctype="multipart/form-data">
+							<form:form method="POST" action="importstructurefile.html" enctype="multipart/form-data">
 	        					<tr>
-	        						<!--Components-->
-									<td><spring:message code="components"/></td>
-									<td><input id="uploadFile" name="uploadFile" type="file"/></td>
+	        						<td>Import project file (CSV)</td>
+									<td><input id="file" name="file" type="file"/></td>
 								</tr>
 								<tr>	
 	       							<td></td>
 	        						<td>
-	        							<input type="submit" value="Load component file">
+	        							<input type="submit" value="Import file">
+	       							</td>
+	   							</tr>	
+    						</form:form>
+        					<tr>
+        						<td>Export project file (CSV)</td>
+								<td>
+									<a href="exportstructurefile.html"><button>Export</button></a>
+								</td>
+							</tr>
+							<form:form method="POST" action="importextparamsets.html" enctype="multipart/form-data">
+	        					<tr>
+	        						<td>Import external parameter sets (CSV)</td>
+									<td><input id="file" name="file" type="file"/></td>
+								</tr>
+								<tr>	
+	       							<td></td>
+	        						<td>
+	        							<input type="submit" value="Import file">
 	       							</td>
 	   							</tr>	
     						</form:form>
 							<tr>
-								<!-- Input parameters -->						
-								<td><spring:message code="input_parameters"/></td>
-								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
-							</tr>
-							<tr>
-								<!-- Output variables -->						
-								<td><spring:message code="output_variables"/></td>
-								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
-							</tr>
-							<tr>
-								<!-- External parameter sets -->						
-								<td><spring:message code="external_parameter_sets"/></td>
-								<td><input id="uploadFile" name="uploadFile" type="file"/></td>
-							</tr>
-							<tr>
 								<!-- Show project data & Import buttons -->		
 								<td><a href="projectdata.html"><button>
 								<spring:message code="show_project_data"/></button></a></td>
-								<td align="right"><a href=""><button>
-								<spring:message code="import"/></button></a></td>
+								<td align="right"></td>
 							</tr>
 						</table>
 					</td>
@@ -162,18 +159,43 @@
 							</tr>
 							<tr>
 								<td>
-								<!-- Import scenarios -->					
-									<b><spring:message code="import_scenarios"/></b>
+									<table>
+										<tr>
+											<td>
+											<!-- Import scenarios -->					
+												<b><spring:message code="import_scenarios"/></b>
+											</td>
+										</tr>
+										<form:form method="POST" action="importscenarios.html" enctype="multipart/form-data">
+				        					<tr>
+				        						<td><spring:message code="import_scenarios"/> (CSV)</td>
+												<td><input id="file" name="file" type="file"/></td>
+											</tr>
+											<tr>	
+				       							<td></td>
+				        						<td>
+				        							<input type="submit" value="Import file">
+				       							</td>
+				   							</tr>	
+			    						</form:form>
+			    						<form:form method="POST" action="exportscenarios.html" enctype="multipart/form-data">
+				        					<tr>
+				        						<td>Export scenarios (CSV)</td>
+												<td><input id="file" name="file" type="file"/></td>
+											</tr>
+											<tr>	
+				       							<td></td>
+				        						<td>
+				        							<input type="submit" value="Export file">
+				       							</td>
+				   							</tr>	
+			    						</form:form>
+										<tr>						
+											<td><a href="showscenarios.html"><button>
+											<spring:message code="show_scenarios"/></button></a></td>
+										</tr>
+									</table>
 								</td>
-							</tr>
-							<tr>
-								<!-- Import scenarios -->						
-								<td><spring:message code="import_scenarios"/><a href=""><button>
-								<spring:message code="import"/></button></a></td>
-							</tr>
-							<tr>						
-								<td><a href="showscenarios.html"><button>
-								<spring:message code="show_scenarios"/></button></a></td>
 							</tr>
 						</table>
 					</td>

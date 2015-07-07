@@ -47,6 +47,18 @@
 								<td></td>
 								<td align="right"></td>
 							</tr>
+							<form:form method="POST" action="importoptimizationset.html" enctype="multipart/form-data">
+	        					<tr>
+	        						<td>Import optimization set file (CSV)</td>
+									<td><input id="file" name="file" type="file"/></td>
+								</tr>
+								<tr>	
+	       							<td></td>
+	        						<td>
+	        							<input type="submit" value="Import file">
+	       							</td>
+	   							</tr>	
+    						</form:form>
 						</table>
 					</td>
 				</tr>
@@ -217,8 +229,8 @@
 							<col style="width: 220px;">
 							<col style="width: 220px;">
 							<tr>
-								<td><a href="exportoptimizationresults.html"><button type="button">Export optimization results</button></a></td>
-								<td align="right"></td>
+								<td><a href="exportoptimizationset.html"><button type="button">Export optimization set</button></a></td>
+								<td align="right"><a href="exportoptimizationresults.html"><button type="button">Export optimization results</button></a></td>
 							</tr>
 							<tr>
 								<td></td>

@@ -1,6 +1,8 @@
 package eu.cityopt.controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
@@ -37,6 +40,7 @@ import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ExtParamService;
 import eu.cityopt.service.ExtParamValService;
 import eu.cityopt.service.ExtParamValSetService;
+import eu.cityopt.service.ImportService;
 import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.MetricService;
@@ -54,6 +58,7 @@ import eu.cityopt.service.TimeSeriesService;
 import eu.cityopt.service.TimeSeriesValService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
+import eu.cityopt.service.impl.ImportServiceImpl;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
@@ -153,6 +158,9 @@ public class ScenarioController {
 
 	@Autowired
 	ImportExportService importExportService;
+	
+	@Autowired
+	ImportServiceImpl importService;
 	
 	@RequestMapping(value="createscenario",method=RequestMethod.GET)
 	public String getCreateScenario(Map<String, Object> model) {
@@ -505,6 +513,34 @@ public class ScenarioController {
 		}
 			
 		return "editscenario";
+	}
+	
+	@RequestMapping(value = "importscenarios", method = RequestMethod.POST)
+	public String uploadCSVFileHandler(Map<String, Object> model, @RequestParam("file") MultipartFile file) {
+	
+		if (!file.isEmpty()) {
+	        try {
+	            ProjectDTO project = (ProjectDTO) model.get("project");
+				
+				if (project == null)
+				{
+					return "error";
+				}
+				
+				try {
+					project = projectService.findByID(project.getPrjid());
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				model.put("project", project);
+			
+				//importService.importScenarioData(project.getPrjid(), scenarioInput, timeSeriesInput);
+	        } catch (Exception e) {
+	            return "You failed to upload => " + e.getMessage();
+	        }
+	    } else {
+	    }
+		return "importdata";
 	}
 	
 	@RequestMapping(value="setmultiscenario", method=RequestMethod.GET)

@@ -55,28 +55,28 @@
 								<!-- Save project -->
 								<td><input type="submit" value=<spring:message code="save_project"/> style="width:120px"></td>
 							</tr>
-								</form:form>							
-								<form:form method="POST" action="uploadFile.html" enctype="multipart/form-data">
-        					<tr>
-        					<!-- Energy model to upload: -->
-								<td><spring:message code="energy_model_to_upload"/>:</td>
-								<td><input type="file" name="file"></td>
-							</tr>
-							<tr>
-								<!-- Detail level -->
-								<td><spring:message code="detail_level"/>:</td>
-        						<td>
-        							<input type="text" name="detailLevel"> 
-       							</td>
-							</tr>
-       						<tr>	
-       							<td></td>
-        						<td>
-        						<!-- Load File -->
-        							<input type="submit" value="<spring:message code="load_file"/>">
-       							</td>
-   							</tr>	
-    						</form:form>
+							</form:form>							
+							<form:form method="POST" action="uploadFile.html" enctype="multipart/form-data">
+	        					<tr>
+	        					<!-- Energy model to upload: -->
+									<td><spring:message code="energy_model_to_upload"/>:</td>
+									<td><input type="file" name="file"></td>
+								</tr>
+								<tr>
+									<!-- Detail level -->
+									<td><spring:message code="detail_level"/>:</td>
+	        						<td>
+	        							<input type="text" name="detailLevel"> 
+	       							</td>
+								</tr>
+	       						<tr>	
+	       							<td></td>
+	        						<td>
+	        						<!-- Load File -->
+	        							<input type="submit" value="<spring:message code="load_file"/>">
+	       							</td>
+	   							</tr>	
+   							</form:form>
 						</table>
 					</td>
 					<td align="right">
