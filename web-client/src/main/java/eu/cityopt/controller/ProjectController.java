@@ -490,6 +490,89 @@ public class ProjectController {
         return "importdata";
     }
 
+	@RequestMapping(value = "exportextparamsets", method = RequestMethod.GET)
+	public String exportExtParamSetsFile(Map<String, Object> model, HttpServletRequest request,
+		HttpServletResponse response) throws IOException {
+	
+		ProjectDTO project = null;
+		
+        try {
+            project = (ProjectDTO) model.get("project");
+			
+			if (project == null)
+			{
+				return "error";
+			}
+			
+			try {
+				project = projectService.findByID(project.getPrjid());
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			model.put("project", project);
+        } catch (Exception e) {
+            return "You failed to export => " + e.getMessage();
+        }
+
+        // set headers for the response
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=\"project.csv\"");
+        response.setHeader(headerKey, headerValue);
+ 
+        OutputStream outputStream = response.getOutputStream();
+
+        /*try {
+			//importExportService.exportExtParamValSets(scenarioFile, timeSeriesFile, projectId, setIds);
+		} catch (ScriptException e) {
+			e.printStackTrace();
+		}*/
+
+        outputStream.close();
+ 
+        return "importdata";
+    }
+	
+	@RequestMapping(value = "exportscenarios", method = RequestMethod.GET)
+	public String exportScenariosFile(Map<String, Object> model, HttpServletRequest request,
+		HttpServletResponse response) throws IOException {
+	
+		ProjectDTO project = null;
+		
+        try {
+            project = (ProjectDTO) model.get("project");
+			
+			if (project == null)
+			{
+				return "error";
+			}
+			
+			try {
+				project = projectService.findByID(project.getPrjid());
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			model.put("project", project);
+        } catch (Exception e) {
+            return "You failed to export => " + e.getMessage();
+        }
+
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=\"project.csv\"");
+        response.setHeader(headerKey, headerValue);
+ 
+        OutputStream outputStream = response.getOutputStream();
+
+        /*try {
+			//importExportService.exportSimulationStructure(project.getPrjid(), outputStream);
+		} catch (ScriptException e) {
+			e.printStackTrace();
+		}*/
+
+        outputStream.close();
+ 
+        return "importdata";
+    }
+	
 	@RequestMapping(value = "importcomponents", method = RequestMethod.POST)
 	public String uploadComponentsFileHandler(Map<String, Object> model, 
 	    @RequestParam("file") MultipartFile file) {
