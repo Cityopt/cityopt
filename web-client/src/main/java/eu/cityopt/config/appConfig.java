@@ -41,21 +41,22 @@ import org.springframework.web.servlet.view.xml.MarshallingView;
 @ComponentScan({"eu.cityopt.controller"}) 
 public class appConfig extends WebMvcConfigurerAdapter {
 	
+	
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(localeChangeInterceptor());
-	}
-
+	}	
+	
 	@Bean
 	public LocaleChangeInterceptor localeChangeInterceptor() {
 		LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-		localeChangeInterceptor.setParamName("language");
+		localeChangeInterceptor.setParamName("lang");
 		return localeChangeInterceptor;
 	}
 
 	@Bean(name = "localeResolver")
 	public LocaleResolver getLocaleResolver() {
 		SessionLocaleResolver localeResolver = new SessionLocaleResolver();
-		localeResolver.setDefaultLocale(new Locale("en"));
+		localeResolver.setDefaultLocale(new Locale("fi"));
 		return localeResolver;
 	}
 
@@ -65,6 +66,7 @@ public class appConfig extends WebMvcConfigurerAdapter {
 		bundleMessageSource.setBasename("messages");
 		return bundleMessageSource;
 	}
+	
 
 	@Bean
 	public InternalResourceViewResolver getInternalResourceViewResolver() {
