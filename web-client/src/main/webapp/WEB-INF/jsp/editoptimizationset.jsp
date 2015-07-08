@@ -25,7 +25,8 @@
 			<table>
 				<col style="width: 400px;">
 				<col style="width: 450px;">
-				<tr><td colspan="2"><h2>Edit database optimization set</h2></td></tr>
+				<!-- Edit database optimization set title -->
+				<tr><td colspan="2"><h2><spring:message code="edit_database_optimization_set"/></h2></td></tr>
 				<tr>
 					<td colspan="2">
 						<table>
@@ -35,14 +36,17 @@
 							<col style="width: 300px;">
 							<col style="width: 175px;">
 							<tr>
-								<td>Name:</td>
+								<!-- Name -->
+								<td><spring:message code="name"/>:</td>
 								<td><form:input type="text" path="name" style="width:200px"/></td>
-								<td>Description:</td>
+								<!-- Description -->
+								<td><spring:message code="description"/>:</td>
 								<td rowspan="2"><textarea id="description" rows="2" style="width: 300px"></textarea></td>
 								<td align="right"><a href="databaseoptimization.html"><button type="button">Run search</button></a></td>
 							</tr>
 							<tr>						
-								<td>User:</td>
+								<!-- User -->	
+								<td><spring:message code="user"/>:</td>
 								<td><input type="text" id="user" style="width:200px"></td>
 								<td></td>
 								<td align="right"></td>
@@ -66,7 +70,8 @@
 					<td>
 						<table>
 							<tr>
-								<td><b>Objective function</b></td>
+								<!-- Objective function -->
+								<td><b><spring:message code="objective_function"/></b></td>
 							</tr>
 							<tr>
 								<td>
@@ -76,10 +81,12 @@
 										<tr>
 											<c:choose>
 												<c:when test="${optimizationset.objectivefunction.ismaximise}">
-													<td>Maximize</td>
+													<!-- Maximize -->
+													<td><spring:message code="maximize"/></td>
 												</c:when>
 												<c:otherwise>
-													<td>Minimize</td>
+													<!-- Minimize -->
+													<td><spring:message code="minimize"/></td>
 												</c:otherwise>
 											</c:choose>
 											<td>
@@ -97,14 +104,19 @@
 							</tr>
 							<tr>
 								<td>
-									<a href="createobjfunction.html"><button type="button">Create</button></a>
-									<a href="editobjfunction.html"><button type="button">Edit</button></a>
-									<a href="importobjfunction.html"><button type="button">Import</button></a>
+									<!-- Create -->
+									<a href="createobjfunction.html"><button type="button"><spring:message code="create"/></button></a>
+									<!-- Edit -->
+									<a href="editobjfunction.html"><button type="button"><spring:message code="edit"/></button></a>
+									<!-- Import -->
+									<a href="importobjfunction.html"><button type="button"><spring:message code="import"/></button></a>
 								</td>
 							</tr>
 							<tr height="20"></tr>
 							<tr>
-								<td><b>Searching constraints</b></td>
+								<!-- Searching constraints -->
+								<td><b><spring:message code="searching_constraints"/>
+								</b></td>
 							</tr>
 							<tr>
 								<td>
@@ -116,12 +128,18 @@
 										<col style="width: 10%;">
 										<col style="width: 10%;">
 										<tr>
-											<th>Name</th>
-											<th>Expression</th>
-											<th>Lower bound</th>
-											<th>Upper bound</th>
-											<th>Edit</th>
-											<th>Delete</th>
+											<!-- Name -->
+											<th><spring:message code="name"/></th>
+											<!-- Expression -->
+											<th><spring:message code="expression"/></th>
+											<!-- Lower bound -->
+											<th><spring:message code="lower_bound"/></th>
+											<!-- Upper bound -->
+											<th><spring:message code="upper_bound"/></th>
+											<!-- Edit -->
+											<th><spring:message code="edit"/></th>
+											<!-- Delete -->
+											<th><spring:message code="delete"/></th>
 										</tr>
 										
 										<c:forEach items="${constraints}" var="constraint">
@@ -130,8 +148,12 @@
 											<td>${constraint.expression}</td>
 											<td>${constraint.lowerbound}</td>
 											<td>${constraint.upperbound}</td>
-											<td><a href="editconstraint.html?constraintid=${constraint.optconstid}"><button type="button">Edit</button></a>
-											<td><a href="deleteconstraint.html?constraintid=${constraint.optconstid}"><button type="button">Delete</button></a>
+											<!-- Edit button -->
+											<td><a href="editconstraint.html?constraintid=${constraint.optconstid}"><button type="button">
+											<spring:message code="edit"/></button></a>
+											<!-- Delete button -->
+											<td><a href="deleteconstraint.html?constraintid=${constraint.optconstid}"><button type="button">
+											<spring:message code="delete"/></button></a>
 									   	</tr>
 										</c:forEach>
 						
@@ -140,13 +162,18 @@
 							</tr>
 							<tr>
 								<td>
-									<a href="createconstraint.html"><button type="button">Create</button></a>
-									<a href="importsearchconstraint.html"><button type="button">Import</button></a>
+									<!-- Create -->
+									<a href="createconstraint.html"><button type="button">
+									<spring:message code="create"/></button></a>
+									<!-- Import -->
+									<a href="importsearchconstraint.html"><button type="button">
+									<spring:message code="import"/></button></a>
 								</td>
 							</tr>
 							<tr height="20"></tr>
 							<tr>
-								<td><b>External parameter value set</b></td>
+								<!-- External parameter value set -->
+								<td><b><spring:message code="external_parameter_value_set"/></b></td>
 							</tr>
 							<tr>
 								<td>
@@ -155,7 +182,7 @@
 							</tr>
 							<tr>
 								<td>
-									<a href="extparamsets.html"><button type="button">Add</button></a>
+									<a href="extparamsets.html"><button type="button"><spring:message code="add"/></button></a>
 									<input type="submit" value="Delete">
 								</td>
 							</tr>
@@ -174,9 +201,12 @@
 										<col style="width: 100px;">
 										<col style="width: 50px;">
 										<tr>
-											<th>Scenario</th>
-											<th>Function value</th>
-											<th>Show</th>
+											<!-- Scenario -->
+											<th><spring:message code="scenario"/></th>
+											<!-- Function value -->
+											<th><spring:message code="function_value"/></th>
+											<!-- Show -->
+											<th><spring:message code="show"/></th>
 										</tr>
 								
 										<c:forEach items="${resultScenariosWithValue}" var="scenarioWithValue">
@@ -229,6 +259,9 @@
 							<col style="width: 220px;">
 							<col style="width: 220px;">
 							<tr>
+								<!-- Export optimization results -->
+								<td><a href="exportoptimizationresults.html"><button type="button"><spring:message code="export_optimization_results"/></button></a></td>
+								<td align="right"></td>
 								<td><a href="exportoptimizationset.html"><button type="button">Export optimization set</button></a></td>
 								<td align="right"><a href="exportoptimizationresults.html"><button type="button">Export optimization results</button></a></td>
 							</tr>
