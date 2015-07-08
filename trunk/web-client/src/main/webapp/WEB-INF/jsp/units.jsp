@@ -25,8 +25,9 @@
 			<div style="overflow:scroll;height:500px;width:600px;overflow:auto">
 			<table>
 				<tr>
-					<td>			
-						<h2>Units</h2>
+					<td>
+						<!-- Units -->			
+						<h2><spring:message code="units"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -37,10 +38,14 @@
 							<col style="width:100px">	
 							
 						<tr height="20">
-						    <th>Name</th>
-						    <th>Data reliability</th>
-						    <th>Type</th>
-						    <th>Delete</th>
+							<!-- Name -->
+						    <th><spring:message code="name"/></th>
+						    <!-- Data reliability -->
+						    <th><spring:message code="data_reliability"/></th>
+						    <!-- Type -->
+						    <th><spring:message code="type"/></th>
+						    <!-- Delete -->
+						    <th><spring:message code="delete"/></th>
 						</tr>
 						
 						<c:forEach items="${units}" var="unit">
@@ -51,7 +56,9 @@
 							<td>
 							</td>
 							<td><a href="<c:url value='deleteunit.html?unitid=${unit.unitid}'/>">
-									<button align="right" type="button" value="Delete">Delete</button>
+									<!-- Delete button -->
+									<button align="right" type="button" value="Delete">
+									<spring:message code="delete"/></button>
 								</a>
 							</td>
 					   	</tr>
@@ -61,7 +68,9 @@
 					<td width="20">
 					</td>
 					<td valign="top">
-						<a href="createunit.html"><button>Create unit</button></a>
+						<!-- Create unit -button -->
+						<a href="createunit.html"><button>
+						<spring:message code="create_unit"/></button></a>
 					</td>
 				</tr>
 			</table>

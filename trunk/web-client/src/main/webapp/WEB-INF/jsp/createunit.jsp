@@ -23,21 +23,26 @@
 		<td>
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="createunit.html" modelAttribute="unitForm">
-			<h2>Create unit</h2>
+			
+			<!-- Create unit -->
+			<h2><spring:message code="create_unit"/></h2>
 
 			<table align="center">
 				<col style="width:150px">
 				<col style="width:300px">
 				<tr>
 					<td>
-						Name
+					<!-- Name -->
+					<spring:message code="name"/>
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="name"/>
 					</td>
 				</tr>
 				<tr height="10">
-					<td>Type
+					<td>
+					<!-- Type -->
+					<spring:message code="type"/>
 					</td>
 					<td>
 						<form:select path="type" items="${types}" style="width: 300px" />
@@ -45,8 +50,8 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td align="right"><input style="width:100px" type="submit" value="Create"/>
-					<a href="units.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create"/>"/>
+					<a href="units.html"><button style="width:100px" type="button" value="Cancel"><spring:message code="cansel"/></button></a></td>
 				</tr>
 			</table>
 			
