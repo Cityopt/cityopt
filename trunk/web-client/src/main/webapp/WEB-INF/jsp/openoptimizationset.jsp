@@ -69,6 +69,7 @@
 			   	</tr>
 				</c:forEach>
 			</table>
+			<element><element><h2 class="successful"></element></element>${successful}</h2><element>			
 			</div>
 		</td>
 	</tr>
