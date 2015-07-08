@@ -27,9 +27,12 @@
 				<col style="width: 80px">
 			
 				<tr height="20">
-				    <th>Name</th>
-				    <th>Type</th>
-				    <th>Open</th>
+					<!-- Name -->
+				    <th><spring:message code="name"/></th>
+				    <!-- Type -->
+				    <th><spring:message code="type"/></th>
+				    <!-- Open -->
+				    <th><spring:message code="open"/></th>
 				</tr>
 			
 				<c:forEach items="${openoptimizationsets}" var="openoptimizationset">
@@ -47,8 +50,10 @@
 							<c:otherwise>
 								<td>Genetic algorithm</td>
 								<td>
+								<!-- Delete -->
 								<a href="<c:url value='deleteoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga'/>">
-									<button align="right"  type="button" value="Delete">Delete</button>
+									<button align="right"  type="button" value="Delete">
+									<spring:message code="delete"/></button>
 								</a>
 								</td>
 							</c:otherwise>

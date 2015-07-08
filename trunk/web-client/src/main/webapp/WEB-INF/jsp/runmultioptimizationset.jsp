@@ -30,9 +30,12 @@
 							<col style="width: 150px">
 						
 							<tr height="20">
-							    <th>Name</th>
-							    <th>Type</th>
-							    <th>Select</th>
+								<!-- Name -->
+							    <th><spring:message code="name"/></th>
+							    <!-- Type -->
+							    <th><spring:message code="type"/></th>
+							    <!-- Select -->
+							    <th><spring:message code="select"/></th>
 							</tr>
 						
 							<c:forEach items="${openoptimizationsets}" var="openoptimizationset">
@@ -44,15 +47,19 @@
 											<c:choose>
 												<c:when test="${usersession.hasOptSetId(openoptimizationset.id) == true}">
 													<td>Added 
+													<!-- Remove button -->
 													(<a href="<c:url value='runmultioptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=db&action=remove'/>">
-														<button align="right"  type="button" value="Open">Remove</button>
+														<button align="right"  type="button" value="Open">
+														<spring:message code="remove"/></button>
 													</a>)
 													</td>
 												</c:when>
 												<c:otherwise>
 													<td>
+													<!-- Add button -->
 													<a href="<c:url value='runmultioptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=db&action=add'/>">
-														<button align="right"  type="button" value="Open">Add</button>
+														<button align="right"  type="button" value="Open">
+														<spring:message code="add"/></button>
 													</a>
 													</td>
 												</c:otherwise>
@@ -84,7 +91,9 @@
 					</td>
 				</tr>
 				<tr>
-					<td align="right"><a href="multioptimization.html"><button type="button">Run multi-optimization</button></a></td>
+					<!-- Run multi -optimization -button  -->
+					<td align="right"><a href="multioptimization.html"><button type="button">
+					<spring:message code="run_multi_optimization"/></button></a></td>
 				</tr>
 			</table>
 			</div>
