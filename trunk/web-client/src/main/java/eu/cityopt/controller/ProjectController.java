@@ -253,10 +253,10 @@ public class ProjectController {
 			
 			// TODO fix
 			//@ author: Markus Turunene 8.7.2015
-			// Language integration for messages. 
-			
+			// Language integration for messages.			
 			//I'm calling message from resources can be language implemented:
-			// 3 part message: Project+(current created project)+is succesfully created			
+			// 3 part message: Project+(current created project)+is succesfully created
+			
 			String projectCreation =resource.getMessage("project", new Object[1], locale)
 			+" "+project.getName()+" "+resource.getMessage("succesfully_created", new Object[1], locale);			
 			model.put("successful", projectCreation);			
@@ -265,9 +265,8 @@ public class ProjectController {
 			//return "editproject";
 			}
 			else{
-				model.put("project", project);
-				//@ author: Markus Turunene 8.7.2015
-				//Calling a locale resource for the error message:
+				model.put("project", project);				
+				//@ author: Markus Turunene date 8.7.2015 //Calling a locale resource for the error message == Require file resource for working.
 				Locale locale = LocaleContextHolder.getLocale();
 				String Errormessage= resource.getMessage("error_allready_exist", new Object[1], locale);
 				model.put("errorMessage", Errormessage);
@@ -501,89 +500,6 @@ public class ProjectController {
         return "importdata";
     }
 
-	@RequestMapping(value = "exportextparamsets", method = RequestMethod.GET)
-	public String exportExtParamSetsFile(Map<String, Object> model, HttpServletRequest request,
-		HttpServletResponse response) throws IOException {
-	
-		ProjectDTO project = null;
-		
-        try {
-            project = (ProjectDTO) model.get("project");
-			
-			if (project == null)
-			{
-				return "error";
-			}
-			
-			try {
-				project = projectService.findByID(project.getPrjid());
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-			model.put("project", project);
-        } catch (Exception e) {
-            return "You failed to export => " + e.getMessage();
-        }
-
-        // set headers for the response
-        String headerKey = "Content-Disposition";
-        String headerValue = String.format("attachment; filename=\"project.csv\"");
-        response.setHeader(headerKey, headerValue);
- 
-        OutputStream outputStream = response.getOutputStream();
-
-        /*try {
-			//importExportService.exportExtParamValSets(scenarioFile, timeSeriesFile, projectId, setIds);
-		} catch (ScriptException e) {
-			e.printStackTrace();
-		}*/
-
-        outputStream.close();
- 
-        return "importdata";
-    }
-	
-	@RequestMapping(value = "exportscenarios", method = RequestMethod.GET)
-	public String exportScenariosFile(Map<String, Object> model, HttpServletRequest request,
-		HttpServletResponse response) throws IOException {
-	
-		ProjectDTO project = null;
-		
-        try {
-            project = (ProjectDTO) model.get("project");
-			
-			if (project == null)
-			{
-				return "error";
-			}
-			
-			try {
-				project = projectService.findByID(project.getPrjid());
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-			model.put("project", project);
-        } catch (Exception e) {
-            return "You failed to export => " + e.getMessage();
-        }
-
-        String headerKey = "Content-Disposition";
-        String headerValue = String.format("attachment; filename=\"project.csv\"");
-        response.setHeader(headerKey, headerValue);
- 
-        OutputStream outputStream = response.getOutputStream();
-
-        /*try {
-			//importExportService.exportSimulationStructure(project.getPrjid(), outputStream);
-		} catch (ScriptException e) {
-			e.printStackTrace();
-		}*/
-
-        outputStream.close();
- 
-        return "importdata";
-    }
-	
 	@RequestMapping(value = "importcomponents", method = RequestMethod.POST)
 	public String uploadComponentsFileHandler(Map<String, Object> model, 
 	    @RequestParam("file") MultipartFile file) {
