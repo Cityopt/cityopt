@@ -42,7 +42,9 @@
 								<!-- Description -->
 								<td><spring:message code="description"/>:</td>
 								<td rowspan="2"><textarea id="description" rows="2" style="width: 300px"></textarea></td>
-								<td align="right"><a href="databaseoptimization.html"><button type="button">Run search</button></a></td>
+								<td align="right"><a href="databaseoptimization.html"><button type="button">
+								<!-- Run search -->
+								<spring:message code="run_search"/></button></a></td>
 							</tr>
 							<tr>						
 								<!-- User -->	
@@ -53,7 +55,8 @@
 							</tr>
 							<form:form method="POST" action="importoptimizationset.html" enctype="multipart/form-data">
 	        					<tr>
-	        						<td>Import optimization set file (CSV)</td>
+	        						<!-- Import optimization set file CSV -->
+	        						<td><spring:message code="import_optimization_set_file"/></td>
 									<td><input id="file" name="file" type="file"/></td>
 								</tr>
 								<tr>	
@@ -192,7 +195,8 @@
 						<table style="width: 440px">
 							<col style="width: 100%;">
 							<tr>
-								<td><b>Results</b></td>
+							<!-- Results -->
+								<td><b><spring:message code="results"/></b></td>
 							</tr>
 							<tr>
 								<td>
@@ -233,15 +237,18 @@
 								</td>
 							</tr>
 							<tr><td><br></td></tr>
-							<tr><td><b>Metrics</b></td></tr>
+							<!-- Metrics -->
+							<tr><td><b><spring:message code="metrics"/></b></td></tr>
 							<tr>
 								<td colspan="3">
 									<table class="tablestyle">
 										<col style="width:400px">
 										
 										<tr>
-											<th>Metric</th>
-											<th>Value</th>
+											<!-- Metric -->
+											<th><spring:message code="metric"/></th>
+											<!-- Value -->
+											<th><spring:message code="value"/></th>
 										</tr>
 					
 										<c:forEach items="${metrics}" var="metric">
@@ -260,10 +267,15 @@
 							<col style="width: 220px;">
 							<tr>
 								<!-- Export optimization results -->
-								<td><a href="exportoptimizationresults.html"><button type="button"><spring:message code="export_optimization_results"/></button></a></td>
+								<td><a href="exportoptimizationresults.html"><button type="button">
+								<spring:message code="export_optimization_results"/></button></a></td>
 								<td align="right"></td>
-								<td><a href="exportoptimizationset.html"><button type="button">Export optimization set</button></a></td>
-								<td align="right"><a href="exportoptimizationresults.html"><button type="button">Export optimization results</button></a></td>
+								<!-- Export Optimization set -->
+								<td><a href="exportoptimizationset.html"><button type="button">
+								<spring:message code="export_optimization_set"/></button></a></td>
+								<!-- Export Optimization Results -->
+								<td align="right"><a href="exportoptimizationresults.html"><button type="button">
+								<spring:message code="export_optimization_results"/></button></a></td>
 							</tr>
 							<tr>
 								<td></td>
