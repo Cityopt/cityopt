@@ -310,20 +310,18 @@ public class OptimizationController {
 			}
 		}
 
-		model.put("optimizationset", optSet);
+		model.put("createoptimizationset", optSet);
+		model.put("successful", "Optimization set succesfully created.");			
 
 		List<OptConstraintDTO> optSearchConstraints = null;
 		
 		try {
 			optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
 		} catch (EntityNotFoundException e) {
-			e.printStackTrace();
-			
-		}
-		
-		model.put("constraints", optSearchConstraints);
-
-		return "editoptimizationset";
+			e.printStackTrace();			
+		}		
+		model.put("constraints", optSearchConstraints);	
+		return "createoptimizationset";
 	}
 	
 	@RequestMapping(value="editobjfunction",method=RequestMethod.GET)
