@@ -252,14 +252,25 @@ public class ProjectController {
 			Locale locale = LocaleContextHolder.getLocale();
 			
 			// TODO fix
-			model.put("successful", "Project succesfully created." + resource.getMessage("createproject", new Object[1], locale));			
+			//@ author: Markus Turunene 8.7.2015
+			// Language integration for messages. 
 			
+			//I'm calling message from resources can be language implemented:
+			// 3 part message: Project+(current created project)+is succesfully created			
+			String projectCreation =resource.getMessage("project", new Object[1], locale)
+			+" "+project.getName()+" "+resource.getMessage("succesfully_created", new Object[1], locale);			
+			model.put("successful", projectCreation);			
 			return "createproject";
+			
 			//return "editproject";
 			}
 			else{
-				model.put("project", project);				
-				model.put("errorMessage", "This project already exists, please create it with another name.");
+				model.put("project", project);
+				//@ author: Markus Turunene 8.7.2015
+				//Calling a locale resource for the error message:
+				Locale locale = LocaleContextHolder.getLocale();
+				String Errormessage= resource.getMessage("error_allready_exist", new Object[1], locale);
+				model.put("errorMessage", Errormessage);
 				return "createproject";
 			}	
 			//return "error";
