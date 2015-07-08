@@ -95,7 +95,8 @@
 			      	<td valign="top">
 			      		<table>
 			      			<tr>
-			      				<td><h2>Users</h2></td>
+			      				<!-- Users -->
+			      				<td><h2><spring:message code="users"/></h2></td>
 			   				</tr>
 			      			<tr>
 			      			   	<td>
@@ -104,21 +105,28 @@
 										<col style="width:50px">	
 										<col style="width:50px">	
 											<tr>
-							      			<th>Name</th>
-							      			<th>Edit</th>
-							      			<th>Delete</th>
+											<!-- Name -->
+							      			<th><spring:message code="name"/></th>
+							      			<!-- Edit -->
+							      			<th><spring:message code="edit"/></th>
+							      			<!-- Delete -->
+							      			<th><spring:message code="delete"/></th>
 							   			</tr>
 							   			
 						   				<c:forEach items="${users}" var="user">
 										<tr>
 											<td>${user.name}</td>
 											<td>
+												<!-- Edit -button -->
 												<a href="<c:url value='edituser.html?userid=${user.userid}'/>">
-													<button align="right" type="button" value="Edit">Edit</button>
+													<button align="right" type="button" value="Edit">
+													<spring:message code="edit"/></button>
 												</a>
 											</td>
+												<!-- Delete -button -->
 			   								<td><a href="<c:url value='deleteuser.html?userid=${user.userid}'/>">
-													<button align="right" type="button" value="Delete">Delete</button>
+													<button align="right" type="button" value="Delete">
+													<spring:message code="delete"/></button>
 												</a>
 											</td>
 									   	</tr>
@@ -131,7 +139,9 @@
 					      	</tr>
 							<tr>
 								<td align="right">
-				      				<a href="createuser.html"><button type="button">Create user</button></a>
+									<!-- Create user -button -->
+				      				<a href="createuser.html"><button type="button">
+				      				<spring:message code="create_user"/></button></a>
 			      				</td>
 			   				</tr>
 			      			      	<!-- <tr width="600" valign="bottom">

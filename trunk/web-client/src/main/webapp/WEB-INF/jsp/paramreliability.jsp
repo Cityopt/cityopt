@@ -25,7 +25,8 @@
 			<table>
 				<tr>
 					<td>
-						<h2>Input parameters - Reliability</h2>
+						<!-- Input parameters Reliability -->
+						<h2><spring:message code="input_parameters_reliability"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -35,7 +36,8 @@
 							<col style="width:400px">	
 							
 							<tr height="20">
-							    <th>Data reliability</th>
+							<!-- Data reliability -->
+							    <th><spring:message code="data_reliability"/></th>
 							</tr>
 						
 							<tr>
@@ -54,8 +56,14 @@
 						</div>
 					</td>
 					<td valign="top">
-						<a href=""><button style="width: 150px">Create new entry</button></a><br>
-						<a href=""><button style="width: 150px">Delete entry</button></a>
+						<!-- Create new entry -button -->
+						<a href=""><button style="width: 150px">
+						<spring:message code="create_new_entry"/></button></a><br>
+						
+						<!-- Delete entry -button -->
+						<a href=""><button style="width: 150px">
+						<spring:message code="delete_entry"/></button></a>
+						
 					</td>
 				</tr>
 			</table>
