@@ -32,7 +32,7 @@
 				<col style="width:30px">
 				<col style="width:800px">
 				<tr>
-					<td><h2>View chart</h2></td>
+					<td><h2><spring:message code="view_chart"/></h2></td>
 					<td></td>
 					<td></td>
 				</tr>
@@ -40,7 +40,8 @@
 					<td>
 						<table>
 							<tr>
-								<td><i>Scenario ${scenario.name} simulation status: ${status}</i></td>
+								<!-- Scenario (simulation name) simulation status: (Status)  -->
+								<td><i><spring:message code="scenario"/> ${scenario.name} <spring:message code="simulation_status"/>: ${status}</i></td>
 							</tr>
 							<c:choose>
 								<c:when test="${error != null && !error.isEmpty()}">
@@ -57,7 +58,7 @@
 							
 							<tr>
 								<td>
-									<b>Scenarios</b>
+									<!-- Scenarios --><b><spring:message code="scenarios"/></b>
 								</td>
 							</tr>
 							<tr>
@@ -67,20 +68,27 @@
 										<col style="width:200px">	
 																															
 										<tr height="20">
-										    <th>Select</th>
-										    <th>Name</th>
+											<!-- Select --><th><spring:message code="select"/></th>
+										    <!-- Name --> <th><spring:message code="name"/></th>
 										</tr>
 														
 										<c:forEach items="${scenarios}" var="scenario">
 										<tr>
 											<c:choose>
 												<c:when test="${usersession.hasScenarioId(scenario.scenid)}">
-													<tr style="background-color: #D4D4D4">
-													<td>Added (<a href="viewchart.html?action=remove&scenarioid=${scenario.scenid}">Remove</a>)</td>
+													<tr style="background-color: #D4D4D4">													
+													<td>
+													<!-- Remove button -->
+													(<spring:message code="added"/>) 
+													(<a href="viewchart.html?action=remove&scenarioid=${scenario.scenid}">
+													<spring:message code="remove"/></a>)
+													</td>
 												</c:when>
 												<c:otherwise>
 													<tr>
-													<td><a href="viewchart.html?action=add&scenarioid=${scenario.scenid}">Add</a></td>
+													<!-- Add -button -->
+													<td><a href="viewchart.html?action=add&scenarioid=${scenario.scenid}">
+													<spring:message code="add"/></a></td>
 												</c:otherwise>
 											</c:choose>
 											<td>${scenario.name}</td>
@@ -93,7 +101,8 @@
 							</tr>
 							<tr>
 								<td>
-									<b>Components</b>
+									<!-- Components -->
+									<b><spring:message code="components"/></b>
 								</td>
 							</tr>
 							<tr>
@@ -102,8 +111,8 @@
 										<col style="width:60px">
 										<col style="width:240px">
 										<tr>
-											<th>Select</th>
-											<th>Component</th>
+											<!-- Select --><th><spring:message code="select"/></th>
+											<!-- Component--><th><spring:message code="component"/></th>
 										</tr>
 										<c:forEach items="${components}" var="component">
 										<c:if test="${selectedcompid == component.componentid}">
@@ -124,7 +133,7 @@
 							</tr>
 							<tr>
 								<td>
-									<b>Output parameters</b>
+									<b><spring:message code="output_parameters"/></b>
 								</td>
 							</tr>
 							<tr>						
@@ -133,8 +142,8 @@
 										<col style="width:100px">
 										<col style="width:200px">
 										<tr>
-											<th>Draw</th>
-											<th>Output variable</th>
+											<th><spring:message code="draw"/></th>
+											<th><spring:message code="output_variable"/></th>
 										</tr>
 										<c:forEach items="${outputVars}" var="outputVar">
 											<c:choose>
@@ -158,7 +167,8 @@
 							</tr>
 							<tr height="20">
 								<td>
-									<b>External parameters</b>
+									<!-- External parameters -->
+									<b><spring:message code="external_parameters"/></b>
 								</td>
 							</tr>
 							<tr>
@@ -168,8 +178,8 @@
 										<col style="width:200px">
 												
 										<tr height="20">
-										    <th>Draw</th>
-										    <th>Name</th>
+										    <th><spring:message code="draw"/></th>
+										    <th><spring:message code="name"/></th>
 										</tr>
 										
 										<c:forEach items="${extParamVals}" var="extParamVal">
@@ -195,7 +205,8 @@
 							</tr>
 							<tr>
 								<td>
-									<b>Project metrics</b>
+									<!-- Project metrics -->
+									<b><spring:message code="project_metrics"/></b>
 								</td>
 							</tr>
 							<tr>
@@ -205,8 +216,8 @@
 									<col style="width:200px">
 										
 									<tr height="20">
-										<th>Draw</th>
-									    <th>Name</th>
+										<th><spring:message code="draw"/></th>
+									    <th><spring:message code="name"/></th>
 									</tr>
 									
 									<c:forEach items="${metrics}" var="metric">
@@ -243,35 +254,46 @@
 											<td align="right">
 												<table>
 													<tr>
-														<td>	
-											 				<b>Select chart type</b>
+														<td>
+															<!-- Select chart type -->	
+											 				<b><spring:message code="select_chart_type"/></b>
 										 				</td>
 									 				</tr>
 									 				<tr>	
 														<td>
 									 					<c:choose>
 															<c:when test="${userSession.getChartType() == 0}">
-										 						<b><a href="viewchart.html?charttype=0">Time series</a></b>
+																<!-- Time series -->
+										 						<b><a href="viewchart.html?charttype=0">
+										 						<spring:message code="time_series"/></a></b>
 															</c:when>
 															<c:otherwise>
-																<a href="viewchart.html?charttype=0">Time series</a>
+																<a href="viewchart.html?charttype=0">
+																<spring:message code="time_series"/></a>
 															</c:otherwise>
 														</c:choose>
 								 						</td>
 							 						</tr>
 							 						<tr>
 							 							<td>
-												 			<a href="viewchart.html?charttype=1">Scatter plot</a>
+							 								<!-- Scatterplot -->
+												 			<a href="viewchart.html?charttype=1">
+												 			<spring:message code="scatter_plot"/></a>
+											 				
 											 			</td>
 									 				</tr>
 									 				<tr>
 									 					<td>
-												 			<a href="viewchart.html?charttype=2">Bar chart</a>
+									 						<!-- Bar chart -->
+												 			<a href="viewchart.html?charttype=2">
+												 			<spring:message code="bar_chart"/></a>
 											 			</td>
 										 			</tr>
 										 			<tr>
 														<td>
-												 			<a href="viewchart.html?charttype=3">Pie chart</a>
+															<!-- Pie chart -->
+												 			<a href="viewchart.html?charttype=3">
+												 			<spring:message code="pie_chart"/></a>
 											 			</td>
 										 			</tr>
 									 			</table>
@@ -280,17 +302,24 @@
 												<table>
 													<tr>
 														<td>
-															<a href="viewchart.html?action=removeall"><button type="button" style="width: 150px">Remove selections</button></a>
+															<!-- Remove selections -->
+															<a href="viewchart.html?action=removeall"><button type="button" style="width: 150px">
+															"<spring:message code="remove_selection"/>"</button></a>
 														</td>
 													</tr>
 													<tr>
 														<td>
-															<a href="viewchart.html?action=refreshchart"><button type="button" style="width: 150px">Refresh chart</button></a>
+															<!-- Refresh chart -->
+															<a href="viewchart.html?action=refreshchart">
+															<button type="button" style="width: 150px">
+															"<spring:message code="refresh_chart"/>"</button></a>
 														</td>
 													</tr>
 													<tr>
 														<td>
-															<a href="viewchart.html?action=openwindow"><button type="button" style="width: 150px">Open chart window</button></a>
+															<!--Open chart window -->
+															<a href="viewchart.html?action=openwindow"><button type="button" style="width: 150px">
+															"<spring:message code="open_chart_window"/>"</button></a>
 														</td>
 													</tr>
 												</table>
