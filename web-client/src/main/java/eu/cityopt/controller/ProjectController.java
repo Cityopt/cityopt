@@ -257,10 +257,11 @@ public class ProjectController {
 			       model.put("project", project);                        
 			       model.put("success",false);                           
 			       return "createproject";
-			}      
-
-			Locale locale = LocaleContextHolder.getLocale();
-			
+			}
+		}
+	}
+			/*
+			Locale locale = LocaleContextHolder.getLocale();			
 			// TODO fix
 			//@ author: Markus Turunene 8.7.2015
 			// Language integration for messages.			
@@ -283,8 +284,8 @@ public class ProjectController {
 				return "createproject";
 			}	
 			//return "error";
-		}
-	}
+		*/
+
 
 	@RequestMapping(value="openproject", method=RequestMethod.GET)
 	public String getStringProjects(Map<String, Object> model)
