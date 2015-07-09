@@ -2,6 +2,7 @@
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core' %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -11,6 +12,7 @@
 </head>
 <body>
 <%@ include file="mainmenu.inc"%>
+
 <form:form method="post" action="createproject.html" modelAttribute="project">
 <table>
 	<tr>
@@ -47,12 +49,16 @@
 							    <td><form:errors path="description" cssClass="error"/></td>
 							</tr>
 						</table>
-						
-				<!-- error message if error -->				
-				<element><element><h2 class="error"></element></element>${errorMessage}</h2><element>
 				
-				<!-- success message if succesful creation -->				
-				<element><element><h2 class="successful"></element></element>${successful}</h2><element>
+				 <c:choose>
+          			  <c:when test="${success!=null && success==true}">
+            			   <h2 class="successful"> <spring:message code="projectSuccess" /> </h2>
+            		</c:when>
+            		<c:when test="${success!=null && success==false}">
+            			   <h2 class="error"> <p><spring:message code="projectExists" /> </p></h2>
+            		</c:when>            	
+        		</c:choose>			
+				
 						
 					</td>
 					<td align="right">
