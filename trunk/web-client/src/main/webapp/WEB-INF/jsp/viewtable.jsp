@@ -36,7 +36,8 @@
 				<col style="width:1100px">	
 				<tr>
 					<td colspan="2" height="80">
-						<h2>View table</h2>
+						<!-- View table -->
+						<h2><spring:message code="view_table"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -52,11 +53,11 @@
 										<col style="width:350px">
 										<tr>
 											<td>
-												<b>Components</b>
+												<b><spring:message code="components"/></b>
 											</td>
 											<td></td>
 											<td>
-												<b>Output parameters</b>
+												<b><spring:message code="output_parameters"/></b>
 											</td>
 											<td></td>
 											<td>
@@ -70,9 +71,12 @@
 													<col style="width:200px">
 													<col style="width:50px">
 													<tr>
-														<th>Select</th>
-														<th>Component</th>
-														<th>Id</th>
+														<!-- Select -->
+														<th><spring:message code="select"/></th>
+														<!-- Component -->
+														<th><spring:message code="component"/></th>
+														<!-- Id -->
+														<th><spring:message code="id"/></th>
 													</tr>
 													<c:forEach items="${components}" var="component">
 													<c:if test="${selectedcompid == component.componentid}">
@@ -95,8 +99,10 @@
 													<col style="width:100px">
 													<col style="width:150px">
 													<tr>
-														<th>Draw</th>
-														<th>Output variable</th>
+														<!-- Draw -->
+														<th><spring:message code="draw"/></th>
+														<!-- Output variable -->
+														<th><spring:message code="output_variable"/></th>
 													</tr>
 													<c:forEach items="${outputVars}" var="outputVar">
 														<c:choose>
@@ -159,7 +165,8 @@
 											<td>
 												<table>
 													<tr>
-														<td>Selected variable: ${selectedOutputVar.name}</td>
+														<!-- Selected variable: -->
+														<td><spring:message code="selected_variable"/>: ${selectedOutputVar.name}</td>
 													</tr>
 													<tr>
 														<td>
@@ -167,7 +174,8 @@
 																<col style="width:200px">
 																		
 																<tr height="20">
-																    <th>Time</th>
+																	<!-- Time -->
+																    <th><spring:message code="time"/></th>
 																</tr>
 																
 																<c:forEach items="${listOutputVarTimes}" var="listOutputVarTime">
@@ -182,7 +190,8 @@
 																<col style="width:100px">
 																		
 																<tr height="20">
-																    <th>Value</th>
+																	<!-- Value -->
+																    <th><spring:message code="value"/></th>
 																</tr>
 																
 																<c:forEach items="${listOutputVarVals}" var="listOutputVarVal">
