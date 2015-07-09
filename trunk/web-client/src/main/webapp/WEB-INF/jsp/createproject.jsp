@@ -50,12 +50,13 @@
 							</tr>
 						</table>
 				
+				<!-- Success // failure message -->
 				 <c:choose>
           			  <c:when test="${success!=null && success==true}">
             			   <h2 class="successful"> <spring:message code="projectSuccess" /> </h2>
             		</c:when>
             		<c:when test="${success!=null && success==false}">
-            			   <h2 class="error"> <p><spring:message code="projectExists" /> </p></h2>
+            			   <h2 class="error"> <spring:message code="projectExists" /> </h2>
             		</c:when>            	
         		</c:choose>			
 				
