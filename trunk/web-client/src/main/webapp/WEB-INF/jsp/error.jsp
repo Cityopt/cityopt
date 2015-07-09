@@ -20,8 +20,10 @@
 		</td>
 		<td width=30></td>
 		<td valign="top">
-			<h3>Error</h3>
-			<p>Please try again later!</p>
+			<!-- Error -->
+			<h3><spring:message code="error"/></h3>
+			<!-- Please try again later! -->
+			<p><spring:message code="please_try_again"/>!</p>
 		</td>
      </tr>
 </table>
