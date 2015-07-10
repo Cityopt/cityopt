@@ -23,7 +23,8 @@
 		<td>
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="createcomponent.html" modelAttribute="component">
-			<h2>Create component</h2>
+			<!-- Create component -->
+			<h2><spring:message code="create_component"/></h2>
 
 			<table align="center">
 				<col style="width:150px">
@@ -31,7 +32,8 @@
 				<col style="width:80px">
 				<tr>
 					<td>
-						Name
+						<!-- Name -->
+						<spring:message code="name"/>
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="name"/>
@@ -43,8 +45,9 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td align="right"><input style="width:100px" type="submit" value="Create"/>
-					<a href="editproject.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<!-- Create & Cancel -button -->
+					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create"/>"/>
+					<a href="editproject.html"><button style="width:100px" type="button" value="cancel"><spring:message code="cansel"/></button></a></td>
 				</tr>
 			</table>
 			
