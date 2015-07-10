@@ -34,7 +34,8 @@
 				<col style="width:750px">	
 				<tr>
 					<td colspan="2" height="80">
-						<h2>Project parameters</h2>
+						<!-- Project parameters -->
+						<h2><spring:message code="project_parameters"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -50,11 +51,13 @@
 										<col style="width:500px">
 										<tr>
 											<td>
-												<b>Components</b>
+												<!-- Components -->
+												<b><spring:message code="components"/></b>
 											</td>
 											<td></td>
 											<td>
-												<b>Input parameters</b>
+												<!-- Input parameters -->
+												<b><spring:message code="input_parameters"/></b>
 											</td>
 										</tr>
 										<tr>						
@@ -65,28 +68,33 @@
 													<col style="width:80px">
 													<col style="width:50px">
 													<tr>
-														<th>Select</th>
-														<th>Components</th>
-														<th>Id</th>
-														<th>Edit</th>
+														<!-- Select -->
+														<th><spring:message code="select"/></th>
+														<!-- Component -->
+														<th><spring:message code="components"/></th>
+														<!-- ID -->
+														<th><spring:message code="id"/></th>
+														<!-- Edit -->
+														<th><spring:message code="edit"/></th>
 													</tr>
 													
 													<c:forEach items="${components}" var="component">
 														<c:choose>
 															<c:when test="${selectedcompid == component.componentid}">
 																<tr style="background-color: #D4D4D4">
-																	<td>Selected</td>
+																	<td><spring:message code="selected"/></td>
 															</c:when>
 															<c:otherwise>
 																<tr>
-																	<td><a href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+																	<td><a href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}'/>">
+																	<spring:message code="select"/></a></td>
 															</c:otherwise>
 														</c:choose>
 															<td>${component.name}</td>
 													    	<td>${component.componentid}</td>
 															<td>
 																<a href="<c:url value='editcomponent.html?componentid=${component.componentid}'/>">
-																	<button align="right" type="button" value="Edit">Edit</button>
+																	<button align="right" type="button" value="Edit"><spring:message code="edit"/></button>
 																</a>
 															</td>
 													   	</tr>
@@ -101,10 +109,14 @@
 													<col style="width:150px">
 													<col style="width:60px">
 													<tr>
-														<th>Input parameter</th>
-														<th>Id</th>
-														<th>Default value</th>
-														<th>Edit</th>
+														<!-- Input parameter -->
+														<th><spring:message code="input_parameter"/></th>
+														<!-- ID -->
+														<th><spring:message code="id"/></th>
+														<!-- Default value -->
+														<th><spring:message code="default_value"/></th>
+														<!-- Edit -->
+														<th><spring:message code="edit"/></th>
 													</tr>
 													
 													<c:forEach items="${inputParameters}" var="inputParam">
@@ -114,7 +126,7 @@
 												    	<td>${inputParam.defaultvalue}</td>
 														<td>
 															<a href="<c:url value='editinputparameter.html?inputparameterid=${inputParam.inputid}'/>">
-																<button align="right" type="button" value="Edit">Edit</button>
+																<button align="right" type="button" value="Edit"><spring:message code="edit"/></button>
 															</a>
 														</td>
 												   	</tr>
@@ -125,12 +137,12 @@
 										</tr>
 										<tr>
 											<td align="right">
-												<a href="createcomponent.html"><button type="button">Create component</button></a>
+												<a href="createcomponent.html"><button type="button"><spring:message code="create_component"/></button></a>
 											</td>
 											<td></td>
 											<td align="right">
 												<c:if test="${selectedcompid != null}">
-													<a href="createinputparameter.html?selectedcompid=${selectedcompid}"><button type="button">Create input parameter</button></a>
+													<a href="createinputparameter.html?selectedcompid=${selectedcompid}"><button type="button"><spring:message code="create_input_parameter"/></button></a>
 												</c:if>
 											</td>
 										</tr>
@@ -143,7 +155,7 @@
 							</tr>
 							<tr>
 								<td>
-									<b>Selected external parameter set:</b>  
+									<b><spring:message code="selected_external_parameter_sets"/>:</b>  
 									${extParamValSet.name}
 									<br>
 									<table class="tablestyle">
@@ -162,10 +174,14 @@
 													<col style="width:100px">
 													<col style="width:50px">
 													<tr height="20">
-													    <th>Name</th>
-													    <th>Comment</th>
-													    <th>Value</th>
-													    <th>Edit</th>
+														<!-- Name -->
+													    <th><spring:message code="name"/></th>
+													    <!-- Comment -->
+													    <th><spring:message code="comment"/></th>
+													    <!-- Value -->
+													    <th><spring:message code="value"/></th>
+													    <!-- Edit -->
+													    <th><spring:message code="edit"/></th>
 													</tr>
 													
 													<c:forEach items="${extParamVals}" var="extParamVal">
@@ -175,7 +191,7 @@
 												    	<td>${extParamVal.value}</td>
 												    	<td>
 															<a href="<c:url value='editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}'/>">
-																<button align="right" type="button" value="Edit">Edit</button>
+																<button align="right" type="button" value="Edit"><spring:message code="edit"/></button>
 															</a>
 														</td>
 												   	</tr>
@@ -183,13 +199,13 @@
 												</table>
 											</td>
 											<td valign="top">
-												<a href="createextparam.html"><button type="button" style="width: 150px">Create external parameter</button></a>
+												<a href="createextparam.html"><button type="button" style="width: 150px"><spring:message code="create_external_parameter"/></button></a>
 											</td>
 										</tr>
 										<tr>
 											<td width="400" align="right">
-												<a href="selectextparamset.html"><button type="button">Select external parameter set</button></a>
-												<a href="editproject.html"><button type="button">Close</button></a>
+												<a href="selectextparamset.html"><button type="button"><spring:message code="select_external_parameter_set"/></button></a>
+												<a href="editproject.html"><button type="button"><spring:message code="close"/></button></a>
 											</td>
 										</tr>
 									</table>
