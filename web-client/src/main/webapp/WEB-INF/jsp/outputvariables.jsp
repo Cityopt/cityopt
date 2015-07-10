@@ -33,7 +33,8 @@
 				<tr>
 					<td></td>
 					<td colspan="2" height="80">
-						<h2>Output variables</h2>
+						<!-- Output variables -->
+						<h2><spring:message code="output_variables"/></h2>
 					</td>
 					<td></td>
 				</tr>
@@ -49,9 +50,11 @@
 										<col style="width:50px">
 										<col style="width:350px">
 										<tr>
-											<td><b>Components</b></td>
+											<!-- Components -->
+											<td><b><spring:message code="components"/></b></td>
 											<td></td>
-											<td><b>Output variables</b></td>
+											<!-- Output variables -->
+											<td><b><spring:message code="output_variables"/></b></td>
 										</tr>
 										<tr>						
 											<td>
@@ -60,9 +63,12 @@
 													<col style="width:150px">
 													<col style="width:60px">
 													<tr>
-														<th>Select</th>
-														<th>Component</th>
-														<th>Id</th>
+														<!-- Select -->
+														<th><spring:message code="select"/></th>
+														<!-- Component -->
+														<th><spring:message code="component"/></th>
+														<!-- ID -->
+														<th><spring:message code="id"/></th>
 													</tr>
 										
 													<c:forEach items="${components}" var="component">
@@ -87,8 +93,10 @@
 													<col style="width:250px">
 													<col style="width:100px">
 													<tr>
-														<th>Output variable</th>
-														<th>Id</th>
+														<!-- Output variable -->
+														<th><spring:message code="output_variable"/></th>
+														<!-- Id -->
+														<th><spring:message code="id"/></th>
 														
 													</tr>
 								
@@ -113,7 +121,7 @@
 										</tr>
 										<tr>
 											<td align="right">
-												<a href="editproject.html"><button type="button">Close</button></a>
+												<a href="editproject.html"><button type="button"><spring:message code="close"/></button></a>
 										    </td>
 										</tr>							      
 									</table>
