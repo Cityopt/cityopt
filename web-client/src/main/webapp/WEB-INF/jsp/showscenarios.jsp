@@ -26,14 +26,17 @@
 			<table>
 				<tr>
 					<td>
-						<h2>Show scenarios</h2>
+						<!-- Show scenarios -->
+						<h2><spring:message code="show_scenarios"/></h2>
 						<table class="tablestyle" width="600" border="1">
 							<col style="width:200px">	
 							<col style="width:250px">
 																												
 							<tr height="20">
-							    <th>Name</th>
-							    <th>Description</th>
+								<!-- Name -->
+							    <th><spring:message code="name"/></th>
+							    <!-- Description -->
+							    <th><spring:message code="description"/></th>
 							</tr>
 											
 							<c:forEach items="${scenarios}" var="scenario">
@@ -46,8 +49,10 @@
 					</td>
 			    </tr>
 		       	<tr>
+		       		<!-- Back -button -->
 			   		<td align="right">
-			   			<a href="importdata.html"><button type="button">Back</button></a>
+			   			<a href="importdata.html"><button type="button">
+			   			<spring:message code="back"/></button></a>
 			   		</td>
 			   	</tr>
 		    </table>
