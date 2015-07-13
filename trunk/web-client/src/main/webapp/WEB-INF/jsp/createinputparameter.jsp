@@ -24,7 +24,8 @@
 		<td>
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="createinputparameter.html?selectedcompid=${selectedcompid}" modelAttribute="inputParam">
-			<h2>Create input parameter</h2>
+			<!-- Create input parameter -->
+			<h2><spring:message code="create_input_parameter"/></h2>
 
 			<table align="center">
 				<col style="width:150px">
@@ -32,7 +33,8 @@
 				<col style="width:80px">
 				<tr>
 					<td>
-						Name
+						<!-- Name -->
+						<spring:message code="name"/>
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="name"/>
@@ -40,7 +42,8 @@
 				</tr>
 				<tr>
 					<td>
-						Default value
+						<!-- Default value -->
+						<spring:message code="default_value"/>
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="defaultvalue"/>
@@ -52,8 +55,9 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td align="right"><input style="width:100px" type="submit" value="Create"/>
-					<a href="projectparameters.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<!-- Create & Cansel button -->
+					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create"/>"/>
+					<a href="projectparameters.html"><button style="width:100px" type="button" value="Cancel"><spring:message code="cancel"/></button></a></td>
 				</tr>
 			</table>
 			</form:form>
