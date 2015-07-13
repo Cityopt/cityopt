@@ -33,7 +33,7 @@
 				<tr>
 					<td></td>
 					<td height="80">
-						<h2>Set multi-scenario</h2>
+						<h2><spring:message code="set_multi_scenario"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -43,7 +43,8 @@
 							<col style="width:500px">
 							<tr>
 								<td>
-									<b>Multi-variables</b>
+									<!-- Multi variables -->
+									<b><spring:message code="multi_variables"/></b>
 								</td>
 							</tr>
 							<tr>
@@ -52,17 +53,21 @@
 										<col style="width:250px">
 										<col style="width:250px">
 										<tr>
-											<th>Select</th>
-											<th>Name</th>
+											<!-- Select -->
+											<th><spring:message code="select"/></th>
+											<!-- Name -->
+											<th><spring:message code="name"/></th>
 										</tr>
 										
 										<c:forEach items="${components}" var="component">
 										<c:if test="${selectedComponent.componentid == component.componentid}">
-											<tr style="background-color: #D4D4D4"><td>Selected</td>
+											<tr style="background-color: #D4D4D4"><td>
+											<spring:message code="selected"/></td>
 										</c:if>
 										<c:if test="${selectedComponent.componentid != component.componentid}">
 											<tr>
-											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">
+											<spring:message code="select"/></a></td>
 										</c:if>
 											<td>${component.name}</td>
 									   	</tr>
@@ -72,7 +77,8 @@
 							</tr>
 							<tr>
 								<td>
-									<b>Multi-scenarios</b>
+									<!-- Multi-scenarios -->
+									<b><spring:message code="multi_scenarios"/></b>
 								</td>
 							</tr>
 							<tr>
@@ -81,17 +87,21 @@
 										<col style="width:250px">
 										<col style="width:250px">
 										<tr>
-											<th>Select</th>
-											<th>Name</th>
+											<!--Select-->
+											<th><spring:message code="select"/></th>
+											<!-- Name -->
+											<th><spring:message code="name"/></th>
 										</tr>
 										
 										<c:forEach items="${components}" var="component">
 										<c:if test="${selectedComponent.componentid == component.componentid}">
-											<tr style="background-color: #D4D4D4"><td>Selected</td>
+											<tr style="background-color: #D4D4D4"><td>
+											<spring:message code="selected"/></td>
 										</c:if>
 										<c:if test="${selectedComponent.componentid != component.componentid}">
 											<tr>
-											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">
+											<spring:message code="select"/></a></td>
 										</c:if>
 											<td>${component.name}</td>
 									   	</tr>
@@ -100,8 +110,10 @@
 								</td>
 							</tr>
 							<tr>
+								<!-- Close -button -->
 								<td align="right">
-									<a href="editscenario.html"><button type="button">Close</button></a>
+									<a href="editscenario.html"><button type="button">
+									<spring:message code="close"/></button></a>
 							    </td>
 							</tr>
 						</table>
