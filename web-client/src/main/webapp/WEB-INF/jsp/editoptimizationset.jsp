@@ -271,10 +271,10 @@
 								<spring:message code="export_optimization_results"/></button></a></td>
 								<td align="right"></td>
 								<!-- Export Optimization set -->
-								<td><a href="exportoptimizationset.html"><button type="button">
+								<td><a href="exportoptimizationset.html"><button type="button" style="width: 120px">
 								<spring:message code="export_optimization_set"/></button></a></td>
 								<!-- Export Optimization Results -->
-								<td align="right"><a href="exportoptimizationresults.html"><button type="button">
+								<td align="right"><a href="exportoptimizationresults.html"><button type="button" style="width: 120px">
 								<spring:message code="export_optimization_results"/></button></a></td>
 							</tr>
 							<tr>
