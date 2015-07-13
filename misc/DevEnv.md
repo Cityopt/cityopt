@@ -162,14 +162,23 @@ To test the user interface manually:
 Deployment to the server
 ========================
 
-1. Install PostgreSQL database
-2. Run the latest SQL database script
-3. Install Apros
-4. Build WAR file in Eclipse
-	-Right click web-client project and export as WAR file
-5. Copy WAR file to server
-6. Install WAR file in Tomcat
-	-Open Tomcat web manager and upload WAR file
+1. Build WAR file in Eclipse
+	-Open cityopt-planning project
+	-Right click "Build complete.launch" and select run as build complete
+2. Connect to the server through remote desktop connection
+	-Copy the new WAR file and SQL script (if changed) to server (C:\Cityopt)
+	-delete the old WAR file
+	-rename the new WAR file to "CityOPT.war"
+3. PostgreSQL database update
+	-Open pgAdmin III
+	-Run the latest SQL database script (if changed) for both CityOPT and EmptyTestDb databases
+4. Tomcat manager
+	-Open Tomcat manager on browser (bookmark)
+	-Undeploy old CityOPT application
+	-Stop Tomcat service
+	-Delete the Tomcat's CityOPT directory
+	-Start Tomcat service
+	-Deploy the new WAR file through Tomcat manager
 
 
 [//]: # (List of links for the Markdown processor.)
