@@ -24,7 +24,8 @@
 		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}" modelAttribute="extParamVal">
-			<h2>Edit external parameter value</h2>
+			<!--Edit external parameter value-->
+			<h2><spring:message code="edit_external_parameter_value"/></h2>
 
 			<table align="center">
 				<col style="width:150px">
@@ -32,7 +33,8 @@
 				<col style="width:80px">
 				<tr>
 					<td>
-						Name
+						<!-- Name -->
+						<spring:message code="name"/>
 					</td>
 					<td>
 						${extParamVal.extparam.name}
@@ -40,7 +42,8 @@
 				</tr>
 				<tr>
 					<td>
-						Value
+						<!-- Value -->
+						<spring:message code="value"/>
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="value"/>
@@ -52,8 +55,10 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td align="right"><input style="width:100px" type="submit" value="Update"/>
-					<a href="editscenario.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<!-- Update and Cancel -buttons -->
+					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="update"/>"/>
+					<a href="editscenario.html"><button style="width:100px" type="button" value="Cancel">
+					<spring:message code="cancel"/></button></a></td>
 				</tr>
 			</table>
 			
