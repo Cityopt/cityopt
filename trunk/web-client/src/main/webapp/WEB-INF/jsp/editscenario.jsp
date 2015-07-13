@@ -65,7 +65,7 @@
 							</tr>
 							<tr>
 								<!-- Multi scenarios -->					
-								<td>Multi-scenarios:</td>
+								<td><spring:message code="multi_scenarios"/>:</td>
 								<td><a href="setmultiscenario.html"><button type="button" style="width:100px">
 								<spring:message code="set"/></button></a></td>
 							</tr>
