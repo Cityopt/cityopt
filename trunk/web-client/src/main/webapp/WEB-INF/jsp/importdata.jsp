@@ -103,45 +103,52 @@
 							<tr>
 								<td>
 									<br>
-									<!-- Import Project data -->
+									<!-- Import project data -->
 									<b><spring:message code="import_project_data"/></b>
 								</td>
 							</tr>
 							<form:form method="POST" action="importstructurefile.html" enctype="multipart/form-data">
 	        					<tr>
-	        						<td>Import project file (CSV)</td>
+	        						<!-- Import project file (CSV) -->
+	        						<td><spring:message code="import_project_file_CSV"/></td>
 									<td><input id="file" name="file" type="file"/></td>
 								</tr>
 								<tr>	
 	       							<td></td>
 	        						<td>
-	        							<input type="submit" value="Import file">
+	        							<!--Import file-->
+	        							<input type="submit" value="<spring:message code="import_file"/>">
 	       							</td>
 	   							</tr>	
     						</form:form>
         					<tr>
-        						<td>Export project file (CSV)</td>
+        						<!-- Export project file (CSV) -->
+        						<td><spring:message code="export_project_file_CSV"/></td>
 								<td>
-									<a href="exportstructurefile.html"><button>Export</button></a>
+									<a href="exportstructurefile.html"><button>
+									<spring:message code="export"/></button></a>
 								</td>
 							</tr>
 							<form:form method="POST" action="importextparamsets.html" enctype="multipart/form-data">
 	        					<tr>
-	        						<td>Import external parameter sets (CSV)</td>
+	        						<!-- Import external parameter sets (CSV) -->
+	        						<td><spring:message code="import_external_parameter_sets_CSV"/></td>
 									<td><input id="file" name="file" type="file"/></td>
 								</tr>
 								<tr>	
 	       							<td></td>
 	        						<td>
-	        							<input type="submit" value="Import file">
+	        							<input type="submit" value="<spring:message code="import_file"/>">
 	       							</td>
 	   							</tr>	
 	   							
     						</form:form>
     						<tr>
-        						<td>Export external parameter sets file (CSV)</td>
+    						
+        						<td><spring:message code="export_external_parameter_sets_file_CSV"/></td>
 								<td>
-									<a href="exportextparamsets.html"><button>Export</button></a>
+									<a href="exportextparamsets.html"><button>
+									<spring:message code="export"/></button></a>
 								</td>
 							</tr>
 							<tr>
@@ -181,17 +188,21 @@
 											<tr>	
 				       							<td></td>
 				        						<td>
-				        							<input type="submit" value="Import file">
+				        							<!-- Import file -->
+				        							<input type="submit" value="<spring:message code="import_file"/>">
 				       							</td>
 				   							</tr>	
 			    						</form:form>
 			    						<tr>
-			        						<td>Export scenarios file (CSV)</td>
+			    							<!-- Export scenario file CSV -->
+			        						<td><spring:message code="export_scenario_file_CSV"/></td>
 											<td>
-												<a href="exportscenarios.html"><button>Export</button></a>
+												<!-- Export -button -->
+												<a href="exportscenarios.html"><button><spring:message code="export"/></button></a>
 											</td>
 										</tr>
 										<tr>						
+											<!-- Show scenarios -->
 											<td><a href="showscenarios.html"><button>
 											<spring:message code="show_scenarios"/></button></a></td>
 										</tr>
