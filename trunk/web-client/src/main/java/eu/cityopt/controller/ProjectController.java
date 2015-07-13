@@ -196,7 +196,7 @@ public class ProjectController {
 	@RequestMapping(value="createproject", method=RequestMethod.GET)
 	public String getCreateProject(Map<String, Object> model) {
 		ProjectDTO newProject = new ProjectDTO();
-		model.put("project", newProject);
+		model.put("newProject", newProject);
 		
 		AppUserDTO user = (AppUserDTO) model.get("user");
 		model.put("user", user);
@@ -206,9 +206,10 @@ public class ProjectController {
 
 	@RequestMapping(value = "createproject", method = RequestMethod.POST)
 	public String getCreateProjectPost(Map<String, Object> model,
-			@Validated @ModelAttribute("project") ProjectDTO projectForm, BindingResult bindingResult) {
+			@Validated @ModelAttribute("newProject") ProjectDTO projectForm, BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
+			
 			return "createproject";
 		} else {
 
@@ -316,6 +317,7 @@ public class ProjectController {
 					e.printStackTrace();
 				}
 				model.put("project", project);
+				model.remove("scenario");
 			}
 			else
 			{

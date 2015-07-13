@@ -2,6 +2,8 @@ package eu.cityopt.DTO;
 
 import java.util.Date;
 
+import javax.validation.constraints.Size;
+
 import lombok.Getter;
 import lombok.Setter;
 import eu.cityopt.model.ScenarioGenerator;
@@ -11,6 +13,7 @@ public class ScenarioDTO extends BaseDTO {
 	@Getter @Setter private int scenid;
 	@Getter @Setter private ProjectDTO project;
 	@Getter @Setter private ScenarioGeneratorDTO scenariogenerator;
+	@Size(min=1,max=50)
 	@Getter @Setter private String name;
 	@Getter @Setter private String description;
 	@Getter @Setter private Date createdon;

@@ -1013,6 +1013,11 @@ public class OptimizationController {
 			return "error";
 		}
 
+		if (optSet.getObjectivefunction() == null)
+		{
+			return "error";
+		}
+		
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e1) {

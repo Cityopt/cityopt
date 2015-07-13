@@ -178,7 +178,7 @@ public class ScenarioController {
 		}
 		
 		ScenarioDTO scenario = new ScenarioDTO();
-		model.put("scenario", scenario);
+		model.put("newScenario", scenario);
 		return "createscenario";
 	}
 
@@ -215,45 +215,45 @@ public class ScenarioController {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
-			}
-			else{
-				model.put("scenario", formScenario);
-				model.put("errorMessage", "This Scenario allready exist, please create another name.");
+				model.put("scenario",  scenario);
+			} else {
+				model.put("newScenario", formScenario);
+				model.put("errorMessage", "This Scenario already exists, please create another name.");
 				return "createscenario";				
-				}			
+			}			
 				
 				
 			//Bugfix #10543 author: Markus Turunen Check if energy models exist
-			if(scenarioService.getInputParamVals(scenario.getScenid())!=null){
+			if(scenarioService.getInputParamVals(scenario.getScenid()) != null){
 				Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 				model.put("inputParamVals", inputParamVals);
 	//			Iterator<InputParamValDTO> iter = inputParamVals.iterator();			
 				InputParamValDTO simStart = inputParamValService.findByNameAndScenario("simulation_start", scenario.getScenid());
 				InputParamValDTO simEnd = inputParamValService.findByNameAndScenario("simulation_end", scenario.getScenid());			
-				if(simStart!=null&&simEnd!=null){				
+				
+				if(simStart != null && simEnd != null){				
 					model.put("simStart", simStart.getValue());
 					model.put("simEnd", simEnd.getValue());//						
 					UserSession userSession = (UserSession) model.get("usersession");
 					userSession = new UserSession();
 					model.put("usersession", userSession);
 					model.put("Succesful", "Scenario succesfully created");
-					model.put("scenario", scenario);					
+					model.put("newScenario", scenario);					
 					return "createscenario";				
-				}else{
-					model.put("scenario", formScenario);				
+				} else {
+					model.put("newScenario", formScenario);				
 					model.put("errorMessage", "Project lack simulation definition, please define them.");
 					return "createscenario";
 				}			
 			}else{	
-				model.put("scenario", formScenario);				
+				model.put("newScenario", formScenario);				
 				model.put("errorMessage", "Project lack input parameter values can't create a scenario,  please define them.");
 				return "createscenario";
 			}
 		}
 		else
 			{
-			model.put("scenario", formScenario);				
+			model.put("newScenario", formScenario);				
 			model.put("errorMessage", "There's no project selected please select one.");
 			return "createscenario";
 			//project null
@@ -451,7 +451,7 @@ public class ScenarioController {
 		else
 		{
 			scenario = new ScenarioDTO();
-			model.put("scenario", scenario);
+			model.put("newScenario", scenario);
 			return "createscenario";
 		}
 	}
@@ -596,7 +596,7 @@ public class ScenarioController {
 		else
 		{
 			scenario = new ScenarioDTO();
-			model.put("scenario", scenario);
+			model.put("newScenario", scenario);
 			return "createscenario";
 		}*/
 		
