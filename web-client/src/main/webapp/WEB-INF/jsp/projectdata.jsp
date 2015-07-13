@@ -34,7 +34,8 @@
 				<col style="width:750px">	
 				<tr>
 					<td colspan="2" height="80">
-						<h2>Project data</h2>
+						<!-- Project data -->
+						<h2><spring:message code="project_data"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -52,15 +53,18 @@
 										<col style="width:250px">
 										<tr>
 											<td>
-												<b>Components</b>
+												<!-- Components -->
+												<b><spring:message code="components"/></b>
 											</td>
 											<td></td>
 											<td>
-												<b>Input parameters</b>
+												<!-- Input parameters-->
+												<b><spring:message code="input_parameters"/></b>
 											</td>
 											<td></td>
 											<td>
-												<b>Output parameters</b>
+												<!-- Output parameters -->
+												<b><spring:message code="output_parameters"/></b>
 											</td>
 										</tr>
 										<tr>						
@@ -70,18 +74,23 @@
 													<col style="width:180px">
 													<col style="width:80px">
 													<tr>
-														<th>Select</th>
-														<th>Components</th>
-														<th>Id</th>
+														<!-- Select -->
+														<th><spring:message code="select"/></th>
+														<!-- Components -->
+														<th><spring:message code="components"/></th>
+														<!-- ID -->
+														<th><spring:message code="id"/></th>
 													</tr>
 													
 													<c:forEach items="${components}" var="component">
 													<c:if test="${selectedcompid == component.componentid}">
-														<tr style="background-color: #D4D4D4"><td>Selected</td>
+														<tr style="background-color: #D4D4D4"><td>
+														<spring:message code="selected"/></td>
 													</c:if>
 													<c:if test="${selectedcompid != component.componentid}">
 														<tr>
-															<td><a href="<c:url value='projectdata.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+															<td><a href="<c:url value='projectdata.html?selectedcompid=${component.componentid}'/>">
+															<spring:message code="select"/></a></td>
 													</c:if>
 														<td>${component.name}</td>
 												    	<td>${component.componentid}</td>
@@ -96,9 +105,9 @@
 													<col style="width:60px">
 													<col style="width:150px">
 													<tr>
-														<th>Input parameter</th>
-														<th>Id</th>
-														<th>Default value</th>
+														<th><spring:message code="input_parameter"/></th>
+														<th><spring:message code="id"/></th>
+														<th><spring:message code="default_value"/></th>
 													</tr>
 													
 													<c:forEach items="${inputParameters}" var="inputParam">
@@ -117,8 +126,8 @@
 													<col style="width:150px">
 													<col style="width:60px">
 													<tr>
-														<th>Output parameter</th>
-														<th>Id</th>
+														<th><spring:message code="output_parameter"/></th>
+														<th><spring:message code="id"/></th>
 													</tr>
 													
 													<c:forEach items="${outputVars}" var="outputVar">
@@ -142,8 +151,10 @@
 								<td>
 									<table width="100%">
 										<tr>
-											<td>External parameter sets</td>
-											<td>External parameters</td>
+											<!-- External parameter sets -->
+											<td><spring:message code="external_parameter_sets"/></td>
+											<!-- External parameters -->
+											<td><spring:message code="external_parameters"/></td>
 										</tr>
 										<tr>
 											<td>
@@ -154,14 +165,17 @@
 																<col style="width:100px">
 																<col style="width:200px">
 																<tr height="20">
-																    <th>Select</th>
-																    <th>Name</th>
+																	<!-- Select -->
+																    <th><spring:message code="select"/></th>
+																    <!-- Name -->
+																    <th><spring:message code="name"/></th>
 																</tr>
 																
 																<c:forEach items="${extParamValSets}" var="extParamValSet">
 																<c:choose>
 																	<c:when test="${selectedextparamvalsetid == extParamValSet.extparamvalsetid}">
-																		<tr style="background-color: #D4D4D4"><td>Selected</td>
+																		<tr style="background-color: #D4D4D4"><td>
+																		<spring:message code="selected"/></td>
 																	</c:when>
 																	<c:otherwise>
 																		<tr>
@@ -169,7 +183,8 @@
 																</c:choose>
 																	<td>
 																		<a href="<c:url value='projectdata.html?extparamvalsetid=${extParamValSet.extparamvalsetid}'/>">
-																			<button align="right" type="button" value="Select">Select</button>
+																			<button align="right" type="button" value="Select">
+																			<spring:message code="select"/></button>
 																		</a>
 																	</td>
 																	<td>${extParamValSet.name}</td>
@@ -188,8 +203,10 @@
 																<col style="width:250px">
 																<col style="width:100px">
 																<tr height="20">
-																    <th>Name</th>
-																    <th>Value</th>
+																	<!-- Name -->
+																    <th><spring:message code="name"/></th>
+																    <!-- Value -->
+																    <th><spring:message code="value"/></th>
 																</tr>
 																
 																<c:forEach items="${extParamVals}" var="extParamVal">
@@ -207,7 +224,8 @@
 										<tr>
 											<td></td>
 											<td width="400" align="right">
-												<a href="importdata.html"><button type="button">Back</button></a>
+												<a href="importdata.html"><button type="button">
+												<spring:message code="back"/></button></a>
 											</td>
 										</tr>
 									</table>
