@@ -29,7 +29,8 @@
 				<col style="width:850px">	
 				<tr>
 					<td>
-						<h2>External parameters</h2>
+						<!-- External parameters -->
+						<h2><spring:message code="external_parameters"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -41,10 +42,14 @@
 							<col style="width:50px">
 									
 							<tr height="20">
-							    <th>Name</th>
-							    <th>Id</th>
-								<th>Value</th>
-							    <th>Edit</th>
+								<!-- Name -->
+							    <th><spring:message code="name"/></th>
+							    <!-- ID -->
+							    <th><spring:message code="id"/></th>
+							    <!-- Value -->
+								<th><spring:message code="value"/></th>
+								<!-- Edit -->
+							    <th><spring:message code="edit"/></th>
 							</tr>
 							
 							<c:forEach items="${extParamVals}" var="extParamVal">
@@ -54,7 +59,7 @@
 						    	<td>${extParamVal.value}</td>
 						    	<td>
 									<a href="<c:url value='editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}'/>">
-										<button align="right" type="button" value="Edit">Edit</button>
+										<button align="right" type="button" value="Edit"><spring:message code="edit"/></button>
 									</a>
 								</td>
 						   	</tr>
@@ -67,8 +72,10 @@
 								<td></td>
 							</tr>
 							<tr>
+								<!-- Close -button -->
 								<td align="right">
-									<a href="editscenario.html"><button type="button">Close</button></a>
+									<a href="editscenario.html"><button type="button">
+									<spring:message code="close"/></button></a>
 							    </td>
 							</tr>
 							      
