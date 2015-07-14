@@ -9,15 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.reflect.TypeToken;
 
-import eu.cityopt.DTO.AlgoParamValDTO;
 import eu.cityopt.DTO.ModelParameterDTO;
-import eu.cityopt.model.AlgoParamVal;
 import eu.cityopt.model.ModelParameter;
 import eu.cityopt.repository.ModelParameterRepository;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ModelParameterService;
 
 @Service("ModelParameterService")
+@SuppressWarnings("serial")
 public class ModelParameterServiceImpl implements ModelParameterService {
 	
 	@Autowired
@@ -34,7 +33,7 @@ public class ModelParameterServiceImpl implements ModelParameterService {
 		
 	}
 
-	@Override
+	//@Override
 	@Transactional
 	public ModelParameterDTO save(ModelParameterDTO u) {
 		ModelParameter modelParam = modelMapper.map(u, ModelParameter.class);

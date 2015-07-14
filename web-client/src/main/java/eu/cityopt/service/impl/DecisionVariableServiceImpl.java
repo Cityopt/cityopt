@@ -12,15 +12,24 @@ import com.google.common.reflect.TypeToken;
 import eu.cityopt.DTO.DecisionVariableDTO;
 import eu.cityopt.model.DecisionVariable;
 import eu.cityopt.repository.DecisionVariableRepository;
+import eu.cityopt.repository.ScenarioGeneratorRepository;
+import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.service.DecisionVariableService;
 import eu.cityopt.service.EntityNotFoundException;
 
 @Service("DecisionVariableService")
+@SuppressWarnings("serial")
 public class DecisionVariableServiceImpl implements DecisionVariableService {
 	
 	@Autowired
 	private DecisionVariableRepository decisionVariableRepository;
-	
+
+	@Autowired
+	private TypeRepository typeRepository;
+
+	@Autowired
+	private ScenarioGeneratorRepository scenarioGeneratorRepository;
+
 	@Autowired
 	private ModelMapper modelMapper;
 	
@@ -35,6 +44,8 @@ public class DecisionVariableServiceImpl implements DecisionVariableService {
 	@Transactional
 	public DecisionVariableDTO save(DecisionVariableDTO u) {
 		DecisionVariable decVar = modelMapper.map(u, DecisionVariable.class);
+		decVar.setType(typeRepository.findOne(u.getType().getTypeid()));
+		decVar.setScenariogenerator(scenarioGeneratorRepository.findOne(u.getScenariogenerator().getScengenid()));
 		decVar = decisionVariableRepository.save(decVar);
 		return modelMapper.map(decVar, DecisionVariableDTO.class);
 	}
