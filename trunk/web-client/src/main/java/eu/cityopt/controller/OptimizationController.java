@@ -1,27 +1,41 @@
 package eu.cityopt.controller;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import eu.cityopt.DTO.AlgoParamValDTO;
+import eu.cityopt.DTO.AlgorithmDTO;
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.DecisionVariableDTO;
@@ -31,6 +45,7 @@ import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.MetricValDTO;
+import eu.cityopt.DTO.ModelParameterDTO;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
 import eu.cityopt.DTO.OpenOptimizationSetDTO;
 import eu.cityopt.DTO.OptConstraintDTO;
@@ -40,7 +55,11 @@ import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioGeneratorDTO;
 import eu.cityopt.DTO.ScenarioWithObjFuncValueDTO;
+import eu.cityopt.DTO.TimeSeriesDTOX;
+import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.service.AlgoParamValService;
+import eu.cityopt.service.AlgorithmService;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentInputParamDTOService;
 import eu.cityopt.service.ComponentService;
@@ -55,6 +74,7 @@ import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.MetricService;
 import eu.cityopt.service.MetricValService;
+import eu.cityopt.service.ModelParameterGrouping;
 import eu.cityopt.service.ObjectiveFunctionService;
 import eu.cityopt.service.OptConstraintService;
 import eu.cityopt.service.OptSearchConstService;
@@ -69,20 +89,26 @@ import eu.cityopt.service.TimeSeriesService;
 import eu.cityopt.service.TimeSeriesValService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
-import eu.cityopt.service.impl.OptimizationSetServiceImpl;
+import eu.cityopt.sim.eval.ConfigurationException;
+import eu.cityopt.sim.eval.EvaluationSetup;
+import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
+import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.web.AlgoParamValForm;
+import eu.cityopt.web.ExtParamValSetForm;
+import eu.cityopt.web.ModelParamForm;
 import eu.cityopt.web.UserSession;
 
 /**
- * @author Olli Stenlund
+ * @author Olli Stenlund, Hannu Rummukainen
  *
  */
 @Controller
 @SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession", "user"})
 public class OptimizationController {
-	
 	@Autowired
 	ProjectService projectService; 
 	
@@ -169,7 +195,19 @@ public class OptimizationController {
 
 	@Autowired
 	ImportExportService importExportService;
-	
+
+	@Autowired
+	AlgorithmService algorithmService;
+
+	@Autowired
+	AlgoParamValService algoParamValService;
+
+	@Autowired
+	SimulationService simulationService;
+
+	@Autowired
+	ScenarioGenerationService scenarioGenerationService;
+
 	@RequestMapping(value="createobjfunction",method=RequestMethod.GET)
 	public String getCreateObjFunction(Map<String, Object> model,
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
@@ -591,252 +629,6 @@ public class OptimizationController {
 		return "editoptimizationset";
 	}
 
-	@RequestMapping(value="creategaobjfunction",method=RequestMethod.GET)
-	public String getCreateGAObjFunction(Map<String, Object> model,
-		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
-		ProjectDTO project = (ProjectDTO) model.get("project");
-
-		if (project == null)
-		{
-			return "error";
-		}
-		
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
-		ScenarioGeneratorDTO scenGenerator = (ScenarioGeneratorDTO) model.get("scengenerator");
-		
-		if (scenGenerator == null)
-		{
-			scenGenerator = new ScenarioGeneratorDTO();
-		}
-		
-		UserSession userSession = (UserSession) model.get("usersession");
-		
-		if (userSession == null)
-		{
-			userSession = new UserSession();
-		}
-		
-		model.put("usersession", userSession);
-		
-		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-		model.put("components", components);
-		
-		if (selectedCompId != null && !selectedCompId.isEmpty())
-		{
-			int nSelectedCompId = Integer.parseInt(selectedCompId);
-			
-			if (nSelectedCompId > 0)
-			{
-				userSession.setComponentId(nSelectedCompId);
-				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
-				model.put("outputVars", outputVars);
-			}
-			model.put("selectedcompid", nSelectedCompId);
-		}
-		
-		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-		model.put("metrics", metrics);
-
-		ObjectiveFunctionDTO function = new ObjectiveFunctionDTO();
-		model.put("function", function);
-		
-		return "creategaobjfunction";
-	}
-
-	@RequestMapping(value="creategaobjfunction", method=RequestMethod.POST)
-	public String getCreateGAObjFunctionPost(ObjectiveFunctionDTO function, HttpServletRequest request, Map<String, Object> model) {
-		ProjectDTO project = (ProjectDTO) model.get("project");
-
-		if (project == null)
-		{
-			return "error";
-		}
-
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		ScenarioGeneratorDTO scenGenerator = null;
-		
-		if (model.containsKey("scengenerator"))
-		{
-			scenGenerator = (ScenarioGeneratorDTO) model.get("scengenerator");
-		}
-		else
-		{
-			return "error";
-		}
-
-		String optSense = request.getParameter("optsense");
-		boolean isMaximize = optSense.equals("max");
-
-		if (function != null && function.getExpression() != null)
-		{
-			ObjectiveFunctionDTO func = new ObjectiveFunctionDTO();
-			func.setName(function.getName());
-			func.setExpression(function.getExpression());
-			func.setIsmaximise(isMaximize);
-			func.setProject(project);
-
-			try {
-				scenGenService.addObjectiveFunction(scenGenerator.getScengenid(), func);
-			} catch (EntityNotFoundException e) {
-				e.printStackTrace();
-				return "error";
-			}
-
-			scenGenerator = scenGenService.save(scenGenerator);
-		}
-
-		model.put("scengenerator", scenGenerator);
-
-		try {
-			List<ObjectiveFunctionDTO> gaFuncs = scenGenService.getObjectiveFunctions(scenGenerator.getScengenid());
-			model.put("objFuncs", gaFuncs);
-
-			List<OptConstraintDTO> gaConstraints = scenGenService.getOptConstraints(scenGenerator.getScengenid());
-			model.put("constraints", gaConstraints);
-
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-		model.put("metrics", metrics);
-		
-		//List<OptSearchConstDTO> optSearchConstraints = optSearchService.findAll();
-		//model.put("constraints", optSearchConstraints);
-
-		return "geneticalgorithm";
-	}
-
-	@RequestMapping(value="createdecisionvariable", method=RequestMethod.GET)
-	public String getCreateDecisionVariables(Map<String, Object> model,
-		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
-		ProjectDTO project = (ProjectDTO) model.get("project");
-
-		if (project == null)
-		{
-			return "error";
-		}
-		
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
-		ScenarioGeneratorDTO scenGenerator = (ScenarioGeneratorDTO) model.get("scengenerator");
-		
-		if (scenGenerator == null)
-		{
-			scenGenerator = new ScenarioGeneratorDTO();
-		}
-		
-		UserSession userSession = (UserSession) model.get("usersession");
-		
-		if (userSession == null)
-		{
-			userSession = new UserSession();
-		}
-		
-		model.put("usersession", userSession);
-		
-		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-		model.put("components", components);
-		
-		if (selectedCompId != null && !selectedCompId.isEmpty())
-		{
-			int nSelectedCompId = Integer.parseInt(selectedCompId);
-			
-			if (nSelectedCompId > 0)
-			{
-				userSession.setComponentId(nSelectedCompId);
-				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
-				model.put("outputVars", outputVars);
-			}
-			model.put("selectedcompid", nSelectedCompId);
-		}
-		
-		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-		model.put("metrics", metrics);
-
-		DecisionVariableDTO decVar = new DecisionVariableDTO();
-		model.put("decVar", decVar);
-		
-		return "creategaobjfunction";
-	}
-
-	@RequestMapping(value="createdecisionvariable", method=RequestMethod.POST)
-	public String getCreateDecisionVariablesPost(DecisionVariableDTO decVar, Map<String, Object> model) {
-		ProjectDTO project = (ProjectDTO) model.get("project");
-
-		if (project == null)
-		{
-			return "error";
-		}
-
-		try {
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		ScenarioGeneratorDTO scenGenerator = null;
-		
-		if (model.containsKey("scengenerator"))
-		{
-			scenGenerator = (ScenarioGeneratorDTO) model.get("scengenerator");
-		}
-		else
-		{
-			return "error";
-		}
-		
-		if (decVar != null && decVar.getExpression() != null)
-		{
-			DecisionVariableDTO newDecVar = new DecisionVariableDTO();
-			newDecVar.setName(decVar.getName());
-			newDecVar.setExpression(decVar.getExpression());
-			newDecVar.setLowerbound(decVar.getLowerbound());
-			newDecVar.setUpperbound(decVar.getUpperbound());
-			newDecVar.setScenariogenerator(scenGenerator);
-			
-			decisionVarService.save(newDecVar);
-
-			scenGenerator = scenGenService.save(scenGenerator);
-		}
-
-		model.put("scengenerator", scenGenerator);
-
-		try {
-			List<ObjectiveFunctionDTO> gaFuncs = scenGenService.getObjectiveFunctions(scenGenerator.getScengenid());
-			model.put("objFuncs",  gaFuncs);
-
-			List<OptConstraintDTO> gaConstraints = scenGenService.getOptConstraints(scenGenerator.getScengenid());
-			model.put("constraints", gaConstraints);
-
-			project = projectService.findByID(project.getPrjid());
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "error";
-		}
-		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-		model.put("metrics", metrics);
-		
-		return "geneticalgorithm";
-	}
 
 	@RequestMapping(value="createoptimizationset",method=RequestMethod.GET)
 	public String getCreateOptimizationSet(Map<String, Object> model) {
@@ -877,19 +669,16 @@ public class OptimizationController {
 				optSet.setName(openOptSet.getName());
 				// Add description?
 				optSet.setProject(project);
-				
+				//TODO clone project's defaultExtParamValSet
 				optSet = optSetService.save(optSet);
 				model.put("optimizationset", optSet);
 				return "editoptimizationset";
 			}
 			else if (nType == 2)
 			{
-				ScenarioGeneratorDTO scenGenerator = new ScenarioGeneratorDTO();
-				scenGenerator.setName(openOptSet.getName());
-				scenGenerator.setProject(project);
-				scenGenerator = scenGenService.save(scenGenerator);
+				ScenarioGeneratorDTO scenGenerator = scenGenService.create(project.getPrjid(), openOptSet.getName());
 				model.put("scengenerator", scenGenerator);
-				return "geneticalgorithm";
+				return "redirect:/geneticalgorithm.html";
 			}
 			else
 			{
@@ -1166,31 +955,7 @@ public class OptimizationController {
 				{
 					return "error";
 				}
-				//TODO model parameters, decision variables
-
-				project = (ProjectDTO) model.get("project");
-
-				if (project == null)
-				{
-					return "error";
-				}
-				
-				try {
-					List<ObjectiveFunctionDTO> gaFuncs = scenGenService.getObjectiveFunctions(scenGen.getScengenid());
-					model.put("objFuncs",  gaFuncs);
-
-					List<OptConstraintDTO> gaConstraints = scenGenService.getOptConstraints(scenGen.getScengenid());
-					model.put("constraints", gaConstraints);
-
-					project = projectService.findByID(project.getPrjid());
-				} catch (EntityNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-				model.put("metrics", metrics);
-
-				return "geneticalgorithm";
+				return "redirect:/geneticalgorithm.html";
 			}
 		}
 		else
@@ -1565,6 +1330,7 @@ public class OptimizationController {
 			
 			return "editoptimizationset";
 		}
+		//TODO should use projectService.getObjectiveFunctions
 		List<ObjectiveFunctionDTO> objFuncs = objFuncService.findAll();
 		model.put("objFuncs", objFuncs);
 		
@@ -1797,46 +1563,730 @@ public class OptimizationController {
 		return "runmultioptimizationset";
 	}
 	
-	@RequestMapping(value="geneticalgorithm", method=RequestMethod.GET)
-	public String getGeneticAlgorithm(Map<String, Object> model,
-		@RequestParam(value="optsetid", required=false) String optsetid,
-		@RequestParam(value="optsettype", required=false) String optsettype) {
-
-		ScenarioGeneratorDTO scenGen = null;
-		
-		if (model.containsKey("scengenerator"))
-		{
-			scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
-			model.put("scengenerator", scenGen);
-		}
-		else
-		{
-			return "error";
-		}
-
+	@RequestMapping(value="editsgobjfunction", method=RequestMethod.GET)
+	public String getEditSGObjFunction(ModelMap model,
+			@RequestParam(value="objid", required=false) Integer objid,
+			@RequestParam(value="selectedcompid", required=false) Integer selectedCompId) {
 		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
-		if (project == null)
-		{
-			return "error";
+		ObjectiveFunctionDTO function = null;
+		if (objid != null) {
+			try {
+				function = (ObjectiveFunctionDTO) objFuncService.findByID(objid);
+				if (function.getProject().getPrjid() != project.getPrjid()) {
+					return "error";
+				}
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+				return "error";
+			}
+		} else {
+			function = new ObjectiveFunctionDTO();
 		}
-		
+		return getEditSGObjFunction(project, function, model, selectedCompId);
+	}
+
+	private String getEditSGObjFunction(
+			ProjectDTO project, ObjectiveFunctionDTO function,
+			ModelMap model, Integer selectedCompId) {
+		UserSession userSession = getUserSession(model);
+
+		model.put("function", function);
+
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+
+		if (selectedCompId != null && selectedCompId > 0) {
+			userSession.setComponentId(selectedCompId);
+			model.put("selectedcompid", selectedCompId);
+			model.put("outputVars", componentService.getOutputVariables(selectedCompId));
+			model.put("inputParams", componentService.getInputParameters(selectedCompId));
+		}
+		model.put("metrics", projectService.getMetrics(project.getPrjid()));
+		model.put("extParams", projectService.getExtParams(project.getPrjid()));
+
+		return "editsgobjfunction";
+	}
+
+	@RequestMapping(value="editsgobjfunction", method=RequestMethod.POST)
+	public String postEditSGObjFunction(
+			ObjectiveFunctionDTO function, ModelMap model,
+			@RequestParam("obtfunctionid") int objid,
+			@RequestParam("optsense") String optSense) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		// TODO validate function expression, name uniqueness
+		if (StringUtils.isBlank(function.getExpression())) {
+			return getEditSGObjFunction(project, function, model, null);
+		}
+		function.setIsmaximise("max".equals(optSense));
+		function.setProject(project);
 		try {
-			List<ObjectiveFunctionDTO> gaFuncs = scenGenService.getObjectiveFunctions(scenGen.getScengenid());
-			model.put("objFuncs",  gaFuncs);
-
-			List<OptConstraintDTO> gaConstraints = scenGenService.getOptConstraints(scenGen.getScengenid());
-			model.put("constraints", gaConstraints);
-
-			project = projectService.findByID(project.getPrjid());
+			if (objid > 0) {
+				// TODO: clone if referenced from elsewhere
+				objFuncService.update(function);
+			} else {
+				scenGenService.addObjectiveFunction(scenGen.getScengenid(), function);
+			}
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return "error";
 		}
-		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-		model.put("metrics", metrics);
+
+		return "redirect:/geneticalgorithm.html";
+	}
+
+	@RequestMapping(value="deletesgobjfunction", method=RequestMethod.POST)
+	public String postDeleteSGObjFunction(
+			ModelMap model, @RequestParam("objid") int objid) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		try {
+			// TODO: This only unlinks.  Should probably delete the actual ObjectiveFunction too, if it's not used elsewhere?
+			scenGenService.removeObjectiveFunction(scenGen.getScengenid(), objid);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return "error";
+		}
+
+		return "redirect:/geneticalgorithm.html";
+	}
+
+	@RequestMapping(value="addsgobjfunction", method=RequestMethod.GET)
+	public String getAddSGObjFunction(ModelMap model) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		try {
+			model.put("objFuncs", sortBy(ObjectiveFunctionDTO::getName,
+					projectService.getObjectiveFunctions(project.getPrjid())));
+			// TODO filter out functions that are already in scenGen
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return "error";
+		}
+		return "addsgobjfunction";
+	}
+
+	@RequestMapping(value="addsgobjfunction", method=RequestMethod.POST)
+	public String postAddSGObjFunction(ModelMap model,
+			@RequestParam("obtfunctionid") int obtfunctionid) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		try {
+			ObjectiveFunctionDTO objFunc = objFuncService.findByID(obtfunctionid);
+			if (objFunc.getProject().getPrjid() != project.getPrjid()) {
+				return "error";
+			}
+			scenGenService.addObjectiveFunction(scenGen.getScengenid(), objFunc);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return "error";
+		}
+		return "redirect:/geneticalgorithm.html";
+	}
+
+	@RequestMapping(value="editsgconstraint", method=RequestMethod.GET)
+	public String getEditSGConstraint(ModelMap model,
+			@RequestParam(value="constrid", required=false) Integer constrid,
+			@RequestParam(value="selectedcompid", required=false) Integer selectedCompId) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		OptConstraintDTO constraint = null;
+		if (constrid != null) {
+			try {
+				constraint = (OptConstraintDTO) optConstraintService.findByID(constrid);
+				if (constraint.getProject().getPrjid() != project.getPrjid()) {
+					return "error";
+				}
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+				return "error";
+			}
+		} else {
+			constraint = new OptConstraintDTO();
+		}
+		return getEditSGConstraint(project, constraint, model, selectedCompId);
+	}
+
+	private String getEditSGConstraint(
+			ProjectDTO project, OptConstraintDTO constraint,
+			ModelMap model, Integer selectedCompId) {
+		UserSession userSession = getUserSession(model);
+
+		model.put("constraint", constraint);
+
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+
+		if (selectedCompId != null && selectedCompId > 0) {
+			userSession.setComponentId(selectedCompId);
+			model.put("selectedcompid", selectedCompId);
+			model.put("outputVars", componentService.getOutputVariables(selectedCompId));
+			model.put("inputParams", componentService.getInputParameters(selectedCompId));
+		}
+		model.put("metrics", projectService.getMetrics(project.getPrjid()));
+		model.put("extParams", projectService.getExtParams(project.getPrjid()));
+
+		return "editsgconstraint";
+	}
+
+	@RequestMapping(value="editsgconstraint", method=RequestMethod.POST)
+	public String postEditSGConstraint(
+			OptConstraintDTO constraint, ModelMap model,
+			@RequestParam("optconstid") int constrid) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		if (StringUtils.isBlank(constraint.getLowerbound())) {
+			constraint.setLowerbound(null);
+		}
+		if (StringUtils.isBlank(constraint.getUpperbound())) {
+			constraint.setUpperbound(null);
+		}
+		// TODO validate expression & bounds syntax, check for name clashes
+		if ((constraint.getLowerbound() == null && constraint.getUpperbound() == null)
+				|| StringUtils.isBlank(constraint.getName())
+				|| StringUtils.isBlank(constraint.getExpression())) {
+			return getEditSGConstraint(project, constraint, model, null);
+		}
+
+		constraint.setProject(project);
+		try {
+			if (constrid > 0) {
+				// TODO: clone if referenced from elsewhere
+				optConstraintService.update(constraint);
+			} else {
+				scenGenService.addOptConstraint(scenGen.getScengenid(), constraint);
+			}
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return "error";
+		}
+
+		return "redirect:/geneticalgorithm.html";
+	}
+
+	@RequestMapping(value="deletesgconstraint", method=RequestMethod.POST)
+	public String postDeleteSGConstraint(
+			ModelMap model, @RequestParam("constrid") Integer constrid) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		try {
+			// TODO: This only unlinks.  Should probably delete the actual ObjectiveFunction too, if it's not used elsewhere?
+			scenGenService.removeOptConstraint(scenGen.getScengenid(), constrid);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return "error";
+		}
+
+		return "redirect:/geneticalgorithm.html";
+	}
+
+	@RequestMapping(value="addsgconstraint", method=RequestMethod.GET)
+	public String getAddSGConstraint(ModelMap model) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		try {
+			model.put("constraints", sortBy(OptConstraintDTO::getName,
+					projectService.getOptConstraints(project.getPrjid())));
+			// TODO filter out constraints that are already in scenGen
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return "error";
+		}
+		return "addsgconstraint";
+	}
+
+	@RequestMapping(value="addsgconstraint", method=RequestMethod.POST)
+	public String postAddSGConstraint(ModelMap model,
+			@RequestParam("constrid") int constrid) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		try {
+			OptConstraintDTO constraint = optConstraintService.findByID(constrid);
+			if (constraint.getProject().getPrjid() != project.getPrjid()) {
+				return "error";
+			}
+			scenGenService.addOptConstraint(scenGen.getScengenid(), constraint);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return "error";
+		}
+		return "redirect:/geneticalgorithm.html";
+	}
+
+	@RequestMapping(value="editsgdecisionvariable", method=RequestMethod.GET)
+	public String getEditSGDecisionVariable(ModelMap model,
+			@RequestParam(value="decisionvarid", required=false) Integer decisionvarid,
+			@RequestParam(value="selectedcompid", required=false) Integer selectedCompId) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		DecisionVariableDTO decVar = null;
+		if (decisionvarid != null) {
+			try {
+				decVar = decisionVarService.findByID(decisionvarid);
+				if (decVar.getScenariogenerator().getScengenid() != scenGen.getScengenid()) {
+					return "error";
+				}
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+				return "error";
+			}
+		} else {
+			decVar = new DecisionVariableDTO();
+		}
+		return getEditSGDecisionVariable(project, decVar, model, selectedCompId);
+	}
+
+	private String getEditSGDecisionVariable(ProjectDTO project,
+			DecisionVariableDTO decVar, ModelMap model, Integer selectedCompId) {
+		model.put("decVar", decVar);
+		List<TypeDTO> typechoices = typeService.findAll().stream().filter(
+				t -> (t.getName().equalsIgnoreCase("Integer") 
+						|| t.getName().equalsIgnoreCase("Double")))
+				.collect(Collectors.toList());
+		model.put("typechoices", typechoices);
+		return "editsgdecisionvariable";
+	}
+
+	@RequestMapping(value="editsgdecisionvariable", method=RequestMethod.POST)
+	public String postEditSGDecisionVariable(
+			DecisionVariableDTO decVar, ModelMap model,
+			@RequestParam("decisionvarid") int decisionvarid,
+			@RequestParam("typeid") int typeid) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		if (StringUtils.isBlank(decVar.getLowerbound())) {
+			decVar.setLowerbound(null);
+		}
+		if (StringUtils.isBlank(decVar.getUpperbound())) {
+			decVar.setUpperbound(null);
+		}
+		if (StringUtils.isBlank(decVar.getName())) {
+			return getEditSGDecisionVariable(project, decVar, model, null);
+		}
+		// TODO validate that the bounds are ordered, allowing for expression bounds
+		try {
+			decVar.setType(typeService.findByID(typeid));
+			decVar.setScenariogenerator(scenGen);
+			//TODO: implement tying to input parameter as an alternative to specifying a name
+			decVar.setInputparameter(null);
+			if (decisionvarid > 0) {
+				decisionVarService.update(decVar);
+			} else {
+				scenGenService.addDecisionVariable(scenGen.getScengenid(), decVar);
+			}
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return "error";
+		}
+		return "redirect:/geneticalgorithm.html";
+	}
+
+	@RequestMapping(value="deletesgdecisionvariable", method=RequestMethod.POST)
+	public String postDeleteSGDecisionVariable(
+			ModelMap model, @RequestParam("decisionvarid") Integer decisionvarid) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		try {
+			scenGenService.removeDecisionVariable(scenGen.getScengenid(), decisionvarid);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return "error";
+		}
+
+		return "redirect:/geneticalgorithm.html";
+	}
+
+	@RequestMapping(value="geneticalgorithm", method=RequestMethod.GET)
+	public String getGeneticAlgorithm(ModelMap model) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		return getGeneticAlgorithm(project, scenGen, model);
+	}
+
+	private String getGeneticAlgorithm(ProjectDTO project, ScenarioGeneratorDTO scenGen, Map<String, Object> model) {
+		model.put("scengenerator", scenGen);
+		UserSession userSession = (UserSession) model.get("usersession");
+		if (userSession == null) {
+			userSession = new UserSession();
+			model.put("usersession", userSession);
+		}
+		try {
+			List<ComponentDTO> components = sortComponentsByName(
+					projectService.getComponents(project.getPrjid()));
+			model.put("components", components);
+			model.put("objFuncs", sortBy(ObjectiveFunctionDTO::getName,
+					scenGenService.getObjectiveFunctions(scenGen.getScengenid())));
+			model.put("constraints", sortBy(OptConstraintDTO::getName,
+					scenGenService.getOptConstraints(scenGen.getScengenid())));
+			List<DecisionVariableDTO> decVars = scenGenService.getDecisionVariables(scenGen.getScengenid());
+			model.put("decVars", sortBy(DecisionVariableDTO::getName, decVars));
+			Integer extParamValSetId = (scenGen.getExtparamvalset() == null) ? null
+					: scenGen.getExtparamvalset().getExtparamvalsetid();
+			model.put("extparamvals", (extParamValSetId == null) ? new ArrayList<ExtParamValDTO>()
+					: sortBy(epv -> epv.getExtparam().getName(),
+							extParamValSetService.getExtParamVals(extParamValSetId)));
+			model.put("extparamvalsetid", extParamValSetId);
+			List<ModelParameterDTO> modelParams = scenGenService.getModelParameters(scenGen.getScengenid());
+			model.put("modelparams", sortBy(mp -> mp.getInputparameter().getQualifiedName(), modelParams));
+			model.put("paramgrouping", new ModelParameterGrouping(modelParams, decVars));
+			model.put("algorithms", algorithmService.findAll());
+			model.put("algoparamvals", scenGenService.getOrCreateAlgoParamVals(scenGen.getScengenid()));
+
+			List<ComponentDTO> inputComponents = pickInputComponents(modelParams, components);
+			model.put("inputcomponents", inputComponents);
+			if (userSession.getComponentId() == 0 && !inputComponents.isEmpty()) {
+				userSession.setComponentId(inputComponents.iterator().next().getComponentid());
+			}
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return "error";
+		}
 
 		return "geneticalgorithm";
-	}	
+	}
+
+	private List<ComponentDTO> pickInputComponents(
+			List<ModelParameterDTO> modelParams, List<ComponentDTO> components) {
+		Set<Integer> componentIds = new HashSet<>();
+		for (ModelParameterDTO mp : modelParams) {
+			componentIds.add(mp.getInputparameter().getComponentComponentid());
+		}
+		return components.stream().filter(
+				c -> componentIds.contains(c.getComponentid()))
+				.collect(Collectors.toList());
+	}
+
+	@RequestMapping(value="geneticalgorithm", method=RequestMethod.POST)
+	public String postGeneticAlgorithm(ModelMap model,
+			@ModelAttribute("scengenerator") ScenarioGeneratorDTO scenGenForm,
+			@RequestParam("algorithmid") int algorithmId,
+			@RequestParam(value="run", required=false) String run) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		if (StringUtils.isBlank(scenGenForm.getName())) {
+			return getGeneticAlgorithm(project, scenGen, model);
+		}
+		try {
+			scenGen = scenGenService.update(scenGen.getScengenid(), scenGenForm.getName(), algorithmId);
+			model.put("scengenerator", scenGen);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return getGeneticAlgorithm(project, scenGen, model);
+		}
+
+		if ( ! StringUtils.isBlank(run)) {
+			try {
+				//TODO userid
+				scenarioGenerationService.startOptimisation(scenGen.getScengenid(), null);
+			} catch (ConfigurationException | ParseException | ScriptException
+					| IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return getGeneticAlgorithm(project, scenGen, model);
+			}
+		}
+
+		return "redirect:/geneticalgorithm.html";
+	}
+
+	@RequestMapping(value="editextparamvalset", method=RequestMethod.GET)
+	private String getEditExtParamValSet(ModelMap model,
+			@RequestParam("extparamvalsetid") Integer extParamValSetId,
+			@RequestParam("context") String context) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+
+		if (extParamValSetId == null) {
+			return "redirect:/" + context;
+		}
+		try {
+			ExtParamValSetForm form = new ExtParamValSetForm();
+			List<ExtParamValDTO> vals = sortBy(epv -> epv.getExtparam().getName(),
+					extParamValSetService.getExtParamVals(extParamValSetId));
+			form.setExtParamValSet(extParamValSetService.findByID(extParamValSetId));
+			for (ExtParamValDTO val : vals) {
+				int extParamId = val.getExtparam().getExtparamid();
+				form.getValueByParamId().put(extParamId, val.getValue());
+				form.getCommentByParamId().put(extParamId, val.getComment());
+			}
+			model.put("extparamvals", vals);
+			model.put("extparamvalsetform", form);
+			model.put("context", context);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return "redirect:/" + context;
+		}
+		return "editextparamvalset";
+	}
+
+	@RequestMapping(value="editextparamvalset", method=RequestMethod.POST)
+	public String postEditExtParamValSet(ModelMap model,
+			ExtParamValSetForm form,
+			@RequestParam("context") String context) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+
+		try {
+			int extParamValSetId = form.getExtParamValSet().getExtparamvalsetid();
+			List<ExtParamValDTO> extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
+			Map<Integer, TimeSeriesDTOX> timeSeriesByParamId = new HashMap<>();
+			for (ExtParamValDTO epv : extParamVals) {
+				int extParamId = epv.getExtparam().getExtparamid();
+				// TODO validate values
+				// TODO import time series as an alternative to scalar value
+				epv.setValue(form.getValueByParamId().get(extParamId));
+				epv.setComment(form.getCommentByParamId().get(extParamId));
+			}
+			extParamValSetService.updateOrClone(form.getExtParamValSet(), extParamVals, timeSeriesByParamId);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		//TODO could support other sources...
+		return "redirect:/" + context;
+	}
+
+	@RequestMapping(value="editsgalgoparamval", method=RequestMethod.GET)
+	public String getEditSGAlgoParamVal(ModelMap model) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		try {
+			List<AlgoParamValDTO> algoParamVals = scenGenService.getOrCreateAlgoParamVals(scenGen.getScengenid());
+			model.put("algoparamvals", algoParamVals);
+
+			AlgoParamValForm form = new AlgoParamValForm();
+			for (AlgoParamValDTO apv : algoParamVals) {
+				String editValue = (StringUtils.equals(apv.getValue(), apv.getAlgoparam().getDefaultvalue()))
+						? "" : apv.getValue();
+				form.getValueByParamId().put(apv.getAlgoparam().getAparamsid(), editValue);
+			}
+			model.put("algoparamvalform", form);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return "redirect:/geneticalgorithm.html";
+		}
+		return "editsgalgoparamval";
+	}
+
+	@RequestMapping(value="editsgalgoparamval", method=RequestMethod.POST)
+	public String postEditSGAlgoParamVal(ModelMap model,
+			AlgoParamValForm form) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		try {
+			List<AlgoParamValDTO> algoParamVals = scenGenService.getAlgoParamVals(scenGen.getScengenid());
+			Map<Integer, AlgoParamValDTO> algoParamValMap = new HashMap<>();
+			for (AlgoParamValDTO apv : algoParamVals) {
+				algoParamValMap.put(apv.getAlgoparam().getAparamsid(), apv);
+			}
+			for (Map.Entry<Integer, String> entry : form.getValueByParamId().entrySet()) {
+				if (StringUtils.isBlank(entry.getValue())) {
+					AlgoParamValDTO apv = algoParamValMap.get(entry.getKey());
+					if (apv != null) {
+						entry.setValue(apv.getAlgoparam().getDefaultvalue());
+					}
+				}
+				//TODO check if the values are numbers etc.
+			}
+			scenGenService.setAlgoParamVals(scenGen.getScengenid(), form.getValueByParamId());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		return "redirect:/geneticalgorithm.html";
+	}
+
+	@RequestMapping(value="editsgmodelparams", method=RequestMethod.GET)
+	public String getEditSGModelParams(ModelMap model) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		UserSession userSession = getUserSession(model);
+		try {
+			List<ComponentDTO> components = sortComponentsByName(
+					projectService.getComponents(project.getPrjid()));
+			List<DecisionVariableDTO> decVars = scenGenService.getDecisionVariables(scenGen.getScengenid());
+			List<ModelParameterDTO> modelParams = sortBy(mp -> mp.getInputparameter().getQualifiedName(),
+					scenGenService.getModelParameters(scenGen.getScengenid()));
+			ModelParameterGrouping grouping = new ModelParameterGrouping(modelParams, decVars);
+
+			ModelParamForm form = new ModelParamForm();
+			for (ModelParameterDTO mp : modelParams) {
+				int inputId = mp.getInputparameter().getInputid();
+				ModelParameterGrouping.MultiValue multivalue = grouping.getMultiValued().get(inputId);
+				String value = "";
+				String group = "";
+				if (multivalue != null) {
+					value = multivalue.getValues();
+					group = multivalue.getGroupName();
+				} else if (grouping.getExpressionValued().contains(inputId)) {
+					value = mp.getExpression();
+				} else if (grouping.getDecisionValued().contains(inputId)) {
+					value = mp.getExpression();
+				} else {
+					value = mp.getValue();
+				}
+				form.getValueByInputId().put(inputId, value);
+				form.getGroupByInputId().put(inputId, group);
+			}
+			model.put("modelparamform", form);
+			model.put("modelparams", modelParams);
+			model.put("groups", sortBy(s -> s, grouping.getGroupsByName().keySet()));
+
+			List<ComponentDTO> inputComponents = pickInputComponents(modelParams, components);
+			model.put("inputcomponents", inputComponents);
+			if (userSession.getComponentId() == 0 && !inputComponents.isEmpty()) {
+				userSession.setComponentId(inputComponents.iterator().next().getComponentid());
+			}
+
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return "redirect:/geneticalgorithm.html";
+		}
+		return "editsgmodelparams";
+	}
+
+	@RequestMapping(value="editsgmodelparams", method=RequestMethod.POST)
+	public String postEditSGModelParams(ModelMap model,
+			ModelParamForm form) {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project == null) return "redirect:/openproject.html";
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+
+		try {
+			List<DecisionVariableDTO> decVars = scenGenService.getDecisionVariables(scenGen.getScengenid());
+			List<ModelParameterDTO> modelParams = scenGenService.getModelParameters(scenGen.getScengenid());
+			ModelParameterGrouping grouping = new ModelParameterGrouping(modelParams, decVars);
+			Map<Integer, ModelParameterDTO> modelParamMap = new HashMap<>();
+			for (ModelParameterDTO mp : modelParams) {
+				modelParamMap.put(mp.getInputparameter().getInputid(), mp);
+			}
+			for (Map.Entry<Integer, String> entry : form.getValueByInputId().entrySet()) {
+				ModelParameterDTO mp = modelParamMap.get(entry.getKey());
+				String value = entry.getValue();
+				String group = form.getGroupByInputId().get(entry.getKey());
+				if (StringUtils.isBlank(group)) {
+					String error = validateTypedValue(mp.getInputparameter().getType(), value);
+					if (error == null) {
+						mp.setValue(value);
+						mp.setExpression(null);
+					} else {
+						mp.setValue(null);
+						mp.setExpression(value);
+					}
+				} else {
+					mp.setValue(null);
+					mp.setExpression(grouping.makeMultiValueExpr(entry.getValue(), group));
+				}
+			}
+			scenGenService.setModelParameters(scenGen.getScengenid(), modelParams);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		return "redirect:/geneticalgorithm.html";
+	}
+
+	private String validateTypedValue(TypeDTO type, String value) {
+		Type simType = Type.getByName((type != null) ? type.getName() : null);
+		try {
+			simType.parse(value, new EvaluationSetup(simulationService.getEvaluator(), Instant.EPOCH));
+			return null;
+		} catch (ParseException e) {
+			// Assume it's an exception.  TODO: use SyntaxChecker to validate
+			return e.getMessage();
+		}
+	}
+
+	@RequestMapping(value="selectcomponent", method=RequestMethod.POST)
+	public @ResponseBody String postSelectComponent(ModelMap model,
+			@RequestParam("selectedcompid") int selectedCompId) {
+		UserSession userSession = getUserSession(model);
+		userSession.setComponentId(selectedCompId);
+		return "";
+	}
+
+	private UserSession getUserSession(ModelMap model) {
+		UserSession userSession = (UserSession) model.get("usersession");
+		if (userSession == null) {
+			userSession = new UserSession();
+			model.put("usersession", userSession);
+		}
+		return userSession;
+	}
+
+	private static <T> List<T> sortBy(Function<T, String> key, Collection<T> collection) {
+		List<T> list = new ArrayList<>(collection);
+		list.sort(Comparator.comparing(key,
+				Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
+		return list;
+	}
+
+	/// Sorts components by name, leaving the special CITYOPT component last.
+	private List<ComponentDTO> sortComponentsByName(List<ComponentDTO> components) {
+		List<ComponentDTO> list = new ArrayList<>(components);
+		list.sort(Comparator.comparing(ComponentDTO::getName,
+				Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
+		for (Iterator<ComponentDTO> it = list.iterator(); it.hasNext();) {
+			ComponentDTO comp = it.next();
+			if (Namespace.CONFIG_COMPONENT.equals(comp.getName())) {
+				it.remove();
+				list.add(comp);
+				break;
+			}
+		}
+		return list;
+	}
 }
