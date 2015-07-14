@@ -235,6 +235,7 @@ public class ProjectController {
 				project = projectService.save(project, 0, 0);			
 				model.put("project", project);
 				model.remove("scenario");
+				model.remove("optimizationset");
 				/*
 				AppUserDTO user = (AppUserDTO) model.get("user");				
 				UserGroupProjectDTO userGroupProject = new UserGroupProjectDTO();
@@ -247,17 +248,17 @@ public class ProjectController {
 				*/
 						
 				project = projectService.save(project, 0, 0);               
-			       model.put("project", project);
-			       model.remove("scenario");               
-			       model.put("success",true);              
+			    model.put("project", project);
+			    model.remove("scenario");               
+				model.remove("optimizationset");
+				model.put("success",true);              
 			                    
-			       return "createproject";
-			              //return "editproject";
-			       }
-			              else{
-			       model.put("project", project);                        
-			       model.put("success",false);                           
-			       return "createproject";
+			    return "createproject";
+			    //return "editproject";
+			} else {
+				model.put("newProject", new ProjectDTO());                        
+			    model.put("success",false);                           
+			    return "createproject";
 			}
 		}
 	}
@@ -602,11 +603,27 @@ public class ProjectController {
 	public String getCloseProjects(Map<String, Object> model, HttpServletRequest request)
 	{
 		model.remove("project");
-		request.getSession().removeAttribute("project");
-		request.getSession().invalidate();
+		model.remove("scenario");
+		model.remove("optimizationset");
+		model.remove("scengenerator");
+		model.remove("optresults");
 		return "start";
 	}	
 
+	@RequestMapping(value="logout", method=RequestMethod.GET)
+	public String getLogout(Map<String, Object> model, HttpServletRequest request)
+	{
+		model.remove("project");
+		model.remove("scenario");
+		model.remove("optimizationset");
+		model.remove("scengenerator");
+		model.remove("optresults");
+		model.remove("usersession");
+		model.remove("user");
+		request.getSession().invalidate();
+		return "logout";
+	}	
+	
 	@RequestMapping(value="index", method=RequestMethod.GET)
 	public String getIndex(Map<String, Object> model) {
 	
