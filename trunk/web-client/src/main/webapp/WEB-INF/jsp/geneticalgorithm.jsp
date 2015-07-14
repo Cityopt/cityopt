@@ -24,7 +24,8 @@
 			<table style="width: 950px">
 				<col style="width: 400px;">
 				<col style="width: 450px;">
-				<tr><td colspan="2"><h2>Edit genetic algorithm optimization set</h2></td></tr>
+				<!--Edit genetic algorithm optimization set-->
+				<tr><td colspan="2"><h2><spring:message code="edit_genetic_algorithm_optimization_set"/></h2></td></tr>
 				<tr>
 					<td colspan="2">
 						<table>
@@ -34,14 +35,18 @@
 							<col style="width: 300px;">
 							<col style="width: 175px;">
 							<tr>
-								<td>Name:</td>
+								<!-- Name -->
+								<td><spring:message code="name"/>:</td>
 								<td><form:input type="text" path="name" style="width:200px"/></td>
-								<td>Description:</td>
+								<!-- Description -->
+								<td><spring:message code="description"/>:</td>
+								<!-- Run GA Generation submit -->
 								<td rowspan="2"><textarea id="description" rows="2" style="width: 300px"></textarea></td>
-								<td align="right"><input type="submit" value="Run GA generation" style="width: 150px"></td>
+								<td align="right"><input type="submit" value="<spring:message code="run_ga_generation"/>" style="width: 150px"></td>
 							</tr>
-							<tr>						
-								<td>User:</td>
+							<tr>
+								<!-- User: -->						
+								<td><spring:message code="user"/>:</td>
 								<td><input type="text" id="user" style="width:200px"></td>
 								<td></td>
 								<td align="right"></td>
@@ -53,14 +58,17 @@
 					<td>
 						<table>
 							<tr>
-								<td><b>Objective function</b></td>
+								<!-- Objective function -->
+								<td><b><spring:message code="objective_function"/></b></td>
 							</tr>
 							<tr>
 								<td>
 									<table class="tablestyle" style="width: 390px">
 										<tr>
-											<th>Optimization sense</th>
-											<th>Expression</th>
+											<!--Optimization Sense -->
+											<th><spring:message code="optimization_sense"/></th>
+											<!-- Expression -->
+											<th><spring:message code="expression"/></th>
 										</tr>
 										
 										<c:forEach items="${objFuncs}" var="function">
@@ -79,22 +87,29 @@
 							</tr>
 							<tr>
 								<td>
-									<a href="creategaobjfunction.html"><button type="button" style="width: 100px">Create</button></a>
-									<input type="submit" value="Delete"  style="width: 100px">
-									<a href="importgaobjfunction.html"><button type="button" style="width: 100px">Import</button></a>
+									<!-- Optimization sense and expression Create,Delete and Import functions-->
+									<a href="creategaobjfunction.html"><button type="button" style="width: 100px">
+									<spring:message code="create"/></button></a>
+									<input type="submit" value="<spring:message code="delete"/>"  style="width: 100px">
+									<a href="importgaobjfunction.html"><button type="button" style="width: 100px">
+									<spring:message code="import"/></button></a>
 								</td>
 							</tr>
 							<tr height="10"></tr>
 							<tr>
-								<td><b>Decision variables</b></td>
+								<!-- Decision variables -->
+								<td><b><spring:message code="decision_variables"/></b></td>
 							</tr>
 							<tr>
 								<td>
 									<table class="tablestyle" style="width: 390px">
 										<tr>
-											<th>Expression</th>
-											<th>Unit</th>
-											<th>Type</th>
+											<!-- Expression -->
+											<th><spring:message code="expression"/></th>
+											<!-- Unit -->
+											<th><spring:message code="unit"/></th>
+											<!-- Type -->
+											<th><spring:message code="type"/></th>
 										</tr>
 										<tr>
 											<td>x</td>
@@ -106,21 +121,25 @@
 							</tr>
 							<tr>
 								<td>
-									<input type="submit" value="Add" style="width: 100px">
-									<input type="submit" value="Delete" style="width: 100px">
-									<input type="submit" value="Import" style="width: 100px">
+									<!-- Add, delete and Import Decision Variables -->
+									<input type="submit" value="<spring:message code="add"/>" style="width: 100px">
+									<input type="submit" value="<spring:message code="delete"/>" style="width: 100px">
+									<input type="submit" value="<spring:message code="import"/>" style="width: 100px">
 								</td>
 							</tr>
 							<tr height="10"></tr>
 							<tr>
-								<td><b>Constraints</b></td>
+								<!-- Constraints -->
+								<td><b><spring:message code="constraints"/></b></td>
 							</tr>
 							<tr>
 								<td>
 									<table class="tablestyle" style="width: 390px">
 										<tr>
-											<th>Name</th>
-											<th>Expression</th>
+											<!-- Name -->
+											<th><spring:message code="name"/></th>
+											<!-- Expression -->
+											<th><spring:message code="expression"/></th>
 										</tr>
 										
 										<c:forEach items="${constraints}" var="constraint">
@@ -134,22 +153,27 @@
 							</tr>
 							<tr>
 								<td>
-									<input type="submit" value="Add" style="width: 100px">
-									<input type="submit" value="Delete" style="width: 100px">
-									<input type="submit" value="Import" style="width: 100px">
+									<!-- Add, Delete and Import Constraints -->
+									<input type="submit" value="<spring:message code="add"/>" style="width: 100px">
+									<input type="submit" value="<spring:message code="delete"/>" style="width: 100px">
+									<input type="submit" value="<spring:message code="import"/>" style="width: 100px">
 								</td>
 							</tr>
 							<tr height="10"></tr>
 							<tr>
-								<td><b>External parameter value set</b></td>
+								<!--External parameter value set-->
+								<td><b><spring:message code="external_parameter_value_set"/></b></td>
 							</tr>
 							<tr>
 								<td>
 									<table class="tablestyle" style="width: 390px">
 										<tr>
-											<th>Expression</th>
-											<th>Type</th>
-											<th>Unit</th>
+											<!-- Expression -->
+											<th><spring:message code="expression"/></th>
+											<!-- Type -->
+											<th><spring:message code="type"/></th>
+											<!-- Unit -->
+											<th><spring:message code="unit"/></th>
 										</tr>
 										<tr>
 											<td>x</td>
@@ -161,8 +185,8 @@
 							</tr>
 							<tr>
 								<td>
-									<input type="submit" value="Add" style="width: 100px">
-									<input type="submit" value="Delete" style="width: 100px">
+									<input type="submit" value="<spring:message code="add"/>" style="width: 100px">
+									<input type="submit" value="<spring:message code="delete"/>" style="width: 100px">
 								</td>
 							</tr>
 						</table>
@@ -172,15 +196,18 @@
 							<col style="width: 180px;">
 							<col style="width: 270px;">
 							<tr>
-								<td>Set the model parameters</td>
-								<td><a href=""><button type="button" style="width:100px">Set</button></a></td>
+								<!--Set the model parameters-->
+								<td><spring:message code="set_model_parameters"/></td>
+								<!-- Set -button -->
+								<td><a href=""><button type="button" style="width:100px"><spring:message code="set"/></button></a></td>
 							</tr>
 							<tr height="10"></tr>
 							<tr>
 								<td>
 									<table class="tablestyle" style="width: 180px; height: 150px">
 										<tr>
-											<th>Component</th>
+											<!-- Component -->
+											<th><spring:message code="component"/></th>
 										</tr>
 										<tr>
 											<td>x</td>
@@ -195,13 +222,14 @@
 											<td>x</td>
 										</tr>
 									</table>
-								</td>
-								<td>
+								<!-- Component -->	
+								</td><spring:message code="component"/><td>
 									<table class="tablestyle" style="width: 270px; height: 150px">
 										<tr>
-											<th>Parameter</th>
-											<th>Value</th>
-											<th>Unit</th>
+											<!-- Parameter, value, unit -->
+											<th><spring:message code="parameter"/></th>
+											<th><spring:message code="value"/></th>
+											<th><spring:message code="unit"/></th>
 										</tr>
 										<tr>
 											<td>x</td>
@@ -228,16 +256,18 @@
 							</tr>
 							<tr height="10"></tr>
 							<tr>
-								<td colspan="2"><b>Algorithm parameters</b></td>
+								<!--Algorithm parameters-->
+								<td colspan="2"><b><spring:message code="algorithm_parameters"/></b></td>
 							</tr>
 							<tr>
 								<td colspan="2">
 									<table class="tablestyle" style="width: 450px">
 										<tr>
-											<th>Parameter</th>
-											<th>Value</th>
-											<th>Default value</th>
-											<th>Type</th>
+											<!-- Parameter,Value,Default value and Type -->
+											<th><spring:message code="parameter"/></th>
+											<th><spring:message code="value"/></th>
+											<th><spring:message code="default_value"/></th>
+											<th><spring:message code="type"/></th>
 										</tr>
 										<tr>
 											<td>x</td>
@@ -257,22 +287,25 @@
 							<tr>
 								<td></td>
 								<td align="right">
-									<a href=""><button type="button"  style="width: 50px">Create</button></a>
-									<a href=""><button type="button"  style="width: 150px">Select existing one</button></a>
+									<!-- Create & Select existing one -->
+									<a href=""><button type="button"  style="width: 50px"><spring:message code="create"/></button></a>
+									<a href=""><button type="button"  style="width: 150px"><spring:message code="select_existing_one"/></button></a>
 								</td>
 							</tr>
 							<tr height="10"></tr>
 							<tr>
-								<td><input type="submit" value="Visualize pareto diagram"></td>
-								<td align="right"><input type="submit" value="Create GA optimization set" style="width: 200px"></td>
+								<!-- Visualize parento diagram -->
+								<td><input type="submit" value="<spring:message code="visualize_parento_diagram"/>"></td>
+								<td align="right"><input type="submit" value="<spring:message code="create_ga_optimization_set"/>" style="width: 200px"></td>
 							</tr>
 							<tr>
-								<td><input type="submit" value="Search optimal solution"></td>
-								<td align="right"><input type="submit" value="Cancel GA optimization set" style="width: 200px"></td>
+								<!-- Create,Cancel and clone Genetic Algorithm set -->
+								<td><input type="submit" value="<spring:message code="search_optimal_solution"/>"></td>
+								<td align="right"><input type="submit" value="<spring:message code="cancel_ga_optimization_set"/>" style="width: 200px"></td>
 							</tr>
 							<tr>
 								<td></td>
-								<td align="right"><input type="submit" value="Clone GA optimization set" style="width: 200px"></td>
+								<td align="right"><input type="submit" value="<spring:message code="clone_ga_optimization_set"/>" style="width: 200px"></td>
 							</tr>
 						</table>
 					</td>
