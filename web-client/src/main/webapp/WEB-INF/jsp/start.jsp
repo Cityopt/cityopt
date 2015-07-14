@@ -16,7 +16,7 @@
 		</td>
 		<td width="20"></td>
 		<td valign="top">
-			<h2>Welcome to Cityopt planning tool!</h2>
+			<h2><spring:message code="welcome"/></h2>
 		</td>
 	</tr>
 </table>
