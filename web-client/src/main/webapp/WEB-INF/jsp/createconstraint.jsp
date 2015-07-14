@@ -26,7 +26,8 @@
 			<table>
 				<tr>
 					<td>
-						<h2>Create constraint</h2>
+						<!-- Create constraint -->
+						<h2><spring:message code="create_constraint"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -39,11 +40,14 @@
 							<col style="width:250px">
 
 							<tr>
-								<td><b>Components</b></td>
+								<!-- Components -->
+								<td><b><spring:message code="components"/></b></td>
 								<td></td>
-								<td><b>Input parameters</b></td>
+								<!-- Input parameters -->
+								<td><b><spring:message code="input_parameters"/></b></td>
 								<td></td>
-								<td><b>Output variables</b></td>
+								<!-- Output variables -->
+								<td><b><spring:message code="output_variables"/></b></td>
 							</tr>
 							<tr>
 								<td valign="top">
@@ -51,18 +55,22 @@
 										<col style="width:60px">
 										<col style="width:190px">
 										<tr>
-											<th>Select</th>
-											<th>Component</th>
+											<!-- Select -->
+											<th><spring:message code="select"/></th>
+											<!-- Component -->
+											<th><spring:message code="component"/></th>
 										</tr>
 							
 										<c:forEach items="${components}" var="component">
 										<tr>
 											<c:if test="${selectedcompid == component.componentid}">
-												<tr style="background-color: #D4D4D4"><td>Selected</td>
+												<tr style="background-color: #D4D4D4"><td>
+												<spring:message code="selected"/></td>
 											</c:if>
 											<c:if test="${selectedcompid != component.componentid}">
 												<tr>
-												<td><a href="<c:url value='createconstraint.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+												<td><a href="<c:url value='createconstraint.html?selectedcompid=${component.componentid}'/>">
+												<spring:message code="select"/></a></td>
 											</c:if>
 												<td>${component.name}</td>
 									   	</tr>
@@ -74,7 +82,8 @@
 									<table class="tablestyle">
 										<col style="width:250px">
 										<tr>
-											<th>Input parameter</th>
+											<!-- Input parameter -->
+											<th><spring:message code="input_parameter"/></th>
 										</tr>
 					
 										<c:forEach items="${inputParams}" var="inputParam">
@@ -89,7 +98,8 @@
 									<table class="tablestyle">
 										<col style="width:250px">
 										<tr>
-											<th>Output variable</th>
+											<!-- Output variable -->
+											<th><spring:message code="output_variable"/></th>
 										</tr>
 					
 										<c:forEach items="${outputVars}" var="outputVar">
@@ -102,7 +112,8 @@
 							</tr>
 							<tr height="20"></tr>
 							<tr>
-								<td><b>Metrics</b></td>
+								<!-- Metrics -->
+								<td><b><spring:message code="metrics"/></b></td>
 							</tr>
 							<tr>
 								<td>
@@ -110,7 +121,8 @@
 										<col style="width:250px">
 										
 										<tr>
-											<th>Metric</th>
+											<!-- Metric -->
+											<th><spring:message code="metric"/></th>
 										</tr>
 					
 										<c:forEach items="${metrics}" var="metric">
@@ -134,28 +146,32 @@
 							<col style="width:240px">
 							<tr>
 								<td></td>
-								<td>Name</td>
+								<!-- Name -->
+								<td><spring:message code="name"/></td>
 								<td><form:input style="width:400px" type="text" path="name"/></td>
 								<td></td>
 							</tr>
 							<tr height=10></tr>
 							<tr>
 								<td></td>
-								<td>Lower bound</td>
+								<!-- Lower bound -->
+								<td><spring:message code="lower_bound"/></td>
 								<td><form:input style="width:400px" type="text" path="lowerbound"/></td>
 								<td></td>
 							</tr>
 							<tr height=10></tr>
 							<tr>
 								<td></td>
-								<td>Expression</td>
+								<!-- Expression -->
+								<td><spring:message code="expression"/></td>
 								<td><form:input style="width:400px" type="text" path="expression"/></td>
 								<td></td>
 							</tr>
 							<tr height=10></tr>
 							<tr>
 								<td></td>
-								<td>Upper bound</td>
+								<!-- Upper bound -->
+								<td><spring:message code="upper_bound"/></td>
 								<td><form:input style="width:400px" type="text" path="upperbound"/></td>
 								<td></td>
 							</tr>
@@ -163,7 +179,10 @@
 								<td></td>
 								<td></td>
 								<td></td>
-								<td align=right><input type="submit" value="Ok"/><a href="editoptimizationset.html"><button type="button">Cancel</button></a></td>
+								<!-- Ok and Cansel submit -buttons -->
+								<td align=right><input type="submit" value="<spring:message code="ok"/>"/>
+								<a href="editoptimizationset.html"><button type="button">
+								<spring:message code="cancel"/></button></a></td>
 							</tr>					
 						</table>
 					</td>

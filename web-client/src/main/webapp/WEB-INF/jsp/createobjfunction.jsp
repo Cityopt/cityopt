@@ -22,7 +22,8 @@
 			<table>
 				<tr>
 					<td>
-						<h2>Create objective function</h2>
+						<!--Create objective function-->
+						<h2><spring:message code="create_objective_function"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -38,15 +39,21 @@
 							<tr>
 								<td></td>
 								<td>
-									Components
+									<!--Components-->
+									<spring:message code="components"/>
+									
 								</td>
 								<td></td>
 								<td>
-									Input parameters
+									<!--Input parameters-->
+									<spring:message code="input_parameters"/>
+									
 								</td>
 								<td></td>
 								<td>
-									Output variables
+									<!--Output variables-->
+									<spring:message code="output_variables"/>
+									
 								</td>
 							</tr>
 							<tr>
@@ -56,8 +63,10 @@
 										<col style="width:60px">
 										<col style="width:190px">
 										<tr>
-											<th>Select</th>
-											<th>Component</th>
+											<!-- Select -->
+											<th><spring:message code="select"/></th>
+											<!-- Component -->
+											<th><spring:message code="component"/></th>
 										</tr>
 							
 										<c:forEach items="${components}" var="component">
@@ -67,7 +76,8 @@
 											</c:if>
 											<c:if test="${selectedcompid != component.componentid}">
 												<tr>
-												<td><a href="<c:url value='createobjfunction.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+												<td><a href="<c:url value='createobjfunction.html?selectedcompid=${component.componentid}'/>">
+												<spring:message code="select"/></a></td>
 											</c:if>
 												<td>${component.name}</td>
 									   	</tr>
@@ -81,9 +91,15 @@
 										<col style="width:60px">
 										<col style="width:150px">
 										<tr>
-											<th>Input parameter</th>
-											<th>Id</th>
-											<th>Default value</th>
+											<th>
+											<!--Input parameter-->
+											<spring:message code="input_parameters"/></th>
+											<th>
+											<!-- Id -->
+											<spring:message code="id"/></th>											
+											<th>
+											<!--Default value-->
+											<spring:message code="default_value"/></th>
 										</tr>
 										
 										<c:forEach items="${inputParameters}" var="inputParam">
@@ -100,7 +116,8 @@
 									<table class="tablestyle">
 										<col style="width:250px">
 										<tr>
-											<th>Output variable</th>
+											<!-- Output variable -->
+											<th><spring:message code="output_variable"/></th>
 										</tr>
 					
 										<c:forEach items="${outputVars}" var="outputVar">
@@ -116,10 +133,13 @@
 							<tr>
 								<td></td>
 								<td>
-									Metrics
+								<!-- Metrics -->
+								<spring:message code="metrics"/>
 								</td>
 								<td></td>
-								<td>External parameters</td>
+								<td>
+								<!--External parameters-->
+								<spring:message code="external_parameters"/></td>
 								<td></td>
 							</tr>
 							<tr>
@@ -129,7 +149,9 @@
 										<col style="width:250px">
 										
 										<tr>
-											<th>Metric name</th>
+											<th>
+											<!--Metric name-->
+											<spring:message code="metric_name"/></th>
 										</tr>
 										
 										<c:forEach items="${metrics}" var="metric">
@@ -145,7 +167,8 @@
 										<col style="width:200px">
 												
 										<tr height="20">
-										    <th>Name</th>
+											<!-- Name -->
+										    <th><spring:message code="name"/></th>
 										</tr>
 										
 										<c:forEach items="${extParamVals}" var="extParamVal">
@@ -161,7 +184,8 @@
 							</tr>
 							<tr>
 								<td></td>
-								<td>Name</td>
+								<!-- Name -->
+								<td><spring:message code="name"/></td>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -173,7 +197,8 @@
 							</tr>
 							<tr>
 								<td></td>
-								<td>Expression</td>
+								<!-- Expression -->
+								<td><spring:message code="expression"/></td>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -185,10 +210,11 @@
 							</tr>
 							<tr>
 								<td></td>
-								<td colspan="3">Optimization sense: 
+								<!-- Optimization sense: Minimize / Maximize -->
+								<td colspan="3"><spring:message code="optimization_sense"/>: 
 									<select name="optsense" id="optsense" size="1">
-										<option value="1" selected>Minimize</option>
-										<option value="2">Maximize</option>
+										<option value="1" selected><spring:message code="minimize"/></option>
+										<option value="2"><spring:message code="maximize"/></option>
 									</select>
 								</td>
 								<td></td>
@@ -197,8 +223,9 @@
 								<td></td>
 								<td></td>
 								<td></td>
-								<td align="right"><input type="submit" value="Ok"></input>
-								<a href="editoptimizationset.html"><button type="button">Cancel</button></a></td>
+								<!-- Ok and cansel - submit buttons -->
+								<td align="right"><input type="submit" value="<spring:message code="ok"/>"></input>
+								<a href="editoptimizationset.html"><button type="button"><spring:message code="cancel"/></button></a></td>
 								<td></td>
 							</tr>					
 						</table>
