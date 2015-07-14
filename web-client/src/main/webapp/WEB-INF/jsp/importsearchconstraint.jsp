@@ -21,7 +21,8 @@
 			<table>
 				<tr>
 					<td>
-						<h2>Search constraints</h2>
+						<!-- Search constraints -->
+						<h2><spring:message code="search_constraints"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -30,7 +31,7 @@
 							<col style="width:300px">
 
 							<tr>
-								<td><b>Search constraints</b></td>
+								<td><b><spring:message code="search_constraints"/></b></td>
 							</tr>
 							<tr>
 								<td valign="top">
@@ -39,14 +40,15 @@
 										<col style="width:240px">
 										<col style="width:300px">
 										<tr>
-											<th>Select</th>
-											<th>Search constraint</th>
-											<th>Expression</th>
+											<!-- Select, Search constraint and Expression -->
+											<th><spring:message code="select"/></th>
+											<th><spring:message code="search_constraints"/></th>
+											<th><spring:message code="expression"/></th>
 										</tr>
 							
 										<c:forEach items="${constraints}" var="constraint">
 											<tr>
-												<td><a href="<c:url value='importsearchconstraint.html?constraintid=${constraint.optconstid}'/>">Select</a></td>
+												<td><a href="<c:url value='importsearchconstraint.html?constraintid=${constraint.optconstid}'/>"><spring:message code="select"/></a></td>
 												<td>${constraint.name}</td>
 										    	<td>${constraint.expression}</td>
 										   	</tr>
@@ -56,7 +58,7 @@
 							</tr>
 							<tr height="20"></tr>
 							<tr>
-								<td align="right"><a href="editoptimizationset.html"><button type="button">Close</button></a></td>
+								<td align="right"><a href="editoptimizationset.html"><button type="button"><spring:message code="close"/></button></a></td>
 							</tr>
 						</table>
 					</td>
