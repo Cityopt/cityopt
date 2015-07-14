@@ -310,7 +310,7 @@ public class OptimizationController {
 			}
 		}
 
-		model.put("createoptimizationset", optSet);
+		model.put("optimizationset", optSet);
 		model.put("successful", "Optimization set succesfully created.");			
 
 		List<OptConstraintDTO> optSearchConstraints = null;
@@ -321,7 +321,7 @@ public class OptimizationController {
 			e.printStackTrace();			
 		}		
 		model.put("constraints", optSearchConstraints);	
-		return "createoptimizationset";
+		return "editoptimizationset";
 	}
 	
 	@RequestMapping(value="editobjfunction",method=RequestMethod.GET)
