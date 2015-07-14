@@ -33,7 +33,8 @@
 				<tr>
 					<td></td>
 					<td height="80">
-						<h2>Scenario parameters</h2>
+						<!-- Scenario parameters -->
+						<h2><spring:message code="scenario_parameters"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -45,11 +46,13 @@
 							<col style="width:300px">	
 							<tr>
 								<td>
-									<b>Components</b>
+									<!-- Components -->
+									<b><spring:message code="components"/></b>
 								</td>
 								<td></td>
 								<td>
-									<b>Input parameter values</b>
+									<!-- Input parameter values -->
+									<b><spring:message code="input_parameter_values"/></b>
 								</td>
 							</tr>
 							<tr>
@@ -58,17 +61,21 @@
 										<col style="width:80px">
 										<col style="width:150px">
 										<tr>
-											<th>Select</th>
-											<th>Component</th>
+											<!-- Select -->
+											<th><spring:message code="select"/></th>
+											<!-- Component -->
+											<th><spring:message code="component"/>Component</th>
 										</tr>
 										
 										<c:forEach items="${components}" var="component">
 										<c:if test="${selectedComponent.componentid == component.componentid}">
-											<tr style="background-color: #D4D4D4"><td>Selected</td>
+											<tr style="background-color: #D4D4D4"><td>
+											<spring:message code="selected"/></td>
 										</c:if>
 										<c:if test="${selectedComponent.componentid != component.componentid}">
 											<tr>
-											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">
+											<spring:message code="select"/></a></td>
 										</c:if>
 											<td>${component.name}</td>
 									   	</tr>
@@ -82,9 +89,12 @@
 										<col style="width:60px">
 										<col style="width:60px">
 										<tr>
-											<th>Input parameter</th>
-											<th>Value</th>
-											<th>Edit</th>
+											<!-- Input parameter -->
+											<th><spring:message code="input_parameters"/></th>
+											<!-- Value -->
+											<th><spring:message code="value"/></th>
+											<!-- Edit -->
+											<th><spring:message code="edit"/></th>
 										</tr>
 										
 										<c:forEach items="${inputParamVals}" var="inputParamVal">
@@ -93,7 +103,8 @@
 									    	<td>${inputParamVal.value}</td>
 											<td>
 												<a href="<c:url value='editinputparamvalue.html?inputparamvalid=${inputParamVal.inputparamvalid}'/>">
-													<button align="right" type="button" value="Edit">Edit</button>
+													<button align="right" type="button" value="Edit">
+													<spring:message code="edit"/></button>
 												</a>
 											</td>
 									   	</tr>
@@ -105,7 +116,9 @@
 								<td></td>
 								<td></td>
 								<td align="right">
-									<a href="editscenario.html"><button type="button">Close</button></a>
+									<!-- Close -button -->
+									<a href="editscenario.html"><button type="button">
+									<spring:message code="close"/></button></a>
 							    </td>
 							</tr>
 						</table>
