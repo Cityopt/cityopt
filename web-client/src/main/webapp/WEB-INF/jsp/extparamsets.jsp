@@ -25,7 +25,8 @@
 			<table>
 				<tr>
 					<td>
-						<h2>External parameter sets</h2>
+						<!--External parameter sets  -->
+						<h2><spring:message code="external_parameter_sets"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -36,9 +37,11 @@
 							<col style="width:350px">
 
 							<tr>
-								<td><b>External parameter sets</b></td>
+								<!--External parameter sets  -->
+								<td><b><spring:message code="external_parameter_sets"/></b></td>
 								<td></td>
-								<td><b>External parameters</b></td>
+								<!-- External parameters -->
+								<td><b><spring:message code="external_parameters"/></b></td>
 							</tr>
 							<tr>
 								<td valign="top">
@@ -46,8 +49,10 @@
 										<col style="width:60px">
 										<col style="width:190px">
 										<tr>
-											<th>Select</th>
-											<th>External parameter set</th>
+											<!-- Select -->
+											<th><spring:message code="select"/></th>
+											<!--External parameter set  -->
+											<th><spring:message code="external_parameter_set"/></th>
 										</tr>
 							
 									</table>
@@ -57,7 +62,8 @@
 									<table class="tablestyle">
 										<col style="width:250px">
 										<tr>
-											<th>External parameter</th>
+											<!--External parameter-->
+											<th><spring:message code="external_parameter"/></th>
 										</tr>
 					
 									</table>
@@ -67,7 +73,9 @@
 							<tr>
 								<td></td>
 								<td></td>
-								<td align="right"><a href="editoptimizationset.html"><button type="button">Close</button></a></td>
+								<!-- Close button -->
+								<td align="right"><a href="editoptimizationset.html"><button type="button">
+								<spring:message code="close"/></button></a></td>
 							</tr>
 						</table>
 					</td>
