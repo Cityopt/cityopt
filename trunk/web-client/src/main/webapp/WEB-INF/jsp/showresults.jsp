@@ -22,7 +22,8 @@
 			<table>
 				<tr>
 					<td>
-						<h2>Optimization results</h2>
+						<!-- Optimization results -->
+						<h2><spring:message code="optimization_results"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -33,13 +34,16 @@
 							<col style="width:100px">
 							<col style="width:300px">
 							<tr>
-								<td>Scenario name:</td>
+								<!-- Scenario name: -->
+								<td><spring:message code="scenario_name"/>:</td>
 								<td>${scenario.name}</td>
-								<td>Description:</td>
+								<!-- Description: -->
+								<td><spring:message code="description"/>:</td>
 								<td>${scenario.description}</td>
 							</tr>
-							<tr>						
-								<td>User:</td>
+							<tr>
+								<!-- User: -->						
+								<td><spring:message code="user"/>:</td>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -57,11 +61,14 @@
 							<col style="width:250px">
 
 							<tr>
-								<td><b>Components</b></td>
+								<!-- Components -->
+								<td><b><spring:message code="components"/></b></td>
 								<td></td>
-								<td><b>Input parameters</b></td>
+								<!-- Input parameters -->
+								<td><b><spring:message code="input_parameters"/></b></td>
 								<td></td>
-								<td><b>Output variables</b></td>
+								<!-- Output variables -->
+								<td><b><spring:message code="output_variables"/></b></td>
 							</tr>
 							<tr>
 								<td valign="top">
@@ -69,18 +76,21 @@
 										<col style="width:60px">
 										<col style="width:190px">
 										<tr>
-											<th>Select</th>
-											<th>Component</th>
+											<!--Select -->
+											<th><spring:message code="select"/></th>
+											<!--Component -->
+											<th><spring:message code="component"/></th>
 										</tr>
 							
 										<c:forEach items="${components}" var="component">
 										<tr>
 											<c:if test="${selectedcompid == component.componentid}">
-												<tr style="background-color: #D4D4D4"><td>Selected</td>
+												<tr style="background-color: #D4D4D4"><td><spring:message code="selected"/></td>
 											</c:if>
 											<c:if test="${selectedcompid != component.componentid}">
 												<tr>
-												<td><a href="<c:url value='showresults.html?selectedcompid=${component.componentid}&scenarioid=${scenario.scenid}'/>">Select</a></td>
+												<td><a href="<c:url value='showresults.html?selectedcompid=${component.componentid}&scenarioid=${scenario.scenid}'/>">
+												<spring:message code="select"/></a></td>
 											</c:if>
 												<td>${component.name}</td>
 									   	</tr>
@@ -93,8 +103,10 @@
 										<col style="width:150px">
 										<col style="width:100px">
 										<tr>
-											<th>Input parameter</th>
-											<th>Value</th>
+											<!--Input parameter-->
+											<th><spring:message code="input_parameter"/></th>
+											<!--Value-->
+											<th><spring:message code="value"/></th>
 										</tr>
 					
 										<c:forEach items="${inputParamVals}" var="inputParamVal">
@@ -110,7 +122,8 @@
 									<table class="tablestyle">
 										<col style="width:250px">
 										<tr>
-											<th>Output variable</th>
+											<!-- Output variable -->
+											<th><spring:message code="output_variable"/></th>
 										</tr>
 					
 										<c:forEach items="${outputVars}" var="outputVar">
@@ -123,7 +136,8 @@
 							</tr>
 							<tr height="20"></tr>
 							<tr>
-								<td><b>Metrics</b></td>
+								<!-- Metrics -->
+								<td><b><spring:message code="metrics"/></b></td>
 							</tr>
 							<tr>
 								<td>
@@ -131,7 +145,8 @@
 										<col style="width:250px">
 										
 										<tr>
-											<th>Metric</th>
+											<!-- Metric -->
+											<th><spring:message code="metric"/></th>
 										</tr>
 					
 										<c:forEach items="${metrics}" var="metric">
@@ -148,7 +163,9 @@
 								<td></td>
 								<td></td>
 								<td></td>
-								<td align="right"><a href="editoptimizationset.html"><button type="button">Back</button></a></td>
+								<!-- Back -button -->
+								<td align="right"><a href="editoptimizationset.html"><button type="button">
+								<spring:message code="back"/></button></a></td>
 							</tr>
 						</table>
 					</td>
