@@ -6,6 +6,7 @@ import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioGeneratorDTO;
+import eu.cityopt.model.ExtParamValSet;
 
 /**
  * 
@@ -56,7 +57,8 @@ public interface CopyService {
 	ExtParamValSetDTO copyExtParamValSet(int extParamValSetId, String newName)
 			throws EntityNotFoundException;
 
-	
+	ExtParamValSet copyExtParamValSet(ExtParamValSet epvs, String newName);
+
 	/**
 	 * copies an optimizationSet specified by the ID. The name of the copied OptimizationSet is set to newName.
 	 * 

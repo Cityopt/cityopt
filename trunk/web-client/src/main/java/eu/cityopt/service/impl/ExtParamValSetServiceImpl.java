@@ -1,6 +1,8 @@
 package eu.cityopt.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.modelmapper.ModelMapper;
@@ -12,16 +14,23 @@ import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
+import eu.cityopt.DTO.TimeSeriesDTOX;
+import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.ExtParamVal;
 import eu.cityopt.model.ExtParamValSet;
 import eu.cityopt.model.ExtParamValSetComp;
+import eu.cityopt.repository.ExtParamRepository;
 import eu.cityopt.repository.ExtParamValRepository;
 import eu.cityopt.repository.ExtParamValSetCompRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
+import eu.cityopt.repository.TimeSeriesRepository;
+import eu.cityopt.service.CopyService;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ExtParamValSetService;
+import eu.cityopt.service.TimeSeriesService;
 
 @Service
+@SuppressWarnings("serial")
 public class ExtParamValSetServiceImpl implements ExtParamValSetService{
 
 	@Autowired
@@ -33,6 +42,18 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
 	@Autowired
 	private ExtParamValRepository extParamValRepository;
 	
+	@Autowired
+	private ExtParamRepository extParamRepository;
+	
+	@Autowired
+	private CopyService copyService;
+
+	@Autowired
+	TimeSeriesService timeSeriesService;
+
+	@Autowired
+	TimeSeriesRepository timeSeriesRepository;
+
 	@Autowired
 	private ModelMapper modelMapper;
 	
@@ -123,4 +144,72 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
 		}
 	}
 
+	@Override
+	@Transactional
+	public ExtParamValSetDTO updateOrClone(
+			ExtParamValSetDTO extParamValSetDTO, List<ExtParamValDTO> extParamVals,
+			Map<Integer, TimeSeriesDTOX> timeSeriesByParamId) throws EntityNotFoundException {
+		ExtParamValSet epvs = extParamValSetRepository.findOne(extParamValSetDTO.getExtparamvalsetid());
+		if (epvs == null) {
+			throw new EntityNotFoundException();
+		}
+		if ( ! epvs.getScenariometricses().isEmpty()) {
+			// Let ScenarioMetrics point to the existing ExtParamValSet in the database,
+			// but change the name of the old ExtParamValSet, and make a copy for modification.
+			String oldName = epvs.getName();
+			epvs.setName(oldName + "(" + epvs.getExtparamvalsetid() + ")");
+			epvs = extParamValSetRepository.save(epvs);
+			extParamValSetRepository.flush();
+
+			epvs = copyService.copyExtParamValSet(epvs, oldName);
+		}
+		epvs.setName(extParamValSetDTO.getName());
+
+		Map<Integer, ExtParamValDTO> newValuesById = new HashMap<>();
+		for (ExtParamValDTO epvDTO : extParamVals) {
+			newValuesById.put(epvDTO.getExtparam().getExtparamid(), epvDTO);
+		}
+		// Alter or delete existing values
+		for (ExtParamValSetComp epvsc : epvs.getExtparamvalsetcomps()) {
+			ExtParamVal epv = epvsc.getExtparamval();
+			if (epv.getTimeseries() != null) {
+				timeSeriesRepository.delete(epv.getTimeseries());
+			}
+			int extParamId = epv.getExtparam().getExtparamid();
+			ExtParamValDTO epvDTO = newValuesById.remove(extParamId);
+			if (epvDTO != null) {
+				updateExtParamVal(epv, epvDTO, timeSeriesByParamId.get(extParamId));
+			} else {
+				extParamValRepository.delete(epv);
+				extParamValSetCompRepository.delete(epvsc);
+			}
+		}
+		// Add new values
+		for (ExtParamValDTO epvDTO : newValuesById.values()) {
+			int extParamId = epvDTO.getExtparam().getExtparamid();
+			ExtParam ep = extParamRepository.findOne(extParamId);
+			if (ep == null) {
+				throw new EntityNotFoundException();
+			}
+			ExtParamVal epv = modelMapper.map(epvDTO, ExtParamVal.class);
+			epv.setExtparam(ep);
+			updateExtParamVal(epv, epvDTO, timeSeriesByParamId.get(extParamId));
+			epv = extParamValRepository.save(epv);
+
+			ExtParamValSetComp epvsc = new ExtParamValSetComp();
+			epvsc.setExtparamval(epv);
+			epvsc.setExtparamvalset(epvs);
+			extParamValSetCompRepository.save(epvsc);
+		}
+		extParamValSetRepository.save(epvs);
+
+		return extParamValSetDTO;
+	}
+
+	private void updateExtParamVal(ExtParamVal epv, ExtParamValDTO epvDTO, TimeSeriesDTOX timeSeries) {
+		epv.setComment(epvDTO.getComment());
+		epv.setValue(epvDTO.getValue());
+		epv.setTimeseries((timeSeries == null) ? null
+				: timeSeriesService.save(timeSeries));
+	}
 }

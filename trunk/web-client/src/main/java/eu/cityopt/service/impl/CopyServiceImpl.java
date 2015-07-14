@@ -833,7 +833,9 @@ public class CopyServiceImpl implements CopyService {
 		return modelMapper.map(epvsC, ExtParamValSetDTO.class);
 	}
 	
-	private ExtParamValSet copyExtParamValSet(ExtParamValSet epvs, String newName) throws EntityNotFoundException{
+	@Override
+	@Transactional
+	public ExtParamValSet copyExtParamValSet(ExtParamValSet epvs, String newName) {
 		
 		ExtParamValSet epvsC = new ExtParamValSet();
 		epvsC.setName(newName);

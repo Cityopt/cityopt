@@ -5,9 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.apache.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +24,13 @@ import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
 import eu.cityopt.DTO.OpenOptimizationSetDTO;
+import eu.cityopt.DTO.OptConstraintDTO;
 import eu.cityopt.DTO.OptSetToOpenOptimizationSetDTOMap;
 import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ProjectScenariosDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioGeneratorToOpenOptimizationSetDTOMap;
-import eu.cityopt.DTO.SimulationModelDTO;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.ExtParamVal;
@@ -53,6 +50,7 @@ import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ProjectService;
 
 @Service
+@SuppressWarnings("serial")
 public class ProjectServiceImpl implements ProjectService{
 	private static final int PAGE_SIZE = 50;
 	
@@ -238,6 +236,16 @@ public class ProjectServiceImpl implements ProjectService{
 		}
 		
 		return modelMapper.map(p.getObjectivefunctions(), new TypeToken<Set<ObjectiveFunctionDTO>>() {}.getType());
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public Set<OptConstraintDTO> getOptConstraints(int prjid) throws EntityNotFoundException {
+		Project p = projectRepository.findOne(prjid);
+		if (p == null) {
+			throw new EntityNotFoundException();
+		}
+		return modelMapper.map(p.getOptconstraints(), new TypeToken<Set<OptConstraintDTO>>() {}.getType());
 	}
 	
 	@Transactional(readOnly = true)
