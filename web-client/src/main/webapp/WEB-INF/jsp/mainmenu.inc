@@ -17,7 +17,7 @@
 				<td>Version: </td><td>${version}</td>
 			</tr>
 			<tr>
-				<td>User: </td><td>${user.name}</td>
+				<td>User: </td><td>${user.name} (<a href="logout.html">logout</a>)</td>
 			</tr>
 			<tr>
 				<td><spring:message code="language"/>:&nbsp;</td>
