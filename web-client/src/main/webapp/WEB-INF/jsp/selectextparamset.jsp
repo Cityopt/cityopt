@@ -23,7 +23,8 @@
 			<table>
 				<tr>
 					<td>
-						<h2>Select external parameter set</h2>
+						<!-- Select external parameter set -->
+						<h2><spring:message code="select_external_parameter_set"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -34,7 +35,8 @@
 							<col style="width:350px">
 
 							<tr>
-								<td><b>External parameter sets</b></td>
+								<!--External parameter sets-->
+								<td><b><spring:message code="external_parameter_sets"/></b></td>
 								<td></td>
 								<td></td>
 							</tr>
@@ -44,18 +46,23 @@
 										<col style="width:60px">
 										<col style="width:190px">
 										<tr>
-											<th>Select</th>
-											<th>Name</th>
+											<!-- Select -->
+											<th><spring:message code="select"/></th>
+											<!-- Name -->
+											<th><spring:message code="name"/></th>
 										</tr>
 							
+										<!-- Select & Selected  -->
 										<c:forEach items="${extParamValSets}" var="extParamValSet">
 											<c:choose>
 												<c:when test="${selectedExtParamSetId == extParamValSet.extparamvalsetid}">
-													<tr style="background-color: #D4D4D4"><td>Selected</td>
+													<tr style="background-color: #D4D4D4"><td>
+													<spring:message code="selected"/></td>
 												</c:when>
 												<c:otherwise>
 													<tr>
-														<td><a href="<c:url value='selectextparamset.html?selectedextparamsetid=${extParamValSet.extparamvalsetid}'/>">Select</a></td>
+														<td><a href="<c:url value='selectextparamset.html?selectedextparamsetid=${extParamValSet.extparamvalsetid}'/>">
+														<spring:message code="select"/></a></td>
 												</c:otherwise>
 											</c:choose>	
 
@@ -68,9 +75,10 @@
 							</tr>
 							<tr height="20"></tr>
 							<tr>
+								<!-- Create external parameter set & back button -->
 								<td align="right">
-									<a href="createextparamset.html"><button type="button">Create external parameter set</button></a>
-									<a href="editproject.html"><button type="button">Back</button></a>
+									<a href="createextparamset.html"><button type="button"><spring:message code="create_external_parameter_set"/></button></a>
+									<a href="editproject.html"><button type="button"><spring:message code="back"/></button></a>
 								</td>
 								<td></td>
 								<td></td>
