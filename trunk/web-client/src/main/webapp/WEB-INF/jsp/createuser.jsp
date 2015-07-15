@@ -30,7 +30,8 @@
 				<col style="width:300px">
 				<tr>
 					<td>
-						Name
+						<!--Name-->
+						<spring:message code="name"/>
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="name"/>
@@ -38,7 +39,8 @@
 				</tr>
 				<tr>
 					<td>
-						Password
+						<!--Password-->
+						<spring:message code="password"/>
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="password"/>
@@ -46,8 +48,10 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td align="right"><input style="width:100px" type="submit" value="Create"/>
-					<a href="usermanagement.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<!-- Create submit and Cancel button -->
+					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create"/>"/>
+					<a href="usermanagement.html"><button style="width:100px" type="button" value="Cancel">
+					<spring:message code="cancel"/></button></a></td>
 				</tr>
 			</table>
 			

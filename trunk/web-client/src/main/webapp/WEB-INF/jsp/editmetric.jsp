@@ -24,7 +24,9 @@
 		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="editmetric.html?metricid=${metric.metid}" modelAttribute="metric">
-			<h2>Edit metric</h2>
+			
+			<!--Edit metric  -->
+			<h2><spring:message code="edit_metric"/></h2>
 
 			<table align="center">
 				<col style="width:150px">
@@ -32,7 +34,8 @@
 				<col style="width:80px">
 				<tr>
 					<td>
-						Name
+						<!--Name-->
+						<spring:message code="name"/>						
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="name"/>
@@ -40,7 +43,8 @@
 				</tr>
 				<tr>
 					<td>
-						Expression
+						<!--Expression-->
+						<spring:message code="expression"/>
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="expression"/>
@@ -52,8 +56,10 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td align="right"><input style="width:100px" type="submit" value="Update"/>
-					<a href="metricdefinition.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<!-- Update submit & Cancel button -->
+					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="update"/>"/>
+					<a href="metricdefinition.html"><button style="width:100px" type="button" value="Cancel">
+					<spring:message code="cancel"/></button></a></td>
 				</tr>
 			</table>
 			
