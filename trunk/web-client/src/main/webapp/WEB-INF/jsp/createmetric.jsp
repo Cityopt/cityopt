@@ -26,7 +26,8 @@
 			<table>
 				<tr>
 					<td>
-						<h2>Create metric</h2>
+						<!-- Create metric -->
+						<h2><spring:message code="create_metric"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -42,14 +43,19 @@
 							<tr>
 								<td></td>
 								<td>
-									Components
+									<!-- Components -->
+									<spring:message code="components"/>
+									
 								</td>
 								<td></td>
 								<td>
-									Input variables
+									<!-- Input variables -->
+									<spring:message code="input_variables"/>
 								</td>
 								<td></td>
-								<td>Output variables</td>
+								<!--Output variables  -->
+								<spring:message code="output_variables"/>
+								<td></td>
 							</tr>
 							<tr>
 								<td></td>
@@ -58,8 +64,10 @@
 										<col style="width:60px">
 										<col style="width:190px">
 										<tr>
-											<th>Select</th>
-											<th>Component</th>
+											<!-- Select -->
+											<th><spring:message code="select"/></th>
+											<!-- Component -->
+											<th><spring:message code="component"/></th>
 										</tr>
 							
 										<c:forEach items="${components}" var="component">
@@ -83,9 +91,10 @@
 										<col style="width:60px">
 										<col style="width:150px">
 										<tr>
-											<th>Input parameter</th>
-											<th>Id</th>
-											<th>Default value</th>
+											<!-- Input parameter, Id, Default value -->
+											<th><spring:message code="input_parameter"/></th>
+											<th><spring:message code="id"/></th>
+											<th><spring:message code="default_value"/></th>
 										</tr>
 										
 										<c:forEach items="${inputParameters}" var="inputParam">
@@ -102,7 +111,8 @@
 									<table class="tablestyle">
 										<col style="width:250px">
 										<tr>
-											<th>Output variable</th>
+											<!--Output variable-->
+											<th><spring:message code="output_variable"/></th>
 										</tr>
 					
 										<c:forEach items="${outputVars}" var="outputVar">
@@ -118,10 +128,12 @@
 							<tr>
 								<td></td>
 								<td>
-									Metrics
+									<!--Metrics-->
+									<spring:message code="metrics"/>
 								</td>
 								<td></td>
-								<td>External parameters</td>
+									<!-- External parameters -->
+								<td><spring:message code="external_parameters"/></td>
 								<td></td>
 							</tr>
 							<tr>
@@ -131,7 +143,8 @@
 										<col style="width:250px">
 										
 										<tr height="20">
-										    <th>Name</th>
+											<!-- Name -->
+										    <th><spring:message code="name"/></th>
 										</tr>
 									
 										<c:forEach items="${metrics}" var="metric">
@@ -147,7 +160,8 @@
 										<col style="width:200px">
 												
 										<tr height="20">
-										    <th>Name</th>
+											<!-- Name -->
+										    <th><spring:message code="name"/></th>
 										</tr>
 										
 										<c:forEach items="${extParamVals}" var="extParamVal">
@@ -162,7 +176,8 @@
 							<tr height="20"></tr>
 							<tr height="20">
 								<td></td>
-								<td>Functions</td>
+								<!-- Functions -->
+								<td><spring:message code="functions"/></td>
 							</tr>
 							<tr>
 								<td></td>
@@ -171,11 +186,12 @@
 										<col style="width:150px">
 										<col style="width:250px">
 										<tr>
-											<th>Function</th>
-											<th>Description</th>
+											<th><spring:message code="function"/></th>
+											<th><spring:message code="description"/></th>
 										</tr>
 										<tr>
-											<td>integrate</td>
+											<!-- Why hard coding?... Integrate -->
+											<td><spring:message code="integrate"/></td>
 											<td></td>
 									   	</tr>
 										
@@ -195,7 +211,8 @@
 							<tr height="20"></tr>
 							<tr>
 								<td></td>
-								<td>Name</td>
+								<!-- Name -->
+								<td><spring:message code="name"/></td>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -207,7 +224,8 @@
 							</tr>
 							<tr>
 								<td></td>
-								<td>Expression</td>
+								<!-- Expression -->
+								<td><spring:message code="expression"/></td>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -228,8 +246,10 @@
 								<td></td>
 								<td></td>
 								<td align="right">
-									<input type="submit" style="width:100px" value="Ok"></input>
-									<a href="metricdefinition.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a>
+									<!-- Ok submit and Cancel -button -->
+									<input type="submit" style="width:100px" value="<spring:message code="ok"/>"></input>
+									<a href="metricdefinition.html"><button style="width:100px" type="button" value="Cancel">
+									<spring:message code="cancel"/></button></a>
 								</td>
 								<td></td>
 							</tr>					
