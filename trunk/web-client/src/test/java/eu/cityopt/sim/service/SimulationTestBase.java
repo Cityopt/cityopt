@@ -50,9 +50,12 @@ public class SimulationTestBase {
         dumpTables(caseName, false);
     }
 
+    public Path makeTempPath(String filename) {
+    	return Paths.get(System.getProperty("java.io.tmpdir")).resolve(filename);
+    }
+
     public void dumpTables(String caseName, boolean includeModel) throws Exception {
-        Path outputPath = Paths.get(System.getProperty("java.io.tmpdir"))
-                .resolve(caseName + "_result.xml");
+        Path outputPath = makeTempPath(caseName + "_result.xml");
         scenarioRepository.flush();
         IDatabaseConnection dbConnection = new DatabaseConnection(
                 DataSourceUtils.getConnection(dataSource));
