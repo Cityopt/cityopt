@@ -550,6 +550,43 @@ public class ImportExportService {
     }
 
     /**
+     * Exports the data of all scenarios in a project, together with
+     * the project default external parameter values, and metric values
+     * computed using the default external parameter values.
+     * @param projectId
+     * @param scenarioFile where to save the external parameters, input parameter values,
+     *    simulation results, and metric values 
+     * @param timeSeriesFile where to save all the time series 
+     * @throws ParseException
+     * @throws IOException 
+     * @throws ScriptException 
+     */
+    @Transactional(readOnly=true)
+    public void exportScenarioData(int projectId, Path scenarioFile, Path timeSeriesFile)
+    				throws ParseException, IOException, ScriptException {
+        Project project = projectRepository.findOne(projectId);
+        Namespace ns = simulationService.makeProjectNamespace(projectId); 
+        List<MetricExpression> metrics = simulationService.loadMetricExpressions(project, ns);
+        ExportBuilder bld = new ExportBuilder(ns);
+        ExtParamValSet set = project.getDefaultextparamvalset();
+        String epsName = (set != null) ? set.getName() : "";
+        ExternalParameters ext = simulationService.loadExternalParametersFromSet(set, ns);
+    	bld.add(ext, epsName);
+        for (Scenario scen : project.getScenarios()) {
+            SimulationInput in = simulationService.loadSimulationInput(scen, ext);
+            bld.add(in, scen.getName());
+            SimulationOutput out = simulationService.loadSimulationOutput(scen, in);
+            if (out instanceof SimulationResults) {
+                bld.add((SimulationResults)out, scen.getName());
+	            bld.add(new MetricValues((SimulationResults)out, metrics),
+	                    scen.getName(), epsName);
+	        }
+	    }
+        OptimisationProblemIO.writeMulti(bld, scenarioFile);
+        OptimisationProblemIO.writeTimeSeries(bld, timeSeriesFile);
+    }
+
+    /**
      * Export external parameter sets.
      * All exported sets must be related to the same project.
      */

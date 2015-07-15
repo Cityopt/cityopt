@@ -115,7 +115,7 @@ public class TestScenarioGenerationService extends SimulationTestBase {
     @Test
     @Ignore("This can take a long time")
     @DatabaseSetup("classpath:/testData/empty_project.xml")
-    public void testImportedProblem() throws Exception {
+    public void testImportedProblemGA() throws Exception {
         Project project = projectRepository.findByNameContainingIgnoreCase("Empty test project").get(0);
         byte[] modelData = getResourceBytes("/ost.zip");
         importExportService.importSimulationModel(
@@ -135,7 +135,35 @@ public class TestScenarioGenerationService extends SimulationTestBase {
                     problemPath, null, paramPath, tsPath);
         }
         runScenarioGeneration(scId, "imported");
-        dumpTables("imported_opt");
+        dumpTables("imported_ga");
+    }
+
+    @Test
+    @DatabaseSetup("classpath:/testData/empty_project.xml")
+    public void testImportedProblemGridSearch() throws Exception {
+        Project project = projectRepository.findByNameContainingIgnoreCase("Empty test project").get(0);
+        byte[] modelData = getResourceBytes("/ost.zip");
+        importExportService.importSimulationModel(
+                project.getPrjid(), null, "test project",
+                modelData, "Apros-Combustion-5.13.06-64bit",
+                Instant.parse("2015-01-01T00:00:00Z"));
+        Integer scId = null;
+        try (TempDir tempDir = new TempDir("testimport")) {
+            Path problemPath = copyResource("/ost-problem-gs.csv", tempDir);
+            Path paramPath = copyResource("/gs.properties", tempDir);
+            Path tsPath = copyResource("/timeseries.csv", tempDir);
+            try (FileInputStream fis = new FileInputStream(problemPath.toFile())) {
+                importExportService.importSimulationStructure(project.getPrjid(), fis);
+            }
+            scId = importExportService.importOptimisationProblem(
+                    project.getPrjid(), "import optimisation test",
+                    problemPath, null, paramPath, tsPath);
+        }
+        runScenarioGeneration(scId, "imported");
+        dumpTables("imported_gs");
+        importExportService.exportScenarioData(
+        		project.getPrjid(), makeTempPath("gs_scenarios_main.csv"),
+        		makeTempPath("gs_scenarios_timeseries.csv"));
     }
 
     private void runScenarioGeneration(String algorithmName) throws Exception {
