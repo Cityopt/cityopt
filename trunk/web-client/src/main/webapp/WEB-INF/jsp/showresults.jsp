@@ -141,20 +141,24 @@
 							</tr>
 							<tr>
 								<td>
-									<table class="tablestyle">
-										<col style="width:250px">
-										
-										<tr>
-											<!-- Metric -->
-											<th><spring:message code="metric"/></th>
+									<table class="tablestyle" width="250px">
+										<col style="width: 150px">
+										<col style="width: 100px">
+			
+										<tr height="20">
+										<!-- Name -->
+										    <th><spring:message code="name"/></th>
+										<!-- Value -->
+										     <th><spring:message code="value"/></th>
 										</tr>
-					
-										<c:forEach items="${metrics}" var="metric">
+										
+										<c:forEach items="${metricVals}" var="metricVal">
 										<tr>
-											<td>${metric.name}</td>
+											<td>${metricVal.metric.name}</td>
+									    	<td>${metricVal.value}</td>
 									   	</tr>
 										</c:forEach>
-									</table>										
+									</table>
 								</td>
 							</tr>
 							<tr height="10"></tr>

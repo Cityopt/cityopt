@@ -24,8 +24,8 @@
 		<td valign="top">
 			<div style="overflow:scroll;height:800px;width:1100px;overflow:auto">
 			<table>
-				<col style="width:400px">	
-				<col style="width:400px">	
+				<col style="width:500px">	
+				<col style="width:600px">	
 			
 				<tr>
 					<td>
@@ -174,16 +174,22 @@
 							<tr>
 								<td>
 									<table>
+										<col style="width:200px">	
+										<col style="width:200px">	
+										<col style="width:200px">	
 										<tr>
 											<td>
 											<!-- Import scenarios -->					
 												<b><spring:message code="import_scenarios"/></b>
 											</td>
+											<td>Scenario file</td>
+											<td>Time series file</td>
 										</tr>
 										<form:form method="POST" action="importscenarios.html" enctype="multipart/form-data">
 				        					<tr>
 				        						<td><spring:message code="import_scenarios"/> (CSV)</td>
 												<td><input id="file" name="file" type="file"/></td>
+												<td><input id="timeSeriesFile" name="timeSeriesFile" type="file"/></td>
 											</tr>
 											<tr>	
 				       							<td></td>

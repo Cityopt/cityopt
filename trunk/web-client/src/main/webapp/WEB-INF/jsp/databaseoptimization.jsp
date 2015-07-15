@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -53,7 +54,7 @@
 					<td><input type="text" id="function"></td>
 				</tr>
 				<tr>
-					<!-- Optimization sence:  Maximize & Minimize-->
+					<!-- Optimization sense:  Maximize & Minimize-->
 					<td><spring:message code="optimize_sence"/>:
 					<input type="radio">
 					<spring:message code="maximize"/>
@@ -128,17 +129,23 @@
 				<tr><td><br></td></tr>
 				<tr>
 					<td colspan="3">
-						<table class="tablestyle" style="width: 100%">
-							<tr>
-								<th>Metrics</th>
-								<th>Value</th>
-								<th>Unit</th>
-							</tr>									
-							<tr>
-								<td>x</td>
-								<td>x</td>
-								<td>x</td>
+						<table class="tablestyle" width="100%">
+							<col style="width: 70%">
+							<col style="width: 30%">
+
+							<tr height="20">
+							<!-- Name -->
+							    <th><spring:message code="name"/></th>
+							<!-- Value -->
+							     <th>Value</th>
 							</tr>
+							
+							<c:forEach items="${metricVals}" var="metricVal">
+							<tr>
+								<td>${metricVal.metric.name}</td>
+						    	<td>${metricVal.value}</td>
+						   	</tr>
+							</c:forEach>
 						</table>
 					</td>
 				</tr>
