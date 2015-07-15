@@ -31,7 +31,8 @@
 				<col style="width:300px">
 				<tr>
 					<td>
-						User
+						<!-- User -->
+						<spring:message code="user"/>
 					</td>
 					<td>
 						${user.name}
@@ -39,20 +40,23 @@
 				</tr>
 				<tr>
 					<td>
-						Role
+						<!-- Role -->
+						<spring:message code="role"/>
 					</td>
 					<td>
+						<!-- Roletypes: Guest, Standard, Expert, Administrator -->
 						<select name="roleType" id="roleType" size="1">
-							<option value="Guest" selected>Guest</option>
-							<option value="Standard">Standard</option>
-							<option value="Expert">Expert</option>
-							<option value="Administrator">Administrator</option>
+							<option value="Guest" selected><spring:message code="guest"/></option>
+							<option value="Standard"><spring:message code="standard"/></option>
+							<option value="Expert"><spring:message code="expert"/></option>
+							<option value="Administrator"><spring:message code="administrator"/></option>
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Project
+						<!--Project-->
+						<spring:message code="project"/>
 					</td>
 					<td>
 						<select name="roleProjectId" id="roleProjectId" size="1">
@@ -64,8 +68,10 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td align="right"><input style="width:100px" type="submit" value="Create role"/>
-					<a href="edituser.html?userid=${user.userid}"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<!-- Create role submit and Cancel -button -->
+					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create_role"/>"/>
+					<a href="edituser.html?userid=${user.userid}"><button style="width:100px" type="button" value="Cancel">
+					<spring:message code="cancel"/></button></a></td>
 				</tr>
 			</table>
 			

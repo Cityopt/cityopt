@@ -23,7 +23,8 @@
 		<td width=30></td>
 		<td>
 			<div style="overflow:scroll;height:800px;width:800px;overflow:auto">
-			<h2>Edit user</h2>
+			<!--Edit user  -->
+			<h2><spring:message code="edit_user"/></h2>
 
 			<table>
 				<tr>
@@ -33,7 +34,8 @@
 							<col style="width:250px">
 							<tr>
 								<td>
-									Name
+									<!--Name-->
+									<spring:message code="name"/>
 								</td>
 								<td>
 									${user.name}
@@ -48,7 +50,8 @@
 				</tr>
 				<tr>
 					<td>
-						<b>User roles</b>
+						<!-- User roles -->
+						<b><spring:message code="user_roles"/></b>
 					</td>
 					<td>
 						
@@ -62,9 +65,10 @@
 							<col style="width:50px">	
 							
 							<tr height="20">
-							    <th>Role</th>
+								<!-- Role, Project & Remove -->
+							    <th><spring:message code="user_role"/></th>
 							    <th><spring:message code="project"/></th>
-							    <th>Remove</th>
+							    <th><spring:message code="remove"/></th>
 							</tr>
 							
 							<c:forEach items="${projectRoles}" var="projectRole">
@@ -82,8 +86,9 @@
 					</td>
 				</tr>
 				<tr>
-					<td align="right"><a href="createrole.html?userid=${user.userid}"><button style="width:100px" type="button" value="Create">Create role</button></a>
-					<a href="usermanagement.html"><button style="width:100px" type="button" value="Back">Back</button></a></td>
+					<!-- Create role and back -buttons -->
+					<td align="right"><a href="createrole.html?userid=${user.userid}"><button style="width:100px" type="button" value="Create"><spring:message code="create_role"/></button></a>
+					<a href="usermanagement.html"><button style="width:100px" type="button" value="Back"><spring:message code="back"/></button></a></td>
 				</tr>
 			</table>
 			</div>
