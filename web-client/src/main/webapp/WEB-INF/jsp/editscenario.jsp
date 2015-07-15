@@ -73,7 +73,7 @@
 							<tr>
 								<!-- Scenario simulation status -->
 								<td><spring:message code="scenario_simulation_status"/>:</td>
-								<td>${scenario.status}</td>
+								<td>${status}</td>
 							</tr>
 							<tr>
 								<!-- Remaining simulation time -->

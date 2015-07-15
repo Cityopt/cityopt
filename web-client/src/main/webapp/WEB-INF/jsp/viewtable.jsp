@@ -41,6 +41,10 @@
 					</td>
 				</tr>
 				<tr>
+					<!-- Scenario (simulation name) simulation status: (Status)  -->
+					<td><i><spring:message code="scenario"/> ${scenario.name} <spring:message code="simulation_status"/>: ${status}</i></td>
+				</tr>
+				<tr>
 					<td>
 						<table>
 							<tr>
@@ -60,9 +64,7 @@
 												<b><spring:message code="output_parameters"/></b>
 											</td>
 											<td></td>
-											<td>
-												
-											</td>
+											<td>Metric values</td>
 										</tr>
 										<tr>						
 											<td valign="top">
@@ -123,6 +125,24 @@
 											</td>
 											<td></td>
 											<td valign="top">
+												<table class="tablestyle" width="250px">
+													<col style="width: 150px">
+													<col style="width: 100px">
+						
+													<tr height="20">
+													<!-- Name -->
+													    <th><spring:message code="name"/></th>
+													<!-- Value -->
+													     <th>Value</th>
+													</tr>
+													
+													<c:forEach items="${metricVals}" var="metricVal">
+													<tr>
+														<td>${metricVal.metric.name}</td>
+												    	<td>${metricVal.value}</td>
+												   	</tr>
+													</c:forEach>
+												</table>
 												<!-- <table class="tablestyle" width="350">
 													<col style="width:100px">
 													<col style="width:150px">

@@ -359,6 +359,21 @@ public class OptimizationController {
 			e.printStackTrace();			
 		}		
 		model.put("constraints", optSearchConstraints);	
+		
+		List<MetricValDTO> listMetricVals = metricValService.findAll();
+		List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+		
+		for (int i = 0; i < listMetricVals.size(); i++)
+		{
+			MetricValDTO metricVal = listMetricVals.get(i);
+			
+			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+			{
+				listProjectMetricVals.add(metricVal);
+			}
+		}
+		model.put("metricVals", listProjectMetricVals);
+		
 		return "editoptimizationset";
 	}
 	
@@ -566,6 +581,20 @@ public class OptimizationController {
 		
 		model.put("constraints", optSearchConstraints);
 
+		List<MetricValDTO> listMetricVals = metricValService.findAll();
+		List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+		
+		for (int i = 0; i < listMetricVals.size(); i++)
+		{
+			MetricValDTO metricVal = listMetricVals.get(i);
+			
+			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+			{
+				listProjectMetricVals.add(metricVal);
+			}
+		}
+		model.put("metricVals", listProjectMetricVals);
+		
 		return "editoptimizationset";
 	}
 	
@@ -623,9 +652,20 @@ public class OptimizationController {
 
 		model.put("project", project);
 
-		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-		model.put("metrics", metrics);
-
+		List<MetricValDTO> listMetricVals = metricValService.findAll();
+		List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+		
+		for (int i = 0; i < listMetricVals.size(); i++)
+		{
+			MetricValDTO metricVal = listMetricVals.get(i);
+			
+			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+			{
+				listProjectMetricVals.add(metricVal);
+			}
+		}
+		model.put("metricVals", listProjectMetricVals);
+		
 		return "editoptimizationset";
 	}
 
@@ -672,6 +712,21 @@ public class OptimizationController {
 				//TODO clone project's defaultExtParamValSet
 				optSet = optSetService.save(optSet);
 				model.put("optimizationset", optSet);
+				
+				List<MetricValDTO> listMetricVals = metricValService.findAll();
+				List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+				
+				for (int i = 0; i < listMetricVals.size(); i++)
+				{
+					MetricValDTO metricVal = listMetricVals.get(i);
+					
+					if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+					{
+						listProjectMetricVals.add(metricVal);
+					}
+				}
+				model.put("metricVals", listProjectMetricVals);
+				
 				return "editoptimizationset";
 			}
 			else if (nType == 2)
@@ -738,9 +793,20 @@ public class OptimizationController {
 			model.put("resultScenariosWithValue", resultScenariosWithValue);
 		}
 		
-		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-		model.put("metrics", metrics);
-
+		List<MetricValDTO> listMetricVals = metricValService.findAll();
+		List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+		
+		for (int i = 0; i < listMetricVals.size(); i++)
+		{
+			MetricValDTO metricVal = listMetricVals.get(i);
+			
+			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+			{
+				listProjectMetricVals.add(metricVal);
+			}
+		}
+		model.put("metricVals", listProjectMetricVals);
+		
 		return "editoptimizationset";
 	}
 	
@@ -766,11 +832,26 @@ public class OptimizationController {
 				//InputStream structureStream = file.getInputStream();
 				//importExportService.importOptimisationProblem(projectId, name, problemFile, algorithmId, algorithmParameterFile, timeSeriesFiles)
 				//importExportService.importOptimisationSet(projectId, userId, name, problemFile, timeSeriesFiles)
+				
+				List<MetricValDTO> listMetricVals = metricValService.findAll();
+				List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+				
+				for (int i = 0; i < listMetricVals.size(); i++)
+				{
+					MetricValDTO metricVal = listMetricVals.get(i);
+					
+					if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+					{
+						listProjectMetricVals.add(metricVal);
+					}
+				}
+				model.put("metricVals", listProjectMetricVals);
 	        } catch (Exception e) {
 	            return "You failed to upload => " + e.getMessage();
 	        }
 	    } else {
 	    }
+		
 		return "editoptimizationset";
 	}
 	
@@ -854,6 +935,20 @@ public class OptimizationController {
 		
 		model.put("usersession", userSession);
 
+		List<MetricValDTO> listMetricVals = metricValService.findAll();
+		List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+		
+		for (int i = 0; i < listMetricVals.size(); i++)
+		{
+			MetricValDTO metricVal = listMetricVals.get(i);
+			
+			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+			{
+				listProjectMetricVals.add(metricVal);
+			}
+		}
+		model.put("metricVals", listProjectMetricVals);
+
 		return "editoptimizationset";
 	}
 	
@@ -930,8 +1025,19 @@ public class OptimizationController {
 				} catch (EntityNotFoundException e) {
 					e.printStackTrace();
 				}
-				Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-				model.put("metrics", metrics);
+				List<MetricValDTO> listMetricVals = metricValService.findAll();
+				List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+				
+				for (int i = 0; i < listMetricVals.size(); i++)
+				{
+					MetricValDTO metricVal = listMetricVals.get(i);
+					
+					if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+					{
+						listProjectMetricVals.add(metricVal);
+					}
+				}
+				model.put("metricVals", listProjectMetricVals);
 		
 				return "editoptimizationset";
 			}
@@ -1230,6 +1336,13 @@ public class OptimizationController {
 	public String getEditConstraintPost(OptConstraintDTO constraint, Map<String, Object> model) throws EntityNotFoundException {
 		OptimizationSetDTO optSet = null;
 		
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
 		if (model.containsKey("optimizationset"))
 		{
 			optSet = (OptimizationSetDTO) model.get("optimizationset");
@@ -1272,6 +1385,20 @@ public class OptimizationController {
 		}
 		model.put("constraints", optSearchConstraints);
 
+		List<MetricValDTO> listMetricVals = metricValService.findAll();
+		List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+		
+		for (int i = 0; i < listMetricVals.size(); i++)
+		{
+			MetricValDTO metricVal = listMetricVals.get(i);
+			
+			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+			{
+				listProjectMetricVals.add(metricVal);
+			}
+		}
+		model.put("metricVals", listProjectMetricVals);
+		
 		return "editoptimizationset";
 	}
 	
@@ -1279,6 +1406,13 @@ public class OptimizationController {
 	public String getImportObjFunction(Map<String, Object> model,
 		@RequestParam(value="objectivefunctionid", required=false) String selectedObjFuncId) {
 
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
 		if (selectedObjFuncId != null && !selectedObjFuncId.isEmpty())
 		{
 			int nSelectedObjFuncId = Integer.parseInt(selectedObjFuncId);
@@ -1328,6 +1462,20 @@ public class OptimizationController {
 			}
 			model.put("constraints", optSearchConstraints);
 			
+			List<MetricValDTO> listMetricVals = metricValService.findAll();
+			List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+			
+			for (int i = 0; i < listMetricVals.size(); i++)
+			{
+				MetricValDTO metricVal = listMetricVals.get(i);
+				
+				if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+				{
+					listProjectMetricVals.add(metricVal);
+				}
+			}
+			model.put("metricVals", listProjectMetricVals);
+			
 			return "editoptimizationset";
 		}
 		//TODO should use projectService.getObjectiveFunctions
@@ -1341,6 +1489,13 @@ public class OptimizationController {
 	public String getImportSearchConstraint(Map<String, Object> model,
 		@RequestParam(value="constraintid", required=false) String selectedConstraintId) {
 
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
 		if (selectedConstraintId != null && !selectedConstraintId.isEmpty())
 		{
 			int nSelectedConstraintId = Integer.parseInt(selectedConstraintId);
@@ -1393,6 +1548,20 @@ public class OptimizationController {
 				e.printStackTrace();
 			}
 			model.put("constraints", optSearchConstraints);
+			
+			List<MetricValDTO> listMetricVals = metricValService.findAll();
+			List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+			
+			for (int i = 0; i < listMetricVals.size(); i++)
+			{
+				MetricValDTO metricVal = listMetricVals.get(i);
+				
+				if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+				{
+					listProjectMetricVals.add(metricVal);
+				}
+			}
+			model.put("metricVals", listProjectMetricVals);
 			
 			return "editoptimizationset";
 		}
@@ -1464,8 +1633,6 @@ public class OptimizationController {
 		
 		//metricService.getMetricVals(metricId, scenId)
 		
-		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-		
 		/*MetricDTO metric1 = metricService.findByID(metric1Id);
 		MetricDTO metric2 = metricService.findByID(metric2Id);
 		//Set<MetricValDTO> metricVals1 = metricService.getMetricVals(metric1Id);
@@ -1484,7 +1651,19 @@ public class OptimizationController {
 			MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
 		}*/
 		
-		model.put("metrics", metrics);
+		List<MetricValDTO> listMetricVals = metricValService.findAll();
+		List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+		
+		for (int i = 0; i < listMetricVals.size(); i++)
+		{
+			MetricValDTO metricVal = listMetricVals.get(i);
+			
+			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+			{
+				listProjectMetricVals.add(metricVal);
+			}
+		}
+		model.put("metricVals", listProjectMetricVals);
 		
 		return "showresults";
 	}

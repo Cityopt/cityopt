@@ -210,6 +210,11 @@ public class VisualizationController {
 		
 		model.put("scenario", scenario);
 		String status = scenario.getStatus();
+		
+		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+			status = "RUNNING";
+		}
+		
 		model.put("status", status);
 		
 		if (charttype != null)
@@ -800,6 +805,42 @@ public class VisualizationController {
 		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
 		model.put("extParamVals", extParamVals);
 		
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		
+		if (scenario == null)
+		{
+			return "error";
+		}
+		
+		try {
+			scenario = scenarioService.findByID(scenario.getScenid());
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		
+		model.put("scenario", scenario);
+		String status = scenario.getStatus();
+
+		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+			status = "RUNNING";
+		}
+			
+		model.put("status", status);
+
+		List<MetricValDTO> listMetricVals = metricValService.findAll();
+		List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+		
+		for (int i = 0; i < listMetricVals.size(); i++)
+		{
+			MetricValDTO metricVal = listMetricVals.get(i);
+			
+			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+			{
+				listProjectMetricVals.add(metricVal);
+			}
+		}
+		model.put("metricVals", listProjectMetricVals);
+
 		return "viewtable";
 	}
 	
@@ -927,8 +968,20 @@ public class VisualizationController {
 		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
 		model.put("extParamVals", extParamVals);
 		
+		List<MetricValDTO> listMetricVals = metricValService.findAll();
+		List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+		
+		for (int i = 0; i < listMetricVals.size(); i++)
+		{
+			MetricValDTO metricVal = listMetricVals.get(i);
+			
+			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+			{
+				listProjectMetricVals.add(metricVal);
+			}
+		}
+		model.put("metricVals", listProjectMetricVals);
+		
 		return "viewtable";
 	}
-		
-
 }

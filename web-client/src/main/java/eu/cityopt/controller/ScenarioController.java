@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Set;
 import javax.script.ScriptException;
 import javax.transaction.Transactional;
 
+import org.python.google.common.io.Files;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -60,6 +62,7 @@ import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.service.impl.ImportServiceImpl;
 import eu.cityopt.sim.eval.ConfigurationException;
+import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.UserSession;
@@ -423,6 +426,14 @@ public class ScenarioController {
 				e.printStackTrace();
 			}
 			
+			String statusMsg = scenario.getStatus();
+
+			if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+				statusMsg = "RUNNING";
+			}
+			
+			model.put("status", statusMsg);
+			
 			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
 			
@@ -516,7 +527,9 @@ public class ScenarioController {
 	}
 	
 	@RequestMapping(value = "importscenarios", method = RequestMethod.POST)
-	public String uploadCSVFileHandler(Map<String, Object> model, @RequestParam("file") MultipartFile file) {
+	public String uploadCSVFileHandler(Map<String, Object> model, 
+		@RequestParam("file") MultipartFile file,
+		@RequestParam("timeSeriesFile") MultipartFile timeSeriesMPFile) {
 	
 		if (!file.isEmpty()) {
 	        try {
@@ -533,16 +546,70 @@ public class ScenarioController {
 					e1.printStackTrace();
 				}
 				model.put("project", project);
-			
-				//importService.importScenarioData(project.getPrjid(), scenarioInput, timeSeriesInput);
+				
+				TempDir dir = new TempDir("temp");
+
+				File scenarioFile = new File("temp_scenario");
+				byte[] bytes = file.getBytes();
+				Files.write(bytes, scenarioFile);
+				
+				File timeSeriesFile = new File("temp_timeseries");
+				byte[] timeSeriesBytes = timeSeriesMPFile.getBytes();
+				Files.write(timeSeriesBytes, timeSeriesFile);
+				
+				List<File> listTSFiles = new ArrayList<File>();
+				listTSFiles.add(timeSeriesFile);
+				
+				importService.importScenarioData(project.getPrjid(), scenarioFile, listTSFiles);
 	        } catch (Exception e) {
-	            return "You failed to upload => " + e.getMessage();
+	            e.printStackTrace();
+	        	return "You failed to upload => " + e.getMessage();
 	        }
 	    } else {
 	    }
 		return "importdata";
 	}
+
+	@RequestMapping(value = "exportscenarios", method = RequestMethod.POST)
+	public String exportCSVFileHandler(Map<String, Object> model) {
 	
+	    /*try {
+            ProjectDTO project = (ProjectDTO) model.get("project");
+			
+			if (project == null)
+			{
+				return "error";
+			}
+			
+			try {
+				project = projectService.findByID(project.getPrjid());
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			model.put("project", project);
+			
+			TempDir dir = new TempDir("temp");
+
+			File scenarioFile = new File("temp_scenario");
+			byte[] bytes = file.getBytes();
+			Files.write(bytes, scenarioFile);
+			
+			File timeSeriesFile = new File("temp_timeseries");
+			byte[] timeSeriesBytes = timeSeriesMPFile.getBytes();
+			Files.write(timeSeriesBytes, timeSeriesFile);
+			
+			List<File> listTSFiles = new ArrayList<File>();
+			listTSFiles.add(timeSeriesFile);
+			
+			//importService..importScenarioData(project.getPrjid(), scenarioFile, listTSFiles);
+        } catch (Exception e) {
+            e.printStackTrace();
+        	return "You failed to upload => " + e.getMessage();
+        }*/
+
+	    return "importdata";
+	}
+
 	@RequestMapping(value="setmultiscenario", method=RequestMethod.GET)
 	public String getSetMultiScenario (Map<String, Object> model) {
 		if (!model.containsKey("project"))
@@ -673,15 +740,22 @@ public class ScenarioController {
 	
 	@RequestMapping(value="deletescenario",method=RequestMethod.GET)
 	public String getDeleteScenario(Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid){
-		//List<Scenario> scenarios = scenarioService.findAllScenarios();
-		//model.addAttribute("scenarios",scenarios);
 	
 		if (scenarioid != null)
 		{
-			ScenarioDTO tempScenario = null;
+			ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 			
+			ScenarioDTO tempScenario = null;
+			int nDeleteScenarioId = Integer.parseInt(scenarioid);
+	
+			if (scenario != null && scenario.getScenid() == nDeleteScenarioId)
+			{
+				// Active scenario is to be deleted
+				model.remove("scenario");
+			}
+				
 			try {
-				tempScenario = scenarioService.findByID(Integer.parseInt(scenarioid));
+				tempScenario = scenarioService.findByID(nDeleteScenarioId);
 			} catch (NumberFormatException e1) {
 				e1.printStackTrace();
 			} catch (EntityNotFoundException e1) {
@@ -700,7 +774,14 @@ public class ScenarioController {
 			}
 		}
 
-		List<ScenarioDTO> scenarios = scenarioService.findAll();
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		Set<ScenarioDTO> scenarios = (Set<ScenarioDTO>) projectService.getScenarios(project.getPrjid());
 		model.put("scenarios", scenarios);
 
 		return "deletescenario";
@@ -952,9 +1033,14 @@ public class ScenarioController {
 		}
 		
 		model.put("scenario", scenario);
+
 		statusMsg = scenario.getStatus();
-		model.put("status", statusMsg);
+
+		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+			statusMsg = "RUNNING";
+		}
 		
+		model.put("status", statusMsg);
 		model.put("error", errorMsg);
 		
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());

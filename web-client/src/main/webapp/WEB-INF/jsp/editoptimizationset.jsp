@@ -241,23 +241,24 @@
 							<tr><td><b><spring:message code="metrics"/></b></td></tr>
 							<tr>
 								<td colspan="3">
-									<table class="tablestyle">
-										<col style="width:400px">
-										
-										<tr>
-											<!-- Metric -->
-											<th><spring:message code="metric"/></th>
-											<!-- Value -->
-											<th><spring:message code="value"/></th>
+									<table class="tablestyle" width="100%">
+										<col style="width: 70%">
+										<col style="width: 30%">
+			
+										<tr height="20">
+										<!-- Name -->
+										    <th><spring:message code="name"/></th>
+										<!-- Value -->
+										     <th><spring:message code="value"/></th>
 										</tr>
-					
-										<c:forEach items="${metrics}" var="metric">
+										
+										<c:forEach items="${metricVals}" var="metricVal">
 										<tr>
-											<td>${metric.name}</td>
-											<td></td>
+											<td>${metricVal.metric.name}</td>
+									    	<td>${metricVal.value}</td>
 									   	</tr>
 										</c:forEach>
-									</table>	
+									</table>
 								</td>
 							</tr>
 							<tr><td><br></td></tr>
@@ -267,15 +268,12 @@
 							<col style="width: 220px;">
 							<tr>
 								<!-- Export optimization results -->
-								<td><a href="exportoptimizationresults.html"><button type="button">
+								<td><a href="exportoptimizationresults.html"><button type="button" style="width: 150px">
 								<spring:message code="export_optimization_results"/></button></a></td>
 								<td align="right"></td>
 								<!-- Export Optimization set -->
-								<td><a href="exportoptimizationset.html"><button type="button" style="width: 120px">
+								<td><a href="exportoptimizationset.html"><button type="button" style="width: 150px">
 								<spring:message code="export_optimization_set"/></button></a></td>
-								<!-- Export Optimization Results -->
-								<td align="right"><a href="exportoptimizationresults.html"><button type="button" style="width: 120px">
-								<spring:message code="export_optimization_results"/></button></a></td>
 							</tr>
 							<tr>
 								<td></td>
