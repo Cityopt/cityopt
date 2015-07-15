@@ -41,7 +41,7 @@ pageEncoding="UTF-8"%>
 				<tr height="10"></tr>
 				<tr>
 					<td align="center">
-						<input type="submit" style="width: 100px" value="Login"/>       
+						<input type="submit" style="width: 100px" value="<spring:message code="login"/>"/>       
 					</td>
 				</tr>
 			</table>
