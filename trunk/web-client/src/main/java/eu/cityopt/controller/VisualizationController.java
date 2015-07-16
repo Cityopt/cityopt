@@ -889,6 +889,14 @@ public class VisualizationController {
 			model.put("selectedcompid", nSelectedCompId);
 		}
 		
+		String status = scenario.getStatus();
+
+		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+			status = "RUNNING";
+		}
+			
+		model.put("status", status);
+		
 		/*Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
 	    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
 		
