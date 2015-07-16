@@ -691,7 +691,7 @@ public class OptimizationController {
 		int nType = Integer.parseInt(type);
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
-		if (project == null)
+		if (project == null || openOptSet == null)
 		{
 			return "error";
 		}
@@ -731,14 +731,7 @@ public class OptimizationController {
 			}
 			else if (nType == 2)
 			{
-				ScenarioGeneratorDTO scenGen = new ScenarioGeneratorDTO();
-				scenGen.setName(openOptSet.getName());
-				
-				List<AlgorithmDTO> algorithms = algorithmService.findAll();
-				scenGen.setAlgorithm(algorithms.get(0));
-				
-				scenGen.setProject(project);
-				scenGen = scenGenService.save(scenGen);
+				ScenarioGeneratorDTO scenGen = scenGenService.create(project.getPrjid(), openOptSet.getName());
 				model.put("scengenerator", scenGen);
 				
 				return "geneticalgorithm";
