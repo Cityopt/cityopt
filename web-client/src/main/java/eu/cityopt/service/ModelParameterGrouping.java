@@ -1,5 +1,6 @@
 package eu.cityopt.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +28,7 @@ public class ModelParameterGrouping {
 		@Getter DecisionVariableDTO variable;
 
 		/// InputParameter ids of parameters in the group
-		@Getter List<Integer> parameters;
+		@Getter List<Integer> parameters = new ArrayList<>();
 
 		public Group(DecisionVariableDTO variable) {
 			this.variable = variable;
