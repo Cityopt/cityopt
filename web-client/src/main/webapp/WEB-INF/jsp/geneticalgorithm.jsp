@@ -56,9 +56,9 @@ function deleteDecisionVariable(decisionvarid) {
 				<tr>
 					<td colspan="2">
 						<table>
-							<col style="width: 80px;">
+							<col style="width: 100px;">
 							<col style="width: 200px;">
-							<col style="width: 170px;">
+							<col style="width: 580px;">
 							<tr>
 								<!-- Name -->
 								<td><spring:message code="name"/>:</td>
@@ -66,7 +66,10 @@ function deleteDecisionVariable(decisionvarid) {
                                 <td align="right"><input type="submit" value="Save" style="width: 150px"></td>
 							</tr>
                             <tr>
-                                <td colspan="2">
+                            	<td>
+                            		<spring:message code="type"/>:
+                            	</td>
+                            	<td>
                                     <select name="algorithmid">
                                         <c:forEach items="${algorithms}" var="algo">
                                             <c:choose>
@@ -94,7 +97,7 @@ function deleteDecisionVariable(decisionvarid) {
 							</tr>
 							<tr>
 								<td>
-									<table class="tablestyle" style="width: 390px">
+									<table class="tablestyle" style="width: 100%">
 										<tr>
                                             <th>Name</th>
 											<!--Optimization Sense -->
@@ -138,7 +141,7 @@ function deleteDecisionVariable(decisionvarid) {
 							</tr>
 							<tr>
 								<td>
-									<table class="tablestyle" style="width: 390px">
+									<table class="tablestyle" style="width: 100%">
 										<tr>
                                             <th>Name</th>
 											<th>Type</th>
@@ -176,7 +179,7 @@ function deleteDecisionVariable(decisionvarid) {
 							</tr>
 							<tr>
 								<td>
-									<table class="tablestyle" style="width: 390px">
+									<table class="tablestyle" style="width: 100%">
 										<tr>
 											<!-- Name -->
 											<th><spring:message code="name"/></th>
@@ -214,7 +217,7 @@ function deleteDecisionVariable(decisionvarid) {
 							</tr>
 							<tr>
 								<td>
-				                  <table class="tablestyle" style="width: 450px">
+				                  <table class="tablestyle" style="width: 100%">
 				                      <col>
 				                      <col align="right">
 				                      <col align="right">
@@ -243,7 +246,7 @@ function deleteDecisionVariable(decisionvarid) {
 						</table>
 					</td>
 					<td valign="top">
-						<table style="width: 450px">
+						<table style="width: 100%">
 							<col style="width: 180px;">
 							<col style="width: 270px;">
 							<tr>
@@ -267,7 +270,7 @@ function deleteDecisionVariable(decisionvarid) {
 						    </tr>
 							<tr>
 								<td colspan="2">
-									<table class="tablestyle" style="width: 450px">
+									<table class="tablestyle" style="width: 100%">
 										<tr>
 											<th><spring:message code="parameter"/></th>
 											<th>Value(s)</th>
@@ -310,7 +313,7 @@ function deleteDecisionVariable(decisionvarid) {
 							</tr>
 							<tr>
 								<td colspan="2">
-									<table class="tablestyle" style="width: 450px">
+									<table class="tablestyle" style="width: 100%">
 									   <col>
 									   <col align="right">
 									   <col align="right">

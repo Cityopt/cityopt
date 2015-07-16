@@ -731,9 +731,17 @@ public class OptimizationController {
 			}
 			else if (nType == 2)
 			{
-				ScenarioGeneratorDTO scenGenerator = scenGenService.create(project.getPrjid(), openOptSet.getName());
-				model.put("scengenerator", scenGenerator);
-				return "redirect:/geneticalgorithm.html";
+				ScenarioGeneratorDTO scenGen = new ScenarioGeneratorDTO();
+				scenGen.setName(openOptSet.getName());
+				
+				List<AlgorithmDTO> algorithms = algorithmService.findAll();
+				scenGen.setAlgorithm(algorithms.get(0));
+				
+				scenGen.setProject(project);
+				scenGen = scenGenService.save(scenGen);
+				model.put("scengenerator", scenGen);
+				
+				return "geneticalgorithm";
 			}
 			else
 			{
