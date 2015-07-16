@@ -16,14 +16,11 @@
 <body>
 	<table cellspacing="0px" cellpadding="0px">
 		<tr>
-			<td><%@ include file="mainmenu.inc"%></td>
+			<td valign="top"><%@ include file="mainmenu.inc"%></td>
 			<td width=30></td>
 			<td valign="top">
-				<div
-					style="overflow: scroll; height: 800px; width: 800px; overflow: auto">
-					<form:form method="post"
-						action="editmetric.html?metricid=${metric.metid}"
-						modelAttribute="metric">
+				<div style="overflow: scroll; height: 800px; width: 800px; overflow: auto">
+					<form:form method="post" action="editmetric.html?metricid=${metric.metid}" modelAttribute="metric">
 						<table>
 							<tr>
 								<td>
@@ -54,69 +51,73 @@
 											<td><spring:message code="output_variables" /></td>
 											<td></td>
 										</tr>
-										<td></td>
-										<td valign="top">
-											<table class="tablestyle">
-												<col style="width: 60px">
-												<col style="width: 190px">
-												<tr>
-													<!-- Select -->
-													<th><spring:message code="select" /></th>
-													<!-- Component -->
-													<th><spring:message code="component" /></th>
-
-													<c:forEach items="${components}" var="component">
+										<tr>
+											<td></td>
+											<td valign="top">
+												<table class="tablestyle">
+													<col style="width: 60px">
+													<col style="width: 190px">
+													<tr>
+														<!-- Select -->
+														<th><spring:message code="select" /></th>
+														<!-- Component -->
+														<th><spring:message code="component" /></th>
+	
+														<c:forEach items="${components}" var="component">
+															<tr>
+																<c:if test="${selectedcompid == component.componentid}">
+																	<tr style="background-color: #D4D4D4">
+																		<td>Selected</td>
+																</c:if>
+																<c:if test="${selectedcompid != component.componentid}">
+																	<tr>
+																		<td><a
+																			href="<c:url value='editmetric.html?selectedcompid=${component.componentid}&metricid=${metric.metid}'/>">Select</a></td>
+																</c:if>
+																<td>${component.name}</td>
+															</tr>
+														</c:forEach>
+													</tr>
+												</table>
+											</td>
+											<td></td>
+											<td valign="top">
+												<table class="tablestyle">
+													<col style="width: 150px">
+													<col style="width: 60px">
+													<col style="width: 150px">
+													<tr>
+														<!-- Input parameter, Id, Default value -->
+														<th><spring:message code="input_parameter" /></th>
+														<th><spring:message code="id" /></th>
+														<th><spring:message code="default_value" /></th>
+													</tr>
+													<c:forEach items="${inputParameters}" var="inputParam">
 														<tr>
-															<c:if test="${selectedcompid == component.componentid}">
-																<tr style="background-color: #D4D4D4">
-																	<td>Selected</td>
-															</c:if>
-															<c:if test="${selectedcompid != component.componentid}">
-																<tr>
-																	<td><a
-																		href="<c:url value='editmetric.html?selectedcompid=${component.componentid}&metricid=${metric.metid}'/>">Select</a></td>
-															</c:if>
-															<td>${component.name}</td>
+															<td>${inputParam.name}</td>
+															<td>${inputParam.inputid}</td>
+															<td>${inputParam.defaultvalue}</td>
 														</tr>
 													</c:forEach>
-												</tr>
-											</table>
-										</td>
-										<td></td>
-										<td valign="top">
-											<table class="tablestyle">
-												<col style="width: 150px">
-												<col style="width: 60px">
-												<col style="width: 150px">
-												<tr>
-													<!-- Input parameter, Id, Default value -->
-													<th><spring:message code="input_parameter" /></th>
-													<th><spring:message code="id" /></th>
-													<th><spring:message code="default_value" /></th>
-												</tr>
-												<c:forEach items="${inputParameters}" var="inputParam">
+												</table>
+											</td>
+											<td></td>
+											<td valign="top">
+												<table class="tablestyle">
+													<col style="width: 250px">
 													<tr>
-														<td>${inputParam.name}</td>
-														<td>${inputParam.inputid}</td>
-														<td>${inputParam.defaultvalue}</td>
+														<!--Output variable-->
+														<th><spring:message code="output_variable" /></th>
 													</tr>
-												</c:forEach>
-											</table>
-										</td>
-										<td></td>
-										<td valign="top">
-											<table class="tablestyle">
-												<col style="width: 250px">
-												<tr>
-													<!--Output variable-->
-													<th><spring:message code="output_variable" /></th>
-												</tr>
-												<c:forEach items="${outputVars}" var="outputVar">
-													<tr>
-														<td>${outputVar.name}</td>
-													</tr>
-												</c:forEach>
-											</table>
+													<c:forEach items="${outputVars}" var="outputVar">
+														<tr>
+															<td>${outputVar.name}</td>
+														</tr>
+													</c:forEach>
+												</table>
+											</td>
+										</tr>
+										<tr height = "10"></tr>
 										<tr>
 											<td></td>
 											<!--Metrics-->
@@ -126,83 +127,83 @@
 											<td><spring:message code="external_parameters" /></td>
 											<td></td>
 										</tr>
-										<td></td>
-										<td>
-											<table class="tablestyle">
-												<col style="width: 250px">
-												<tr height="20">
-													<!-- Name -->
-													<th><spring:message code="name" /></th>
-												</tr>
-												<c:forEach items="${metrics}" var="metric">
-													<tr>
-														<td>${metric.name}</td>
+										<tr>
+											<td></td>
+											<td>
+												<table class="tablestyle">
+													<col style="width: 250px">
+													<tr height="20">
+														<!-- Name -->
+														<th><spring:message code="name" /></th>
 													</tr>
-												</c:forEach>
-											</table>
-										</td>
-										<td></td>
-										<td valign="top">
-											<table class="tablestyle" width="250">
-												<col style="width: 110px">
-
-												<tr height="20">
-													<!-- Name -->
-													<th><spring:message code="name" /></th>
-												</tr>
-
-												<c:forEach items="${extParamVals}" var="extParamVal">
-													<tr>
-														<td>${extParamVal.extparam.name}</td>
+													<c:forEach items="${metrics}" var="metric">
+														<tr>
+															<td>${metric.name}</td>
+														</tr>
+													</c:forEach>
+												</table>
+											</td>
+											<td></td>
+											<td valign="top">
+												<table class="tablestyle" width="250">
+													<col style="width: 110px">
+	
+													<tr height="20">
+														<!-- Name -->
+														<th><spring:message code="name" /></th>
 													</tr>
-												</c:forEach>
-											</table>
-										</td>								
-										
-										<table align="center">
-											<col style="width: 150px">
-											<col style="width: 80px">
-											<col style="width: 80px">
-											<tr>
-												<td>
-													<!--Name--> <spring:message code="name" />
-												</td>
-												<td><form:input style="width:300px" type="text"
-														path="name" /></td>
-														
-											</tr>
-											<tr>
-												<td>
-													<!--Expression--> <spring:message code="expression_name" />
-												</td>
-												<td><form:input style="width:300px" type="text"
-														path="expression" /></td>
-											</tr>
-											<tr>
-												<td>
-													<!--Expression--> <spring:message code="expression" />
-												</td>
-												<td><form:input style="width:300px" type="text"
-														path="expression" /></td>
-											</tr>
-											<tr height="10">
-												<td></td>
-											</tr>
-											<tr>
-												<td></td>
-												<!-- Update submit & Cancel button -->
-												<td align="right"><input style="width: 100px"
-													type="submit" value="<spring:message code="update"/>" /> <a
-													href="metricdefinition.html"><button
-															style="width: 100px" type="button" value="Cancel">
-															<spring:message code="cancel" />
-														</button></a></td>
-											</tr>
-										</table>
-									</table> </form:form>
-									</div>
+	
+													<c:forEach items="${extParamVals}" var="extParamVal">
+														<tr>
+															<td>${extParamVal.extparam.name}</td>
+														</tr>
+													</c:forEach>
+												</table>
+											</td>	
+										</tr>
+										<tr height = "10"></tr>
+										<tr>
+											<td></td>						
+											<td colspan="5">
+												<table align="center">
+													<col style="width: 150px">
+													<col style="width: 550px">
+													<tr>
+														<td>
+															<!--Name--> <spring:message code="name" />
+														</td>
+														<td><form:input style="width:550px" type="text"	path="name" /></td>
+													</tr>
+													<tr>
+														<td>
+															<!--Expression--> <spring:message code="expression" />
+														</td>
+														<td><form:input style="width:550px" type="text"	path="expression" /></td>
+													</tr>
+													<tr height="10">
+														<td></td>
+													</tr>
+													<tr>
+														<td></td>
+														<!-- Update submit & Cancel button -->
+														<td align="right"><input style="width: 100px" type="submit" value="<spring:message code="update"/>" /> 
+															<a href="metricdefinition.html">
+															<button	style="width: 100px" type="button" value="Cancel">
+																<spring:message code="cancel" />
+															</button></a>
+														</td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+									</table>
 								</td>
-							</tr>
+							</tr> 
 						</table>
+					</form:form>
+				</div>
+			</td>
+		</tr>
+	</table>
 </body>
 </html>
