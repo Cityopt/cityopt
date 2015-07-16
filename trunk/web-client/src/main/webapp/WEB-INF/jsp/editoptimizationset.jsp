@@ -17,7 +17,7 @@
 <body>
 <table cellspacing="0" cellpadding="0">
 	<tr>	
-		<td><%@ include file="mainmenu.inc"%></td>
+		<td valign="top"><%@ include file="mainmenu.inc"%></td>
 		<td width="30"></td>
 		<td valign="top">
 			<h2 class="error">${errorMessage}</h2>
@@ -28,7 +28,7 @@
 				<!-- Edit database optimization set title -->
 				<tr><td colspan="2"><h2><spring:message code="edit_database_optimization_set"/></h2></td></tr>
 				<tr>
-					<td colspan="2">
+					<td colspan="2" valign="top">
 						<table>
 							<col style="width: 80px;">
 							<col style="width: 200px;">
@@ -70,7 +70,7 @@
 					</td>
 				</tr>
 				<tr>						
-					<td>
+					<td valign="top">
 						<table>
 							<tr>
 								<!-- Objective function -->

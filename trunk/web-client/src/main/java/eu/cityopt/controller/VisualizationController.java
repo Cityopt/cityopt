@@ -574,7 +574,13 @@ public class VisualizationController {
 				else
 				{
 					TimeSeries timeSeries = new TimeSeries(extVarVal.getExtparam().getName());
-					timeSeries.add(new Minute(new Date()), Double.parseDouble(extVarVal.getValue()));
+					double value = 0;
+					
+					if (!extVarVal.getValue().isEmpty()) {
+						value = Double.parseDouble(extVarVal.getValue());
+					}
+					
+					timeSeries.add(new Minute(new Date()), value);
 					
 					timeSeriesCollection.addSeries(timeSeries);
 				}
