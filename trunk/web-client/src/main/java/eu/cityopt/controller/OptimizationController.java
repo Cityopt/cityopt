@@ -734,7 +734,7 @@ public class OptimizationController {
 				ScenarioGeneratorDTO scenGen = scenGenService.create(project.getPrjid(), openOptSet.getName());
 				model.put("scengenerator", scenGen);
 				
-				return "geneticalgorithm";
+				return "redirect:/geneticalgorithm.html";
 			}
 			else
 			{
