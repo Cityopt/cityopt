@@ -466,7 +466,11 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 		sg.setProject(projectRepository.findOne(projectId));
 		sg.setAlgorithm(findDefaultAlgorithm());
 		ExtParamValSet epvs = sg.getProject().getDefaultextparamvalset();
-		sg.setExtparamvalset(copyService.copyExtParamValSet(epvs, epvs.getName() + "(" + name +")"));
+		if (epvs != null) {
+			sg.setExtparamvalset(copyService.copyExtParamValSet(epvs, epvs.getName() + "(" + name +")"));
+		} else {
+			sg.setExtparamvalset(null);
+		}
 		sg.setName(name);
 		sg = scenarioGeneratorRepository.save(sg);
 		List<AlgoParamVal> newAPV = getOrCreateAlgoParamVals(sg);
