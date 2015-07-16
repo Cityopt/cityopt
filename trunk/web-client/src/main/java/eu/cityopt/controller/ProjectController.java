@@ -1990,18 +1990,75 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value="editmetric", method=RequestMethod.GET)
-	public String getEditMetric(Model model, @RequestParam(value="metricid", required=true) String metricid) {
+	public String getEditMetric(Map<String, Object> model, 
+	@RequestParam(value="metricid", required=true) String metricid, 
+	@RequestParam(value="selectedcompid", 
+	required=false) String selectedCompId){
+		
 		int nMetricId = Integer.parseInt(metricid);
 		MetricDTO metric = null;
-
-		try {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if (project==null){
+			return "error";
+		}
+		try { 
 			metric = metricService.findByID(nMetricId);
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
-		model.addAttribute("metric", metric);
-		
+		model.put("metric", metric);
+
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+
+		if (selectedCompId != null && !selectedCompId.isEmpty()) {
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+
+			if (nSelectedCompId > 0) {
+				// userSession.setComponentId(nSelectedCompId);
+
+				Set<InputParameterDTO> inputParams = componentService
+						.getInputParameters(nSelectedCompId);
+				model.put("inputParameters", inputParams);
+
+				Set<OutputVariableDTO> outputVars = componentService
+						.getOutputVariables(nSelectedCompId);
+				model.put("outputVars", outputVars);
+			}
+			model.put("selectedcompid", nSelectedCompId);
+		}
+
+		List<ExtParamValDTO> extParamVals = null;
+		int defaultExtParamValSetId = projectService
+				.getDefaultExtParamSetId(project.getPrjid());
+
+		if (defaultExtParamValSetId != 0) {
+			try {
+				ExtParamValSetDTO extParamValSet = extParamValSetService
+						.findByID(defaultExtParamValSetId);
+				model.put("extParamValSet", extParamValSet);
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			try {
+				extParamVals = extParamValSetService
+						.getExtParamVals(defaultExtParamValSetId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+
+			model.put("extParamVals", extParamVals);
+		}
+
+		MetricDTO newMetric = new MetricDTO();
+		model.put("metric", newMetric);
+
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+
 		return "editmetric";
+		
 	}
 
 	@RequestMapping(value="editmetric", method=RequestMethod.POST)
