@@ -1654,15 +1654,19 @@ public class OptimizationController {
 		List<MetricValDTO> listMetricVals = metricValService.findAll();
 		List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
 		
-		for (int i = 0; i < listMetricVals.size(); i++)
+		Iterator<MetricValDTO> metricValIter = listMetricVals.iterator();
+		
+		while (metricValIter.hasNext())
 		{
-			MetricValDTO metricVal = listMetricVals.get(i);
+			MetricValDTO metricVal = metricValIter.next();
 			
-			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid()
+				&& metricVal.getScenariometrics().getScenario().getScenid() == resultScenario.getScenid())
 			{
 				listProjectMetricVals.add(metricVal);
 			}
 		}
+		
 		model.put("metricVals", listProjectMetricVals);
 		
 		return "showresults";
