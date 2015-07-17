@@ -197,7 +197,7 @@ class BindingLayer {
     Object put(String componentName, String name, Object value) {
         Type type = validate(componentName, name);
         if (!type.isCompatible(value)) {
-            throw new IllegalArgumentException("Invalid value for "
+            throw new IllegalArgumentException("Invalid " + type.name + " value for "
                     + formatReference(componentName, name) + ": " + value);
         }
         mergedBindings = null;
