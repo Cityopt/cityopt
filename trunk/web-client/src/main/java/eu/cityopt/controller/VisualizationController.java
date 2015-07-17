@@ -833,20 +833,22 @@ public class VisualizationController {
 			
 		model.put("status", status);
 
-		List<MetricValDTO> listMetricVals = metricValService.findAll();
+		Set<MetricValDTO> listMetricVals = scenarioService.getMetricsValues(scenario.getScenid());
 		List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+		Iterator<MetricValDTO> metricValIter = listMetricVals.iterator();
 		
-		for (int i = 0; i < listMetricVals.size(); i++)
+		while (metricValIter.hasNext())
 		{
-			MetricValDTO metricVal = listMetricVals.get(i);
+			MetricValDTO metricVal = metricValIter.next();
 			
-			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid()
+				&& metricVal.getScenariometrics().getScenario().getScenid() == scenario.getScenid())
 			{
 				listProjectMetricVals.add(metricVal);
 			}
 		}
 		model.put("metricVals", listProjectMetricVals);
-
+		
 		return "viewtable";
 	}
 	
@@ -872,6 +874,11 @@ public class VisualizationController {
 		}
 		
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		
+		if (scenario == null)
+		{
+			return "error";
+		}
 		
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
@@ -982,14 +989,16 @@ public class VisualizationController {
 		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
 		model.put("extParamVals", extParamVals);
 		
-		List<MetricValDTO> listMetricVals = metricValService.findAll();
+		Set<MetricValDTO> listMetricVals = scenarioService.getMetricsValues(scenario.getScenid());
 		List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+		Iterator<MetricValDTO> metricValIter = listMetricVals.iterator();
 		
-		for (int i = 0; i < listMetricVals.size(); i++)
+		while (metricValIter.hasNext())
 		{
-			MetricValDTO metricVal = listMetricVals.get(i);
+			MetricValDTO metricVal = metricValIter.next();
 			
-			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid()
+				&& metricVal.getScenariometrics().getScenario().getScenid() == scenario.getScenid())
 			{
 				listProjectMetricVals.add(metricVal);
 			}

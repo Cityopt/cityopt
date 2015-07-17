@@ -800,7 +800,6 @@ public class OptimizationController {
 		for (int i = 0; i < listMetricVals.size(); i++)
 		{
 			MetricValDTO metricVal = listMetricVals.get(i);
-			
 			if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
 			{
 				listProjectMetricVals.add(metricVal);
