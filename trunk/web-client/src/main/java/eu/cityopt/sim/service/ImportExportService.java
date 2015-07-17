@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,8 +38,12 @@ import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.opt.io.CsvTimeSeriesData;
 import eu.cityopt.opt.io.ExportBuilder;
+import eu.cityopt.opt.io.JacksonBinder;
+import eu.cityopt.opt.io.JacksonBinderScenario;
+import eu.cityopt.opt.io.JacksonBinderScenario.ScenarioItem;
 import eu.cityopt.opt.io.OptimisationProblemIO;
 import eu.cityopt.opt.io.TimeSeriesData;
+import eu.cityopt.opt.io.TimeSeriesData.Series;
 import eu.cityopt.repository.AlgorithmRepository;
 import eu.cityopt.repository.ComponentRepository;
 import eu.cityopt.repository.ExtParamRepository;
@@ -62,6 +67,7 @@ import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
+import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.AlgorithmParameters;
@@ -547,6 +553,154 @@ public class ImportExportService {
                 proj, os);
         OptimisationProblemIO.writeProblemCsv(
                 prob, problemFile, timeSeriesFile);
+    }
+
+    /**
+	 * Imports external parameter values, input parameter values and simulation
+	 * results for scenarios of a project. Existing scenarios are replaced when
+	 * their name matches, and otherwise kept unchanged.  The project default
+	 * external parameter value set is replaced with some external parameter value
+	 * set from the input; if there is more than one then one is chosen at random.
+	 * <p>
+	 * External parameter values are optional.  For each scenario, there may be
+	 * only input parameter values, or both input parameter values and simulation
+	 * results, or neither.
+	 * <p>
+	 * Metric values in the input are ignored, and instead new metric values for
+	 * the scenarios are computed with current metric expressions and default
+	 * external parameter value set (whichever set is picked).
+	 * 
+	 * @param projectId
+	 * @param scenarioFile
+	 * @param timeSeriesFiles
+	 * @throws ParseException
+	 */
+    @Transactional
+    public void importScenarioData(int projectId, Path scenarioFile, Path... timeSeriesFiles)
+    		throws IOException, ParseException {
+        Project project = projectRepository.findOne(projectId);
+		CsvTimeSeriesData tsd = makeTimeSeriesReader(project);
+        for (Path tsPath : timeSeriesFiles) {
+        	tsd.read(tsPath);
+        }
+        List<JacksonBinderScenario.ScenarioItem> items = OptimisationProblemIO.readMulti(scenarioFile);
+        Map<String, List<JacksonBinder.ExtParam>> epsEXT = new HashMap<>();
+        Map<String, List<JacksonBinder.Input>> scenIN = new HashMap<>(); 
+        Map<String, List<JacksonBinder.Output>> scenOUT = new HashMap<>();
+        for (ScenarioItem si : items) {
+        	switch (si.getKind()) {
+        	case EXT:
+        		epsEXT.computeIfAbsent(si.extparamvalsetname, k -> new ArrayList<>())
+        		.add((JacksonBinder.ExtParam) si.getItem());
+        		break;
+        	case IN: {
+        		JacksonBinder.Input input = (JacksonBinder.Input) si.getItem();
+        		scenIN.computeIfAbsent(si.scenarioname, k -> new ArrayList<>())
+        		.add(input);
+        		break;
+        	}
+        	case OUT: {
+        		JacksonBinder.Output output = (JacksonBinder.Output) si.getItem();
+        		scenOUT.computeIfAbsent(si.scenarioname, k -> new ArrayList<>())
+        		.add(output);
+        	}
+    		default: //Ignore
+        	}
+        }
+
+        Namespace ns = simulationService.makeProjectNamespace(project.getPrjid());
+        List<MetricExpression> metricExpressions = null;
+        try {
+        	metricExpressions = simulationService.loadMetricExpressions(project, ns);
+        } catch (ScriptException e) { /* ignore */ }
+
+        Map<String, ExternalParameters> externals = new HashMap<>();
+        List<Runnable> idUpdateList = new ArrayList<>();
+        ExternalParameters defaultExternals = new ExternalParameters(ns);
+        for (Map.Entry<String, List<JacksonBinder.ExtParam>> entry : epsEXT.entrySet()) {
+        	ExternalParameters externalData = new ExternalParameters(ns);
+        	String setName = entry.getKey();
+        	for (JacksonBinder.ExtParam ep : entry.getValue()) {
+        		Type type = ns.externals.get(ep.name);
+        		if (type != null) {
+	        		if (type.isTimeSeriesType()) {
+	        			Series series = tsd.getSeries(ep.tsKey());
+	        			if (series != null) {
+	            			externalData.put(ep.name,
+	            					ns.evaluator.makeTS(type, series.getTimes(), series.getValues()));
+	        			}
+	        		} else {
+	            		externalData.putString(ep.name, ep.value);
+	        		}
+        		}
+        	}
+        	externals.put(setName, externalData);
+        	ExtParamValSet eps = simulationService.saveExternalParameterValues(
+        			project, externalData, setName, idUpdateList);
+        	// XXX the default ExtParamValSet is set randomly if there are multiple
+        	// ExtParamValSets in the data.
+        	project.setDefaultextparamvalset(eps);
+        	defaultExternals = externalData;
+        }
+
+        Map<String, SimulationInput> inputs = new HashMap<>();
+        for (Map.Entry<String, List<JacksonBinder.Input>> entry : scenIN.entrySet()) {
+        	String scenName = entry.getKey();
+        	if (scenName != null) {
+        		SimulationInput inputData = new SimulationInput(defaultExternals);
+        		for (JacksonBinder.Input in : entry.getValue()) {
+            		Type type = ns.getInputType(in.comp, in.name);
+            		if (type != null) {
+            			inputData.putString(in.comp, in.name, in.value);
+            		}
+        		}
+        		inputs.put(scenName, inputData);
+        	}
+        }
+
+        Map<String, SimulationResults> results = new HashMap<>();
+        for (Map.Entry<String, List<JacksonBinder.Output>> entry : scenOUT.entrySet()) {
+        	String scenName = entry.getKey();
+    		SimulationInput inputData = inputs.get(scenName);
+    		if (inputData != null) {
+    			SimulationResults resultData = new SimulationResults(inputData, "");
+    			for (JacksonBinder.Output out : entry.getValue()) {
+            		Type type = ns.getOutputType(out.comp, out.name);
+            		if (type != null) {
+		        		if (type.isTimeSeriesType()) {
+		        			Series series = tsd.getSeries(out.tsKey());
+		        			if (series != null) {
+		            			resultData.put(out.comp, out.name,
+		            					ns.evaluator.makeTS(type, series.getTimes(), series.getValues()));
+		        			}
+		        		} else {
+		        			resultData.putString(out.comp, out.name, out.value);
+		        		}
+            		}
+    			}
+    			results.put(scenName, resultData);
+    		}
+        }
+
+        String description = "Imported from " + scenarioFile.getFileName().toString();
+        SimulationStorage storage = simulationService.makeDbSimulationStorage(
+        		project.getPrjid(), defaultExternals);
+        Set<String> scenNames = new HashSet<>(inputs.keySet());
+        scenNames.addAll(results.keySet());
+        for (String scenName : scenNames) {
+        	if (scenName != null) {
+	        	SimulationStorage.Put put = new SimulationStorage.Put(
+	        			inputs.get(scenName), new String[] { scenName, description });
+	        	SimulationResults resultData = results.get(scenName); 
+	        	put.output = resultData;
+	        	if (metricExpressions != null) {
+		        	try {
+		        		put.metricValues = new MetricValues(resultData, metricExpressions);
+		        	} catch (ScriptException e) { /* ignore */ }
+	        	}
+        		storage.put(put);
+        	}
+        }
     }
 
     /**

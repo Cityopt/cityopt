@@ -19,6 +19,7 @@
   <xsl:template match="@extparamvalsetid"/>
   <xsl:template match="@id"/>
   <xsl:template match="@inputid"/>
+  <xsl:template match="@inputparamvalid"/>
   <xsl:template match="@metid"/>
   <xsl:template match="@metricvalid"/>
   <xsl:template match="@modelid"/>

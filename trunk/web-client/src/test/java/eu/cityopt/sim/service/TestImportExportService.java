@@ -176,4 +176,24 @@ public class TestImportExportService extends SimulationTestBase {
             Files.copy(tsout, System.out);
         }
     }
+
+    @Test
+    @DatabaseSetup("classpath:/testData/empty_project.xml")
+    @ExpectedDatabase(value="classpath:/testData/import_scenarios_result.xml",
+        assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testImportScenarioData() throws Exception {
+        Project project = projectRepository.findByNameContainingIgnoreCase("Empty test project").get(0);
+        try (InputStream in = getClass().getResource("/ost-problem-gs.csv").openStream()) {
+            importExportService.importSimulationStructure(project.getPrjid(), in);
+        }
+        try (TempDir tempDir = new TempDir("testimport")) {
+        	Path scenarioPath = copyResource("/testData/CSV_testData/gs_scenarios_main.csv", tempDir);
+            Path tsPath = copyResource("/testData/CSV_testData/gs_scenarios_timeseries.csv", tempDir);
+            importExportService.importScenarioData(project.getPrjid(), scenarioPath, tsPath);
+        }
+        importExportService.exportScenarioData(
+        		project.getPrjid(), makeTempPath("imported_scenarios_main.csv"),
+        		makeTempPath("imported_scenarios_timeseries.csv"));
+        dumpTables("import_scenarios");
+    }
 }
