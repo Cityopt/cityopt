@@ -23,7 +23,7 @@
 			<col style="width: 450px;">
 									
 			<!--Title Create database optimization set-->
-			<tr><td colspan="2"><h2><spring:message code="create_database_optimization_set"/></h2></td></tr>
+			<tr><td colspan="2"><h2><spring:message code="create_optimization_set"/></h2></td></tr>
 			<tr>
 				<td colspan="2">
 					<table>
