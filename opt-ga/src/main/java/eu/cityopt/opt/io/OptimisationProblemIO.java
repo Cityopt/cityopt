@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
+import java.util.List;
 
 import javax.script.ScriptException;
 
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 
+import eu.cityopt.opt.io.JacksonBinderScenario.ScenarioItem;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.opt.OptimisationProblem;
@@ -31,7 +33,8 @@ public class OptimisationProblemIO {
             mapper = JacksonCsvModule.getCsvMapper(),
             tsMapper = JacksonCsvModule.getTsCsvMapper();
     private static ObjectReader
-            reader = JacksonCsvModule.getProblemReader(mapper);
+            reader = JacksonCsvModule.getProblemReader(mapper),
+            screader = JacksonCsvModule.getScenarioProblemReader(mapper);
     private static ObjectWriter
             prwriter = JacksonCsvModule.getProblemWriter(mapper),
             scwriter = JacksonCsvModule.getScenarioWriter(mapper);
@@ -136,7 +139,12 @@ public class OptimisationProblemIO {
             throws IOException {
         scwriter.writeValue(outFile.toFile(), builder.getScenarioBinder());
     }
-    
+
+    public static List<ScenarioItem> readMulti(Path inFile) throws IOException {
+    	JacksonBinderScenario binder = new JacksonBinderScenario(screader, inFile);
+    	return binder.getItems();
+    }
+
     /**
      * Write out single scenario data.
      * Scenario and external parameter set names are not included, hence this

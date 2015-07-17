@@ -190,6 +190,17 @@ public class Namespace extends EvaluationSetup {
     }
 
     /**
+     * Return the type of an output variable.
+     * @param comp component name
+     * @param var variable name
+     * @return the {@link Type} or null if no such output
+     */
+    public Type getOutputType(String comp, String var) {
+        Component c = components.get(comp);
+        return c != null ? c.outputs.get(var) : null;
+    }
+
+    /**
      * Return the type of a decision variable.
      * @param comp component name, null for top-level
      * @param var variable name
