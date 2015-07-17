@@ -815,6 +815,11 @@ public class ProjectController {
 	
 		return "importdata";
 	}
+	@RequestMapping(value="exportdata", method=RequestMethod.GET)
+	public String getExportData(Model model){
+	
+		return "exportdata";
+	}
 	
 	@RequestMapping(value="projectdata", method=RequestMethod.GET)
 	public String getProjectData(Map<String, Object> model, 
