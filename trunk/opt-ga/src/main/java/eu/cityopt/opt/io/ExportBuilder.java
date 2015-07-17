@@ -200,7 +200,7 @@ public class ExportBuilder {
                 out.item.name = nt.getKey();
                 out.item.type = nt.getValue();
                 if (val != null) {
-                    String lbl = makeTSLabel(out.item.name, scenario, null);
+                    String lbl = makeTSLabel(out.item.getQName(), scenario, null);
                     tsd.put(lbl, val);
                     out.item.value = lbl;
                 }
