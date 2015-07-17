@@ -111,12 +111,12 @@ public class TestSimulationService extends SimulationTestBase {
         BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>();
         Future<SimulationOutput> job = simulationService.startSimulation(
                 scenario.getScenid(), tasks::add);
+        // The cancellation runs the clean-up task synchronously.
         job.cancel(true);
         assertTrue(job.isCancelled());
-        // The cancellation queues the clean-up task, now run it.
-        tasks.take().run();
         assertTrue(tasks.isEmpty());
-        Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+        // Just in case some task got run in another thread...
+        Thread.sleep(TimeUnit.SECONDS.toMillis(3));
         assertTrue(tasks.isEmpty());
         // There should be no updates to the database.
         scenario = scenarioRepository.findByNameContaining("testscenario").get(0);
