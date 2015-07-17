@@ -242,20 +242,26 @@
 							<tr>
 								<td colspan="3">
 									<table class="tablestyle" width="100%">
-										<col style="width: 70%">
-										<col style="width: 30%">
+										<col style="width: 33%">
+										<col style="width: 33%">
+										<col style="width: 33%">
 			
 										<tr height="20">
 										<!-- Name -->
 										    <th><spring:message code="name"/></th>
 										<!-- Value -->
 										     <th><spring:message code="value"/></th>
+										<!-- Scenario related -->
+											 <th><spring:message code="scenario_related"/></th>
 										</tr>
-										
+													
 										<c:forEach items="${metricVals}" var="metricVal">
 										<tr>
 											<td>${metricVal.metric.name}</td>
 									    	<td>${metricVal.value}</td>
+									    	<td>${metricVal.scenariometrics.scenario.name}</td>
+									    	
+									    	
 									   	</tr>
 										</c:forEach>
 									</table>
