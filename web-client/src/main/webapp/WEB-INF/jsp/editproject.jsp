@@ -92,7 +92,7 @@
 							<col style="width:600px">
 							<tr>
 								<!--Input parameters -->
-								<td><spring:message code="input_parameters"/></td>
+								<td><spring:message code="input_and_external_parameters"/></td>
 								
 								<!-- Set -->
 								<td><a href="projectparameters.html"><button type="button" style="width:120px">
@@ -101,7 +101,7 @@
 								<!-- Close project -->
 								<td align="right"><a href="closeproject.html"><button type="button" style="width:120px">
 								<spring:message code="close_project"/></button></a></td>
-							</tr>
+							</tr>									
 							<tr>
 								<!-- Output variables-->
 								<td><spring:message code="output_variables"/></td>
