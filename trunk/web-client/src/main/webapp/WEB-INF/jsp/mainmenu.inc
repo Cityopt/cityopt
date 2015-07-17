@@ -86,6 +86,12 @@
 		<a href="importdata.html"><spring:message code="importdata"/></a>
 	</td>
 </tr>
+<tr>
+	<td></td>
+	<td>
+		<a href="exportdata.html"><spring:message code="exportdata"/></a>
+	</td>
+</tr>
 <c:choose>	
 	<c:when test="${not empty project}">
 	<tr>
