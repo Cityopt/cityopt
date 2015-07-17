@@ -30,22 +30,6 @@
   <inputparameter name="Central_storage_h" version="0"/>
   <algorithm description="grid search"/>
   <algorithm description="genetic algorithm"/>
-  <algorithm description="genetic algorithm" version="0"/>
-  <algorithm description="genetic algorithm" version="0"/>
-  <algorithm description="genetic algorithm" version="0"/>
-  <algorithm description="grid search" version="0"/>
-  <algorithm description="genetic algorithm" version="0"/>
-  <algorithm description="genetic algorithm" version="0"/>
-  <algorithm description="genetic algorithm" version="0"/>
-  <algorithm description="grid search" version="0"/>
-  <algorithm description="genetic algorithm" version="0"/>
-  <algorithm description="genetic algorithm" version="0"/>
-  <algorithm description="genetic algorithm" version="0"/>
-  <algorithm description="grid search" version="0"/>
-  <algorithm description="genetic algorithm" version="0"/>
-  <algorithm description="genetic algorithm" version="0"/>
-  <algorithm description="genetic algorithm" version="0"/>
-  <algorithm description="grid search" version="0"/>
   <scenariogenerator/>
   <scenario description="Imported from gs_scenarios_main.csv" status="SUCCESS" version="2"/>
   <scenario description="Imported from gs_scenarios_main.csv" status="SUCCESS" version="2"/>
@@ -76,9 +60,6 @@
   <algoparam defaultvalue="25" name="number of offspring per generation"/>
   <algoparam defaultvalue="0.95" name="crossover rate"/>
   <algoparamval/>
-  <appuser/>
-  <usergroup/>
-  <usergroupproject/>
   <inputparamval value="2015-01-01T00:00:00Z" version="0"/>
   <inputparamval value="2015-01-01T00:00:00Z" version="0"/>
   <inputparamval value="2015-01-01T00:00:00Z" version="0"/>
