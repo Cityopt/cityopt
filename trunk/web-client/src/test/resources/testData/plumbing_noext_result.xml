@@ -23,9 +23,6 @@
   <decisionvariable/>
   <outputvariable name="PI12_MIX_MASS_FLOW"/>
   <algoparamval/>
-  <appuser/>
-  <usergroup/>
-  <usergroupproject/>
   <inputparamval value="3"/>
   <inputparamval value="2015-01-01T00:00:00"/>
   <inputparamval value="2015-01-01T00:01:00"/>
