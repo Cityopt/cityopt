@@ -143,41 +143,6 @@
 												   	</tr>
 													</c:forEach>
 												</table>
-												<!-- <table class="tablestyle" width="350">
-													<col style="width:100px">
-													<col style="width:150px">
-													<col style="width:50px">
-													<col style="width:50px">
-													<col style="width:50px">
-															
-													<tr height="20">
-													    <th>Draw</th>
-													    <th>Name</th>
-													    <th>Id</th>
-														<th>Value</th>
-													    <th>Default value</th>
-													</tr>
-													
-													<c:forEach items="${extParamVals}" var="extParamVal">
-													<tr>
-														<c:choose>
-															<c:when test="${usersession.hasExtParam(extParamVal.extparamvalid)}">
-																<tr style="background-color: rgb(140, 200, 200)">
-																<td>Shown (<a href="writetable.html?action=remove&extparamid=${extParamVal.extparamvalid}">Remove</a>)</td>
-															</c:when>
-															<c:otherwise>
-																<tr>
-																<td><a href="writetable.html?action=add&extparamid=${extParamVal.extparamvalid}">Show</a></td>
-															</c:otherwise>
-														</c:choose>
-														
-														<td>${extParamVal.extparam.name}</td>
-												    	<td>${extParamVal.extparamvalid}</td>
-												    	<td>${extParamVal.value}</td>
-												    	<td>${extParamVal.extparam.defaultvalue}</td>
-												   	</tr>
-													</c:forEach>
-												</table>-->
 											</td>
 										</tr>
 										<tr height="20"><td></td></tr>
