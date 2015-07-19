@@ -524,6 +524,8 @@ public class VisualizationController {
 		while(iterator.hasNext()) {
 			int outputVarId = iterator.next(); 
 	    
+			// TODO Add values from all selected scenarios
+			
 			try {
 				OutputVariableDTO outputVar = outputVarService.findByID(outputVarId);
 				SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, nScenId);

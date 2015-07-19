@@ -669,7 +669,6 @@ public class OptimizationController {
 		return "editoptimizationset";
 	}
 
-
 	@RequestMapping(value="createoptimizationset",method=RequestMethod.GET)
 	public String getCreateOptimizationSet(Map<String, Object> model) {
 	
@@ -684,7 +683,7 @@ public class OptimizationController {
 		return "createoptimizationset";
 	}
 
-	@RequestMapping(value="createoptimizationset",method=RequestMethod.POST)
+	@RequestMapping(value="createoptimizationset", method=RequestMethod.POST)
 	public String getCreateOptimizationSetPost(Map<String, Object> model, HttpServletRequest request, OpenOptimizationSetDTO openOptSet) {
 	
 		String type = request.getParameter("type");
@@ -695,6 +694,7 @@ public class OptimizationController {
 		{
 			return "error";
 		}
+		
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e) {
@@ -709,7 +709,15 @@ public class OptimizationController {
 				optSet.setName(openOptSet.getName());
 				// Add description?
 				optSet.setProject(project);
-				//TODO clone project's defaultExtParamValSet
+				
+				//TODO clone project's defaultExtParamValSet?
+				
+				int nDefaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+				
+				// TODO have to be fixed
+				//ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(nDefaultExtParamValSetId);
+				//optSet.setExtparamvalset(extParamValSet);
+				
 				optSet = optSetService.save(optSet);
 				model.put("optimizationset", optSet);
 				

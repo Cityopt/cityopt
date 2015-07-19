@@ -53,9 +53,10 @@
 									<spring:message code="input_variables"/>
 								</td>
 								<td></td>
-								<!--Output variables  -->
-								<spring:message code="output_variables"/>
-								<td></td>
+								<td>
+									<!--Output variables  -->
+									<spring:message code="output_variables"/>
+								</td>
 							</tr>
 							<tr>
 								<td></td>
