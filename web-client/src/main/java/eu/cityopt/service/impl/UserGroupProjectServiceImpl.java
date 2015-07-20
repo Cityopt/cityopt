@@ -1,9 +1,13 @@
 package eu.cityopt.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.authentication.UserServiceBeanDefinitionParser;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,6 +94,30 @@ public class UserGroupProjectServiceImpl implements UserGroupProjectService {
 	public List<UserGroupProjectDTO> findByUser(int userId) {
 		return modelMapper.map(userGroupProjectRepository.findByUser(userId), 
 				new TypeToken<List<UserGroupProjectDTO>>() {}.getType());
+	}
+	
+	@Override
+	public List<UserGroupProjectDTO> findByUser(String userName) {
+		return modelMapper.map(userGroupProjectRepository.findByUser(userName), 
+				new TypeToken<List<UserGroupProjectDTO>>() {}.getType());
+	}
+	
+	@Override
+	@Transactional(readOnly=true)
+	public UserDetails findUserDetails(String userName) {
+		List<UserGroupProject> userInfo = userGroupProjectRepository.findByUser(userName);
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		
+		if(userInfo==null || userInfo.size()==0)
+			return null;
+		
+		for(UserGroupProject ugp : userInfo)
+		{
+			authorities.add(new GrantedAuthorityImpl(ugp.getUsergroup().getName(),ugp.getProject().getName()));
+		}
+		
+		UserDetails details  = new UserDetailsImpl(userInfo.get(0).getAppuser().getName(),userInfo.get(0).getAppuser().getPassword(),authorities);
+		return details;
 	}
 	
 	@Override
