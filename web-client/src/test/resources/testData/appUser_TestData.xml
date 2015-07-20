@@ -10,9 +10,9 @@
 	<appuser userid="3" name="Flo" version="1"/>	
 	<appuser userid="4" name="Sepp" password="Seppensicher" version="1"/>
 	
-	<usergroup usergroupid="1" name="Administrator" version="1"/>
-	<usergroup usergroupid="2" name="Editor" version="1"/>
-	<usergroup usergroupid="3" name="Reader" version="1"/>
+	<usergroup usergroupid="1" name="ROLE_Administrator" version="1"/>
+	<usergroup usergroupid="2" name="ROLE_Editor" version="1"/>
+	<usergroup usergroupid="3" name="ROLE_Reader" version="1"/>
 	
 	<usergroupproject userid="1" usergroupid="1" prjid="1" version="1"/>
 	<usergroupproject userid="1" usergroupid="3" prjid="2" version="1"/>

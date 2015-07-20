@@ -2,6 +2,7 @@ package eu.cityopt.service;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,6 +11,8 @@ import javax.persistence.PersistenceContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -22,6 +25,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.DTO.UserGroupProjectDTO;
+import eu.cityopt.service.impl.GrantedAuthorityImpl;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -47,7 +51,7 @@ public class UserGroupProjectServiceTest {
 		List<UserGroupProjectDTO> ugpList = userGroupProjectService.findAll();
 		assertNotNull(ugpList);
 		assertEquals(5, ugpList.size());
-		assertEquals(2, ugpList.stream().filter(u -> u.getUsergroup().getName().equals("Administrator")).count());
+		assertEquals(2, ugpList.stream().filter(u -> u.getUsergroup().getName().equals("ROLE_Administrator")).count());
 	}
 	
 	@Test
@@ -57,6 +61,19 @@ public class UserGroupProjectServiceTest {
 		assertEquals(2, ugpList.size());
 		for(UserGroupProjectDTO ugp : ugpList)
 			assertTrue(ugp.getAppuser().getName().equals("Michael"));
+	}
+	
+	@Test
+	public void findUserDetails() {
+		UserDetails details = userGroupProjectService.findUserDetails("Michael");
+		
+		assertNotNull(details);
+		assertEquals(details.getAuthorities().size(),2);
+		
+		GrantedAuthority[] grantedAuthorities = (GrantedAuthority[])details.getAuthorities().toArray(new GrantedAuthority[details.getAuthorities().size()]);
+		
+		assertEquals("ROLE_Administrator",grantedAuthorities[0].getAuthority());
+		assertEquals("ROLE_Reader",grantedAuthorities[1].getAuthority());				
 	}
 	
 	@Test
@@ -70,7 +87,7 @@ public class UserGroupProjectServiceTest {
 		ugpList = userGroupProjectService.findByGroup(3);
 		assertNotNull(ugpList);
 		assertEquals(3, ugpList.size());
-		assertEquals(3, ugpList.stream().filter(u -> u.getUsergroup().getName().equals("Reader")).count());
+		assertEquals(3, ugpList.stream().filter(u -> u.getUsergroup().getName().equals("ROLE_Reader")).count());
 	}
 
 	@Test
