@@ -62,6 +62,9 @@
 									<button align="right"  type="button" value="Open"><spring:message code="open"/></button>
 								</a>
 								</td>
+								
+								
+								
 							</c:otherwise>
 						</c:choose>
 			   	</tr>
