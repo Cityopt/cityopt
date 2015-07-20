@@ -16,9 +16,9 @@
 		</td>
 		<td width="20"></td>
 		<td valign="top">
-			<h2>Logout</h2>
-			<p>You have been logged out. <br><br>
-			<a href="index.html">Login</</a></p>
+			<h2><spring:message code="log_out"/></h2>
+			<p><spring:message code="good_bye"/><br><br>
+			<a href="index.html"><spring:message code="login"/></</a></p>
 		</td>
 	</tr>
 </table>
