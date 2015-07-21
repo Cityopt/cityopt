@@ -34,6 +34,7 @@
 				<col style="width:250px">
 				<col style="width:50px">
 				<col style="width:50px">
+				<col style="width:50px">
 																									
 				<tr height="20">
 					<!--Name-->
@@ -42,6 +43,8 @@
 				    <th><spring:message code="id"/></th>
 				    <!--Description-->
 				    <th><spring:message code="description"/></th>
+				    <!--Status-->    
+				    <th><spring:message code="status"/></th>				    
 				    <!--Open-->    
 				    <th><spring:message code="open"/></th>
 				    <!-- Clone-->				
@@ -52,7 +55,8 @@
 				<tr>
 					<td>${scenario.name}</td>
 			    	<td>${scenario.scenid}</td>
-					<td>${scenario.description}</td>			
+					<td>${scenario.description}</td>
+					<<td>${scenario.status}</td>			
 					<td>
 						<a href="<c:url value='openscenario.html?scenarioid=${scenario.scenid}'/>">
 							<button align="right" type="button" value="Open"><spring:message code="open"/>
