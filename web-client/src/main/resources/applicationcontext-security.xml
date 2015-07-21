@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.1.xsd
+		http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+   
+   
+    <security:http use-expressions="true"> 
+ 		<security:form-login login-page="/login.html" default-target-url="/index.html" authentication-failure-url="/login.html?errorLogin" always-use-default-target='true'/> 
+ 	
+ 		<security:intercept-url pattern="/login.html" access="isAnonymous() or isAuthenticated()" />
+ 	 	<security:intercept-url pattern="/**" access="isAuthenticated()" />
+ 		 
+ 		<security:expression-handler ref="webExpressionHandler" />
+ 		<security:csrf disabled="false"/>
+ 	
+ 	<!--
+ 		<security:intercept-url pattern="/**" access="hasRole('ROLE_Administrator') or hasRole('ROLE_Expert') or hasRole('ROLE_Standard') or hasRole('ROLE_Guest')" />
+ 		<security:intercept-url pattern="/**" access="hasRole('ROLE_ADMIN')" />
+ 	-->
+ 		 
+	</security:http>
+	
+	<bean id="webExpressionHandler"  class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+  			<property name="permissionEvaluator" ref="permissionEvaluator" />
+	</bean>
+	
+	 <bean id="permissionEvaluator" class="eu.cityopt.service.impl.CustomPermissionEvaluatorImpl"/>
+   
+	<security:authentication-manager>
+	 <security:authentication-provider
+	  user-service-ref="customUserDetailService">
+	 </security:authentication-provider>
+	</security:authentication-manager>
+	
+	
+	<!-- Enable the use of pre/post annotation service level -->
+    <!-- 
+    <security:global-method-security pre-post-annotations="enabled" secured-annotations="enabled">
+        <security:expression-handler ref="expressionHandler" />
+    </security:global-method-security>
+ 
+    <bean id="permissionEvaluator" class="eu.cityopt.service.impl.CustomPermissionEvaluatorImpl"/>
+   
+    <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+        <property name="permissionEvaluator" ref="permissionEvaluator"/>
+    </bean>
+     -->
+      
+	<!-- 
+	<security:http auto-config="true" use-expressions="false">
+		<security:intercept-url pattern="/**" access="ROLE_USER" />
+	</security:http>
+ 
+	<security:authentication-manager>
+	  <security:authentication-provider>
+	    <security:user-service>
+		<security:user name="flo" password="123456" authorities="ROLE_USER" />
+	    </security:user-service>
+	  </security:authentication-provider>
+	</security:authentication-manager>
+ 	-->
+</beans>

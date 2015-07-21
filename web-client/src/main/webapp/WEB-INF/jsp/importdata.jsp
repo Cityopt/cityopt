@@ -78,7 +78,7 @@
 								</td>
 							</tr>
 							
-							<form:form method="POST" action="uploadFile.html" enctype="multipart/form-data">
+							<form:form method="POST" action="uploadFile.html?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
 	        					<tr>
 	        						<!-- Energy model to upload: -->
 									<td><spring:message code="energy_model_to_upload"/>:</td>
