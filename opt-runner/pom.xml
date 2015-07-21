@@ -80,8 +80,8 @@
 		<dependency>
 			<groupId>eu.cityopt</groupId>
 			<artifactId>opt-ga</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 			<scope>runtime</scope>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
