@@ -192,6 +192,28 @@ public class ProjectController {
 
 	@Autowired
 	MessageSource resource;
+	
+	//Enable Spring security
+		/*
+		@RequestMapping(method=RequestMethod.GET, value="/login")
+		public String displayLoginPage(){
+		 return "myLoginPage";
+		}
+		 
+		@RequestMapping(value="/login", params="errorLogin")
+		public String directToLoginPageWithError(Model model){
+		 // Adding an attribute to flag that an error happened at login
+		 model.addAttribute("loginFailed", true);
+		 
+		 return "myLoginPage";
+		}
+		
+		@RequestMapping(method=RequestMethod.GET, value="/securityTest")
+		@PreAuthorize("@securityService.hasPermission('sampleCheckOnController')")
+		public String displaySecurityTestPage(){
+		 return "springsecurity";
+		}
+		*/
 
 	@RequestMapping(value="createproject", method=RequestMethod.GET)
 	public String getCreateProject(Map<String, Object> model) {

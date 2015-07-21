@@ -17,7 +17,7 @@
 
 <context:annotation-config/>
 
-<context:component-scan base-package="eu.cityopt.repository, eu.cityopt.service, eu.cityopt.sim.service"/>
+<context:component-scan base-package="eu.cityopt.repository, eu.cityopt.service,eu.cityopt.sim.service"/>
 <jpa:repositories base-package="eu.cityopt.repository" />
 
 <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
@@ -71,8 +71,9 @@
  
 <bean id="appMetadata" class="eu.cityopt.config.AppMetadata"/>
 
-<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+<bean id="filterMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 	<property name="maxUploadSize" value="100000000" />
 </bean>
+
 
 </beans>
