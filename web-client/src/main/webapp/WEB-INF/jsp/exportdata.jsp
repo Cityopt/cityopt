@@ -31,16 +31,7 @@
 					<td>
 						<!-- Export data -->
 						<h2><spring:message code="export_data"/></h2>
-					</td>
-					<td align="right">						
-						<!-- Download project templates & download button -->
-						<p><spring:message code="download_project_templates"/><a href="">						
-						<button><spring:message code="download"/></button></a></p>
-						
-						<!-- Download scenario templates & download button -->
-						<p><spring:message code="download_scenario_templates"/><a href="">
-						<button><spring:message code="download"/></button></a></p>
-					</td>
+					</td>					
 				</tr>
 				<tr>
 					<td valign="top">
@@ -65,7 +56,7 @@
 							</tr>
 							<tr>
 								<!-- Design target: -->						
-								<td><b><spring:message code="design_target"/></b>:</td>
+								<td><b><spring:message code="design_target"/></b>: ${project.description}</td>
 								<td></td>
 							</tr>
 							<tr>
@@ -110,36 +101,7 @@
 							</tr>
 						
 							
-						</table>
-					</td>
-					<td valign="top">
-						<table>
-							<tr>
-								<td>
-									<img src="assets/img/test_map.jpg"/>
-								</td>
-							</tr>
-							<tr align="right">
-								<!-- Upload diagram -->
-								<td><a href="uploaddiagram.html"><button type="button">
-								<spring:message code="upload_diagram"/></button></a></td>
-							</tr>
-							<tr>
-								<td>
-									<table>
-										<col style="width:200px">	
-										<col style="width:200px">	
-										<col style="width:200px">	
-										<tr>
-											<td>											
-			    						
-										
-									</table>
-								</td>
-							</tr>
-						</table>
-					</td>
-					
+						</table>					
 				</tr>
 			</table>
 			</div>
