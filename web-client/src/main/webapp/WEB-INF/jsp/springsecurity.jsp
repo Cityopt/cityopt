@@ -33,7 +33,7 @@ Your roles are:
 
 
 </sec:authorize>
-<sec:authorize access="hasRole()'ROLE_VIEWER')">
+<sec:authorize access="hasRole('ROLE_VIEWER')">
 
 
 </sec:authorize>						
