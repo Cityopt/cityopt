@@ -45,6 +45,8 @@
 								<td align="right"><a href="databaseoptimization.html"><button type="button">
 								<!-- Run search -->
 								<spring:message code="run_search"/></button></a></td>
+							
+							
 							</tr>
 							<tr>						
 								<!-- User -->	
