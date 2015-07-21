@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>eu.cityopt</groupId>
 			<artifactId>sim-eval</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
