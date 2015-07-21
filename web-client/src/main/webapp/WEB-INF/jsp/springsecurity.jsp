@@ -24,6 +24,19 @@ Your roles are:
     <li>${role.authority}</li>
     </c:forEach>
 </ul>
+
+<sec:authorize access="@securityService.hasPermission('JSP')">						
+
+
+</sec:authorize>
+<sec:authorize access="hasPermission(#project,'ROLE_VIEWER')">
+
+
+</sec:authorize>
+<sec:authorize access="hasRole()'ROLE_VIEWER')">
+
+
+</sec:authorize>						
  
 
 </body>
