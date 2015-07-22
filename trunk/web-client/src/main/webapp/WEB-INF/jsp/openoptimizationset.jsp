@@ -60,10 +60,10 @@
 								<td>
 								<a href="<c:url value='openoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga'/>">
 									<button align="right"  type="button" value="Open"><spring:message code="open"/></button>
-								</a>
-								</td>
-								
-								
+								</a></td>
+								<td><a	href="<c:url value='cloneoptimizer.html?optimizerid=${openoptimizationset.id}'/>">
+												<button align="right" type="button" value="Clone"><spring:message code="clone"/></button>
+									</a></td>						
 								
 							</c:otherwise>
 						</c:choose>

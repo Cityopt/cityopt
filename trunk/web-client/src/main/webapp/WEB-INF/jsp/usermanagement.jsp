@@ -124,7 +124,8 @@
 												</a>
 											</td>
 												<!-- Delete -button -->
-			   								<td><a href="<c:url value='deleteuser.html?userid=${user.userid}'/>">
+			   								<td><a href="<c:url value='deleteuser.html?userid=${user.userid}'/>"
+			   								onclick="return confirm('<spring:message code="confirm_delete_user"/>')">
 													<button align="right" type="button" value="Delete">
 													<spring:message code="delete"/></button>
 												</a>
