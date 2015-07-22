@@ -48,7 +48,8 @@
 					<td>${scenario.description}</td>
 			    	<td>
 			    		<!-- delete button -->
-						<a href="<c:url value='deletescenario.html?scenarioid=${scenario.scenid}'/>">
+						<a href="<c:url value='deletescenario.html?scenarioid=${scenario.scenid}'/>"
+						onclick="return confirm('<spring:message code="confirm_scenario_deletion"/>')">
 							<button align="right"  type="button" value="Delete">
 							<spring:message code="delete"/></button>
 						</a>

@@ -42,7 +42,8 @@
 							<c:when test="${openoptimizationset.isDatabaseSearch()}">
 								<td>Database search</td>
 								<td>
-								<a href="<c:url value='deleteoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=db'/>">
+									<a href="<c:url value='deleteoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=db'/>"
+									onclick="return confirm('<spring:message code="confirm_optimizationset_deletion"/>')">
 									<button align="right"  type="button" value="Delete">Delete</button>
 								</a>
 								</td>
