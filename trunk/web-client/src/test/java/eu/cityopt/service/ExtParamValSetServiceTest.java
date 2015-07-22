@@ -101,11 +101,4 @@ public class ExtParamValSetServiceTest {
 		assertEquals(epv.iterator().next().getExtparam().getName(), val.getExtparam().getName());
 	}
 	
-	@Test
-	public void cleanUp()
-	{
-		extParamValSetService.cleanupExtParamValSets();
-		assertEquals(1, extParamValSetService.findAll().size());
-	}
-	
 }
