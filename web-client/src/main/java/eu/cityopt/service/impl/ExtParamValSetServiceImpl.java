@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -211,5 +212,10 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
 		epv.setValue(epvDTO.getValue());
 		epv.setTimeseries((timeSeries == null) ? null
 				: timeSeriesService.save(timeSeries));
+	}
+
+	@Override	
+	public void cleanupExtParamValSets() {
+		extParamValSetRepository.cleanupExtParamValSets();		
 	}
 }
