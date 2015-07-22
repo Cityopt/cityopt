@@ -72,7 +72,8 @@
 								</td>
 								<td>
 									<!-- Delete button -->
-									<a href="<c:url value='metricdefinition.html?metricid=${metric.metid}&action=delete'/>" onclick="return confirm('Are you sure you want to delete metric')">
+									<a href="<c:url value='metricdefinition.html?metricid=${metric.metid}&action=delete'/>" 
+									onclick="return confirm('Are you sure you want to delete metric')">
 										<button align="right" type="button" value="Delete">
 										<spring:message code="delete"/></button>
 									</a>
