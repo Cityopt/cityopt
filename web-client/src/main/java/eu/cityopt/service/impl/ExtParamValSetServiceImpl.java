@@ -215,6 +215,7 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
 	}
 
 	@Override	
+	@Transactional
 	public void cleanupExtParamValSets() {
 		extParamValSetRepository.cleanupExtParamValSets();		
 	}
