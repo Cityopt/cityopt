@@ -14,7 +14,7 @@ public class TempDirTest {
 
     @Test
     public void testTempDir() throws IOException {
-        TempDir tmp = new TempDir("test");
+        TempDir tmp = new TempDir("cityopt_test");
         try {
             assertTrue("Directory not created",
                        Files.isDirectory(tmp.getPath()));
