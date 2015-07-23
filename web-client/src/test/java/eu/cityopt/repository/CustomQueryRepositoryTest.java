@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
@@ -24,6 +25,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.DTO.ComponentInputParamDTO;
+import eu.cityopt.model.Component;
 import eu.cityopt.model.TimeSeriesVal;
 
 @Transactional
@@ -39,6 +41,9 @@ public class CustomQueryRepositoryTest {
 
 	@Autowired
 	private CustomQueryRepository cqrepo; 
+	
+	@Autowired
+	private ComponentRepository crepo;
 	
 	@Autowired
 	private TimeSeriesValRepository timeSeriesValRepository; 
@@ -66,6 +71,22 @@ public class CustomQueryRepositoryTest {
 	 	assertEquals(4, list.stream().filter(i -> i.getComponentname().equals("Storage_Vertical_tank_with_heat_structure")).count());
 	 	assertEquals(5, list.stream().filter(i -> i.getComponentname().equals("Gas_boiler")).count());
 	}
+	
+	@Test
+	public void testfindComponentsWithInputParams2() throws SQLException {
+		
+		List<ComponentInputParamDTO> component_1 = cqrepo.findComponentsWithInputParamsByCompId(1);
+		assertEquals(4,component_1.size());
+		
+		List<ComponentInputParamDTO> component_2 = cqrepo.findComponentsWithInputParamsByCompId(2);
+		assertEquals(4,component_2.size());
+		
+		List<ComponentInputParamDTO> component_3 = cqrepo.findComponentsWithInputParamsByCompId(3);
+		assertEquals(5,component_3.size());
+	 	
+	}
+	
+	
 	
 	@Test
 	public void testTSBatchInsert() {

@@ -3,6 +3,8 @@ package eu.cityopt.repository;
 import java.sql.Date;
 import java.util.List;
 
+import javax.persistence.OrderBy;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -16,9 +18,12 @@ import eu.cityopt.model.Project;
 public interface ProjectRepository extends JpaRepository<Project,Integer>,
 		JpaSpecificationExecutor<Project> {
 
+	
 	List<Project> findByNameContainingIgnoreCase(String prjname,Sort sort);
 	
 	List<Project> findByNameContainingIgnoreCase(String prjname);
+	
+	List<Project> findByNameContainingIgnoreCaseOrderByNameAsc(String prjname);
 	
 	Project findByName(String prjname);
 		
