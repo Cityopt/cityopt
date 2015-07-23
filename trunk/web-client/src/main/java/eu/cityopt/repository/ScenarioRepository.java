@@ -18,7 +18,7 @@ public interface ScenarioRepository extends JpaRepository<Scenario,Integer>{
 	Scenario findByName(String scenName);
 	
 	@Query("select s from Scenario s where Lower(s.name) like Lower(:scenName)"
-			+ " and s.project.prjid = :prjid")
+			+ " and s.project.prjid = :prjid order by s.name")
 	Scenario findByNamePrjid(@Param("scenName") String scenName, @Param("prjid") int prjid);
 	
 	@Query("select s from Scenario s where s.createdon between :dateLower and :dateUpper order by s.name")

@@ -272,7 +272,7 @@ public class Project extends VersionModel implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
-	@OrderBy("componentid")
+	@OrderBy("name")
 	public List<Component> getComponents() {
 		return this.components;
 	}

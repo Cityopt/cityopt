@@ -53,7 +53,7 @@ public class CustomQueryRepositoryImpl implements CustomQueryRepository {
 				+ " (SELECT *"
 				+ " FROM inputparamval"
 				+ " WHERE scenid=?) inputparamval ON inputparameter.inputid=inputparamval.inputid"
-				+ "	WHERE component.prjid=?";
+				+ "	WHERE component.prjid=? order by component.name, inputparameter.name";
 
 		Object [] argso = new Object [] { prjid, scenid };
 		
@@ -103,7 +103,7 @@ public class CustomQueryRepositoryImpl implements CustomQueryRepository {
 				+ " (SELECT *"
 				+ " FROM inputparamval"
 				+ " ) inputparamval ON inputparameter.inputid=inputparamval.inputid"
-				+ "	WHERE component.componentId=?";
+				+ "	WHERE component.componentId=? order by inputparameter.name";
 		
 		Object [] argso = new Object [] { componentId };
 		
