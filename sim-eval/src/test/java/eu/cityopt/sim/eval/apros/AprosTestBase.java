@@ -7,7 +7,9 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 
-import org.junit.BeforeClass;
+import org.junit.*;
+
+import eu.cityopt.sim.eval.SimulatorManagers;
 
 public class AprosTestBase {
     private final static String propsName = "/apros/test.properties";
@@ -28,5 +30,10 @@ public class AprosTestBase {
                 props.getProperty("profile_dir"));
         profileName = props.getProperty("profile");
         AprosManager.register(profileDir, Executors.newSingleThreadExecutor());
+    }
+    
+    @AfterClass
+    public static void closeSimulators() {
+        SimulatorManagers.shutdown();
     }
 }
