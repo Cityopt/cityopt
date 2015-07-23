@@ -14,7 +14,7 @@ public class OptimizationSetDTO extends BaseDTO {
 
 	@Getter @Setter private int optid;
 	@Getter @Setter private ObjectiveFunctionDTO objectivefunction;
-	@Getter @Setter private ExtParamValSet extparamvalset;
+	@Getter @Setter private ExtParamValSetDTO extparamvalset;
 	@Getter @Setter private Integer prjid;
 //	@Getter @Setter private ScenarioDTO scenario;
 	@Getter @Setter private ProjectDTO project;
