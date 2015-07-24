@@ -20,7 +20,7 @@
     </dependency>
     <dependency>
       <groupId>com.jcraft</groupId>
-      <artifactId>jsch.agentproxy.core</artifactId>
+      <artifactId>jsch.agentproxy.jsch</artifactId>
       <version>0.0.9</version>
     </dependency>
   </dependencies>
