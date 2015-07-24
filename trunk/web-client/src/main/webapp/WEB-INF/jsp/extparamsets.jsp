@@ -60,7 +60,7 @@
 								<td></td>
 								<td valign="top">
 									<table class="tablestyle">
-										<col style="width:250px">
+										
 										<tr>
 											<!--External parameter-->
 											<th><spring:message code="external_parameter"/></th>
@@ -68,16 +68,49 @@
 					
 									</table>
 								</td>
-							</tr>
-							<tr height="20"></tr>
-							<tr>
-								<td></td>
-								<td></td>
+							</tr>							
+							<!-- Create Data Entries -->
+							<tr height="20" width="125">
+								<td>
+									<table style="width:125,5px" border="1">				
+										<col style="width:68px">
+										<col style="width:176px">														
+										<!-- ForEachElement: Select element // External parameterset -->
+										<tr><td>Select</td><td>Dataentry</td></tr>
+										<tr><td>Select</td><td>Dataentry</td></tr>
+										
+										<!-- Selector element -->									
+										<c:choose>										
+											<c:when test="${selectedExtParamSetId == extParamValSet.extparamvalsetid}">										
+											<tr style="background-color: #D4D4D4"><td><spring:message code="selected"/></td>											
+											<td>Dataentry</td><tr>
+											</c:when>										
+											<c:otherwise>
+											<td><a href="<c:url value='selectextparamset.html?selectedextparamsetid=${extParamValSet.extparamvalsetid}'/>">								
+											<tr><td><spring:message code="select"/></td><tr>
+											<td>Dataentry</td><tr>
+											</c:otherwise>
+										</c:choose>															
+									</table>
+									<td></td>
+									<td>
+										<table style="width:125,5px" border="1">
+										<!-- For each element get the External parameter Parameter -->																														
+											<tr><td>External parameter 1</td></tr>
+											<tr><td>External parameter 2</td></tr>			
+											</tr>
+										</table>
+									</td>				
+								<tr>	
+									
 								<!-- Close button -->
+								<td></td>
+								<td></td>							
 								<td align="right"><a href="editoptimizationset.html"><button type="button">
 								<spring:message code="close"/></button></a></td>
 							</tr>
 						</table>
+						</td>
 					</td>
 				</tr>
 				<tr height=20></tr>
