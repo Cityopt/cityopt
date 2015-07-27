@@ -75,27 +75,33 @@
 									<table style="width:125,5px" border="1">				
 										<col style="width:68px">
 										<col style="width:176px">														
-										<!-- ForEachElement: Select element // External parameterset -->
-										<tr><td>Select</td><td>Dataentry</td></tr>
-										<tr><td>Select</td><td>Dataentry</td></tr>
 										
-										<!-- Selector element -->									
-										<c:choose>										
-											<c:when test="${selectedExtParamSetId == extParamValSet.extparamvalsetid}">										
-											<tr style="background-color: #D4D4D4"><td><spring:message code="selected"/></td>											
-											<td>Dataentry</td><tr>
-											</c:when>										
-											<c:otherwise>
-											<td><a href="<c:url value='selectextparamset.html?selectedextparamsetid=${extParamValSet.extparamvalsetid}'/>">								
-											<tr><td><spring:message code="select"/></td><tr>
-											<td>Dataentry</td><tr>
-											</c:otherwise>
-										</c:choose>															
+										<!-- ForEachElement: Select element // External parameterset -->										
+										<!-- Example:<tr><td>Select</td><td>Dataentry</td></tr> -->		
+															
+										<c:forEach items="${extParamValSets}" var="extParamValSet">
+											<c:choose>
+												<c:when test="${selectedextparamsetid == extParamValSet.extparamvalsetid}">
+													<tr style="background-color: #D4D4D4"><td>
+													<spring:message code="selected"/></td>
+												</c:when>
+												<c:otherwise>
+													<tr>
+														<td><a href="<c:url value='extparamsets.html?selectedextparamsetid=${extParamValSet.extparamvalsetid}'/>">
+														<spring:message code="select"/></a></td>
+												</c:otherwise>
+											</c:choose>	
+											<td>${extParamValSet.name}</td>
+									   	</tr>
+									   	</c:forEach>
+										
+																						
 									</table>
 									<td></td>
 									<td>
 										<table style="width:125,5px" border="1">
-										<!-- For each element get the External parameter Parameter -->																														
+										<!-- For each element get the External parameter Parameter -->
+																																								
 											<tr><td>External parameter 1</td></tr>
 											<tr><td>External parameter 2</td></tr>			
 											</tr>
