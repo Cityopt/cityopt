@@ -71,6 +71,7 @@ import eu.cityopt.service.OptSearchConstService;
 import eu.cityopt.service.OptimizationSetService;
 import eu.cityopt.service.OutputVariableService;
 import eu.cityopt.service.ProjectService;
+import eu.cityopt.service.ProjectServiceDTOTest;
 import eu.cityopt.service.ScenarioGeneratorService;
 import eu.cityopt.service.ScenarioService;
 import eu.cityopt.service.SimulationResultService;
@@ -766,6 +767,59 @@ public class ProjectController {
 		}
 		return "error";
 	}
+	
+		//@author Markus Turunen
+		//This seems to handle extparamsets	
+		//	@RequestParam(value="selectorid", required=false) String seclectorID )	
+		
+		@RequestMapping(value="extparamsets",method=RequestMethod.GET)
+		public String getExtParamSets(Map<String, Object> model,
+		@RequestParam(value="selectedextparamvalsetid", required=false) String selectedExtParamValSetId){
+		
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		if(this.projectDoesNotExist(project)){return "error";}		
+		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
+		model.put("extParamValSets", extParamValSets);
+		List<ExtParamValDTO> extParamVals = null;
+						
+		if (selectedExtParamValSetId != null)
+		{
+			try {
+				extParamVals = extParamValSetService.getExtParamVals(projectService.getDefaultExtParamSetId(project.getPrjid()));
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			model.put("extParamVals", extParamVals);
+		}
+		
+			
+			
+		return "extparamsets";
+		}
+	
+
+	//@author: Markus Turunen 
+	//Functionality: Check does the project exist.
+	//Unnessessary comentary: Tierd of checking project Null? Here's a service for it.
+	//Extra service Methods I made for myself.
+		
+		public boolean projectDoesNotExist(ProjectDTO project){
+			if(project==null){
+				return true;
+			}else
+				return false;		
+		}
+		
+		public boolean ExternParamValSetDoExist(ExtParamValSetService externalParam){
+			if(externalParam!=null){
+				return true;
+			}else
+				return false;		
+		}
+	
+		
+	////
 
 	@RequestMapping(value="units", method=RequestMethod.GET)
 	public String getUnits(Model model){
@@ -1128,12 +1182,9 @@ public class ProjectController {
 		
 		return "coordinates";
 	}
-		
-	@RequestMapping(value="extparamsets",method=RequestMethod.GET)
-	public String getExtParamSets(Model model) {
 	
-		return "extparamsets";
-	}
+	
+	
 	
 	@RequestMapping(value="projectparameters", method=RequestMethod.GET)
 	public String getProjectParameters(Map<String, Object> model, 
@@ -2303,6 +2354,7 @@ public class ProjectController {
 	{
 		return "error";
 	}	
+	
 	
 	public boolean hasAdminRights(int nUserId, int nProjectId) {
 		UserGroupProjectDTO userGroupProject = userGroupProjectService.findByUserAndProject(nUserId, nProjectId);
