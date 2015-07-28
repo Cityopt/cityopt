@@ -478,7 +478,41 @@ public class OptimizationController {
 		}
 		
 		
+		// author@: Markus Turunen
+		// this method supposed to handle External parameter Handling when Person submit the form.
 		
+		@RequestMapping(value="/sendexternalparameterset",method=RequestMethod.GET)
+		public String sendExternalParameters(Map<String, Object> model,
+				@RequestParam(value="id", required=false) int ExternalParameterSetId){									
+			
+			ProjectDTO project = (ProjectDTO) model.get("project");
+			if(this.projectDoesNotExist(project)){return "error";}
+			ExtParamValSetDTO extParamValSet = projectService.getExtParamValSets(project.getPrjid()).get(ExternalParameterSetId);				
+			OptimizationSetDTO otpSet=(OptimizationSetDTO) model.get("optimizationset");
+			
+			
+			//Comment:  These syntaxes haven't worked. Tried to save data into database.			
+			// 
+			// OptimizationSetService optimizationService.sendExternalParameters(model, ExternalParameterSetId);		
+			//OptimizationSetService optimizationSetService;
+			//optimizationSetService.extParamValSetService.save(extParamValSet);
+			
+			
+			
+
+			
+				
+			
+			return "editoptimization";
+		}
+		
+
+		public boolean projectDoesNotExist(ProjectDTO project){
+			if(project==null){
+				return true;
+			}else
+				return false;		
+		}
 		
 		//List<OptimizationSetDTO> list = optSetService.findByNameContaining(clonename);
 			/*

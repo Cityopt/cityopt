@@ -770,7 +770,7 @@ public class ProjectController {
 	
 		//@author Markus Turunen
 		//This seems to handle extparamsets	
-		//	@RequestParam(value="selectorid", required=false) String seclectorID )	
+			
 		
 		@RequestMapping(value="extparamsets",method=RequestMethod.GET)
 		public String getExtParamSets(Map<String, Object> model,
@@ -791,13 +791,15 @@ public class ProjectController {
 			}
 			
 			model.put("extParamVals", extParamVals);
-		}
-		
-			
+		}	
 			
 		return "extparamsets";
 		}
+		
+		
+		
 	
+		
 
 	//@author: Markus Turunen 
 	//Functionality: Check does the project exist.
