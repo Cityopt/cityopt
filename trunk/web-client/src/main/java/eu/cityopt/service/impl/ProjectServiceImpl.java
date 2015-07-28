@@ -1,7 +1,10 @@
 package eu.cityopt.service.impl;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -251,8 +254,8 @@ public class ProjectServiceImpl implements ProjectService{
 	@Transactional(readOnly = true)
 	public Set<ScenarioDTO> getScenarios(int prjid) {
 		Project item = projectRepository.findOne(prjid);
-		Set<Scenario> scenarios = item.getScenarios(); 
-		return modelMapper.map(scenarios, new TypeToken<Set<ScenarioDTO>>() {}.getType());
+		Set<Scenario> scenarios = item.getScenarios();
+		return modelMapper.map(scenarios, new TypeToken<LinkedHashSet<ScenarioDTO>>() {}.getType());
 	}
 	
 	@Transactional(readOnly = true)

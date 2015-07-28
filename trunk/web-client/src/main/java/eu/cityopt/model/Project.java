@@ -5,8 +5,10 @@ package eu.cityopt.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -50,7 +53,7 @@ public class Project extends VersionModel implements java.io.Serializable {
 	private Integer updatedby;
 	private Set<ObjectiveFunction> objectivefunctions = new HashSet<ObjectiveFunction>(
 			0);
-	private Set<Scenario> scenarios = new HashSet<Scenario>(0);
+	private Set<Scenario> scenarios = new LinkedHashSet<Scenario>();
 	private Set<ScenarioGenerator> scenariogenerators = new HashSet<ScenarioGenerator>(
 			0);
 	private List<Component> components = new ArrayList<Component>();
@@ -254,6 +257,7 @@ public class Project extends VersionModel implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
+	@OrderBy("name")
 	public Set<Scenario> getScenarios() {
 		return this.scenarios;
 	}
