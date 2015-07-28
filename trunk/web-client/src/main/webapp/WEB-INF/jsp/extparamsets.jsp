@@ -32,6 +32,7 @@
 				<tr>
 					<td>
 						<table>
+							<form method="get" action="editoptimizationset.html"/sendexternalparameterset>			
 							<col style="width:250px">
 							<col style="width:30px">
 							<col style="width:350px">
@@ -51,6 +52,7 @@
 										<tr>
 											<!-- Select -->
 											<th><spring:message code="select"/></th>
+											
 											<!--External parameter set  -->
 											<th><spring:message code="external_parameter_set"/></th>
 										</tr>
@@ -73,7 +75,7 @@
 							<tr height="20" width="125">
 								<td>
 									<table style="width:125,5px" border="1">				
-										<col style="width:68px">
+										<col style="width:68px">										
 										<col style="width:176px">														
 										
 										<!-- ForEachElement: Select element // External parameterset -->										
@@ -88,7 +90,9 @@
 												<c:otherwise>
 													<tr>
 														<td><a href="<c:url value='extparamsets.html?selectedextparamsetid=${extParamValSet.extparamvalsetid}'/>">
+														<input type="button" name="id" value="${extParamValSet.extparamvalsetid}">
 														<spring:message code="select"/></a></td>
+														
 												</c:otherwise>
 											</c:choose>	
 											<td>${extParamValSet.name}</td>
@@ -101,19 +105,24 @@
 									<td>
 										<table style="width:125,5px" border="1">
 										<!-- For each element get the External parameter Parameter -->
-																																								
-											<tr><td>External parameter 1</td></tr>
-											<tr><td>External parameter 2</td></tr>			
+										<c:forEach items="${extParamValSets}" var="extParamValSet">																												
+											<tr><td>${extParamValSet.name}</td></tr>
+										</c:forEach>
+														
 											</tr>
 										</table>
 									</td>				
-								<tr>	
-									
-								<!-- Close button -->
+								<tr>							
+								<td></td>								
 								<td></td>
-								<td></td>							
+								<td></td>
+								<!-- Submint button -->	
+								
+								<!-- Close button -->
+								<td><input id="id" type="submit"></form></a></td>							
 								<td align="right"><a href="editoptimizationset.html"><button type="button">
 								<spring:message code="close"/></button></a></td>
+								
 							</tr>
 						</table>
 						</td>
