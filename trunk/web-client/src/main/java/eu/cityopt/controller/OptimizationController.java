@@ -481,16 +481,34 @@ public class OptimizationController {
 		// author@: Markus Turunen
 		// this method supposed to handle External parameter Handling when Person submit the form.
 		
-		@RequestMapping(value="/sendexternalparameterset",method=RequestMethod.GET)
+		@RequestMapping(value="sendexternalparameterset",method=RequestMethod.GET)
 		public String sendExternalParameters(Map<String, Object> model,
 				@RequestParam(value="id", required=false) int ExternalParameterSetId){									
 			
 			ProjectDTO project = (ProjectDTO) model.get("project");
 			if(this.projectDoesNotExist(project)){return "error";}
 			ExtParamValSetDTO extParamValSet = projectService.getExtParamValSets(project.getPrjid()).get(ExternalParameterSetId);				
-			OptimizationSetDTO otpSet=(OptimizationSetDTO) model.get("optimizationset");
-			
-			
+			OptimizationSetDTO database= OptimizationDTOInitializer(model);
+			database.setExtparamvalset(extParamValSet);
+			return "editoptimization";
+		}
+		
+		//author@:Markus Turunen
+		//Unnessessary Irony: This could also be service
+		//OptimizationDTOInitializer does exactly that.
+		public OptimizationSetDTO OptimizationDTOInitializer(Map<String, Object> model){			
+			OptimizationSetDTO optimizationset = (OptimizationSetDTO) model.get("optimizationset");
+			return optimizationset;
+		}
+
+		
+		public boolean projectDoesNotExist(ProjectDTO project){
+			if(project==null){
+				return true;
+			}else
+				return false;		
+		}
+		
 			//Comment:  These syntaxes haven't worked. Tried to save data into database.			
 			// 
 			// OptimizationSetService optimizationService.sendExternalParameters(model, ExternalParameterSetId);		
@@ -503,16 +521,9 @@ public class OptimizationController {
 			
 				
 			
-			return "editoptimization";
-		}
+		
 		
 
-		public boolean projectDoesNotExist(ProjectDTO project){
-			if(project==null){
-				return true;
-			}else
-				return false;		
-		}
 		
 		//List<OptimizationSetDTO> list = optSetService.findByNameContaining(clonename);
 			/*
