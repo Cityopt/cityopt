@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
+import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.OptConstraintDTO;
 import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.ProjectDTO;
@@ -39,6 +40,9 @@ public class OptimizationSetServiceTest {
 	
 	@Autowired
 	ProjectService projectService; 
+	
+	@Autowired
+	ExtParamValSetService extParamValSetService;
 	
 	@Test
 	public void testGetSearchConstraints() throws EntityNotFoundException {
@@ -62,26 +66,36 @@ public class OptimizationSetServiceTest {
 	@Test
 //	@Rollback(false)
 	public void testSaveOptimizationSet() throws EntityNotFoundException {
-		ProjectDTO project = projectService.findByID(1);
-		Integer sizeBefore = optimizationSetService.findAll().size();
+	    ProjectDTO project = projectService.findByID(1);
+	    Integer sizeBefore = optimizationSetService.findAll().size();
+	    ExtParamValSetDTO xpvs = extParamValSetService.findByID(1);
 
-		OptimizationSetDTO testSet = new OptimizationSetDTO();
+	    assertNotNull(project);
+	    assertNotNull(xpvs);
 
-		testSet.setProject(project);
-		testSet.setName("my first optset");
-		
-		testSet = optimizationSetService.save(testSet);
+	    OptimizationSetDTO testSet = new OptimizationSetDTO();
 
-//		optimizationSetService.findByID(id)
-		assertEquals(sizeBefore + 1, optimizationSetService.findAll().size());
-		Set<OptimizationSetDTO> pOset = projectService.getSearchOptimizationSets(1);
-		assertNotNull(pOset);
-		boolean found = false;
-		for(OptimizationSetDTO os : pOset){
-			if(testSet.getName() == os.getName())
-				found = true;
-		}
-		assertTrue(found);
+	    testSet.setProject(project);
+	    testSet.setName("my first optset");
+	    testSet.setExtparamvalset(xpvs);
+
+	    testSet = optimizationSetService.save(testSet);
+
+	    //		optimizationSetService.findByID(id)
+	    assertEquals(sizeBefore + 1, optimizationSetService.findAll().size());
+	    Set<OptimizationSetDTO> pOset = projectService.getSearchOptimizationSets(1);
+	    assertNotNull(pOset);
+	    boolean found = false;
+	    for(OptimizationSetDTO os : pOset){
+	        if(testSet.getName() == os.getName()) {
+	            assertFalse("Duplicate OptimizationSet names found",
+	                    found);
+	            found = true;
+	            assertEquals(1,
+	                    os.getExtparamvalset().getExtparamvalsetid());
+	        }
+	    }
+	    assertTrue(found);
 	}
 
 	@Test
@@ -89,10 +103,14 @@ public class OptimizationSetServiceTest {
 	public void testUpdateOptimizationSet() throws EntityNotFoundException {
 		
 		OptimizationSetDTO testSet = optimizationSetService.findByID(1);
-		testSet.setName("my first optset");
+		final String osname = "my first optset"; 
+		testSet.setName(osname);
 		testSet.getProject().setDescription("asdf");
 		testSet = optimizationSetService.save(testSet);
+		assertEquals(osname, testSet.getName());
 		
-		assertEquals(testSet.getName(), optimizationSetService.findByID(1).getName());
+		OptimizationSetDTO fetched = optimizationSetService.findByID(1);
+		
+		assertEquals(osname, fetched.getName());
 	}
 }
