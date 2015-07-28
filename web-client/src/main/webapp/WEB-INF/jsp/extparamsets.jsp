@@ -32,7 +32,7 @@
 				<tr>
 					<td>
 						<table>
-							<form method="get" action="editoptimizationset.html"/sendexternalparameterset>			
+							<form method="get" action="editoptimizationset.html" path="sendexternalparameterset">			
 							<col style="width:250px">
 							<col style="width:30px">
 							<col style="width:350px">
@@ -89,6 +89,7 @@
 												</c:when>
 												<c:otherwise>
 													<tr>
+													
 														<td><a href="<c:url value='extparamsets.html?selectedextparamsetid=${extParamValSet.extparamvalsetid}'/>">
 														<input type="button" name="id" value="${extParamValSet.extparamvalsetid}">
 														<spring:message code="select"/></a></td>
@@ -97,9 +98,7 @@
 											</c:choose>	
 											<td>${extParamValSet.name}</td>
 									   	</tr>
-									   	</c:forEach>
-										
-																						
+									   	</c:forEach>																						
 									</table>
 									<td></td>
 									<td>
