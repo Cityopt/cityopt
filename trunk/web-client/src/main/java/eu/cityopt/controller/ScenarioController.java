@@ -228,7 +228,7 @@ public class ScenarioController {
 				
 			//Bugfix #10543 author: Markus Turunen Check if energy models exist
 			if(scenarioService.getInputParamVals(scenario.getScenid()) != null){
-				Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+				List<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 				model.put("inputParamVals", inputParamVals);
 	//			Iterator<InputParamValDTO> iter = inputParamVals.iterator();			
 				InputParamValDTO simStart = inputParamValService.findByNameAndScenario("simulation_start", scenario.getScenid());
@@ -289,7 +289,7 @@ public class ScenarioController {
 			model.put("scenario", scenario);
 			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 			model.put("components", components);
-			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+			List<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 			model.put("inputParamVals", inputParamVals);
 		
 			UserSession userSession = (UserSession) model.get("usersession");
@@ -434,7 +434,7 @@ public class ScenarioController {
 			
 			model.put("status", statusMsg);
 			
-			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+			List<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
 			
 			while(iter.hasNext())
@@ -492,7 +492,7 @@ public class ScenarioController {
 				model.put("errorMessage", "This scenario has been updated in the meantime, please reload.");
 			}
 			
-			Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+			List<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
 			
 			while(iter.hasNext())
@@ -701,7 +701,7 @@ public class ScenarioController {
 			e.printStackTrace();
 		}
 		
-		Set<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+		List<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 		Iterator<InputParamValDTO> iter = inputParamVals.iterator();
 		
 		while(iter.hasNext())

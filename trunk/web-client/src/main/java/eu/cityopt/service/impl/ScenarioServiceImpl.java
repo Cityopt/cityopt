@@ -133,10 +133,9 @@ public class ScenarioServiceImpl implements ScenarioService {
 	
 	@Override
 	@Transactional(readOnly=true)
-	public Set<InputParamValDTO> getInputParamVals(int scenId)	{
-		Scenario scen = scenarioRepository.findOne(scenId);
-		Set<InputParamVal> inputParamVals = scen.getInputparamvals();
-		return modelMapper.map(inputParamVals, new TypeToken<Set<InputParamValDTO>>() {}.getType());
+	public List<InputParamValDTO> getInputParamVals(int scenId)	{
+		List<InputParamVal> inputParamVals = inputParamValRepository.findByScenario(scenId);
+		return modelMapper.map(inputParamVals, new TypeToken<List<InputParamValDTO>>() {}.getType());
 	}
 
 	@Override

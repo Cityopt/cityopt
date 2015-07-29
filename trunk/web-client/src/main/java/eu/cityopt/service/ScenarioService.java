@@ -17,7 +17,7 @@ public interface ScenarioService extends CityOptService<ScenarioDTO>{
 	
 //	List<Scenario> findByCreationDate(Date dateLower, Date dateUpper);
 
-	Set<InputParamValDTO> getInputParamVals(int scenId);
+	List<InputParamValDTO> getInputParamVals(int scenId);
 	
 	ScenarioDTO save(ScenarioDTO s, int prjid);
 
