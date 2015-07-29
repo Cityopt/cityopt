@@ -54,7 +54,7 @@ public class Project extends VersionModel implements java.io.Serializable {
 	private Set<ObjectiveFunction> objectivefunctions = new HashSet<ObjectiveFunction>(
 			0);
 	private Set<Scenario> scenarios = new LinkedHashSet<Scenario>();
-	private Set<ScenarioGenerator> scenariogenerators = new HashSet<ScenarioGenerator>(
+	private Set<ScenarioGenerator> scenariogenerators = new LinkedHashSet<ScenarioGenerator>(
 			0);
 	private List<Component> components = new ArrayList<Component>();
 	private Set<OptConstraint> optconstraints = new HashSet<OptConstraint>(0);
@@ -62,7 +62,7 @@ public class Project extends VersionModel implements java.io.Serializable {
 	private Set<UserGroupProject> usergroupprojects = new HashSet<UserGroupProject>(
 			0);
 	private Set<ExtParam> extparams = new HashSet<ExtParam>(0);
-	private Set<OptimizationSet> optimizationsets = new HashSet<OptimizationSet>(
+	private Set<OptimizationSet> optimizationsets = new LinkedHashSet<OptimizationSet>(
 			0);	
 	
 	public Project() {
@@ -267,6 +267,7 @@ public class Project extends VersionModel implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
+	@OrderBy("name")
 	public Set<ScenarioGenerator> getScenariogenerators() {
 		return this.scenariogenerators;
 	}
@@ -322,6 +323,7 @@ public class Project extends VersionModel implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
+	@OrderBy("name")
 	public Set<OptimizationSet> getOptimizationsets() {
 		return this.optimizationsets;
 	}
