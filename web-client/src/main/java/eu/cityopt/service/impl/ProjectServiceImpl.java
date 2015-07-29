@@ -271,9 +271,9 @@ public class ProjectServiceImpl implements ProjectService{
 		Set<OptimizationSet> osSet = p.getOptimizationsets();
 		Set<ScenarioGenerator> sgSet = p.getScenariogenerators();
 		Set<OpenOptimizationSetDTO> osSetDTO = modelMapper.map(osSet, 
-				new TypeToken<Set<OpenOptimizationSetDTO>>() {}.getType());
+				new TypeToken<LinkedHashSet<OpenOptimizationSetDTO>>() {}.getType());
 		osSetDTO.addAll(modelMapper.map(sgSet, 
-				new TypeToken<Set<OpenOptimizationSetDTO>>() {}.getType()));
+				new TypeToken<LinkedHashSet<OpenOptimizationSetDTO>>() {}.getType()));
 
 		return osSetDTO;
 	}
@@ -287,7 +287,7 @@ public class ProjectServiceImpl implements ProjectService{
 			throw new EntityNotFoundException();
 		}
 		
-		return modelMapper.map(p.getOptimizationsets(), new TypeToken<Set<OptimizationSetDTO>>() {}.getType());
+		return modelMapper.map(p.getOptimizationsets(), new TypeToken<LinkedHashSet<OptimizationSetDTO>>() {}.getType());
 	}
 	
 	@Override
