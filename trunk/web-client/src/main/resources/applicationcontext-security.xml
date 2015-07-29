@@ -19,6 +19,7 @@
    
     <security:http use-expressions="true"> 
  		<security:form-login login-page="/login.html" default-target-url="/index.html" authentication-failure-url="/login.html?errorLogin" always-use-default-target='true'/> 
+ 		<security:logout logout-url="/exit" logout-success-url="/login.html"/>
  	
  		<security:intercept-url pattern="/login.html" access="isAnonymous() or isAuthenticated()" />
  	 	<security:intercept-url pattern="/**" access="isAuthenticated()" />

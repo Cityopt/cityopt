@@ -9,8 +9,10 @@
   <context-param>
   <param-name>contextConfigLocation</param-name>
   <!-- Enable Spring security  -->
-  <!-- <param-value>classpath:/applicationcontext-security.xml,classpath:/jpaContext.xml</param-value>-->
- <param-value>classpath:/jpaContext.xml</param-value>
+  <!--  
+ <param-value>classpath:/applicationcontext-security.xml,classpath:/jpaContext.xml</param-value>
+ -->
+  <param-value>classpath:/jpaContext.xml</param-value>
  </context-param>
  	 
  <servlet>

@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <table class="menustyle" height=800 align="left">
 <col style="width: 60px">
 <col style="width: 150px">
@@ -20,7 +22,17 @@
 				<td>Build date: </td><td>15.7.2015</td>
 			</tr>
 			<tr>
-				<td>User: </td><td>${user.name} (<a href="logout.html">logout</a>)</td>
+				<td>User: </td><td>${user.name}
+				
+				
+				<c:url var="logoutUrl" value="/exit"/>
+					<form action="${logoutUrl}" method="post">
+  					<input type="submit" value="Log out" />
+  					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+				</form>
+				
+				
+				</td>
 			</tr>
 			<tr>
 				<td><spring:message code="language"/>:&nbsp;</td>
