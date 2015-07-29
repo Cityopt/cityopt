@@ -38,6 +38,14 @@ public interface InputParamValRepository extends JpaRepository<InputParamVal,Int
 	
 	@Query("select ipv from InputParamVal ipv "
 			+ " join ipv.inputparameter ip"
+			+ " join ipv.scenario s"
+			+ " where "
+			+ " s.scenid = :scenid ")
+	@OrderBy("ip.name")
+	List<InputParamVal> findByScenario(@Param("scenid") int scenid);
+	
+	@Query("select ipv from InputParamVal ipv "
+			+ " join ipv.inputparameter ip"
 			+ " join ip.component c"
 			+ " join ipv.scenario s"
 			+ " where c.componentid = :componentid"
