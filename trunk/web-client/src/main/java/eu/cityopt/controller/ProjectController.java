@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
@@ -41,6 +42,7 @@ import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
+import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.TypeDTO;
@@ -86,6 +88,10 @@ import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.UnitForm;
 import eu.cityopt.web.UserSession;
+
+
+//Contains Forms for UI
+import eu.cityopt.forms.*;
 
 /**
  * @author Olli Stenlund
@@ -781,7 +787,10 @@ public class ProjectController {
 		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
 		model.put("extParamValSets", extParamValSets);
 		List<ExtParamValDTO> extParamVals = null;
-						
+		
+		
+		ModelAndView externalParameterID = new ModelAndView("ExternParamIDForm");
+		
 		if (selectedExtParamValSetId != null)
 		{
 			try {
@@ -796,9 +805,31 @@ public class ProjectController {
 		return "extparamsets";
 		}
 		
+		@RequestMapping(value="extparamsets",method=RequestMethod.POST)
+		public String setExtParamSets(Map<String, Object> model,Model model2,
+				@ModelAttribute ExternParamIDForm ExForm){
+			
+			System.out.println("Test: setExtParamSet is invoked");
+			
+			ProjectDTO project = (ProjectDTO) model.get("project");
+			if(this.projectDoesNotExist(project)){return "error";}
+			model2.addAttribute("ExForm", ExForm);						
+			int id=ExForm.getId();
+			System.out.println(id);
+			OptimizationSetDTO database= OptimizationDTOInitializer(model);
+			ExtParamValSetDTO extParamValSet = projectService.getExtParamValSets(project.getPrjid()).get(id);
+			
+			
+			
+			System.out.println("Test: Saved into Database");
+			
+			
+			return "editoptimizationset";
+			
+		}
 		
 		
-	
+			
 		
 
 	//@author: Markus Turunen 
@@ -806,6 +837,10 @@ public class ProjectController {
 	//Unnessessary comentary: Tierd of checking project Null? Here's a service for it.
 	//Extra service Methods I made for myself.
 		
+		public OptimizationSetDTO OptimizationDTOInitializer(Map<String, Object> model){			
+			OptimizationSetDTO optimizationset = (OptimizationSetDTO) model.get("optimizationset");
+			return optimizationset;
+		}		
 		public boolean projectDoesNotExist(ProjectDTO project){
 			if(project==null){
 				return true;
