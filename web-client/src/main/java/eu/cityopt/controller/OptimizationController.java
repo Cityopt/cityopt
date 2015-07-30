@@ -481,6 +481,7 @@ public class OptimizationController {
 		// author@: Markus Turunen
 		// this method supposed to handle External parameter Handling when Person submit the form.
 		
+		/*
 		@RequestMapping(value="sendexternalparameterset",method=RequestMethod.GET)
 		public String sendExternalParameters(Map<String, Object> model,
 				@RequestParam(value="id", required=false) int ExternalParameterSetId){									
@@ -508,21 +509,13 @@ public class OptimizationController {
 			}else
 				return false;		
 		}
+		*/
 		
 			//Comment:  These syntaxes haven't worked. Tried to save data into database.			
 			// 
 			// OptimizationSetService optimizationService.sendExternalParameters(model, ExternalParameterSetId);		
 			//OptimizationSetService optimizationSetService;
-			//optimizationSetService.extParamValSetService.save(extParamValSet);
-			
-			
-			
-
-			
-				
-			
-		
-		
+			//optimizationSetService.extParamValSetService.save(extParamValSet);		
 
 		
 		//List<OptimizationSetDTO> list = optSetService.findByNameContaining(clonename);
