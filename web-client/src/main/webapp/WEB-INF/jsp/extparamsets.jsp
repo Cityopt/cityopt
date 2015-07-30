@@ -32,7 +32,9 @@
 				<tr>
 					<td>
 						<table>
-							<form method="get" action="editoptimizationset.html" path="sendexternalparameterset">			
+							
+							<form action="#" th:action="@{ExForm}" th:object="${ExForm}" method="post">
+															
 							<col style="width:250px">
 							<col style="width:30px">
 							<col style="width:350px">
@@ -91,7 +93,7 @@
 													<tr>
 													
 														<td><a href="<c:url value='extparamsets.html?selectedextparamsetid=${extParamValSet.extparamvalsetid}'/>">
-														<input type="button" name="id" value="${extParamValSet.extparamvalsetid}">
+														<input type="button" name="id" th:field="*{id}" value="${extParamValSet.extparamvalsetid}">
 														<spring:message code="select"/></a></td>
 														
 												</c:otherwise>
