@@ -23,7 +23,6 @@ public interface InputParamValRepository extends JpaRepository<InputParamVal,Int
 			+ " join ipv.scenario s"
 			+ " where ip.inputid = :inputid "
 			+ " and s.scenid = :scenid ")
-	@OrderBy("ip.name")
 	InputParamVal findByInputIdAndScenId(@Param("inputid") int inputid, @Param("scenid") int scenid);
 
 	@Query("select ipv from InputParamVal ipv "
