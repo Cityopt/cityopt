@@ -200,6 +200,9 @@ public class ProjectController {
 	@Autowired
 	MessageSource resource;
 	
+	@Autowired
+	OptimizationSetService optimizationSetService;
+	
 	//Enable Spring security
 		/*
 		@RequestMapping(method=RequestMethod.GET, value="/login")
@@ -817,13 +820,11 @@ public class ProjectController {
 			int id=ExForm.getId();
 			System.out.println(id);
 			OptimizationSetDTO database= OptimizationDTOInitializer(model);
-			ExtParamValSetDTO extParamValSet = projectService.getExtParamValSets(project.getPrjid()).get(id);
-			
-			
-			
+			ExtParamValSetDTO extParamValSet = projectService.getExtParamValSets(project.getPrjid()).get(0);			
+			database.setExtparamvalset(extParamValSet);			
+			optSetService.save(database);						
+			optimizationSetService.save(database);
 			System.out.println("Test: Saved into Database");
-			
-			
 			return "editoptimizationset";
 			
 		}
@@ -836,6 +837,9 @@ public class ProjectController {
 	//Functionality: Check does the project exist.
 	//Unnessessary comentary: Tierd of checking project Null? Here's a service for it.
 	//Extra service Methods I made for myself.
+		
+		
+		
 		
 		public OptimizationSetDTO OptimizationDTOInitializer(Map<String, Object> model){			
 			OptimizationSetDTO optimizationset = (OptimizationSetDTO) model.get("optimizationset");
