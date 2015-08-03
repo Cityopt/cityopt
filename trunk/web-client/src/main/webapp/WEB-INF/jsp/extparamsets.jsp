@@ -31,14 +31,11 @@
 				</tr>
 				<tr>
 					<td>
-						<table>
-							
-							<form action="#" th:action="@{ExForm}" th:object="${ExForm}" method="post">
-															
+						<table>							
+							<form action="#" th:action="@{ExForm}" th:object="${ExForm}" method="post">															
 							<col style="width:250px">
 							<col style="width:30px">
 							<col style="width:350px">
-
 							<tr>
 								<!--External parameter sets  -->
 								<td><b><spring:message code="external_parameter_sets"/></b></td>
@@ -82,22 +79,26 @@
 										
 										<!-- ForEachElement: Select element // External parameterset -->										
 										<!-- Example:<tr><td>Select</td><td>Dataentry</td></tr> -->		
-															
+										<c:set var="count" value="0" scope="page" />															
 										<c:forEach items="${extParamValSets}" var="extParamValSet">
+											<tr>
+																																		
+											<td><input type="radio" name="id" value="${count}"></td>
+											<c:set var="count" value="${count + 1}" scope="page"/> 
+											<!-- 											
 											<c:choose>
 												<c:when test="${selectedextparamsetid == extParamValSet.extparamvalsetid}">
 													<tr style="background-color: #D4D4D4"><td>
 													<spring:message code="selected"/></td>
 												</c:when>
 												<c:otherwise>
-													<tr>
-													
+													<tr>													
 														<td><a href="<c:url value='extparamsets.html?selectedextparamsetid=${extParamValSet.extparamvalsetid}'/>">
 														<input type="button" name="id" th:field="*{id}" value="${extParamValSet.extparamvalsetid}">
-														<spring:message code="select"/></a></td>
-														
+														<spring:message code="select"/></a></td>														
 												</c:otherwise>
 											</c:choose>	
+											 -->
 											<td>${extParamValSet.name}</td>
 									   	</tr>
 									   	</c:forEach>																						
@@ -120,10 +121,9 @@
 								<!-- Submint button -->	
 								
 								<!-- Close button -->
-								<td><input id="id" type="submit"></form></a></td>							
+								<td><input name="index" type="submit"></form></a></td>							
 								<td align="right"><a href="editoptimizationset.html"><button type="button">
-								<spring:message code="close"/></button></a></td>
-								
+								<spring:message code="close"/></button></a></td>								
 							</tr>
 						</table>
 						</td>
