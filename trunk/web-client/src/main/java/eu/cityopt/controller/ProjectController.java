@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
@@ -191,9 +190,6 @@ public class ProjectController {
 
     @Autowired
     MessageSource resource;
-
-    @Autowired
-    OptimizationSetService optimizationSetService;
 
     //Enable Spring security
     /*
@@ -801,23 +797,26 @@ public class ProjectController {
     }
 
     @RequestMapping(value="extparamsets",method=RequestMethod.POST)
-    public String setExtParamSets(Map<String, Object> model,Model model2,
+    public String setExtParamSets(Map<String, Object> model,
             @ModelAttribute ExternParamIDForm ExForm,
             @RequestParam(value="id",required=true) int ID){		
 
         System.out.println("Test: setExtParamSet is invoked");
 
         ProjectDTO project = (ProjectDTO) model.get("project");
-        if(this.projectDoesNotExist(project)){return "error";}
-        model2.addAttribute("ExForm", ExForm);
+        if (projectDoesNotExist(project)) {
+            return "error";
+        }
+        model.put("ExForm", ExForm);
         ExForm.setId(ID);
         int id=ExForm.getId();
         System.out.println(id);
-        OptimizationSetDTO database= OptimizationDTOInitializer(model);
-        ExtParamValSetDTO extParamValSet = projectService.getExtParamValSets(project.getPrjid()).get(id);			
-        database.setExtparamvalset(extParamValSet);			
-        optSetService.save(database);						
-        optimizationSetService.save(database);
+        OptimizationSetDTO optset = getOptimizationSet(model);
+        ExtParamValSetDTO extParamValSet = projectService.getExtParamValSets(
+                project.getPrjid())
+                .get(id);			
+        optset.setExtparamvalset(extParamValSet);			
+        optset = optSetService.save(optset);						
         System.out.println("Test: Saved into Database");
         return "editoptimizationset";			
     }
@@ -834,7 +833,7 @@ public class ProjectController {
 
 
 
-    public OptimizationSetDTO OptimizationDTOInitializer(Map<String, Object> model){			
+    public OptimizationSetDTO getOptimizationSet(Map<String, Object> model){			
         OptimizationSetDTO optimizationset = (OptimizationSetDTO) model.get("optimizationset");
         return optimizationset;
     }		
