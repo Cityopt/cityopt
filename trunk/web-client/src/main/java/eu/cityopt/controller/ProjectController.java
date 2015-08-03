@@ -1,7 +1,5 @@
 package eu.cityopt.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,18 +8,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import javax.script.ScriptException;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
@@ -50,7 +46,8 @@ import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.DTO.UserGroupDTO;
 import eu.cityopt.DTO.UserGroupProjectDTO;
 import eu.cityopt.config.AppMetadata;
-import eu.cityopt.model.AppUser;
+//Contains Forms for UI
+import eu.cityopt.forms.ExternParamIDForm;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.AprosService;
@@ -73,7 +70,6 @@ import eu.cityopt.service.OptSearchConstService;
 import eu.cityopt.service.OptimizationSetService;
 import eu.cityopt.service.OutputVariableService;
 import eu.cityopt.service.ProjectService;
-import eu.cityopt.service.ProjectServiceDTOTest;
 import eu.cityopt.service.ScenarioGeneratorService;
 import eu.cityopt.service.ScenarioService;
 import eu.cityopt.service.SimulationResultService;
@@ -88,10 +84,6 @@ import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.UnitForm;
 import eu.cityopt.web.UserSession;
-
-
-//Contains Forms for UI
-import eu.cityopt.forms.*;
 
 /**
  * @author Olli Stenlund
@@ -810,27 +802,28 @@ public class ProjectController {
 		
 		@RequestMapping(value="extparamsets",method=RequestMethod.POST)
 		public String setExtParamSets(Map<String, Object> model,Model model2,
-				@ModelAttribute ExternParamIDForm ExForm){
+				@ModelAttribute ExternParamIDForm ExForm,
+				@RequestParam(value="id",required=true) int ID){		
 			
 			System.out.println("Test: setExtParamSet is invoked");
 			
 			ProjectDTO project = (ProjectDTO) model.get("project");
 			if(this.projectDoesNotExist(project)){return "error";}
-			model2.addAttribute("ExForm", ExForm);						
+			model2.addAttribute("ExForm", ExForm);
+			ExForm.setId(ID);
 			int id=ExForm.getId();
 			System.out.println(id);
 			OptimizationSetDTO database= OptimizationDTOInitializer(model);
-			ExtParamValSetDTO extParamValSet = projectService.getExtParamValSets(project.getPrjid()).get(0);			
+			ExtParamValSetDTO extParamValSet = projectService.getExtParamValSets(project.getPrjid()).get(id);			
 			database.setExtparamvalset(extParamValSet);			
 			optSetService.save(database);						
 			optimizationSetService.save(database);
 			System.out.println("Test: Saved into Database");
-			return "editoptimizationset";
-			
+			return "editoptimizationset";			
 		}
 		
 		
-			
+		
 		
 
 	//@author: Markus Turunen 
