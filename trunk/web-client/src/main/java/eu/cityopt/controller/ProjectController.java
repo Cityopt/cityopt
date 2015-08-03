@@ -767,64 +767,6 @@ public class ProjectController {
         return "error";
     }
 
-    //@author Markus Turunen
-    //This seems to handle extparamsets	
-
-
-    @RequestMapping(value="extparamsets",method=RequestMethod.GET)
-    public String getExtParamSets(Map<String, Object> model,
-            @RequestParam(value="selectedextparamvalsetid", required=false) String selectedExtParamValSetId){
-
-        ProjectDTO project = (ProjectDTO) model.get("project");
-        if (project == null) {
-            return "error";
-        }		
-        List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
-        model.put("extParamValSets", extParamValSets);
-        List<ExtParamValDTO> extParamVals = null;
-
-
-        ModelAndView externalParameterID = new ModelAndView("ExternParamIDForm");
-
-        if (selectedExtParamValSetId != null)
-        {
-            try {
-                extParamVals = extParamValSetService.getExtParamVals(projectService.getDefaultExtParamSetId(project.getPrjid()));
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            model.put("extParamVals", extParamVals);
-        }	
-
-        return "extparamsets";
-    }
-
-    @RequestMapping(value="extparamsets",method=RequestMethod.POST)
-    public String setExtParamSets(
-            Map<String, Object> model,
-            @RequestParam(value="id",required=true) int id) {		
-        OptimizationSetDTO optset = (OptimizationSetDTO)model.get(
-                "optimizationset");
-        if (optset == null) {
-            // Invalid state
-            return "error";
-        }
-        try {
-            ExtParamValSetDTO extParamValSet
-                = extParamValSetService.findByID(id);
-            optset.setExtparamvalset(extParamValSet);
-            optset = optSetService.update(optset);
-            model.put("optimizationset", optset);                                            
-        } catch (EntityNotFoundException 
-                 | ObjectOptimisticLockingFailureException e) {
-            model.put("errorMessage",
-                      "Concurrent modification detected.");
-            //TODO Anything more sensible that we could do here?
-        }
-        return "editoptimizationset";                   
-    }
-
     @RequestMapping(value="units", method=RequestMethod.GET)
     public String getUnits(Model model){
         List<UnitDTO> units = unitService.findAll();
