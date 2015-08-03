@@ -10,6 +10,8 @@ import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.ProjectDTO;
 
+//TODO Is this going to get used?  Currently it isn't.
+
 public class ExternParamIDForm {
 
 	private int id;
