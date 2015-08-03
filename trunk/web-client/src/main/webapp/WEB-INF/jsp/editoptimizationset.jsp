@@ -182,7 +182,7 @@
 							</tr>
 							<tr>
 								<td>
-									<input type="text" style="width: 350px">
+									${optimizationset.extparamvalset == null ? "(unset)" : optimizationset.extparamvalset.name}
 								</td>
 							</tr>
 							<tr>
