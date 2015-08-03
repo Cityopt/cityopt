@@ -32,7 +32,7 @@
 				<tr>
 					<td>
 						<table>							
-							<form action="#" th:action="@{ExForm}" th:object="${ExForm}" method="post">															
+							<form action="#" method="post">															
 							<col style="width:250px">
 							<col style="width:30px">
 							<col style="width:350px">
@@ -79,12 +79,9 @@
 										
 										<!-- ForEachElement: Select element // External parameterset -->										
 										<!-- Example:<tr><td>Select</td><td>Dataentry</td></tr> -->		
-										<c:set var="count" value="0" scope="page" />															
 										<c:forEach items="${extParamValSets}" var="extParamValSet">
 											<tr>
-																																		
-											<td><input type="radio" name="id" value="${count}"></td>
-											<c:set var="count" value="${count + 1}" scope="page"/> 
+											<td><input type="radio" name="id" value="${extParamValSet.extparamvalsetid}"></td>
 											<!-- 											
 											<c:choose>
 												<c:when test="${selectedextparamsetid == extParamValSet.extparamvalsetid}">

@@ -89,7 +89,9 @@ import eu.cityopt.web.UserSession;
  *
  */
 @Controller
-@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession", "user", "version"})
+@SessionAttributes({
+    "project", "scenario", "optimizationset", "scengenerator", "optresults",
+    "usersession", "user", "version"})
 public class ProjectController {
 
     @Autowired
@@ -774,7 +776,9 @@ public class ProjectController {
             @RequestParam(value="selectedextparamvalsetid", required=false) String selectedExtParamValSetId){
 
         ProjectDTO project = (ProjectDTO) model.get("project");
-        if(this.projectDoesNotExist(project)){return "error";}		
+        if (project == null) {
+            return "error";
+        }		
         List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
         model.put("extParamValSets", extParamValSets);
         List<ExtParamValDTO> extParamVals = null;
@@ -797,62 +801,29 @@ public class ProjectController {
     }
 
     @RequestMapping(value="extparamsets",method=RequestMethod.POST)
-    public String setExtParamSets(Map<String, Object> model,
-            @ModelAttribute ExternParamIDForm ExForm,
-            @RequestParam(value="id",required=true) int ID){		
-
-        System.out.println("Test: setExtParamSet is invoked");
-
-        ProjectDTO project = (ProjectDTO) model.get("project");
-        if (projectDoesNotExist(project)) {
+    public String setExtParamSets(
+            Map<String, Object> model,
+            @RequestParam(value="id",required=true) int id) {		
+        OptimizationSetDTO optset = (OptimizationSetDTO)model.get(
+                "optimizationset");
+        if (optset == null) {
+            // Invalid state
             return "error";
         }
-        model.put("ExForm", ExForm);
-        ExForm.setId(ID);
-        int id=ExForm.getId();
-        System.out.println(id);
-        OptimizationSetDTO optset = getOptimizationSet(model);
-        ExtParamValSetDTO extParamValSet = projectService.getExtParamValSets(
-                project.getPrjid())
-                .get(id);			
-        optset.setExtparamvalset(extParamValSet);			
-        optset = optSetService.save(optset);						
-        System.out.println("Test: Saved into Database");
-        return "editoptimizationset";			
+        try {
+            ExtParamValSetDTO extParamValSet
+                = extParamValSetService.findByID(id);
+            optset.setExtparamvalset(extParamValSet);
+            optset = optSetService.update(optset);
+            model.put("optimizationset", optset);                                            
+        } catch (EntityNotFoundException 
+                 | ObjectOptimisticLockingFailureException e) {
+            model.put("errorMessage",
+                      "Concurrent modification detected.");
+            //TODO Anything more sensible that we could do here?
+        }
+        return "editoptimizationset";                   
     }
-
-
-
-
-
-    //@author: Markus Turunen 
-    //Functionality: Check does the project exist.
-    //Unnessessary comentary: Tierd of checking project Null? Here's a service for it.
-    //Extra service Methods I made for myself.
-
-
-
-
-    public OptimizationSetDTO getOptimizationSet(Map<String, Object> model){			
-        OptimizationSetDTO optimizationset = (OptimizationSetDTO) model.get("optimizationset");
-        return optimizationset;
-    }		
-    public boolean projectDoesNotExist(ProjectDTO project){
-        if(project==null){
-            return true;
-        }else
-            return false;		
-    }
-
-    public boolean ExternParamValSetDoExist(ExtParamValSetService externalParam){
-        if(externalParam!=null){
-            return true;
-        }else
-            return false;		
-    }
-
-
-    ////
 
     @RequestMapping(value="units", method=RequestMethod.GET)
     public String getUnits(Model model){
