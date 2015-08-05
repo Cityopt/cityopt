@@ -241,7 +241,8 @@ public class ScenarioController {
 					userSession = new UserSession();
 					model.put("usersession", userSession);
 					model.put("Succesful", "Scenario succesfully created");
-					model.put("newScenario", scenario);					
+					model.put("newScenario", scenario);
+					model.put("success",true);
 					return "createscenario";				
 				} else {
 					model.put("newScenario", formScenario);				
