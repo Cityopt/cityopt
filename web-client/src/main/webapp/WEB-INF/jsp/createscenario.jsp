@@ -63,7 +63,12 @@
 						<element><h2 class="error"></element>${errorMessage}</h2><element>
 						<!-- Information message if scenario is created -->
 						<element><element><h2 class="successful"></element></element>${successful}</h2><element>				
-						
+					<c:choose>
+						 <c:when test="${success!=null && success==true}">
+						<a href="editscenario.html"><button style="width:100px" type="button" value="Next">
+            			   <spring:message code="next"/></button></a>
+            			</c:when>
+            		</c:choose>	
 					</td>
 				</tr>
 			</table>

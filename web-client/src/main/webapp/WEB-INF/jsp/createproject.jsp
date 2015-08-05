@@ -49,11 +49,13 @@
 							    <td><form:errors path="description" cssClass="error"/></td>
 							</tr>
 						</table>
-				
+										
 				<!-- Success // failure message -->
 				 <c:choose>
           			  <c:when test="${success!=null && success==true}">
-            			   <h2 class="successful"> <spring:message code="projectSuccess" /> </h2>
+            			   <h2 class="successful"> <spring:message code="projectSuccess"/></h2>
+            			   <a href="editproject.html"><button style="width:100px" type="button" value="Next">
+            			   <spring:message code="next"/></button></a>
             		</c:when>
             		<c:when test="${success!=null && success==false}">
             			   <h2 class="error"> <spring:message code="projectExists" /> </h2>
