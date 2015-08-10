@@ -9,8 +9,34 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
 <html>
 <head>
+
+
+<!-- JQuery script: For Radio button events -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $(":radio").click(function(){
+        var jsonBom =$(this).attr("value");
+        //Test Data for atribute 
+        $("#JQTest").text(jsonBom);// $("#JQTest").text($(this).attr("value"));  
+        $( "jsonBom" ).submit();
+        
+        //jSonWrapper
+        var object={jsonBom:jsonBom};
+        // Ajax Submit
+        jQuery.ajax("extparamsets",
+        {
+            type:"POST",
+            data:"object"
+        })                                   
+    });   
+});
+
+</script>
+
 <title>CityOpt external parameter sets</title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -64,7 +90,8 @@
 										
 										<tr>
 											<!--External parameter-->
-											<th><spring:message code="external_parameter"/></th>
+											<th width="125" ><spring:message code="name"/></th>
+											<th width="125" ><spring:message code="value"/></th>
 										</tr>
 					
 									</table>
@@ -81,8 +108,11 @@
 										<!-- Example:<tr><td>Select</td><td>Dataentry</td></tr> -->		
 										<c:forEach items="${extParamValSets}" var="extParamValSet">
 											<tr>
-											<td><input type="radio" name="id" value="${extParamValSet.extparamvalsetid}"></td>
-											<!-- 											
+											<td><input type="radio" name="id" value="${extParamValSet.extparamvalsetid}">
+											<label for="${extParamValSet.extparamvalsetid}"><spring:message code="select"/></label></td>
+											<input type="hidden" name="jsonBom" value='${extparamValset.extparamvalsetid} '/>
+																						
+											<!--							
 											<c:choose>
 												<c:when test="${selectedextparamsetid == extParamValSet.extparamvalsetid}">
 													<tr style="background-color: #D4D4D4"><td>
@@ -101,11 +131,16 @@
 									   	</c:forEach>																						
 									</table>
 									<td></td>
-									<td>
-										<table style="width:125,5px" border="1">
-										<!-- For each element get the External parameter Parameter -->
-										<c:forEach items="${extParamValSets}" var="extParamValSet">																												
-											<tr><td>${extParamValSet.name}</td></tr>
+									<td valign = "top">
+										<table style="width:255px" border="1">
+										<!-- For each element get the External parameter Parameter -->		
+										<c:forEach items="${extParamVals}" var="extParamVal">																											
+											<tr>
+												<tr><p id=JQTest><p></tr>
+												<input type=hidden id=JQTest>
+												<td>${extParamVal.extparam.name}</td>
+												<td>${extParamVal.value}</td>												
+											</tr>
 										</c:forEach>
 														
 											</tr>
