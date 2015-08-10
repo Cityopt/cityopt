@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jfree.data.time.TimeSeries;
@@ -27,6 +28,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -545,8 +547,6 @@ public class OptimizationController {
 			}
      */
 
-
-
     @RequestMapping(value="editobjfunction", method=RequestMethod.POST)
     public String getEditObjFunctionPost(ObjectiveFunctionDTO function, HttpServletRequest request, Map<String, Object> model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -635,7 +635,6 @@ public class OptimizationController {
 
         return "editoptimizationset";
     }
-
     @RequestMapping(value="deleteconstraint", method=RequestMethod.GET)
     public String getDeleteConstraint(Map<String, Object> model, @RequestParam(value="constraintid", required=true) String constraintId) {
         OptConstraintDTO constraint = null;
@@ -857,41 +856,37 @@ public class OptimizationController {
     }
     
     //@author Markus Turunen
-
     @RequestMapping(value="extparamsets",method=RequestMethod.GET)
     public String getExtParamSets(
             Map<String, Object> model,
-            @RequestParam(value="selectedextparamvalsetid", required=false)
-            String selectedExtParamValSetId) {
-
+            @RequestParam(value="selectedcompid", required=false) String selectedCompId){    
         ProjectDTO project = (ProjectDTO) model.get("project");
-        if (project == null) {
-            return "error";
-        }
+        if (project == null) {return "error";}
         //project may be stale but the id should be good.
-        List<ExtParamValSetDTO> extParamValSets
-            = projectService.getExtParamValSets(project.getPrjid());
-        model.put("extParamValSets", extParamValSets);
-        List<ExtParamValDTO> extParamVals = null;
-
-        //ModelAndView externalParameterID = new ModelAndView("ExternParamIDForm");
-
-        //FIXME How is this supposed to work?
-        if (selectedExtParamValSetId != null)
-        {
-            try {
-                extParamVals = extParamValSetService.getExtParamVals(projectService.getDefaultExtParamSetId(project.getPrjid()));
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            model.put("extParamVals", extParamVals);
-        }       
-
+        List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
+        model.put("extParamValSets", extParamValSets);       
+        int extParamValSetId = 0;
+        extParamValSetId =600;
+        // ToD0 Get Data From AjaX to enable this variables:
+        if(extParamValSetId!=0){
+        List<ExtParamValDTO> extParamVals=null;
+		try {extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
+		} catch (EntityNotFoundException e) {e.printStackTrace(); return "error";}		
+        model.put("extParamVals", extParamVals); 
+        }
         return "extparamsets";
-    }
-
-    @RequestMapping(value="extparamsets",method=RequestMethod.POST)
+       
+    } 
+   
+    /*
+    //Session Atribute test Did not work..
+    protected int doGetID(HttpServletRequest request, HttpServletResponse responce){    	
+    	int ID=0; 
+    	ID = Integer.parseInt(request.getParameter("ID"));
+    	return ID;    	
+    }*/
+            
+	@RequestMapping(value="extparamsets",method=RequestMethod.POST)
     public String setExtParamSets(
             Map<String, Object> model,
             @RequestParam(value="id",required=true) int id) {           
@@ -958,10 +953,9 @@ public class OptimizationController {
             }
         } else {
         }
-
         return "editoptimizationset";
     }
-
+    
     @RequestMapping(value="databaseoptimization", method=RequestMethod.GET)
     public String getDatabaseOptimization(Map<String, Object> model) {
 
