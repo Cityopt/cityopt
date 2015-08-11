@@ -860,45 +860,53 @@ public class OptimizationController {
     public String getExtParamSets(
             Map<String, Object> model,
             @RequestParam(value="selectedcompid", required=false) String selectedCompId){    
-        ProjectDTO project = (ProjectDTO) model.get("project");
-        if (project == null) {return "error";}
-        //project may be stale but the id should be good.
-        List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
-        model.put("extParamValSets", extParamValSets);       
+        
+    	ProjectDTO project= initiateProject(model);    	
+    	List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());      
+       	model.put("extParamValSets", extParamValSets);
         int extParamValSetId = 0;
-        extParamValSetId =600;
+        extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());        
         // ToD0 Get Data From AjaX to enable this variables:
-        if(extParamValSetId!=0){
+        
+        if(extParamValSetId!=0){        
         List<ExtParamValDTO> extParamVals=null;
 		try {extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
 		} catch (EntityNotFoundException e) {e.printStackTrace(); return "error";}		
         model.put("extParamVals", extParamVals); 
         }
-        return "extparamsets";
-       
+        return "extparamsets";        
     } 
-   
-    /*
-    //Session Atribute test Did not work..
-    protected int doGetID(HttpServletRequest request, HttpServletResponse responce){    	
-    	int ID=0; 
-    	ID = Integer.parseInt(request.getParameter("ID"));
-    	return ID;    	
-    }*/
-            
+    
+    @RequestMapping(value="extparamsets", method=RequestMethod.POST, produces="application/json")
+    @ResponseBody public String getSessionAjaxID( Map<String, Object> model, @RequestBody Map<String, Object> data){
+    	
+    	ProjectDTO project= initiateProject(model);
+    	int extParamValSetId = 0;
+    	 // ToD0 Get Data From AjaX to enable this variables:
+    	int ID= (int) data.get("id");    	
+        List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
+        extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());        
+        extParamValSetId=ID;
+        if(extParamValSetId!=0){        
+        List<ExtParamValDTO> extParamVals=null;
+		try {extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
+		} catch (EntityNotFoundException e) {e.printStackTrace(); return "error";}		
+        model.put("extParamVals", extParamVals); 
+        }
+        return "extparamsets";         
+    }   
+    
 	@RequestMapping(value="extparamsets",method=RequestMethod.POST)
     public String setExtParamSets(
-            Map<String, Object> model,
-            @RequestParam(value="id",required=true) int id) {           
-        OptimizationSetDTO optset = (OptimizationSetDTO)model.get(
-                "optimizationset");
+            Map<String, Object> model,@RequestParam(value="id",required=true) int id) { 
+		
+        OptimizationSetDTO optset = (OptimizationSetDTO)model.get("optimizationset");
         if (optset == null) {
             // Invalid state
             return "error";
         }
         try {
-            ExtParamValSetDTO extParamValSet
-                = extParamValSetService.findByID(id);
+            ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(id);
             optset.setExtparamvalset(extParamValSet);
             optset = optSetService.update(optset);
             model.put("optimizationset", optset);                                            
@@ -912,6 +920,12 @@ public class OptimizationController {
         return "editoptimizationset";                   
     }
 
+	// Helper Methods To prevent work Repetition: This method create Project DTO object from the model	
+	public ProjectDTO initiateProject(Map<String, Object> model){
+		ProjectDTO project = (ProjectDTO) model.get("project");
+        return project;		
+	}
+	
     @RequestMapping(value = "importoptimizationset", method = RequestMethod.POST)
     public String uploadCSVFileHandler(Map<String, Object> model, @RequestParam("file") MultipartFile file) {
 
