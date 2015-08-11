@@ -13,8 +13,7 @@
 <html>
 <head>
 
-
-<!-- JQuery script: For Radio button events -->
+<!-- JQuery script: For Radio button for in-Page events -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
 $(document).ready(function(){
@@ -23,15 +22,17 @@ $(document).ready(function(){
         //Test Data for atribute 
         $("#JQTest").text(jsonBom);// $("#JQTest").text($(this).attr("value"));  
         $( "jsonBom" ).submit();
-        
-        //jSonWrapper
-        var object={jsonBom:jsonBom};
-        // Ajax Submit
-        jQuery.ajax("extparamsets",
-        {
-            type:"POST",
-            data:"object"
-        })                                   
+
+      //jSonWrapper // Ajax Submit
+		$.ajax({			
+			"type":'POST',
+			"url":'<c:url value="extparamsets.html" />',
+			"data":JSON.stringify({"id=" : jsonBon}),
+			"success":sent,
+			"error":error,
+			contentType:"application/json",
+			dataType:"json"
+		});                                 
     });   
 });
 
