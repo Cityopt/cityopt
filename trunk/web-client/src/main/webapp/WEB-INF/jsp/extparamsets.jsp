@@ -16,23 +16,52 @@
 <!-- JQuery script: For Radio button for in-Page events -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
+
 $(document).ready(function(){
+
+	function SendID(jsonBom){
+		console.log(jsonBom);
+		var dataToSend = { selectedcompid : jsonBom };
+	
+		$.ajax({
+			url:"http://localhost:8080/CityOPT/extparamsets.json",
+			type:"GET",
+			data: JSON.stringify(dataToSend),
+			contentType: "application/json",
+		    dataType: "json",
+			success: function(data, textStatus, jqXHR) {
+		        //data - response from server
+		        console.log("success: data="+data);
+		        console.log(JSON.stringify(data));
+
+		        var jstlTagName = '${extParamVal.extparam.name}';
+		       	var jstlTagValue= '${extParamVal.value}';
+		       	
+		       	//$("#externalParameters").css( "border", "3px solid red" ).html("<tr><th>MUAHAHAHA!!</th><td>:3c</td></tr>");
+		        // ToD0 get Ajax Tags work in.. Spring controller
+		        $("#externalParameters").css( "border", "3px solid red" ).
+		        html("<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>"
+			    +"<tr><th>jstlTagName</th><td>jstlTagValue</td></tr>");
+				      
+
+		        //$.each(data, function(index, item) {
+		            //now you can access properties using dot notation
+		        //});
+		    },
+		    error: function (jqXHR, textStatus, errorThrown) {
+		 		console.error(errorThrown);
+		    }
+		});
+	};
+	
     $(":radio").click(function(){
         var jsonBom =$(this).attr("value");
+        
         //Test Data for atribute 
         $("#JQTest").text(jsonBom);// $("#JQTest").text($(this).attr("value"));  
-        $( "jsonBom" ).submit();
-
-      //jSonWrapper // Ajax Submit
-		$.ajax({			
-			"type":'POST',
-			"url":'<c:url value="extparamsets.html" />',
-			"data":JSON.stringify({"id=" : jsonBon}),
-			"success":sent,
-			"error":error,
-			contentType:"application/json",
-			dataType:"json"
-		});                                 
+        SendID(jsonBom);
+      //jSonWrapper // Ajax Submit		
+	  //$( "jsonBom" ).submit();                                 
     });   
 });
 
@@ -133,13 +162,14 @@ $(document).ready(function(){
 									</table>
 									<td></td>
 									<td valign = "top">
-										<table style="width:255px" border="1">
-										<!-- For each element get the External parameter Parameter -->		
-										<c:forEach items="${extParamVals}" var="extParamVal">																											
-											<tr>
-												<tr><p id=JQTest><p></tr>
-												<input type=hidden id=JQTest>
-												<td>${extParamVal.extparam.name}</td>
+										<table id="externalParameters" style="width:255px" border="1">
+										<!-- For each element get the External parameter Parameter -->
+											
+										<c:forEach items="${extParamVals}" var="extParamVal">																							
+											<tr data-extparam-id="${extParamVal.extparam.extparamid}">
+												<%-- <tr><p id="JQTest"><p></tr>
+												<input type="hidden" id="JQTest" />--%>
+												<th>${extParamVal.extparam.name}</th>
 												<td>${extParamVal.value}</td>												
 											</tr>
 										</c:forEach>
