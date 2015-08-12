@@ -875,16 +875,26 @@ public class OptimizationController {
         model.put("extParamVals", extParamVals); 
         }
         return "extparamsets";        
-    } 
+    }
     
-    @RequestMapping(value="extparamsets", method=RequestMethod.POST, produces="application/json")
-    @ResponseBody public String getSessionAjaxID( Map<String, Object> model, @RequestBody Map<String, Object> data){
+    @RequestMapping(value="localhost:8080/CityOPT/extparamsets.json", method=RequestMethod.GET, produces="application/json")
+    @ResponseBody
+    public  String getSessionAjaxID( Map<String, Object> model, 
+    		@RequestParam Integer id,
+    		@RequestBody Data data, 
+    		HttpServletRequest request,
+    		HttpServletResponse response){
     	
+    	
+    	    	
+    	System.out.println("invoked");
     	ProjectDTO project= initiateProject(model);
     	int extParamValSetId = 0;
     	 // ToD0 Get Data From AjaX to enable this variables:
-    	int ID= (int) data.get("id");    	
-        List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
+    	int ID= (int) data.getID();
+    	//Test Int in Java
+    	System.out.print(id);
+    	
         extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());        
         extParamValSetId=ID;
         if(extParamValSetId!=0){        
