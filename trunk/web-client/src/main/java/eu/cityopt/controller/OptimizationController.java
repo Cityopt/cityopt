@@ -794,7 +794,7 @@ public class OptimizationController {
             Map<String, Object> model,            
             @RequestParam(value="id", required=false) String id){    
    
-		model.put("id",id);
+		model.put("id", id);
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
 		model.put("extParamValSets", extParamValSets);
