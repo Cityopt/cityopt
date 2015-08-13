@@ -16,54 +16,20 @@
 <!-- JQuery script: For Radio button for in-Page events -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
 
-$(document).ready(function(){
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
 
-	function SendID(jsonBom){
-		console.log(jsonBom);
-		var dataToSend = { selectedcompid : jsonBom };
-	
-		$.ajax({
-			url:"http://localhost:8080/CityOPT/extparamsets.json",
-			type:"GET",
-			data: JSON.stringify(dataToSend),
-			contentType: "application/json",
-		    dataType: "json",
-			success: function(data, textStatus, jqXHR) {
-		        //data - response from server
-		        console.log("success: data="+data);
-		        console.log(JSON.stringify(data));
-
-		        var jstlTagName = '${extParamVal.extparam.name}';
-		       	var jstlTagValue= '${extParamVal.value}';
-		       	
-		       	//$("#externalParameters").css( "border", "3px solid red" ).html("<tr><th>MUAHAHAHA!!</th><td>:3c</td></tr>");
-		        // ToD0 get Ajax Tags work in.. Spring controller
-		        $("#externalParameters").css( "border", "3px solid red" ).
-		        html("<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>"
-			    +"<tr><th>jstlTagName</th><td>jstlTagValue</td></tr>");
-				      
-
-		        //$.each(data, function(index, item) {
-		            //now you can access properties using dot notation
-		        //});
-		    },
-		    error: function (jqXHR, textStatus, errorThrown) {
-		 		console.error(errorThrown);
-		    }
-		});
-	};
-	
-    $(":radio").click(function(){
-        var jsonBom =$(this).attr("value");
-        
-        //Test Data for atribute 
-        $("#JQTest").text(jsonBom);// $("#JQTest").text($(this).attr("value"));  
-        SendID(jsonBom);
-      //jSonWrapper // Ajax Submit		
-	  //$( "jsonBom" ).submit();                                 
-    });   
-});
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
 
 </script>
 
@@ -83,6 +49,7 @@ $(document).ready(function(){
 					<td>
 						<!--External parameter sets  -->
 						<h2><spring:message code="external_parameter_sets"/></h2>
+						<tr><p id="JQTest"><p>
 					</td>
 				</tr>
 				<tr>
@@ -138,24 +105,25 @@ $(document).ready(function(){
 										<!-- Example:<tr><td>Select</td><td>Dataentry</td></tr> -->		
 										<c:forEach items="${extParamValSets}" var="extParamValSet">
 											<tr>
+											<!-- 
 											<td><input type="radio" name="id" value="${extParamValSet.extparamvalsetid}">
 											<label for="${extParamValSet.extparamvalsetid}"><spring:message code="select"/></label></td>
-											<input type="hidden" name="jsonBom" value='${extparamValset.extparamvalsetid} '/>
-																						
-											<!--							
+											<input type="hidden" name="jsonBom" value='${extparamValset.extparamvalsetid} '/>																	
+											 -->
 											<c:choose>
-												<c:when test="${selectedextparamsetid == extParamValSet.extparamvalsetid}">
+												<c:when test="${extParamValSet.extparamvalsetid == id}">
+													<input type="hidden" name=id value="${extParamValSet.extparamvalsetid}"/>
 													<tr style="background-color: #D4D4D4"><td>
 													<spring:message code="selected"/></td>
 												</c:when>
 												<c:otherwise>
 													<tr>													
-														<td><a href="<c:url value='extparamsets.html?selectedextparamsetid=${extParamValSet.extparamvalsetid}'/>">
-														<input type="button" name="id" th:field="*{id}" value="${extParamValSet.extparamvalsetid}">
+														<td><a href="<c:url value='extparamsets.html?id=${extParamValSet.extparamvalsetid}'/>">
+														<!--<input type="button" name="id" th:field="*{id}" value="${extParamValSet.extparamvalsetid}">-->
 														<spring:message code="select"/></a></td>														
 												</c:otherwise>
 											</c:choose>	
-											 -->
+											
 											<td>${extParamValSet.name}</td>
 									   	</tr>
 									   	</c:forEach>																						
@@ -170,7 +138,8 @@ $(document).ready(function(){
 												<%-- <tr><p id="JQTest"><p></tr>
 												<input type="hidden" id="JQTest" />--%>
 												<th>${extParamVal.extparam.name}</th>
-												<td>${extParamVal.value}</td>												
+												<td>${extParamVal.value}</td>
+																								
 											</tr>
 										</c:forEach>
 														
