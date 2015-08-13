@@ -799,20 +799,16 @@ public class OptimizationController {
 		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
 		model.put("extParamValSets", extParamValSets);
 		int extParamValSetId = 0;
+	
+			
 		
-		// If it's null it we don't use it.
-		/*
-		if (selectedCompId != null) {
-			extParamValSetId = Integer.parseInt(selectedCompId);
-		}else{
-		
-		// If Time This update should be done Ajax with partial update.
-		}// ToD0 Get Data From AjaX to enable this variables:
-		*/
 		extParamValSetId = projectService.getDefaultExtParamSetId(project
 				.getPrjid());
 		
-
+		// If Time This update should be done Ajax with partial update.
+		// ToD0 Get Data From AjaX to enable this variables:
+		// Currently it's working but it's dummy, url parameter
+		
 		if (id!=null){
 			extParamValSetId=Integer.parseInt(id);
 		}
