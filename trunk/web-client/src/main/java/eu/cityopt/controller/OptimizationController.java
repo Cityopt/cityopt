@@ -28,6 +28,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -477,75 +478,7 @@ public class OptimizationController {
         model.put("openoptimizationsets", optSets);		
         return "openoptimizationset";
 
-    }
-
-
-    // author@: Markus Turunen
-    // this method supposed to handle External parameter Handling when Person submit the form.
-
-    /*
-		@RequestMapping(value="sendexternalparameterset",method=RequestMethod.GET)
-		public String sendExternalParameters(Map<String, Object> model,
-				@RequestParam(value="id", required=false) int ExternalParameterSetId){									
-
-			ProjectDTO project = (ProjectDTO) model.get("project");
-			if(this.projectDoesNotExist(project)){return "error";}
-			ExtParamValSetDTO extParamValSet = projectService.getExtParamValSets(project.getPrjid()).get(ExternalParameterSetId);				
-			OptimizationSetDTO database= OptimizationDTOInitializer(model);
-			database.setExtparamvalset(extParamValSet);
-			return "editoptimization";
-		}
-
-		//author@:Markus Turunen
-		//Unnessessary Irony: This could also be service
-		//OptimizationDTOInitializer does exactly that.
-		public OptimizationSetDTO OptimizationDTOInitializer(Map<String, Object> model){			
-			OptimizationSetDTO optimizationset = (OptimizationSetDTO) model.get("optimizationset");
-			return optimizationset;
-		}
-
-
-		public boolean projectDoesNotExist(ProjectDTO project){
-			if(project==null){
-				return true;
-			}else
-				return false;		
-		}
-     */
-
-    //Comment:  These syntaxes haven't worked. Tried to save data into database.			
-    // 
-    // OptimizationSetService optimizationService.sendExternalParameters(model, ExternalParameterSetId);		
-    //OptimizationSetService optimizationSetService;
-    //optimizationSetService.extParamValSetService.save(extParamValSet);		
-
-
-    //List<OptimizationSetDTO> list = optSetService.findByNameContaining(clonename);
-    /*
-			ProjectDTO project = (ProjectDTO) model.get("project");
-			int nProjectId = Integer.parseInt(projectid);
-			try {
-				project = projectService.findByID(nProjectId);
-			} catch (EntityNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			//Random number is to make clone crash temp. solution.
-			//ToDo: Fix the issue:
-			String clonename = project.getName()+"(clone)"+Math.random()*1000;
-			try {
-				ProjectDTO ProjectCloner = copyService.copyProject(nProjectId,clonename);
-			} catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			List<ProjectDTO> projects = projectService.findAll();
-			model.put("projects", projects);
-			return "openproject";
-					// ;(projectid, clonename, true, false, true, false);
-			}
-     */
+    }    
 
     @RequestMapping(value="editobjfunction", method=RequestMethod.POST)
     public String getEditObjFunctionPost(ObjectiveFunctionDTO function, HttpServletRequest request, Map<String, Object> model) {
@@ -858,45 +791,86 @@ public class OptimizationController {
     //@author Markus Turunen
     @RequestMapping(value="extparamsets",method=RequestMethod.GET)
     public String getExtParamSets(
-            Map<String, Object> model,
-            @RequestParam(value="selectedcompid", required=false) String selectedCompId){    
-        
-    	ProjectDTO project= initiateProject(model);    	
-    	List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());      
-       	model.put("extParamValSets", extParamValSets);
-        int extParamValSetId = 0;
-        extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());        
-        // ToD0 Get Data From AjaX to enable this variables:
-        
-        if(extParamValSetId!=0){        
-        List<ExtParamValDTO> extParamVals=null;
-		try {extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
-		} catch (EntityNotFoundException e) {e.printStackTrace(); return "error";}		
-        model.put("extParamVals", extParamVals); 
-        }
-        return "extparamsets";        
+            Map<String, Object> model,            
+            @RequestParam(value="id", required=false) String id){    
+   
+		model.put("id",id);
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
+		model.put("extParamValSets", extParamValSets);
+		int extParamValSetId = 0;
+		
+		// If it's null it we don't use it.
+		/*
+		if (selectedCompId != null) {
+			extParamValSetId = Integer.parseInt(selectedCompId);
+		}else{
+		
+		// If Time This update should be done Ajax with partial update.
+		}// ToD0 Get Data From AjaX to enable this variables:
+		*/
+		extParamValSetId = projectService.getDefaultExtParamSetId(project
+				.getPrjid());
+		
+
+		if (id!=null){
+			extParamValSetId=Integer.parseInt(id);
+		}
+		
+		if (extParamValSetId != 0) {
+			List<ExtParamValDTO> extParamVals = null;
+			try {
+				extParamVals = extParamValSetService
+						.getExtParamVals(extParamValSetId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+				return "error";
+			}
+			model.put("extParamVals", extParamVals);
+		}
+		return "extparamsets";       
+    }   
+    
+    
+    @RequestMapping("?id={number}")
+    public String printIndex( Map<String, Object> model, @PathVariable("id") int number){
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+    	int extParamValSetId = 0;		
+		extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+		extParamValSetId=number;
+		// ToD0 Get Data From AjaX to enable this variables:
+
+		if (extParamValSetId != 0) {
+			List<ExtParamValDTO> extParamVals = null;
+			try {
+				extParamVals = extParamValSetService
+						.getExtParamVals(extParamValSetId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+				return "error";
+			}
+			model.put("extParamVals", extParamVals);  	
+		}
+		return "extparamsets";   
     }
     
-    @RequestMapping(value="localhost:8080/CityOPT/extparamsets.json", method=RequestMethod.GET, produces="application/json")
+    
+    /* Ajax Testing 
+    @RequestMapping(value="ajax", method=RequestMethod.GET, produces="application/json")
     @ResponseBody
     public  String getSessionAjaxID( Map<String, Object> model, 
-    		@RequestParam Integer id,
-    		@RequestBody Data data, 
+    		@RequestParam Integer data,    		
     		HttpServletRequest request,
     		HttpServletResponse response){
-    	
-    	
-    	    	
+    	    	    	    	   	   	
     	System.out.println("invoked");
     	ProjectDTO project= initiateProject(model);
     	int extParamValSetId = 0;
-    	 // ToD0 Get Data From AjaX to enable this variables:
-    	int ID= (int) data.getID();
+    	 // ToD0 Get Data From AjaX to enable this variables:    	
     	//Test Int in Java
-    	System.out.print(id);
-    	
+    	System.out.print(selectedcompid);    	
         extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());        
-        extParamValSetId=ID;
+     
         if(extParamValSetId!=0){        
         List<ExtParamValDTO> extParamVals=null;
 		try {extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
@@ -905,7 +879,7 @@ public class OptimizationController {
         }
         return "extparamsets";         
     }   
-    
+    */
 	@RequestMapping(value="extparamsets",method=RequestMethod.POST)
     public String setExtParamSets(
             Map<String, Object> model,@RequestParam(value="id",required=true) int id) { 
