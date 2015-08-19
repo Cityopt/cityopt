@@ -7,6 +7,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+// select all desired input fields and attach tooltips to them
+$("#myform :input").tooltip({	 
+    // place tooltip on the right edge
+    position: "right",
+    // a little tweaking of the position
+    offset: [-2, 10],
+    // use the built-in fadeIn/fadeOut effect
+    effect: "fade",
+    // custom opacity setting
+    opacity: 0.7   
+    });
+</script>
+
 <title>CityOpt create project</title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -18,73 +33,80 @@
 	<tr>
 		<td width=20></td>
 		<td>
-			<table style="width:900px">			
+			<table class="ProjectCreationForm" style="width:900px" >			
 				<!-- create project -->
 				<tr><td><h2><spring:message code="createproject"/></h2></td></tr>	
-				<tr>
-					<td>
-						<table>
+				<tr valing="top">
+					<td valing="top">
+						<table >
 							<tr>
 								<!--Project name:-->
 								<td><spring:message code="project_name"/>:</td>
-								<td><form:input type="text" path="name"/></td>
-								<td><form:errors path="name" cssClass="error"/></td>
+								<c:set var="tooltip_name"><spring:message code="tooltip_create_project_name"/></c:set>
+								<td><form:input type="text" path="name" title="${tooltip_name}"/></td>
+								<td><form:errors path="name" cssClass="error"/></td>															
 							</tr>
 							<tr>
 								<!--Location:-->						
 								<td><spring:message code="location"/>:</td>
-								<td><form:input type="text" path="location"/></td>
+								<c:set var="tooltip_location"><spring:message code="tooltip_create_project_location"/></c:set>
+								<td><form:input type="text" path="location" title="${tooltip_location}"/></td>
 								<td><form:errors path="location" cssClass="error"/></td>
 							</tr>
 							<tr>
 								<!--Design target:-->						
 								<td><spring:message code="design_target"/>:</td>
-								<td><form:input type="text" path="designtarget"/></td>
+								<c:set var="tooltip_desingtarget"><spring:message code="tooltip_design_target"/></c:set>
+								<td><form:input type="text" path="designtarget" title="${tooltip_desingtarget}"/></td>
 								<td><form:errors path="designtarget" cssClass="error"/></td>
 							</tr>
 							<tr>
 								<!--Description -->						
 								<td><spring:message code="description"/>:</td>
-								<td><form:textarea type="text" rows="3" path="description"></form:textarea></td>
+								<c:set var="tooltip_description"><spring:message code="tooltip_description"/></c:set>
+								<td><form:textarea type="text" rows="3" path="description" title="${tooltip_desingtarget}"></form:textarea></td>
 							    <td><form:errors path="description" cssClass="error"/></td>
-							</tr>
-						</table>
-										
-				<!-- Success // failure message -->
+							</tr>					
+							<tr height=10px></tr>						
+							<td align="right">
+							<!-- Create project -->
+								<c:set var="tooltip_create_project"><spring:message code="tooltip_create_project"/></c:set>
+								<td align="right"><input type="submit" title="${tooltip_create_project}" 
+								value="<spring:message code="createproject"/>" style="width:120px"></td>
+							</td>							
+						</table>						
+							<!-- Success // failure message -->
 				 <c:choose>
           			  <c:when test="${success!=null && success==true}">
             			   <h2 class="successful"> <spring:message code="projectSuccess"/></h2>
-            			   <a href="editproject.html"><button style="width:100px" type="button" value="Next">
+            			   <c:set var="tooltip_next"><spring:message code="tooltip_next"/></c:set>
+            			   <a href="editproject.html"><button style="width:100px" type="button" value="Next" title="${tooltip_next}">
             			   <spring:message code="next"/></button></a>
             		</c:when>
             		<c:when test="${success!=null && success==false}">
             			   <h2 class="error"> <spring:message code="projectExists" /> </h2>
             		</c:when>            	
-        		</c:choose>			
+        		</c:choose>						
 				
-						
-					</td>
-					<td align="right">
-						<img src="assets/img/test_map.jpg"/>
-					</td>
-				</tr>
-				<tr>
-					<!--Upload diagram-->
-					<td colspan="2" align="Right">
-						<input type="button" id="uploadDiagram" value=<spring:message code="upload_diagram"/> style="width:120px"/>
-					</td>
-				</tr>
+					</td><td align="right"><img src="assets/img/test_map.jpg"/></td>				
+				
 				<tr>
 					<td colspan="2">
 						<table>
 							<col style="width:150px">
 							<col style="width:150px">
-							<col style="width:600px">
+							<col style="width:500px">
 							<tr>
-								<td></td>
-								<td></td>
+								<td></td>							
+								<!--Upload diagram-->
+								<td colspan="2" align="Right"><input type="button" id="uploadDiagram" 
+								value=<spring:message code="upload_diagram"/> style="width:100px"/></td>
+								</tr>				
 								<!-- Create project -->
-								<td align="right"><input type="submit" value="<spring:message code="createproject"/>" style="width:120px"></td>
+								<!-- 
+								<c:set var="tooltip_create_project"><spring:message code="tooltip_create_project"/></c:set>
+								<td align="right"><input type="submit" title="${tooltip_create_project}" value="<spring:message code="createproject"/>" style="width:120px"></td>
+								-->
 							</tr>
 						</table>
 					</td>
