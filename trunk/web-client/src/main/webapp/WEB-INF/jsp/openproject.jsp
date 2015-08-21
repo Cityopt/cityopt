@@ -49,13 +49,15 @@
 					<td>${project.description}</td>			
 					
 					<td>
-						<a href="<c:url value='editproject.html?prjid=${project.prjid}'/>">
+						<c:set var="tooltip_open"><spring:message code="tooltip_open_project"/></c:set>
+						<a href="<c:url value='editproject.html?prjid=${project.prjid}'/>" title="${tooltip_open}">
 							<button align="right"  type="button" value="Open"><spring:message code="open"/></button>
 						</a>
 					</td>
 					
 					<td>
-						<a href="<c:url value='cloneproject.html?projectid=${project.prjid}'/>">
+						<c:set var="tooltip_clone"><spring:message code="tooltip_clone_project"/></c:set>
+						<a href="<c:url value='cloneproject.html?projectid=${project.prjid}'/>"title=" ${tooltip_clone}">
 							<button align="right" type="button" value="Clone"><spring:message code="clone"/></button>
 						</a>
 					</td>

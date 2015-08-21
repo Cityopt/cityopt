@@ -1,3 +1,4 @@
+
 <%--@elvariable id="newProject" type="com.cityopt.DTO.ProjectDTO"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -7,20 +8,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script>
-// select all desired input fields and attach tooltips to them
-$("#myform :input").tooltip({	 
-    // place tooltip on the right edge
-    position: "right",
-    // a little tweaking of the position
-    offset: [-2, 10],
-    // use the built-in fadeIn/fadeOut effect
-    effect: "fade",
-    // custom opacity setting
-    opacity: 0.7   
-    });
-</script>
 
 <title>CityOpt create project</title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />

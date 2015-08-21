@@ -44,8 +44,9 @@
 									<td>${project.prjid}</td>
 									<td>${project.location}</td>
 									<td></td>
-									<td><a										
-										href="<c:url value='deleteproject.html?prjid=${project.prjid}'/>"
+									<td><a
+										<c:set var="tooltip_delete"><spring:message code="tooltip_delete_project"/></c:set>										
+										href="<c:url value='deleteproject.html?prjid=${project.prjid}'/>" title="${tooltip_delete}"
 										 onclick="return confirm('<spring:message code="confirm_project_deletion"/>')">
 											<button type="button" value="Delete">
 											<!-- Delete button -->
