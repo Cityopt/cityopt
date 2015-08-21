@@ -19,7 +19,7 @@
 			<td width="30"></td>
 			<td valign="top">
 				<div
-					style="overflow: scroll; height: 500px; width: 500px; overflow: auto">
+					style="overflow: scroll; height: 800px; width: 500px; overflow: auto">
 					<form:form method="post" action="deleteproject.html">
 						<!-- Delete Project -->
 						<h2><spring:message code="delete_project"/></h2>
