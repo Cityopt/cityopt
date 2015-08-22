@@ -20,7 +20,7 @@
 		<td><%@ include file="mainmenu.inc"%></td>
 		<td width="50"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:400px;width:1000px;overflow:auto">
+			<div style="overflow:scroll;height:800px;width:1000px;overflow:auto">
 			<table>
 				<tr>
 				<!-- Project metrics -->

@@ -43,8 +43,8 @@
 							<col style="width:500px">
 							<tr>
 								<td>
-									<!-- Multi variables -->
-									<b><spring:message code="multi_variables"/></b>
+									<!-- Multi-scenarios -->
+									<b><spring:message code="multi_scenarios"/></b>
 								</td>
 							</tr>
 							<tr>
@@ -77,8 +77,14 @@
 							</tr>
 							<tr>
 								<td>
-									<!-- Multi-scenarios -->
-									<b><spring:message code="multi_scenarios"/></b>
+									<a href="createmultiscenario.html"><button style="width:100px" type="button" value="Create">
+									<spring:message code="create"/></button></a>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<!-- Multi variables -->
+									<b><spring:message code="multi_variables"/></b>									
 								</td>
 							</tr>
 							<tr>
@@ -110,6 +116,10 @@
 								</td>
 							</tr>
 							<tr>
+							    <td>
+									<a href="createmultivariable.html"><button style="width:100px" type="button" value="Create">
+									<spring:message code="create"/></button></a>
+								</td>
 								<!-- Close -button -->
 								<td align="right">
 									<a href="editscenario.html"><button type="button">

@@ -23,7 +23,7 @@
 	<td width="50"></td>
 	<td valign="top">
 		<div style="overflow:scroll;height:400px;width:600px;overflow:auto">
-		<form method="post" action="runmultiscenario.html">
+		<form:form method="post" action="runmultiscenario.html">
 		<!-- Run Muli -scenario -->
 		<h2><spring:message code="run_multi_scenario"/></h2>
 		<table class="tablestyle" width="600" border="1">
@@ -49,7 +49,7 @@
 	    	<td>x</td>
 	   		<td>x</td>
 	    	<td>x</td>
-	    	<td> <input type="checkbox"/> </td>
+	    	<td> </td>
 	  	</tr>
 	</c:forEach>
 		</table>
@@ -61,7 +61,7 @@
 			    </td>
 			</tr>
       	</table>
-		</form>
+		</form:form>
 		</div>
 	</td>
 </tr>
