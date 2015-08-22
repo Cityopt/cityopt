@@ -121,15 +121,7 @@
 	       							</td>
 	   							</tr>	
     						</form:form>
-        					<tr>
-        						<!-- Export project file (CSV) -->
-        						<td><spring:message code="export_project_file_CSV"/></td>
-								<td>
-									<a href="exportstructurefile.html"><button>
-									<spring:message code="export"/></button></a>
-								</td>
-							</tr>
-							<form:form method="POST" action="importextparamsets.html" enctype="multipart/form-data">
+        					<form:form method="POST" action="importextparamsets.html" enctype="multipart/form-data">
 	        					<tr>
 	        						<!-- Import external parameter sets (CSV) -->
 	        						<td><spring:message code="import_external_parameter_sets_CSV"/></td>
@@ -144,14 +136,6 @@
 	   							
     						</form:form>
     						<tr>
-    						
-        						<td><spring:message code="export_external_parameter_sets_file_CSV"/></td>
-								<td>
-									<a href="exportextparamsets.html"><button>
-									<spring:message code="export"/></button></a>
-								</td>
-							</tr>
-							<tr>
 								<!-- Show project data & Import buttons -->		
 								<td><a href="projectdata.html"><button>
 								<spring:message code="show_project_data"/></button></a></td>
@@ -168,8 +152,8 @@
 							</tr>
 							<tr align="right">
 								<!-- Upload diagram -->
-								<td><a href="uploaddiagram.html"><button type="button">
-								<spring:message code="upload_diagram"/></button></a></td>
+								<td><!-- href="uploaddiagram.html"><button type="button">
+								<spring:message code="upload_diagram"/></button></a>--></td>
 							</tr>
 							<tr>
 								<td>
@@ -199,15 +183,7 @@
 				       							</td>
 				   							</tr>	
 			    						</form:form>
-			    						<tr>
-			    							<!-- Export scenario file CSV -->
-			        						<td><spring:message code="export_scenario_file_CSV"/></td>
-											<td>
-												<!-- Export -button -->
-												<a href="exportscenarios.html"><button><spring:message code="export"/></button></a>
-											</td>
-										</tr>
-										<tr>						
+			    						<tr>						
 											<!-- Show scenarios -->
 											<td><a href="showscenarios.html"><button>
 											<spring:message code="show_scenarios"/></button></a></td>

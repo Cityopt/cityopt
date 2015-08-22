@@ -92,7 +92,7 @@
 				</tr>
 				<tr>
 					<!-- Run multi -optimization -button  -->
-					<td align="right"><a href="multioptimization.html"><button type="button">
+					<td align="right"><a href="runmultioptimizationset.html"><button type="button">
 					<spring:message code="run_multi_optimization"/></button></a></td>
 				</tr>
 			</table>

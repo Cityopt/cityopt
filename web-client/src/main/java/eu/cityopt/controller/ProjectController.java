@@ -837,8 +837,15 @@ public class ProjectController {
 
         return "importdata";
     }
+
     @RequestMapping(value="exportdata", method=RequestMethod.GET)
     public String getExportData(Model model){
+
+        return "exportdata";
+    }
+
+    @RequestMapping(value="exportextparamsets", method=RequestMethod.GET)
+    public String getExportExtParamSets(Model model){
 
         return "exportdata";
     }
@@ -1381,23 +1388,30 @@ public class ProjectController {
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
 
         int nInputParamId = Integer.parseInt(inputParamId);
         InputParameterDTO updatedInputParam = null;
+        
         try {
             updatedInputParam = inputParamService.findByID(nInputParamId);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
+        
         updatedInputParam.setName(inputParam.getName());
         updatedInputParam.setDefaultvalue(inputParam.getDefaultvalue());
         UnitDTO unit = unitService.save(new UnitDTO());
-        int componentId = inputParamService.getComponentId(updatedInputParam.getInputid());
-        inputParamService.save(updatedInputParam, componentId, unit.getUnitid());
+        updatedInputParam.setUnit(unit);
+        int componentId = updatedInputParam.getComponentComponentid();//inputParamService.getComponentId(updatedInputParam.getInputid());
 
+        try {
+			inputParamService.update(updatedInputParam, componentId, unit.getUnitid());
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+        
         model.put("selectedcompid", componentId);
 
         try {
@@ -2124,7 +2138,8 @@ public class ProjectController {
 
     @RequestMapping(value="uploaddiagram", method=RequestMethod.GET)
     public String getUploadDiagram(HttpServletRequest request, Map<String, Object> model){
-        ProjectDTO project = (ProjectDTO) model.get("project");
+        
+    	ProjectDTO project = (ProjectDTO) model.get("project");
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {

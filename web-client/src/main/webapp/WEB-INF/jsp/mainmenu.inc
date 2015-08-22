@@ -17,7 +17,7 @@
 				<td>Version: </td><td>${version}</td>
 			</tr>
 			<tr>
-				<td>Build date: </td><td>15.7.2015</td>
+				<td>Build date: </td><td>22.8.2015</td>
 			</tr>
 			<tr>
 				<td>User: </td><td>${user.name} (<a href="logout.html">logout</a>)</td>

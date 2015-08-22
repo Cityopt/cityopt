@@ -57,7 +57,7 @@
 					<td></td>
 					<!-- Update and Cancel -buttons -->
 					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="update"/>"/>
-					<a href="editscenario.html"><button style="width:100px" type="button" value="Cancel">
+					<a href="projectparameters.html"><button style="width:100px" type="button" value="Cancel">
 					<spring:message code="cancel"/></button></a></td>
 				</tr>
 			</table>
