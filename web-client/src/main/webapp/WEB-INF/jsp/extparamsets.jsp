@@ -48,13 +48,13 @@ var getUrlParameter = function getUrlParameter(sParam) {
 					<td>
 						<!--External parameter sets  -->
 						<h2><spring:message code="external_parameter_sets"/></h2>
-						<tr><p id="JQTest"><p>
+						<p id="JQTest"></p>
 					</td>
 				</tr>
 				<tr>
 					<td>
+						<form action="extparamsets.html" method="post">															
 						<table>							
-							<form action="#" method="post">															
 							<col style="width:250px">
 							<col style="width:30px">
 							<col style="width:350px">
@@ -94,7 +94,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 								</td>
 							</tr>							
 							<!-- Create Data Entries -->
-							<tr height="20" width="125">
+							<tr height="20">
 								<td>
 									<table style="width:125,5px" border="1">				
 										<col style="width:68px">										
@@ -149,14 +149,15 @@ var getUrlParameter = function getUrlParameter(sParam) {
 								<td></td>								
 								<td></td>
 								<td></td>
-								<!-- Submint button -->	
+								<!-- Submit button -->	
 								
 								<!-- Close button -->
-								<td><input name="index" type="submit"></form></a></td>							
+								<td><input name="index" type="submit"></a></td>							
 								<td align="right"><a href="editoptimizationset.html"><button type="button">
 								<spring:message code="close"/></button></a></td>								
 							</tr>
 						</table>
+						</form>
 						</td>
 					</td>
 				</tr>
