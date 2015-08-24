@@ -84,11 +84,14 @@
 							<col style="width:150px">
 							<col style="width:500px">
 							<tr>
-								<td></td>							
+								<td></td>
+															
 								<!--Upload diagram-->
+								<!-- 
 								<td colspan="2" align="Right"><input type="button" id="uploadDiagram" 
 								value=<spring:message code="upload_diagram"/> style="width:100px"/></td>
-								</tr>				
+								</tr>
+								 -->				
 								<!-- Create project -->
 								<!-- 
 								<c:set var="tooltip_create_project"><spring:message code="tooltip_create_project"/></c:set>

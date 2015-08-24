@@ -30,8 +30,10 @@
 						<col  style="width: 100%">
 						<col  style="width: 100%">
 						
+						<!-- 
 						<tr style="height: 54px;"></tr>												
 						<tr style= background-color:#FBBA00>
+						 -->
 							<td>														
 								<!-- Export data --><!--  style="background-color:#FBBA00"-->								
 								<h2><spring:message code="export_data" /></h2>												

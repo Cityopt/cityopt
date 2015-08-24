@@ -86,7 +86,8 @@
 				<tr>
 				<!--Create metric-->
 					<td align="right">
-						<a href="exportmetrics.html"><button type="button">Export metrics</button></a>
+						<!-- ToDo: Create Export functionality for this button -->
+						<!-- <a href="exportmetrics.html"><button type="button">Export metrics</button></a> -->
 			   			<a href="createmetric.html"><button type="button"><spring:message code="create_metric"/></button></a>
 			   		</td>
 				</tr>
