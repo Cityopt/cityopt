@@ -684,9 +684,14 @@ public class OptimizationController {
 
                 int nDefaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 
-                // TODO have to be fixed
-                //ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(nDefaultExtParamValSetId);
-                //optSet.setExtparamvalset(extParamValSet);
+                ExtParamValSetDTO extParamValSet = null;
+                
+				try {
+					extParamValSet = extParamValSetService.findByID(nDefaultExtParamValSetId);
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+                optSet.setExtparamvalset(extParamValSet);
 
                 optSet = optSetService.save(optSet);
                 model.put("optimizationset", optSet);
@@ -791,8 +796,8 @@ public class OptimizationController {
     //@author Markus Turunen
     @RequestMapping(value="extparamsets",method=RequestMethod.GET)
     public String getExtParamSets(
-            Map<String, Object> model,            
-            @RequestParam(value="id", required=false) String id){    
+        Map<String, Object> model,            
+        @RequestParam(value="id", required=false) String id) {    
    
 		model.put("id", id);
 		ProjectDTO project = (ProjectDTO) model.get("project");
@@ -800,24 +805,20 @@ public class OptimizationController {
 		model.put("extParamValSets", extParamValSets);
 		int extParamValSetId = 0;
 	
-			
-		
-		extParamValSetId = projectService.getDefaultExtParamSetId(project
-				.getPrjid());
+		extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 		
 		// If Time This update should be done Ajax with partial update.
 		// ToD0 Get Data From AjaX to enable this variables:
 		// Currently it's working but it's dummy, url parameter
 		
-		if (id!=null){
-			extParamValSetId=Integer.parseInt(id);
+		if (id != null) {
+			extParamValSetId = Integer.parseInt(id);
 		}
 		
 		if (extParamValSetId != 0) {
 			List<ExtParamValDTO> extParamVals = null;
 			try {
-				extParamVals = extParamValSetService
-						.getExtParamVals(extParamValSetId);
+				extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 				return "error";
@@ -828,7 +829,7 @@ public class OptimizationController {
     }   
     
     
-    @RequestMapping("?id={number}")
+    /*@RequestMapping("?id={number}")
     public String printIndex( Map<String, Object> model, @PathVariable("id") int number){
     	ProjectDTO project = (ProjectDTO) model.get("project");
     	int extParamValSetId = 0;		
@@ -848,7 +849,7 @@ public class OptimizationController {
 			model.put("extParamVals", extParamVals);  	
 		}
 		return "extparamsets";   
-    }
+    }*/
     
     
     /* Ajax Testing 
@@ -876,27 +877,37 @@ public class OptimizationController {
         return "extparamsets";         
     }   
     */
+    
 	@RequestMapping(value="extparamsets",method=RequestMethod.POST)
-    public String setExtParamSets(
-            Map<String, Object> model,@RequestParam(value="id",required=true) int id) { 
+    public String setExtParamSets(Map<String, Object> model, @RequestParam(value="id", required=true) int id) { 
 		
-        OptimizationSetDTO optset = (OptimizationSetDTO)model.get("optimizationset");
-        if (optset == null) {
+        OptimizationSetDTO optSet = (OptimizationSetDTO)model.get("optimizationset");
+
+        try {
+            optSet = optSetService.findByID(optSet.getOptid());
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+        model.put("optimizationset", optSet);
+        
+        if (optSet == null) {
             // Invalid state
             return "error";
         }
+        
         try {
             ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(id);
-            optset.setExtparamvalset(extParamValSet);
-            optset = optSetService.update(optset);
-            model.put("optimizationset", optset);                                            
-        } catch (EntityNotFoundException 
-                 | ObjectOptimisticLockingFailureException e) {
-            model.put("errorMessage",
-                      "Concurrent modification detected.");
-            //TODO Anything more sensible that we could do here?
+            optSet.setExtparamvalset(extParamValSet);
+            optSet = optSetService.update(optSet);
+            model.put("optimizationset", optSet);                                            
+        } catch (EntityNotFoundException e) {
+            model.put("errorMessage", "Entity not found.");
+            e.printStackTrace();
+        } catch(ObjectOptimisticLockingFailureException e) {
+            model.put("errorMessage", "Concurrent modification detected.");
             e.printStackTrace();
         }
+
         return "editoptimizationset";                   
     }
 
