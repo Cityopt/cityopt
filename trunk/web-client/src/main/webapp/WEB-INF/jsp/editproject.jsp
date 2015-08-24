@@ -33,35 +33,42 @@
 							<form:form method="post" action="editproject.html?action=update" modelAttribute="project">
 							<tr>
 								<!--Project name:-->
+								<c:set var="tooltip_name"><spring:message code="tooltip_edit_project_name"/></c:set>
 								<td><spring:message code="project_name"/>:</td>
-								<td><form:input type="text" path="name" style="width:250px"/></td>
+								<td><form:input type="text" path="name" title="${tooltip_name}" style="width:250px"/></td>
 							</tr>
 							<tr>
-								<!-- Location: -->						
+							
+								<!-- Location: -->
+								<c:set var="tooltip_location"><spring:message code="tooltip_create_project_location"/></c:set>						
 								<td><spring:message code="location"/>:</td>
-								<td><form:input type="text" path="location" style="width:250px"/></td>
+								<td><form:input type="text" path="location" title="${tooltip_location}" style="width:250px"/></td>
 							</tr>
 							<tr>
-								<!-- Design target: -->						
+								<!-- Design target: -->
+								<c:set var="tooltip_designtarget"><spring:message code="tooltip_edit_project_designtarget"/></c:set>						
 								<td><spring:message code="design_target"/>:</td>
-								<td><form:input type="text" path="designtarget" style="width:250px"/></td>
+								<td><form:input type="text" path="designtarget" title="${tooltip_designtarget}" style="width:250px"/></td>
 							</tr>
 							<tr>
-								<!-- Description -->						
+								<!-- Description -->
+								<c:set var="tooltip_description"><spring:message code="tooltip_edit_project_description"/></c:set>						
 								<td><spring:message code="description"/>:</td>
-								<td><form:textarea type="text" rows="3" path="description" style="width:250px"></form:textarea></td>
+								<td><form:textarea title="${tooltip_description}" type="text" rows="3" path="description"  style="width:250px"></form:textarea></td>
 							</tr>
 							<tr>
 								<td></td>
 								<!-- Save project -->
-								<td><input type="submit" value=<spring:message code="save_project"/> style="width:120px"></td>
+								<c:set var="tooltip_save"><spring:message code="tooltip_edit_project_save"/></c:set>
+								<td><input type="submit" title="${tooltip_save}" value=<spring:message code="save_project"/> style="width:120px"></td>
 							</tr>
 							</form:form>							
 							<form:form method="POST" action="uploadFile.html?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
 	        					<tr>
 	        					<!-- Energy model to upload: -->
+	        						<c:set var="tooltip_energymodel"><spring:message code="tooltip_edit_project_energymodel"/></c:set>
 									<td><spring:message code="energy_model_to_upload"/>:</td>
-									<td><input type="file" name="file"></td>
+									<td><input type="file" name="file" title="${tooltip_energymodel}"></td>
 								</tr>
 								<tr>
 									<!-- Detail level -->

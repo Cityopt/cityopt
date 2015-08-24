@@ -275,13 +275,18 @@
 							<col style="width: 220px;">
 							<col style="width: 220px;">
 							<tr>
-								<!-- Export optimization results -->
+							
+								<!-- Export optimization results ToDo:Create export functionality -->
+								<!--  
 								<td><a href="exportoptimizationresults.html"><button type="button" style="width: 150px">
 								<spring:message code="export_optimization_results"/></button></a></td>
 								<td align="right"></td>
-								<!-- Export Optimization set -->
+								-->
+								<!-- Export Optimization set ToDo: Create export functionality-->
+								<!--  
 								<td><a href="exportoptimizationset.html"><button type="button" style="width: 150px">
 								<spring:message code="export_optimization_set"/></button></a></td>
+								-->
 							</tr>
 							<tr>
 								<td></td>

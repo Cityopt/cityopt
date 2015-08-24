@@ -32,7 +32,6 @@ var getUrlParameter = function getUrlParameter(sParam) {
 };
 
 </script>
-
 <title>CityOpt external parameter sets</title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
