@@ -236,16 +236,16 @@ public class ProjectController {
         } else {
 
             ProjectDTO project = new ProjectDTO();
-            project.setName(projectForm.getName());
+            project.setName(projectForm.getName().trim());
             String desc = projectForm.getDescription();
 
             if (desc != null && !desc.isEmpty())
             {
-                project.setDescription(projectForm.getDescription());
+                project.setDescription(projectForm.getDescription().trim());
             }
 
-            project.setLocation(projectForm.getLocation());
-            project.setDesigntarget(projectForm.getDesigntarget());
+            project.setLocation(projectForm.getLocation().trim());
+            project.setDesigntarget(projectForm.getDesigntarget().trim());
 
             // Create default ext param val set
             /*ExtParamValSetDTO extParamValSet = new ExtParamValSetDTO();
@@ -601,11 +601,13 @@ public class ProjectController {
 
                 try {
                     //project = projectService.findByID(project.getPrjid());
-
-                    project.setName(projectForm.getName());
-                    project.setDescription(projectForm.getDescription());
-                    project.setLocation(projectForm.getLocation());
-                    project.setDesigntarget(projectForm.getDesigntarget());
+                	
+                	//Fix issue: Bug #10864 //Trim because we handling raw input data method .
+                	//trim() - method deletes spaces end and start.
+                    project.setName(projectForm.getName().trim());
+                    project.setDescription(projectForm.getDescription().trim());
+                    project.setLocation(projectForm.getLocation().trim());
+                    project.setDesigntarget(projectForm.getDesigntarget().trim());
 
                     project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()),
                             projectService.getDefaultExtParamSetId(project.getPrjid()));
@@ -1284,7 +1286,7 @@ public class ProjectController {
         }
 
         ComponentDTO component = new ComponentDTO();
-        component.setName(componentForm.getName());
+        component.setName(componentForm.getName().trim());
         componentService.save(component, project.getPrjid());
 
         try {
@@ -1484,7 +1486,7 @@ public class ProjectController {
         }
 
         InputParameterDTO inputParam = new InputParameterDTO();
-        inputParam.setName(inputParamForm.getName());
+        inputParam.setName(inputParamForm.getName().trim());
         inputParam.setDefaultvalue(inputParamForm.getDefaultvalue());
         UnitDTO unit = unitService.save(new UnitDTO());
         inputParamService.save(inputParam, component.getComponentid(), unit.getUnitid());
@@ -1536,7 +1538,7 @@ public class ProjectController {
         }
 
         ExtParamDTO newExtParam = new ExtParamDTO();
-        newExtParam.setName(extParam.getName());
+        newExtParam.setName(extParam.getName().trim());
         newExtParam.setProject(project);
         newExtParam = extParamService.save(newExtParam, project.getPrjid());
 
@@ -2008,7 +2010,7 @@ public class ProjectController {
         }
 
         MetricDTO metric = new MetricDTO();
-        metric.setName(metricForm.getName());
+        metric.setName(metricForm.getName().trim());
         metric.setExpression(metricForm.getExpression());
         metric.setProject (project);
         metric = metricService.save(metric);
