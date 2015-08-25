@@ -297,6 +297,14 @@ public class ScenarioController {
 				e.printStackTrace();
 			}
 			
+			String statusMsg = scenario.getStatus();
+
+			if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+				statusMsg = "RUNNING";
+			}
+			
+			model.put("status", statusMsg);
+			
 			model.put("scenario", scenario);
 			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 			model.put("components", components);
