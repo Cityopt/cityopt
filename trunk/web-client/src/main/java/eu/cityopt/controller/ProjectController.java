@@ -600,8 +600,7 @@ public class ProjectController {
                 }
 
                 try {
-                    //project = projectService.findByID(project.getPrjid());
-                	
+                    //project = projectService.findByID(project.getPrjid());                	
                 	//Fix issue: Bug #10864 //Trim because we handling raw input data method .
                 	//trim() - method deletes spaces end and start.
                     project.setName(projectForm.getName().trim());
@@ -663,6 +662,7 @@ public class ProjectController {
         String version = appMetaData.getVersion();
         model.put("version", version);
 
+         // Password dosen't help in trimming or does it?
         String username = userForm.getName();
         String password = userForm.getPassword();
         AppUserDTO user = null;
@@ -804,7 +804,7 @@ public class ProjectController {
             if (unitForm.getName() != null && unitForm.getType() != null && !unitForm.getName().isEmpty())
             {
                 UnitDTO newUnit = new UnitDTO();
-                newUnit.setName(unitForm.getName());
+                newUnit.setName(unitForm.getName().trim());
                 List<TypeDTO> types = typeService.findAll();
 
                 // Find the type
@@ -924,8 +924,8 @@ public class ProjectController {
         if (userForm.getName() != null)
         {
             AppUserDTO user = new AppUserDTO();
-            user.setName(userForm.getName());
-            user.setPassword(userForm.getPassword());
+            user.setName(userForm.getName().trim());
+            user.setPassword(userForm.getPassword().trim());
             user = userService.save(user);
         }
 

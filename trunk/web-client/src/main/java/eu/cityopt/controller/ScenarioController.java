@@ -216,8 +216,8 @@ public class ScenarioController {
 			//List<ScenarioDTO> elements = scenarioService.findByNameContaining(formScenario.getName());
 			
 			if (scenarioService.findByName(formScenario.getName())==null){			
-				scenario.setName(formScenario.getName());
-				scenario.setDescription(formScenario.getDescription());
+				scenario.setName(formScenario.getName().trim());
+				scenario.setDescription(formScenario.getDescription().trim());
 				scenario.getScenid();
 				model.put("successful", "Scenario succesfully created.");
 				List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
@@ -573,11 +573,11 @@ public class ScenarioController {
 				
 				if (inputName.equals("simulation_start"))
 				{
-					model.put("simStart", inputParamVal.getValue());
+					model.put("simStart", inputParamVal.getValue().trim());
 				}
 				else if (inputName.equals("simulation_end"))
 				{
-					model.put("simEnd", inputParamVal.getValue());
+					model.put("simEnd", inputParamVal.getValue().trim());
 				}
 			}
 			
@@ -612,8 +612,8 @@ public class ScenarioController {
 			
 			ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 			
-			scenario.setName(formScenario.getName());
-			scenario.setDescription(formScenario.getDescription());
+			scenario.setName(formScenario.getName().trim());
+			scenario.setDescription(formScenario.getDescription().trim());
 			
 			try {
 				scenario = scenarioService.save(scenario, project.getPrjid());
