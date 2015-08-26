@@ -55,7 +55,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 					<td>
 						<form action="extparamsets.html" method="post">															
 						<table>							
-							<col style="width:250px">
+							<col style="width:255px">
 							<col style="width:30px">
 							<col style="width:350px">
 							<tr>
@@ -68,16 +68,15 @@ var getUrlParameter = function getUrlParameter(sParam) {
 							<tr>
 								<td valign="top">
 									<table class="tablestyle">
-										<col style="width:60px">
-										<col style="width:190px">
+										<col style="width:70px">
+										<col style="width:200px">
 										<tr>
 											<!-- Select -->
 											<th><spring:message code="select"/></th>
 											
 											<!--External parameter set  -->
 											<th><spring:message code="external_parameter_set"/></th>
-										</tr>
-							
+										</tr>							
 									</table>
 								</td>
 								<td></td>
@@ -94,21 +93,17 @@ var getUrlParameter = function getUrlParameter(sParam) {
 								</td>
 							</tr>							
 							<!-- Create Data Entries -->
-							<tr height="20">
-								<td>
-									<table style="width:125,5px" border="1">				
-										<col style="width:68px">										
-										<col style="width:176px">														
+							<div class="Entrydata">
+							<tr class="tablestyle">								
+								<td style="border-style:hidden" valign="top" align="left" border="none" cellspacing="0" cellpadding="0">
+									<table   style="width:250px" cellspacing="0" cellpadding="0" border="1">				
+										<col style="width:60px">										
+										<col style="width:200px">						
 										
 										<!-- ForEachElement: Select element // External parameterset -->										
 										<!-- Example:<tr><td>Select</td><td>Dataentry</td></tr> -->		
-										<c:forEach items="${extParamValSets}" var="extParamValSet">
-											<tr>
-											<!-- 
-											<td><input type="radio" name="id" value="${extParamValSet.extparamvalsetid}">
-											<label for="${extParamValSet.extparamvalsetid}"><spring:message code="select"/></label></td>
-											<input type="hidden" name="jsonBom" value='${extparamValset.extparamvalsetid} '/>																	
-											 -->
+										<c:forEach items="${extParamValSets}" var="extParamValSet">											
+											<tr class="tablestyle" align="left" valign="top" >																					
 											<c:choose>
 												<c:when test="${extParamValSet.extparamvalsetid == id}">
 													<input type="hidden" name=id value="${extParamValSet.extparamvalsetid}"/>
@@ -121,31 +116,28 @@ var getUrlParameter = function getUrlParameter(sParam) {
 														<!--<input type="button" name="id" th:field="*{id}" value="${extParamValSet.extparamvalsetid}">-->
 														<spring:message code="select"/></a></td>														
 												</c:otherwise>
-											</c:choose>	
-											
-											<td>${extParamValSet.name}</td>
+											</c:choose>											
+											<td>${extParamValSet.name}</td>											
 									   	</tr>
 									   	</c:forEach>																						
 									</table>
-									<td></td>
-									<td valign = "top">
-										<table id="externalParameters" style="width:255px" border="1">
+									<td style="border-style:hidden"></td>
+									<td style="border-style:hidden"  valign = "top">
+										<table id="externalParameters" cellspacing="0"  style="width:255px" border="1" align="left">
 										<!-- For each element get the External parameter Parameter -->
 											
 										<c:forEach items="${extParamVals}" var="extParamVal">																							
-											<tr data-extparam-id="${extParamVal.extparam.extparamid}">
-												<%-- <tr><p id="JQTest"><p></tr>
-												<input type="hidden" id="JQTest" />--%>
-												<th>${extParamVal.extparam.name}</th>
-												<td>${extParamVal.value}</td>
-																								
+											<tr data-extparam-id="${extParamVal.extparam.extparamid}">												
+												<td>${extParamVal.extparam.name}</td>
+												<td>${extParamVal.value}</td>																								
 											</tr>
 										</c:forEach>
 														
 											</tr>
 										</table>
 									</td>				
-								<tr>							
+								<tr>
+							</div>							
 								<td></td>								
 								<td></td>
 								<td></td>
