@@ -71,17 +71,20 @@
 									<td><input type="file" name="file" title="${tooltip_energymodel}"></td>
 								</tr>
 								<tr>
-									<!-- Detail level -->
+									<!-- Detail level -->									
+									<c:set var="tooltip_detail"><spring:message code="tooltip_edit_project_detail"/></c:set>
 									<td><spring:message code="detail_level"/>:</td>
 	        						<td>
-	        							<input type="text" name="detailLevel"> 
+	        							<input type="text" name="detailLevel" title="${tooltip_detail}"> 
 	       							</td>
 								</tr>
 	       						<tr>	
 	       							<td></td>
 	        						<td>
 	        						<!-- Load File -->
-	        							<input type="submit" value="<spring:message code="load_file"/>">
+	        						
+	        							<c:set var="tip_load_energymodel"><spring:message code="tooltip_edit_project_load_energymodel"/></c:set>
+	        							<input type="submit" title="${tip_load_energymodel}" value="<spring:message code="load_file"/>">
 	       							</td>
 	   							</tr>	
    							</form:form>
@@ -102,11 +105,14 @@
 								<td><spring:message code="input_and_external_parameters"/></td>
 								
 								<!-- Set -->
-								<td><a href="projectparameters.html"><button type="button" style="width:120px">
+								<c:set var="tooltip_set_input_parameter"><spring:message code="tooltip_edit_project_set_input_parameter"/></c:set>
+								<td><a href="projectparameters.html"><button type="button" title="${tooltip_set_input_parameter}" style="width:120px">
 								<spring:message code="set"/></button></a></td>
 								
 								<!-- Close project -->
-								<td align="right"><a href="closeproject.html"><button type="button" style="width:120px">
+								<c:set var="tooltip_closeproject"><spring:message code="tooltip_edit_project_close_project"/></c:set>
+								<td align="right"><a href="closeproject.html"><button type="button"  title="${tooltip_closeproject}" style="width:120px"
+								 onclick="return confirm('<spring:message code="confirm_closing_project"/>')">								
 								<spring:message code="close_project"/></button></a></td>
 							</tr>									
 							<tr>
@@ -114,7 +120,8 @@
 								<td><spring:message code="output_variables"/></td>
 								
 								<!-- Set -->
-								<td><a href="outputvariables.html"><button type="button" style="width:120px">
+								<c:set var="tooltip_outputparameters"><spring:message code="tooltip_edit_project_set_output_parameters"/></c:set>
+								<td><a href="outputvariables.html"><button type="button" title="${tooltip_outputparameters}" style="width:120px">
 								<spring:message code="set"/></button></a></td>
 								<td align="right"></td>
 							</tr>
