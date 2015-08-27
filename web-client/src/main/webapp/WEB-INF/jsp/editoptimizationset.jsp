@@ -274,8 +274,7 @@
 						<table>
 							<col style="width: 220px;">
 							<col style="width: 220px;">
-							<tr>
-							
+							<tr>							
 								<!-- Export optimization results ToDo:Create export functionality -->
 								<!--  
 								<td><a href="exportoptimizationresults.html"><button type="button" style="width: 150px">

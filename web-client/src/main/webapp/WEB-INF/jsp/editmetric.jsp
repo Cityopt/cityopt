@@ -71,8 +71,9 @@
 																</c:if>
 																<c:if test="${selectedcompid != component.componentid}">
 																	<tr>
-																		<td><a
-																			href="<c:url value='editmetric.html?selectedcompid=${component.componentid}&metricid=${metric.metid}'/>">Select</a></td>
+																	<c:set var="tooltip_selector"><spring:message code="tooltip_select"/></c:set>
+																	<td><a href="<c:url value='editmetric.html?selectedcompid=${component.componentid}&metricid=${metric.metid}'/>" title="${tooltip_selector}">
+																	<spring:message code="select"/></a></td>
 																</c:if>
 																<td>${component.name}</td>
 															</tr>
@@ -172,13 +173,15 @@
 														<td>
 															<!--Name--> <spring:message code="name" />
 														</td>
-														<td><form:input style="width:550px" type="text"	path="name" /></td>
+														<c:set var="name_tooltip"><spring:message code="tooltip_createmetric_name"/></c:set>
+														<td><form:input style="width:550px" title="${name_tooltip}" type="text"	path="name" /></td>
 													</tr>
 													<tr>
 														<td>
 															<!--Expression--> <spring:message code="expression" />
 														</td>
-														<td><form:input style="width:550px" type="text"	path="expression" /></td>
+														<c:set var="expressiontip"><spring:message code="tooltip_expression"/></c:set>
+														<td><form:input style="width:550px" title="${expressiontip}" type="text"	path="expression" /></td>
 													</tr>
 													<tr height="10">
 														<td></td>
@@ -186,9 +189,12 @@
 													<tr>
 														<td></td>
 														<!-- Update submit & Cancel button -->
-														<td align="right"><input style="width: 100px" type="submit" value="<spring:message code="update"/>" /> 
+														<c:set var="tooltip_update"><spring:message code="tooltip_update"/></c:set>
+														<td align="right"><input style="width: 100px" type="submit" value="<spring:message code="update"/>" title="${tooltip_update}" /> 
 															<a href="metricdefinition.html">
-															<button	style="width: 100px" type="button" value="Cancel">
+															
+															<c:set var="tooltip_cansel"><spring:message code="tooltip_cansel"/></c:set>
+															<button	style="width: 100px" title="${tooltip_cansel}" type="button" value="Cancel">
 																<spring:message code="cancel" />
 															</button></a>
 														</td>

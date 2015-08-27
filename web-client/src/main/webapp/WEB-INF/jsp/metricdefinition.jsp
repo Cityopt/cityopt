@@ -58,23 +58,26 @@
 						    	<td>${metric.expression}</td>
 								<td>
 									<!-- Clone button -->
+									<c:set var="tooltipclone"><spring:message code="tooltip_clone"/></c:set>
 									<a href="<c:url value='metricdefinition.html?metricid=${metric.metid}&action=clone'/>">
-										<button align="right" type="button" value="Clone">
+										<button align="right" title="${tooltipclone}" type="button" value="Clone">
 										<spring:message code="clone"/></button>
 									</a>
 								</td>
 								<td>
 									<!-- Edit button -->
+									<c:set var="tooltipedit"><spring:message code="tooltip_edit"/></c:set>
 									<a href="<c:url value='editmetric.html?metricid=${metric.metid}'/>">
-										<button align="right" type="button" value="Edit">
+										<button align="right" title="${tooltipedit}" type="button" value="Edit">
 										<spring:message code="edit"/></button>
 									</a>
 								</td>
 								<td>
 									<!-- Delete button -->
+									<c:set var="tooltipdelete"><spring:message code="tooltip_delete"/></c:set>
 									<a href="<c:url value='metricdefinition.html?metricid=${metric.metid}&action=delete'/>" 
 									onclick="return confirm('Are you sure you want to delete metric')">
-										<button align="right" type="button" value="Delete">
+										<button align="right" title="${tooltipdelete}" type="button" value="Delete">
 										<spring:message code="delete"/></button>
 									</a>
 								</td>
@@ -88,7 +91,9 @@
 					<td align="right">
 						<!-- ToDo: Create Export functionality for this button -->
 						<!-- <a href="exportmetrics.html"><button type="button">Export metrics</button></a> -->
-			   			<a href="createmetric.html"><button type="button"><spring:message code="create_metric"/></button></a>
+			   			<c:set var="tooltipcreatemetric"><spring:message code="tooltip_create_metric"/></c:set>
+			   			<a href="createmetric.html"><button title="${tooltipcreatemetric}" type="button">
+			   			<spring:message code="create_metric"/></button></a>
 			   		</td>
 				</tr>
 			</table>
