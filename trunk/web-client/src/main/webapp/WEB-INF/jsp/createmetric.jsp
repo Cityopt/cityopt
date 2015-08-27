@@ -74,11 +74,14 @@
 										<c:forEach items="${components}" var="component">
 										<tr>
 											<c:if test="${selectedcompid == component.componentid}">
-												<tr style="background-color: #D4D4D4"><td>Selected</td>
+												<tr style="background-color: #D4D4D4"><td>
+												<spring:message code="selected"/></td>
 											</c:if>
 											<c:if test="${selectedcompid != component.componentid}">
 												<tr>
-												<td><a href="<c:url value='createmetric.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+												<c:set var="tooltip_selector"><spring:message code="tooltip_select"/></c:set>
+												<td><a href="<c:url value='createmetric.html?selectedcompid=${component.componentid}'/>" title="${tooltip_selector}">
+												<spring:message code="select"/></a></td>
 											</c:if>
 												<td>${component.name}</td>
 									   	</tr>
@@ -220,7 +223,8 @@
 							</tr>					
 							<tr>
 								<td></td>
-								<td colspan="3"><form:input style="width:100%" type="text" path="name"/></td>
+								<c:set var="nametooltip"><spring:message code="tooltip_createmetric_name"/></c:set>
+								<td colspan="3"><form:input style="width:100%" title="${nametooltip}" type="text" path="name"/></td>
 								<td></td>
 							</tr>
 							<tr>
@@ -233,7 +237,8 @@
 							</tr>					
 							<tr>
 								<td></td>
-								<td colspan="3"><form:input style="width:100%" type="text" path="expression"/></td>
+								<c:set var="expressiontip"><spring:message code="tooltip_expression"/></c:set>
+								<td colspan="3"><form:input style="width:100%" title="${expressiontip}" type="text" path="expression"/></td>
 								<td></td>
 							</tr>
 							<tr>
