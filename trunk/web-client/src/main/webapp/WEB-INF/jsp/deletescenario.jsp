@@ -48,9 +48,10 @@
 					<td>${scenario.description}</td>
 			    	<td>
 			    		<!-- delete button -->
+			    		<c:set var="tooltip_delete"><spring:message code="tooltip_delete"/></c:set>
 						<a href="<c:url value='deletescenario.html?scenarioid=${scenario.scenid}'/>"
 						onclick="return confirm('<spring:message code="confirm_scenario_deletion"/>')">
-							<button align="right"  type="button" value="Delete">
+							<button align="right" title="${tooltip_delete}"  type="button" value="Delete">
 							<spring:message code="delete"/></button>
 						</a>
 					</td>

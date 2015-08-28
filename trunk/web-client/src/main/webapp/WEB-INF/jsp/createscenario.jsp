@@ -30,9 +30,10 @@
 					<td>
 						<table>
 							<tr>
-								<!-- Scenario name -->
+								<!-- Scenario name -->								
 								<td><spring:message code="scenario_name"/>:</td>
-								<td><form:input type="text" path="name"  style="width: 200px"/></td>
+								<c:set var="tooltip_name"><spring:message code="tooltip_create_scenario_name"/></c:set>
+								<td><form:input type="text" path="name"  title="${tooltip_name}" style="width: 200px"/></td>
 								<td></td>
 								<td></td>
 							</tr>
@@ -46,7 +47,8 @@
 							<tr>
 								<!-- Description -->						
 								<td><spring:message code="description"/>:</td>
-								<td><form:textarea type="text" rows="3" path="description" style="width: 200px"></form:textarea></td>
+								<c:set var="tooltip_description"><spring:message code="tooltip_create_scenario_description"/></c:set>
+								<td><form:textarea type="text" rows="3" title="${tooltip_description}" path="description" style="width: 200px"></form:textarea></td>
 								<td></td>
 								<td></td>
 							</tr>
@@ -54,7 +56,8 @@
 							<tr>						
 								<td></td>
 								<!-- Create scenario button -->
-								<td align="right"><input type="submit" value="<spring:message code="create_scenario"/>" style="width:120px"></td>
+								<c:set var="tooltip_create_scenario"><spring:message code="tooltip_create_scenario"/></c:set>
+								<td align="right"><input type="submit" title="${tooltip_create_scenario}" value="<spring:message code="create_scenario"/>" style="width:120px"></td>
 								<td></td>
 								<td></td>
 							</tr>

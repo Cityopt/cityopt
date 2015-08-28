@@ -37,36 +37,45 @@
 							<form:form method="post" action="editscenario.html?action=update" modelAttribute="scenario">
 							<tr>
 								<!-- Scenario name -->
+								<c:set var="tooltip_name"><spring:message code="tooltip_edit_scenario_name"/></c:set>
 								<td><spring:message code="scenario_name"/>:</td>
-								<td><form:input type="text" path="name" style="width:200px"/></td>
+								<td><form:input type="text" path="name" title="${tooltip_name}" style="width:200px"/></td>
+								
 								<!-- Update Scenario -->
-								<td><input type="submit" value="<spring:message code="update_scenario"/>" style="width:150px"></td>
+								<c:set var="tooltip_update_scenario"><spring:message code="tooltip_update_scenario"/></c:set>
+								<td><input type="submit" value="<spring:message code="update_scenario"/>" title="${tooltip_update_scenario}" style="width:150px"></td>
 							</tr>
 							<tr>
 								<!-- Description -->						
 								<td><spring:message code="description"/>:</td>
-								<td><form:textarea type="text" rows="3" path="description" style="width:200px"/></td>
+								<c:set var="tooltip_description"><spring:message code="tooltip_edit_scenario_description"/></c:set>
+								<td><form:textarea type="text" rows="3" title="${tooltip_description}" path="description" style="width:200px"/></td>
+								
 								<!-- Simulate scenario -->
-								<td valign="top"><a href="runscenario.html"><button type="button" style="width:150px">
+								<c:set var="tooltip_simulate_scenario"><spring:message code="tooltip_simulate_scenario"/></c:set>
+								<td valign="top"><a href="runscenario.html"><button type="button" title="${tooltip_simulate_scenario}" style="width:150px">								
 								<spring:message code="simulate_scenario"/></button></a></td>
 							</tr>
 							<tr height="15"></tr>
 							<tr>
 								<!-- Input parameter & set button -->						
 								<td><spring:message code="input_parameters"/>:</td>
-								<td><a href="scenarioparameters.html"><button type="button" style="width:100px">
+								<c:set var="tooltip_scenario_parameters"><spring:message code="tooltip_edit_scenario_parameters"/></c:set>
+								<td><a href="scenarioparameters.html"><button type="button" title="${tooltip_scenario_parameters}" style="width:100px">
 								<spring:message code="set"/></button></a></td>
 							</tr>
 							<tr>
 								<!-- External parameters & set button -->						
 								<td><spring:message code="external_parameters"/>:</td>
-								<td><a href="scenariovariables.html"><button type="button" style="width:100px">
+								<c:set var="tooltip_scenario_externalparameters"><spring:message code="tooltip_edit_scenario_externalparameters"/></c:set>
+								<td><a href="scenariovariables.html"><button type="button" title="${tooltip_scenario_externalparameters}" style="width:100px">
 								<spring:message code="set"/></button></a></td>
 							</tr>
 							<tr>
 								<!-- Multi scenarios -->					
 								<td><spring:message code="multi_scenarios"/>:</td>
-								<td><a href="setmultiscenario.html"><button type="button" style="width:100px">
+								<c:set var="tooltip_multiscenarios"><spring:message code="tooltip_edit_multiskenarios"/></c:set>
+								<td><a href="setmultiscenario.html"><button type="button" title="${tooltip_multiscenarios}" style="width:100px">
 								<spring:message code="set"/></button></a></td>
 							</tr>
 							<tr height="15"></tr>
@@ -77,23 +86,26 @@
 							</tr>
 							<tr>
 								<!-- Remaining simulation time -->
+								<!-- ToD0 Must make any kind loading screen! -->
 								<td><spring:message code="remaining_simulation_time"/>:</td>
 								<td></td>
 							</tr>
-							</form:form>
-							
+							</form:form>							
 							<form:form method="post" action="setsimulationdate.html">
 							<tr>
 								<!--Dynamic simulation period from-->
+								<c:set var="tooltip_simulation_start"><spring:message code="tooltip_dynamicsimulation_start"/></c:set>
+								<c:set var="tooltip_simulation_end"><spring:message code="tooltip_dynamicsimulation_end"/></c:set>
 								<td><spring:message code="dynamic_simulation_period_from"/></td>
-								<td><input name="simstart" type="text" style="width:180px" value="${simStart}"/>
+								<td><input name="simstart" title="${tooltip_simulation_start}" type="text" style="width:180px" value="${simStart}"/>
 								<spring:message code="to"/>
-								<input name="simend" type="text" style="width:180px" value="${simEnd}" /></td>
+								<input name="simend" title="${tooltip_simulation_end}" type="text" style="width:180px" value="${simEnd}" /></td>
 							</tr>
 							<tr>
 								<td></td>
 								<!-- Save dates -->
-								<td><input type="submit" value="<spring:message code="save_dates"/>" style="width:100px"/></td>
+								<c:set var="tooltip_savedates"><spring:message code="tooltip_savedates"/></c:set>
+								<td><input type="submit" title="${tooltip_savedates}" value="<spring:message code="save_dates"/>" style="width:100px"/></td>
 							</tr>
 							</form:form>
 							
