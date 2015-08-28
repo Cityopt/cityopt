@@ -58,13 +58,15 @@
 					<td>${scenario.description}</td>
 					<<td>${scenario.status}</td>			
 					<td>
-						<a href="<c:url value='openscenario.html?scenarioid=${scenario.scenid}'/>">
+						<c:set var="tooltip_open_scenario"><spring:message code="tooltip_open_scenario"/></c:set>
+						<a href="<c:url value='openscenario.html?scenarioid=${scenario.scenid}'/>" title="${tooltip_open_scenario}">
 							<button align="right" type="button" value="Open"><spring:message code="open"/>
 							</button>
 						</a>
 					</td>
 					<td>
-						<a href="<c:url value='clonescenario.html?scenarioid=${scenario.scenid}'/>">
+						<c:set var="tooltip_clone"><spring:message code="tooltip_clone"/></c:set>
+						<a href="<c:url value='clonescenario.html?scenarioid=${scenario.scenid}'/>" title="${tooltip_clone}">
 							<button align="right" type="button" value="Clone"><spring:message code="clone"/></button>
 						</a>
 					</td>
