@@ -15,10 +15,12 @@ import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.InputParameter;
+import eu.cityopt.model.Type;
 import eu.cityopt.model.Unit;
 import eu.cityopt.repository.ComponentRepository;
 import eu.cityopt.repository.InputParamValRepository;
 import eu.cityopt.repository.InputParameterRepository;
+import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.repository.UnitRepository;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.InputParameterService;
@@ -36,6 +38,9 @@ public class InputParameterServiceImpl implements InputParameterService {
 	
 	@Autowired
 	private UnitRepository unitRepository;
+	
+	@Autowired
+	private TypeRepository typeRepository;
 	
 	@Autowired
 	private ComponentRepository componentRepository;
@@ -62,9 +67,12 @@ public class InputParameterServiceImpl implements InputParameterService {
 		InputParameter param = modelMapper.map(u, InputParameter.class);
 		Component com = componentRepository.getOne(componentId);
 		Unit unit = unitRepository.getOne(unitId);
+		Type type = typeRepository.getOne(u.getType().getTypeid());
 		
 		param.setComponent(com);
 		param.setUnit(unit);
+		param.setType(type);
+				
 		param = inputParameterRepository.save(param);
 		return modelMapper.map(param, InputParameterDTO.class);
 	}
