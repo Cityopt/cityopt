@@ -27,6 +27,55 @@
 				<col style="width: 450px;">
 				<!-- Edit database optimization set title -->
 				<tr><td colspan="2"><h2><spring:message code="edit_database_optimization_set"/></h2></td></tr>
+				
+				<!-- Tool tips -->
+				<c:set var="tooltip_name">
+						<spring:message code="tooltip_edit_optimizationset_name" />
+					</c:set>
+				<c:set var="tooltip_description">
+						<spring:message code="tooltip_edit_optimizationset_description" />
+					</c:set>
+				<c:set var="tooltip_run">
+						<spring:message code="tooltip_run_optimization" />
+					</c:set>
+				<c:set var="tooltip_user">
+						<spring:message code="tooltip_edit_optimizationset_user" />
+					</c:set>
+				<c:set var="tooltip_targetfunction">
+					<spring:message code="tooltip_edit_optimizationset_targetfunction" />
+				</c:set>
+				<c:set var="tooltip_create_objectivefunction">
+					<spring:message code="tooltip_editoptimizationset_create_objectivefunction" />
+				</c:set>
+				<c:set var="tooltip_edit_objectivefunction">
+					<spring:message code="tooltip_editoptimizationset_edit_objectivefunction" />
+				</c:set>
+				<c:set var="tooltip_delete_objectivefunction">
+					<spring:message code="tooltip_editoptimizationset_delete_objectivefunction" />
+				</c:set>
+				<c:set var="tooltip_import_objectivefunction">
+					<spring:message code="tooltip_editoptimizationset_import_objectivefunction" />
+				</c:set>
+				<c:set var="tooltip_create_constraints">
+					<spring:message code="tooltip_create_constraints" />
+				</c:set>
+				<c:set var="tooltip_edit_constraints">
+					<spring:message code="tooltip_edit_constraints" />
+				</c:set>
+				<c:set var="tooltip_delete_constraints">
+					<spring:message code="tooltip_delete_constraints" />
+				</c:set>
+				<c:set var="tooltip_import_constraints">
+					<spring:message code="tooltip_import_constraints" />
+				</c:set>
+				<c:set var="tooltip_add_externalparameter">
+					<spring:message code="tooltip_add_externalparameter" />
+				</c:set>
+				<c:set var="tooltip_delete_externalparameter">
+					<spring:message code="tooltip_delete_externalparameter" />
+				</c:set>		
+						
+				
 				<tr>
 					<td colspan="2" valign="top">
 						<table>
@@ -36,13 +85,13 @@
 							<col style="width: 300px;">
 							<col style="width: 175px;">
 							<tr>
-								<!-- Name -->
+								<!-- Name -->								
 								<td><spring:message code="name"/>:</td>
-								<td><form:input type="text" path="name" style="width:200px"/></td>
+								<td><form:input type="text" title="${tooltip_name}" path="name" style="width:200px"/></td>
 								<!-- Description -->
 								<td><spring:message code="description"/>:</td>
-								<td rowspan="2"><textarea id="description" rows="2" style="width: 300px"></textarea></td>
-								<td align="right"><a href="databaseoptimization.html"><button type="button">
+								<td rowspan="2"><textarea id="description" title="${tooltip_description}" rows="2" style="width: 300px"></textarea></td>
+								<td align="right"><a href="databaseoptimization.html"><button title="${tooltip_run}" type="button">
 								<!-- Run search -->
 								<spring:message code="run_search"/></button></a></td>
 							
@@ -51,7 +100,7 @@
 							<tr>						
 								<!-- User -->	
 								<td><spring:message code="user"/>:</td>
-								<td><input type="text" id="user" style="width:200px"></td>
+								<td><input type="text" title="${tooltip_user}" id="user" style="width:200px"></td>
 								<td></td>
 								<td align="right"></td>
 							</tr>
@@ -95,7 +144,7 @@
 												</c:otherwise>
 											</c:choose>
 											<td>
-												<table class="tablestyle" width="100%">
+												<table class="tablestyle" title="${tooltip_targetfunction}" width="100%">
 													<tr>
 														<td>
 															${optimizationset.objectivefunction.expression}
@@ -110,11 +159,14 @@
 							<tr>
 								<td>
 									<!-- Create -->
-									<a href="createobjfunction.html"><button type="button"><spring:message code="create"/></button></a>
+									<a href="createobjfunction.html"><button title="${tooltip_create_objectivefunction}" type="button">
+									<spring:message code="create"/></button></a>
 									<!-- Edit -->
-									<a href="editobjfunction.html"><button type="button"><spring:message code="edit"/></button></a>
+									<a href="editobjfunction.html"><button title="${tooltip_edit_objectivefunction}" type="button">
+									<spring:message code="edit"/></button></a>
 									<!-- Import -->
-									<a href="importobjfunction.html"><button type="button"><spring:message code="import"/></button></a>
+									<a href="importobjfunction.html"><button title="${tooltip_import_objectivefunction}" type="button">
+									<spring:message code="import"/></button></a>
 								</td>
 							</tr>
 							<tr height="20"></tr>
@@ -154,24 +206,26 @@
 											<td>${constraint.lowerbound}</td>
 											<td>${constraint.upperbound}</td>
 											<!-- Edit button -->
-											<td><a href="editconstraint.html?constraintid=${constraint.optconstid}"><button type="button">
+											<td><a href="editconstraint.html?constraintid=${constraint.optconstid}">
+											<button title="${tooltip_edit_constraints}" type="button">
 											<spring:message code="edit"/></button></a>
 											<!-- Delete button -->
-											<td><a href="deleteconstraint.html?constraintid=${constraint.optconstid}"><button type="button">
+											<td><a href="deleteconstraint.html?constraintid=${constraint.optconstid}">
+											<button title="${tooltip_delete_constraints}" type="button"
+											onclick="return confirm('<spring:message code="confirm_delete_constraint"/>')">
 											<spring:message code="delete"/></button></a>
 									   	</tr>
-										</c:forEach>
-						
+										</c:forEach>						
 									</table>
 								</td>
 							</tr>
 							<tr>
 								<td>
 									<!-- Create -->
-									<a href="createconstraint.html"><button type="button">
+									<a href="createconstraint.html"><button title="${tooltip_create_constraints}" type="button">
 									<spring:message code="create"/></button></a>
 									<!-- Import -->
-									<a href="importsearchconstraint.html"><button type="button">
+									<a href="importsearchconstraint.html"><button title="${tooltip_import_constraints}" type="button">
 									<spring:message code="import"/></button></a>
 								</td>
 							</tr>
@@ -187,8 +241,9 @@
 							</tr>
 							<tr>
 								<td>
-									<a href="extparamsets.html"><button type="button"><spring:message code="add"/></button></a>
-									<input type="submit" value="Delete">
+									<a href="extparamsets.html"><button  title="${tooltip_add_externalparameter}" type="button"><spring:message code="add"/></button></a>
+									<input type="submit" title="${tooltip_delete_externalparameter}" value="Delete" 
+									onclick="return confirm('<spring:message code="confirm_delete_externalparameter"/>')">
 								</td>
 							</tr>
 						</table>
@@ -261,10 +316,8 @@
 										<tr>
 											<td>${metricVal.metric.name}</td>
 									    	<td>${metricVal.value}</td>
-									    	<td>${metricVal.scenariometrics.scenario.name}</td>
-									    	
-									    	
-									   	</tr>
+									    	<td>${metricVal.scenariometrics.scenario.name}</td>						    	
+									    </tr>
 										</c:forEach>
 									</table>
 								</td>

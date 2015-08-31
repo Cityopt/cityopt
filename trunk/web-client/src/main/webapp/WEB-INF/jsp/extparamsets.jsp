@@ -66,6 +66,9 @@ var getUrlParameter = function getUrlParameter(sParam) {
 					<c:set var="tooltip_close">
 						<spring:message code="tooltip_close" />
 					</c:set>
+					<c:set var="tooltip_create_objectivefunction">
+						<spring:message code="tooltip_editoptimizationset_create_objectivefunction" />
+					</c:set>
 
 					<tr>
 						<td>
