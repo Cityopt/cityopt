@@ -34,7 +34,9 @@
 				    <!-- Open -->
 				    <th><spring:message code="open"/></th>
 				</tr>
-			
+				<!-- Tool tip -->
+				<c:set var="delete_optimizationset"><spring:message code="tooltip_delete"/></c:set>
+				<!-- Table elements -->
 				<c:forEach items="${openoptimizationsets}" var="openoptimizationset">
 				<tr>
 					<td>${openoptimizationset.name}</td>
@@ -44,7 +46,7 @@
 								<td>
 									<a href="<c:url value='deleteoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=db'/>"
 									onclick="return confirm('<spring:message code="confirm_optimizationset_deletion"/>')">
-									<button align="right"  type="button" value="Delete">Delete</button>
+									<button align="right" title="${delete_optimizationset}" type="button" value="Delete">Delete</button>
 								</a>
 								</td>
 							</c:when>
@@ -53,7 +55,7 @@
 								<td>
 								<!-- Delete -->
 								<a href="<c:url value='deleteoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga'/>">
-									<button align="right"  type="button" value="Delete">
+									<button align="right" title="${delete_optimizationset}"  type="button" value="Delete">
 									<spring:message code="delete"/></button>
 								</a>
 								</td>

@@ -99,6 +99,12 @@ var getUrlParameter = function getUrlParameter(sParam) {
 													<col style="width: 60px">
 													<col style="width: 200px">
 
+													<!-- Tool tips -->
+													<c:set var="select_externalparameter"><spring:message code="tooltip_select_externalparameterset"/></c:set>
+													<c:set var="selected_externalparameter"><spring:message code="tooltip_selected_externalparameterset"/></c:set>
+													<c:set var="submit_externalparameter"><spring:message code="tooltip_submit_externalparameterset"/></c:set>
+													<c:set var="tooltip_close"><spring:message code="tooltip_close"/></c:set>
+													
 													<!-- ForEachElement: Select element // External parameterset -->
 													<!-- Example:<tr><td>Select</td><td>Dataentry</td></tr> -->
 													<c:forEach items="${extParamValSets}" var="extParamValSet">
@@ -107,13 +113,13 @@ var getUrlParameter = function getUrlParameter(sParam) {
 																<c:when test="${extParamValSet.extparamvalsetid == id}">
 																	<input type="hidden" name=id
 																		value="${extParamValSet.extparamvalsetid}" />
-																	<tr style="background-color: #D4D4D4">
+																	<tr title="${selected_externalparameter}" style="background-color: #D4D4D4">
 																		<td><spring:message code="selected" /></td>
 																</c:when>
 																<c:otherwise>
 																	<tr>
 																		<td><a
-																			href="<c:url value='extparamsets.html?id=${extParamValSet.extparamvalsetid}'/>">
+																			href="<c:url value='extparamsets.html?id=${extParamValSet.extparamvalsetid}'/>" title="${select_externalparameter}">
 																				<!--<input type="button" name="id" th:field="*{id}" value="${extParamValSet.extparamvalsetid}">-->
 																				<spring:message code="select" />
 																		</a></td>
@@ -147,9 +153,9 @@ var getUrlParameter = function getUrlParameter(sParam) {
 										<!-- Submit button -->
 
 										<!-- Close button -->
-										<td><input name="index" type="submit"></a></td>
+										<td><input name="index" title="${submit_externalparameter}" type="submit"></a></td>
 										<td align="right"><a href="editoptimizationset.html"><button
-													type="button">
+													type="button" title="${tooltip_close}">
 													<spring:message code="close" />
 												</button></a></td>
 									</tr>

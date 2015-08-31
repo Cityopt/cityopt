@@ -37,7 +37,10 @@
 				    <!-- clone -->
 				    <th><spring:message code="clone"/></th>
 				</tr>
-			
+				<!-- tool tips -->
+				<c:set var="open_optimizationset"><spring:message code="tooltip_open_optimizationset"/></c:set>
+				<c:set var="clone_optimizationset"><spring:message code="tooltip_clone"/></c:set>
+				<!-- Tables -->
 				<c:forEach items="${openoptimizationsets}" var="openoptimizationset">
 				<tr>
 					<td>${openoptimizationset.name}</td>
@@ -46,12 +49,12 @@
 								<td>Database search</td>
 								<td>
 								<a href="<c:url value='openoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=db'/>">
-									<button align="right"  type="button" value="Open"><spring:message code="open"/></button>
+									<button align="right" title="${open_optimizationset}"  type="button" value="Open"><spring:message code="open"/></button>
 								</a>
 								</td>
 									<td><a
 											href="<c:url value='cloneoptimizer.html?optimizerid=${openoptimizationset.id}'/>">
-												<button align="right" type="button" value="Clone"><spring:message code="clone"/></button>
+												<button align="right" title="${clone_optimizationset}" type="button" value="Clone"><spring:message code="clone"/></button>
 									</a></td>
 
 									</c:when>
