@@ -34,25 +34,31 @@
 						<col style="width: 175px;">
 						<tr>
 							<!-- Name -->
+							<c:set var="tooltip_name"><spring:message code="tooltip_create_optimizationset_name"/></c:set>
 							<td><spring:message code="name"/>:</td>
-							<td><form:input type="text" id="name" path="name" style="width:200px"/></td>
+							<td><form:input type="text" id="name" title="${tooltip_name}" path="name" style="width:200px"/></td>
 							<!-- Description -->
+							<c:set var="tooltip_description"><spring:message code="tooltip_create_optimizationset_description"/></c:set>
 							<td><spring:message code="description"/>:</td>
-							<td rowspan="2"><textarea id="description" rows="2" style="width: 300px"></textarea></td>
-							<td align="right"><input type="submit" value="Create" style="width: 100px"></td>
+							<td rowspan="2"><textarea id="description" title="${tooltip_description}" rows="2" style="width: 300px"></textarea></td>
+							<!-- Create -->
+							<c:set var="tooltip_create"><spring:message code="tooltip_create_optimizationset"/></c:set>
+							<td align="right"><input type="submit" title="${tooltip_create}" value="Create" style="width: 100px"></td>
 						</tr>
 						<tr>
-						<!-- User -->						
+						<!-- User -->
+							<c:set var="tooltip_user"><spring:message code="tooltip_create_optimizationset_user"/></c:set>						
 							<td><spring:message code="user"/>:</td>
-							<td><input type="text" id="user" style="width:200px"></td>
+							<td><input type="text" title="${tooltip_user}" id="user" style="width:200px"></td>
 							<td></td>
 							<td align="right"></td>
 						</tr>
 						<tr>
 						<!-- Type -->
+							<c:set var="tooltip_type"><spring:message code="tooltip_create_optimizationset_type"/></c:set>
 							<td><spring:message code="type"/>:</td>
 							<td>
-								<select name="type" id="type" size="1">
+								<select name="type" title="${tooltip_type}" id="type" size="1">
 									<!-- option Database search -->
 									<option value="1" selected><spring:message code="database_search"/></option>
 									<!-- Genetic algorithm -->
