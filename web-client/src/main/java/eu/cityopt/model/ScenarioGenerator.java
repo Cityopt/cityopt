@@ -170,7 +170,7 @@ public class ScenarioGenerator extends VersionModel implements java.io.Serializa
 		this.decisionvariables = decisionvariables;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator",cascade=CascadeType.REMOVE)
 	public Set<ModelParameter> getModelparameters() {
 		return this.modelparameters;
 	}
@@ -179,7 +179,7 @@ public class ScenarioGenerator extends VersionModel implements java.io.Serializa
 		this.modelparameters = modelparameters;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator",cascade=CascadeType.REMOVE)
 	public Set<ScenGenResult> getScengenresults() {
 		return this.scengenresults;
 	}
@@ -188,7 +188,7 @@ public class ScenarioGenerator extends VersionModel implements java.io.Serializa
 		this.scengenresults = scengenresults;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator",cascade=CascadeType.REMOVE)
 	public Set<ScenGenOptConstraint> getScengenoptconstraints() {
 		return this.scengenoptconstraints;
 	}
@@ -207,7 +207,7 @@ public class ScenarioGenerator extends VersionModel implements java.io.Serializa
 		this.scenarios = scenarios;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator",cascade=CascadeType.REMOVE)
 	public Set<AlgoParamVal> getAlgoparamvals() {
 		return this.algoparamvals;
 	}
@@ -216,7 +216,7 @@ public class ScenarioGenerator extends VersionModel implements java.io.Serializa
 		this.algoparamvals = algoparamvals;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator",cascade=CascadeType.REMOVE)
 	public Set<ScenGenObjectiveFunction> getScengenobjectivefunctions() {
 		return this.scengenobjectivefunctions;
 	}
