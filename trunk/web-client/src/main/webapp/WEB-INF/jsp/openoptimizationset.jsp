@@ -62,10 +62,10 @@
 								<td>Genetic algorithm</td>
 								<td>
 								<a href="<c:url value='openoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga'/>">
-									<button align="right"  type="button" value="Open"><spring:message code="open"/></button>
+									<button align="right" title="${open_optimizationset}"  type="button" value="Open"><spring:message code="open"/></button>
 								</a></td>
 								<td><a	href="<c:url value='cloneoptimizer.html?optimizerid=${openoptimizationset.id}'/>">
-												<button align="right" type="button" value="Clone"><spring:message code="clone"/></button>
+												<button align="right" title="${clone_optimizationset}" type="button" value="Clone"><spring:message code="clone"/></button>
 									</a></td>						
 								
 							</c:otherwise>
