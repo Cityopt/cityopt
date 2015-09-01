@@ -26,6 +26,12 @@
 			<!-- Create component -->
 			<h2><spring:message code="create_component"/></h2>
 
+
+			<!-- Tool tips -->
+			<c:set var="tooltip_name"><spring:message code="tooltip_name"/></c:set>
+			<c:set var="tooltip_create"><spring:message code="tooltip_create"/></c:set>
+			<c:set var="tooltip_cansel"><spring:message code="tooltip_cansel"/></c:set>
+
 			<table align="center">
 				<col style="width:150px">
 				<col style="width:80px">
@@ -35,8 +41,8 @@
 						<!-- Name -->
 						<spring:message code="name"/>
 					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="name"/>
+					<td>						
+						<form:input style="width:300px" title="${tooltip_name}" type="text" path="name"/>
 					</td>
 				</tr>
 				<tr height="10">
@@ -46,8 +52,8 @@
 				<tr>
 					<td></td>
 					<!-- Create & Cancel -button -->
-					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create"/>"/>
-					<a href="editproject.html"><button style="width:100px" type="button" value="cancel"><spring:message code="cansel"/></button></a></td>
+					<td align="right"><input title="${tooltip_create}" style="width:100px" type="submit" value="<spring:message code="create"/>"/>
+					<a href="editproject.html"><button title="${tooltip_cansel}" style="width:100px" type="button" value="cancel"><spring:message code="cansel"/></button></a></td>
 				</tr>
 			</table>
 			

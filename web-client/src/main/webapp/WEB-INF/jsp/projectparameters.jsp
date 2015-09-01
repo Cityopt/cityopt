@@ -77,16 +77,20 @@
 														<!-- Edit -->
 														<th><spring:message code="edit"/></th>
 													</tr>
+													<!-- Tooltips -->
+													<c:set var="tooltip_select"><spring:message code="tooltip_select"/></c:set>
+													<c:set var="tooltip_selected"><spring:message code="tooltip_selected"/></c:set>
+													<c:set var="tooltip_projectparameters"><spring:message code="tooltip_projectparameters"/></c:set>
 													
 													<c:forEach items="${components}" var="component">
 														<c:choose>
 															<c:when test="${selectedcompid == component.componentid}">
-																<tr style="background-color: #D4D4D4">
+																<tr style="background-color: #D4D4D4" title="${tooltip_selected}">
 																	<td><spring:message code="selected"/></td>
 															</c:when>
 															<c:otherwise>
 																<tr>
-																	<td><a href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}'/>">
+																	<td><a href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}'/>" title="${tooltip_select}">
 																	<spring:message code="select"/></a></td>
 															</c:otherwise>
 														</c:choose>
@@ -94,7 +98,7 @@
 													    	<td>${component.componentid}</td>
 															<td>
 																<a href="<c:url value='editcomponent.html?componentid=${component.componentid}'/>">
-																	<button align="right" type="button" value="Edit"><spring:message code="edit"/></button>
+																	<button align="right" title="${tooltip_projectparameters}" type="button" value="Edit"><spring:message code="edit"/></button>
 																</a>
 															</td>
 													   	</tr>
@@ -136,8 +140,9 @@
 											</td>
 										</tr>
 										<tr>
+											<c:set var="tooltip_createcomponent"><spring:message code="tooltip_create_component"/></c:set>											
 											<td align="right">
-												<a href="createcomponent.html"><button type="button"><spring:message code="create_component"/></button></a>
+												<a href="createcomponent.html"><button title="${tooltip_createcomponent}" type="button"><spring:message code="create_component"/></button></a>
 											</td>
 											<td></td>
 											<td align="right">
