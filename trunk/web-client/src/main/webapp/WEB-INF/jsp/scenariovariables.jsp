@@ -51,10 +51,8 @@
 								<!-- Edit -->
 							    <th><spring:message code="edit"/></th>
 							</tr>
-							
-							
+																					
 							<c:set var="tooltip_edit"><spring:message code="tooltip_edit_scenariovariables"/></c:set>
-							
 							<c:forEach items="${extParamVals}" var="extParamVal">
 							<tr>
 								<td>${extParamVal.extparam.name}</td>
