@@ -52,6 +52,9 @@
 							    <th><spring:message code="edit"/></th>
 							</tr>
 							
+							
+							<c:set var="tooltip_edit"><spring:message code="tooltip_edit_scenariovariables"/></c:set>
+							
 							<c:forEach items="${extParamVals}" var="extParamVal">
 							<tr>
 								<td>${extParamVal.extparam.name}</td>
@@ -59,7 +62,8 @@
 						    	<td>${extParamVal.value}</td>
 						    	<td>
 									<a href="<c:url value='editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}'/>">
-										<button align="right" type="button" value="Edit"><spring:message code="edit"/></button>
+										<button align="right" title="${tooltip_edit}" type="button" value="Edit">
+										<spring:message code="edit"/></button>
 									</a>
 								</td>
 						   	</tr>

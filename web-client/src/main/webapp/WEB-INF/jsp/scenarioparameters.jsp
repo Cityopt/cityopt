@@ -64,17 +64,20 @@
 											<!-- Select -->
 											<th><spring:message code="select"/></th>
 											<!-- Component -->
-											<th><spring:message code="component"/>Component</th>
+											<th><spring:message code="component"/></th>
 										</tr>
+										<!-- Tooltips -->
+										<c:set var="tooltip_select"><spring:message code="tooltip_select"/></c:set>
+										<c:set var="tooltip_selected"><spring:message code="tooltip_selected"/></c:set>
 										
 										<c:forEach items="${components}" var="component">
 										<c:if test="${selectedComponent.componentid == component.componentid}">
-											<tr style="background-color: #D4D4D4"><td>
+											<tr title="${tooltip_selected}" style="background-color: #D4D4D4"><td>
 											<spring:message code="selected"/></td>
 										</c:if>
 										<c:if test="${selectedComponent.componentid != component.componentid}">
 											<tr>
-											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">
+											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>" title="${tooltip_select}">
 											<spring:message code="select"/></a></td>
 										</c:if>
 											<td>${component.name}</td>
@@ -97,13 +100,16 @@
 											<th><spring:message code="edit"/></th>
 										</tr>
 										
+										<!-- Tooltip -->
+										<c:set var="tooltip_edit_inputparameter"><spring:message code="tooltip_edit_scenario_parameter"/></c:set>
+										
 										<c:forEach items="${inputParamVals}" var="inputParamVal">
 										<tr>
 											<td>${inputParamVal.inputparameter.name}</td>
 									    	<td>${inputParamVal.value}</td>
 											<td>
 												<a href="<c:url value='editinputparamvalue.html?inputparamvalid=${inputParamVal.inputparamvalid}'/>">
-													<button align="right" type="button" value="Edit">
+													<button align="right" title="${tooltip_edit_inputparameter}" type="button" value="Edit">
 													<spring:message code="edit"/></button>
 												</a>
 											</td>
@@ -117,7 +123,8 @@
 								<td></td>
 								<td align="right">
 									<!-- Close -button -->
-									<a href="editscenario.html"><button type="button">
+									<c:set var="tooltip_close"><spring:message code="tooltip_close"/></c:set>
+									<a href="editscenario.html"><button title="${tooltip_close}" type="button">
 									<spring:message code="close"/></button></a>
 							    </td>
 							</tr>

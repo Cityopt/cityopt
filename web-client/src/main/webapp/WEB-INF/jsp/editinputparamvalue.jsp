@@ -32,7 +32,8 @@
 				<col style="width:80px">
 				<tr>
 					<td>
-						Name
+						<!-- Name -->
+						<spring:message code="name"/>						
 					</td>
 					<td>
 						${inputParamVal.inputparameter.name}
@@ -40,10 +41,13 @@
 				</tr>
 				<tr>
 					<td>
-						Value
+						<!-- Value -->
+						<spring:message code="value"/>						
 					</td>
 					<td>
-						<form:input style="width:300px" type="text" path="value"/>
+						<!-- Input field -->
+						<c:set var="tooltip_change"><spring:message code="tooltip_changevalue_parameter"/></c:set>
+						<form:input style="width:300px" type="text" path="value" title="${tooltip_change}"/>
 					</td>
 				</tr>
 				<tr height="10">
@@ -52,8 +56,10 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td align="right"><input style="width:100px" type="submit" value="Update"/>
-					<a href="scenarioparameters.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<c:set var="tooltip_update"><spring:message code="tooltip_update"/></c:set>
+					<c:set var="tooltip_cansel"><spring:message code="tooltip_cansel"/></c:set>
+					<td align="right"><input style="width:100px" title="${tooltip_update}"  type="submit" value="Update"/>
+					<a href="scenarioparameters.html"><button style="width:100px"  title="${tooltip_cansel}" type="button" value="Cancel">Cancel</button></a></td>
 				</tr>
 			</table>
 			
