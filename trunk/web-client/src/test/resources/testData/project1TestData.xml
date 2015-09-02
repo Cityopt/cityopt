@@ -68,7 +68,7 @@
 <optconstraint optconstid="7" prjid="1" expression="Energy_Supply2" lowerbound="0" upperbound="90000"  version="1" />
 
 
-<objectivefunction obtfunctionid="1" prjid="1" typeid="1" expression="CO2_Emissions + Cost" ismaximise="false" version="1"/>
+<objectivefunction obtfunctionid="1" prjid="1" typeid="1" name="ObjectiveFunction 1" expression="CO2_Emissions + Cost" ismaximise="false" version="1"/>
 
 <optimizationset optid="1" prjid="1" optfunctionid="1" extparamvalsetid="1" name="Optimization Set 1"  version="1" />
 <algorithm algorithmid="1" description="grid search" version="1" />
