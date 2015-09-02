@@ -94,5 +94,15 @@ public class ObjectiveFunctionServiceImpl implements ObjectiveFunctionService {
 		return modelMapper.map(of.getOptimizationsets(), 
 				new TypeToken<Set<OptimizationSetDTO>>(){}.getType());
 	}
+
+	@Override
+	public ObjectiveFunctionDTO findByName(int prjID, String name) throws EntityNotFoundException {
+		ObjectiveFunction of = objectiveFunctionRepository.findByName(prjID, name);
+		if(of == null) {
+			throw new EntityNotFoundException();
+		}
+
+		return modelMapper.map(of, ObjectiveFunctionDTO.class);
+	}
 	
 }

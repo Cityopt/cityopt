@@ -8,6 +8,8 @@ import eu.cityopt.DTO.OptimizationSetDTO;
 public interface ObjectiveFunctionService extends CityOptService<ObjectiveFunctionDTO> {
 
 	ObjectiveFunctionDTO save(ObjectiveFunctionDTO u);
+	
+	ObjectiveFunctionDTO findByName(int prjID,String name) throws EntityNotFoundException;
 
 	ObjectiveFunctionDTO update(ObjectiveFunctionDTO toUpdate)
 			throws EntityNotFoundException;
