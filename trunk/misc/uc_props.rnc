@@ -18,6 +18,4 @@ node = element node {
   node*
 }
 
-# TODO: switch to xsd:boolean.  Would have to change the script to print
-# lower case or 0/1.
 bool = "True" | "False"
