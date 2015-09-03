@@ -22,7 +22,7 @@
 		</td>
 		<td style="width: 30px"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:600px;width:800px;overflow:auto">
+			<div style="overflow:scroll;height:800px;width:800px;overflow:auto">
 			<table>
 				<col style="width:30px">
 				<col style="width:750px">	
@@ -46,13 +46,15 @@
 							<tr>
 								<td valign="top">
 									<table class="tablestyle">
-										<col style="width:250px">
-										<col style="width:250px">
+										<col style="width:100px">
+										<col style="width:200px">
+										<col style="width:100px">
 										<tr>
 											<!-- Select -->
 											<th><spring:message code="select"/></th>
 											<!-- Name -->
 											<th><spring:message code="name"/></th>
+											<th><spring:message code="delete"/></th>
 										</tr>
 										
 										<c:forEach items="${scenGens}" var="scenGen">
@@ -72,6 +74,13 @@
 													</c:otherwise>
 												</c:choose>
 												<td>${scenGen.name}</td>
+												<td><a href="<c:url value='deletemultiscenario.html?multiscenarioid=${scenGen.scengenid}'/>"
+													 onclick="return confirm('<spring:message code="confirm_project_deletion"/>')">
+														<button type="button" value="Delete">
+														<!-- Delete button -->
+														<spring:message code="delete"/></button>
+													</a>
+												</td>
 										   		</tr>
 									   		</c:if>
 										</c:forEach>
@@ -94,8 +103,8 @@
 							<tr>
 								<td valign="top">
 									<table class="tablestyle">
-										<col style="width:250px">
-										<col style="width:250px">
+										<col style="width:200px">
+										<col style="width:200px">
 										<tr>
 											<!--Select-->
 											<th><spring:message code="expression"/></th>
@@ -106,6 +115,13 @@
 											<tr>
 												<td>${modelParam.expression}</td>
 												<td>${modelParam.inputparameter.name}</td>
+												<!-- href="<c:url value='deletemultivariable.html?multivariableid=${modelParam.modelparamid}'/>"
+													 onclick="return confirm('<spring:message code="confirm_project_deletion"/>')">
+														<button type="button" value="Delete">
+														<!-- Delete button -->
+														<!--<spring:message code="delete"/></button>-->
+													
+												
 										   	</tr>
 										</c:forEach>
 									</table>
@@ -113,9 +129,20 @@
 							</tr>
 							<tr>
 							    <td>
-									<a href="createmultivariable.html?multiscenarioid=${multiscenarioid}"><button style="width:100px" type="button" value="Create">
-									<spring:message code="create"/></button></a>
+									<c:choose>
+										<c:when test="${multiscenarioid > 0}">
+											<a href="createmultivariable.html?multiscenarioid=${multiscenarioid}"><button style="width:100px" type="button" value="Create">
+											<spring:message code="create"/></button></a>
+										</c:when>
+										<c:otherwise>
+											<button type="button" style="width:100px"><spring:message code="create"/></button>
+										</c:otherwise>
+									</c:choose>
+									
 								</td>
+							</tr>
+							<tr height="20"></tr>
+							<tr>
 								<!-- Close -button -->
 								<td align="right">
 									<a href="editscenario.html"><button type="button">
