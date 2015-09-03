@@ -1,5 +1,6 @@
 package eu.cityopt.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -93,19 +94,19 @@ public class ComponentServiceImpl implements ComponentService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Set<InputParameterDTO> getInputParameters(int componentId)
+	public List<InputParameterDTO> getInputParameters(int componentId)
 	{
 		Component comp = componentRepository.findOne(componentId);
-		Set<InputParameter> inputParamVals = comp.getInputparameters();
-		return modelMapper.map(inputParamVals, new TypeToken<Set<InputParameterDTO>>() {}.getType());
+		List<InputParameter> inputParamVals = comp.getInputparameters();
+		return modelMapper.map(inputParamVals, new TypeToken<List<InputParameterDTO>>() {}.getType());
 	}
 	
 	@Transactional(readOnly = true)
-	public Set<OutputVariableDTO> getOutputVariables(int componentId)
+	public List<OutputVariableDTO> getOutputVariables(int componentId)
 	{
 		Component comp = componentRepository.findOne(componentId);
-		Set<OutputVariable> inputParamVals = comp.getOutputvariables();
-		return modelMapper.map(inputParamVals, new TypeToken<Set<OutputVariableDTO>>() {}.getType());
+		List<OutputVariable> inputParamVals = comp.getOutputvariables();
+		return modelMapper.map(inputParamVals, new TypeToken<List<OutputVariableDTO>>() {}.getType());
 	}
 
 	@Override

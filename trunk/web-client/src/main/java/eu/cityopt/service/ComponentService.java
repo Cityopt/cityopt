@@ -17,9 +17,9 @@ public interface ComponentService extends CityOptService<ComponentDTO>{
 	
 	ComponentDTO update(ComponentDTO toUpdate, int prjid) throws EntityNotFoundException;
 	
-	Set<InputParameterDTO> getInputParameters(int componentId);
+	List<InputParameterDTO> getInputParameters(int componentId);
 	
-	Set<OutputVariableDTO> getOutputVariables(int componentId);
+	List<OutputVariableDTO> getOutputVariables(int componentId);
 	
 	List<ComponentDTO> findByName(String name);
 	

@@ -883,7 +883,7 @@ public class ProjectController {
 
             model.put("selectedcompid", selectedCompId);
             model.put("selectedComponent",  selectedComponent);
-            Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+            List<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
             model.put("inputParameters", inputParams);
         }
 
@@ -1171,7 +1171,7 @@ public class ProjectController {
 
             model.put("selectedcompid", selectedCompId);
             model.put("selectedComponent",  selectedComponent);
-            Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+            List<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
             model.put("inputParameters", inputParams);
         }
 
@@ -1427,7 +1427,7 @@ public class ProjectController {
         model.put("extParams", extParams);
         List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
         model.put("components", components);
-        Set<InputParameterDTO> inputParams = componentService.getInputParameters(componentId);
+        List<InputParameterDTO> inputParams = componentService.getInputParameters(componentId);
         model.put("inputParameters", inputParams);
 
         return "projectparameters";
@@ -1955,10 +1955,10 @@ public class ProjectController {
             {
                 userSession.setComponentId(nSelectedCompId);
 
-                Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+                List<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
                 model.put("inputParameters", inputParams);
 
-                Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+                List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
                 model.put("outputVars", outputVars);
             }
             model.put("selectedcompid", nSelectedCompId);
@@ -2059,11 +2059,11 @@ public class ProjectController {
             if (nSelectedCompId > 0) {
                 // userSession.setComponentId(nSelectedCompId);
 
-                Set<InputParameterDTO> inputParams = componentService
+                List<InputParameterDTO> inputParams = componentService
                         .getInputParameters(nSelectedCompId);
                 model.put("inputParameters", inputParams);
 
-                Set<OutputVariableDTO> outputVars = componentService
+                List<OutputVariableDTO> outputVars = componentService
                         .getOutputVariables(nSelectedCompId);
                 model.put("outputVars", outputVars);
             }

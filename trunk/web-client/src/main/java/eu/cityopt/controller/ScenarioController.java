@@ -500,7 +500,7 @@ public class ScenarioController {
 
             model.put("selectedcompid", selectedCompId);
             model.put("selectedComponent",  selectedComponent);
-            Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+            List<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
             model.put("inputParameters", inputParams);
         }
         else if (model.containsKey("selectedcompid"))
@@ -516,7 +516,7 @@ public class ScenarioController {
 
             model.put("selectedcompid", selectedCompId);
             model.put("selectedComponent",  selectedComponent);
-            Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+            List<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
             model.put("inputParameters", inputParams);
         }
         
