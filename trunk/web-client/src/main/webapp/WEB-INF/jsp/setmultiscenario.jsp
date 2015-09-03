@@ -1,9 +1,5 @@
-<%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
-<%--@elvariable id="component" type="com.cityopt.DTO.ComponentDTO"--%>
-<%--@elvariable id="selectedComponent" type="com.cityopt.DTO.ComponentDTO"--%>
-<%--@elvariable id="inputParamVal" type="com.cityopt.DTO.InputParamValDTO"--%>
-<%--@elvariable id="extParam" type="com.cityopt.DTO.ExtParamDTO"--%>
-<%--@elvariable id="componentInputParamVal" type="com.cityopt.DTO.ComponentInputParamDTO"--%>
+<%--@elvariable id="scenGen" type="com.cityopt.DTO.ScenarioGeneratorDTO"--%>
+<%--@elvariable id="algorithm" type="com.cityopt.DTO.AlgorithmDTO"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -59,18 +55,25 @@
 											<th><spring:message code="name"/></th>
 										</tr>
 										
-										<c:forEach items="${components}" var="component">
-										<c:if test="${selectedComponent.componentid == component.componentid}">
-											<tr style="background-color: #D4D4D4"><td>
-											<spring:message code="selected"/></td>
-										</c:if>
-										<c:if test="${selectedComponent.componentid != component.componentid}">
-											<tr>
-											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">
-											<spring:message code="select"/></a></td>
-										</c:if>
-											<td>${component.name}</td>
-									   	</tr>
+										<c:forEach items="${scenGens}" var="scenGen">
+											<c:if test="${scenGen.algorithm.algorithmid == 1}">
+												<c:choose>
+													<c:when test="${multiscenarioid == scenGen.scengenid}">
+														<tr style="background-color: #D4D4D4">
+															<td><spring:message code="selected"/></td>
+													</c:when>
+													<c:otherwise>
+														<tr>
+															<td>
+																<a href="<c:url value='setmultiscenario.html?multiscenarioid=${scenGen.scengenid}'/>">
+																	<spring:message code="select"/>
+																</a>
+															</td>
+													</c:otherwise>
+												</c:choose>
+												<td>${scenGen.name}</td>
+										   		</tr>
+									   		</c:if>
 										</c:forEach>
 									</table>
 								</td>
@@ -81,6 +84,7 @@
 									<spring:message code="create"/></button></a>
 								</td>
 							</tr>
+							<tr height="10"></tr>
 							<tr>
 								<td>
 									<!-- Multi variables -->
@@ -94,30 +98,22 @@
 										<col style="width:250px">
 										<tr>
 											<!--Select-->
-											<th><spring:message code="select"/></th>
-											<!-- Name -->
-											<th><spring:message code="name"/></th>
+											<th><spring:message code="expression"/></th>
+											<th><spring:message code="input_parameters"/></th>
 										</tr>
 										
-										<c:forEach items="${components}" var="component">
-										<c:if test="${selectedComponent.componentid == component.componentid}">
-											<tr style="background-color: #D4D4D4"><td>
-											<spring:message code="selected"/></td>
-										</c:if>
-										<c:if test="${selectedComponent.componentid != component.componentid}">
+										<c:forEach items="${modelparameters}" var="modelParam">
 											<tr>
-											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>">
-											<spring:message code="select"/></a></td>
-										</c:if>
-											<td>${component.name}</td>
-									   	</tr>
+												<td>${modelParam.expression}</td>
+												<td>${modelParam.inputparameter.name}</td>
+										   	</tr>
 										</c:forEach>
 									</table>
 								</td>
 							</tr>
 							<tr>
 							    <td>
-									<a href="createmultivariable.html"><button style="width:100px" type="button" value="Create">
+									<a href="createmultivariable.html?multiscenarioid=${multiscenarioid}"><button style="width:100px" type="button" value="Create">
 									<spring:message code="create"/></button></a>
 								</td>
 								<!-- Close -button -->

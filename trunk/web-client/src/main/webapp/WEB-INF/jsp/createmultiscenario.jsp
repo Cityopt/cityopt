@@ -1,3 +1,4 @@
+<%--@elvariable id="multiscenario" type="eu.cityopt.DTO.ScenarioGeneratorDTO"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
@@ -32,9 +33,9 @@ $("#myform :input").tooltip({
 	<tr>
 		<td width=20></td>
 		<td>
-			<table class="ProjectCreationForm" style="width:900px" >
+			<table class="ProjectCreationForm" style="width:500px" >
 				<!-- create project -->
-				<tr><td><h2>Create project</h2></td></tr>	
+				<tr><td><h2>Create multi scenario</h2></td></tr>	
 				<tr valign="top">
 					<td valign="top">
 						<table>
@@ -59,7 +60,10 @@ $("#myform :input").tooltip({
             		</c:when>            	
         		</c:choose>						
 				
-					</td><td align="right"><img src="assets/img/test_map.jpg"/></td>				
+					</td>
+					<td align="right">
+						<input type="submit" value="<spring:message code="create"/>" style="width:120px">
+					</td>				
 			</table>
 		</td>
 	</tr>
