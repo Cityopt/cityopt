@@ -37,19 +37,9 @@ $("#myform :input").tooltip({
 			<table class="ProjectCreationForm" style="width:900px" >
 				<!-- create project -->
 				<tr><td><h2>Create multi variable</h2></td></tr>	
-				<tr valign="top">
-					<td valign="top">
-						<table>
-							<tr>
-								<td>Expression:</td>
-								<c:set var="tooltip_name">Values</c:set>
-								<td><form:input type="text" path="expression" title="${tooltip_expression}" style="width: 400px"/></td>
-								<td><form:errors path="expression" cssClass="error"/></td>															
-							</tr>
-						</table>
-					</td>
+				<tr height="20">
+					<td><p>Please select component and input parameter:</p></td>
 				</tr>
-				<tr height="20"></tr>
 				<tr>
 					<td>
 						<table>
@@ -117,23 +107,45 @@ $("#myform :input").tooltip({
 							</tr>				
 						</table>						
 							<!-- Success // failure message -->
-				 <c:choose>
-          			  <c:when test="${success!=null && success==true}">
-            			   <h2 class="successful">Multi variable created</h2>
-            			   <c:set var="tooltip_next"><spring:message code="tooltip_next"/></c:set>
-            			   <a href="editproject.html"><button style="width:100px" type="button" value="Next" title="${tooltip_next}">
-            			   <spring:message code="next"/></button></a>
-            		</c:when>
-            		<c:when test="${success!=null && success==false}">
-            			   <h2 class="error">Multi variable already exists</h2>
-            		</c:when>            	
-        		</c:choose>						
+						 <c:choose>
+		          			  <c:when test="${success!=null && success==true}">
+		            			   <h2 class="successful">Multi variable created</h2>
+		            			   <c:set var="tooltip_next"><spring:message code="tooltip_next"/></c:set>
+		            			   <a href="editproject.html"><button style="width:100px" type="button" value="Next" title="${tooltip_next}">
+		            			   <spring:message code="next"/></button></a>
+		            		</c:when>
+		            		<c:when test="${success!=null && success==false}">
+		            			   <h2 class="error">Multi variable already exists</h2>
+		            		</c:when>            	
+		        		</c:choose>			
+        			</td>
+        		</tr>
+        		<tr height="20"></tr>
+        		<tr valign="top">
+					<td valign="top">
+						<table>
+							<tr>
+								<td>Expression:</td>
+								<c:set var="tooltip_name">Values</c:set>
+								<td><form:input type="text" path="expression" title="${tooltip_expression}" style="width: 400px"/></td>
+								<td><form:errors path="expression" cssClass="error"/></td>		
+								<td align="right">
+									<c:choose>
+										<c:when test="${selectedinputid > 0}">
+											<input type="submit" value="<spring:message code="create"/>" style="width:100px">
+										</c:when>
+										<c:otherwise>
+											<button type="button" style="width:100px"><spring:message code="create"/></button>
+										</c:otherwise>
+									</c:choose>
+									<a href="editscenario.html"><button type="button" style="width:100px">Cancel</button></a>
+								</td>														
+							</tr>
+						</table>
+					</td>
+				</tr>
 			</table>
 		</td>
-		<td align="right">
-			<input type="submit" value="<spring:message code="create"/>" style="width:120px">
-			<a href="editscenario.html"><button type="button">Cancel</button></a>
-		</td>	
 	</tr>
 </table>
 </form:form>
