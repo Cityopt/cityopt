@@ -1,3 +1,5 @@
+<%--@elvariable id="multivariable" type="eu.cityopt.DTO.ModelParameterDTO"--%>
+<%--@elvariable id="multiscenarioid" type="java.lang.String"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
@@ -34,24 +36,85 @@ $("#myform :input").tooltip({
 		<td>
 			<table class="ProjectCreationForm" style="width:900px" >
 				<!-- create project -->
-				<tr><td><h2>Create project</h2></td></tr>	
+				<tr><td><h2>Create multi variable</h2></td></tr>	
 				<tr valign="top">
 					<td valign="top">
 						<table>
 							<tr>
-								<td>Name:</td>
-								<c:set var="tooltip_name">Multi variable name</c:set>
-								<td><form:input type="text" path="name" title="${tooltip_name}"/></td>
-								<td><form:errors path="name" cssClass="error"/></td>															
-							</tr>
-							<tr height=10px></tr>		
-							<tr>
-								<td>Name:</td>
+								<td>Expression:</td>
 								<c:set var="tooltip_name">Values</c:set>
-								<td><form:input type="text" path="name" title="${tooltip_name}"/></td>
-								<td><form:errors path="name" cssClass="error"/></td>															
+								<td><form:input type="text" path="expression" title="${tooltip_expression}" style="width: 400px"/></td>
+								<td><form:errors path="expression" cssClass="error"/></td>															
 							</tr>
-							<tr height=10px></tr>						
+						</table>
+					</td>
+				</tr>
+				<tr height="20"></tr>
+				<tr>
+					<td>
+						<table>
+							<tr>						
+								<td valign="top">
+									<table class="tablestyle">
+										<col style="width:80px">
+										<col style="width:180px">
+										<tr>
+											<!-- Select -->
+											<th><spring:message code="select"/></th>
+											<!-- Component -->
+											<th><spring:message code="components"/></th>
+										</tr>
+										
+										<c:forEach items="${components}" var="component">
+											<c:choose>
+												<c:when test="${selectedcompid == component.componentid}">
+													<tr style="background-color: #D4D4D4">
+														<td><spring:message code="selected"/></td>
+												</c:when>
+												<c:otherwise>
+													<tr>
+														<td><a href="<c:url value='createmultivariable.html?multiscenarioid=${multiscenarioid}&selectedcompid=${component.componentid}'/>">
+														<spring:message code="select"/></a></td>
+												</c:otherwise>
+											</c:choose>
+												<td>${component.name}</td>
+										    </tr>
+										</c:forEach>
+									</table>
+								</td>
+								<td></td>
+								<td valign="top">
+									<table class="tablestyle">
+										<col style="width:80px">
+										<col style="width:150px">
+										<tr>
+											<!-- Select -->
+											<th><spring:message code="select"/></th>
+											<!-- Input parameter -->
+											<th><spring:message code="input_parameter"/></th>
+										</tr>
+										
+										<c:forEach items="${inputParameters}" var="inputParam">
+										<tr>
+											<c:choose>
+												<c:when test="${selectedinputid == inputParam.inputid}">
+													<tr style="background-color: #D4D4D4">
+														<td><spring:message code="selected"/></td>
+												</c:when>
+												<c:otherwise>
+													<tr>
+														<td><a href="<c:url value='createmultivariable.html?multiscenarioid=${multiscenarioid}&selectedcompid=${selectedcompid}&selectedinputid=${inputParam.inputid}'/>">
+														<spring:message code="select"/></a></td>
+												</c:otherwise>
+											</c:choose>
+											
+											<td>${inputParam.name}</td>
+									   	</tr>
+										</c:forEach>
+										
+									</table>
+								</td>
+							</tr>				
 						</table>						
 							<!-- Success // failure message -->
 				 <c:choose>
@@ -65,10 +128,12 @@ $("#myform :input").tooltip({
             			   <h2 class="error">Multi variable already exists</h2>
             		</c:when>            	
         		</c:choose>						
-				
-					</td><td align="right"><img src="assets/img/test_map.jpg"/></td>				
 			</table>
 		</td>
+		<td align="right">
+			<input type="submit" value="<spring:message code="create"/>" style="width:120px">
+			<a href="editscenario.html"><button type="button">Cancel</button></a>
+		</td>	
 	</tr>
 </table>
 </form:form>

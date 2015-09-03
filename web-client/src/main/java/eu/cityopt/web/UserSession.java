@@ -21,7 +21,25 @@ public class UserSession {
 	private int nComponentId;
 	private int nChartType;
 	private String strUserName;
+	private String nMultiScenarioId;
+	private String nSelectedInputId;
 	
+	public String getSelectedInputId() {
+		return nSelectedInputId;
+	}
+
+	public void setSelectedInputId(String nSelectedInputId) {
+		this.nSelectedInputId = nSelectedInputId;
+	}
+
+	public String getMultiScenarioId() {
+		return nMultiScenarioId;
+	}
+
+	public void setMultiScenarioId(String nMultiScenarioId) {
+		this.nMultiScenarioId = nMultiScenarioId;
+	}
+
 	public String getUserName() {
 		return strUserName;
 	}

@@ -56,7 +56,7 @@
 					<td>${scenario.name}</td>
 			    	<td>${scenario.scenid}</td>
 					<td>${scenario.description}</td>
-					<<td>${scenario.status}</td>			
+					<td>${scenario.status}</td>			
 					<td>
 						<c:set var="tooltip_open_scenario"><spring:message code="tooltip_open_scenario"/></c:set>
 						<a href="<c:url value='openscenario.html?scenarioid=${scenario.scenid}'/>" title="${tooltip_open_scenario}">

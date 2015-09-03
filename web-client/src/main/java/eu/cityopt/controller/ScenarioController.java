@@ -32,7 +32,9 @@ import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
+import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParamValDTO;
+import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.ModelParameterDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
@@ -54,6 +56,7 @@ import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.MetricService;
 import eu.cityopt.service.MetricValService;
+import eu.cityopt.service.ModelParameterService;
 import eu.cityopt.service.ObjectiveFunctionService;
 import eu.cityopt.service.OptConstraintService;
 import eu.cityopt.service.OptSearchConstService;
@@ -247,8 +250,13 @@ public class ScenarioController {
 				if(simStart != null && simEnd != null){				
 					model.put("simStart", simStart.getValue());
 					model.put("simEnd", simEnd.getValue());//						
+					
 					UserSession userSession = (UserSession) model.get("usersession");
-					userSession = new UserSession();
+					
+					if (userSession == null) {
+						userSession = new UserSession();
+					}
+					
 					model.put("usersession", userSession);
 					model.put("Succesful", "Scenario succesfully created");
 					model.put("newScenario", scenario);
@@ -344,19 +352,16 @@ public class ScenarioController {
 		return "openscenario";
 	}
 
-	@RequestMapping(value="createmultiscenario", method=RequestMethod.GET)
+	@RequestMapping(value = "createmultiscenario", method=RequestMethod.GET)
     public String getCreateMultiScenario(Map<String, Object> model) {
         
-		
-		return "setmultiscenario";
-		
-		/*ScenarioGeneratorDTO scenGen = new ScenarioGeneratorDTO();
-        model.put("scenGen", scenGen);
+		ScenarioGeneratorDTO scenGen = new ScenarioGeneratorDTO();
+        model.put("multiscenario", scenGen);
 
         AppUserDTO user = (AppUserDTO) model.get("user");
         model.put("user", user);
 
-        return "createmultiscenario";*/
+        return "createmultiscenario";
     }
 
     @RequestMapping(value = "createmultiscenario", method = RequestMethod.POST)
@@ -367,37 +372,35 @@ public class ScenarioController {
             return "createmultiscenario";
         } else {
         	ScenarioGeneratorDTO scenGen = new ScenarioGeneratorDTO();
-        	scenGen.setName(newScenGen.getName());
+        	scenGen.setName(newScenGen.getName().trim());
             List<AlgorithmDTO> algorithms = (List<AlgorithmDTO>) algorithmService.findAll();
+
+            // TODO write something smarter?
             scenGen.setAlgorithm(algorithms.get(0));
 
-            String expression = "";
-            ModelParameterDTO modelParam = new ModelParameterDTO();
-            modelParam.setExpression(expression);
+            ProjectDTO project = (ProjectDTO) model.get("project");
+    		
+    		if (project == null)
+    		{
+    			return "error";
+    		}
+    		
+            scenGen.setProject(project);
+            scenGen = scenGenService.save(scenGen);
             
-            /*ProjectDTO project = new ProjectDTO();
-            project.setName(projectForm.getName());
-            String desc = projectForm.getDescription();
-
-            if (desc != null && !desc.isEmpty())
-            {
-                project.setDescription(projectForm.getDescription());
-            }
-
-            project.setLocation(projectForm.getLocation());
-            project.setDesigntarget(projectForm.getDesigntarget());*/
-
-            // Create default ext param val set
-            /*ExtParamValSetDTO extParamValSet = new ExtParamValSetDTO();
-			extParamValSet.setName("default set");
-			extParamValSet = extParamValSetService.save(extParamValSet);			
-			project.setExtparamvalset(extParamValSet);*/
-
+            /*String expression = "";
+            ModelParameterDTO modelParam = new ModelParameterDTO();
+            modelParam.setExpression(expression);*/
+            
             if (true) {//projectService.findByName(project.getName()) == null) {
                 
-                return "createmultiscenario";
+                model.put("success", true);   
+                
+                List<ScenarioGeneratorDTO> listScenGens = scenGenService.findAll();
+        		model.put("scenGens", listScenGens);
+        		
+                return "setmultiscenario";
             } else {
-                model.put("newProject", new ProjectDTO());                        
                 model.put("success",false);                           
                 return "createmultiscenario";
             }
@@ -405,47 +408,158 @@ public class ScenarioController {
     }
     
     @RequestMapping(value="createmultivariable", method=RequestMethod.GET)
-    public String getCreateMultiVariable(Map<String, Object> model) {
+    public String getCreateMultiVariable(Map<String, Object> model,
+    	@RequestParam(value="selectedcompid", required=false) String selectedCompId,
+    	@RequestParam(value="selectedinputid", required=false) String selectedInputId,
+    	@RequestParam(value="multiscenarioid", required=true) String multiScenarioId) {
 
-    	return "setmultiscenario";
-		
-    	/*ModelParameterDTO modelParameter = new ModelParameterDTO();
+    	ModelParameterDTO modelParameter = new ModelParameterDTO();
     	model.put("multivariable", modelParameter);
 
+    	UserSession userSession = (UserSession) model.get("usersession");
+		
+		if (userSession == null) {
+			userSession = new UserSession();
+		}
+		
+		userSession.setMultiScenarioId(multiScenarioId);
+		
+		if (selectedInputId != null)
+		{
+			userSession.setSelectedInputId(selectedInputId);
+		}
+		
+		model.put("usersession", userSession);
+		
+		model.put("multiscenarioid", multiScenarioId);
+		
         AppUserDTO user = (AppUserDTO) model.get("user");
         model.put("user", user);
 
-        return "createmultivariable";*/
+        ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+
+        try {
+            project = projectService.findByID(project.getPrjid());
+        } catch (EntityNotFoundException e1) {
+            e1.printStackTrace();
+        }
+
+        ComponentDTO selectedComponent = null;
+
+        if (selectedCompId != null && !selectedCompId.isEmpty())
+        {
+            int nSelectedCompId = Integer.parseInt(selectedCompId);
+
+            try {
+                selectedComponent = componentService.findByID(nSelectedCompId);
+            } catch (EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            model.put("selectedcompid", selectedCompId);
+            model.put("selectedComponent",  selectedComponent);
+            Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+            model.put("inputParameters", inputParams);
+        }
+        else if (model.containsKey("selectedcompid"))
+        {
+        	selectedCompId = (String) model.get("selectedcompid");
+            int nSelectedCompId = Integer.parseInt(selectedCompId);
+
+            try {
+                selectedComponent = componentService.findByID(nSelectedCompId);
+            } catch (EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            model.put("selectedcompid", selectedCompId);
+            model.put("selectedComponent",  selectedComponent);
+            Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+            model.put("inputParameters", inputParams);
+        }
+        
+        if (selectedInputId != null && !selectedInputId.isEmpty())
+        {
+        	model.put("selectedinputid", selectedInputId);
+        }
+        
+        model.put("project", project);
+        
+        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+        model.put("components", components);
+        
+        return "createmultivariable";
     }
 
     @RequestMapping(value = "createmultivariable", method = RequestMethod.POST)
     public String getCreateMultiVariablePost(Map<String, Object> model,
-        @Validated @ModelAttribute("multivariable") ModelParameterDTO newModelParameter, BindingResult bindingResult) {
+        @Validated @ModelAttribute("multivariable") ModelParameterDTO newModelParameter,
+        BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return "createmultivariable";
         } else {
+        	UserSession userSession = (UserSession) model.get("usersession");
+        	int nMultiScenarioId = 0;
+        	int nSelectedInputId = 0;
+        	
+    		if (userSession != null) {
+    			nMultiScenarioId = Integer.parseInt(userSession.getMultiScenarioId());
+    			nSelectedInputId = Integer.parseInt(userSession.getSelectedInputId());
+    		} else {
+    			return "error";
+    		}
+    		
+    		model.put("usersession", userSession);
+
         	ModelParameterDTO modelParameter = new ModelParameterDTO();
         	modelParameter.setExpression(newModelParameter.getExpression());
-
-        	// TODO set scengen?
         	
-            if (true) {//projectService.findByName(project.getName()) == null) {
-                /*AppUserDTO user = (AppUserDTO) model.get("user");				
-				UserGroupProjectDTO userGroupProject = new UserGroupProjectDTO();
-				userGroupProject.setAppuser(user);
-				userGroupProject.setProject(project);
+        	InputParameterDTO inputParam = null;
+        	
+        	try {
+				inputParam = inputParamService.findByID(nSelectedInputId);
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
+        	modelParameter.setInputparameter(inputParam);
+        	
+        	ScenarioGeneratorDTO scenGen = null;
 
-				UserGroupDTO userGroup = userGroupService.findByGroupName("Administrator").get(0);
-				userGroupProject.setUsergroup(userGroup);
-				userGroupProject = userGroupProjectService.save(userGroupProject);
-                 */
-
-                model.remove("scenario");               
-                model.remove("optimizationset");
-                model.put("success",true);              
-
-                return "createmultivariable";
+        	try {
+				scenGen = scenGenService.findByID(nMultiScenarioId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+        	
+        	List<ModelParameterDTO> modelParams = null;
+			
+        	try {
+				modelParams = scenGenService.getModelParameters(nMultiScenarioId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+        	
+        	modelParams.add(modelParameter);
+        	
+        	try {
+				scenGenService.setModelParameters(scenGen.getScengenid(), modelParams);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+        	
+        	scenGen = scenGenService.save(scenGen);
+			
+        	if (true) {
+        		List<ScenarioGeneratorDTO> listScenGens = scenGenService.findAll();
+        		model.put("scenGens", listScenGens);
+        		
+                return "setmultiscenario";
             } else {
                 model.put("newProject", new ProjectDTO());                        
                 model.put("success",false);                           
@@ -745,14 +859,32 @@ public class ScenarioController {
 	}
 
 	@RequestMapping(value="setmultiscenario", method=RequestMethod.GET)
-	public String getSetMultiScenario (Map<String, Object> model) {
+	public String getSetMultiScenario (Map<String, Object> model,
+		@RequestParam(value="multiscenarioid", required=false) String scenGenId) {
 		if (!model.containsKey("project"))
 		{
 			return "error";
 		}
 
-		ProjectDTO project = (ProjectDTO) model.get("project");
+		//ProjectDTO project = (ProjectDTO) model.get("project");
+
+		List<ScenarioGeneratorDTO> listScenGens = scenGenService.findAll();
+		model.put("scenGens", listScenGens);
 		
+		if (scenGenId != null && !scenGenId.isEmpty())
+		{
+			int nScenGenId = Integer.parseInt(scenGenId);
+			model.put("multiscenarioid", scenGenId);
+			ScenarioGeneratorDTO scenGen = null;
+			try {
+				scenGen = scenGenService.findByID(nScenGenId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+
+			model.put("modelparameters", scenGen.getModelparameters());
+		}
+			
 		/*try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e) {
