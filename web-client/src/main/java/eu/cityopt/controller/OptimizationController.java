@@ -252,10 +252,10 @@ public class OptimizationController {
             if (nSelectedCompId > 0)
             {
                 userSession.setComponentId(nSelectedCompId);
-                Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+                List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
                 model.put("outputVars", outputVars);
 
-                Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+                List<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
                 model.put("inputParameters", inputParams);
             }
             model.put("selectedcompid", nSelectedCompId);
@@ -421,7 +421,7 @@ public class OptimizationController {
             if (nSelectedCompId > 0)
             {
                 userSession.setComponentId(nSelectedCompId);
-                Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+                List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
                 model.put("outputVars", outputVars);
             }
             model.put("selectedcompid", nSelectedCompId);
@@ -1308,10 +1308,10 @@ public class OptimizationController {
             if (nSelectedCompId > 0)
             {
                 userSession.setComponentId(nSelectedCompId);
-                Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+                List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
                 model.put("outputVars", outputVars);
 
-                Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+                List<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
                 model.put("inputParams", inputParams);
             }
             model.put("selectedcompid", nSelectedCompId);
@@ -1423,10 +1423,10 @@ public class OptimizationController {
             if (nSelectedCompId > 0)
             {
                 userSession.setComponentId(nSelectedCompId);
-                Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+                List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
                 model.put("outputVars", outputVars);
 
-                Set<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+                List<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
                 model.put("inputParams", inputParams);
             }
             model.put("selectedcompid", nSelectedCompId);
@@ -1728,7 +1728,7 @@ public class OptimizationController {
             if (nSelectedCompId > 0)
             {
                 userSession.setComponentId(nSelectedCompId);
-                Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+                List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
                 model.put("outputVars", outputVars);
 
                 List<InputParamValDTO> listInputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, nResultScenarioId);

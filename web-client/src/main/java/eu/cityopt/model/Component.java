@@ -3,7 +3,9 @@ package eu.cityopt.model;
 // Generated 13.11.2014 15:13:00 by Hibernate Tools 4.0.0
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -36,8 +38,8 @@ public class Component extends VersionModel implements java.io.Serializable {
 	private String name;
 	private String alias;
 	private Serializable geometryblob;
-	private Set<InputParameter> inputparameters = new HashSet<InputParameter>(0);
-	private Set<OutputVariable> outputvariables = new HashSet<OutputVariable>(0);
+	private List<InputParameter> inputparameters = new ArrayList<InputParameter>();
+	private List<OutputVariable> outputvariables = new ArrayList<OutputVariable>();
 
 	public Component() {
 	}
@@ -49,8 +51,8 @@ public class Component extends VersionModel implements java.io.Serializable {
 	}
 
 	public Component(int componentid, Project project, String name,
-			String alias, Serializable geometryblob, Set<InputParameter> inputparameters,
-			Set<OutputVariable> outputvariables) {
+			String alias, Serializable geometryblob, List<InputParameter> inputparameters,
+			List<OutputVariable> outputvariables) {
 		this.componentid = componentid;
 		this.project = project;
 		this.name = name;
@@ -123,21 +125,21 @@ public class Component extends VersionModel implements java.io.Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component", cascade={CascadeType.REMOVE})
 	@javax.persistence.OrderBy("name")
-	public Set<InputParameter> getInputparameters() {
+	public List<InputParameter> getInputparameters() {
 		return this.inputparameters;
 	}
 
-	public void setInputparameters(Set<InputParameter> inputparameters) {
+	public void setInputparameters(List<InputParameter> inputparameters) {
 		this.inputparameters = inputparameters;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "component", cascade={CascadeType.REMOVE})
 	@javax.persistence.OrderBy("name")
-	public Set<OutputVariable> getOutputvariables() {
+	public List<OutputVariable> getOutputvariables() {
 		return this.outputvariables;
 	}
 
-	public void setOutputvariables(Set<OutputVariable> outputvariables) {
+	public void setOutputvariables(List<OutputVariable> outputvariables) {
 		this.outputvariables = outputvariables;
 	}
 

@@ -143,7 +143,7 @@ public class ScenarioServiceTest {
 			ComponentDTO component = components.get(i);
 			//List<ComponentInputParamDTO> listComponentInputParams = componentInputParamService.findAllByComponentId(component.getComponentid());
 			
-			Set<InputParameterDTO> setInputParams = componentService.getInputParameters(component.getComponentid());
+			List<InputParameterDTO> setInputParams = componentService.getInputParameters(component.getComponentid());
 			Iterator<InputParameterDTO> iter = setInputParams.iterator();
 
 			while(iter.hasNext())

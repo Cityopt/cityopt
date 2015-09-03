@@ -129,7 +129,7 @@ public class CopyServiceTest {
 		assertEquals(3, compList.size());
 		ComponentDTO[] comps = compList.stream().filter(c -> c.getName().equals("Solar_thermal_panels")).toArray(size -> new ComponentDTO[size]);
 		assertNotNull(comps);
-		Set<InputParameterDTO> ipSet = componentService.getInputParameters(comps[0].getComponentid());
+		List<InputParameterDTO> ipSet = componentService.getInputParameters(comps[0].getComponentid());
 		assertEquals(1, ipSet.stream().filter(i -> i.getName().equals("collector_area")).count());
 		assertEquals(1, ipSet.stream().filter(i -> i.getName().equals("Heat_loss_coefficient")).count());
 		assertEquals(1, ipSet.stream().filter(i -> i.getName().equals("Temperature_dependence_of_the_heat_losses")).count());
@@ -161,7 +161,7 @@ public class CopyServiceTest {
 		assertEquals(3, compList.size());
 		ComponentDTO[] comps = compList.stream().filter(c -> c.getName().equals("Solar_thermal_panels")).toArray(size -> new ComponentDTO[size]);
 		assertNotNull(comps);
-		Set<InputParameterDTO> ipSet = componentService.getInputParameters(comps[0].getComponentid());
+		List<InputParameterDTO> ipSet = componentService.getInputParameters(comps[0].getComponentid());
 		assertEquals(1, ipSet.stream().filter(i -> i.getName().equals("collector_area")).count());
 		assertEquals(1, ipSet.stream().filter(i -> i.getName().equals("Heat_loss_coefficient")).count());
 		assertEquals(1, ipSet.stream().filter(i -> i.getName().equals("Temperature_dependence_of_the_heat_losses")).count());

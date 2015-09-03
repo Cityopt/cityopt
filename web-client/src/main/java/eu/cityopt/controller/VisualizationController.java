@@ -260,7 +260,7 @@ public class VisualizationController {
 			if (nSelectedCompId > 0)
 			{
 				userSession.setComponentId(nSelectedCompId);
-				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
 				model.put("outputVars", outputVars);
 			}
 			model.put("selectedcompid", nSelectedCompId);
@@ -268,7 +268,7 @@ public class VisualizationController {
 		else if (userSession.getComponentId() > 0)
 		{
 			model.put("selectedcompid", userSession.getComponentId());
-			Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(userSession.getComponentId());
+			List<OutputVariableDTO> outputVars = componentService.getOutputVariables(userSession.getComponentId());
 			model.put("outputVars", outputVars);
 		}
 		
@@ -792,7 +792,7 @@ public class VisualizationController {
 			if (nSelectedCompId > 0)
 			{
 				userSession.setComponentId(nSelectedCompId);
-				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
 				model.put("outputVars", outputVars);
 			}
 			model.put("selectedcompid", nSelectedCompId);
@@ -892,7 +892,7 @@ public class VisualizationController {
 			if (nSelectedCompId > 0)
 			{
 				userSession.setComponentId(nSelectedCompId);
-				Set<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+				List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
 				model.put("outputVars", outputVars);
 			}
 			model.put("selectedcompid", nSelectedCompId);
