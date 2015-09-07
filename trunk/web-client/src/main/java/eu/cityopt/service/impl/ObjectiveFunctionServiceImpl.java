@@ -105,4 +105,14 @@ public class ObjectiveFunctionServiceImpl implements ObjectiveFunctionService {
 		return modelMapper.map(of, ObjectiveFunctionDTO.class);
 	}
 	
+	@Override
+	public Boolean existsByName(int prjID, String name)  {
+		ObjectiveFunction of = objectiveFunctionRepository.findByName(prjID, name);
+		if(of == null) {
+			return false;
+		}
+
+		return true;
+	}
+	
 }
