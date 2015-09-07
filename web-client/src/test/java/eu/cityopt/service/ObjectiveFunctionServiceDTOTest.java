@@ -85,4 +85,13 @@ public class ObjectiveFunctionServiceDTOTest {
         }.runTest();	
 	}
 	
+	@Test
+	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
+	public void existsByName() throws EntityNotFoundException {
+		
+		assertTrue(objectiveFunctionService.existsByName(1, "ObjectiveFunction 1"));
+		
+		assertFalse(objectiveFunctionService.existsByName(1, "ObjectiveFunction 2"));			
+	}
+	
 }
