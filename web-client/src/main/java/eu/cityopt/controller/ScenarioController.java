@@ -36,6 +36,7 @@ import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.ModelParameterDTO;
+import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioGeneratorDTO;
@@ -1182,9 +1183,13 @@ public class ScenarioController {
 		if (selectedCompId != null)
 		{
 			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
 			ComponentDTO selectedComponent = null;
+			List<OutputVariableDTO> outputVariables=null;
 			try {
-				selectedComponent = componentService.findByID(nSelectedCompId);
+				selectedComponent = componentService.findByID(nSelectedCompId);				
+				outputVariables = componentService.getOutputVariables(nSelectedCompId);
+				
 			} catch (EntityNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1193,6 +1198,8 @@ public class ScenarioController {
 			//model.put("inputParams", selectedComponent.getInputparameters());
 			model.put("selectedComponent",  selectedComponent);
 			model.put("selectedcompid", selectedCompId);
+			model.put("outputVariables", outputVariables);
+			
 		}
 
 		model.put("project", project);
