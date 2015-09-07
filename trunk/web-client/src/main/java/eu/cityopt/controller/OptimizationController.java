@@ -1905,32 +1905,45 @@ public class OptimizationController {
             ObjectiveFunctionDTO function, ModelMap model,
             @RequestParam("obtfunctionid") int objid,
             @RequestParam("optsense") String optSense) {
+    	
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
         // TODO validate function expression, name uniqueness
-        if (StringUtils.isBlank(function.getExpression())) {
-            return getEditSGObjFunction(project, function, model, null);
-        }
-        function.setIsmaximise("max".equals(optSense));
-        function.setProject(project);
-        try {
-            if (objid > 0) {
-                // TODO: clone if referenced from elsewhere
-                objFuncService.update(function);
-            } else {
-                scenGenService.addObjectiveFunction(scenGen.getScengenid(), function);
-            }
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-            return "error";
-        }
-
-        return "redirect:/geneticalgorithm.html";
-    }
-
+        boolean pass=true;        
+        if((objFuncService.existsByName(project.getPrjid(),function.getName()))){        	
+        	pass = false;        
+        }        	
+        if (pass==true){
+	        if (StringUtils.isBlank(function.getExpression())) {
+	            return getEditSGObjFunction(project, function, model, null);
+	        }
+	        function.setIsmaximise("max".equals(optSense));
+	        function.setProject(project);
+		        try {
+		            if (objid > 0) {
+		                // TODO: clone if referenced from elsewhere
+		                objFuncService.update(function);
+		            } else {
+		                scenGenService.addObjectiveFunction(scenGen.getScengenid(), function);
+		            }
+		        } catch (EntityNotFoundException e) {
+		            e.printStackTrace();
+		            return "error";
+		        }
+	        return "redirect:/geneticalgorithm.html";
+	        }      
+        ObjectiveFunctionDTO function2 = new ObjectiveFunctionDTO();
+        function2.setName(function.getName());
+        function2.setExpression(function.getExpression());
+        model.put("function", function2);
+        model.put("error",true);
+        return "editsgobjfunction";       
+    	}	
+    
+    
     @RequestMapping(value="deletesgobjfunction", method=RequestMethod.POST)
     public String postDeleteSGObjFunction(
             ModelMap model, @RequestParam("objid") int objid) {

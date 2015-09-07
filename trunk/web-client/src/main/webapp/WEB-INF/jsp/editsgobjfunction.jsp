@@ -159,6 +159,11 @@
 								<td colspan="3"><form:input style="width:520px" type="text" path="name"/></td>
 								<td></td>
 							</tr>
+							 <c:choose>
+          			  			<c:when test="${error!=null && error==true}">
+          			  				<h2 class="error"> <spring:message code="error_element_uniqueness" /> </h2>
+          			  			</c:when>
+          			  		</c:choose>									
 							<tr>
 								<td></td>
 								<td>Expression</td>
