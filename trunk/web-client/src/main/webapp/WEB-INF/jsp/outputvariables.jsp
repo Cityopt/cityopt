@@ -100,7 +100,7 @@
 														
 													</tr>
 								
-													<c:forEach items="${selectedComponent.outputvariables}" var="outputVar">
+													<c:forEach items="${outputVariables}" var="outputVar">
 													<tr>
 														<td>${outputVar.name}</td>
 												    	<td>${outputVar.outvarid}</td>
