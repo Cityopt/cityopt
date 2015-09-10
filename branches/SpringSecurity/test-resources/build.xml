@@ -1,0 +1,14 @@
+<project default="build">
+    <target name="build">
+        <antcall target="zip-dir">
+            <param name="dir" value="testmodel" />
+        </antcall>
+        <antcall target="zip-dir">
+            <param name="dir" value="ost" />
+        </antcall>
+    </target>
+    <target name="zip-dir">
+        <zip destfile="target/classes/${dir}.zip"
+             basedir="src/main/zip/${dir}" />
+    </target>
+</project>

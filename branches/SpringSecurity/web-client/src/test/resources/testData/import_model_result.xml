@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<dataset>
+  <extparamvalset/>
+  <simulationmodel description="test project" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="2015-01-01 00:00:00.0"/>
+  <project name="Empty test project" location="Helsinki" version="2"/>
+  <component name="PV_TOTAL_ENERGY"/>
+  <component name="ETH_NETWORK"/>
+  <component name="HEATING_LOAD"/>
+  <component name="CHP_ELECT_PROD"/>
+  <component name="SAMPLE_DISTRICT"/>
+  <component name="CHP_BOIL_TH_OUT"/>
+  <component name="FUEL_CONSUMPTION"/>
+  <component name="CITYOPT"/>
+  <inputparameter name="simulation_start" defaultvalue="2015-01-01T00:00:00Z"/>
+  <inputparameter name="simulation_end" defaultvalue="2016-01-01T00:00:00Z"/>
+  <inputparameter name="Burner_efficiency" defaultvalue="0.7"/>
+  <inputparameter name="Heat_storage_tank_height" defaultvalue="15.0"/>
+  <inputparameter name="Heat_storage_nominal_charge_or_discharge_capacity" defaultvalue="40.0"/>
+  <inputparameter name="Share_of_roof_area_occupied_by_PVpanels" defaultvalue="10.0"/>
+  <inputparameter name="CHP_electrical_power_rating" defaultvalue="2400.0"/>
+  <inputparameter name="Insulation_layer_factor" defaultvalue="1.0"/>
+  <inputparameter name="CHP_thermal_power_rating" defaultvalue="4000.0"/>
+  <inputparameter name="Burner_nominal_power" defaultvalue="17000.0"/>
+  <inputparameter name="Share_of_roof_area_occupied_by_THcollectors" defaultvalue="0.0"/>
+  <scenariogenerator/>
+  <scenario/>
+  <optconstraint/>
+  <objectivefunction/>
+  <optimizationset/>
+  <optsetscenarios/>
+  <metric/>
+  <decisionvariable/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <extparam/>
+  <extparamval/>
+  <algoparamval/>
+  <inputparamval/>
+  <modelparameter/>
+  <metricval/>
+  <scengenresult/>
+  <decisionvariableresult/>
+  <objectivefunctionresult/>
+  <optconstraintresult/>
+  <timeseriesval/>
+</dataset>

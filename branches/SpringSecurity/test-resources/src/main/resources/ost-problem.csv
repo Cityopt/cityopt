@@ -1,0 +1,22 @@
+kind,component,name,type,value,lower,upper,expression
+in,CITYOPT,simulation_end,Timestamp,2016-01-01T00:00:00Z,,,
+in,CITYOPT,simulation_start,Timestamp,2015-01-01T00:00:00Z,,,
+in,OSTERSUNDOM_BIG_1,Central_storage_h,Double,80,,,h0
+in,OSTERSUNDOM_BIG_1,A1_Storage_h,Double,10,,,h1
+in,OSTERSUNDOM_BIG_1,A1_Solarth_m2,Double,0,,,a1
+in,OSTERSUNDOM_BIG_1,A2Storage_h,Double,15,,,h2
+in,OSTERSUNDOM_BIG_1,A2_Solarth_m2,Double,0,,,a2
+out,HOUR_HEAT,SP_VALUE,TimeSeries/linear,,,,
+out,HOUR_NET_COOL,SP_VALUE,TimeSeries/linear,,,,
+out,HOUR_NET_ELEC,SP_VALUE,TimeSeries/linear,,,,
+met,,heating,Double,,,,"integrate(HOUR_HEAT.SP_VALUE, 0, Infinity) / 3600"
+met,,cooling,Double,,,,"integrate(HOUR_NET_COOL.SP_VALUE, 0, Infinity) / 3600"
+met,,electric,Double,,,,"integrate(HOUR_NET_ELEC.SP_VALUE, 0, Infinity) / 3600"
+obj,,heat,min,,,,heating
+obj,,cool,min,,,,cooling
+obj,,el,min,,,,electric
+dv,,h0,Double,,80,200,
+dv,,h1,Double,,10,50,
+dv,,h2,Double,,15,50,
+dv,,a1,Double,,0,10000,
+dv,,a2,Double,,0,30000,

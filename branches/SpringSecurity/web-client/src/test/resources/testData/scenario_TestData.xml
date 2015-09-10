@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dataset>
+
+<simulationmodel modelblob="dGhpcyBpcyBhIHRlc3QgZmlsZSBmb3IgZGJ1bml0IGJsb2IgZGF0YS4=" simulator="APROS" description="model with Base64" modelID="1" version="1"/>
+
+<project prjid="1" name="Project 1" location="Vienna" description="this is a good description" modelid="1" version="1"/>
+<project prjid="2" name="Project 3" location="Helsinki" version="1"/>
+
+<scenario name="test" description="this is a test" createdon="2014-12-02" updatedon="2014-12-01" prjid="1" version="1"/>
+
+<component name="testcomponent 1" prjid="1" componentid="1"  version="1"/>
+<component name="testcomponent 2" prjid="1" componentid="2" version="1"/>
+<component name="testcomponent 3" prjid="1" componentid="3" version="1"/>
+<component name="testcomponent 4" prjid="1" componentid="4" version="1"/>
+<component name="testcomponent 5" prjid="1" componentid="5" version="1"/>
+<component name="testcomponent 6" prjid="1" componentid="6" version="1"/>
+<component name="testcomponent 7" prjid="1" componentid="7" version="1"/>
+<component name="testcomponent 8" prjid="1" componentid="8" version="1"/>
+<component name="testcomponent 9" prjid="1" componentid="9" version="1"/>
+<component name="testcomponent 10" prjid="2" componentid="10" version="1"/>
+<component name="testcomponent 11" prjid="2" componentid="11" version="1"/>
+<component name="testcomponent 12" prjid="2" componentid="12" version="1"/>
+
+<type typeid="1" name="myType" version="1"/>
+<unit unitid="1" name="myUnit" version="1"/>
+
+<metric name="myMetric" expression="my expression != bad" unitid="1" prjid="1" version="1"/>
+
+
+
+</dataset>
