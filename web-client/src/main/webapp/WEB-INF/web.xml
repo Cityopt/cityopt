@@ -8,9 +8,8 @@
  
   <context-param>
   <param-name>contextConfigLocation</param-name>
-  <!-- Enable Spring security  -->
-  <!-- <param-value>classpath:/applicationcontext-security.xml,classpath:/jpaContext.xml</param-value>-->
- <param-value>classpath:/jpaContext.xml</param-value>
+  <param-value>classpath:/applicationcontext-security.xml,classpath:/jpaContext.xml</param-value>
+ <!--<param-value>classpath:/jpaContext.xml</param-value>-->
  </context-param>
  	 
  <servlet>
@@ -33,9 +32,7 @@
     <url-pattern>/*</url-pattern>
 </filter-mapping>
  
- <!-- Enable Spring security  -->
-  <!--  
- <filter>
+  <filter>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy
 		</filter-class>
@@ -44,7 +41,7 @@
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
 </filter-mapping>
- -->
+
  <servlet-mapping>
   <servlet-name>cityOptDispatcherServlet</servlet-name>
   <url-pattern>*.html</url-pattern>

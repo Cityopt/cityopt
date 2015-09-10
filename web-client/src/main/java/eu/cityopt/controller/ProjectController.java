@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -226,6 +228,7 @@ public class ProjectController {
         return "createproject";
     }
 
+    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value = "createproject", method = RequestMethod.POST)
     public String getCreateProjectPost(Map<String, Object> model,
             @Validated @ModelAttribute("newProject") ProjectDTO projectForm, BindingResult bindingResult) {
@@ -656,19 +659,34 @@ public class ProjectController {
         return "index";
     }
 
+    
+    //@ Markus Adding security feature:    
     @RequestMapping(value="index", method=RequestMethod.POST)
     public String getIndexPost(Map<String, Object> model, AppUserDTO userForm) {
 
         String version = appMetaData.getVersion();
         model.put("version", version);
-
+        
+        
+        
+        BCryptPasswordEncoder passwordEnconder = new BCryptPasswordEncoder(12);
+        
+        
          // Password dosen't help in trimming or does it?
         String username = userForm.getName();
         String password = userForm.getPassword();
+       
         AppUserDTO user = null;
 
         try {
             user = userService.findByNameAndPassword(username, password);
+            
+            // ToDo Implement theese:
+            
+            //user = userService.findByName(username);
+            // String (encrypted password) getEncryptedPasswordByName(username);
+            // passwordEnconder.matches(rawPassword, encodedPassword)
+            
         } catch (EntityNotFoundException e) {
             System.out.println("User " + username + " not found");
         }
