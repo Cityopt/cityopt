@@ -8,6 +8,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -315,7 +316,9 @@
 										<c:forEach items="${metricVals}" var="metricVal">
 										<tr>
 											<td>${metricVal.metric.name}</td>
-									    	<td>${metricVal.value}</td>
+									    <!-- Formating number -->
+									    	<c:set var="metricValue" value="${metricVal.value}"/>									    	
+									    	<td><fmt:formatNumber type="number" maxFractionDigits="2" value="${metricValue}" /></td>
 									    	<td>${metricVal.scenariometrics.scenario.name}</td>						    	
 									    </tr>
 										</c:forEach>
