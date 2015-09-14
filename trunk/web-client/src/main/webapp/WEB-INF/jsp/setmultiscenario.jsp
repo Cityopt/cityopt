@@ -105,22 +105,21 @@
 									<table class="tablestyle">
 										<col style="width:200px">
 										<col style="width:200px">
+										<col style="width:100px">
 										<tr>
 											<!--Select-->
-											<th><spring:message code="expression"/></th>
 											<th><spring:message code="input_parameters"/></th>
+											<th><spring:message code="expression"/></th>
+											<th><spring:message code="edit"/></th>
 										</tr>
 										
 										<c:forEach items="${modelparameters}" var="modelParam">
 											<tr>
-												<td>${modelParam.expression}</td>
 												<td>${modelParam.inputparameter.name}</td>
-												<!-- href="<c:url value='deletemultivariable.html?multivariableid=${modelParam.modelparamid}'/>"
-													 onclick="return confirm('<spring:message code="confirm_project_deletion"/>')">
-														<button type="button" value="Delete">
-														<!-- Delete button -->
-														<!--<spring:message code="delete"/></button>-->
-													
+												<td>${modelParam.expression}</td>
+												<td><a href="<c:url value='editmultivariable.html?multiscenarioid=${multiscenarioid}&multivariableid=${modelParam.modelparamid}'/>">
+													<button type="button"><spring:message code="edit"/></button>
+												</a></td>	
 												
 										   	</tr>
 										</c:forEach>

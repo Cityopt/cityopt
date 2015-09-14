@@ -368,7 +368,7 @@ public class ProjectController {
         else if (!model.containsKey("project"))
         {
             ProjectDTO newProject = new ProjectDTO();
-            model.put("project", newProject);
+            model.put("newProject", newProject);
             model.remove("scenario");
             return "createproject";
         }
