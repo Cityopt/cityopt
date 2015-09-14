@@ -224,6 +224,12 @@ public class ProjectController {
 		 return "springsecurity";
 		}
      */
+    	
+    @RequestMapping(value = "/403", method = RequestMethod.GET)
+    public String accessDenied(Map<String, Object> model) {      
+    	 	return "403";
+    }
+  
 
     @RequestMapping(value="createproject", method=RequestMethod.GET)
     public String getCreateProject(Map<String, Object> model) {
