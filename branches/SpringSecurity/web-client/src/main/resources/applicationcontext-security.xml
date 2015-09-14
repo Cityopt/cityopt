@@ -9,12 +9,15 @@
               class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
               <constructor-arg name="strength" value="12" />
     </bean>
-
+	
 	<security:http use-expressions="true">
-		<security:intercept-url pattern="/**"
-			access="hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard','ROLE_Guest')" />		
-			<security:http-basic />
-		<security:logout />
+			
+		<security:intercept-url	pattern="/assets/css/**" access="permitAll"/>
+		<security:intercept-url pattern="/assets/img/**" access="permitAll"/>
+		<security:intercept-url pattern="/login.html" access="permitAll"/>
+		<security:intercept-url pattern="/**" access="hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard','ROLE_Guest')" />	
+		<security:form-login login-page="/login.html" default-target-url="/loginOK.html" username-parameter="name" password-parameter="password"/>			
+		
 	</security:http>
 
 	<security:authentication-manager>
