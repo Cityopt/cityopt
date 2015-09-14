@@ -10,25 +10,25 @@
               <constructor-arg name="strength" value="12" />
     </bean>
 	
-	<security:http use-expressions="true">
-			
+	<security:http use-expressions="true">			
 		<security:intercept-url	pattern="/assets/css/**" access="permitAll"/>
 		<security:intercept-url pattern="/assets/img/**" access="permitAll"/>
-		<security:intercept-url pattern="/login.html" access="permitAll"/>		
+		<security:intercept-url pattern="/login.html" access="permitAll"/>
+		<security:intercept-url pattern="/loginerror.html" access="permitAll"/>		
 		<security:intercept-url pattern="/**" access="hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard','ROLE_Guest')" />	
-		<security:form-login login-page="/login.html" default-target-url="/loginOK.html" username-parameter="name" password-parameter="password"/>			
+		<security:form-login login-page="/login.html" authentication-failure-url="/loginerror.html" default-target-url="/loginOK.html" username-parameter="name" password-parameter="password"/>			
 		
 		
 	</security:http>
 	<security:authentication-manager>
 		<security:authentication-provider>
 			<!-- Enables encryption -->
-			<!--  <security:password-encoder ref="encoder"></security:password-encoder>-->
+			<security:password-encoder ref="encoder"></security:password-encoder>
 			<security:jdbc-user-service data-source-ref="dataSource"
                           users-by-username-query=
                             "select us.name, us.password, us.active from appuser us where us.name = ?"
                           authorities-by-username-query=
-                           "select us.name, ur.name from appuser us join usergroup ur on ur.usergroupid=us.fk_usergroupid and us.name = ?" />
+                            "select us.name, ur.name from appuser us join usergroup ur on ur.usergroupid=us.fk_usergroupid and us.name = ?" />
 
 		</security:authentication-provider>
 	</security:authentication-manager>

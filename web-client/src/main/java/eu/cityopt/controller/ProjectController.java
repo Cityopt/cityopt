@@ -19,7 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -205,9 +209,53 @@ public class ProjectController {
     		return "login";		 
 		}
     	
+    	private String getPrincipal(){
+            String userName = null;
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            if (principal instanceof UserDetails) {
+                userName = ((UserDetails)principal).getUsername();
+            } else {
+                userName = principal.toString();
+            }
+            return userName;
+        }
+    	
+    	@RequestMapping(value="/logout",  method=RequestMethod.GET)
+        public String logoutPage(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) {
+    		    		
+    		model.remove("project");
+            model.remove("scenario");
+            model.remove("optimizationset");
+            model.remove("scengenerator");
+            model.remove("optresults");
+            model.remove("usersession");
+            model.remove("user");
+            request.getSession().invalidate();        
+    		
+                    Authentication aut = SecurityContextHolder.getContext().getAuthentication();
+                    if (aut != null) {
+                                SecurityContextLogoutHandler ctxLogOut = new SecurityContextLogoutHandler();
+                                ctxLogOut.logout(request, response, aut);
+                    }               
+                                    
+                    return "redirect:/login.html?logout";
+        }
+    	
+    	@RequestMapping(value="/loginerror",  method=RequestMethod.GET)
+    	 public String loginError(Map<String, Object> model) {
+    		return "redirect:/login.html?error";
+    	}
+    	
+    	
+    	    	
     	@RequestMapping(value="/loginOK", method=RequestMethod.GET)
     	public String loginOK(Map<String, Object> model){
-    		System.out.println("loginOK");    		
+    		System.out.println("loginOK");
+    		AppUserDTO user = new AppUserDTO();
+    		user.setName(this.getPrincipal());
+    		model.put("user", user);
+
     		return  "start";
     	}
     	/*
@@ -228,9 +276,9 @@ public class ProjectController {
     @RequestMapping(value = "/403", method = RequestMethod.GET)
     public String accessDenied(Map<String, Object> model) {      
     	 	return "403";
-    }
-  
+    }  
 
+    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="createproject", method=RequestMethod.GET)
     public String getCreateProject(Map<String, Object> model) {
         ProjectDTO newProject = new ProjectDTO();
@@ -650,6 +698,7 @@ public class ProjectController {
         return "start";
     }	
 
+    /*
     @RequestMapping(value="logout", method=RequestMethod.GET)
     public String getLogout(Map<String, Object> model, HttpServletRequest request)
     {
@@ -663,7 +712,8 @@ public class ProjectController {
         request.getSession().invalidate();
         return "logout";
     }	
-
+     */
+    
     @RequestMapping(value="index", method=RequestMethod.GET)
     public String getIndex(Map<String, Object> model) {
     	System.out.println("Index invoked");
