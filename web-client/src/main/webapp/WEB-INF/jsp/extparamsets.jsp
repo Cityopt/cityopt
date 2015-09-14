@@ -72,7 +72,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 
 					<tr>
 						<td>
-							<form action="extparamsets.html" method="post">
+							<form action="${postpage}" method="post">
 								<table>
 									<col style="width: 255px">
 									<col style="width: 30px">
@@ -121,8 +121,8 @@ var getUrlParameter = function getUrlParameter(sParam) {
 												<c:forEach items="${extParamValSets}" var="extParamValSet">
 													<tr class="tablestyle" align="left" valign="top">
 														<c:choose>
-															<c:when test="${extParamValSet.extparamvalsetid == id}">
-																<input type="hidden" name=id
+															<c:when test="${extParamValSet.extparamvalsetid == extparamvalsetid}">
+																<input type="hidden" name=extparamvalsetid
 																	value="${extParamValSet.extparamvalsetid}" />
 																<tr title="${selected_externalparameter}"
 																	style="background-color: #D4D4D4">
@@ -130,8 +130,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 															</c:when>
 															<c:otherwise>
 																<tr>
-																	<td><a
-																		href="<c:url value='extparamsets.html?id=${extParamValSet.extparamvalsetid}'/>"
+																	<td><a href="<c:url value='${postpage}?extparamvalsetid=${extParamValSet.extparamvalsetid}'/>"
 																		title="${select_externalparameter}"> <!--<input type="button" name="id" th:field="*{id}" value="${extParamValSet.extparamvalsetid}">-->
 																			<spring:message code="select" />
 																	</a></td>
@@ -168,16 +167,17 @@ var getUrlParameter = function getUrlParameter(sParam) {
 										<!-- Submit button -->
 
 										<!-- Close button -->
-										<td><input name="index"
-											title="${submit_externalparameter}" type="submit"></a></td>
-										<td align="right"><a href="editoptimizationset.html"><button
-													type="button" title="${tooltip_close}">
+										<td><input name="index" title="${submit_externalparameter}" type="submit" value="<spring:message code="select" />"></td>
+										<td align="right">
+											<a href="editoptimizationset.html">
+												<button	type="button" title="${tooltip_close}">
 													<spring:message code="close" />
-												</button></a></td>
+												</button>
+											</a>
+										</td>
 									</tr>
 								</table>
 							</form>
-						</td>
 						</td>
 					</tr>
 					<tr height=20></tr>

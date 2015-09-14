@@ -213,34 +213,18 @@ function deleteDecisionVariable(decisionvarid) {
 							</tr>
 							<tr height="10"></tr>
 							<tr>
-								<td><b>External parameter values</b></td>
+								<td><b>External parameter set</b></td>
 							</tr>
 							<tr>
 								<td>
-				                  <table class="tablestyle" style="width: 450px">
-				                      <col>
-				                      <col align="right">
-				                      <col align="right">
-				                      <tr>
-				                          <th>Parameter</th>
-				                          <th>Value</th>
-				                          <th>Comment</th>
-				                      </tr>
-				    
-				                      <c:forEach items="${extparamvals}" var="epv">
-				                      <tr>
-				                          <td>${epv.extparam.name}</td>
-				                          <td align="right">${epv.value}</td>
-                                          <td>${epv.comment}</td>
-				                      </tr>
-				                      </c:forEach>
-				                  </table>
+									${scengenerator.extparamvalset == null ? "(unset)" : scengenerator.extparamvalset.name}
 								</td>
 							</tr>
+	
 							<tr>
 								<td>
-                                 <a href="editextparamvalset.html?extparamvalsetid=${extparamvalsetid}&context=geneticalgorithm.html">
-                                 <button type="button" style="width: 100px"><spring:message code="edit"/></button></a>
+                                 <a href="gaextparamsets.html?extparamvalsetid=${extparamvalsetid}&context=geneticalgorithm.html">
+                                 <button type="button" style="width: 100px"><spring:message code="select"/></button></a>
 								</td>
 							</tr>
 						</table>
@@ -249,6 +233,10 @@ function deleteDecisionVariable(decisionvarid) {
 						<table style="width: 100%">
 							<col style="width: 180px;">
 							<col style="width: 270px;">
+							<tr>
+								<td>Optimization progress</td>
+								<td>${runinfo}</td>
+							</tr>
 							<tr>
 								<td><b>Model input parameters</b></td>
 							</tr>

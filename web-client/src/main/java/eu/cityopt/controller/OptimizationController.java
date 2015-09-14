@@ -99,6 +99,7 @@ import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
 import eu.cityopt.sim.service.ScenarioGenerationService;
+import eu.cityopt.sim.service.ScenarioGenerationService.RunInfo;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.AlgoParamValForm;
 import eu.cityopt.web.ExtParamValSetForm;
@@ -715,6 +716,19 @@ public class OptimizationController {
             else if (nType == 2)
             {
                 ScenarioGeneratorDTO scenGen = scenGenService.create(project.getPrjid(), openOptSet.getName());
+
+                int nDefaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+
+                ExtParamValSetDTO extParamValSet = null;
+                
+				try {
+					extParamValSet = extParamValSetService.findByID(nDefaultExtParamValSetId);
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+                scenGen.setExtparamvalset(extParamValSet);
+
+                scenGen = scenGenService.save(scenGen);
                 model.put("scengenerator", scenGen);
 
                 return "redirect:/geneticalgorithm.html";
@@ -797,9 +811,9 @@ public class OptimizationController {
     @RequestMapping(value="extparamsets",method=RequestMethod.GET)
     public String getExtParamSets(
         Map<String, Object> model,            
-        @RequestParam(value="id", required=false) String id) {    
+        @RequestParam(value="extparamvalsetid", required=false) String id) {    
    
-		model.put("id", id);
+		model.put("extparamvalsetid", id);
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
 		model.put("extParamValSets", extParamValSets);
@@ -825,6 +839,9 @@ public class OptimizationController {
 			}
 			model.put("extParamVals", extParamVals);
 		}
+		
+		model.put("postpage", "extparamsets.html");
+		
 		return "extparamsets";       
     }   
     
@@ -879,7 +896,7 @@ public class OptimizationController {
     */
     
 	@RequestMapping(value="extparamsets",method=RequestMethod.POST)
-    public String setExtParamSets(Map<String, Object> model, @RequestParam(value="id", required=true) int id) { 
+    public String setExtParamSets(Map<String, Object> model, @RequestParam(value="extparamvalsetid", required=true) int id) { 
 		
         OptimizationSetDTO optSet = (OptimizationSetDTO)model.get("optimizationset");
 
@@ -909,6 +926,73 @@ public class OptimizationController {
         }
 
         return "editoptimizationset";                   
+    }
+
+	@RequestMapping(value="gaextparamsets", method=RequestMethod.GET)
+    private String getGAExtParamValSet(Map<String, Object> model,
+        @RequestParam(value="extparamvalsetid", required=false) String id) {
+   
+		model.put("extparamvalsetid", id);
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
+		model.put("extParamValSets", extParamValSets);
+	
+		int extParamValSetId = 0;
+		extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+		
+		if (id != null) {
+			extParamValSetId = Integer.parseInt(id);
+		}
+		
+		if (extParamValSetId != 0) {
+			List<ExtParamValDTO> extParamVals = null;
+			try {
+				extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+				return "error";
+			}
+			model.put("extParamVals", extParamVals);
+		}
+		
+		model.put("postpage", "gaextparamsets.html");
+		
+		return "extparamsets";       
+	}    		
+
+	@RequestMapping(value="gaextparamsets",method=RequestMethod.POST)
+    public String setGAExtParamSets(Map<String, Object> model, @RequestParam(value="extparamvalsetid", required=true) int id) { 
+
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+
+        try {
+            scenGen = scenGenService.findByID(scenGen.getScengenid());
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+        model.put("optimizationset", scenGen);
+        
+        if (scenGen == null) {
+            // Invalid state
+            return "error";
+        }
+        
+        try {
+            ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(id);
+            scenGen.setExtparamvalset(extParamValSet);
+            scenGen = scenGenService.update(scenGen);
+            model.put("scengenerator", scenGen);                                            
+        } catch (EntityNotFoundException e) {
+            model.put("errorMessage", "Entity not found.");
+            e.printStackTrace();
+        } catch(ObjectOptimisticLockingFailureException e) {
+            model.put("errorMessage", "Concurrent modification detected.");
+            e.printStackTrace();
+        }
+
+        model.put("extparamvalsetid", id);
+		
+        return "redirect:/geneticalgorithm.html";                   
     }
 
 	// Helper Methods To prevent work Repetition: This method create Project DTO object from the model	
@@ -2241,9 +2325,14 @@ public class OptimizationController {
     @RequestMapping(value="geneticalgorithm", method=RequestMethod.GET)
     public String getGeneticAlgorithm(ModelMap model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
-        if (project == null) return "redirect:/openproject.html";
+        
+        if (project == null) 
+        	return "redirect:/openproject.html";
+        
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
-        if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
+        
+        if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) 
+        	return "redirect:/openproject.html";
 
         return getGeneticAlgorithm(project, scenGen, model);
     }
@@ -2251,10 +2340,12 @@ public class OptimizationController {
     private String getGeneticAlgorithm(ProjectDTO project, ScenarioGeneratorDTO scenGen, Map<String, Object> model) {
         model.put("scengenerator", scenGen);
         UserSession userSession = (UserSession) model.get("usersession");
+        
         if (userSession == null) {
             userSession = new UserSession();
             model.put("usersession", userSession);
         }
+        
         try {
             List<ComponentDTO> components = sortComponentsByName(
                     projectService.getComponents(project.getPrjid()));
@@ -2277,6 +2368,12 @@ public class OptimizationController {
             model.put("algorithms", algorithmService.findAll());
             model.put("algoparamvals", scenGenService.getOrCreateAlgoParamVals(scenGen.getScengenid()));
 
+            RunInfo runInfo = scenarioGenerationService.getRunningOptimisations().get(scenGen.getScengenid());
+            
+            if (runInfo != null) {
+            	model.put("runinfo", runInfo.toString());
+            }
+            
             List<ComponentDTO> inputComponents = pickInputComponents(modelParams, components);
             model.put("inputcomponents", inputComponents);
             if (userSession.getComponentId() == 0 && !inputComponents.isEmpty()) {
@@ -2338,8 +2435,35 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editextparamvalset", method=RequestMethod.GET)
-    private String getEditExtParamValSet(ModelMap model,
-            @RequestParam("extparamvalsetid") Integer extParamValSetId,
+    private String getEditExtParamValSet(Map<String, Object> model,            
+        @RequestParam(value="id", required=false) String id) {    
+   
+		model.put("id", id);
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
+		model.put("extParamValSets", extParamValSets);
+		int extParamValSetId = 0;
+	
+		extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+		
+		if (id != null) {
+			extParamValSetId = Integer.parseInt(id);
+		}
+		
+		if (extParamValSetId != 0) {
+			List<ExtParamValDTO> extParamVals = null;
+			try {
+				extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+				return "error";
+			}
+			model.put("extParamVals", extParamVals);
+		}
+		return "extparamsets";       
+    		
+    		
+            /*@RequestParam("extparamvalsetid") Integer extParamValSetId,
             @RequestParam("context") String context) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
@@ -2364,7 +2488,7 @@ public class OptimizationController {
             e.printStackTrace();
             return "redirect:/" + context;
         }
-        return "editextparamvalset";
+        return "editextparamvalset";*/
     }
 
     @RequestMapping(value="editextparamvalset", method=RequestMethod.POST)

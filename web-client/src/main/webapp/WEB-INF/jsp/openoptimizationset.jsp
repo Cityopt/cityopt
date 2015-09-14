@@ -57,7 +57,7 @@
 												<button align="right" title="${clone_optimizationset}" type="button" value="Clone"><spring:message code="clone"/></button>
 									</a></td>
 
-									</c:when>
+							</c:when>
 							<c:otherwise>
 								<td>Genetic algorithm</td>
 								<td>

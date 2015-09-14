@@ -22,7 +22,16 @@ public class UserSession {
 	private int nChartType;
 	private String strUserName;
 	private String nMultiScenarioId;
+	private String nMultiVariableId;
 	private String nSelectedInputId;
+
+	public String getMultiVariableId() {
+		return nMultiVariableId;
+	}
+
+	public void setMultiVariableId(String nMultiVariableId) {
+		this.nMultiVariableId = nMultiVariableId;
+	}
 	
 	public String getSelectedInputId() {
 		return nSelectedInputId;
@@ -73,7 +82,7 @@ public class UserSession {
 		selectedScenGenIds.remove(nSelectedScenGenId);
 	}
 
-	public boolean hasScenGenId(int nId)
+	public boolean hasSelectedScenGenId(int nId)
 	{
 		return selectedScenGenIds.contains(nId);
 	}
