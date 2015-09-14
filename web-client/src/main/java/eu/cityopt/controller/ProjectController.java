@@ -195,13 +195,22 @@ public class ProjectController {
     @Autowired
     MessageSource resource;
 
-    //Enable Spring security
-    /*
-		@RequestMapping(method=RequestMethod.GET, value="/login")
-		public String displayLoginPage(){
-		 return "myLoginPage";
-		}
+    	@RequestMapping(method=RequestMethod.GET, value="/login")
+		public String displayLoginPage(Map<String, Object> model){
+    		System.out.println("login invoked");
+    		 
+    		 AppUserDTO user = new AppUserDTO();
+    	     model.put("user", user);
 
+    		return "login";		 
+		}
+    	
+    	@RequestMapping(value="/loginOK", method=RequestMethod.GET)
+    	public String loginOK(Map<String, Object> model){
+    		System.out.println("loginOK");    		
+    		return  "start";
+    	}
+    	/*
 		@RequestMapping(value="/login", params="errorLogin")
 		public String directToLoginPageWithError(Model model){
 		 // Adding an attribute to flag that an error happened at login
@@ -209,7 +218,6 @@ public class ProjectController {
 
 		 return "myLoginPage";
 		}
-
 		@RequestMapping(method=RequestMethod.GET, value="/securityTest")
 		@PreAuthorize("@securityService.hasPermission('sampleCheckOnController')")
 		public String displaySecurityTestPage(){
@@ -652,7 +660,7 @@ public class ProjectController {
 
     @RequestMapping(value="index", method=RequestMethod.GET)
     public String getIndex(Map<String, Object> model) {
-
+    	System.out.println("Index invoked");
         AppUserDTO user = new AppUserDTO();
         model.put("user", user);
 
@@ -669,7 +677,7 @@ public class ProjectController {
         
         
         
-        BCryptPasswordEncoder passwordEnconder = new BCryptPasswordEncoder(12);
+       // BCryptPasswordEncoder passwordEnconder = new BCryptPasswordEncoder(12);
         
         
          // Password dosen't help in trimming or does it?
