@@ -258,6 +258,10 @@ public class ScenarioGenerationService
 
        /** Short status string, e.g. "iteration 43" */
        String status;
+
+       public String toString() {
+    	   return "Started: " + started + "; Deadline: " + deadline + "; Status: " + status;
+       }
     }
 
     /**
