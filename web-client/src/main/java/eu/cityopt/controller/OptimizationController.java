@@ -2372,6 +2372,8 @@ public class OptimizationController {
             
             if (runInfo != null) {
             	model.put("runinfo", runInfo.toString());
+            } else {
+            	model.put("runinfo", "-");
             }
             
             List<ComponentDTO> inputComponents = pickInputComponents(modelParams, components);
