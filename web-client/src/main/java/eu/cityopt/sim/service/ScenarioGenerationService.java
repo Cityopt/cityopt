@@ -196,6 +196,9 @@ public class ScenarioGenerationService
         AlgorithmParameters algorithmParameters = loadAlgorithmParameters(scenarioGenerator);
 
         OptimisationProblem problem = loadOptimisationProblem(project, scenarioGenerator);
+        if (problem.decisionVars.isEmpty()) {
+        	throw new ConfigurationException("No decision variables defined");
+        }
         final SimulationModel model = simulationService.loadSimulationModel(project);
         problem.model = model;
         boolean running = false;
