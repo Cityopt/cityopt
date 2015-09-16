@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
@@ -59,24 +60,29 @@ public class AprosModelTest extends AprosTestBase {
             SimulationModel model = manager.parseModel(profileName, in);
 
             Namespace ns = new Namespace(new Evaluator(), model.getTimeOrigin());
+            Map<String, Map<String, String>> units = new HashMap<>();
             ns.initConfigComponent();
             StringWriter warnings = new StringWriter();
-            SimulationInput defaultInput = model.findInputsAndOutputs(ns, 0, warnings);
+            SimulationInput defaultInput = model.findInputsAndOutputs(ns, units, 0, warnings);
 
             System.out.print(warnings.toString());
             System.out.println("Structure of " + modelResource + ":");
             for (Map.Entry<String, Component> ce : ns.components.entrySet()) {
                 String cname = ce.getKey();
                 System.out.println(cname + ": {");
+                Map<String, String> cunits = units.get(cname);
                 for (Map.Entry<String, Type> ie : ce.getValue().inputs.entrySet()) {
                     String iname = ie.getKey();
                     String valueText = (cname.equals(Namespace.CONFIG_COMPONENT))
                             ? "-" : defaultInput.getString(cname, iname);
+                    String unit = (cunits != null) ? cunits.get(iname) : null;
                     System.out.println("  in " + iname + ": " + ie.getValue()
-                            + ", default " + valueText);
+                            + ", default " + valueText + " [" + unit + "]");
                 }
                 for (Map.Entry<String, Type> oe : ce.getValue().outputs.entrySet()) {
-                    System.out.println("  out " + oe.getKey() + ": " + oe.getValue());
+                    String unit = (cunits != null) ? cunits.get(oe.getKey()) : null;
+                    System.out.println("  out " + oe.getKey() + ": " + oe.getValue()
+                    			+ " [" + unit + "]");
                 }
                 System.out.println("}");
             }
