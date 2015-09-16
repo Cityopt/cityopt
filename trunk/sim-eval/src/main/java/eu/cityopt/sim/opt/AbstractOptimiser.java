@@ -187,10 +187,8 @@ public abstract class AbstractOptimiser implements Runnable {
                 }
                 activeJobs.set(jobId, null);
                 freeJobIds.add(jobId);
-                if (freeJobIds.remainingCapacity() == 0) {
-                    synchronized (jobsDoneCondition) {
-                        jobsDoneCondition.notifyAll();
-                    }
+                synchronized (jobsDoneCondition) {
+                    jobsDoneCondition.notifyAll();
                 }
                 logger.info("Completed simulation job " + jobName);
             });
