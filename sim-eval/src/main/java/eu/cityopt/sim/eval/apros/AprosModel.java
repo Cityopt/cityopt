@@ -224,12 +224,13 @@ public class AprosModel implements SimulationModel {
 
     @Override
     public SimulationInput findInputsAndOutputs(
-            Namespace newNamespace, int detailLevel, Writer warningWriter)
+            Namespace newNamespace, Map<String, Map<String, String>> units,
+            int detailLevel, Writer warningWriter)
                     throws IOException {
         try {
             SyntaxChecker syntaxChecker = new SyntaxChecker(newNamespace.evaluator);
             SimulationInput defaultValues = findInputs(
-                    uc_props, detailLevel, syntaxChecker, newNamespace, warningWriter);
+                    uc_props, detailLevel, syntaxChecker, newNamespace, units, warningWriter);
             findOutputs(syntaxChecker, newNamespace, warningWriter);
             return defaultValues;
         } catch (ScriptException e) {
@@ -289,7 +290,7 @@ public class AprosModel implements SimulationModel {
 
     private static SimulationInput findInputs(
             Node rootNode, int detailLevel, SyntaxChecker syntaxChecker,
-            Namespace newNamespace, Writer warnings)
+            Namespace newNamespace, Map<String, Map<String, String>> units, Writer warnings)
                     throws IOException {
         Map<String, Map<String, Double>> values = new HashMap<>();
         XPathFactory xPathFactory = XPathFactory.newInstance();
@@ -319,12 +320,15 @@ public class AprosModel implements SimulationModel {
                             Node propNode = propNodes.item(j);
                             Node propNameNode = propNode.getAttributes().getNamedItem("name");
                             Node propValueNode = propNode.getAttributes().getNamedItem("value");
+                            Node propUnitNode = propNode.getAttributes().getNamedItem("unit");
                             if (propNameNode == null || propValueNode == null) {
                                 throw new IOException("Invalid property in module '" + moduleName 
                                         + "' in " + USER_COMPONENT_PROPERTIES_FILENAME);
                             }
                             String propName = propNameNode.getNodeValue();
                             String propValue = propValueNode.getNodeValue();
+                            String propUnit = (propUnitNode != null)
+                            		? propUnitNode.getNodeValue() : null;
                             try {
                                 double value = Double.valueOf(propValue);
 
@@ -334,6 +338,10 @@ public class AprosModel implements SimulationModel {
                                     if (old == null) {
                                         values.computeIfAbsent(moduleName, k -> new HashMap<>())
                                             .putIfAbsent(propName, value);
+                                        if (propUnit != null && !propUnit.isEmpty()) {
+                                        	units.computeIfAbsent(moduleName,  k -> new HashMap<>())
+                                        		.putIfAbsent(propName, propUnit);
+                                        }
                                     } else {
                                         duplicateInputNames.add(moduleName + "." + propName);
                                     }

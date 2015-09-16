@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.Instant;
+import java.util.Map;
 
 import org.w3c.dom.Document;
 
@@ -30,6 +31,8 @@ public interface SimulationModel extends Closeable {
      *   inputs and outputs will be created.  You will probably also need
      *   to call {@link Namespace#initConfigComponent()} before entering
      *   here.
+     * @param units an empty Map to which units of inputs and outputs
+     *   will be stored insofar they are known.
      * @param detailLevel indicates how much of the available input
      *   parameters and output variables are to be included.  0 is minimal,
      *   larger numbers may provide more results.
@@ -40,6 +43,7 @@ public interface SimulationModel extends Closeable {
      *   may be left unset (null).
      */
     SimulationInput findInputsAndOutputs(Namespace newNamespace,
+    		Map<String, Map<String, String>> units,
             int detailLevel, Writer warningWriter) throws IOException;
 
     /** Access to Apros user component structure, or null if not available. */
