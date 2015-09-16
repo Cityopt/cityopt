@@ -678,7 +678,7 @@ CREATE TABLE UserGroupProject
 (
 	usergroupprojectid integer NOT NULL DEFAULT nextval(('usergroupproject_usergroupprojectid_seq'::text)::regclass),
 	userGroupID integer NOT NULL,
-	prjID integer NOT NULL,
+	prjID integer,
 	userID integer NOT NULL,
 	version integer
 )

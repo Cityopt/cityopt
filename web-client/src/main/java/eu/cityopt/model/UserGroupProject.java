@@ -62,7 +62,7 @@ public class UserGroupProject extends VersionModel implements java.io.Serializab
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "prjid", nullable = false)
+	@JoinColumn(name = "prjid", nullable = true)
 	public Project getProject() {
 		return this.project;
 	}
