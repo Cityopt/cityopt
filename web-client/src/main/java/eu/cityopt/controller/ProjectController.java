@@ -487,10 +487,14 @@ public class ProjectController {
 
                 importExportService.importSimulationModel(project.getPrjid(), 0, "Imported evergy model " + Instant.now(), bytes, simulatorName, timeOrigin);
                 importExportService.importModelInputsAndOutputs(project.getPrjid(), 0);
+                
+                model.put("success",true);
 
                 //Path path = new Path(file.getOriginalFilename());
                 //importExportService.importSimulationStructure(project.getPrjid(), path);
             } catch (Exception e) {
+            	
+            	model.put("success",false);
                 return "You failed to upload => " + e.getMessage();
             }
         } else {

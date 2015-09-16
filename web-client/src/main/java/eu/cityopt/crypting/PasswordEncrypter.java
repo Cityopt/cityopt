@@ -9,7 +9,7 @@ public class PasswordEncrypter {
         hash("expert");
         hash("standard");
         hash("quest");
-        
+        hash("markus");        
         
 
 }

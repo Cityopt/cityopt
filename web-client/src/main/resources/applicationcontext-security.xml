@@ -28,7 +28,12 @@
                           users-by-username-query=
                             "select us.name, us.password, us.active from appuser us where us.name = ?"
                           authorities-by-username-query=
-                            "select us.name, ur.name from appuser us join usergroup ur on ur.usergroupid=us.fk_usergroupid and us.name = ?" />
+                            "SELECT appuser.name, usergroup.name 
+                            FROM appuser, usergroup, usergroupproject 
+                            WHERE appuser.name = ? 
+                            AND usergroupproject.prjid is null 
+                            AND appuser.userid = usergroupproject.userid
+                            AND usergroup.usergroupid = usergroupproject.usergroupid" />
 
 		</security:authentication-provider>
 	</security:authentication-manager>
