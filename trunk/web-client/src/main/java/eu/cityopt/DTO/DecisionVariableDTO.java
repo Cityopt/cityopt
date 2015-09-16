@@ -8,7 +8,7 @@ public class DecisionVariableDTO  extends BaseDTO{
 
 	@Getter @Setter private int decisionvarid;
 	@Getter @Setter private TypeDTO type;
-	@Getter @Setter private ScenarioGeneratorDTO scenariogenerator;
+	@Getter @Setter private ScenarioGeneratorSimpleDTO scenariogenerator;
 	@Getter @Setter private InputParameter inputparameter;
 	@Getter @Setter private String name;
 	@Getter @Setter private String lowerbound;
