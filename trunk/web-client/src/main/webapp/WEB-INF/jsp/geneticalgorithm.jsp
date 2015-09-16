@@ -28,7 +28,7 @@ function deleteDecisionVariable(decisionvarid) {
     document.mainform.action = "${baseURL}/deletesgdecisionvariable.html"
 }
 </script>
-<%@ include file="cityopt.js"%>
+<script language="javascript"><%@ include file="cityopt.js"%></script>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Cityopt edit genetic algorithm optimization set</title>
