@@ -276,7 +276,7 @@ public class ImportServiceImpl implements ImportService {
 			else{
 				ep.setName(row.ExtParamName);
 				ep.setProject(project);
-				Unit unit = unitRepository.findByNameLike(row.ExtParamUnitName);
+				Unit unit = unitRepository.findByName(row.ExtParamUnitName);
 				ep.setUnit(unit);
 //				ep.setDefaultvalue(row.ExtParamdefaultValue);
 //				if(row.ExtParamdefaultTimeseriesId != null && row.ExtParamdefaultTimeseriesId != 0){
