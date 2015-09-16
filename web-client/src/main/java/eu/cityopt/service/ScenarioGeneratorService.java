@@ -11,6 +11,7 @@ import eu.cityopt.DTO.ModelParameterDTO;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
 import eu.cityopt.DTO.OptConstraintDTO;
 import eu.cityopt.DTO.ScenarioGeneratorDTO;
+import eu.cityopt.DTO.ScenarioGeneratorSimpleDTO;
 
 public interface ScenarioGeneratorService extends CityOptService<ScenarioGeneratorDTO>{
 
@@ -83,4 +84,13 @@ public interface ScenarioGeneratorService extends CityOptService<ScenarioGenerat
 
 	ScenarioGeneratorDTO update(int scenGenId, String name, Integer algorithmId)
 			throws EntityNotFoundException;
+
+	/** Converts ScenarioGeneratorDTO to ScenarioGeneratorSimpleDTO. */
+    public static ScenarioGeneratorSimpleDTO convertDTO(
+			ScenarioGeneratorDTO scenGen) {
+    	ScenarioGeneratorSimpleDTO s = new ScenarioGeneratorSimpleDTO();
+    	s.setVersion(scenGen.getVersion());
+    	s.setScengenid(scenGen.getScengenid());
+		return s;
+	}
 }

@@ -2289,7 +2289,7 @@ public class OptimizationController {
         // TODO validate that the bounds are ordered, allowing for expression bounds
         try {
             decVar.setType(typeService.findByID(typeid));
-            decVar.setScenariogenerator(scenGen);
+            decVar.setScenariogenerator(ScenarioGeneratorService.convertDTO(scenGen));
             //TODO: implement tying to input parameter as an alternative to specifying a name
             decVar.setInputparameter(null);
             if (decisionvarid > 0) {
