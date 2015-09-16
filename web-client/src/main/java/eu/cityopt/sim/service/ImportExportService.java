@@ -36,6 +36,7 @@ import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
+import eu.cityopt.model.Unit;
 import eu.cityopt.opt.io.CsvTimeSeriesData;
 import eu.cityopt.opt.io.ExportBuilder;
 import eu.cityopt.opt.io.JacksonBinder;
@@ -57,6 +58,7 @@ import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.SimulationModelRepository;
 import eu.cityopt.repository.TypeRepository;
+import eu.cityopt.repository.UnitRepository;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.ExternalParameters;
@@ -105,6 +107,7 @@ public class ImportExportService {
     @Inject private OptimizationSetRepository optimizationSetRepository;
     @Inject private ExtParamValSetRepository extParamValSetRepository;
     @Inject private ScenarioRepository scenarioRepository;
+    @Inject private UnitRepository unitRepository;
 
     /**
      * Creates a SimulationModel row in the database.
@@ -183,15 +186,16 @@ public class ImportExportService {
             Instant timeOrigin = simulationService.loadTimeOrigin(project.getSimulationmodel());
             Namespace namespace = new Namespace(simulationService.getEvaluator(), timeOrigin);
             namespace.initConfigComponent();
+            Map<String, Map<String, String>> units = new HashMap<>();
             StringWriter warnings = new StringWriter();
             SimulationInput defaultInput = model.findInputsAndOutputs(
-                    namespace, detailLevel, warnings);
+                    namespace, units, detailLevel, warnings);
 
             defaultInput.put(Namespace.CONFIG_COMPONENT, Namespace.CONFIG_SIMULATION_START, 0.0);
             defaultInput.put(Namespace.CONFIG_COMPONENT, Namespace.CONFIG_SIMULATION_END,
                     (double) DEFAULT_SIMULATED_TIME_SECONDS);
 
-            saveNamespaceComponents(project, namespace);
+            saveNamespaceComponents(project, namespace, units);
             projectRepository.save(project);
             saveDefaultInput(project, defaultInput);
             return warnings.toString();
@@ -254,7 +258,7 @@ public class ImportExportService {
     public void saveSimulationStructure(
             Project project, SimulationStructure structure) {
         saveExternalParameters(project, structure.getNamespace());
-        saveNamespaceComponents(project, structure.getNamespace());
+        saveNamespaceComponents(project, structure.getNamespace(), null);
         saveMetrics(project, structure.getNamespace(), structure.metrics);
         projectRepository.save(project);
     }
@@ -291,7 +295,8 @@ public class ImportExportService {
         extParamRepository.save(changed);
     }
 
-    public void saveNamespaceComponents(Project project, Namespace namespace) {
+    public void saveNamespaceComponents(Project project, Namespace namespace,
+    		Map<String, Map<String, String>> units) {
         Map<String, Component> oldComponents = new HashMap<>();
         for (Component component : project.getComponents()) {
             oldComponents.put(component.getName(), component);
@@ -309,12 +314,14 @@ public class ImportExportService {
                 componentRepository.save(component);
             }
 
-            saveComponentInputParameters(component, nsComponent.inputs);
-            saveComponentOutputVariables(component, nsComponent.outputs);
+            Map<String, String> compUnits = (units != null) ? units.get(componentName) : null;
+            saveComponentInputParameters(component, nsComponent.inputs, compUnits);
+            saveComponentOutputVariables(component, nsComponent.outputs, compUnits);
         }
     }
 
-    public void saveComponentInputParameters(Component component, Map<String, Type> inputs) {
+    public void saveComponentInputParameters(Component component, Map<String, Type> inputs,
+    		Map<String, String> units) {
         List<InputParameter> changedInputParameters = new ArrayList<>();
         Map<String, InputParameter> oldInputParameters = new HashMap<>();
         for (InputParameter inputParameter : component.getInputparameters()) {
@@ -339,6 +346,7 @@ public class ImportExportService {
                 inputParameter.setName(name);
                 inputParameter.setComponent(component);
                 inputParameter.setType(typeRepository.findByNameLike(type.name));
+                inputParameter.setUnit(findOrCreateUnit(units, name));
                 component.getInputparameters().add(inputParameter);
                 changedInputParameters.add(inputParameter);
             }
@@ -346,7 +354,8 @@ public class ImportExportService {
         inputParameterRepository.save(changedInputParameters);
     }
 
-    public void saveComponentOutputVariables(Component component, Map<String, Type> outputs) {
+    public void saveComponentOutputVariables(Component component, Map<String, Type> outputs,
+    		Map<String, String> units) {
         Map<String, OutputVariable> oldOutputVariables = new HashMap<>();
         for (OutputVariable outputVariable : component.getOutputvariables()) {
             oldOutputVariables.put(outputVariable.getName(), outputVariable);
@@ -371,6 +380,7 @@ public class ImportExportService {
                 outputVariable.setName(name);
                 outputVariable.setComponent(component);
                 outputVariable.setType(typeRepository.findByNameLike(type.name));
+                outputVariable.setUnit(findOrCreateUnit(units, name));
                 component.getOutputvariables().add(outputVariable);
                 changedOutputVariables.add(outputVariable);
             }
@@ -378,7 +388,27 @@ public class ImportExportService {
         outputVariableRepository.save(changedOutputVariables);
     }
 
-    public void saveMetrics(Project project, Namespace namespace,
+    private Unit findOrCreateUnit(Map<String, String> units, String key) {
+    	if (units != null && key != null) {
+    		String unitName = units.get(key);
+    		if (unitName != null) {
+    			unitName = unitName.trim();
+	    		if (!unitName.isEmpty()) {
+		    		Unit unit = unitRepository.findByName(unitName);
+		    		if (unit != null) {
+		    			return unit;
+		    		} else {
+			    		unit = new Unit();
+			    		unit.setName(unitName);
+			    		return unitRepository.save(unit);
+		    		}
+	    		}
+    		}
+    	}
+		return null;
+	}
+
+	public void saveMetrics(Project project, Namespace namespace,
             Collection<MetricExpression> metricExpressions) {
         Map<String, Metric> oldMetrics = new HashMap<>();
         for (Metric metric : project.getMetrics()) {
