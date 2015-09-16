@@ -1,4 +1,3 @@
-<script language="javascript">
 function postSelectedComponent(componentid) {
     var http = new XMLHttpRequest();
     http.open("POST", "selectcomponent.html", true);
@@ -17,4 +16,3 @@ function selectComponent(className, componentid) {
     showComponent(className, componentid);
     postSelectedComponent(componentid);
 }
-</script>

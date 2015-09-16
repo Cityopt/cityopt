@@ -5,7 +5,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<%@ include file="cityopt.js"%>
+<script language="javascript"><%@ include file="cityopt.js"%></script>
 <head>
 <title>CityOpt edit GA model input parameters</title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
