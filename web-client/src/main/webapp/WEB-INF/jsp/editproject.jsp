@@ -85,6 +85,17 @@
 	        						
 	        							<c:set var="tip_load_energymodel"><spring:message code="tooltip_edit_project_load_energymodel"/></c:set>
 	        							<input type="submit" title="${tip_load_energymodel}" value="<spring:message code="load_file"/>">
+	        							
+	        							 <c:choose>
+	        							 	<c:when test="${success!=null && success==true}">
+	        							 	<br><br><spring:message code="simulation_uploaded"/>
+	        							 	</c:when>
+	        							 	<c:when test="${success!=null && success==false}">
+	        							 	<br><br><h2 class="error"><spring:message code="simulation_upload_failed"/></h2>
+	        							 	</c:when>
+	        							 </c:choose>
+	        							     	
+	        							
 	       							</td>
 	   							</tr>	
    							</form:form>
