@@ -201,7 +201,9 @@ public class ProjectController {
 
     	@RequestMapping(method=RequestMethod.GET, value="/login")
 		public String displayLoginPage(Map<String, Object> model){
-    		System.out.println("login invoked");
+    		
+    		
+    		//System.out.println("login invoked");
     		 
     		 AppUserDTO user = new AppUserDTO();
     	     model.put("user", user);
@@ -251,7 +253,7 @@ public class ProjectController {
     	    	
     	@RequestMapping(value="/loginOK", method=RequestMethod.GET)
     	public String loginOK(Map<String, Object> model){
-    		System.out.println("loginOK");
+    		//System.out.println("loginOK");
     		AppUserDTO user = new AppUserDTO();
     		user.setName(this.getPrincipal());
     		model.put("user", user);
