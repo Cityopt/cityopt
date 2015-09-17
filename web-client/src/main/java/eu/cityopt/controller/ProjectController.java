@@ -840,8 +840,7 @@ public class ProjectController {
 
         // TODO
         if (user != null && project != null)
-        {
-            //if (hasAdminRights(user.getUserid()))
+        {            
             {
                 List<AppUserDTO> users = userService.findAll();
                 model.put("users", users);
