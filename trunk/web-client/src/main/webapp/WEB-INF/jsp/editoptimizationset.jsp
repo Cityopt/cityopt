@@ -316,8 +316,7 @@
 										<c:forEach items="${metricVals}" var="metricVal">
 										<tr>
 											<td>${metricVal.metric.name}</td>
-									    <!-- Formating number -->
-									    	<c:set var="metricValue" value="${metricVal.value}"/>									    	
+											<c:set var="metricValue" value="${metricVal.value}"/>
 									    	<td><fmt:formatNumber type="number" maxFractionDigits="2" value="${metricValue}" /></td>
 									    	<td>${metricVal.scenariometrics.scenario.name}</td>						    	
 									    </tr>

@@ -18,6 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -193,13 +199,66 @@ public class ProjectController {
     @Autowired
     MessageSource resource;
 
-    //Enable Spring security
-    /*
-		@RequestMapping(method=RequestMethod.GET, value="/login")
-		public String displayLoginPage(){
-		 return "myLoginPage";
-		}
+    	@RequestMapping(method=RequestMethod.GET, value="/login")
+		public String displayLoginPage(Map<String, Object> model){
+    		System.out.println("login invoked");
+    		 
+    		 AppUserDTO user = new AppUserDTO();
+    	     model.put("user", user);
 
+    		return "login";		 
+		}
+    	
+    	private String getPrincipal(){
+            String userName = null;
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            if (principal instanceof UserDetails) {
+                userName = ((UserDetails)principal).getUsername();
+            } else {
+                userName = principal.toString();
+            }
+            return userName;
+        }
+    	
+    	@RequestMapping(value="/logout",  method=RequestMethod.GET)
+        public String logoutPage(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) {
+    		    		
+    		model.remove("project");
+            model.remove("scenario");
+            model.remove("optimizationset");
+            model.remove("scengenerator");
+            model.remove("optresults");
+            model.remove("usersession");
+            model.remove("user");
+            request.getSession().invalidate();        
+    		
+                    Authentication aut = SecurityContextHolder.getContext().getAuthentication();
+                    if (aut != null) {
+                                SecurityContextLogoutHandler ctxLogOut = new SecurityContextLogoutHandler();
+                                ctxLogOut.logout(request, response, aut);
+                    }               
+                                    
+                    return "redirect:/login.html?logout";
+        }
+    	
+    	@RequestMapping(value="/loginerror",  method=RequestMethod.GET)
+    	 public String loginError(Map<String, Object> model) {
+    		return "redirect:/login.html?error";
+    	}
+    	
+    	
+    	    	
+    	@RequestMapping(value="/loginOK", method=RequestMethod.GET)
+    	public String loginOK(Map<String, Object> model){
+    		System.out.println("loginOK");
+    		AppUserDTO user = new AppUserDTO();
+    		user.setName(this.getPrincipal());
+    		model.put("user", user);
+
+    		return  "start";
+    	}
+    	/*
 		@RequestMapping(value="/login", params="errorLogin")
 		public String directToLoginPageWithError(Model model){
 		 // Adding an attribute to flag that an error happened at login
@@ -207,14 +266,19 @@ public class ProjectController {
 
 		 return "myLoginPage";
 		}
-
 		@RequestMapping(method=RequestMethod.GET, value="/securityTest")
 		@PreAuthorize("@securityService.hasPermission('sampleCheckOnController')")
 		public String displaySecurityTestPage(){
 		 return "springsecurity";
 		}
      */
+    	
+    @RequestMapping(value = "/403", method = RequestMethod.GET)
+    public String accessDenied(Map<String, Object> model) {      
+    	 	return "403";
+    }  
 
+    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="createproject", method=RequestMethod.GET)
     public String getCreateProject(Map<String, Object> model) {
         ProjectDTO newProject = new ProjectDTO();
@@ -226,6 +290,7 @@ public class ProjectController {
         return "createproject";
     }
 
+    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value = "createproject", method = RequestMethod.POST)
     public String getCreateProjectPost(Map<String, Object> model,
             @Validated @ModelAttribute("newProject") ProjectDTO projectForm, BindingResult bindingResult) {
@@ -422,10 +487,14 @@ public class ProjectController {
 
                 importExportService.importSimulationModel(project.getPrjid(), 0, "Imported evergy model " + Instant.now(), bytes, simulatorName, timeOrigin);
                 importExportService.importModelInputsAndOutputs(project.getPrjid(), 0);
+                
+                model.put("success",true);
 
                 //Path path = new Path(file.getOriginalFilename());
                 //importExportService.importSimulationStructure(project.getPrjid(), path);
             } catch (Exception e) {
+            	
+            	model.put("success",false);
                 return "You failed to upload => " + e.getMessage();
             }
         } else {
@@ -633,6 +702,7 @@ public class ProjectController {
         return "start";
     }	
 
+    /*
     @RequestMapping(value="logout", method=RequestMethod.GET)
     public String getLogout(Map<String, Object> model, HttpServletRequest request)
     {
@@ -646,29 +716,45 @@ public class ProjectController {
         request.getSession().invalidate();
         return "logout";
     }	
-
+     */
+    
     @RequestMapping(value="index", method=RequestMethod.GET)
     public String getIndex(Map<String, Object> model) {
-
+    	System.out.println("Index invoked");
         AppUserDTO user = new AppUserDTO();
         model.put("user", user);
 
         return "index";
     }
 
+    
+    //@ Markus Adding security feature:    
     @RequestMapping(value="index", method=RequestMethod.POST)
     public String getIndexPost(Map<String, Object> model, AppUserDTO userForm) {
 
         String version = appMetaData.getVersion();
         model.put("version", version);
-
+        
+        
+        
+       // BCryptPasswordEncoder passwordEnconder = new BCryptPasswordEncoder(12);
+        
+        
          // Password dosen't help in trimming or does it?
         String username = userForm.getName();
         String password = userForm.getPassword();
+       
         AppUserDTO user = null;
 
         try {
             user = userService.findByNameAndPassword(username, password);
+            
+            // ToDo Implement theese:
+            
+            //user = userService.findByName(username);
+            // String (encrypted password) getEncryptedPasswordByName(username);
+            // passwordEnconder.matches(rawPassword, encodedPassword)
+            
         } catch (EntityNotFoundException e) {
             System.out.println("User " + username + " not found");
         }
@@ -754,8 +840,7 @@ public class ProjectController {
 
         // TODO
         if (user != null && project != null)
-        {
-            //if (hasAdminRights(user.getUserid()))
+        {            
             {
                 List<AppUserDTO> users = userService.findAll();
                 model.put("users", users);

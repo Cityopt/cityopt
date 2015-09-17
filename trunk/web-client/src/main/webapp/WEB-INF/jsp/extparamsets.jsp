@@ -72,7 +72,12 @@ var getUrlParameter = function getUrlParameter(sParam) {
 
 					<tr>
 						<td>
-							<form action="${postpage}" method="post">
+					
+						
+							<form action="extparamsets.html" method="post">							
+								<!-- csrt support (version 4.0) -->
+									<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+								
 								<table>
 									<col style="width: 255px">
 									<col style="width: 30px">
