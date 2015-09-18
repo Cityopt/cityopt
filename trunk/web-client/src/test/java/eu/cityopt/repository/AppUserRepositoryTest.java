@@ -44,6 +44,23 @@ public class AppUserRepositoryTest {
 	}
 
 	@Test
+	public void create() {
+		
+		List<AppUser> result = appuserRepository.findByUserName("flo_new");
+		assertEquals(0,result.size());
+		
+		AppUser user = new AppUser();
+		user.setName("flo_new");
+		user.setPassword("secretsecret");
+		
+		appuserRepository.saveAndFlush(user);
+		
+		result = appuserRepository.findByUserName("flo_new");
+		assertEquals(1,result.size());
+		
+	}
+	
+	@Test
 	public void delete() {
 		List<AppUser> result = appuserRepository.findByUserName("Michael");
 		
@@ -51,6 +68,7 @@ public class AppUserRepositoryTest {
 		result = appuserRepository.findByUserName("Michael");
 		assertEquals(1, result.size());
 	}
+
 	
 	@Test
 	@Rollback(true)
