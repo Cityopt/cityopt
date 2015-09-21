@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +60,7 @@ import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.MetricService;
 import eu.cityopt.service.MetricValService;
+import eu.cityopt.service.ModelParameterGrouping;
 import eu.cityopt.service.ModelParameterService;
 import eu.cityopt.service.ObjectiveFunctionService;
 import eu.cityopt.service.OptConstraintService;
@@ -79,6 +81,8 @@ import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.web.ModelParamForm;
+import eu.cityopt.web.ScenarioParamForm;
 import eu.cityopt.web.UserSession;
 
 /**
@@ -1112,10 +1116,24 @@ public class ScenarioController {
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
-			//model.put("selectedcompid", selectedCompId);
+			
+			
+			List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
+			ScenarioParamForm form = new ScenarioParamForm();
+			 
+	            for (InputParamValDTO InputParamValue : inputParamVals) {
+	                int inputId = InputParamValue.getInputparamvalid();	               
+	                String value = "";  
+	                value = InputParamValue.getValue();
+	              
+	                form.getValueByInputId().put(inputId, value);
+	            }
+	            model.put("scenarioParamForm", form);  
+			
+			model.put("selectedcompid", selectedCompId);
 			model.put("selectedComponent",  selectedComponent);
 
-			List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
+			
 			//List<ComponentInputParamDTO> componentInputParamVals = componentInputParamService.findAllByComponentId(nSelectedCompId);
 			model.put("inputParamVals", inputParamVals);
 		}
@@ -1127,6 +1145,90 @@ public class ScenarioController {
 				
 		return "scenarioparameters";
 	}
+
+	
+	@RequestMapping(value="scenarioParam", method=RequestMethod.POST)
+	public String setScenarioParam(Map<String, Object> model,
+		ScenarioParamForm form,
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId){
+		ProjectDTO project = (ProjectDTO) model.get("project");
+				
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		int nSelectedCompId = Integer.parseInt(selectedCompId);		
+		List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
+		Map<Integer, InputParamValDTO> InputParamMAP = new HashMap<>();
+		 
+         for (InputParamValDTO inputParameterValue : inputParamVals) {
+        	 InputParamMAP.put(inputParameterValue.getInputparamvalid(), inputParameterValue);
+         }
+         
+		for (Map.Entry<Integer, String> entry : form.getValueByInputId().entrySet()) {
+            
+			InputParamValDTO inputParameterValue = InputParamMAP.get(entry.getKey());
+			inputParameterValue.setValue(entry.getValue());
+			
+			
+            //inputParamValId = entry.getKey();            
+            //String value = entry.getValue();
+            
+    		//int nInputParamValId = Integer.parseInt(inputParamValId);
+    		InputParamValDTO updatedInputParamVal = null;
+    		
+    		try {
+    			updatedInputParamVal = inputParamValService.findByID(inputParameterValue.getInputparamvalid());
+    		} catch (EntityNotFoundException e) {
+    			e.printStackTrace();
+    		}
+    		
+    		updatedInputParamVal.setValue(entry.getValue().trim());
+    		//updatedInputParamVal.setValue(inputParamVal.getValue());
+    		updatedInputParamVal.setScenario(scenario);
+    		inputParamValService.save(updatedInputParamVal);            
+		}
+	
+            
+		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		try {
+			project = projectService.findByID(project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		
+		
+		ComponentDTO selectedComponent = null;
+		//int nSelectedCompId = 0;
+		
+		if (selectedCompId != null)
+		{
+			nSelectedCompId = Integer.parseInt(selectedCompId);
+			try {
+				selectedComponent = componentService.findByID(nSelectedCompId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			model.put("selectedcompid", selectedCompId);
+			model.put("selectedComponent",  selectedComponent);
+
+			//List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
+			//List<ComponentInputParamDTO> componentInputParamVals = componentInputParamService.findAllByComponentId(nSelectedCompId);
+			model.put("inputParamVals", inputParamVals);
+		}
+
+		model.put("project", project);
+
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+				
+		return "scenarioparameters";
+	}
+	
+	
+	
 	
 	@RequestMapping(value="scenariovariables",method=RequestMethod.GET)
 	public String getScenarioVariables(Map<String, Object> model,

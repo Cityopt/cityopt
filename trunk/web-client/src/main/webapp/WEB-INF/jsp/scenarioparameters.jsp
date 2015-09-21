@@ -89,32 +89,46 @@
 								<td valign="top">
 									<table class="tablestyle">
 										<col style="width:150px">
-										<col style="width:60px">
-										<col style="width:60px">
+										<col style="width:120px">
+										<!--<col style="width:60px">-->
 										<tr>
 											<!-- Input parameter -->
 											<th><spring:message code="input_parameters"/></th>
 											<!-- Value -->
 											<th><spring:message code="value"/></th>
 											<!-- Edit -->
-											<th><spring:message code="edit"/></th>
+											<!--<th><spring:message code="edit"/></th>-->
 										</tr>
 										
 										<!-- Tooltip -->
 										<c:set var="tooltip_edit_inputparameter"><spring:message code="tooltip_edit_scenario_parameter"/></c:set>
 										
+										<!-- Edit input parameterForm -->
+										<form:form modelAttribute="scenarioParamForm" method="post" action="scenarioParam.html?selectedcompid=${selectedcompid}">
 										<c:forEach items="${inputParamVals}" var="inputParamVal">
 										<tr>
 											<td>${inputParamVal.inputparameter.name}</td>
-									    	<td>${inputParamVal.value}</td>
+											<!--<td>${inputParamVal.value}</td>-->
+									    	<td>
+									    	<form:input type="text" 
+									    	title="${tooltip_edit_inputparameter}" 
+									    	value="${inputParamVal.value}" 
+									    	path="valueByInputId[${inputParamVal.inputparamvalid}]"/>
+									    	
+									    	</td>
+									    	<!--  Ex-Edit button.
 											<td>
 												<a href="<c:url value='editinputparamvalue.html?inputparamvalid=${inputParamVal.inputparamvalid}'/>">
 													<button align="right" title="${tooltip_edit_inputparameter}" type="button" value="Edit">
 													<spring:message code="edit"/></button>
 												</a>
 											</td>
+											-->
 									   	</tr>
 										</c:forEach>
+										<c:set var="tooltip_update"><spring:message code="tooltip_update"/></c:set>										
+																				
+										</form:form>
 									</table>
 								</td>
 							</tr>
@@ -122,6 +136,9 @@
 								<td></td>
 								<td></td>
 								<td align="right">
+									<!-- Update -button -->
+									
+									<input style="width:100px" title="${tooltip_update}"  type="submit" value="Update"/>
 									<!-- Close -button -->
 									<c:set var="tooltip_close"><spring:message code="tooltip_close"/></c:set>
 									<a href="editscenario.html"><button title="${tooltip_close}" type="button">
