@@ -51,6 +51,9 @@
   <xsl:template match="@usergroupid"/>
   <xsl:template match="@usergroupprojectid"/>
 
+  <!-- Remove also version columns. -->
+  <xsl:template match="@version"/>
+
   <!-- Tables with only id fields cannot be compared now, so drop them. -->
   <xsl:template match="extparamvalsetcomp"/>
   <xsl:template match="scenariometrics"/>
