@@ -1,6 +1,8 @@
 package eu.cityopt.sim.opt;
 
+import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.DecisionValues;
+import eu.cityopt.sim.eval.ObjectiveStatus;
 import eu.cityopt.sim.eval.SimulationInput;
 
 /** Creates human-readable names for generated scenarios. */
@@ -16,4 +18,10 @@ public interface ScenarioNameFormat {
      * when simulation input is not yet available.
      */
     String[] format(DecisionValues decisions);
+
+    /**
+     * Creates an extended description after evaluation results are available.
+     */
+	String extendDescription(String initialDescription,
+			ConstraintStatus constraints, ObjectiveStatus objectives);
 }

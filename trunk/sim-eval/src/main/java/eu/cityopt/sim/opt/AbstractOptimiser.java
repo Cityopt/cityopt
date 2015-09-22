@@ -174,6 +174,8 @@ public abstract class AbstractOptimiser implements Runnable {
                     return null;
                 } finally {
                     if (put.output != null) {
+                        put.description = formatter.extendDescription(
+                    			put.description, put.constraintStatus, put.objectiveStatus);
                         storage.put(put);
                     }
                 }

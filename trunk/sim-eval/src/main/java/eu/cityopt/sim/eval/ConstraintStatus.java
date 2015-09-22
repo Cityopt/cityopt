@@ -127,4 +127,32 @@ public class ConstraintStatus implements PartiallyComparable<ConstraintStatus> {
         }
         return true;
     }
+
+    public String toString() {
+    	if (constraints.isEmpty()) {
+    		return "-";
+    	}
+        StringBuilder sb = new StringBuilder();
+        String delim = "";
+        int i = 0;
+        for (Constraint constraint : constraints) {
+            sb.append(delim);
+        	sb.append(constraint.getName());
+            sb.append(' ');
+            if (infeasibilities[i] == 0) {
+            	sb.append("ok");
+            } else if (infeasibilities[i] > 0) {
+        		sb.append("over +");
+            	sb.append(infeasibilities[i]);
+        	} else if (infeasibilities[i] < 0) {
+        		sb.append("under ");
+            	sb.append(infeasibilities[i]);
+        	} else {
+        		sb.append("N/A");
+            }
+            delim = ", ";
+            ++i;
+        }
+        return sb.toString();
+    }
 }
