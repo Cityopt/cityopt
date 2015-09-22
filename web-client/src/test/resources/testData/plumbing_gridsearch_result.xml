@@ -11,9 +11,9 @@
   <inputparameter name="typ" defaultvalue="2"/>
   <inputparameter name="simulation_start" defaultvalue="2015-01-01T00:00:00"/>
   <inputparameter name="simulation_end" defaultvalue="2015-01-01T00:00:00"/>
-  <scenariogenerator status="COMPLETED_RESULTS : FEASIBLE"/>
-  <scenario description="C01.typ = 1" status="SUCCESS"/>
-  <scenario description="C01.typ = 2" status="SUCCESS"/>
+  <scenariogenerator status="COMPLETED_RESULTS : FEASIBLE" name="scengentest"/>
+  <scenario description="C01.typ = 1; CONSTRAINTS: con1 over +0.06864849001833345; OBJECTIVES: obj1 = 1.881090598899993" status="SUCCESS"/>
+  <scenario description="C01.typ = 2; CONSTRAINTS: con1 ok; OBJECTIVES: obj1 = 13.770240904399932" status="SUCCESS"/>
   <optconstraint name="con1" expression="mean(PIP01.PI12_MIX_MASS_FLOW)" lowerbound="0.1" upperbound="1.0"/>
   <objectivefunction name="obj1" expression="integrate(PIP01.PI12_MIX_MASS_FLOW * C01.typ, 0, Infinity)" ismaximise="true"/>
   <optimizationset/>
