@@ -13,6 +13,8 @@ public class AppUserDTO  extends BaseDTO{
 	
 	@Size(min=5,message="At least 5 characters")
 	@Getter @Setter private String password;
+	
+	@Getter @Setter private Boolean enabled;
 //	private Set<UserGroupProject> usergroupprojects = new HashSet<UserGroupProject>(
 //			0);
 
