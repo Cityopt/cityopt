@@ -87,4 +87,22 @@ public class ObjectiveStatus implements PartiallyComparable<ObjectiveStatus> {
     public static Integer compare(ObjectiveStatus a, ObjectiveStatus b) {
         return a.compareTo(b);
     }
+
+    public String toString() {
+    	if (objectives.isEmpty()) {
+    		return "-";
+    	}
+        StringBuilder sb = new StringBuilder();
+        String delim = "";
+        int i = 0;
+        for (ObjectiveExpression objective : objectives) {
+            sb.append(delim);
+        	sb.append(objective.getName());
+            sb.append(" = ");
+            sb.append(objectiveValues[i]);
+            delim = ", ";
+            ++i;
+        }
+        return sb.toString();
+    }
 }

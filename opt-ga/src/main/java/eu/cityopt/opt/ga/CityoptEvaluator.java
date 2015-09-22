@@ -35,6 +35,7 @@ import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.opt.OptimisationLog;
 import eu.cityopt.sim.opt.OptimisationProblem;
+import eu.cityopt.sim.opt.ScenarioNameFormat;
 
 /**
  * The Cityopt evaluator for Opt4J.
@@ -83,6 +84,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     };
     private OptimisationLog userLog =
             m -> System.err.println(m);
+	private ScenarioNameFormat formatter;
 
     @Inject
     public CityoptEvaluator(OptimisationProblem problem)
@@ -99,6 +101,11 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     @Inject(optional=true)
     public void setUserLog(OptimisationLog log) {
         this.userLog = log;
+    }
+
+    @Inject(optional=true)
+    public void setFormatter(ScenarioNameFormat formatter) {
+        this.formatter = formatter;
     }
 
     @Override
@@ -157,6 +164,10 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
             throw new RuntimeException("Execution error", e);
         } finally {
             if (put.output != null) {
+                if (formatter != null) {
+                	put.description = formatter.extendDescription(
+                			put.description, put.constraintStatus, put.objectiveStatus);
+                }
                 storage.put(put);
             }
             if (job != null) {

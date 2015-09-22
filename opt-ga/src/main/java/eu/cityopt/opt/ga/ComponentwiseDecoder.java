@@ -7,7 +7,9 @@ import org.opt4j.core.problem.Decoder;
 
 import com.google.inject.Inject;
 
+import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.DecisionValues;
+import eu.cityopt.sim.eval.ObjectiveStatus;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.OptimisationLog;
@@ -28,6 +30,12 @@ implements Decoder<ComponentwiseGenotype, CityoptPhenotype> {
         public String[] format(DecisionValues decisions) {
             return new String[] { "-", decisions.toString() };
         }
+
+		@Override
+		public String extendDescription(String initialDescription,
+				ConstraintStatus constraints, ObjectiveStatus objectives) {
+			return initialDescription;
+		}
     };
 
     private OptimisationLog userLog =

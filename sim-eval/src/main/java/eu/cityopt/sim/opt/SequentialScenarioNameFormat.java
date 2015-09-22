@@ -3,8 +3,10 @@ package eu.cityopt.sim.opt;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.DecisionValues;
 import eu.cityopt.sim.eval.DecisionVariable;
+import eu.cityopt.sim.eval.ObjectiveStatus;
 import eu.cityopt.sim.eval.SimulationInput;
 
 /**
@@ -36,4 +38,23 @@ public class SequentialScenarioNameFormat implements ScenarioNameFormat {
         result[1] = decisions.formatString(variableOrder);
         return result;
     }
+
+	@Override
+	public String extendDescription(String initialDescription,
+			ConstraintStatus constraints, ObjectiveStatus objectives) {
+		StringBuilder sb = new StringBuilder(initialDescription);
+		sb.append("; CONSTRAINTS: ");
+		if (constraints != null) {
+			sb.append(constraints.toString());
+		} else {
+			sb.append("N/A");
+		}
+		sb.append("; OBJECTIVES: ");
+		if (objectives != null) {
+			sb.append(objectives.toString());
+		} else {
+			sb.append("N/A");
+		}
+		return sb.toString();
+	}
 }
