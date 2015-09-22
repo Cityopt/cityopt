@@ -275,8 +275,10 @@ CREATE TABLE AppUser
 (
 	userID integer NOT NULL DEFAULT nextval(('appuser_userid_seq'::text)::regclass),
 	name varchar(50)	 NOT NULL,
-	password varchar(50)	,
-	version integer
+	password varchar(50),	
+	enabled boolean		,
+	version integer		
+
 )
 ;
 

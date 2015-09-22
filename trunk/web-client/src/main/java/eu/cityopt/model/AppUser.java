@@ -28,6 +28,8 @@ public class AppUser extends VersionModel implements java.io.Serializable {
 	private int userid;
 	private String name;
 	private String password;
+	private Boolean enabled;
+	
 	private Set<UserGroupProject> usergroupprojects = new HashSet<UserGroupProject>(
 			0);
 
@@ -75,6 +77,15 @@ public class AppUser extends VersionModel implements java.io.Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	@Column(name = "enabled")
+	public Boolean getEnabled() {
+		return this.enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appuser", cascade=CascadeType.REMOVE)
