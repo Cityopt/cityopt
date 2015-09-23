@@ -8,8 +8,7 @@ public class PasswordEncrypter {
         hash("admin");
         hash("expert");
         hash("standard");
-        hash("quest");
-        hash("omni");        
+        hash("guest");
         
 
 }

@@ -2639,13 +2639,16 @@ public class OptimizationController {
             List<ModelParameterDTO> modelParams = scenGenService.getModelParameters(scenGen.getScengenid());
             ModelParameterGrouping grouping = new ModelParameterGrouping(modelParams, decVars);
             Map<Integer, ModelParameterDTO> modelParamMap = new HashMap<>();
+            
             for (ModelParameterDTO mp : modelParams) {
                 modelParamMap.put(mp.getInputparameter().getInputid(), mp);
             }
+            
             for (Map.Entry<Integer, String> entry : form.getValueByInputId().entrySet()) {
                 ModelParameterDTO mp = modelParamMap.get(entry.getKey());
                 String value = entry.getValue();
                 String group = form.getGroupByInputId().get(entry.getKey());
+                
                 if (StringUtils.isBlank(group)) {
                     String error = validateTypedValue(mp.getInputparameter().getType(), value);
                     if (error == null) {

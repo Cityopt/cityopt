@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import eu.cityopt.DTO.AlgorithmDTO;
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
+import eu.cityopt.DTO.DecisionVariableDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
@@ -394,6 +395,17 @@ public class ScenarioController {
 
             // TODO write something smarter?
             scenGen.setAlgorithm(algorithms.get(0));
+
+            int nDefaultExtParamSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+            ExtParamValSetDTO extParamSet = null;
+			
+            try {
+				extParamSet = extParamValSetService.findByID(nDefaultExtParamSetId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+            scenGen.setExtparamvalset(extParamSet);
 
             scenGen = scenGenService.save(scenGen);
             
@@ -1358,6 +1370,24 @@ public class ScenarioController {
 		while (iter.hasNext())
 		{
 			int nMultiScenarioId = iter.next(); 
+		
+            List<DecisionVariableDTO> decVars = null;
+            
+			try {
+				decVars = scenGenService.getDecisionVariables(nMultiScenarioId);
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			List<ModelParameterDTO> modelParams = null;
+			
+			try {
+				modelParams = scenGenService.getModelParameters(nMultiScenarioId);
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
+            
+			ModelParameterGrouping grouping = new ModelParameterGrouping(modelParams, decVars);
 			
 			try {
 				scenGenSimService.startOptimisation(nMultiScenarioId, null);
