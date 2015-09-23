@@ -23,10 +23,10 @@
 	<security:authentication-manager>
 		<security:authentication-provider>
 			<!-- Enables encryption -->
-			<security:password-encoder ref="encoder"></security:password-encoder>
+			<!-- <security:password-encoder ref="encoder"></security:password-encoder>-->
 			<security:jdbc-user-service data-source-ref="dataSource"
                           users-by-username-query=
-                            "select us.name, us.password, us.active from appuser us where us.name = ?"
+                            "select us.name, us.password, us.enabled from appuser us where us.name = ?"
                           authorities-by-username-query=
                             "SELECT appuser.name, usergroup.name 
                             FROM appuser, usergroup, usergroupproject 
