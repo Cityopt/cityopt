@@ -22,7 +22,7 @@
 		</td>
 		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:500px;width:600px;overflow:auto">
+			<div style="overflow:scroll;height:800px;width:800px;overflow:auto">
 			
 			<!-- Open scenario -->
 			<h2> <spring:message code="open_scenario"/></h2>
