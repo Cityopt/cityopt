@@ -275,7 +275,7 @@ CREATE TABLE AppUser
 (
 	userID integer NOT NULL DEFAULT nextval(('appuser_userid_seq'::text)::regclass),
 	name varchar(50)	 NOT NULL,
-	password varchar(50),	
+	password varchar(60),	
 	enabled boolean		,
 	version integer		
 
@@ -1576,3 +1576,9 @@ INSERT INTO UserGroup VALUES (1, 'ROLE_Administrator', 0);
 INSERT INTO UserGroup VALUES (2, 'ROLE_Expert', 0);
 INSERT INTO UserGroup VALUES (3, 'ROLE_Standard', 0);
 INSERT INTO UserGroup VALUES (4, 'ROLE_Guest', 0);
+
+INSERT INTO USERGROUPPROJECT VALUES (1, 1, null, 1, 0);
+INSERT INTO USERGROUPPROJECT VALUES (2, 2, null, 2, 0);
+INSERT INTO USERGROUPPROJECT VALUES (3, 3, null, 3, 0);
+INSERT INTO USERGROUPPROJECT VALUES (4, 4, null, 4, 0);
+
