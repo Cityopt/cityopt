@@ -13,10 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.reflect.TypeToken;
 
+import eu.cityopt.DTO.ObjResultsToObjResultsDTOMap;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
+import eu.cityopt.DTO.ObjectiveFunctionResultDTO;
+import eu.cityopt.DTO.OptSetToOpenOptimizationSetDTOMap;
 import eu.cityopt.DTO.OptimizationSetDTO;
+import eu.cityopt.DTO.ScenarioGeneratorToOpenOptimizationSetDTOMap;
 import eu.cityopt.model.ObjectiveFunction;
+import eu.cityopt.model.ObjectiveFunctionResult;
 import eu.cityopt.repository.ObjectiveFunctionRepository;
+import eu.cityopt.repository.ObjectiveFunctionResultRepository;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ObjectiveFunctionService;
 
@@ -27,10 +33,20 @@ public class ObjectiveFunctionServiceImpl implements ObjectiveFunctionService {
 	private ObjectiveFunctionRepository objectiveFunctionRepository;
 	
 	@Autowired
+	private ObjectiveFunctionResultRepository objectiveFunctionResultRepository;
+	
+	@Autowired
 	private ModelMapper modelMapper;
 	
 	@PersistenceContext
 	private EntityManager em;
+	
+	@Autowired
+	public ObjectiveFunctionServiceImpl(ModelMapper modelMapper) {
+		this.modelMapper = modelMapper;
+		modelMapper.addMappings(new ObjResultsToObjResultsDTOMap());
+		
+	}
 	
 	
 	@Transactional(readOnly=true)
@@ -113,6 +129,19 @@ public class ObjectiveFunctionServiceImpl implements ObjectiveFunctionService {
 		}
 
 		return true;
+	}
+
+	@Override
+	public List<ObjectiveFunctionResultDTO> findResultsByScenarioGenerator(int scenGenID,
+			int objectiveFunctionId) {
+		
+		List<ObjectiveFunctionResult> results = objectiveFunctionResultRepository.findByScenGenAndObjFunction(scenGenID, objectiveFunctionId);
+		if(results == null) {
+			return null;
+		}
+
+		return modelMapper.map(results, 
+				new TypeToken<List<ObjectiveFunctionResultDTO>>(){}.getType());
 	}
 	
 }
