@@ -96,42 +96,79 @@
 			      		<table>
 			      			<tr>
 			      				<!-- Users -->
-			      				<td><h2><spring:message code="users"/></h2></td>
+			      				<td><h2><spring:message code="usermanagement"/></h2></td>
 			   				</tr>
 			      			<tr>
 			      			   	<td>
 				      			   	<table class="tablestyle" border="1">
-							      		<col style="width:250px">	
+							      		<col style="width:250px">
+							      			
 										<col style="width:50px">	
 										<col style="width:50px">	
-											<tr>
-											<!-- Name -->
-							      			<th><spring:message code="name"/></th>
+																	      			
+							      			<!-- Username -->
+							      			<th><spring:message code="username"/></th>							      			
+							      			<!-- Password -->
+							      			<th><spring:message code="password"/></th>							      			
+							      			<!-- UserRole -->
+							      			<th><spring:message code="userole"/></th>  			
+							      			<!-- Project -->
+							      			<th><spring:message code="project"/></th>
+							      			<!-- Active -->
+							      			<th><spring:message code="enabled"/></th>							      			
 							      			<!-- Edit -->
 							      			<th><spring:message code="edit"/></th>
 							      			<!-- Delete -->
 							      			<th><spring:message code="delete"/></th>
-							   			</tr>
-							   			
+							      										   				
+							   				</tr>
+							   				
+							   			<form action="">
+							   										   			
 						   				<c:forEach items="${users}" var="user">
-										<tr>
-											<td>${user.name}</td>
+										<tr>											
+											<td>${user.name}</td>											
+											<td>${user.password}</td>											
+											<td>																						
+												<form:select path="user" >
+											 		<c:forEach items="${userGroups}" var="userGroup">											 		      								                   
+								                           <option value="${userGroup.usergroupid}"> ${userGroup.name}</option>
+								              		</c:forEach>		                 
+												</form:select>  						
+                    																							
 											<td>
-												<!-- Edit -button -->
+											
+											<!-- Enabled -->
+											</td>
+											<td align="center">	
+												<c:if test="${user.enabled eq true}">
+													<form:checkbox path="user" value="${user.enabled}" checked="true" />	
+												</c:if>				
+												<c:if test="${user.enabled eq false}">
+													<form:checkbox path="user" value="${user.enabled}"/>	
+												</c:if>
+											</td>	
+												
+											<!-- Edit -button -->
+											<td>	
 												<a href="<c:url value='edituser.html?userid=${user.userid}'/>">
 													<button align="right" type="button" value="Edit">
 													<spring:message code="edit"/></button>
 												</a>
 											</td>
-												<!-- Delete -button -->
-			   								<td><a href="<c:url value='deleteuser.html?userid=${user.userid}'/>"
-			   								onclick="return confirm('<spring:message code="confirm_delete_user"/>')">
+											
+											<!-- Delete -button -->
+			   								<td>
+			   									<a href="<c:url value='deleteuser.html?userid=${user.userid}'/>"
+			   									onclick="return confirm('<spring:message code="confirm_delete_user"/>')">
 													<button align="right" type="button" value="Delete">
 													<spring:message code="delete"/></button>
 												</a>
 											</td>
 									   	</tr>
 										</c:forEach>
+										
+										</form>										
 							      	</table>
 					      		</td>
 					      	</tr>
@@ -140,6 +177,8 @@
 					      	</tr>
 							<tr>
 								<td align="right">
+									
+									<input type="submit" value="Ok"></input>
 									<!-- Create user -button -->
 				      				<a href="createuser.html"><button type="button">
 				      				<spring:message code="create_user"/></button></a>

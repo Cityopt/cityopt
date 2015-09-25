@@ -23,6 +23,9 @@
 		<td valign="top">
 			<div style="overflow:scroll;height:800px;width:800px;overflow:auto">
 			<form:form method="post" modelAttribute="user">
+			<!-- csrt support (version 4.0) -->
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+					
 			<h2>Create user</h2>
 
 			<table align="center">
@@ -30,13 +33,13 @@
 				<col style="width:300px">
 				<tr>
 					<td>
-						<!--Name-->
-						<spring:message code="name"/>
+						<!--Username-->
+						<spring:message code="username"/>
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="name"/>
 					</td>
-				</tr>
+				</tr>				
 				<tr>
 					<td>
 						<!--Password-->
@@ -53,8 +56,7 @@
 					<a href="usermanagement.html"><button style="width:100px" type="button" value="Cancel">
 					<spring:message code="cancel"/></button></a></td>
 				</tr>
-			</table>
-			
+			</table>			
 			</form:form>
 			</div>
 		</td>

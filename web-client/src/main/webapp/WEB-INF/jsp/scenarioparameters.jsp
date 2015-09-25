@@ -20,7 +20,6 @@
 
 <body>
 <table cellspacing="0" cellpadding="0">
-	<form:form modelAttribute="scenarioParamForm" method="post" action="scenarioParam.html?selectedcompid=${selectedcompid}">
 	<tr>
 		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
@@ -90,22 +89,23 @@
 								<td valign="top">
 									<table class="tablestyle">
 										<col style="width:150px">
-										<col style="width:120px">
-										<!--<col style="width:60px">-->
+										<col style="width:60px">
+										<col style="width:60px">
+										
 										<tr>
 											<!-- Input parameter -->
 											<th><spring:message code="input_parameters"/></th>
 											<!-- Value -->
 											<th><spring:message code="value"/></th>
-											<!-- Edit -->
-											<!--<th><spring:message code="edit"/></th>-->
+											<!-- Unit -->
+											<th><spring:message code="unit"/></th>
 										</tr>
 										
 										<!-- Tooltip -->
 										<c:set var="tooltip_edit_inputparameter"><spring:message code="tooltip_edit_scenario_parameter"/></c:set>
 										
 										<!-- Edit input parameterForm -->
-										
+										<form:form modelAttribute="scenarioParamForm" method="post" action="scenarioParam.html?selectedcompid=${selectedcompid}">
 										<c:forEach items="${inputParamVals}" var="inputParamVal">
 										<tr>
 											<td>${inputParamVal.inputparameter.name}</td>
@@ -117,6 +117,9 @@
 									    	path="valueByInputId[${inputParamVal.inputparamvalid}]"/>
 									    	
 									    	</td>
+									    <td>${inputParamVal.inputparameter.unit.name}</td>
+									    	
+									    	
 									    	<!--  Ex-Edit button.
 											<td>
 												<a href="<c:url value='editinputparamvalue.html?inputparamvalid=${inputParamVal.inputparamvalid}'/>">
@@ -129,7 +132,7 @@
 										</c:forEach>
 										<c:set var="tooltip_update"><spring:message code="tooltip_update"/></c:set>										
 																				
-									
+										</form:form>
 									</table>
 								</td>
 							</tr>
@@ -148,13 +151,11 @@
 							</tr>
 						</table>
 					</td>
-				</tr>
-						
+				</tr>	
 			</table>
 			</div>
 		</td>
 	</tr>
-	</form:form>
 </table>
 </body>
 </html>
