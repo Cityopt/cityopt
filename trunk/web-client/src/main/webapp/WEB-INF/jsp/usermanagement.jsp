@@ -137,6 +137,11 @@
 												</form:select>  						
                     																							
 											<td>
+												<form:select path="user" >
+											 		<c:forEach items="${projects}" var="project">											 		      								                   
+								                           <option value="${project.name}">${project.name}</option>
+								              		</c:forEach>		                 
+												</form:select>  
 											
 											<!-- Enabled -->
 											</td>
