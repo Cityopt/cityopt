@@ -7,6 +7,5 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class ScenarioParamForm {
-	@Getter @Setter private Map<Integer, String> valueByInputId = new HashMap<>();
-	
+	@Getter @Setter private Map<Integer, String> valueByInputId = new HashMap<>();	
 }
