@@ -101,9 +101,10 @@
 			      			<tr>
 			      			   	<td>
 				      			   	<table class="tablestyle" border="1">
-							      		<col style="width:250px">
-							      			
+							      		<col style="width:50px">							      			
 										<col style="width:50px">	
+										<col style="width:50px">
+										<col style="width:50px">
 										<col style="width:50px">	
 																	      			
 							      			<!-- Username -->
@@ -127,8 +128,8 @@
 							   										   			
 						   				<c:forEach items="${users}" var="user">
 										<tr>											
-											<td>${user.name}</td>											
-											<td>${user.password}</td>											
+											<td><form:input path="user"	value="${user.name}"/></td>																						
+											<td><form:input path="user"	value="${user.password}"/></td>											
 											<td>																						
 												<form:select path="user" >
 											 		<c:forEach items="${userGroups}" var="userGroup">											 		      								                   
