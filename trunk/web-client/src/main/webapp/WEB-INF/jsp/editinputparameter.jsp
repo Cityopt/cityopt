@@ -45,7 +45,9 @@
 					<td>
 						<form:input style="width:300px" type="text" path="defaultvalue"/>
 					</td>
-				</tr>
+				</tr>				
+				<!-- ToDO implement Drag panel and use Units in it. -->
+				
 				<tr height="10">
 					<td>
 					</td>

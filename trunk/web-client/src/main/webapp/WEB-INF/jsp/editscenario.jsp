@@ -139,16 +139,19 @@
 									<table class="tablestyle" border="1">
 										<col style="width:150px">
 										<col style="width:50px">
+										<col style="width:50px">
 										
 										<!-- Parameter names & values -->
 										<tr>			
 											<th><spring:message code="parameter_name"/></th>
 											<th><spring:message code="value"/></th>
+											<th><spring:message code="unit"/></th>
 										</tr>
 										<c:forEach items="${inputParamVals}" var="inputParamVal">
 										<tr>
 											<td>${inputParamVal.inputparameter.name}</td>
 									    	<td>${inputParamVal.value}</td>
+									    	<td>${inputParamVal.inputparameter.unit.name}</td>
 									   	</tr>
 										</c:forEach>
 									</table>

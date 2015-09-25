@@ -646,6 +646,7 @@ public class ProjectController {
         return "editproject";
     }
 
+    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="editproject", method=RequestMethod.POST)
     public String getEditProjectPost(ProjectDTO projectForm, Map<String, Object> model, 
             @RequestParam(value="action", required=false) String action) {
@@ -773,7 +774,8 @@ public class ProjectController {
             return "index";
         }
     }
-
+    
+    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="deleteproject",method=RequestMethod.GET)
     public String getDeleteProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid){
         if (prjid != null)
@@ -833,7 +835,7 @@ public class ProjectController {
         // ;(projectid, clonename, true, false, true, false);
     }
 
-
+    @Secured({"ROLE_Administrator"})
     @RequestMapping(value="usermanagement", method=RequestMethod.GET)
     public String getUserManagement(Map<String, Object> model) {
 
@@ -845,7 +847,13 @@ public class ProjectController {
         {            
             {
                 List<AppUserDTO> users = userService.findAll();
+                List<UserGroupDTO> userGroups= userGroupService.findAll();
+                
+                
+                model.put("userGroups", userGroups);
                 model.put("users", users);
+               
+                
                 return "usermanagement";
             }
         }
@@ -1013,6 +1021,7 @@ public class ProjectController {
             AppUserDTO user = new AppUserDTO();
             user.setName(userForm.getName().trim());
             user.setPassword(userForm.getPassword().trim());
+            user.setEnabled(true);
             user = userService.save(user);
         }
 

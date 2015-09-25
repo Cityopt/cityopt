@@ -1135,13 +1135,16 @@ public class ScenarioController {
 			 
 	            for (InputParamValDTO InputParamValue : inputParamVals) {
 	                int inputId = InputParamValue.getInputparamvalid();	               
-	                String value = "";  
+	                String value = ""; 
+	                
 	                value = InputParamValue.getValue();
-	              
+	                
 	                form.getValueByInputId().put(inputId, value);
-	            }
-	            model.put("scenarioParamForm", form);  
-			
+	            }        
+	      
+	         
+	      
+	        model.put("scenarioParamForm", form);			
 			model.put("selectedcompid", selectedCompId);
 			model.put("selectedComponent",  selectedComponent);
 
