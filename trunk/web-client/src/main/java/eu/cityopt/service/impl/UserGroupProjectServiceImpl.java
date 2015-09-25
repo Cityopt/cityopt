@@ -91,14 +91,18 @@ public class UserGroupProjectServiceImpl implements UserGroupProjectService {
 	}
 
 	@Override
+	@Transactional(readOnly=true)
 	public List<UserGroupProjectDTO> findByUser(int userId) {
+		
 		return modelMapper.map(userGroupProjectRepository.findByUser(userId), 
 				new TypeToken<List<UserGroupProjectDTO>>() {}.getType());
 	}
 	
 	@Override
+	@Transactional(readOnly=true)
 	public List<UserGroupProjectDTO> findByUser(String userName) {
-		return modelMapper.map(userGroupProjectRepository.findByUser(userName), 
+		
+		return modelMapper.map(findByUser, 
 				new TypeToken<List<UserGroupProjectDTO>>() {}.getType());
 	}
 	
