@@ -42,7 +42,8 @@ extends AbstractCollection<MergedTimeSeries.Entry> {
     
     private class MergeIterator implements Iterator<Entry> {
         private PriorityQueue<Entry> heads = new PriorityQueue<>(
-                times.size(), Comparator.comparingDouble(Entry::getTime));
+                Math.max(1, times.size()),
+                Comparator.comparingDouble(Entry::getTime));
         
         private MergeIterator() {
             heads.addAll(
