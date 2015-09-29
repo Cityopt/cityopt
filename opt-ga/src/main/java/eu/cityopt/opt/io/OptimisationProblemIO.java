@@ -110,13 +110,16 @@ public class OptimisationProblemIO {
     
     /**
      * Export an OptimisationProblem to CSV files.
+     * Only creates tsFile if there are time series to export.
      */
     public static void writeProblemCsv(
             OptimisationProblem problem, Path problemFile, Path tsFile)
                     throws IOException {
-        try (OutputStream pr = Files.newOutputStream(problemFile);
-             OutputStream ts = Files.newOutputStream(tsFile)) {
-            writeProblemCsv(problem, pr, ts);
+        ExportBuilder bld = new ExportBuilder(problem.getNamespace());
+        ExportDirectors.build(problem, bld, null);
+        writeSingle(bld, problemFile);
+        if (!bld.getTimeSeriesData().isEmpty()) {
+            writeTimeSeries(bld, tsFile);
         }
     }
     
