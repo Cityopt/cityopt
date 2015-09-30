@@ -695,4 +695,18 @@ public enum Type {
             return result;
         }
     }
+
+    /**
+     * Parses a list of some supported type sufficiently to determine list length.
+     * May accept invalid input such as mixed-type lists.
+     * @throws ParseException if the input is invalid
+     */
+    public static int preparseListLength(String list) throws ParseException {
+    	try {
+			Object[] array = objectMapper.readValue(list, Object[].class);
+			return array.length;
+		} catch (IOException e) {
+            throw new ParseException(e.getMessage(), 0);
+		}
+    }
 }
