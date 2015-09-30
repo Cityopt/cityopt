@@ -47,13 +47,16 @@
                 </td>
               </tr>
               <tr>
+                <td><div class="error">${errorMessage}</div></td>
+              </tr>
+              <tr>
                 <td>
 	              <table class="tablestyle" style="width: 450px">
                      <tr>
                          <th>Parameter</th>
                          <th>Value(s)</th>
-                         <th>Group</th>
                          <th>Unit</th>
+                         <th>Group</th>
                      </tr>
                      <c:forEach items="${modelparams}" var="mp">
                      <tr class="Component${mp.inputparameter.componentComponentid} ModelParameter">
@@ -61,6 +64,7 @@
                          <td>
                              <form:input align="right" style="width:200px" type="text" path="valueByInputId[${mp.inputparameter.inputid}]"/>
                          </td>
+                         <td>${empty mp.inputparameter.unit ? '' : mp.inputparameter.unit.name}</td>
                          <td>
                             <c:choose>
                             <c:when test="${empty groups}">
@@ -75,22 +79,22 @@
 	                         </c:otherwise>
                             </c:choose>
                          </td>
-                         <td>${empty mp.inputparameter.unit ? '' : mp.inputparameter.unit.name}</td>
                      </tr>
                      </c:forEach>
 	              </table>
                 </td>
               </tr>
-              <tr>
-                  <td>
-                    <!-- <input type="submit" value="New Group">  -->
-                  </td>
-              </tr>   
               <tr height="10"></tr>
               <tr>
                   <td align="right">
                     <input type="submit" value="Ok">
                     <a href="geneticalgorithm.html"><button type="button" style="width: 100px">Cancel</button></a>
+                  </td>
+              </tr>   
+              <tr>
+                  <td>
+                    <input type="submit" name="newgroup" value="New Group">
+                    <input type="submit" name="cleangroups" value="Delete Empty Groups">
                   </td>
               </tr>   
 			</table>

@@ -1391,7 +1391,12 @@ public class ScenarioController {
 				e1.printStackTrace();
 			}
             
-			ModelParameterGrouping grouping = new ModelParameterGrouping(modelParams, decVars);
+			try {
+				ModelParameterGrouping grouping = scenGenService.getModelParameterGrouping(nMultiScenarioId);
+			} catch (EntityNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			
 			try {
 				scenGenSimService.startOptimisation(nMultiScenarioId, null);
