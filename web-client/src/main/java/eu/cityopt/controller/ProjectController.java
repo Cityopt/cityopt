@@ -6,10 +6,13 @@ import java.io.OutputStream;
 import java.security.Principal;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.script.ScriptException;
@@ -841,6 +844,7 @@ public class ProjectController {
 
     
     //@author Markus Turunen Usemanagement
+    //--------------
     @Secured({"ROLE_Administrator"})
     @RequestMapping(value="usermanagement", method=RequestMethod.GET)
     public String getUserManagement(Map<String, Object> model) {
@@ -864,21 +868,43 @@ public class ProjectController {
     public String getEditUser(Map<String, Object> model,
     		UserManagementForm form) {    	
     	 
+    	//	Test print of Form:
     		System.out.println("usemanagement: invoked");
     		System.out.println(form.getUser().keySet()+" "+form.getUser().values());    		
     		System.out.println(form.getPassword().keySet()+" "+form.getPassword().values());
     		System.out.println(form.getUserRole().keySet()+" "+form.getUserRole().values());
     		System.out.println(form.getProject().keySet()+" "+form.getProject().values());
     		System.out.println(form.getEnabled().keySet()+" "+form.getEnabled().values());
-    	
     		
-    		//AppUserDTO user = new AppUserDTO();    		
-    		//List<AppUserDTO> users = userService.findAll();
     		
-    				
-	    	initializeUserManagement(model);
-    		return "usermanagement";
+    		Iterator<Integer> keySetIterator = form.getUser().keySet().iterator();
+    		String username;
+    		
+    		while(keySetIterator.hasNext()){
+    		
+    		Integer key = keySetIterator.next();
+    			AppUserDTO user=null;
+				try {user = userService.findByID(key);} catch (EntityNotFoundException e) 
+				{	// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    			user.setName(form.getUser().get(key).trim());
+    			user.setPassword(form.getPassword().get(key).trim());
+    			user.setEnabled(form.getEnabled().get(key));
+    			userService.save(user);
+    			try {userService.update(user);} catch (EntityNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
+    					
+			initializeUserManagement(model);
+			return "usermanagement";   	
+    
     		} 
+    
+    
+	    	
     
     //@author Markus Turunen
     // Initialize the UserManagementForms set up the model;
@@ -897,19 +923,17 @@ public class ProjectController {
     // Form Factory: 
     public UserManagementForm CreateUsemanagementForm(List<AppUserDTO> users){
     
-    UserManagementForm form = new UserManagementForm();
-		 
+    UserManagementForm form = new UserManagementForm();		 
 	for (Iterator i = users.iterator(); i.hasNext(); ){
-		AppUserDTO appuser=(AppUserDTO) i.next();
-	
+		AppUserDTO appuser=(AppUserDTO) i.next();	
 		String name = appuser.getName();
-		String password=  appuser.getPassword();
-		
+		String password=  appuser.getPassword();		
 		//UserGroupProjectDTO usergroup=userGroupProjectService.findByUserAndProject(appuser.getUserid(),null);     
 	}            	
     return form;    
     }
     
+    //------
 
     @RequestMapping(value="units", method=RequestMethod.GET)
     public String getUnits(Model model){
@@ -1073,7 +1097,7 @@ public class ProjectController {
             	   try {userService.update(user);} 
             	   catch (EntityNotFoundException e) {
             		// TODO Auto-generated catch block e.printStackTrace();
-            	   }
+            	   }           
             initializeUserManagement(model);           	  
         }
         else{
