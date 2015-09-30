@@ -1,6 +1,5 @@
 package eu.cityopt.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -38,12 +37,14 @@ public interface ScenarioGeneratorService extends CityOptService<ScenarioGenerat
 	void setModelParameters(int scengenid, List<ModelParameterDTO> modelParams)
 			throws EntityNotFoundException;
 
-	List<ObjectiveFunctionDTO> getObjectiveFunctions(int scenGenId) throws EntityNotFoundException;
+	List<ObjectiveFunctionDTO> getObjectiveFunctions(int scenGenId)
+			throws EntityNotFoundException;
 	
 	ObjectiveFunctionDTO addObjectiveFunction(int scenGenId,
 			ObjectiveFunctionDTO obtFuncDTO) throws EntityNotFoundException;
 	
-	void removeObjectiveFunction(int scenGenId, int objectiveFunctionId) throws EntityNotFoundException;
+	void removeObjectiveFunction(int scenGenId, int objectiveFunctionId)
+			throws EntityNotFoundException;
 
 	List<OptConstraintDTO> getOptConstraints(int scenGenId)
 			throws EntityNotFoundException;
@@ -68,10 +69,37 @@ public interface ScenarioGeneratorService extends CityOptService<ScenarioGenerat
 
 	List<DecisionVariableDTO> getDecisionVariables(int scengenid) throws EntityNotFoundException;
 
+	/**
+	 * Adds a new decision variable to a scenario generator.
+	 */
 	DecisionVariableDTO addDecisionVariable(int scenGenId,
 			DecisionVariableDTO decVarDTO) throws EntityNotFoundException;
 
 	void removeDecisionVariable(int scenGenId, int decVarId) throws EntityNotFoundException;
+
+	void setDecisionVariables(int scenGenId, List<DecisionVariableDTO> variables)
+			throws EntityNotFoundException;
+
+	/**
+	 * Reads model parameters and determines their types and grouping. 
+	 */
+	ModelParameterGrouping getModelParameterGrouping(int scenGenId)
+			throws EntityNotFoundException;
+
+	/**
+	 * Saves any changes to model parameters and their grouping. In addition to
+	 * model parameters, some decision variables of the scenario generator are
+	 * also updated: specifically the variables that are associated with groups,
+	 * and the variables that are directly linked to model parameters.
+	 */
+	void setModelParameterGrouping(int scenGenId,
+			ModelParameterGrouping grouping) throws EntityNotFoundException;
+
+	/**
+	 * Saves only the decision variables of the model parameter grouping.
+	 */
+	void updateDecisionVariables(int scenGenId,
+			ModelParameterGrouping grouping) throws EntityNotFoundException;
 
 	/**
 	 * Creates and initializes a ScenarioGenerator with the given name.

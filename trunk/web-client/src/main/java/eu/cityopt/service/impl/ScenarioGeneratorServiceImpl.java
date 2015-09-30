@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +18,13 @@ import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.AlgoParamDTO;
 import eu.cityopt.DTO.AlgoParamValDTO;
-import eu.cityopt.DTO.AlgorithmDTO;
 import eu.cityopt.DTO.DecisionVariableDTO;
 import eu.cityopt.DTO.ModelParameterDTO;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
 import eu.cityopt.DTO.OptConstraintDTO;
 import eu.cityopt.DTO.ScenarioGeneratorDTO;
+import eu.cityopt.DTO.ScenarioGeneratorSimpleDTO;
+import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.model.AlgoParam;
 import eu.cityopt.model.AlgoParamVal;
 import eu.cityopt.model.Algorithm;
@@ -51,7 +53,11 @@ import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.service.CopyService;
 import eu.cityopt.service.EntityNotFoundException;
+import eu.cityopt.service.ModelParameterGrouping;
 import eu.cityopt.service.ScenarioGeneratorService;
+import eu.cityopt.service.TypeService;
+import eu.cityopt.sim.eval.EvaluationSetup;
+import eu.cityopt.sim.service.SimulationService;
 
 @Service
 @SuppressWarnings("serial")
@@ -95,6 +101,9 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 
 	@Autowired
 	private TypeRepository typeRepository;
+
+	@Autowired
+	private ApplicationContext appContext;
 
 	@Autowired
 	private CopyService copyService;
@@ -323,6 +332,58 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 
 	@Transactional
 	@Override
+	public ModelParameterGrouping getModelParameterGrouping(int scenGenId) throws EntityNotFoundException {
+		ScenarioGenerator sg = scenarioGeneratorRepository.findOne(scenGenId);
+		if (sg == null) {
+			throw new EntityNotFoundException();
+		}
+		List<ModelParameterDTO> modelParameters = getModelParameters(scenGenId);
+		List<DecisionVariableDTO> decisionVariables = getDecisionVariables(scenGenId);
+		TypeDTO integerType = appContext.getBean(TypeService.class).findByName("Integer");
+		EvaluationSetup setup = appContext.getBean(SimulationService.class).getDummyEvaluationSetup();
+		ScenarioGeneratorSimpleDTO sgDTO =  modelMapper.map(sg, ScenarioGeneratorSimpleDTO.class);
+		return new ModelParameterGrouping(modelParameters, decisionVariables,
+				sgDTO, integerType, setup);
+	}
+
+	@Transactional
+	@Override
+	public void setModelParameterGrouping(int scenGenId,
+			ModelParameterGrouping grouping) throws EntityNotFoundException {
+		ScenarioGenerator sg = scenarioGeneratorRepository.findOne(scenGenId);
+		if (sg == null) {
+			throw new EntityNotFoundException();
+		}
+		Map<Integer, ModelParameterDTO> modelParameterMap = new HashMap<>();
+		for (ModelParameterDTO mp : getModelParameters(scenGenId)) {
+			modelParameterMap.put(mp.getInputparameter().getInputid(), mp);
+		}
+		grouping.copyModelParametersTo(modelParameterMap, null);
+		setModelParameters(scenGenId, new ArrayList<>(modelParameterMap.values()));
+
+		updateDecisionVariables(scenGenId, grouping);
+	}
+
+	@Transactional
+	@Override
+	public void updateDecisionVariables(int scenGenId,
+			ModelParameterGrouping grouping) throws EntityNotFoundException {
+		ScenarioGenerator sg = scenarioGeneratorRepository.findOne(scenGenId);
+		if (sg == null) {
+			throw new EntityNotFoundException();
+		}
+
+		Map<Integer, DecisionVariableDTO> decisionVariableMap = new HashMap<>();
+		for (DecisionVariableDTO dv : getDecisionVariables(scenGenId)) {
+			decisionVariableMap.put(dv.getDecisionvarid(), dv);
+		}
+		grouping.copyDecisionVariablesTo(decisionVariableMap, null);
+		setDecisionVariables(scenGenId, new ArrayList<>(decisionVariableMap.values()));
+	}
+
+
+	@Transactional
+	@Override
 	public OptConstraintDTO addOptConstraint(int scenGenId, OptConstraintDTO ocDTO) 
 			throws EntityNotFoundException {
 		
@@ -457,6 +518,56 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 			throw new EntityNotFoundException();
 		}
 		decisionVariableRepository.delete(dv);
+	}
+
+	@Transactional
+	@Override
+	public void setDecisionVariables(int scenGenId, List<DecisionVariableDTO> variables)
+			throws EntityNotFoundException {
+		ScenarioGenerator sg = scenarioGeneratorRepository.findOne(scenGenId);
+		if (sg == null) {
+			throw new EntityNotFoundException();
+		}
+		Map<Integer, DecisionVariableDTO> dtoByVarId = new HashMap<>();
+		for (DecisionVariableDTO dto : variables) {
+			dtoByVarId.put(dto.getDecisionvarid(), dto);
+		}
+		Set<DecisionVariable> newSet = new HashSet<>();
+		for (DecisionVariable dv : sg.getDecisionvariables()) {
+			int varId = dv.getDecisionvarid();
+			DecisionVariableDTO dto = dtoByVarId.remove(varId);
+			if (dto != null) {
+				dv.setName(dto.getName());
+				dv.setLowerbound(dto.getLowerbound());
+				dv.setUpperbound(dto.getUpperbound());
+				dv.setType((dto.getType() != null)
+						? typeRepository.findOne(dto.getType().getTypeid())
+						: null);
+				dv.setInputparameter((dto.getInputparameter() != null)
+						? inputParameterRepository.findOne(dto.getInputparameter().getInputid())
+						: null);
+				newSet.add(dv);
+			} else {
+				decisionVariableRepository.delete(dv);
+			}
+		}
+		for (DecisionVariableDTO dto : dtoByVarId.values()) {
+			DecisionVariable dv = new DecisionVariable();
+			dv.setName(dto.getName());
+			dv.setLowerbound(dto.getLowerbound());
+			dv.setUpperbound(dto.getUpperbound());
+			dv.setType((dto.getType() != null)
+					? typeRepository.findOne(dto.getType().getTypeid())
+					: null);
+			dv.setInputparameter((dto.getInputparameter() != null)
+					? inputParameterRepository.findOne(dto.getInputparameter().getInputid())
+					: null);
+			dv.setScenariogenerator(sg);
+			newSet.add(dv);
+		}
+		sg.setDecisionvariables(newSet);
+		decisionVariableRepository.save(newSet);
+		scenarioGeneratorRepository.save(sg);
 	}
 
 	@Transactional
