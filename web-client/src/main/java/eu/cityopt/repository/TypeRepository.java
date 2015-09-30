@@ -34,4 +34,6 @@ public interface TypeRepository extends JpaRepository<Type, Integer> {
 	 * Types contain the search term, ignoring its case
 	 */
 	List<Type> findByNameContainingIgnoreCase(String searchTerm);
+
+	Type findByName(String name);
 }
