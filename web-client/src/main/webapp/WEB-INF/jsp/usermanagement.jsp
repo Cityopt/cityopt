@@ -84,6 +84,8 @@
 </head>
 <body>
 <table cellspacing="0" cellpadding="0">
+
+
 	<tr>
 		<td>
 			<%@include file='mainmenu.inc'%>
@@ -91,6 +93,7 @@
 		<td width="30"></td>
 		<td valign="top">
 			<table>
+			
 			   	<tr>
 			      	<td valign="top">
 			      		<table>
@@ -122,36 +125,34 @@
 							      			<!-- Delete -->
 							      			<th><spring:message code="delete"/></th>
 							      										   				
-							   				</tr>
-							   				
-							   			<form action="">
-							   										   			
-						   				<c:forEach items="${users}" var="user">
-										<tr>											
-											<td><form:input path="user"	value="${user.name}"/></td>																						
-											<td><form:input path="user"	value="${user.password}"/></td>											
-											<td>																						
-												<form:select path="user" >
-											 		<c:forEach items="${userGroups}" var="userGroup">											 		      								                   
-								                           <option value="${userGroup.usergroupid}"> ${userGroup.name}</option>
-								              		</c:forEach>		                 
-												</form:select>  						
-                    																							
-											<td>
-												<form:select path="user" >
+							   				</tr>							   				
+							   			<form:form modelAttribute="UserManagementForm" method="post" action="usermanagement.html">	
+						   					<c:forEach items="${users}" var="user">
+											<tr>											
+												<td><form:input path="user[${user.userid}]"	value="${user.name}"/></td>																						
+												<td><form:input path="password[${user.userid}]"	value="${user.password}"/></td>											
+												<td>																						
+													<form:select path="userRole[${user.userid}]" >
+											 			<c:forEach items="${userGroups}" var="userGroup">
+											 			 	<option  value="${userGroup.usergroupid}"> ${userGroup.name}</option>
+								              			</c:forEach>		                 
+													</form:select>  														
+												</td>
+												<td>
+												<form:select path="project[${user.userid}]" >
 											 		<c:forEach items="${projects}" var="project">											 		      								                   
 								                           <option value="${project.name}">${project.name}</option>
 								              		</c:forEach>		                 
 												</form:select>  
-											
+												</td>
 											<!-- Enabled -->
-											</td>
+											
 											<td align="center">	
 												<c:if test="${user.enabled eq true}">
-													<form:checkbox path="user" value="${user.enabled}" checked="true" />	
+													<form:checkbox path="enabled[${user.userid}]" value="${user.enabled}" checked="true" />	
 												</c:if>				
 												<c:if test="${user.enabled eq false}">
-													<form:checkbox path="user" value="${user.enabled}"/>	
+													<form:checkbox path="enabled[${user.userid}]" value="${user.enabled}"/>	
 												</c:if>
 											</td>	
 												
@@ -173,8 +174,8 @@
 											</td>
 									   	</tr>
 										</c:forEach>
-										
-										</form>										
+											<input type="submit" value="update"></input>
+										</form:form>							
 							      	</table>
 					      		</td>
 					      	</tr>
@@ -184,7 +185,7 @@
 							<tr>
 								<td align="right">
 									
-									<input type="submit" value="Ok"></input>
+								
 									<!-- Create user -button -->
 				      				<a href="createuser.html"><button type="button">
 				      				<spring:message code="create_user"/></button></a>
@@ -228,6 +229,7 @@
 			</table>
 		</td>
 	</tr>
+
 </table>
 </body>
 </html>

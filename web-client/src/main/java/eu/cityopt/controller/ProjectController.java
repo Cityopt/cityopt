@@ -3,6 +3,7 @@ package eu.cityopt.controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.Principal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -41,6 +42,7 @@ import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
+import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.OptimizationSetDTO;
@@ -87,7 +89,9 @@ import eu.cityopt.service.UserGroupService;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.web.ScenarioParamForm;
 import eu.cityopt.web.UnitForm;
+import eu.cityopt.web.UserManagementForm;
 import eu.cityopt.web.UserSession;
 
 /**
@@ -835,6 +839,8 @@ public class ProjectController {
         // ;(projectid, clonename, true, false, true, false);
     }
 
+    
+    //@author Markus Turunen Usemanagement
     @Secured({"ROLE_Administrator"})
     @RequestMapping(value="usermanagement", method=RequestMethod.GET)
     public String getUserManagement(Map<String, Object> model) {
@@ -846,23 +852,64 @@ public class ProjectController {
         if (user != null && project != null)
         {            
             {
-                List<AppUserDTO> users = userService.findAll();
-                List<UserGroupDTO> userGroups= userGroupService.findAll();
-                
-                
-                model.put("userGroups", userGroups);
-                model.put("users", users);
-               
-                
+            	initializeUserManagement(model);                
                 return "usermanagement";
             }
         }
-        else
-        {
-
-        }
+        else{}
         return "error";
     }
+    
+    @RequestMapping(value="usermanagement",method=RequestMethod.POST)
+    public String getEditUser(Map<String, Object> model,
+    		UserManagementForm form) {    	
+    	 
+    		System.out.println("usemanagement: invoked");
+    		System.out.println(form.getUser().keySet()+" "+form.getUser().values());    		
+    		System.out.println(form.getPassword().keySet()+" "+form.getPassword().values());
+    		System.out.println(form.getUserRole().keySet()+" "+form.getUserRole().values());
+    		System.out.println(form.getProject().keySet()+" "+form.getProject().values());
+    		System.out.println(form.getEnabled().keySet()+" "+form.getEnabled().values());
+    	
+    		
+    		//AppUserDTO user = new AppUserDTO();    		
+    		//List<AppUserDTO> users = userService.findAll();
+    		
+    				
+	    	initializeUserManagement(model);
+    		return "usermanagement";
+    		} 
+    
+    //@author Markus Turunen
+    // Initialize the UserManagementForms set up the model;
+    // Made class to reduce repetition in my code.
+    public void initializeUserManagement(Map<String, Object> model){
+    	List<AppUserDTO> users = userService.findAll();
+        List<UserGroupDTO> userGroups= userGroupService.findAll();
+        List<ProjectDTO> projects = projectService.findAll(); 
+    	UserManagementForm form = this.CreateUsemanagementForm(users);  
+    	model.put("UserManagementForm", form);	
+        model.put("projects", projects);                
+        model.put("userGroups", userGroups);
+        model.put("users", users);        
+    }    
+    
+    // Form Factory: 
+    public UserManagementForm CreateUsemanagementForm(List<AppUserDTO> users){
+    
+    UserManagementForm form = new UserManagementForm();
+		 
+	for (Iterator i = users.iterator(); i.hasNext(); ){
+		AppUserDTO appuser=(AppUserDTO) i.next();
+	
+		String name = appuser.getName();
+		String password=  appuser.getPassword();
+		
+		//UserGroupProjectDTO usergroup=userGroupProjectService.findByUserAndProject(appuser.getUserid(),null);     
+	}            	
+    return form;    
+    }
+    
 
     @RequestMapping(value="units", method=RequestMethod.GET)
     public String getUnits(Model model){
@@ -1016,21 +1063,25 @@ public class ProjectController {
 
     @RequestMapping(value="createuser", method=RequestMethod.POST)
     public String getCreateUserPost(AppUserDTO userForm, Map<String, Object> model) {
-        if (userForm.getName() != null)
+        if (userForm.getName() != null && userForm.getPassword() != null)
         {
             AppUserDTO user = new AppUserDTO();
             user.setName(userForm.getName().trim());
             user.setPassword(userForm.getPassword().trim());
             user.setEnabled(true);
             user = userService.save(user);
+            	   try {userService.update(user);} 
+            	   catch (EntityNotFoundException e) {
+            		// TODO Auto-generated catch block e.printStackTrace();
+            	   }
+            initializeUserManagement(model);           	  
         }
-
-        List<AppUserDTO> users = userService.findAll();
-        model.put("users", users);
-
-        return "usermanagement";
-    }
-
+        else{
+        	return "createuser";
+        } 
+        return "usermanagement"; 
+    }  
+    
     @RequestMapping(value="edituser",method=RequestMethod.GET)
     public String getEditUser(Map<String, Object> model, 
             @RequestParam(value="userid", required=true) String userid) {
@@ -1052,8 +1103,35 @@ public class ProjectController {
 
         return "edituser";
     }
+    
+  
 
-    /*@RequestMapping(value="edituser", method=RequestMethod.POST)
+    
+    
+  //user.setName(form.getUser());
+    //List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
+    //@RequestParam(value="userid", required=true) String userid
+    	//for (InputParamValDTO inputParameterValue : inputParamVals) {
+    	
+    	/*
+        int nUserId = 0;
+        AppUserDTO user = null;
+        nUserId = Integer.parseInt(userid);
+        try {
+            user = userService.findByID(nUserId);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        model.put("user", user);
+        List<UserGroupProjectDTO> listUserGroupProjects = userGroupProjectService.findByUser(nUserId);
+        model.put("userRoles", listUserGroupProjects);
+
+        return "edituser";
+        */
+   
+
+    @RequestMapping(value="edituser", method=RequestMethod.POST)
 	public String getEditUserPost(UserForm userForm, Map<String, Object> model,
 		@RequestParam(value="userid", required=true) String userId) {
 
@@ -1076,7 +1154,8 @@ public class ProjectController {
 		model.put("users", users);
 
 		return "usermanagement";
-	}*/
+    }
+	
 
     @RequestMapping(value="createrole", method=RequestMethod.GET)
     public String getAddRole(Map<String, Object> model, 
