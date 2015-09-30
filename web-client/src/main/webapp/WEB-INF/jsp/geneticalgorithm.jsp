@@ -148,11 +148,10 @@ function deleteDecisionVariable(decisionvarid) {
 									<table class="tablestyle" style="width: 450px">
 										<tr>
                                             <th>Name</th>
-											<th>Type</th>
-											<!-- Type -->
 											<th><spring:message code="type"/></th>
 											<th>Lower bound</th>
 											<th>Upper bound</th>
+                                            <th></th>
                                             <th></th>
 										</tr>
                                         <c:forEach items="${decVars}" var="decvar">
@@ -262,8 +261,8 @@ function deleteDecisionVariable(decisionvarid) {
 										<tr>
 											<th><spring:message code="parameter"/></th>
 											<th>Value(s)</th>
+                                            <th><spring:message code="unit"/></th>
 											<th>Group</th>
-											<th><spring:message code="unit"/></th>
 										</tr>
                                         <c:forEach items="${modelparams}" var="mp">
                                         <tr class="Component${mp.inputparameter.componentComponentid} ModelParameter">
@@ -272,19 +271,22 @@ function deleteDecisionVariable(decisionvarid) {
                                                 <c:when test="${not empty mp.value}">
                                                   <td align="right">${mp.value}</td>
                                                 </c:when>
-                                               <c:when test="${paramgrouping.decisionValued.contains(mp.inputparameter.inputid)}">
+                                               <c:when test="${not empty paramgrouping.decisionValued[mp.inputparameter.inputid]}">
                                                   <td align="right"><i>decision variable</i></td>
                                                </c:when>
-                                               <c:when test="${empty paramgrouping.multiValued[mp.inputparameter.inputid]}">
+                                               <c:when test="${not empty paramgrouping.expressionValued[mp.inputparameter.inputid]}">
                                                   <td>${mp.expression}</td>
                                                </c:when>
+                                               <c:when test="${not empty paramgrouping.multiValued[mp.inputparameter.inputid]}">
+                                                  <td align="right">${paramgrouping.multiValued[mp.inputparameter.inputid].valueString}</td>
+                                               </c:when>
                                                <c:otherwise>
-                                                  <td align="right">${paramgrouping.multiValued[mp.inputparameter.inputid].values}</td>
+                                                  <td><div class="error">INTERNAL ERROR</div></td>
                                                </c:otherwise>
                                             </c:choose>
-                                            <td>${empty paramgrouping.multiValued[mp.inputparameter.inputid] ? ''
-                                                      : paramgrouping.multiValued[mp.inputparameter.inputid].groupName}</td>
                                             <td>${empty mp.inputparameter.unit ? '' : mp.inputparameter.unit.name}</td>
+                                            <td>${empty paramgrouping.multiValued[mp.inputparameter.inputid] ? ''
+                                                      : paramgrouping.multiValued[mp.inputparameter.inputid].group.name}</td>
                                         </tr>
                                         </c:forEach>
 									</table>

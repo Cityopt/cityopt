@@ -1,9 +1,7 @@
 package eu.cityopt.controller;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -18,18 +16,13 @@ import java.util.stream.Collectors;
 
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.xy.DefaultXYDataset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,7 +31,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import eu.cityopt.DTO.AlgoParamValDTO;
-import eu.cityopt.DTO.AlgorithmDTO;
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.DecisionVariableDTO;
@@ -93,7 +85,6 @@ import eu.cityopt.service.TimeSeriesValService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.sim.eval.ConfigurationException;
-import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.service.ImportExportService;
@@ -2339,12 +2330,7 @@ public class OptimizationController {
 
     private String getGeneticAlgorithm(ProjectDTO project, ScenarioGeneratorDTO scenGen, Map<String, Object> model) {
         model.put("scengenerator", scenGen);
-        UserSession userSession = (UserSession) model.get("usersession");
-        
-        if (userSession == null) {
-            userSession = new UserSession();
-            model.put("usersession", userSession);
-        }
+        UserSession userSession = getUserSession(model);
         
         try {
             List<ComponentDTO> components = sortComponentsByName(
@@ -2364,7 +2350,7 @@ public class OptimizationController {
             model.put("extparamvalsetid", extParamValSetId);
             List<ModelParameterDTO> modelParams = scenGenService.getModelParameters(scenGen.getScengenid());
             model.put("modelparams", sortBy(mp -> mp.getInputparameter().getQualifiedName(), modelParams));
-            model.put("paramgrouping", new ModelParameterGrouping(modelParams, decVars));
+            model.put("paramgrouping", scenGenService.getModelParameterGrouping(scenGen.getScengenid()));
             model.put("algorithms", algorithmService.findAll());
             model.put("algoparamvals", scenGenService.getOrCreateAlgoParamVals(scenGen.getScengenid()));
 
@@ -2581,34 +2567,39 @@ public class OptimizationController {
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
-        UserSession userSession = getUserSession(model);
         try {
-            List<ComponentDTO> components = sortComponentsByName(
-                    projectService.getComponents(project.getPrjid()));
-            List<DecisionVariableDTO> decVars = scenGenService.getDecisionVariables(scenGen.getScengenid());
-            List<ModelParameterDTO> modelParams = sortBy(mp -> mp.getInputparameter().getQualifiedName(),
-                    scenGenService.getModelParameters(scenGen.getScengenid()));
-            ModelParameterGrouping grouping = new ModelParameterGrouping(modelParams, decVars);
+            ModelParameterGrouping grouping = scenGenService.getModelParameterGrouping(scenGen.getScengenid());
 
             ModelParamForm form = new ModelParamForm();
-            for (ModelParameterDTO mp : modelParams) {
-                int inputId = mp.getInputparameter().getInputid();
+            for (int inputId : grouping.getInputParameters().keySet()) {
                 ModelParameterGrouping.MultiValue multivalue = grouping.getMultiValued().get(inputId);
                 String value = "";
                 String group = "";
                 if (multivalue != null) {
-                    value = multivalue.getValues();
-                    group = multivalue.getGroupName();
-                } else if (grouping.getExpressionValued().contains(inputId)) {
-                    value = mp.getExpression();
-                } else if (grouping.getDecisionValued().contains(inputId)) {
-                    value = mp.getExpression();
+                    value = multivalue.getValueString();
+                    group = multivalue.getGroup().getName();
                 } else {
-                    value = mp.getValue();
+                	value = grouping.getFreeText(inputId);
                 }
                 form.getValueByInputId().put(inputId, value);
                 form.getGroupByInputId().put(inputId, group);
             }
+            return getEditSGModelParams(project, scenGen, model, form, grouping);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            return "redirect:/geneticalgorithm.html";
+        }
+    }
+
+    String getEditSGModelParams(
+    		ProjectDTO project, ScenarioGeneratorDTO scenGen, ModelMap model,
+    		ModelParamForm form, ModelParameterGrouping grouping) {
+        UserSession userSession = getUserSession(model);
+    	try {
+	        List<ComponentDTO> components = sortComponentsByName(
+	                projectService.getComponents(project.getPrjid()));
+	        List<ModelParameterDTO> modelParams = sortBy(mp -> mp.getInputparameter().getQualifiedName(),
+	                scenGenService.getModelParameters(scenGen.getScengenid()));
             model.put("modelparamform", form);
             model.put("modelparams", modelParams);
             model.put("groups", sortBy(s -> s, grouping.getGroupsByName().keySet()));
@@ -2618,65 +2609,74 @@ public class OptimizationController {
             if (userSession.getComponentId() == 0 && !inputComponents.isEmpty()) {
                 userSession.setComponentId(inputComponents.iterator().next().getComponentid());
             }
-
-        } catch (EntityNotFoundException e) {
+    	} catch (EntityNotFoundException e) {
             e.printStackTrace();
             return "redirect:/geneticalgorithm.html";
-        }
+    	}
         return "editsgmodelparams";
     }
 
     @RequestMapping(value="editsgmodelparams", method=RequestMethod.POST)
     public String postEditSGModelParams(ModelMap model,
-            ModelParamForm form) {
+            ModelParamForm form,
+            @RequestParam(value="newgroup", required=false) String newGroup,
+            @RequestParam(value="cleangroups", required=false) String cleanGroups) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
         try {
-            List<DecisionVariableDTO> decVars = scenGenService.getDecisionVariables(scenGen.getScengenid());
-            List<ModelParameterDTO> modelParams = scenGenService.getModelParameters(scenGen.getScengenid());
-            ModelParameterGrouping grouping = new ModelParameterGrouping(modelParams, decVars);
-            Map<Integer, ModelParameterDTO> modelParamMap = new HashMap<>();
-            
-            for (ModelParameterDTO mp : modelParams) {
-                modelParamMap.put(mp.getInputparameter().getInputid(), mp);
-            }
-            
+            ModelParameterGrouping grouping =
+            		scenGenService.getModelParameterGrouping(scenGen.getScengenid());
+            String errors = "";
             for (Map.Entry<Integer, String> entry : form.getValueByInputId().entrySet()) {
-                ModelParameterDTO mp = modelParamMap.get(entry.getKey());
+            	int inputId = entry.getKey();
                 String value = entry.getValue();
-                String group = form.getGroupByInputId().get(entry.getKey());
-                
-                if (StringUtils.isBlank(group)) {
-                    String error = validateTypedValue(mp.getInputparameter().getType(), value);
-                    if (error == null) {
-                        mp.setValue(value);
-                        mp.setExpression(null);
-                    } else {
-                        mp.setValue(null);
-                        mp.setExpression(value);
-                    }
-                } else {
-                    mp.setValue(null);
-                    mp.setExpression(grouping.makeMultiValueExpr(entry.getValue(), group));
+                String group = form.getGroupByInputId().get(inputId);
+                try {
+	                if (StringUtils.isBlank(group)) {
+	                	grouping.setFreeText(inputId, value);
+	                } else {
+	                	grouping.setMultiValue(inputId, value, group);
+	                }
+                } catch (ParseException e) {
+                	errors = errors + e.getMessage() + "<br>\n";
                 }
             }
-            scenGenService.setModelParameters(scenGen.getScengenid(), modelParams);
+            for (ModelParameterGrouping.Group group : grouping.findMismatchingGroups()) {
+            	errors = errors + "Error in group " + group.getName()
+            			+ ": number of values varies between " + group.getMinNumberOfValues()
+            			+ " and " + group.getMaxNumberOfValues() + "<br>\n";
+            }
+            if (cleanGroups != null || newGroup != null || !errors.isEmpty()) {
+            	if (newGroup != null) {
+            		grouping.addGroup();
+            	}
+                if (cleanGroups != null) {
+                	grouping.deleteEmptyGroups();
+                }
+                // Decision variable changes are saved here because their content
+                // is not preserved in the form command object.
+                scenGenService.updateDecisionVariables(scenGen.getScengenid(), grouping);
+                model.put("errorMessage", errors);
+            	return getEditSGModelParams(project, scenGen, model, form, grouping);
+            } else {
+            	scenGenService.setModelParameterGrouping(scenGen.getScengenid(), grouping);
+            }
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
-        return "redirect:/geneticalgorithm.html";
+    	return "redirect:/geneticalgorithm.html";
     }
 
-    private String validateTypedValue(TypeDTO type, String value) {
+    String validateTypedValue(TypeDTO type, String value) {
         Type simType = Type.getByName((type != null) ? type.getName() : null);
         try {
-            simType.parse(value, new EvaluationSetup(simulationService.getEvaluator(), Instant.EPOCH));
+            simType.parse(value, simulationService.getDummyEvaluationSetup());
             return null;
         } catch (ParseException e) {
-            // Assume it's an exception.  TODO: use SyntaxChecker to validate
+            // TODO: use SyntaxChecker to validate
             return e.getMessage();
         }
     }
@@ -2684,12 +2684,12 @@ public class OptimizationController {
     @RequestMapping(value="selectcomponent", method=RequestMethod.POST)
     public @ResponseBody String postSelectComponent(ModelMap model,
             @RequestParam("selectedcompid") int selectedCompId) {
-        UserSession userSession = getUserSession(model);
-        userSession.setComponentId(selectedCompId);
+	    UserSession userSession = getUserSession(model);
+	    userSession.setComponentId(selectedCompId);
         return "";
     }
 
-    private UserSession getUserSession(ModelMap model) {
+    private UserSession getUserSession(Map<String, Object> model) {
         UserSession userSession = (UserSession) model.get("usersession");
         if (userSession == null) {
             userSession = new UserSession();
