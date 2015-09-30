@@ -10,4 +10,5 @@ public interface TypeService extends CityOptService<TypeDTO> {
 
 	public TypeDTO findByID(int id) throws EntityNotFoundException;
 
+	public TypeDTO findByName(String name);
 }

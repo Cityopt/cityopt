@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.reflect.TypeToken;
 
+import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
+import eu.cityopt.model.Project;
 import eu.cityopt.model.Type;
 import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.service.EntityNotFoundException;
@@ -69,4 +71,12 @@ public class TypeServiceImpl implements TypeService {
 		return modelMapper.map(t, TypeDTO.class);
 	}
 	
+	@Override
+	@Transactional(readOnly = true)
+	public TypeDTO findByName(String name) {
+		Type t = typeRepository.findByName(name);
+		if (t != null)
+			return modelMapper.map(t, TypeDTO.class);
+		return null;
+	}
 }
