@@ -107,6 +107,8 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         }
     }
 
+    private boolean concurrentUpdate = false;
+
     private volatile boolean cachePopulated = false;
     private Object cacheFillMutex = new Object();
     private ConcurrentMap<SimulationInput, Gate> cache = new ConcurrentHashMap<>();
@@ -165,7 +167,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     @Override
     public void put(SimulationStorage.Put put) {
         Gate gate = cache.computeIfAbsent(put.input, k -> new Gate(put.output));
-        synchronized (gate) {
+        synchronized (concurrentUpdate ? gate : cache) {
             if (gate.output != put.output && gate.output != null) {
                 Integer oldScenId = gate.output.getInput().getScenarioId();
                 if (oldScenId != null && put.input.getScenarioId() == null) {
@@ -174,27 +176,44 @@ public class DbSimulationStorage implements DbSimulationStorageI {
             }
             gate.output = put.output;
 
-            proxy.doPutTransaction(put);
+        	try {
+        		proxy.doPutTransaction(put);
+        	} catch (Throwable t) {
+        		log.error("FAILED " + contextMessage(put), t);
+        		throw t;
+        	}
         }
+    }
+
+    String contextMessage(SimulationStorage.Put put) {
+    	return "Put scenario " + put.name + " (" + put.description + ")";
     }
 
     @Override
     @Transactional
     public void doPutTransaction(SimulationStorage.Put put) {
-        Scenario scenario = saveSimulationInput(put.input, put.name, put.description);
-        boolean newScenario = (put.input.getScenarioId() == null);
-        if (put.output != null) {
-            saveSimulationOutput(scenario, put.output);
-        }
-        if (put.metricValues != null) {
-            scenario = saveMetricValues(scenario, newScenario, put.metricValues);
-        }
-        if (scenGenId != null) {
-            saveGeneratorScenarioData(
-                    scenario, put.decisions, put.constraintStatus, put.objectiveStatus);
-        }
-        scenarioRepository.flush();
-        put.input.setScenarioId(scenario.getScenid());
+    	String context = contextMessage(put);
+    	log.debug("Entering " + context);
+    	try {
+	        Scenario scenario = saveSimulationInput(put.input, put.name, put.description);
+	        boolean newScenario = (put.input.getScenarioId() == null);
+	        if (put.output != null) {
+	            saveSimulationOutput(scenario, put.output);
+	        }
+	        if (put.metricValues != null) {
+	            scenario = saveMetricValues(scenario, newScenario, put.metricValues);
+	        }
+	        if (scenGenId != null) {
+	            saveGeneratorScenarioData(
+	                    scenario, put.decisions, put.constraintStatus, put.objectiveStatus);
+	        }
+	        scenarioRepository.flush();
+	        put.input.setScenarioId(scenario.getScenid());
+    	} catch (Throwable t) {
+    		log.debug("Failing " + context, t);
+    		throw t;
+    	}
+		log.debug("Exiting " + context);
     }
 
     @Override
@@ -283,6 +302,19 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         }
     }
 
+    String getFreshScenarioName(String basename) {
+        if (basename == null) {
+            basename = "Generated at " + Instant.now();
+        }
+        int i = 1;
+        String name = basename;
+        while (scenarioRepository.findByNamePrjid(name, projectId) != null) {
+        	name = basename + "." + i;
+        	++i;
+        }
+        return name;
+    }
+
     Scenario saveSimulationInput(
             SimulationInput simInput, String scenarioName, String scenarioDescription) {
         Scenario scenario = getScenario(simInput);
@@ -290,9 +322,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
             //TODO might want to write anyway, in case someone changed the database
             return scenario;
         }
-        if (scenarioName == null) {
-            scenarioName = "Generated at " + Instant.now();
-        }
+        scenarioName = getFreshScenarioName(scenarioName);
         Project project = getProject();
         Date now = new Date();
         scenario = new Scenario();
@@ -387,6 +417,8 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                 }
             }
             scenario.setSimulationresults(newResults);
+            scenario.setUpdatedby(userId);
+            scenario.setUpdatedon(new Date());
             simulationResultRepository.save(newResults);
             scenario = scenarioRepository.save(scenario);
 
@@ -401,6 +433,8 @@ public class DbSimulationStorage implements DbSimulationStorageI {
             } else {
                 scenario.setStatus(SimulationService.STATUS_SIMULATOR_FAILURE);
             }
+            scenario.setUpdatedby(userId);
+            scenario.setUpdatedon(new Date());
             scenario = scenarioRepository.save(scenario);
         }
         return scenario;
