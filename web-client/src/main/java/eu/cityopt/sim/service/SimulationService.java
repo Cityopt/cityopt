@@ -51,6 +51,7 @@ import eu.cityopt.repository.TimeSeriesRepository;
 import eu.cityopt.repository.TimeSeriesValRepository;
 import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.sim.eval.ConfigurationException;
+import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.MetricExpression;
@@ -490,6 +491,16 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                 ? simulationModel.getTimeorigin() : null;
         return (timeOriginDate != null)
                 ? timeOriginDate.toInstant() : DEFAULT_TIME_ORIGIN;
+    }
+
+    /**
+	 * Returns a non-specific {@link EvaluationSetup} that can be used for data
+	 * validation, but does not guarantee correct evaluation of expressions.
+	 * Please use {@link #makeProjectNamespace(int)} to get an
+	 * {@link EvaluationSetup} for actual evaluation purposes.
+	 */
+    public EvaluationSetup getDummyEvaluationSetup() {
+    	return new EvaluationSetup(getEvaluator(), Instant.EPOCH);
     }
 
     /**
