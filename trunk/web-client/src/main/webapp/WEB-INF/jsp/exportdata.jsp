@@ -72,6 +72,7 @@
 										${project.description}
 									</c:if></td>
 									</tr>
+									<tr height="20"></tr>
 									<tr>
 										<!-- Export project file (CSV) -->
 										<td><spring:message code="export_project_file_CSV" /></td>
@@ -79,11 +80,6 @@
 													<spring:message code="export" />
 												</button></a></td>
 
-										<!-- Show project data & Import buttons -->
-										<td><a href="projectdata.html"><button>
-													<spring:message code="show_project_data" />
-												</button></a></td>
-										<td align="right"></td>
 									</tr>
 									<tr>
 										<!-- Export scenario file CSV -->
@@ -94,10 +90,6 @@
 												</button></a>
 										</td>
 
-										<!-- Show scenarios -->
-										<td><a href="showscenarios.html"><button>
-													<spring:message code="show_scenarios" />
-												</button></a></td>
 									</tr>
 									<tr>
 										<td><spring:message
@@ -106,7 +98,23 @@
 													<spring:message code="export" />
 												</button></a></td>
 									</tr>
+									<tr height="20"></tr>
+									<tr>
+										<!-- Show project data & Import buttons -->
+										<td><a href="projectdata.html">
+												<button style="width: 150px">
+													<spring:message code="show_project_data" />
+												</button></a></td>
+										<td align="right"></td>
+									</tr>
+									<tr>
+										<!-- Show scenarios -->
+										<td><a href="showscenarios.html"><button style="width: 150px">
+													<spring:message code="show_scenarios" />
+												</button></a></td>
+									</tr>
 								</table>
+							</td>
 						</tr>
 					</table>
 				</div>

@@ -51,10 +51,26 @@
 								<c:set var="tooltip_description"><spring:message code="tooltip_edit_scenario_description"/></c:set>
 								<td><form:textarea type="text" rows="3" title="${tooltip_description}" path="description" style="width:200px"/></td>
 								
-								<!-- Simulate scenario -->
-								<c:set var="tooltip_simulate_scenario"><spring:message code="tooltip_simulate_scenario"/></c:set>
-								<td valign="top"><a href="runscenario.html"><button type="button" title="${tooltip_simulate_scenario}" style="width:150px">								
-								<spring:message code="simulate_scenario"/></button></a></td>
+								<!-- Export simulation results file (CSV) -->
+								<td valign="top">
+									<table>
+										<tr>
+											<td>
+												<a href="exportsimulationresults.html"><button style="width: 150px" type="button">
+														Export simulation results
+													</button></a>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<!-- Simulate scenario -->
+												<c:set var="tooltip_simulate_scenario"><spring:message code="tooltip_simulate_scenario"/></c:set>
+												<a href="runscenario.html"><button type="button" title="${tooltip_simulate_scenario}" style="width:150px">								
+												<spring:message code="simulate_scenario"/></button></a>
+											</td>
+										</tr>
+									</table>
+								</td>
 							</tr>
 							<tr height="15"></tr>
 							<tr>
