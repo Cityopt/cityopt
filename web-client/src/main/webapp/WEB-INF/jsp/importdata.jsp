@@ -22,10 +22,10 @@
 
 		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:800px;width:1100px;overflow:auto">
+			<div style="overflow:scroll;height:800px;width:1200px;overflow:auto">
 			<table>
 				<col style="width:500px">	
-				<col style="width:600px">	
+				<col style="width:700px">	
 			
 				<tr>
 					<td>
@@ -123,22 +123,30 @@
     						</form:form>
         					<form:form method="POST" action="importextparamsets.html" enctype="multipart/form-data">
 	        					<tr>
+	        						<td></td>
+									<td>File</td>
+									<td>Time series</td>
+								</tr>
+								<tr>
 	        						<!-- Import external parameter sets (CSV) -->
 	        						<td><spring:message code="import_external_parameter_sets_CSV"/></td>
 									<td><input id="file" name="file" type="file"/></td>
+									<td><input id="fileTimeSeries" name="Time series file" type="file"/></td>
 								</tr>
-								<tr>	
+	        					<tr>	
 	       							<td></td>
 	        						<td>
-	        							<input type="submit" value="<spring:message code="import_file"/>">
+	        							<input type="submit" value="Import files">
 	       							</td>
 	   							</tr>	
-	   							
     						</form:form>
     						<tr>
 								<!-- Show project data & Import buttons -->		
-								<td><a href="projectdata.html"><button>
-								<spring:message code="show_project_data"/></button></a></td>
+								<td>
+									<a href="projectdata.html">
+										<button><spring:message code="show_project_data"/></button>
+									</a>
+								</td>
 								<td align="right"></td>
 							</tr>
 						</table>
@@ -158,7 +166,7 @@
 							<tr>
 								<td>
 									<table>
-										<col style="width:200px">	
+										<col style="width:150px">	
 										<col style="width:200px">	
 										<col style="width:200px">	
 										<tr>
@@ -173,17 +181,37 @@
 				        					<tr>
 				        						<td><spring:message code="import_scenarios"/> (CSV)</td>
 												<td><input id="file" name="file" type="file"/></td>
-												<td><input id="timeSeriesFile" name="timeSeriesFile" type="file"/></td>
+												<td><input id="timeSeriesFile1" name="timeSeriesFile1" type="file"/></td>
+											</tr>
+				        					<tr>
+				        						<td></td>
+												<td></td>
+												<td><input id="timeSeriesFile2" name="timeSeriesFile2" type="file"/></td>
+											</tr>
+				        					<tr>
+				        						<td></td>
+												<td></td>
+												<td><input id="timeSeriesFile3" name="timeSeriesFile3" type="file"/></td>
+											</tr>
+				        					<tr>
+				        						<td></td>
+												<td></td>
+												<td><input id="timeSeriesFile4" name="timeSeriesFile4" type="file"/></td>
+											</tr>
+				        					<tr>
+				        						<td></td>
+												<td></td>
+												<td><input id="timeSeriesFile5" name="timeSeriesFile5" type="file"/></td>
 											</tr>
 											<tr>	
 				       							<td></td>
-				        						<td>
+												<td>
 				        							<!-- Import file -->
-				        							<input type="submit" value="<spring:message code="import_file"/>">
+				        							<input type="submit" value="Import files">
 				       							</td>
 				   							</tr>	
 			    						</form:form>
-			    						<tr>						
+			    						<tr align="right">						
 											<!-- Show scenarios -->
 											<td><a href="showscenarios.html"><button>
 											<spring:message code="show_scenarios"/></button></a></td>

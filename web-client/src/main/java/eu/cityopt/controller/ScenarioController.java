@@ -1,9 +1,14 @@
 package eu.cityopt.controller;
 
 import java.awt.Desktop.Action;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,8 +16,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.script.ScriptException;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang.StringUtils;
@@ -557,6 +568,13 @@ public class ScenarioController {
 				e1.printStackTrace();
 			}
 			
+			// TODO
+			int nCount = 1;
+			
+			DecisionVariableDTO decVar = new DecisionVariableDTO();
+			decVar.setLowerbound("" + 1);
+			decVar.setUpperbound("" + nCount);
+			
         	/*ScenarioGeneratorDTO scenGen = null;
 
         	try {
@@ -870,7 +888,11 @@ public class ScenarioController {
 	@RequestMapping(value = "importscenarios", method = RequestMethod.POST)
 	public String uploadCSVFileHandler(Map<String, Object> model, 
 		@RequestParam("file") MultipartFile file,
-		@RequestParam("timeSeriesFile") MultipartFile timeSeriesMPFile) {
+		@RequestParam("timeSeriesFile1") MultipartFile timeSeriesMPFile1,
+		@RequestParam("timeSeriesFile2") MultipartFile timeSeriesMPFile2,
+		@RequestParam("timeSeriesFile3") MultipartFile timeSeriesMPFile3,
+		@RequestParam("timeSeriesFile4") MultipartFile timeSeriesMPFile4,
+		@RequestParam("timeSeriesFile5") MultipartFile timeSeriesMPFile5) {
 	
 		if (!file.isEmpty()) {
 	        try {
@@ -888,18 +910,36 @@ public class ScenarioController {
 				}
 				model.put("project", project);
 				
-				TempDir dir = new TempDir("temp");
-
 				File scenarioFile = new File("temp_scenario");
 				byte[] bytes = file.getBytes();
 				Files.write(bytes, scenarioFile);
-				
-				File timeSeriesFile = new File("temp_timeseries");
-				byte[] timeSeriesBytes = timeSeriesMPFile.getBytes();
-				Files.write(timeSeriesBytes, timeSeriesFile);
-				
+
 				List<File> listTSFiles = new ArrayList<File>();
-				listTSFiles.add(timeSeriesFile);
+
+				File timeSeriesFile1 = new File("temp_timeseries");
+				byte[] timeSeriesBytes1 = timeSeriesMPFile1.getBytes();
+				Files.write(timeSeriesBytes1, timeSeriesFile1);
+				listTSFiles.add(timeSeriesFile1);
+
+				File timeSeriesFile2 = new File("temp_timeseries2");
+				byte[] timeSeriesBytes2 = timeSeriesMPFile2.getBytes();
+				Files.write(timeSeriesBytes2, timeSeriesFile2);
+				listTSFiles.add(timeSeriesFile2);
+
+				File timeSeriesFile3 = new File("temp_timeseries3");
+				byte[] timeSeriesBytes3 = timeSeriesMPFile3.getBytes();
+				Files.write(timeSeriesBytes3, timeSeriesFile3);
+				listTSFiles.add(timeSeriesFile3);
+
+				File timeSeriesFile4 = new File("temp_timeseries4");
+				byte[] timeSeriesBytes4 = timeSeriesMPFile4.getBytes();
+				Files.write(timeSeriesBytes4, timeSeriesFile4);
+				listTSFiles.add(timeSeriesFile4);
+
+				File timeSeriesFile5 = new File("temp_timeseries");
+				byte[] timeSeriesBytes5 = timeSeriesMPFile5.getBytes();
+				Files.write(timeSeriesBytes5, timeSeriesFile5);
+				listTSFiles.add(timeSeriesFile5);
 				
 				importService.importScenarioData(project.getPrjid(), scenarioFile, listTSFiles);
 	        } catch (Exception e) {
@@ -912,50 +952,205 @@ public class ScenarioController {
 	}
 
 	@RequestMapping(value = "exportscenarios", method = RequestMethod.GET)
-	public String exportScenarios(Map<String, Object> model) {
-		return "importdata";
-	}
+	public void exportScenarios(Map<String, Object> model, HttpServletRequest request, 
+		HttpServletResponse response) {
+
+        ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return;
+		}
+
+		Path timeSeriesPath = null;
+		Path scenarioPath = null;
+		File fileScenario = null;
+		File fileTimeSeries = null;
+		List<File> files = new ArrayList<File>();
+		
+		try (TempDir tempDir = new TempDir("export")) {
+	        timeSeriesPath = tempDir.getPath().resolve("timeseries.csv");
+	        scenarioPath = tempDir.getPath().resolve("scenarios.csv");
+	        importExportService.exportScenarioData(project.getPrjid(), scenarioPath, timeSeriesPath);
+
+	        fileTimeSeries = timeSeriesPath.toFile();
+	        fileScenario = scenarioPath.toFile();
+	        files.add(fileScenario);
+	        files.add(fileTimeSeries);
+		
+			// Set the content type based to zip
+			response.setContentType("Content-type: text/zip");
+			response.setHeader("Content-Disposition", "attachment; filename=scenarios.zip");
 	
-	@RequestMapping(value = "exportscenarios", method = RequestMethod.POST)
-	public String exportScenariosPost(Map<String, Object> model) {
-	
-	    /*try {
-            ProjectDTO project = (ProjectDTO) model.get("project");
-			
-			if (project == null)
-			{
-				return "error";
-			}
+			ServletOutputStream out = null;
 			
 			try {
-				project = projectService.findByID(project.getPrjid());
-			} catch (Exception e1) {
-				e1.printStackTrace();
+				out = response.getOutputStream();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			model.put("project", project);
+	
+			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
+	
+			for (File file : files) {
+		
+				try {
+					zos.putNextEntry(new ZipEntry(file.getName()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		
+				// Get the file
+				FileInputStream fis = null;
+				try {
+					fis = new FileInputStream(file);
+				} catch (FileNotFoundException fnfe) {
+					// If the file does not exists, write an error entry instead of
+					// file
+					// contents
+					
+					try {
+						zos.write(("ERROR could not find file " + file.getName()).getBytes());
+						zos.closeEntry();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					System.out.println("Could find file "
+							+ file.getAbsolutePath());
+					continue;
+				} catch (IOException e)	{
+					e.printStackTrace();
+				}
 			
-			TempDir dir = new TempDir("temp");
-
-			File scenarioFile = new File("temp_scenario");
-			byte[] bytes = file.getBytes();
-			Files.write(bytes, scenarioFile);
-			
-			File timeSeriesFile = new File("temp_timeseries");
-			byte[] timeSeriesBytes = timeSeriesMPFile.getBytes();
-			Files.write(timeSeriesBytes, timeSeriesFile);
-			
-			List<File> listTSFiles = new ArrayList<File>();
-			listTSFiles.add(timeSeriesFile);
-			
-			//importService..importScenarioData(project.getPrjid(), scenarioFile, listTSFiles);
-        } catch (Exception e) {
-            e.printStackTrace();
-        	return "You failed to upload => " + e.getMessage();
-        }*/
-
-	    return "importdata";
+				BufferedInputStream fif = new BufferedInputStream(fis);
+		
+				// Write the contents of the file
+				int data = 0;
+				try {
+					while ((data = fif.read()) != -1) {
+						zos.write(data);
+					}
+					fif.close();
+		
+					zos.closeEntry();
+					System.out.println("Finished file " + file.getName());
+		
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			response.flushBuffer();
+			zos.close();
+		} catch (Exception e) {
+	    	e.printStackTrace();
+	    }
 	}
+	
+	@RequestMapping(value = "exportsimulationresults", method = RequestMethod.GET)
+	public void exportSimulationResults(Map<String, Object> model, HttpServletResponse response) {
 
+		System.out.println("Start");
+
+        ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return;
+		}
+
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+
+		if (scenario == null)
+		{
+			return;
+		}
+		
+		Path timeSeriesPath = null;
+		Path scenarioPath = null;
+		File fileScenario = null;
+		File fileTimeSeries = null;
+		List<File> files = new ArrayList<File>();
+		
+		try (TempDir tempDir = new TempDir("export")) {
+	        timeSeriesPath = tempDir.getPath().resolve("timeseries.csv");
+	        scenarioPath = tempDir.getPath().resolve("scenarios.csv");
+	        
+			//System.out.println("Starting exporting simulation results");
+			importExportService.exportSimulationResults(scenarioPath, timeSeriesPath, project.getPrjid(), scenario.getScenid());
+
+	        fileTimeSeries = timeSeriesPath.toFile();
+	        fileScenario = scenarioPath.toFile();
+	        files.add(fileScenario);
+	        files.add(fileTimeSeries);
+
+			// Set the content type based to zip
+			response.setContentType("Content-type: text/zip");
+			response.setHeader("Content-Disposition", "attachment; filename=simulation_results.zip");
+	
+			ServletOutputStream out = null;
+			
+			try {
+				out = response.getOutputStream();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	
+			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
+	
+			for (File file : files) {
+		
+				try {
+					zos.putNextEntry(new ZipEntry(file.getName()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		
+				// Get the file
+				FileInputStream fis = null;
+				try {
+					fis = new FileInputStream(file);
+				} catch (FileNotFoundException fnfe) {
+					// If the file does not exists, write an error entry instead of
+					// file
+					// contents
+					
+					try {
+						zos.write(("ERROR could not find file " + file.getName()).getBytes());
+						zos.closeEntry();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					System.out.println("Could find file "
+							+ file.getAbsolutePath());
+					continue;
+				} catch (IOException e)	{
+					e.printStackTrace();
+				}
+			
+				BufferedInputStream fif = new BufferedInputStream(fis);
+		
+				// Write the contents of the file
+				int data = 0;
+				try {
+					while ((data = fif.read()) != -1) {
+						zos.write(data);
+					}
+					fif.close();
+		
+					zos.closeEntry();
+					//System.out.println("Finished file " + file.getName());
+		
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			response.flushBuffer();
+			zos.close();
+		} catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+	}
+	
 	@RequestMapping(value="setmultiscenario", method=RequestMethod.GET)
 	public String getSetMultiScenario (Map<String, Object> model,
 		@RequestParam(value="multiscenarioid", required=false) String scenGenId) {

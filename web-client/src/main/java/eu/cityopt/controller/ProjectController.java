@@ -1,8 +1,15 @@
 package eu.cityopt.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
 import java.security.Principal;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -14,8 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.script.ScriptException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -51,6 +61,7 @@ import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
+import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.DTO.UserGroupDTO;
@@ -90,12 +101,14 @@ import eu.cityopt.service.UnitService;
 import eu.cityopt.service.UserGroupProjectService;
 import eu.cityopt.service.UserGroupService;
 import eu.cityopt.sim.eval.SimulatorManagers;
+import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.ScenarioParamForm;
 import eu.cityopt.web.UnitForm;
 import eu.cityopt.web.UserManagementForm;
 import eu.cityopt.web.UserSession;
+import eu.cityopt.service.ImportService;
 
 /**
  * @author Olli Stenlund
@@ -202,6 +215,9 @@ public class ProjectController {
 
     @Autowired
     ImportExportService importExportService;
+
+    @Autowired
+    ImportService importService;
 
     @Autowired
     MessageSource resource;
@@ -542,7 +558,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "exportstructurefile", method = RequestMethod.GET)
-    public String exportStructureFile(Map<String, Object> model, HttpServletRequest request,
+    public void exportStructureFile(Map<String, Object> model, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         ProjectDTO project = null;
@@ -552,7 +568,7 @@ public class ProjectController {
 
             if (project == null)
             {
-                return "error";
+                return;
             }
 
             try {
@@ -562,31 +578,8 @@ public class ProjectController {
             }
             model.put("project", project);
         } catch (Exception e) {
-            return "You failed to export => " + e.getMessage();
+            return;
         }
-
-        // get absolute path of the application
-        /*ServletContext context = request.getServletContext();
-        String appPath = context.getRealPath("");
-        System.out.println("appPath = " + appPath);
-
-        // construct the complete absolute path of the file
-        String fullPath = appPath + "";//filePath;      
-        File downloadFile = new File(fullPath);
-        //FileInputStream inputStream = new FileInputStream(downloadFile);
-
-        // get MIME type of the file
-        String mimeType = context.getMimeType(fullPath);
-        if (mimeType == null) {
-            // set to binary type if MIME mapping not found
-            mimeType = "application/octet-stream";
-        }
-        //System.out.println("MIME type: " + mimeType);
-         */
-        // set content attributes for the response
-        /*response.setContentType(mimeType);
-        response.setContentLength((int) downloadFile.length());
-         */
         // set headers for the response
         String headerKey = "Content-Disposition";
         String headerValue = String.format("attachment; filename=\"project.csv\"");
@@ -600,20 +593,162 @@ public class ProjectController {
             e.printStackTrace();
         }
 
-        /* byte[] buffer = new byte[4096];
-        int bytesRead = -1;
-
-        // write bytes read from the input stream into the output stream
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outStream.write(buffer, 0, bytesRead);
-        }
-
-        inputStream.close();*/
         outputStream.close();
-
-        return "importdata";
     }
 
+    @RequestMapping(value = "exportmetrics", method = RequestMethod.GET)
+	public void exportMetrics(Map<String, Object> model, HttpServletRequest request, 
+		HttpServletResponse response) {
+
+    	//System.out.println("Export metrics");
+        ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return;
+		}
+
+		Path timeSeriesPath = null;
+		Path scenarioPath = null;
+		File fileScenario = null;
+		File fileTimeSeries = null;
+		List<File> files = new ArrayList<File>();
+		
+		try (TempDir tempDir = new TempDir("export")) {
+	        timeSeriesPath = tempDir.getPath().resolve("timeseries.csv");
+	        scenarioPath = tempDir.getPath().resolve("scenarios.csv");
+	        
+	        List<ExtParamValSetDTO> extValSets = extParamValSetService.findAll();
+	        Set<Integer> extParamValSetIds = new HashSet<Integer>();
+	        
+	        for (ExtParamValSetDTO extValSet : extValSets)
+	        {
+	        	extParamValSetIds.add(extValSet.getExtparamvalsetid());
+	        }
+
+	        List<ScenarioDTO> scenarios = scenarioService.findAll();
+	        Set<Integer> scenarioIds = new HashSet<Integer>();
+	        
+	        for (ScenarioDTO scenarioTemp : scenarios)
+	        {
+	        	scenarioIds.add(scenarioTemp.getScenid());
+	        }
+
+	    	//System.out.println("Starting export metrics");
+	        importExportService.exportMetricValues(scenarioPath, timeSeriesPath, project.getPrjid(), extParamValSetIds, scenarioIds);
+
+	        fileTimeSeries = timeSeriesPath.toFile();
+	        fileScenario = scenarioPath.toFile();
+	        files.add(fileScenario);
+	        files.add(fileTimeSeries);
+
+			// Set the content type based to zip
+			response.setContentType("Content-type: text/zip");
+			response.setHeader("Content-Disposition", "attachment; filename=metrics.zip");
+	
+			ServletOutputStream out = null;
+			
+			try {
+				out = response.getOutputStream();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	
+			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
+	
+			for (File file : files) {
+		
+				try {
+					zos.putNextEntry(new ZipEntry(file.getName()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		
+				// Get the file
+				FileInputStream fis = null;
+				try {
+					fis = new FileInputStream(file);
+				} catch (FileNotFoundException fnfe) {
+					// If the file does not exists, write an error entry instead of
+					// file
+					// contents
+					
+					try {
+						zos.write(("ERROR could not find file " + file.getName()).getBytes());
+						zos.closeEntry();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					System.out.println("Could find file "
+							+ file.getAbsolutePath());
+					continue;
+				} catch (IOException e)	{
+					e.printStackTrace();
+				}
+			
+				BufferedInputStream fif = new BufferedInputStream(fis);
+		
+				// Write the contents of the file
+				int data = 0;
+				try {
+					while ((data = fif.read()) != -1) {
+						zos.write(data);
+					}
+					fif.close();
+		
+					zos.closeEntry();
+					System.out.println("Finished file " + file.getName());
+		
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			response.flushBuffer();
+			zos.close();
+		} catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+	}
+    
+    @RequestMapping(value = "importextparamsets", method = RequestMethod.POST)
+    public String importExtParamSets(Map<String, Object> model, 
+        @RequestParam("file") MultipartFile file,
+        @RequestParam("fileTimeSeries") MultipartFile fileTimesSeries) {
+    
+        ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+
+        File convFile = new File(file.getOriginalFilename());
+        File convFile2 = new File(fileTimesSeries.getOriginalFilename());
+
+        try {
+			convFile.createNewFile();
+	        convFile2.createNewFile();
+        
+	        FileOutputStream fos = new FileOutputStream(convFile); 
+	        fos.write(file.getBytes());
+	        fos.close(); 
+	        
+	        fos = new FileOutputStream(convFile2); 
+	        fos.write(fileTimesSeries.getBytes());
+	        fos.close(); 
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} 
+        
+        try {
+			importService.importExtParamValSet(project.getPrjid(), convFile, convFile2);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		} 
+        
+        return "importextparamsets";
+    }
+    
     @RequestMapping(value = "importcomponents", method = RequestMethod.POST)
     public String uploadComponentsFileHandler(Map<String, Object> model, 
             @RequestParam("file") MultipartFile file) {
@@ -1013,10 +1148,110 @@ public class ProjectController {
     }
 
     @RequestMapping(value="exportextparamsets", method=RequestMethod.GET)
-    public String getExportExtParamSets(Model model){
+    public void getExportExtParamSets(Map<String, Object> model, HttpServletRequest request, 
+    	HttpServletResponse response) {
+        	
+        ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return;
+		}
 
-        return "exportdata";
-    }
+		Path timeSeriesPath = null;
+		Path scenarioPath = null;
+		File fileScenario = null;
+		File fileTimeSeries = null;
+		List<File> files = new ArrayList<File>();
+		
+		try (TempDir tempDir = new TempDir("export")) {
+	        timeSeriesPath = tempDir.getPath().resolve("timeseries.csv");
+	        scenarioPath = tempDir.getPath().resolve("scenarios.csv");
+	        
+	        List<ExtParamValSetDTO> extValSets = extParamValSetService.findAll();
+	        Set<Integer> extParamValSetIds = new HashSet<Integer>();
+	        
+	        for (ExtParamValSetDTO extValSet : extValSets)
+	        {
+	        	extParamValSetIds.add(extValSet.getExtparamvalsetid());
+	        }
+
+	    	//System.out.println("Starting export external param sets");
+	        importExportService.exportExtParamValSets(scenarioPath, timeSeriesPath, project.getPrjid(), projectService.getDefaultExtParamSetId(project.getPrjid()));
+
+	        fileTimeSeries = timeSeriesPath.toFile();
+	        fileScenario = scenarioPath.toFile();
+	        files.add(fileScenario);
+	        files.add(fileTimeSeries);
+
+			// Set the content type based to zip
+			response.setContentType("Content-type: text/zip");
+			response.setHeader("Content-Disposition", "attachment; filename=external_parameter_sets.zip");
+	
+			ServletOutputStream out = null;
+			
+			try {
+				out = response.getOutputStream();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	
+			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
+	
+			for (File file : files) {
+		
+				try {
+					zos.putNextEntry(new ZipEntry(file.getName()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		
+				// Get the file
+				FileInputStream fis = null;
+				try {
+					fis = new FileInputStream(file);
+				} catch (FileNotFoundException fnfe) {
+					// If the file does not exists, write an error entry instead of
+					// file
+					// contents
+					
+					try {
+						zos.write(("ERROR could not find file " + file.getName()).getBytes());
+						zos.closeEntry();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					System.out.println("Could find file "
+							+ file.getAbsolutePath());
+					continue;
+				} catch (IOException e)	{
+					e.printStackTrace();
+				}
+			
+				BufferedInputStream fif = new BufferedInputStream(fis);
+		
+				// Write the contents of the file
+				int data = 0;
+				try {
+					while ((data = fif.read()) != -1) {
+						zos.write(data);
+					}
+					fif.close();
+		
+					zos.closeEntry();
+					//System.out.println("Finished file " + file.getName());
+		
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			response.flushBuffer();
+			zos.close();
+		} catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+	}
+    
 
     @RequestMapping(value="projectdata", method=RequestMethod.GET)
     public String getProjectData(Map<String, Object> model, 

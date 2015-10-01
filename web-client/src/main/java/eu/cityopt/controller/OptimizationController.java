@@ -1,6 +1,12 @@
 package eu.cityopt.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,9 +19,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.script.ScriptException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +97,7 @@ import eu.cityopt.service.UnitService;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.Type;
+import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
 import eu.cityopt.sim.service.ScenarioGenerationService;
@@ -797,6 +808,212 @@ public class OptimizationController {
 
         return "editoptimizationset";
     }
+    
+    @RequestMapping(value = "exportoptimizationset", method = RequestMethod.GET)
+	public void exportScenarios(Map<String, Object> model, HttpServletRequest request, 
+		HttpServletResponse response) {
+
+        ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return;
+		}
+
+		OptimizationSetDTO optSet = (OptimizationSetDTO)model.get("optimizationset");
+
+		if (optSet == null)
+		{
+			return;
+		}
+		
+		Path timeSeriesPath = null;
+		Path problemPath = null;
+		File fileProblem = null;
+		File fileTimeSeries = null;
+		List<File> files = new ArrayList<File>();
+		
+		try (TempDir tempDir = new TempDir("export")) {
+	        timeSeriesPath = tempDir.getPath().resolve("timeseries.csv");
+	        problemPath = tempDir.getPath().resolve("optimization_problem.csv");
+
+	        importExportService.exportOptimisationSet(optSet.getOptid(), problemPath, timeSeriesPath);
+
+	        fileTimeSeries = timeSeriesPath.toFile();
+	        fileProblem = problemPath.toFile();
+	        files.add(fileProblem);
+	        files.add(fileTimeSeries);
+		
+			// Set the content type based to zip
+			response.setContentType("Content-type: text/zip");
+			response.setHeader("Content-Disposition", "attachment; filename=optimization_set.zip");
+	
+			ServletOutputStream out = null;
+			
+			try {
+				out = response.getOutputStream();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	
+			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
+	
+			for (File file : files) {
+		
+				try {
+					zos.putNextEntry(new ZipEntry(file.getName()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		
+				// Get the file
+				FileInputStream fis = null;
+				try {
+					fis = new FileInputStream(file);
+				} catch (FileNotFoundException fnfe) {
+					// If the file does not exists, write an error entry instead of
+					// file
+					// contents
+					
+					try {
+						zos.write(("ERROR could not find file " + file.getName()).getBytes());
+						zos.closeEntry();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					System.out.println("Could find file "
+							+ file.getAbsolutePath());
+					continue;
+				} catch (IOException e)	{
+					e.printStackTrace();
+				}
+			
+				BufferedInputStream fif = new BufferedInputStream(fis);
+		
+				// Write the contents of the file
+				int data = 0;
+				try {
+					while ((data = fif.read()) != -1) {
+						zos.write(data);
+					}
+					fif.close();
+		
+					zos.closeEntry();
+					System.out.println("Finished file " + file.getName());
+		
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			response.flushBuffer();
+			zos.close();
+		} catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+	}
+    
+    @RequestMapping(value = "exportoptimizationproblem", method = RequestMethod.GET)
+	public void exportOptimizationProblem(Map<String, Object> model, HttpServletRequest request, 
+		HttpServletResponse response) {
+
+        ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return;
+		}
+
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+
+		if (scenGen == null)
+		{
+			return;
+		}
+		
+		Path timeSeriesPath = null;
+		Path problemPath = null;
+		File fileProblem = null;
+		File fileTimeSeries = null;
+		List<File> files = new ArrayList<File>();
+		
+		try (TempDir tempDir = new TempDir("export")) {
+	        timeSeriesPath = tempDir.getPath().resolve("timeseries.csv");
+	        problemPath = tempDir.getPath().resolve("optimization_problem.csv");
+
+	        importExportService.exportOptimisationProblem(scenGen.getScengenid(), problemPath, timeSeriesPath);
+
+	        fileTimeSeries = timeSeriesPath.toFile();
+	        fileProblem = problemPath.toFile();
+	        files.add(fileProblem);
+	        files.add(fileTimeSeries);
+		
+			// Set the content type based to zip
+			response.setContentType("Content-type: text/zip");
+			response.setHeader("Content-Disposition", "attachment; filename=optimization_problem.zip");
+	
+			ServletOutputStream out = null;
+			
+			try {
+				out = response.getOutputStream();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	
+			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
+	
+			for (File file : files) {
+		
+				try {
+					zos.putNextEntry(new ZipEntry(file.getName()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		
+				// Get the file
+				FileInputStream fis = null;
+				try {
+					fis = new FileInputStream(file);
+				} catch (FileNotFoundException fnfe) {
+					// If the file does not exists, write an error entry instead of
+					// file
+					// contents
+					
+					try {
+						zos.write(("ERROR could not find file " + file.getName()).getBytes());
+						zos.closeEntry();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					System.out.println("Could find file "
+							+ file.getAbsolutePath());
+					continue;
+				} catch (IOException e)	{
+					e.printStackTrace();
+				}
+			
+				BufferedInputStream fif = new BufferedInputStream(fis);
+		
+				// Write the contents of the file
+				int data = 0;
+				try {
+					while ((data = fif.read()) != -1) {
+						zos.write(data);
+					}
+					fif.close();
+		
+					zos.closeEntry();
+					System.out.println("Finished file " + file.getName());
+		
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			response.flushBuffer();
+			zos.close();
+		} catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+	}
     
     //@author Markus Turunen
     @RequestMapping(value="extparamsets",method=RequestMethod.GET)

@@ -83,11 +83,16 @@ function deleteDecisionVariable(decisionvarid) {
                                         </c:forEach>
                                     </select>
                                 </td>
-                                <td align="right"><input type="submit" name="run" value="Run algorithm" style="width: 150px"></td>
+                                <td align="right">
+                                	<a href="exportoptimizationproblem.html"><button type="button" style="width: 150px">Export optimization problem</button></a>
+								</td>
                             </tr>
                             <tr>
 								<td>Optimization progress:</td>
 								<td>${runinfo}</td>
+								<td align="right">
+									<input type="submit" name="run" value="Run algorithm" style="width: 150px">
+								</td>
 							</tr>
 						</table>
 					</td>

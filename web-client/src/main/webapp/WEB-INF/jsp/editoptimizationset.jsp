@@ -92,10 +92,10 @@
 								<!-- Description -->
 								<td><spring:message code="description"/>:</td>
 								<td rowspan="2"><textarea id="description" title="${tooltip_description}" rows="2" style="width: 300px"></textarea></td>
-								<td align="right"><a href="databaseoptimization.html"><button title="${tooltip_run}" type="button">
-								<!-- Run search -->
-								<spring:message code="run_search"/></button></a></td>
-							
+								<td align="right">
+									<a href="exportoptimizationset.html"><button type="button" style="width: 120px">
+									<spring:message code="export_optimization_set"/></button></a>
+								</td>
 							
 							</tr>
 							<tr>						
@@ -103,7 +103,11 @@
 								<td><spring:message code="user"/>:</td>
 								<td><input type="text" title="${tooltip_user}" id="user" style="width:200px"></td>
 								<td></td>
-								<td align="right"></td>
+								<td align="right">
+									<a href="databaseoptimization.html"><button style="width: 120px" title="${tooltip_run}" type="button">
+									<!-- Run search -->
+									<spring:message code="run_search"/></button></a>
+								</td>
 							</tr>
 							<form:form method="POST" action="importoptimizationset.html" enctype="multipart/form-data">
 	        					<tr>
@@ -330,17 +334,6 @@
 							<col style="width: 220px;">
 							<col style="width: 220px;">
 							<tr>							
-								<!-- Export optimization results ToDo:Create export functionality -->
-								<!--  
-								<td><a href="exportoptimizationresults.html"><button type="button" style="width: 150px">
-								<spring:message code="export_optimization_results"/></button></a></td>
-								<td align="right"></td>
-								-->
-								<!-- Export Optimization set ToDo: Create export functionality-->
-								<!--  
-								<td><a href="exportoptimizationset.html"><button type="button" style="width: 150px">
-								<spring:message code="export_optimization_set"/></button></a></td>
-								-->
 							</tr>
 							<tr>
 								<td></td>
