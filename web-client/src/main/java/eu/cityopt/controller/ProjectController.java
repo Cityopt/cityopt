@@ -1015,32 +1015,35 @@ public class ProjectController {
     		Iterator<Integer> keySetIterator = form.getUser().keySet().iterator();
     		String username;
     		
-    		while(keySetIterator.hasNext()){
-    		
+    		while(keySetIterator.hasNext()){    		
     		Integer key = keySetIterator.next();
     			AppUserDTO user=null;
 				try {user = userService.findByID(key);} catch (EntityNotFoundException e) 
 				{	// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				// Handles user and password
     			user.setName(form.getUser().get(key).trim());
-    			user.setPassword(form.getPassword().get(key).trim());
-    			user.setEnabled(form.getEnabled().get(key));
-    			userService.save(user);
+    			user.setPassword(form.getPassword().get(key).trim());    			
+    			
+    			// Set up Boolean Checkbox
+    			// Bug fix Form Checkbox get nulls; 
+    			if(form.getEnabled().get(key)!=null){
+    				user.setEnabled(true);
+    			}else{
+    				user.setEnabled(false);
+    			}    			    					   			
+    			//userService.save(user);
     			try {userService.update(user);} catch (EntityNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-    		}
-    					
+    		}    					
 			initializeUserManagement(model);
 			return "usermanagement";   	
     
     		} 
-    
-    
-	    	
-    
+        
     //@author Markus Turunen
     // Initialize the UserManagementForms set up the model;
     // Made class to reduce repetition in my code.
