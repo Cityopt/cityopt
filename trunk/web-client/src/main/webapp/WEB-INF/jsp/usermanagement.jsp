@@ -80,6 +80,10 @@
     }
 
     //]]>
+	// CheckboxValues
+    $(document).ready(function() {
+      $('#myCheckbox').attr('checked', true);
+    });    
     </script>
 </head>
 <body>
@@ -126,55 +130,57 @@
 							      			<th><spring:message code="delete"/></th>
 							      										   				
 							   				</tr>							   				
-							   			<form:form modelAttribute="UserManagementForm" method="post" action="usermanagement.html">	
-						   					<c:forEach items="${users}" var="user">
-											<tr>											
-												<td><form:input path="user[${user.userid}]"	value="${user.name}"/></td>																						
-												<td><form:input path="password[${user.userid}]"	value="${user.password}"/></td>											
-												<td>																						
-													<form:select path="userRole[${user.userid}]" >
-											 			<c:forEach items="${userGroups}" var="userGroup">
-											 			 	<option  value="${userGroup.usergroupid}"> ${userGroup.name}</option>
-								              			</c:forEach>		                 
-													</form:select>  														
-												</td>
-												<td>
-												<form:select path="project[${user.userid}]" >
-											 		<c:forEach items="${projects}" var="project">											 		      								                   
-								                           <option value="${project.name}">${project.name}</option>
-								              		</c:forEach>		                 
-												</form:select>  
-												</td>
-											<!-- Enabled -->
-											
-											<td align="center">	
-												<c:if test="${user.enabled eq true}">
-													<form:checkbox path="enabled[${user.userid}]" value="${user.enabled}" checked="true" />	
-												</c:if>				
-												<c:if test="${user.enabled eq false}">
-													<form:checkbox path="enabled[${user.userid}]" value="${user.enabled}"/>	
-												</c:if>
-											</td>	
-												
-											<!-- Edit -button -->
-											<td>	
-												<a href="<c:url value='edituser.html?userid=${user.userid}'/>">
-													<button align="right" type="button" value="Edit">
-													<spring:message code="edit"/></button>
-												</a>
-											</td>
-											
-											<!-- Delete -button -->
-			   								<td>
-			   									<a href="<c:url value='deleteuser.html?userid=${user.userid}'/>"
-			   									onclick="return confirm('<spring:message code="confirm_delete_user"/>')">
-													<button align="right" type="button" value="Delete">
-													<spring:message code="delete"/></button>
-												</a>
-											</td>
-									   	</tr>
-										</c:forEach>
-											<input type="submit" value="update"></input>
+							   			<form:form modelAttribute="UserManagementForm" method="post" action="usermanagement.html">
+												<c:forEach items="${users}" var="user">
+													<tr>
+														<td><form:input path="user[${user.userid}]"
+																value="${user.name}" /></td>
+														<td><form:input path="password[${user.userid}]"
+																value="${user.password}" /></td>
+														<td><form:select path="userRole[${user.userid}]">
+																<c:forEach items="${userGroups}" var="userGroup">
+																	<option value="${userGroup.usergroupid}">
+																		${userGroup.name}</option>
+																</c:forEach>
+															</form:select></td>
+														<td><form:select path="project[${user.userid}]">
+																<c:forEach items="${projects}" var="project">
+																	<option value="${project.name}">${project.name}</option>
+																</c:forEach>
+															</form:select></td>
+
+														<!-- Enabled -->
+														<td align="center">
+															<c:if test="${user.enabled eq true}">
+																<form:checkbox path="enabled[${user.userid}]"
+																	value="${user.enabled}" checked="true" id="myCheckbox" name="enabled" />
+																
+															</c:if> 
+															<c:if test="${user.enabled eq false}">
+																<form:checkbox path="enabled[${user.userid}]"
+																	value="${user.enabled}" id="myCheckbox" />
+																	
+															</c:if></td>
+
+														<!-- Edit -button -->
+														<td><a
+															href="<c:url value='edituser.html?userid=${user.userid}'/>">
+																<button align="right" type="button" value="Edit">
+																	<spring:message code="edit" />
+																</button>
+														</a></td>
+
+														<!-- Delete -button -->
+														<td><a
+															href="<c:url value='deleteuser.html?userid=${user.userid}'/>"
+															onclick="return confirm('<spring:message code="confirm_delete_user"/>')">
+																<button align="right" type="button" value="Delete">
+																	<spring:message code="delete" />
+																</button>
+														</a></td>
+													</tr>
+												</c:forEach>
+												<input type="submit" value="update"></input>
 										</form:form>							
 							      	</table>
 					      		</td>
@@ -183,9 +189,7 @@
 					      		<td></td>
 					      	</tr>
 							<tr>
-								<td align="right">
-									
-								
+								<td align="right">								
 									<!-- Create user -button -->
 				      				<a href="createuser.html"><button type="button">
 				      				<spring:message code="create_user"/></button></a>
