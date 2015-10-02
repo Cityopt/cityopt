@@ -1,12 +1,17 @@
 package eu.cityopt.controller;
 
 import java.sql.Date;
+import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class UserForm {
 	private String name;
 	private String company;
 	private String userName;
 	private String password;
+	@Getter @Setter private Boolean enabled;
 	private String email;
 	private String userRole;
 	private String startRights;

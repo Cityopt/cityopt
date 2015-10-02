@@ -49,6 +49,17 @@
 						<form:input style="width:300px" type="text" path="password"/>
 					</td>
 				</tr>
+				
+				<tr>
+					<!--Activate user-->
+					<td>
+					<spring:message code="activate"/>
+					<td>
+					<form:radiobutton path="enabled" value="true" checked="checked"/><spring:message code="yes"/> 
+					<form:radiobutton path="enabled" value="false"/><spring:message code="no"/> 
+					</td>
+					<td>				
+				</tr>	
 				<tr>
 					<td></td>
 					<!-- Create submit and Cancel button -->

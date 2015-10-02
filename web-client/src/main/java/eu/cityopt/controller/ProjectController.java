@@ -1059,8 +1059,7 @@ public class ProjectController {
     }    
     
     // Form Factory: 
-    public UserManagementForm CreateUsemanagementForm(List<AppUserDTO> users){
-    
+    public UserManagementForm CreateUsemanagementForm(List<AppUserDTO> users){    
     UserManagementForm form = new UserManagementForm();		 
 	for (Iterator i = users.iterator(); i.hasNext(); ){
 		AppUserDTO appuser=(AppUserDTO) i.next();	
@@ -1319,7 +1318,6 @@ public class ProjectController {
     public String getCreateUser(Map<String, Object> model) {
         AppUserDTO user = new AppUserDTO();
         model.put("user", user);
-
         return "createuser";
     }
 
@@ -1330,7 +1328,7 @@ public class ProjectController {
             AppUserDTO user = new AppUserDTO();
             user.setName(userForm.getName().trim());
             user.setPassword(userForm.getPassword().trim());
-            user.setEnabled(true);
+            user.setEnabled(userForm.getEnabled());
             user = userService.save(user);
             	   try {userService.update(user);} 
             	   catch (EntityNotFoundException e) {
