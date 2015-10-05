@@ -69,8 +69,6 @@ import eu.cityopt.DTO.UserGroupProjectDTO;
 import eu.cityopt.config.AppMetadata;
 //Contains Forms for UI
 import eu.cityopt.forms.ExternParamIDForm;
-package eu.cityopt.controller;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
