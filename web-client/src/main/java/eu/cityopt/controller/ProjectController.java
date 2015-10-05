@@ -69,6 +69,78 @@ import eu.cityopt.DTO.UserGroupProjectDTO;
 import eu.cityopt.config.AppMetadata;
 //Contains Forms for UI
 import eu.cityopt.forms.ExternParamIDForm;
+package eu.cityopt.controller;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Path;
+import java.security.Principal;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.script.ScriptException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import eu.cityopt.DTO.AppUserDTO;
+import eu.cityopt.DTO.ComponentDTO;
+import eu.cityopt.DTO.ExtParamDTO;
+import eu.cityopt.DTO.ExtParamValDTO;
+import eu.cityopt.DTO.ExtParamValSetDTO;
+import eu.cityopt.DTO.InputParamValDTO;
+import eu.cityopt.DTO.InputParameterDTO;
+import eu.cityopt.DTO.MetricDTO;
+import eu.cityopt.DTO.OptimizationSetDTO;
+import eu.cityopt.DTO.OutputVariableDTO;
+import eu.cityopt.DTO.ProjectDTO;
+import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.TypeDTO;
+import eu.cityopt.DTO.UnitDTO;
+import eu.cityopt.DTO.UserGroupDTO;
+import eu.cityopt.DTO.UserGroupProjectDTO;
+import eu.cityopt.config.AppMetadata;
+//Contains Forms for UI
+import eu.cityopt.forms.ExternParamIDForm;
+import eu.cityopt.model.UserGroupProject;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.AprosService;
@@ -1047,6 +1119,7 @@ public class ProjectController {
     //@author Markus Turunen
     // Initialize the UserManagementForms set up the model;
     // Made class to reduce repetition in my code.
+    
     public void initializeUserManagement(Map<String, Object> model){
     	List<AppUserDTO> users = userService.findAll();
         List<UserGroupDTO> userGroups= userGroupService.findAll();
@@ -1070,12 +1143,27 @@ public class ProjectController {
     return form;    
     }
     
+    // Usergroup Help Methods;
+    public UserGroupProjectDTO CreateUserGroupDTO(UserGroupDTO usergroup, 
+    		ProjectDTO project, AppUserDTO appuser){    	
+    	UserGroupProjectDTO userGroupDTO=new UserGroupProjectDTO();
+    	userGroupDTO.setProject(project);
+    	userGroupDTO.setProject(project);
+    	userGroupDTO.setAppuser(appuser);    	
+    	return userGroupDTO;
+    }
+    
+    public void saveGroupProject(UserGroupProjectDTO userproject){    	
+    	userGroupProjectService.save(userproject);
+    }
+    
     //------
 
     @RequestMapping(value="units", method=RequestMethod.GET)
     public String getUnits(Model model){
         List<UnitDTO> units = unitService.findAll();
         model.addAttribute("units", units);
+        
 
         return "units";
     }
@@ -1315,11 +1403,15 @@ public class ProjectController {
     }
 
     @RequestMapping(value="createuser",method=RequestMethod.GET)
-    public String getCreateUser(Map<String, Object> model) {
-        AppUserDTO user = new AppUserDTO();
-        model.put("user", user);
+    public String getCreateUser(Map<String, Object> model) {       
+        this.initializeUserManagement(model);        
         return "createuser";
     }
+        //AppUserDTO user = new AppUserDTO();
+        //List<UserGroupDTO> userGroups= userGroupService.findAll();
+        //model.put("user", user);
+       
+    
 
     @RequestMapping(value="createuser", method=RequestMethod.POST)
     public String getCreateUserPost(AppUserDTO userForm, Map<String, Object> model) {
@@ -1340,7 +1432,10 @@ public class ProjectController {
         	return "createuser";
         } 
         return "usermanagement"; 
-    }  
+    }
+    
+    
+    
     
     @RequestMapping(value="edituser",method=RequestMethod.GET)
     public String getEditUser(Map<String, Object> model, 
