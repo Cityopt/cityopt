@@ -653,7 +653,7 @@ public class ProjectController {
             return;
         }
         // set headers for the response
-        response.setContentType("text/xml");
+        response.setContentType("text/csv");
         String headerKey = "Content-Disposition";
         String headerValue = String.format("attachment; filename=\"project.csv\"");
         response.setHeader(headerKey, headerValue);
