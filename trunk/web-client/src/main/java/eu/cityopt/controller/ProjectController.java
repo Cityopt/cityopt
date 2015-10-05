@@ -580,7 +580,7 @@ public class ProjectController {
                 String simulatorName = simulatorNames.iterator().next();
                 Instant timeOrigin =  Instant.parse("2015-01-01T00:00:00Z");
 
-                importExportService.importSimulationModel(project.getPrjid(), 0, "Imported evergy model " + Instant.now(), bytes, simulatorName, timeOrigin);
+                importExportService.importSimulationModel(project.getPrjid(), 0, "Imported energy model " + Instant.now(), bytes, simulatorName, timeOrigin);
                 importExportService.importModelInputsAndOutputs(project.getPrjid(), 0);
                 
                 model.put("success",true);
@@ -620,7 +620,9 @@ public class ProjectController {
                 importExportService.importSimulationStructure(project.getPrjid(), structureStream);
 
             } catch (Exception e) {
-                return "You failed to upload => " + e.getMessage();
+            	//System.out.println("" + e.getStackTrace().toString());
+            	e.printStackTrace();
+                return "You failed to upload => " + e.getStackTrace().toString();
             }
         } else {
         }
@@ -651,6 +653,7 @@ public class ProjectController {
             return;
         }
         // set headers for the response
+        response.setContentType("text/xml");
         String headerKey = "Content-Disposition";
         String headerValue = String.format("attachment; filename=\"project.csv\"");
         response.setHeader(headerKey, headerValue);
