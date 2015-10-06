@@ -24,7 +24,8 @@ public interface UserGroupProjectService extends CityOptService<UserGroupProject
 	UserDetails findUserDetails(String username);
 	
 	List<UserGroupProjectDTO> findByUser(String userName);
-
-	UserGroupProjectDTO findByUserAndProject(int userId, int projectId);
+	
+	UserGroupProjectDTO findByUserAndProject(int userId, Integer projectId);
+	
 	
 }

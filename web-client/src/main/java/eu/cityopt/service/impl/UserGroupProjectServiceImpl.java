@@ -124,11 +124,24 @@ public class UserGroupProjectServiceImpl implements UserGroupProjectService {
 	}
 	
 	@Override
-	public UserGroupProjectDTO findByUserAndProject(int userId, int projectId) {
-		UserGroupProject ugp = userGroupProjectRepository.findByUserAndProject(userId, projectId);
+	public UserGroupProjectDTO findByUserAndProject(int userId,
+			Integer projectId) {
+		
+		UserGroupProject ugp = null;
+		
+		if(projectId==null)
+		{
+			ugp = userGroupProjectRepository.findByUserAndProjectIsNull(userId);
+		}
+		else
+		{
+			ugp = userGroupProjectRepository.findByUserAndProject(userId, projectId);
+		}
+		
 		if(ugp == null)
 			return null;
 		return modelMapper.map(ugp, UserGroupProjectDTO.class);
 	}
+	
 	
 }
