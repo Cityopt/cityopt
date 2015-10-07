@@ -5,8 +5,11 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -34,8 +37,10 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
+import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.SimulationOutput;
+import eu.cityopt.sim.eval.util.TempDir;
 
 /**
  * Test simulation runs via the SimulationService class.
@@ -60,6 +65,12 @@ import eu.cityopt.sim.eval.SimulationOutput;
 public class TestSimulationService extends SimulationTestBase {
     @Autowired
     SimulationService simulationService;
+
+    @Autowired
+    ImportExportService importExportService;
+
+    @Autowired
+    ProjectRepository projectRepository;
 
     @Test
     @DatabaseSetup("classpath:/testData/plumbing_scenario.xml")
@@ -144,14 +155,20 @@ public class TestSimulationService extends SimulationTestBase {
             ConfigurationException, InterruptedException,
             ExecutionException, ScriptException, Exception {
         Scenario scenario = scenarioRepository.findByNameContaining("testscenario").get(0);
-        BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>();
-        Future<SimulationOutput> job = simulationService.startSimulation(
-                scenario.getScenid(), tasks::add);
-        do {
-            tasks.take().run();
-        } while (!tasks.isEmpty());
-        assertTrue(job.isDone());
+    	runSimulation(scenario.getScenid());
     }
+
+	private void runSimulation(int scenId) throws ParseException, IOException,
+			ConfigurationException, InterruptedException, ExecutionException,
+			ScriptException, Exception {
+		BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>();
+		Future<SimulationOutput> job =
+				simulationService.startSimulation(scenId, tasks::add);
+		do {
+			tasks.take().run();
+		} while (!tasks.isEmpty());
+		assertTrue(job.isDone());
+	}
 
     private void updateMetrics() throws ParseException, ScriptException {
         Project project = scenarioRepository.findByNameContaining("testscenario").get(0).getProject();
@@ -159,4 +176,29 @@ public class TestSimulationService extends SimulationTestBase {
                 simulationService.updateMetricValues(project.getPrjid(), null);
         System.out.println(status);
     }
+
+    @Test
+    @DatabaseSetup("classpath:/testData/empty_project.xml")
+    @ExpectedDatabase(value="classpath:/testData/imported_sim_result.xml",
+            assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testSimulateImportedScenario() throws Exception {
+        Project project = projectRepository.findByNameContainingIgnoreCase("Empty test project").get(0);
+        byte[] modelData = getResourceBytes("/ost.zip");
+        importExportService.importSimulationModel(
+                project.getPrjid(), null, "test project",
+                modelData, "Apros-Combustion-5.13.06-64bit",
+                Instant.parse("2015-01-01T00:00:00Z"));
+        try (TempDir tempDir = new TempDir("testimport")) {
+            Path scenarioPath = copyResource("/testData/import_sim_scenarios.csv", tempDir);
+            Path tsPath = copyResource("/testData/import_sim_timeseries.csv", tempDir);
+            try (FileInputStream fis = new FileInputStream(scenarioPath.toFile())) {
+                importExportService.importSimulationStructure(project.getPrjid(), fis);
+            }
+            importExportService.importScenarioData(project.getPrjid(), scenarioPath,  tsPath);
+        }
+        Scenario scenario = scenarioRepository.findByNameContaining("new scen 789").get(0);
+        runSimulation(scenario.getScenid());
+        dumpTables("imported_sim");
+    }
+
 }
