@@ -380,7 +380,11 @@ public class ProjectController {
         model.put("newProject", newProject);
 
         AppUserDTO user = (AppUserDTO) model.get("user");
-        model.put("user", user);
+        
+        if (user != null)
+        {
+        	model.put("user", user);
+        }
 
         return "createproject";
     }

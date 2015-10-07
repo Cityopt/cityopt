@@ -1253,6 +1253,50 @@ public class OptimizationController {
         return "editoptimizationset";
     }
     
+    @RequestMapping(value = "importoptimizationproblem", method = RequestMethod.POST)
+    public String importOptimizationProblem(Map<String, Object> model, @RequestParam("file") MultipartFile file) {
+
+        if (!file.isEmpty()) {
+            try {
+                ProjectDTO project = (ProjectDTO) model.get("project");
+
+                if (project == null)
+                {
+                    return "error";
+                }
+
+                try {
+                    project = projectService.findByID(project.getPrjid());
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+                model.put("project", project);
+
+                //InputStream structureStream = file.getInputStream();
+                //importExportService.importOptimisationProblem(projectId, name, problemFile, algorithmId, algorithmParameterFile, timeSeriesFiles)
+                //importExportService.importOptimisationSet(projectId, userId, name, problemFile, timeSeriesFiles)
+
+                List<MetricValDTO> listMetricVals = metricValService.findAll();
+                List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+
+                for (int i = 0; i < listMetricVals.size(); i++)
+                {
+                    MetricValDTO metricVal = listMetricVals.get(i);
+
+                    if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+                    {
+                        listProjectMetricVals.add(metricVal);
+                    }
+                }
+                model.put("metricVals", listProjectMetricVals);
+            } catch (Exception e) {
+                return "You failed to upload => " + e.getMessage();
+            }
+        } else {
+        }
+        return "editoptimizationset";
+    }
+    
     @RequestMapping(value="databaseoptimization", method=RequestMethod.GET)
     public String getDatabaseOptimization(Map<String, Object> model) {
 

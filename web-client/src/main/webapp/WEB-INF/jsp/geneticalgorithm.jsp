@@ -94,6 +94,21 @@ function deleteDecisionVariable(decisionvarid) {
 									<input type="submit" name="run" value="Run algorithm" style="width: 150px">
 								</td>
 							</tr>
+							<tr>
+								<form:form method="POST" action="importoptimizationproblem.html" enctype="multipart/form-data">
+		        					<tr>
+		        						<!-- Import optimization set file CSV -->
+		        						<td>Import optimization problem</td>
+										<td><input id="file" name="file" type="file"/></td>
+									</tr>
+									<tr>	
+		       							<td></td>
+		        						<td>
+		        							<input type="submit" value="Import file">
+		       							</td>
+		   							</tr>	
+	    						</form:form>
+    						</tr>
 						</table>
 					</td>
 				</tr>
