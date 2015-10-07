@@ -118,7 +118,9 @@ public class ImportExportService {
      * @param userId id of the creating user, or null
      * @param description model description
      * @param modelData the binary model data (e.g. zip file bytes)
-     * @param simulatorName a valid simulator name from {@link SimulatorManagers}
+     * @param simulatorName a simulator name from {@link SimulatorManagers}.
+     *    If null, reading the model will be attempted with support code for
+     *    different simulators, and the first to succeed wins.
      * @param overrideTimeOrigin the time corresponding to a simulation time of zero.
      *   If null, then an attempt is made to get the origin from the model data.
      * @return id of the created SimulationModel row
