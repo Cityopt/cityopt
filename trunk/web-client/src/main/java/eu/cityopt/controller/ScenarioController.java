@@ -915,31 +915,56 @@ public class ScenarioController {
 				Files.write(bytes, scenarioFile);
 
 				List<File> listTSFiles = new ArrayList<File>();
+				File timeSeriesFile1 = null;
+				File timeSeriesFile2 = null;
+				File timeSeriesFile3 = null;
+				File timeSeriesFile4 = null;
+				File timeSeriesFile5 = null;
+				byte[] timeSeriesBytes1 = null;
+				byte[] timeSeriesBytes2 = null;
+				byte[] timeSeriesBytes3 = null;
+				byte[] timeSeriesBytes4 = null;
+				byte[] timeSeriesBytes5 = null;
+				
+				if (timeSeriesMPFile1 != null)
+				{
+					timeSeriesFile1 = new File("temp_timeseries");
+					timeSeriesBytes1 = timeSeriesMPFile1.getBytes();
+					Files.write(timeSeriesBytes1, timeSeriesFile1);
+					listTSFiles.add(timeSeriesFile1);
+				}
+				
+				if (timeSeriesMPFile2 != null)
+				{
+					timeSeriesFile2 = new File("temp_timeseries2");
+					timeSeriesBytes2 = timeSeriesMPFile2.getBytes();
+					Files.write(timeSeriesBytes2, timeSeriesFile2);
+					listTSFiles.add(timeSeriesFile2);
+				}
 
-				File timeSeriesFile1 = new File("temp_timeseries");
-				byte[] timeSeriesBytes1 = timeSeriesMPFile1.getBytes();
-				Files.write(timeSeriesBytes1, timeSeriesFile1);
-				listTSFiles.add(timeSeriesFile1);
+				if (timeSeriesMPFile3 != null)
+				{
+					timeSeriesFile3 = new File("temp_timeseries3");
+					timeSeriesBytes3 = timeSeriesMPFile3.getBytes();
+					Files.write(timeSeriesBytes3, timeSeriesFile3);
+					listTSFiles.add(timeSeriesFile3);
+				}
 
-				File timeSeriesFile2 = new File("temp_timeseries2");
-				byte[] timeSeriesBytes2 = timeSeriesMPFile2.getBytes();
-				Files.write(timeSeriesBytes2, timeSeriesFile2);
-				listTSFiles.add(timeSeriesFile2);
-
-				File timeSeriesFile3 = new File("temp_timeseries3");
-				byte[] timeSeriesBytes3 = timeSeriesMPFile3.getBytes();
-				Files.write(timeSeriesBytes3, timeSeriesFile3);
-				listTSFiles.add(timeSeriesFile3);
-
-				File timeSeriesFile4 = new File("temp_timeseries4");
-				byte[] timeSeriesBytes4 = timeSeriesMPFile4.getBytes();
-				Files.write(timeSeriesBytes4, timeSeriesFile4);
-				listTSFiles.add(timeSeriesFile4);
-
-				File timeSeriesFile5 = new File("temp_timeseries");
-				byte[] timeSeriesBytes5 = timeSeriesMPFile5.getBytes();
-				Files.write(timeSeriesBytes5, timeSeriesFile5);
-				listTSFiles.add(timeSeriesFile5);
+				if (timeSeriesMPFile4 != null)
+				{
+					timeSeriesFile4 = new File("temp_timeseries4");
+					timeSeriesBytes4 = timeSeriesMPFile4.getBytes();
+					Files.write(timeSeriesBytes4, timeSeriesFile4);
+					listTSFiles.add(timeSeriesFile4);
+				}
+				
+				if (timeSeriesMPFile5 != null)
+				{
+					timeSeriesFile5 = new File("temp_timeseries");
+					timeSeriesBytes5 = timeSeriesMPFile5.getBytes();
+					Files.write(timeSeriesBytes5, timeSeriesFile5);
+					listTSFiles.add(timeSeriesFile5);
+				}
 				
 				importService.importScenarioData(project.getPrjid(), scenarioFile, listTSFiles);
 	        } catch (Exception e) {
@@ -1328,18 +1353,15 @@ public class ScenarioController {
 			List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
 			ScenarioParamForm form = new ScenarioParamForm();
 			 
-	            for (InputParamValDTO InputParamValue : inputParamVals) {
-	                int inputId = InputParamValue.getInputparamvalid();	               
-	                String value = ""; 
-	                
-	                value = InputParamValue.getValue();
-	                
-	                form.getValueByInputId().put(inputId, value);
-	            }        
-	            
-	      
-	         
-	      
+            for (InputParamValDTO InputParamValue : inputParamVals) {
+                int inputId = InputParamValue.getInputparamvalid();	               
+                String value = ""; 
+                
+                value = InputParamValue.getValue();
+                
+                form.getValueByInputId().put(inputId, value);
+            }        
+          
 	        model.put("scenarioParamForm", form);			
 			model.put("selectedcompid", selectedCompId);
 			model.put("selectedComponent",  selectedComponent);
