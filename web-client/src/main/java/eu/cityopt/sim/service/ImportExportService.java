@@ -640,7 +640,7 @@ public class ImportExportService {
         	}
         }
 
-        Namespace ns = simulationService.makeProjectNamespace(project.getPrjid());
+        Namespace ns = simulationService.makeProjectNamespace(projectId);
         List<MetricExpression> metricExpressions = null;
         try {
         	metricExpressions = simulationService.loadMetricExpressions(project, ns);
@@ -649,6 +649,7 @@ public class ImportExportService {
         Map<String, ExternalParameters> externals = new HashMap<>();
         List<Runnable> idUpdateList = new ArrayList<>();
         ExternalParameters defaultExternals = new ExternalParameters(ns);
+        ExtParamValSet defaultEPS = null;
         for (Map.Entry<String, List<JacksonBinder.ExtParam>> entry : epsEXT.entrySet()) {
         	ExternalParameters externalData = new ExternalParameters(ns);
         	String setName = entry.getKey();
@@ -667,12 +668,16 @@ public class ImportExportService {
         		}
         	}
         	externals.put(setName, externalData);
-        	ExtParamValSet eps = simulationService.saveExternalParameterValues(
+        	defaultEPS = simulationService.saveExternalParameterValues(
         			project, externalData, setName, idUpdateList);
-        	// XXX the default ExtParamValSet is set randomly if there are multiple
-        	// ExtParamValSets in the data.
-        	project.setDefaultextparamvalset(eps);
+	    	project = projectRepository.findOne(projectId);
         	defaultExternals = externalData;
+        }
+        if (defaultEPS != null) {
+	        // XXX the default ExtParamValSet is set randomly if there are multiple
+	    	// ExtParamValSets in the data.
+	    	project.setDefaultextparamvalset(defaultEPS);
+	    	project = projectRepository.save(project);
         }
 
         Map<String, SimulationInput> inputs = new HashMap<>();
@@ -716,7 +721,7 @@ public class ImportExportService {
 
         String description = "Imported from " + scenarioFile.getFileName().toString();
         SimulationStorage storage = simulationService.makeDbSimulationStorage(
-        		project.getPrjid(), defaultExternals);
+        		projectId, defaultExternals);
         Set<String> scenNames = new HashSet<>(inputs.keySet());
         scenNames.addAll(results.keySet());
         for (String scenName : scenNames) {
