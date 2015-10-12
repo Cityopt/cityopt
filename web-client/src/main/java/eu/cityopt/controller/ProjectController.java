@@ -1464,7 +1464,7 @@ public class ProjectController {
              usergroupDTO.setProject(null);
              usergroupDTO.setAppuser(user);
            
-             int useroleid=userForm.getUserRole();
+             int useroleid=userForm.getRole();
              UserGroupDTO newUser = null;
  			try {
  				newUser = userGroupService.findByID(useroleid);
