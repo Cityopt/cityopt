@@ -70,14 +70,6 @@
 									<td><spring:message code="energy_model_to_upload"/>:</td>
 									<td><input type="file" name="file" title="${tooltip_energymodel}"></td>
 								</tr>
-								<tr>
-									<!-- Detail level -->									
-									<c:set var="tooltip_detail"><spring:message code="tooltip_edit_project_detail"/></c:set>
-									<td><spring:message code="detail_level"/>:</td>
-	        						<td>
-	        							<input type="text" name="detailLevel" title="${tooltip_detail}"> 
-	       							</td>
-								</tr>
 	       						<tr>	
 	       							<td></td>
 	        						<td>

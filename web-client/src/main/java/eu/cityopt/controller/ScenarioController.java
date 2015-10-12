@@ -316,7 +316,7 @@ public class ScenarioController {
 		
 		if (project == null)
 		{
-			return "createproject";
+			return "error";
 		}
 		
 		if (scenarioid != null)
