@@ -35,7 +35,7 @@
 							<tr>
 								<td>
 									<!--Name-->
-									<spring:message code="name"/>
+									<spring:message code="name"/>:
 								</td>
 								<td>
 									${user.name}
@@ -51,7 +51,7 @@
 				<tr>
 					<td>
 						<!-- User roles -->
-						<b><spring:message code="user_roles"/></b>
+						<b><spring:message code="user_roles"/>:</b>
 					</td>
 					<td>
 						
@@ -71,12 +71,12 @@
 							    <th><spring:message code="remove"/></th>
 							</tr>
 							
-							<c:forEach items="${projectRoles}" var="projectRole">
+							<c:forEach items="${userRoles}" var="projectRole">
 								<tr>
 							    	<td>${projectRole.usergroup.name}</td>
 									<td>${projectRole.project.name}</td>
 									<td>
-										<a href="<c:url value='removerole.html?roleid=${projectRole.usergroup.id}'/>">
+										<a href="<c:url value='removerole.html?roleid=${projectRole.usergroup.usergroupid}'/>">
 											<button align="right" type="button"><spring:message code="remove"/></button>
 										</a>
 									</td>

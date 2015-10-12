@@ -3,10 +3,27 @@ package eu.cityopt.controller;
 import java.sql.Date;
 import java.util.Map;
 
+import javax.validation.constraints.Size;
+
 import lombok.Getter;
 import lombok.Setter;
 
 public class UserForm {
+	
+   //@Getter @Setter private int userid;
+
+	@Size(min=5,message="At least 5 characters")
+	@Getter @Setter private String name;	
+	@Size(min=5,message="At least 5 characters")
+	@Getter @Setter private String password;	
+	@Getter @Setter private Boolean enabled;	
+	@Getter @Setter private int role;
+	@Getter @Setter private String project;
+	@Getter @Setter private String[] projects;
+	
+	/*
+	
+	
 	private String name;
 	private String company;
 	private String userName;
@@ -89,4 +106,5 @@ public class UserForm {
 	public void setProject(String project) {
 		this.project = project;
 	}
+	*/
 }
