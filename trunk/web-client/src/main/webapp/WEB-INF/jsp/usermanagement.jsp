@@ -119,41 +119,44 @@
 												<!-- Username -->
 												<th><spring:message code="username" /></th>
 												<!-- Password -->
-												<th><spring:message code="password" /></th>
+												<th><spring:message code="password" /></th>										
 												<!-- User Role -->
 												<th><spring:message code="userole" /></th>
-												<!-- Active -->
+												<!-- Enabled -->
 												<th><spring:message code="enabled" /></th>
-
+												
 												<!-- Edit -->
 												<th><spring:message code="edit" /></th>
 												<!-- Delete -->
 												<th><spring:message code="delete" /></th>
 
 												</tr>
-												<c:forEach items="${UserGroupProject}"
-													var="userGroupProject">
-													<c:set var="user" value="${userGroupProject.appuser}"></c:set>
+																									
+												<c:forEach items="${users}" var="user">													
 													<tr>
 														<td><form:input path="user[${user.userid}]"
 																value="${user.name}" /></td>
 														<td><form:input path="password[${user.userid}]"
 																value="${user.password}" /></td>
-														<td><form:select path="userRole[${user.userid}]">
-
+														
+														<!-- Set up userRoles Table -->
+														<td>
+														
+														<c:set var="userRoleValue" value="${userRole[user.userid]}" />		
+															<form:select path="userRole[${user.userid}]">
 																<c:forEach items="${userGroups}" var="userGroup">
 																	<c:choose>
-																		<c:when
-																			test="${userGroup.usergroupid eq userGroupProject.usergroup.usergroupid}">
+																		<c:when	test="${userGroup.usergroupid == userRoleValue}">
 																			<option value="${userGroup.usergroupid}" selected>
-																				${userGroup.name}</option>
+																				${userGroup.name}</option>																			
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${userGroup.usergroupid}">${userGroup.name}</option>
 																		</c:otherwise>
 																	</c:choose>
 																</c:forEach>
-															</form:select></td>
+															</form:select>
+														</td>
 
 														<!-- Enabled -->
 														<td align="center"><c:if
@@ -167,6 +170,10 @@
 																	value="${user.enabled}" id="myCheckbox" />
 
 															</c:if></td>
+															
+															
+																										
+													
 
 														<!-- Edit -button -->
 														<td><a

@@ -1155,16 +1155,20 @@ public class ProjectController {
 		int id = appuser.getUserid();
 		String name = appuser.getName();
 		String password=  appuser.getPassword();		
+		int ugpResult = 0;
+		String project="";
 		
-		int ugpResult = 0;		
 		List <UserGroupProjectDTO> list = userGroupProjectService.findByUser(name);
 			for(UserGroupProjectDTO ugp : list ){
 				if(ugp.getProject()==null){
 					ugpResult=ugp.getUsergroup().getUsergroupid();
-					break;
-				}				
-			}	
-			
+					project += "null";
+				}else{
+				project += ugp.getProject().getName();
+				}					
+			}
+				
+		form.getProject().put(id, project);	
 		form.getUserRole().put(id, ugpResult);		
 		form.getUser().put(id,name);
 		form.getPassword().put(id, password);		
@@ -1491,12 +1495,16 @@ public class ProjectController {
     @RequestMapping(value="edituser",method=RequestMethod.GET)
     public String getEditUser(Map<String, Object> model, 
             @RequestParam(value="userid", required=true) String userid) {
-
-        int nUserId = 0;
+    	
+    	this.InitiateEditUser(model, userid);    	
+        return "edituser";
+    }
+      
+    // Other classes going to use this service:
+    public void InitiateEditUser(Map<String, Object> model, String userid){
+    	int nUserId = 0;
         AppUserDTO user = null;
-
-        nUserId = Integer.parseInt(userid);
-
+        nUserId = Integer.parseInt(userid);        
         try {
             user = userService.findByID(nUserId);
         } catch (EntityNotFoundException e) {
@@ -1506,12 +1514,9 @@ public class ProjectController {
         model.put("user", user);
         List<UserGroupProjectDTO> listUserGroupProjects = userGroupProjectService.findByUser(nUserId);
         model.put("userRoles", listUserGroupProjects);
-
-        return "edituser";
     }
     
-  
-
+   // -------
     
     
   //user.setName(form.getUser());
@@ -1561,8 +1566,22 @@ public class ProjectController {
 
 		return "usermanagement";
     }
+    
+    
+    
 	
-
+    
+    @RequestMapping(value="removerole", method=RequestMethod.GET)
+    public String RemoveRole(Map<String, Object> model) {
+        //int nUserId = Integer.parseInt(userid);        
+        
+    	System.out.println("delete invoked");        
+        return "edituser";
+        
+        //@RequestParam(value="userid", required=true) String userid
+        
+    }
+    
     @RequestMapping(value="createrole", method=RequestMethod.GET)
     public String getAddRole(Map<String, Object> model, 
             @RequestParam(value="userid", required=true) String userid) {
@@ -1595,12 +1614,10 @@ public class ProjectController {
 
         List<ProjectDTO> projects = projectService.findAll();
         model.put("projects", projects);
-
         model.put("user", user);
-
         UserGroupProjectDTO role = new UserGroupProjectDTO();
         model.put("role",  role);
-
+        
         return "createrole";
     }
 
@@ -1668,7 +1685,9 @@ public class ProjectController {
             e.printStackTrace();
         }
 
-        return "usermanagement";
+        // Link back to to previous page
+        this.InitiateEditUser(model,userid);       
+        return "edituser";
     }
 
     @RequestMapping(value="deleteuser", method=RequestMethod.GET)
