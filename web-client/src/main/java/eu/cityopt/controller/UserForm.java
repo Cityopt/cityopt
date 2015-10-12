@@ -21,9 +21,7 @@ public class UserForm {
 	@Getter @Setter private String project;
 	@Getter @Setter private String[] projects;
 	
-	/*
-	
-	
+	/*	
 	private String name;
 	private String company;
 	private String userName;

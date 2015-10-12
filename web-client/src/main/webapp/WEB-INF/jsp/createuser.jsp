@@ -70,13 +70,7 @@
 								<td>
 							</tr>
 							<tr>
-								<td><spring:message code="userole" />
-								<td><form:select path="role">
-										<c:forEach items="${userGroups}" var="userGroup">
-											<option value="${userGroup.usergroupid}">${userGroup.name}</option>
-										</c:forEach>
-									</form:select>
-								</td>
+								
 							</tr>
 							
 							<tr height=50px; />
