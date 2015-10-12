@@ -1088,7 +1088,6 @@ public class ProjectController {
     		System.out.println(form.getProject().keySet()+" "+form.getProject().values());
     		System.out.println(form.getEnabled().keySet()+" "+form.getEnabled().values());
     		
-    		
     		Iterator<Integer> keySetIterator = form.getUser().keySet().iterator();
     		String username;
     		
@@ -1128,25 +1127,52 @@ public class ProjectController {
     public void initializeUserManagement(Map<String, Object> model){
     	List<AppUserDTO> users = userService.findAll();
         List<UserGroupDTO> userGroups= userGroupService.findAll();
-        List<ProjectDTO> projects = projectService.findAll(); 
-    	UserManagementForm form = this.CreateUsemanagementForm(users);  
+        List<ProjectDTO> projects = projectService.findAll();        
+        List<UserGroupProjectDTO> usergroupprojects= userGroupProjectService.findAll();
+        UserForm userForm = new UserForm();        
+    	UserManagementForm form = this.CreateUsemanagementForm(users);
+    	
+    	model.put("UserForm",userForm);
+    	model.put("UserGroupProject", usergroupprojects);
     	model.put("UserManagementForm", form);	
         model.put("projects", projects);                
         model.put("userGroups", userGroups);
-        model.put("users", users);        
+        model.put("users", users);
+        List<UserGroupProjectDTO> listUserGroupProjects = userGroupProjectService.findAll();       
+        model.put("userRoles", listUserGroupProjects);        
     }    
     
     // Form Factory: 
     public UserManagementForm CreateUsemanagementForm(List<AppUserDTO> users){    
-    UserManagementForm form = new UserManagementForm();		 
-	for (Iterator i = users.iterator(); i.hasNext(); ){
-		AppUserDTO appuser=(AppUserDTO) i.next();	
+   
+    	
+    	UserManagementForm form = new UserManagementForm();
+    	UserGroupProject usergroup; 
+    	
+	for (Iterator i = users.iterator(); i.hasNext(); ){	
+		
+		AppUserDTO appuser=(AppUserDTO) i.next();
+		int id = appuser.getUserid();
 		String name = appuser.getName();
 		String password=  appuser.getPassword();		
-		//UserGroupProjectDTO usergroup=userGroupProjectService.findByUserAndProject(appuser.getUserid(),null);     
+		
+		int ugpResult = 0;		
+		List <UserGroupProjectDTO> list = userGroupProjectService.findByUser(name);
+			for(UserGroupProjectDTO ugp : list ){
+				if(ugp.getProject()==null){
+					ugpResult=ugp.getUsergroup().getUsergroupid();
+					break;
+				}				
+			}	
+			
+		form.getUserRole().put(id, ugpResult);		
+		form.getUser().put(id,name);
+		form.getPassword().put(id, password);		
+		}
+	
+	return form;   
 	}            	
-    return form;    
-    }
+    
     
     // Usergroup Help Methods;
     public UserGroupProjectDTO CreateUserGroupDTO(UserGroupDTO usergroup, 
@@ -1419,25 +1445,46 @@ public class ProjectController {
     
 
     @RequestMapping(value="createuser", method=RequestMethod.POST)
-    public String getCreateUserPost(AppUserDTO userForm, Map<String, Object> model) {
-        if (userForm.getName() != null && userForm.getPassword() != null)
-        {
-            AppUserDTO user = new AppUserDTO();
-            user.setName(userForm.getName().trim());
-            user.setPassword(userForm.getPassword().trim());
-            user.setEnabled(userForm.getEnabled());
-            user = userService.save(user);
-            	   try {userService.update(user);} 
-            	   catch (EntityNotFoundException e) {
-            		// TODO Auto-generated catch block e.printStackTrace();
-            	   }           
-            initializeUserManagement(model);           	  
-        }
-        else{
-        	return "createuser";
-        } 
-        return "usermanagement"; 
-    }
+    public String getCreateUserPost(UserForm userForm, Map<String, Object> model) {
+    	 if (userForm.getName() != null && userForm.getPassword() != null)
+         {
+             AppUserDTO user = new AppUserDTO();
+             user.setName(userForm.getName().trim());
+             user.setPassword(userForm.getPassword().trim());
+             user.setEnabled(userForm.getEnabled());
+             user = userService.save(user);
+             	   try {
+             		   	userService.update(user);
+             		   } 
+             	   catch (EntityNotFoundException e) {
+             		// TODO Auto-generated catch block e.printStackTrace();
+             	   }
+             	   
+             UserGroupProjectDTO usergroupDTO =new UserGroupProjectDTO();
+             usergroupDTO.setProject(null);
+             usergroupDTO.setAppuser(user);
+           
+             int useroleid=userForm.getUserRole();
+             UserGroupDTO newUser = null;
+ 			try {
+ 				newUser = userGroupService.findByID(useroleid);
+ 			} catch (EntityNotFoundException e) {
+ 				// TODO Auto-generated catch block
+ 				e.printStackTrace();
+ 			}
+             usergroupDTO.setUsergroup(newUser);
+             
+             
+             userGroupProjectService.save(usergroupDTO);
+             	   
+             initializeUserManagement(model);           	  
+         } 
+         else{
+         	return "createuser";
+         }
+        
+         return "usermanagement"; 
+     }
     
     
     
