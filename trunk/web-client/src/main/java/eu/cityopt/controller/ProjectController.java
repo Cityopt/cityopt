@@ -1062,10 +1062,10 @@ public class ProjectController {
     public String getUserManagement(Map<String, Object> model) {
 
         AppUserDTO user = (AppUserDTO) model.get("user");
-        ProjectDTO project = (ProjectDTO) model.get("project");
+        //ProjectDTO project = (ProjectDTO) model.get("project");
 
         // TODO
-        if (user != null && project != null)
+        if (user != null)// && project != null)
         {            
             {
             	initializeUserManagement(model);                
@@ -1297,8 +1297,7 @@ public class ProjectController {
 	        	extParamValSetIds.add(extValSet.getExtparamvalsetid());
 	        }
 
-	    	//System.out.println("Starting export external param sets");
-	        importExportService.exportExtParamValSets(scenarioPath, timeSeriesPath, project.getPrjid(), projectService.getDefaultExtParamSetId(project.getPrjid()));
+	    	importExportService.exportExtParamValSets(scenarioPath, timeSeriesPath, project.getPrjid(), projectService.getDefaultExtParamSetId(project.getPrjid()));
 
 	        fileTimeSeries = timeSeriesPath.toFile();
 	        fileScenario = scenarioPath.toFile();
@@ -1360,7 +1359,7 @@ public class ProjectController {
 					fif.close();
 		
 					zos.closeEntry();
-					//System.out.println("Finished file " + file.getName());
+					System.out.println("Finished file " + file.getName());
 		
 				} catch (IOException e) {
 					e.printStackTrace();

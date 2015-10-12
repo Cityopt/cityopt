@@ -77,21 +77,20 @@
 									</c:if>
 								</td>
 							</tr>
-							
+							<tr height="20"></tr>
+							<tr>
+								<td>
+									<b>Import energy model</b><br>
+								</td>
+							</tr>
 							<form:form method="POST" action="uploadFile.html?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
 	        					<tr>
 	        						<!-- Energy model to upload: -->
-									<td><spring:message code="energy_model_to_upload"/>:</td>
+									<td>
+										<spring:message code="energy_model_to_upload"/>:</td>
 									<td><input type="file" name="file"></td>
 								</tr>
-								<tr>
-									<!-- Detail level -->
-									<td><spring:message code="detail_level"/>:</td>
-	        						<td>
-	        							<input type="text" name="detailLevel"> 
-	       							</td>
-								</tr>
-	       						<tr>	
+								<tr>	
 	       							<td></td>
 	        						<td>
 	        						<!-- Load File -->
@@ -121,33 +120,14 @@
 	       							</td>
 	   							</tr>	
     						</form:form>
-        					<form:form method="POST" action="importextparamsets.html" enctype="multipart/form-data">
-	        					<tr>
-	        						<td></td>
-									<td>File</td>
-									<td>Time series</td>
-								</tr>
-								<tr>
-	        						<!-- Import external parameter sets (CSV) -->
-	        						<td><spring:message code="import_external_parameter_sets_CSV"/></td>
-									<td><input id="file" name="file" type="file"/></td>
-									<td><input id="fileTimeSeries" name="Time series file" type="file"/></td>
-								</tr>
-	        					<tr>	
-	       							<td></td>
-	        						<td>
-	        							<input type="submit" value="Import files">
-	       							</td>
-	   							</tr>	
-    						</form:form>
     						<tr>
+								<td></td>
 								<!-- Show project data & Import buttons -->		
-								<td>
+								<td align="right">
 									<a href="projectdata.html">
 										<button><spring:message code="show_project_data"/></button>
 									</a>
 								</td>
-								<td align="right"></td>
 							</tr>
 						</table>
 					</td>
@@ -211,7 +191,9 @@
 				       							</td>
 				   							</tr>	
 			    						</form:form>
-			    						<tr align="right">						
+			    						<tr align="right">	
+			    							<td></td>
+			    							<td></td>					
 											<!-- Show scenarios -->
 											<td><a href="showscenarios.html"><button>
 											<spring:message code="show_scenarios"/></button></a></td>

@@ -111,9 +111,16 @@
 							</tr>
 							<form:form method="POST" action="importoptimizationset.html" enctype="multipart/form-data">
 	        					<tr>
-	        						<!-- Import optimization set file CSV -->
+	        						<td></td>
+									<!-- Import optimization set file CSV -->
 	        						<td><spring:message code="import_optimization_set_file"/></td>
+									<td>Time series</td>
+								</tr>
+								<tr>
+	        						<!-- Import external parameter sets (CSV) -->
+	        						<td>Import</td>
 									<td><input id="file" name="file" type="file"/></td>
+									<td><input id="fileTimeSeries" name="Time series file" type="file"/></td>
 								</tr>
 								<tr>	
 	       							<td></td>
