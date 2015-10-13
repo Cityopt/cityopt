@@ -137,23 +137,13 @@
 														<td><form:input path="user[${user.userid}]"
 																value="${user.name}" /></td>
 														<td><form:input path="password[${user.userid}]"
-																value="${user.password}" /></td>
-														
-														<!-- Set up userRoles Table -->
+																value="${user.password}" /></td>														
+														<!-- Set up userRoles Table -->														
 														<td>
-														
-														<c:set var="userRoleValue" value="${userRole[user.userid]}" />		
-															<form:select path="userRole[${user.userid}]">
-																<c:forEach items="${userGroups}" var="userGroup">
-																	<c:choose>
-																		<c:when	test="${userGroup.usergroupid == userRoleValue}">
-																			<option value="${userGroup.usergroupid}" selected>
-																				${userGroup.name}</option>																			
-																		</c:when>
-																		<c:otherwise>
+															<form:select path="userRole[${user.userid}]">																
+																<option value="" selected></option>
+																<c:forEach items="${userGroups}" var="userGroup">																																
 																			<option value="${userGroup.usergroupid}">${userGroup.name}</option>
-																		</c:otherwise>
-																	</c:choose>
 																</c:forEach>
 															</form:select>
 														</td>
@@ -170,12 +160,10 @@
 																	value="${user.enabled}" id="myCheckbox" />
 
 															</c:if></td>
-															
-															
-																										
-													
-
+																		
 														<!-- Edit -button -->
+						
+														
 														<td><a
 															href="<c:url value='edituser.html?userid=${user.userid}'/>">
 																<button align="right" type="button" value="Edit">
@@ -192,16 +180,15 @@
 																</button>
 														</a></td>
 													</tr>
-													<!-- 	
-																									
+													
+													<!--											
 														<tr>	
 														<c:forEach items="${userRoles}" var="projectRole">																						
 														<tr>																
 														${projectRole.usergroup.name}
 														${projectRole.project.name}
 														</tr>						
-							   							</c:forEach>
-							   							
+							   							</c:forEach>							   							
 														<td>
 														<form:select path="project[${user.userid}]">
 																<c:forEach items="${projects}" var="project">

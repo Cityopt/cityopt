@@ -69,6 +69,7 @@ import eu.cityopt.DTO.UserGroupProjectDTO;
 import eu.cityopt.config.AppMetadata;
 //Contains Forms for UI
 import eu.cityopt.forms.ExternParamIDForm;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -174,6 +175,7 @@ import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.web.RoleForm;
 import eu.cityopt.web.ScenarioParamForm;
 import eu.cityopt.web.UnitForm;
 import eu.cityopt.web.UserManagementForm;
@@ -879,12 +881,10 @@ public class ProjectController {
         String version = appMetaData.getVersion();
         model.put("version", version);
         
+               
+       // BCryptPasswordEncoder passwordEnconder = new BCryptPasswordEncoder(12);       
+       // Password dosen't help in trimming or does it?
         
-        
-       // BCryptPasswordEncoder passwordEnconder = new BCryptPasswordEncoder(12);
-        
-        
-         // Password dosen't help in trimming or does it?
         String username = userForm.getName();
         String password = userForm.getPassword();
        
@@ -893,8 +893,7 @@ public class ProjectController {
         try {
             user = userService.findByNameAndPassword(username, password);
             
-            // ToDo Implement theese:
-            
+            // ToDo Implement theese:            
             //user = userService.findByName(username);
             // String (encrypted password) getEncryptedPasswordByName(username);
             // passwordEnconder.matches(rawPassword, encodedPassword)
@@ -1429,7 +1428,13 @@ public class ProjectController {
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
-
+        List<ProjectDTO> projects = projectService.findAll();
+        List<UserGroupDTO> userGroups= userGroupService.findAll();
+        
+        model.put("projects", projects);
+        model.put("userGroups", userGroups);
+        RoleForm form = new RoleForm();        
+        model.put("RoleForm", form);
         model.put("user", user);
         List<UserGroupProjectDTO> listUserGroupProjects = userGroupProjectService.findByUser(nUserId);
         model.put("userRoles", listUserGroupProjects);
@@ -1483,15 +1488,16 @@ public class ProjectController {
     
     
     @RequestMapping(value="removerole", method=RequestMethod.GET)
-    public String RemoveRole(Map<String, Object> model) {
-        //int nUserId = Integer.parseInt(userid);        
-        
+    public String RemoveRole(Map<String, Object> model,
+    	@RequestParam(value="userid", required=true) String userid) {
+        //int nUserId = Integer.parseInt(userid); 
     	System.out.println("delete invoked");        
-        return "edituser";
+    	this.InitiateEditUser(model, userid);
+    	return "edituser";
+    	}
+        //
         
-        //@RequestParam(value="userid", required=true) String userid
-        
-    }
+    
     
     @RequestMapping(value="createrole", method=RequestMethod.GET)
     public String getAddRole(Map<String, Object> model, 
