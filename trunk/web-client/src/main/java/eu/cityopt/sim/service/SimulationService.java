@@ -358,14 +358,16 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                 ExtParamVal extParamVal = extParamValSetComp.getExtparamval(); 
                 String extName = extParamVal.getExtparam().getName();
                 Type extType = namespace.externals.get(extName);
-                Object simValue;
-                if (extType.isTimeSeriesType()) {
-                    simValue = loadTimeSeries(extParamVal.getTimeseries(), extType,
-                            namespace.evaluator, namespace.timeOrigin);
-                } else {
-                    simValue = extType.parse(extParamVal.getValue(), namespace);
+                if (extType != null) {
+	                Object simValue;
+	                if (extType.isTimeSeriesType()) {
+	                    simValue = loadTimeSeries(extParamVal.getTimeseries(), extType,
+	                            namespace.evaluator, namespace.timeOrigin);
+	                } else {
+	                    simValue = extType.parse(extParamVal.getValue(), namespace);
+	                }
+	                simExternals.put(extName, simValue);
                 }
-                simExternals.put(extName, simValue);
             }
         }
         return simExternals;
