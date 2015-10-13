@@ -70,12 +70,34 @@
 								<td>
 							</tr>
 							<tr>
-								
+								<!-- Main Role  -->								
+								<td><spring:message code="role" />:</td>
+								<td>
+								<form:select path="role">																
+										<option value="3" selected>Role_Standard</option>
+										<c:forEach items="${userGroups}" var="userGroup">																																
+										<option value="${userGroup.usergroupid}">${userGroup.name}</option>
+										</c:forEach>
+								</form:select>
+								</td>								
+							</tr>
+							<tr>
+								<td><spring:message code="project" />:</td>
+								<td>
+								<form:select path="project">
+								<c:forEach items="${projects}" var="project">
+									<option value="${project.name}">${project.name}</option>
+								</c:forEach>
+								</form:select>
+								</td>
+								<td><a href="createproject.html"><button
+										style="width: 100px" type="button" value="create_project">
+										<spring:message code="create_project" /></button></a>
+								</td>							
 							</tr>
 							
-							<tr height=50px; />
-							<td/>
-														
+							<tr height=50px;>							
+							<td></td>							
 							<!-- Create submit and Cancel button -->
 							<td align="right"><input style="width: 100px" type="submit"
 								value="<spring:message code="create"/>" />
