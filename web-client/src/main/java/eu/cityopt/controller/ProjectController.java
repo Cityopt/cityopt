@@ -786,84 +786,6 @@ public class ProjectController {
 	    	e.printStackTrace();
 	    }
 	}
-    
-    @RequestMapping(value = "importextparamsets", method = RequestMethod.POST)
-    public String importExtParamSets(Map<String, Object> model, 
-        @RequestParam("file") MultipartFile file,
-        @RequestParam("fileTimeSeries") MultipartFile fileTimesSeries) {
-    
-        ProjectDTO project = (ProjectDTO) model.get("project");
-
-        if (project == null)
-        {
-            return "error";
-        }
-
-        File convFile = new File(file.getOriginalFilename());
-        File convFile2 = new File(fileTimesSeries.getOriginalFilename());
-
-        try {
-			convFile.createNewFile();
-	        convFile2.createNewFile();
-        
-	        FileOutputStream fos = new FileOutputStream(convFile); 
-	        fos.write(file.getBytes());
-	        fos.close(); 
-	        
-	        fos = new FileOutputStream(convFile2); 
-	        fos.write(fileTimesSeries.getBytes());
-	        fos.close(); 
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		} 
-        
-        try {
-			importService.importExtParamValSet(project.getPrjid(), convFile, convFile2);
-		} catch (EntityNotFoundException e) {
-			e.printStackTrace();
-		} 
-        
-        return "importextparamsets";
-    }
-    
-    @RequestMapping(value = "importcomponents", method = RequestMethod.POST)
-    public String uploadComponentsFileHandler(Map<String, Object> model, 
-            @RequestParam("file") MultipartFile file) {
-
-        if (!file.isEmpty()) {
-            try {
-                byte[] bytes = file.getBytes();
-
-                ProjectDTO project = (ProjectDTO) model.get("project");
-
-                if (project == null)
-                {
-                    return "error";
-                }
-
-                try {
-                    project = projectService.findByID(project.getPrjid());
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-                model.put("project", project);
-
-                Set<String> simulatorNames = SimulatorManagers.getSimulatorNames();
-                String simulatorName = simulatorNames.iterator().next();
-                Instant timeOrigin =  Instant.parse("2015-01-01T00:00:00Z");
-
-                importExportService.importSimulationModel(project.getPrjid(), 0, "Imported evergy model " + Instant.now(), bytes, simulatorName, timeOrigin);
-                importExportService.importModelInputsAndOutputs(project.getPrjid(), 0);
-
-                //Path path = new Path(file.getOriginalFilename());
-                //importExportService.importSimulationStructure(project.getPrjid(), path);
-            } catch (Exception e) {
-                return "You failed to upload => " + e.getMessage();
-            }
-        } else {
-        }
-        return "editproject";
-    }
 
     @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="editproject", method=RequestMethod.POST)
@@ -1489,9 +1411,6 @@ public class ProjectController {
          return "usermanagement"; 
      }
     
-    
-    
-    
     @RequestMapping(value="edituser",method=RequestMethod.GET)
     public String getEditUser(Map<String, Object> model, 
             @RequestParam(value="userid", required=true) String userid) {
@@ -1515,11 +1434,7 @@ public class ProjectController {
         List<UserGroupProjectDTO> listUserGroupProjects = userGroupProjectService.findByUser(nUserId);
         model.put("userRoles", listUserGroupProjects);
     }
-    
-   // -------
-    
-    
-  //user.setName(form.getUser());
+    //user.setName(form.getUser());
     //List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
     //@RequestParam(value="userid", required=true) String userid
     	//for (InputParamValDTO inputParameterValue : inputParamVals) {
@@ -1541,7 +1456,6 @@ public class ProjectController {
         return "edituser";
         */
    
-
     @RequestMapping(value="edituser", method=RequestMethod.POST)
 	public String getEditUserPost(UserForm userForm, Map<String, Object> model,
 		@RequestParam(value="userid", required=true) String userId) {
@@ -1567,9 +1481,6 @@ public class ProjectController {
 		return "usermanagement";
     }
     
-    
-    
-	
     
     @RequestMapping(value="removerole", method=RequestMethod.GET)
     public String RemoveRole(Map<String, Object> model) {
@@ -1737,9 +1648,6 @@ public class ProjectController {
 
         return "coordinates";
     }
-
-
-
 
     @RequestMapping(value="projectparameters", method=RequestMethod.GET)
     public String getProjectParameters(Map<String, Object> model, 

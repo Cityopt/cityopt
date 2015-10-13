@@ -24,7 +24,7 @@
 		<td valign="top">
 			<div style="overflow:scroll;height:800px;width:1200px;overflow:auto">
 			<table>
-				<col style="width:500px">	
+				<col style="width:600px">	
 				<col style="width:700px">	
 			
 				<tr>
@@ -120,7 +120,64 @@
 	       							</td>
 	   							</tr>	
     						</form:form>
+    													
+    						<form:form method="POST" action="importoptimizationset.html" enctype="multipart/form-data">
+	        					<tr>
+	        						<td><b>Import optimization set</b></td>
+									<!-- Import optimization set file CSV -->
+	        						<td>Optimization set file (CSV)</td>
+									<td>Time series</td>
+								</tr>
+								<tr>
+	        						<!-- Import external parameter sets (CSV) -->
+	        						<td></td>
+									<td><input id="file" name="file" type="file"/></td>
+									<td><input id="fileTimeSeries" name="fileTimeSeries" type="file"/></td>
+								</tr>
+								<tr>	
+	       							<td></td>
+	        						<td>
+	        							<input type="submit" value="Import file">
+	       							</td>
+	   							</tr>	
+    						</form:form>
+    						<tr height="20">
+							</tr>
+    						<form:form method="POST" action="importoptimizationproblem.html" enctype="multipart/form-data">
+	        					<tr>
+	        						<td><b>Import optimization problem</b></td>
+									<!-- Import optimization set file CSV -->
+	        						<td>Optimization problem file (CSV)</td>
+									<td>Algorithm parameter file (CSV)</td>
+								</tr>
+								<tr>
+	        						<!-- Import external parameter sets (CSV) -->
+	        						<td></td>
+									<td><input id="fileProblem" name="fileProblem" type="file"/></td>
+									<td><input id="fileAlgorithm" name="fileAlgorithm" type="file"/></td>
+								</tr>
+								<tr height="20"></tr>
+	        					<tr>
+	        						<td></td>
+									<!-- Import optimization set file CSV -->
+	        						<td></td>
+									<td>Time series (CSV)</td>
+								</tr>
+								<tr>
+	        						<!-- Import external parameter sets (CSV) -->
+	        						<td></td>
+									<td></td>
+									<td><input id="fileTimeSeries" name="fileTimeSeries" type="file"/></td>
+								</tr>
+								<tr>	
+	       							<td></td>
+	        						<td>
+	        							<input type="submit" value="Import files">
+	       							</td>
+	   							</tr>	
+    						</form:form>
     						<tr>
+								<td></td>
 								<td></td>
 								<!-- Show project data & Import buttons -->		
 								<td align="right">
@@ -162,26 +219,6 @@
 				        						<td><spring:message code="import_scenarios"/> (CSV)</td>
 												<td><input id="file" name="file" type="file"/></td>
 												<td><input id="timeSeriesFile1" name="timeSeriesFile1" type="file"/></td>
-											</tr>
-				        					<tr>
-				        						<td></td>
-												<td></td>
-												<td><input id="timeSeriesFile2" name="timeSeriesFile2" type="file"/></td>
-											</tr>
-				        					<tr>
-				        						<td></td>
-												<td></td>
-												<td><input id="timeSeriesFile3" name="timeSeriesFile3" type="file"/></td>
-											</tr>
-				        					<tr>
-				        						<td></td>
-												<td></td>
-												<td><input id="timeSeriesFile4" name="timeSeriesFile4" type="file"/></td>
-											</tr>
-				        					<tr>
-				        						<td></td>
-												<td></td>
-												<td><input id="timeSeriesFile5" name="timeSeriesFile5" type="file"/></td>
 											</tr>
 											<tr>	
 				       							<td></td>

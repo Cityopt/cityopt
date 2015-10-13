@@ -22,7 +22,6 @@
 		<td width="30"></td>
 		<td valign="top">
 			<h2 class="error">${errorMessage}</h2>
-			<form:form method="post" action="editoptimizationset.html" modelAttribute="optimizationset">
 			<table>
 				<col style="width: 400px;">
 				<col style="width: 450px;">
@@ -85,6 +84,7 @@
 							<col style="width: 80px;">
 							<col style="width: 300px;">
 							<col style="width: 175px;">
+							<form:form method="post" action="editoptimizationset.html" modelAttribute="optimizationset">
 							<tr>
 								<!-- Name -->								
 								<td><spring:message code="name"/>:</td>
@@ -109,26 +109,9 @@
 									<spring:message code="run_search"/></button></a>
 								</td>
 							</tr>
-							<form:form method="POST" action="importoptimizationset.html" enctype="multipart/form-data">
-	        					<tr>
-	        						<td></td>
-									<!-- Import optimization set file CSV -->
-	        						<td><spring:message code="import_optimization_set_file"/></td>
-									<td>Time series</td>
-								</tr>
-								<tr>
-	        						<!-- Import external parameter sets (CSV) -->
-	        						<td>Import</td>
-									<td><input id="file" name="file" type="file"/></td>
-									<td><input id="fileTimeSeries" name="Time series file" type="file"/></td>
-								</tr>
-								<tr>	
-	       							<td></td>
-	        						<td>
-	        							<input type="submit" value="Import file">
-	       							</td>
-	   							</tr>	
-    						</form:form>
+							</form:form>
+							<tr height="20">
+							</tr>
 						</table>
 					</td>
 				</tr>
@@ -351,7 +334,7 @@
 				</tr>
 			
 			</table>
-			</form:form>
+			
 		</td>
 	</tr>
 </table>

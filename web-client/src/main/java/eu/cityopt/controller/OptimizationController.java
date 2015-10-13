@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -27,7 +29,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.omg.IOP.Encoding;
+import org.python.google.common.io.Files;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
@@ -1210,7 +1215,9 @@ public class OptimizationController {
 	}
 	
     @RequestMapping(value = "importoptimizationset", method = RequestMethod.POST)
-    public String uploadCSVFileHandler(Map<String, Object> model, @RequestParam("file") MultipartFile file) {
+    public String uploadCSVFileHandler(Map<String, Object> model, 
+		@RequestParam("file") MultipartFile file,
+		@RequestParam("fileTimeSeries") MultipartFile fileTimeSeries) {
 
         if (!file.isEmpty()) {
             try {
@@ -1221,6 +1228,8 @@ public class OptimizationController {
                     return "error";
                 }
 
+                AppUserDTO user = (AppUserDTO) model.get("user");
+                
                 try {
                     project = projectService.findByID(project.getPrjid());
                 } catch (Exception e1) {
@@ -1228,35 +1237,36 @@ public class OptimizationController {
                 }
                 model.put("project", project);
 
-                //InputStream structureStream = file.getInputStream();
-                //importExportService.importOptimisationProblem(projectId, name, problemFile, algorithmId, algorithmParameterFile, timeSeriesFiles)
-                //importExportService.importOptimisationSet(projectId, userId, name, problemFile, timeSeriesFiles)
+                File file1 = new File("temp");
+				byte[] bytes = file.getBytes();
+				Files.write(bytes, file1);
+				Path path1 = file1.toPath();
+				
+				File file2 = new File("temp_timeseries");
+				bytes = fileTimeSeries.getBytes();
+				Files.write(bytes, file2);
+				Path path2 = file2.toPath();
+				
+                System.out.println("Starting importing optimization set");
+                importExportService.importOptimisationSet(project.getPrjid(), user.getUserid(), "optimization set", path1, path2);
 
-                List<MetricValDTO> listMetricVals = metricValService.findAll();
-                List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
-
-                for (int i = 0; i < listMetricVals.size(); i++)
-                {
-                    MetricValDTO metricVal = listMetricVals.get(i);
-
-                    if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
-                    {
-                        listProjectMetricVals.add(metricVal);
-                    }
-                }
-                model.put("metricVals", listProjectMetricVals);
+                System.out.println("Import done");
             } catch (Exception e) {
+                e.printStackTrace();
                 return "You failed to upload => " + e.getMessage();
             }
         } else {
         }
-        return "editoptimizationset";
+        return "importdata";
     }
     
     @RequestMapping(value = "importoptimizationproblem", method = RequestMethod.POST)
-    public String importOptimizationProblem(Map<String, Object> model, @RequestParam("file") MultipartFile file) {
+    public String importOptimizationProblem(Map<String, Object> model, 
+		@RequestParam("fileProblem") MultipartFile fileProblem,
+		@RequestParam("fileAlgorithm") MultipartFile fileAlgorithm,
+		@RequestParam("fileTimeSeries") MultipartFile fileTimeSeries) {
 
-        if (!file.isEmpty()) {
+        if (!fileProblem.isEmpty()) {
             try {
                 ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1272,29 +1282,39 @@ public class OptimizationController {
                 }
                 model.put("project", project);
 
-                //InputStream structureStream = file.getInputStream();
-                //importExportService.importOptimisationProblem(projectId, name, problemFile, algorithmId, algorithmParameterFile, timeSeriesFiles)
-                //importExportService.importOptimisationSet(projectId, userId, name, problemFile, timeSeriesFiles)
+                File file1 = new File("temp");
+				byte[] bytes = fileProblem.getBytes();
+				Files.write(bytes, file1);
+				Path path1 = file1.toPath();
+				
+				File file2 = new File("temp");
+				bytes = fileAlgorithm.getBytes();
+				Files.write(bytes, file2);
+				Path path2 = file2.toPath();
 
-                List<MetricValDTO> listMetricVals = metricValService.findAll();
-                List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+				File file3 = new File("temp");
+				bytes = fileTimeSeries.getBytes();
+				Files.write(bytes, file3);
+				Path path3 = file3.toPath();
+				
+				InputStream structureStream = fileProblem.getInputStream();
+                
+				/*StringWriter writer = new StringWriter();
+				IOUtils.copy(structureStream, writer);
+				String theString = writer.toString();
+				
+				System.out.println("Starting importing of this file: " + theString);*/
+				
+				importExportService.importSimulationStructure(project.getPrjid(), structureStream);
 
-                for (int i = 0; i < listMetricVals.size(); i++)
-                {
-                    MetricValDTO metricVal = listMetricVals.get(i);
-
-                    if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
-                    {
-                        listProjectMetricVals.add(metricVal);
-                    }
-                }
-                model.put("metricVals", listProjectMetricVals);
+                importExportService.importOptimisationProblem(project.getPrjid(), "test_name", path1, null, null, path3);
             } catch (Exception e) {
+                e.printStackTrace();
                 return "You failed to upload => " + e.getMessage();
             }
         } else {
         }
-        return "editoptimizationset";
+        return "importdata";
     }
     
     @RequestMapping(value="databaseoptimization", method=RequestMethod.GET)
