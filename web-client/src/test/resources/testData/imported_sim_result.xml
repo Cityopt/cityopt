@@ -92,10 +92,6 @@
   <inputparameter name="A14_Storage_h"/>
   <algorithm description="grid search"/>
   <algorithm description="genetic algorithm"/>
-  <algorithm description="genetic algorithm"/>
-  <algorithm description="genetic algorithm"/>
-  <algorithm description="genetic algorithm"/>
-  <algorithm description="grid search"/>
   <scenariogenerator/>
   <scenario description="Imported from import_sim_scenarios.csv" status="SUCCESS"/>
   <optconstraint/>
