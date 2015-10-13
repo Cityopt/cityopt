@@ -888,11 +888,7 @@ public class ScenarioController {
 	@RequestMapping(value = "importscenarios", method = RequestMethod.POST)
 	public String uploadCSVFileHandler(Map<String, Object> model, 
 		@RequestParam("file") MultipartFile file,
-		@RequestParam("timeSeriesFile1") MultipartFile timeSeriesMPFile1,
-		@RequestParam("timeSeriesFile2") MultipartFile timeSeriesMPFile2,
-		@RequestParam("timeSeriesFile3") MultipartFile timeSeriesMPFile3,
-		@RequestParam("timeSeriesFile4") MultipartFile timeSeriesMPFile4,
-		@RequestParam("timeSeriesFile5") MultipartFile timeSeriesMPFile5) {
+		@RequestParam("timeSeriesFile1") MultipartFile timeSeriesMPFile1) {
 	
 		if (!file.isEmpty()) {
 	        try {
@@ -916,15 +912,7 @@ public class ScenarioController {
 
 				List<File> listTSFiles = new ArrayList<File>();
 				File timeSeriesFile1 = null;
-				File timeSeriesFile2 = null;
-				File timeSeriesFile3 = null;
-				File timeSeriesFile4 = null;
-				File timeSeriesFile5 = null;
 				byte[] timeSeriesBytes1 = null;
-				byte[] timeSeriesBytes2 = null;
-				byte[] timeSeriesBytes3 = null;
-				byte[] timeSeriesBytes4 = null;
-				byte[] timeSeriesBytes5 = null;
 				
 				if (timeSeriesMPFile1 != null)
 				{
@@ -934,39 +922,7 @@ public class ScenarioController {
 					listTSFiles.add(timeSeriesFile1);
 				}
 				
-				if (timeSeriesMPFile2 != null)
-				{
-					timeSeriesFile2 = new File("temp_timeseries2");
-					timeSeriesBytes2 = timeSeriesMPFile2.getBytes();
-					Files.write(timeSeriesBytes2, timeSeriesFile2);
-					listTSFiles.add(timeSeriesFile2);
-				}
-
-				if (timeSeriesMPFile3 != null)
-				{
-					timeSeriesFile3 = new File("temp_timeseries3");
-					timeSeriesBytes3 = timeSeriesMPFile3.getBytes();
-					Files.write(timeSeriesBytes3, timeSeriesFile3);
-					listTSFiles.add(timeSeriesFile3);
-				}
-
-				if (timeSeriesMPFile4 != null)
-				{
-					timeSeriesFile4 = new File("temp_timeseries4");
-					timeSeriesBytes4 = timeSeriesMPFile4.getBytes();
-					Files.write(timeSeriesBytes4, timeSeriesFile4);
-					listTSFiles.add(timeSeriesFile4);
-				}
-				
-				if (timeSeriesMPFile5 != null)
-				{
-					timeSeriesFile5 = new File("temp_timeseries");
-					timeSeriesBytes5 = timeSeriesMPFile5.getBytes();
-					Files.write(timeSeriesBytes5, timeSeriesFile5);
-					listTSFiles.add(timeSeriesFile5);
-				}
-				
-				importService.importScenarioData(project.getPrjid(), scenarioFile, listTSFiles);
+				importExportService.importScenarioData(project.getPrjid(), scenarioFile.toPath(), timeSeriesFile1.toPath());
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        	return "You failed to upload => " + e.getMessage();
