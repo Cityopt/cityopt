@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -139,10 +140,21 @@
 														<td><form:input path="password[${user.userid}]"
 																value="${user.password}" /></td>														
 														<!-- Set up userRoles Table -->														
+														
+														
+														
+														
+														
 														<td>
-															<form:select path="userRole[${user.userid}]">																
-																<option value="" selected></option>
-																<c:forEach items="${userGroups}" var="userGroup">																																
+															<c:set var="userID" value="${user.userid}"/>
+															<form:select path="userRole[${user.userid}]">
+																		<c:forEach items="${UserGroupProject}" var="GroupProject">
+																			<c:if test="${userGroupProject.appuser eq userID}">
+																				</option>	
+																			</c:if>
+																		</c:forEach>
+																<option value="${userGroupProject.usergroupprojectid}" selected>${userGroupProject.usergroupprojectid.name}															
+																<c:forEach items="${userGroups}" var="userGroup">																																																			
 																			<option value="${userGroup.usergroupid}">${userGroup.name}</option>
 																</c:forEach>
 															</form:select>

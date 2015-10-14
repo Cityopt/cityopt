@@ -97,7 +97,7 @@
 									
 									<td>
 										<c:set var="tooltip_delete"><spring:message code="tooltip_delete"/></c:set>	
-										<a href="<c:url value='removerole.html?userid=&roleid=${projectRole.usergroup.usergroupid}'/>" title="${tooltip_delete}"
+										<a href="<c:url value='removerole.html?userid=${user.userid}&projectid=${projectRole.usergroupprojectid}'/>" title="${tooltip_delete}"
 										 onclick="return confirm('<spring:message code="confirm_project_deletion"/>')">
 											<button align="right" type="button"><spring:message code="remove"/></button>
 										</a>
