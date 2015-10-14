@@ -296,14 +296,10 @@ public class ProjectController {
 
     	@RequestMapping(method=RequestMethod.GET, value="/login")
 		public String displayLoginPage(Map<String, Object> model){
-    		
-    		
-    		//System.out.println("login invoked");
-    		 
+    		     		   		 
     		 AppUserDTO user = new AppUserDTO();
     	     model.put("user", user);
-
-    		return "login";		 
+    		 return "login";		 
 		}
     	
     	private String getPrincipal(){
@@ -345,10 +341,9 @@ public class ProjectController {
     	}
     	
     	
-    	    	
     	@RequestMapping(value="/loginOK", method=RequestMethod.GET)
     	public String loginOK(Map<String, Object> model){
-    		//System.out.println("loginOK");
+    		
     		AppUserDTO user = new AppUserDTO();
     		user.setName(this.getPrincipal());
     		model.put("user", user);
@@ -948,16 +943,10 @@ public class ProjectController {
     // This method handles project cloning.	
     @RequestMapping(value="cloneproject", method=RequestMethod.GET)
     public String CloneScenario(Map<String, Object> model, @RequestParam(value = "projectid") String projectid) {
-
-        ProjectDTO project = (ProjectDTO) model.get("project");
-        int nProjectId = Integer.parseInt(projectid);
-        try {
-            project = projectService.findByID(nProjectId);
-        } catch (EntityNotFoundException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }		
-        String clonename = project.getName()+"(copy)";
+      
+    	ProjectDTO project= this.ParseProjectIDtoProjectDTO(model, projectid);	
+    	int nProjectId = Integer.parseInt(projectid);    	
+    	String clonename = project.getName()+"(copy)";
         int i=0;
         while(projectService.findByName(clonename)!=null){
             i++;
@@ -974,6 +963,22 @@ public class ProjectController {
         return "openproject";
         // ;(projectid, clonename, true, false, true, false);
     }
+    
+    
+    // Get Project from database based on model and projectID
+    public ProjectDTO ParseProjectIDtoProjectDTO(Map<String, Object> model, String projectid){
+    	 
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+          int nProjectId = Integer.parseInt(projectid);
+          try {
+              project = projectService.findByID(nProjectId);
+          } catch (EntityNotFoundException e1) {
+              // TODO Auto-generated catch block
+              e1.printStackTrace();
+          }
+    	return project;
+    }
+    
 
     
     //@author Markus Turunen Usemanagement
@@ -982,18 +987,11 @@ public class ProjectController {
     @RequestMapping(value="usermanagement", method=RequestMethod.GET)
     public String getUserManagement(Map<String, Object> model) {
 
-        AppUserDTO user = (AppUserDTO) model.get("user");
-        //ProjectDTO project = (ProjectDTO) model.get("project");
-
-        // TODO
-        if (user != null)// && project != null)
-        {            
-            {
+        AppUserDTO user = (AppUserDTO) model.get("user");      
+        if (user != null){
             	initializeUserManagement(model);                
                 return "usermanagement";
-            }
-        }
-        else{}
+            }        
         return "error";
     }
     
@@ -1023,8 +1021,7 @@ public class ProjectController {
     			user.setName(form.getUser().get(key).trim());
     			user.setPassword(form.getPassword().get(key).trim());    			
     			
-    			// Set up Boolean Checkbox
-    			// Bug fix Form Checkbox get nulls; 
+    			// Set up Boolean Checkbox Bug fix Form Checkbox get nulls; 
     			if(form.getEnabled().get(key)!=null){
     				user.setEnabled(true);
     			}else{
@@ -1043,9 +1040,10 @@ public class ProjectController {
         
     //@author Markus Turunen
     // Initialize the UserManagementForms set up the model;
-    // Made class to reduce repetition in my code.
-    
+    // Made class to reduce repetition in my code.    
     public void initializeUserManagement(Map<String, Object> model){
+    	
+    	//Set up Variables 
     	List<AppUserDTO> users = userService.findAll();
         List<UserGroupDTO> userGroups= userGroupService.findAll();
         List<ProjectDTO> projects = projectService.findAll();        
@@ -1053,6 +1051,7 @@ public class ProjectController {
         UserForm userForm = new UserForm();        
     	UserManagementForm form = this.CreateUsemanagementForm(users);
     	
+    	//Put Front controller using model attribute.
     	model.put("UserForm",userForm);
     	model.put("UserGroupProject", usergroupprojects);
     	model.put("UserManagementForm", form);	
@@ -1066,7 +1065,6 @@ public class ProjectController {
     // Form Factory: 
     public UserManagementForm CreateUsemanagementForm(List<AppUserDTO> users){    
    
-    	
     	UserManagementForm form = new UserManagementForm();
     	UserGroupProject usergroup; 
     	
@@ -1097,7 +1095,6 @@ public class ProjectController {
 	
 	return form;   
 	}            	
-    
     
     // Usergroup Help Methods;
     public UserGroupProjectDTO CreateUserGroupDTO(UserGroupDTO usergroup, 
@@ -1438,6 +1435,7 @@ public class ProjectController {
         model.put("user", user);
         List<UserGroupProjectDTO> listUserGroupProjects = userGroupProjectService.findByUser(nUserId);
         model.put("userRoles", listUserGroupProjects);
+    
     }
     //user.setName(form.getUser());
     //List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
@@ -1465,16 +1463,9 @@ public class ProjectController {
 	public String getEditUserPost(UserForm userForm, Map<String, Object> model,
 		@RequestParam(value="userid", required=true) String userId) {
 
-		AppUserDTO user = null;
-		try {
-			user = (AppUserDTO) userService.findByID(Integer.parseInt(userId));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (EntityNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		if (userForm.getName() != null)
+    	AppUserDTO user = this.ParseUserIDtoUser(userId);
+    	
+    	if (userForm.getName() != null)
 		{
 			user.setName(userForm.getName());
 			userService.save(user);
@@ -1489,47 +1480,45 @@ public class ProjectController {
     
     @RequestMapping(value="removerole", method=RequestMethod.GET)
     public String RemoveRole(Map<String, Object> model,
-    	@RequestParam(value="userid", required=true) String userid) {
+    	@RequestParam(value="userid", required=true) String userid,
+    	@RequestParam(value="projectid", required=true) String projectid) {
         //int nUserId = Integer.parseInt(userid); 
-    	System.out.println("delete invoked");        
-    	this.InitiateEditUser(model, userid);
-    	return "edituser";
+    	   	
+    	System.out.println("delete invoked");
+    	System.out.println(projectid);
+    	System.out.println(userid);    	
+    	int useridn = Integer.parseInt(userid);
+    	int usergroupprojectid = Integer.parseInt(projectid);    	
+    	try {
+			userGroupProjectService.delete(usergroupprojectid);
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  	
+    	this.InitiateEditUser(model, userid);				
+		return "edituser";
     	}
-        //
-        
-    
-    
-    @RequestMapping(value="createrole", method=RequestMethod.GET)
-    public String getAddRole(Map<String, Object> model, 
-            @RequestParam(value="userid", required=true) String userid) {
-        int nUserId = Integer.parseInt(userid);
-
+      
+       
+    //Returns User from userDTO from raw input data        
+    public AppUserDTO ParseUserIDtoUser(String userid){    	
+    	int nUserId = Integer.parseInt(userid);
         AppUserDTO user = null;
-
         try {
             user = userService.findByID(nUserId);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
-
-        /*UserGroupDTO userGroup = new UserGroupDTO();
-		userGroup.setName("Administrator");
-
-		UserGroupDTO userGroup2 = new UserGroupDTO();
-		userGroup2.setName("Expert");
-
-		UserGroupDTO userGroup3 = new UserGroupDTO();
-		userGroup3.setName("Standard");
-
-		UserGroupDTO userGroup4 = new UserGroupDTO();
-		userGroup4.setName("Guest");
-
-		userGroupService.save(userGroup);
-		userGroupService.save(userGroup2);
-		userGroupService.save(userGroup3);
-		userGroupService.save(userGroup4);*/
-
-        List<ProjectDTO> projects = projectService.findAll();
+    	return user;    	
+    }
+    
+    
+    @RequestMapping(value="createrole", method=RequestMethod.GET)
+    public String getAddRole(Map<String, Object> model, 
+            @RequestParam(value="userid", required=true) String userid) {
+        
+    	AppUserDTO user=ParseUserIDtoUser(userid);
+    	List<ProjectDTO> projects = projectService.findAll();
         model.put("projects", projects);
         model.put("user", user);
         UserGroupProjectDTO role = new UserGroupProjectDTO();
@@ -1537,22 +1526,14 @@ public class ProjectController {
         
         return "createrole";
     }
-
+        
+    
     @RequestMapping(value="createrole", method=RequestMethod.POST)
     public String getCreateRolePost(Map<String, Object> model, HttpServletRequest request, 
             @RequestParam(value="userid", required=true) String userid) {
-        int nUserId = Integer.parseInt(userid);
-
-        AppUserDTO user = null;
-
-        try {
-            user = userService.findByID(nUserId);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-
+    	
+    	AppUserDTO user= ParseUserIDtoUser(userid);
         model.put("user", user);
-
         String role = request.getParameter("roleType");
         UserGroupDTO userGroup = null;
 
@@ -2007,7 +1988,6 @@ public class ProjectController {
 
         model.put("selectedcompid", nSelectedCompId);
         model.put("selectedComponent",  component);
-
         model.put("project", project);
 
         return "projectparameters";
@@ -2615,7 +2595,7 @@ public class ProjectController {
             @RequestParam(value="metricid", required=true) String metricid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
-        if (project == null)
+        if (project == null) 
         {
             return "error";
         }
