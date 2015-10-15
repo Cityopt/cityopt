@@ -692,7 +692,7 @@ public class ProjectController {
 	        timeSeriesPath = tempDir.getPath().resolve("timeseries.csv");
 	        scenarioPath = tempDir.getPath().resolve("scenarios.csv");
 	        
-	        List<ExtParamValSetDTO> extValSets = extParamValSetService.findAll();
+	        List<ExtParamValSetDTO> extValSets = projectService.getExtParamValSets(project.getPrjid());
 	        Set<Integer> extParamValSetIds = new HashSet<Integer>();
 	        
 	        for (ExtParamValSetDTO extValSet : extValSets)
