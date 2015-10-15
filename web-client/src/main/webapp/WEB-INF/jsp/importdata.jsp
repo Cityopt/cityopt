@@ -148,27 +148,15 @@
 	        						<td><b>Import optimization problem</b></td>
 									<!-- Import optimization set file CSV -->
 	        						<td>Optimization problem file (CSV)</td>
-									<td>Algorithm parameter file (CSV)</td>
-								</tr>
-								<tr>
-	        						<!-- Import external parameter sets (CSV) -->
-	        						<td></td>
-									<td><input id="fileProblem" name="fileProblem" type="file"/></td>
-									<td><input id="fileAlgorithm" name="fileAlgorithm" type="file"/></td>
-								</tr>
-								<tr height="20"></tr>
-	        					<tr>
-	        						<td></td>
-									<!-- Import optimization set file CSV -->
-	        						<td></td>
 									<td>Time series (CSV)</td>
 								</tr>
 								<tr>
 	        						<!-- Import external parameter sets (CSV) -->
 	        						<td></td>
-									<td></td>
+									<td><input id="fileProblem" name="fileProblem" type="file"/></td>
 									<td><input id="fileTimeSeries" name="fileTimeSeries" type="file"/></td>
 								</tr>
+								<tr height="20"></tr>
 								<tr>	
 	       							<td></td>
 	        						<td>

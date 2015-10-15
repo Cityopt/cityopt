@@ -1209,7 +1209,7 @@ public class ProjectController {
 		
 		try (TempDir tempDir = new TempDir("export")) {
 	        timeSeriesPath = tempDir.getPath().resolve("timeseries.csv");
-	        scenarioPath = tempDir.getPath().resolve("scenarios.csv");
+	        scenarioPath = tempDir.getPath().resolve("ext_param_sets.csv");
 	        
 	        List<ExtParamValSetDTO> extValSets = extParamValSetService.findAll();
 	        Set<Integer> extParamValSetIds = new HashSet<Integer>();

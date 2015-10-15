@@ -1230,6 +1230,11 @@ public class OptimizationController {
 
                 AppUserDTO user = (AppUserDTO) model.get("user");
                 
+                if (user == null)
+                {
+                	return "error";
+                }
+                
                 try {
                     project = projectService.findByID(project.getPrjid());
                 } catch (Exception e1) {
@@ -1247,6 +1252,9 @@ public class OptimizationController {
 				Files.write(bytes, file2);
 				Path path2 = file2.toPath();
 				
+				InputStream structureStream = file.getInputStream();
+				importExportService.importSimulationStructure(project.getPrjid(), structureStream);
+
                 System.out.println("Starting importing optimization set");
                 importExportService.importOptimisationSet(project.getPrjid(), user.getUserid(), "optimization set", path1, path2);
 
@@ -1263,7 +1271,6 @@ public class OptimizationController {
     @RequestMapping(value = "importoptimizationproblem", method = RequestMethod.POST)
     public String importOptimizationProblem(Map<String, Object> model, 
 		@RequestParam("fileProblem") MultipartFile fileProblem,
-		@RequestParam("fileAlgorithm") MultipartFile fileAlgorithm,
 		@RequestParam("fileTimeSeries") MultipartFile fileTimeSeries) {
 
         if (!fileProblem.isEmpty()) {
@@ -1287,15 +1294,20 @@ public class OptimizationController {
 				Files.write(bytes, file1);
 				Path path1 = file1.toPath();
 				
-				File file2 = new File("temp");
+				/*File file2 = new File("temp");
 				bytes = fileAlgorithm.getBytes();
 				Files.write(bytes, file2);
-				Path path2 = file2.toPath();
+				Path path2 = file2.toPath();*/
 
-				File file3 = new File("temp");
-				bytes = fileTimeSeries.getBytes();
-				Files.write(bytes, file3);
-				Path path3 = file3.toPath();
+				Path path3 = null;
+				
+				if (fileTimeSeries != null)
+				{
+					File file3 = new File("temp");
+					bytes = fileTimeSeries.getBytes();
+					Files.write(bytes, file3);
+					path3 = file3.toPath();
+				}
 				
 				InputStream structureStream = fileProblem.getInputStream();
                 
