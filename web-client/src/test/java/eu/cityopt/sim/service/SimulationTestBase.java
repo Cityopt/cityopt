@@ -77,9 +77,13 @@ public class SimulationTestBase {
         }
         return out.toArray(new String[out.size()]);
     }
+    
+    public InputStream openResource(String resourceName) {
+        return getClass().getResourceAsStream(resourceName);
+    }
 
     byte[] getResourceBytes(String resourceName) throws IOException {
-        try (InputStream in = getClass().getResource(resourceName).openStream()) {
+        try (InputStream in = openResource(resourceName)) {
             return IOUtils.toByteArray(in);
         }
     }

@@ -64,12 +64,12 @@ public class TestImportExportService extends SimulationTestBase {
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testImportOptimisationProblem() throws Exception {
         Project project = scenarioRepository.findByNameContaining("testscenario").get(0).getProject();
-        try (TempDir tempDir = new TempDir("testimport")) {
-            Path problemPath = copyResource("/test-problem.csv", tempDir);
-            Path paramPath = copyResource("/ga.properties", tempDir);
-            Path tsPath = copyResource("/timeseries.csv", tempDir);
+        try (InputStream problem = openResource("/test-problem.csv");
+             InputStream params = openResource("/ga.properties");
+             InputStream ts = openResource("/timeseries.csv")) {
             importExportService.importOptimisationProblem(
-                    project.getPrjid(), "testygeneration", problemPath, null, paramPath, tsPath);
+                    project.getPrjid(), "testygeneration", problem,
+                    null, params, ts);
         }
         dumpTables("import_problem");
     }
@@ -80,13 +80,13 @@ public class TestImportExportService extends SimulationTestBase {
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testExportOptimisationProblem() throws Exception {
         Project project = scenarioRepository.findByNameContaining("testscenario").get(0).getProject();
-        try (TempDir tempDir = new TempDir("testimport")) {
-            Path problemPath = copyResource("/test-problem.csv", tempDir);
-            Path paramPath = copyResource("/ga.properties", tempDir);
-            Path tsPath = copyResource("/timeseries.csv", tempDir);
+        try (TempDir tempDir = new TempDir("testimport");
+             InputStream problem = openResource("/test-problem.csv");
+             InputStream params = openResource("/ga.properties");
+             InputStream ts = openResource("/timeseries.csv")) {
             int sgid = importExportService.importOptimisationProblem(
-                    project.getPrjid(), "testygeneration", problemPath, null,
-                    paramPath, tsPath);
+                    project.getPrjid(), "testygeneration", problem, null,
+                    params, ts);
             Path pout = tempDir.getPath().resolve("problem-out.csv");
             Path tsout = tempDir.getPath().resolve("timeseries-out.csv");
             importExportService.exportOptimisationProblem(sgid, pout, tsout);
@@ -147,11 +147,11 @@ public class TestImportExportService extends SimulationTestBase {
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testImportOptimisationSet() throws Exception {
         Project project = scenarioRepository.findByNameContaining("testscenario").get(0).getProject();
-        try (TempDir tempDir = new TempDir("testimport")) {
-            Path problemPath = copyResource("/test-problem.csv", tempDir);
-            Path tsPath = copyResource("/timeseries.csv", tempDir);
+        try (TempDir tempDir = new TempDir("testimport");
+             InputStream problem = openResource("/test-problem.csv");
+             InputStream ts = openResource("/timeseries.csv")) {
             importExportService.importOptimisationSet(
-                    project.getPrjid(), null, "testimport", problemPath, tsPath);
+                    project.getPrjid(), null, "testimport", problem, ts);
         }
         dumpTables("import_optset");
     }
@@ -161,12 +161,11 @@ public class TestImportExportService extends SimulationTestBase {
     public void testExportOptimisationSet() throws Exception {
         Project project = scenarioRepository.findByNameContaining(
                 "testscenario").get(0).getProject();
-        try (TempDir tempDir = new TempDir("testimport")) {
-            Path problemPath = copyResource("/test-problem.csv", tempDir);
-            Path tsPath = copyResource("/timeseries.csv", tempDir);
+        try (TempDir tempDir = new TempDir("testimport");
+             InputStream problem = openResource("/test-problem.csv");
+             InputStream ts = openResource("/timeseries.csv")) {
             int optSetId = importExportService.importOptimisationSet(
-                    project.getPrjid(), null, "testimport",
-                    problemPath, tsPath);
+                    project.getPrjid(), null, "testimport", problem, ts);
             Path pout = tempDir.getPath().resolve("problem-out.csv");
             Path tsout = tempDir.getPath().resolve("timeseries-out.csv");
             importExportService.exportOptimisationSet(optSetId, pout, tsout);

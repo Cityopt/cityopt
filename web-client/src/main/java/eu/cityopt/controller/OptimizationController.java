@@ -1242,21 +1242,18 @@ public class OptimizationController {
                 }
                 model.put("project", project);
 
-                File file1 = new File("temp");
-				byte[] bytes = file.getBytes();
-				Files.write(bytes, file1);
-				Path path1 = file1.toPath();
-				
-				File file2 = new File("temp_timeseries");
-				bytes = fileTimeSeries.getBytes();
-				Files.write(bytes, file2);
-				Path path2 = file2.toPath();
-				
-				InputStream structureStream = file.getInputStream();
-				importExportService.importSimulationStructure(project.getPrjid(), structureStream);
+                try (InputStream structureStream = file.getInputStream()) {
+                    importExportService.importSimulationStructure(
+                            project.getPrjid(), structureStream);
+                }
 
                 System.out.println("Starting importing optimization set");
-                importExportService.importOptimisationSet(project.getPrjid(), user.getUserid(), "optimization set", path1, path2);
+                try (InputStream optset = file.getInputStream();
+                     InputStream ts = fileTimeSeries.getInputStream()) {
+                    importExportService.importOptimisationSet(
+                            project.getPrjid(), user.getUserid(),
+                            "optimization set", optset, ts);
+                }
 
                 System.out.println("Import done");
             } catch (Exception e) {
@@ -1269,9 +1266,10 @@ public class OptimizationController {
     }
     
     @RequestMapping(value = "importoptimizationproblem", method = RequestMethod.POST)
-    public String importOptimizationProblem(Map<String, Object> model, 
-		@RequestParam("fileProblem") MultipartFile fileProblem,
-		@RequestParam("fileTimeSeries") MultipartFile fileTimeSeries) {
+    public String importOptimizationProblem(
+            Map<String, Object> model, 
+            @RequestParam("fileProblem") MultipartFile fileProblem,
+            @RequestParam("fileTimeSeries") MultipartFile fileTimeSeries) {
 
         if (!fileProblem.isEmpty()) {
             try {
@@ -1289,37 +1287,22 @@ public class OptimizationController {
                 }
                 model.put("project", project);
 
-                File file1 = new File("temp");
-				byte[] bytes = fileProblem.getBytes();
-				Files.write(bytes, file1);
-				Path path1 = file1.toPath();
-				
-				/*File file2 = new File("temp");
-				bytes = fileAlgorithm.getBytes();
-				Files.write(bytes, file2);
-				Path path2 = file2.toPath();*/
-
-				Path path3 = null;
-				
-				if (fileTimeSeries != null)
-				{
-					File file3 = new File("temp2");
-					byte[] bytes2 = fileTimeSeries.getBytes();
-					Files.write(bytes2, file3);
-					path3 = file3.toPath();
-				}
-				
-				InputStream structureStream = fileProblem.getInputStream();
-                
-				/*StringWriter writer = new StringWriter();
+                /*StringWriter writer = new StringWriter();
 				IOUtils.copy(structureStream, writer);
 				String theString = writer.toString();
-				
-				System.out.println("Starting importing of this file: " + theString);*/
-				
-				importExportService.importSimulationStructure(project.getPrjid(), structureStream);
 
-                importExportService.importOptimisationProblem(project.getPrjid(), "test_name", path1, null, null, path3);
+				System.out.println("Starting importing of this file: " + theString);*/
+
+                try (InputStream in = fileProblem.getInputStream()) {
+                    importExportService.importSimulationStructure(
+                            project.getPrjid(), in);
+                }
+                try (InputStream problem = fileProblem.getInputStream();
+                     InputStream ts = fileTimeSeries.getInputStream()) {
+                    importExportService.importOptimisationProblem(
+                            project.getPrjid(), "test_name", problem,
+                            null, null, ts);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 return "You failed to upload => " + e.getMessage();
