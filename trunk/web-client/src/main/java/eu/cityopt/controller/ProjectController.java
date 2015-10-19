@@ -1051,6 +1051,8 @@ public class ProjectController {
         UserForm userForm = new UserForm();        
     	UserManagementForm form = this.CreateUsemanagementForm(users);
     	
+    	
+    	
     	//Put Front controller using model attribute.
     	model.put("UserForm",userForm);
     	model.put("UserGroupProject", usergroupprojects);
@@ -1062,7 +1064,9 @@ public class ProjectController {
         model.put("userRoles", listUserGroupProjects);        
     }    
     
-    // Form Factory: 
+    
+
+	// Form Factory: 
     public UserManagementForm CreateUsemanagementForm(List<AppUserDTO> users){    
    
     	UserManagementForm form = new UserManagementForm();
@@ -1109,6 +1113,17 @@ public class ProjectController {
     public void saveGroupProject(UserGroupProjectDTO userproject){    	
     	userGroupProjectService.save(userproject);
     }
+    
+    
+    // Try to make something to print user's projects and Roles,
+    public void UserProjectGroups(AppUserDTO user,UserGroupProjectDTO userGroup){
+    	
+    	
+    	    	
+    	
+    	
+    }
+    
     
     //------
 
@@ -1488,14 +1503,17 @@ public class ProjectController {
     	System.out.println(projectid);
     	System.out.println(userid);    	
     	int useridn = Integer.parseInt(userid);
-    	int usergroupprojectid = Integer.parseInt(projectid);    	
+    	int usergroupprojectid = Integer.parseInt(projectid);
+    	
     	try {
 			userGroupProjectService.delete(usergroupprojectid);
 		} catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}  	
-    	this.InitiateEditUser(model, userid);				
+		}   	
+    	    	
+    	
+		this.InitiateEditUser(model, userid);				
 		return "edituser";
     	}
       
@@ -1589,7 +1607,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value="deleteuser", method=RequestMethod.GET)
-    public String getDeleteUser(Model model, @RequestParam(value="userid") String userid) {
+    public String getDeleteUser(Map<String, Object> model, @RequestParam(value="userid") String userid) {
         int nUserId = Integer.parseInt(userid);
 
         if (nUserId >= 0)
@@ -1610,8 +1628,9 @@ public class ProjectController {
         }
 
         List<AppUserDTO> users = userService.findAll();
-        model.addAttribute("users", users);
-
+        //model.addAttribute("users", users);
+        this.initializeUserManagement(model);
+        
         return "usermanagement";
     }
 
