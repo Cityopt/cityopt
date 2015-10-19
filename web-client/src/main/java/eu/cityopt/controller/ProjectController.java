@@ -1395,10 +1395,9 @@ public class ProjectController {
              	   catch (EntityNotFoundException e) {
              		// TODO Auto-generated catch block e.printStackTrace();
              	   }
-             String userProject = userForm.getProject();
-             ProjectDTO project = projectService.findByName(userProject);	   
-             UserGroupProjectDTO usergroupDTO =new UserGroupProjectDTO();
-             usergroupDTO.setProject(project);
+                     
+             UserGroupProjectDTO usergroupDTO =new UserGroupProjectDTO();             
+             usergroupDTO.setProject(null);
              usergroupDTO.setAppuser(user);
            
              int useroleid=userForm.getRole();
@@ -1409,10 +1408,17 @@ public class ProjectController {
  				// TODO Auto-generated catch block
  				e.printStackTrace();
  			}
-             usergroupDTO.setUsergroup(newUser);
-             
-             
+             usergroupDTO.setUsergroup(newUser);             
              userGroupProjectService.save(usergroupDTO);
+             
+             
+             // Assign into initial asignment             
+             UserGroupProjectDTO usergroup2 = usergroupDTO;
+             String userProject = userForm.getProject();
+             ProjectDTO project = projectService.findByName(userProject);	
+             usergroup2.setProject(project);
+             userGroupProjectService.save(usergroup2); 
+             
              	   
              initializeUserManagement(model);           	  
          } 
