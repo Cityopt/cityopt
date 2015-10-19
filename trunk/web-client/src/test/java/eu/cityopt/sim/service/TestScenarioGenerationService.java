@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Arrays;
@@ -123,16 +124,17 @@ public class TestScenarioGenerationService extends SimulationTestBase {
                 modelData, "Apros-Combustion-5.13.06-64bit",
                 Instant.parse("2015-01-01T00:00:00Z"));
         Integer scId = null;
-        try (TempDir tempDir = new TempDir("testimport")) {
-            Path problemPath = copyResource("/ost-problem.csv", tempDir);
-            Path paramPath = copyResource("/ga.properties", tempDir);
-            Path tsPath = copyResource("/timeseries.csv", tempDir);
-            try (FileInputStream fis = new FileInputStream(problemPath.toFile())) {
-                importExportService.importSimulationStructure(project.getPrjid(), fis);
-            }
+        String problemRes = "/ost-problem.csv";
+        try (InputStream in = openResource(problemRes)) {
+            importExportService.importSimulationStructure(project.getPrjid(),
+                                                          in);
+        }
+        try (InputStream problem = openResource(problemRes);
+             InputStream params = openResource("/ga.properties");
+             InputStream ts = openResource("/timeseries.csv")) {
             scId = importExportService.importOptimisationProblem(
                     project.getPrjid(), "import optimisation test",
-                    problemPath, null, paramPath, tsPath);
+                    problem, null, params, ts);
         }
         runScenarioGeneration(scId, "imported");
         dumpTables("imported_ga");
@@ -148,16 +150,17 @@ public class TestScenarioGenerationService extends SimulationTestBase {
                 modelData, "Apros-Combustion-5.13.06-64bit",
                 Instant.parse("2015-01-01T00:00:00Z"));
         Integer scId = null;
-        try (TempDir tempDir = new TempDir("testimport")) {
-            Path problemPath = copyResource("/ost-problem-gs.csv", tempDir);
-            Path paramPath = copyResource("/gs.properties", tempDir);
-            Path tsPath = copyResource("/timeseries.csv", tempDir);
-            try (FileInputStream fis = new FileInputStream(problemPath.toFile())) {
-                importExportService.importSimulationStructure(project.getPrjid(), fis);
-            }
+        String problemRes = "/ost-problem-gs.csv";
+        try (InputStream in = openResource(problemRes)) {
+            importExportService.importSimulationStructure(project.getPrjid(),
+                                                          in);
+        }
+        try (InputStream problem = openResource(problemRes);
+             InputStream params = openResource("/gs.properties");
+             InputStream ts = openResource("/timeseries.csv")) {
             scId = importExportService.importOptimisationProblem(
                     project.getPrjid(), "import optimisation test",
-                    problemPath, null, paramPath, tsPath);
+                    problem, null, params, ts);
         }
         runScenarioGeneration(scId, "imported");
         dumpTables("imported_gs");

@@ -1,6 +1,5 @@
 package eu.cityopt.sim.service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -482,12 +481,15 @@ public class ImportExportService {
      *   in the database.
      * @param name name for the ScenarioGenerator row.  The same name is used for
      *   the created ExtParamValSet.
-     * @param problemFile defines the objectives and constraints
+     * @param problemStream defines the objectives and constraints
      * @param algorithmId identifies the optimisation algorithm.  May be left
      *   null, in which case the algorithm can be set in algorithm parameters.
-     * @param algorithmParameterFile algorithm parameters. May be left null.
-     * @param timeSeriesFiles paths of CSV files containing time series data
+     * @param algorithmParameterStream algorithm parameters. May be left null.
+     * @param timeSeriesStreams CSV streams containing time series data
      *   for external parameters
+     * @param timeSeriesNames Names to use in error messages about the
+     *   time series streams, in the same order as timeSeriesStreams.
+     *   If null, error messages refer to timeSeriesStreams indices.
      * @return id of created ScenarioGenerator row
      * @throws IOException 
      * @throws ConfigurationException 
@@ -496,14 +498,20 @@ public class ImportExportService {
      */
     @Transactional
     public int importOptimisationProblem(
-            int projectId, String name, Path problemFile, Integer algorithmId,
-            Path algorithmParameterFile, Path... timeSeriesFiles) 
-                    throws IOException, ConfigurationException, ParseException, ScriptException {
+            int projectId, String name, InputStream problemStream,
+            Integer algorithmId,
+            InputStream algorithmParameterStream,
+            InputStream[] timeSeriesStreams,
+            String[] timeSeriesNames) 
+                    throws IOException, ConfigurationException,
+                           ParseException, ScriptException
+    {
         Project project = projectRepository.findOne(projectId);
 
         AlgorithmParameters algorithmParameters = null;
-        if (algorithmParameterFile != null) {
-            algorithmParameters = readAlgorithmParameters(algorithmParameterFile);
+        if (algorithmParameterStream != null) {
+            algorithmParameters = readAlgorithmParameters(
+                    algorithmParameterStream);
         }
 
         Algorithm algorithm = null;
@@ -514,12 +522,31 @@ public class ImportExportService {
         }
 
         TimeSeriesData timeSeriesData =
-                readTimeSeriesCsv(project, timeSeriesFiles);
+                readTimeSeriesCsv(project, timeSeriesStreams, timeSeriesNames);
         OptimisationProblem problem =
-                OptimisationProblemIO.readProblemCsv(problemFile, timeSeriesData);
+                OptimisationProblemIO.readProblemCsv(
+                        problemStream, timeSeriesData);
 
-        return saveOptimisationProblem(project, name, problem, algorithm, algorithmParameters);
+        return saveOptimisationProblem(project, name, problem,
+                                       algorithm, algorithmParameters);
     }
+    
+    /**
+     * @see #importOptimisationProblem(int, String, InputStream, Integer, InputStream, InputStream[], String[])
+     */
+    @Transactional
+    public int importOptimisationProblem(
+            int projectId, String name, InputStream problemStream,
+            Integer algorithmId,
+            InputStream algorithmParameterStream,
+            InputStream... timeSeriesStreams)
+                    throws IOException, ConfigurationException,
+                           ParseException, ScriptException {
+        return importOptimisationProblem(
+                projectId, name, problemStream, algorithmId,
+                algorithmParameterStream, timeSeriesStreams, null);
+    }
+
     
     @Transactional(readOnly=true)
     public void exportOptimisationProblem(
@@ -544,7 +571,7 @@ public class ImportExportService {
      * @param projectId the associated project, which must have exactly the
      *   same external parameters, input parameters, output variables and
      *   metrics as the optimisation problem.  In an empty project they can
-     *   be set up by calling {@link #importSimulationStructure(int, Path, Path...)}
+     *   be set up by calling {@link #importSimulationStructure}
      *   with the same input files.
      *   The project must also have a SimulationModel with a defined time origin
      *   in the database.
@@ -561,20 +588,34 @@ public class ImportExportService {
     @Transactional
     public int importOptimisationSet(
             int projectId, Integer userId,
-            String name, Path problemFile, Path... timeSeriesFiles) 
+            String name, InputStream problemStream,
+            InputStream[] timeSeriesStreams,
+            String[] timeSeriesNames) 
                    throws IOException, ParseException, ScriptException
     {
         Project project = projectRepository.findOne(projectId);
 
         TimeSeriesData timeSeriesData =
-                readTimeSeriesCsv(project, timeSeriesFiles);
+                readTimeSeriesCsv(project, timeSeriesStreams, timeSeriesNames);
         //TODO should have a specific method for reading an optimization set
         OptimisationProblem problem =
-                OptimisationProblemIO.readProblemCsv(problemFile, timeSeriesData);
+                OptimisationProblemIO.readProblemCsv(problemStream, timeSeriesData);
 
         return optimisationSupport.saveOptimisationSet(project, userId, name, problem);
     }
     
+    /**
+     * @see #importOptimisationSet(int, Integer, String, InputStream, InputStream[], String[])
+     */
+    @Transactional
+    public int importOptimisationSet(
+            int prjid, Integer userId, String name,
+            InputStream problem, InputStream... timeSeries)
+                    throws IOException, ParseException, ScriptException {
+        return importOptimisationSet(prjid, userId, name, problem,
+                                     timeSeries, null);
+    }
+
     @Transactional(readOnly=true)
     public void exportOptimisationSet(
             int optSetId, Path problemFile, Path timeSeriesFile)
@@ -889,14 +930,21 @@ public class ImportExportService {
      * Reads time series data from CSV files.
      * @param project the time origin is read from the project's
      *   simulation model data
-     * @param csvFiles paths to CSV files containing time series data.
+     * @param timeSeriesStreams CSV streams containing time series data.
      *   See {@link CsvTimeSeriesData} for the required contents.
+     * @param timeSeriesNames Names to use for the streams in error messages.
+     *   If null, error messages indicate indices to timeSeriesStreams.
      */
-    public TimeSeriesData readTimeSeriesCsv(Project project, Path... csvFiles)
+    public TimeSeriesData readTimeSeriesCsv(Project project,
+                                            InputStream[] timeSeriesStreams,
+                                            String[] timeSeriesNames)
             throws IOException, ParseException {
         CsvTimeSeriesData tsd = makeTimeSeriesReader(project);
-        for (Path path : csvFiles) {
-            tsd.read(path);
+        for (int i = 0; i != timeSeriesStreams.length; ++i) {
+            tsd.read(timeSeriesStreams[i],
+                     (timeSeriesNames != null
+                      ? timeSeriesNames[i]
+                      : String.format("<timeSeriesStreams[%d]>", i))); 
         }
         return tsd;
     }
@@ -916,11 +964,10 @@ public class ImportExportService {
      * Reads algorithm parameters from a properties file.
      * @throws IOException 
      */
-    public AlgorithmParameters readAlgorithmParameters(Path path) throws IOException {
+    public AlgorithmParameters readAlgorithmParameters(InputStream stream)
+            throws IOException {
         AlgorithmParameters ap = new AlgorithmParameters();
-        try (InputStream stream = new FileInputStream(path.toFile())) {
-            ap.load(stream);
-        }
+        ap.load(stream);
         return ap;
     }
 
