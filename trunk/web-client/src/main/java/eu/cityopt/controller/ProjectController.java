@@ -1395,9 +1395,10 @@ public class ProjectController {
              	   catch (EntityNotFoundException e) {
              		// TODO Auto-generated catch block e.printStackTrace();
              	   }
-             	   
+             String userProject = userForm.getProject();
+             ProjectDTO project = projectService.findByName(userProject);	   
              UserGroupProjectDTO usergroupDTO =new UserGroupProjectDTO();
-             usergroupDTO.setProject(null);
+             usergroupDTO.setProject(project);
              usergroupDTO.setAppuser(user);
            
              int useroleid=userForm.getRole();
@@ -1498,10 +1499,12 @@ public class ProjectController {
     	@RequestParam(value="userid", required=true) String userid,
     	@RequestParam(value="projectid", required=true) String projectid) {
         //int nUserId = Integer.parseInt(userid); 
-    	   	
-    	System.out.println("delete invoked");
-    	System.out.println(projectid);
-    	System.out.println(userid);    	
+    	
+    	// Test prints
+    	//System.out.println("delete invoked");
+    	//System.out.println(projectid);
+    	//System.out.println(userid); 
+    	
     	int useridn = Integer.parseInt(userid);
     	int usergroupprojectid = Integer.parseInt(projectid);
     	

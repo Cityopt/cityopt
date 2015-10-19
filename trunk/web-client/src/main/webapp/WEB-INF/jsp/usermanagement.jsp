@@ -122,7 +122,8 @@
 												<!-- Password -->
 												<th><spring:message code="password" /></th>										
 												<!-- User Role -->
-												<th><spring:message code="userole" /></th>
+												<th><spring:message code="userole" /></th>											
+												
 												<!-- Enabled -->
 												<th><spring:message code="enabled" /></th>
 												
@@ -132,34 +133,15 @@
 												<th><spring:message code="delete" /></th>
 
 												</tr>
-																									
+											 													
 												<c:forEach items="${users}" var="user">													
 													<tr>
 														<td><form:input path="user[${user.userid}]"
 																value="${user.name}" /></td>
 														<td><form:input path="password[${user.userid}]"
-																value="${user.password}" /></td>														
-														<!-- Set up userRoles Table -->														
+																value="${user.password}" /></td>													
+														<td></td>																								
 														
-														
-														
-														
-														
-														<td>
-															<c:set var="userID" value="${user.userid}"/>
-															<form:select path="userRole[${user.userid}]">
-																		<c:forEach items="${UserGroupProject}" var="GroupProject">
-																			<c:if test="${userGroupProject.appuser eq userID}">
-																				</option>	
-																			</c:if>
-																		</c:forEach>
-																<option value="${userGroupProject.usergroupprojectid}" selected>${userGroupProject.usergroupprojectid.name}															
-																<c:forEach items="${userGroups}" var="userGroup">																																																			
-																			<option value="${userGroup.usergroupid}">${userGroup.name}</option>
-																</c:forEach>
-															</form:select>
-														</td>
-
 														<!-- Enabled -->
 														<td align="center"><c:if
 																test="${user.enabled eq true}">
@@ -170,7 +152,6 @@
 															</c:if> <c:if test="${user.enabled eq false}">
 																<form:checkbox path="enabled[${user.userid}]"
 																	value="${user.enabled}" id="myCheckbox" />
-
 															</c:if></td>
 																		
 														<!-- Edit -button -->
@@ -195,18 +176,7 @@
 													
 													<!--											
 														<tr>	
-														<c:forEach items="${userRoles}" var="projectRole">																						
-														<tr>																
-														${projectRole.usergroup.name}
-														${projectRole.project.name}
-														</tr>						
-							   							</c:forEach>							   							
-														<td>
-														<form:select path="project[${user.userid}]">
-																<c:forEach items="${projects}" var="project">
-																	<option value="${project.name}">${project.name}</option>
-																</c:forEach>
-															</form:select>															
+																												
 														</td>	
 													
 													 -->

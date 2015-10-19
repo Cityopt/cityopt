@@ -19,6 +19,7 @@ public class UserForm {
 	@Getter @Setter private Boolean enabled;	
 	@Getter @Setter private int role;
 	@Getter @Setter private String project;
+	@Getter @Setter private Boolean asign;	
 	@Getter @Setter private String[] projects;
 	
 	/*	
