@@ -73,8 +73,7 @@
 								<!-- Main Role  -->								
 								<td><spring:message code="role" />:</td>
 								<td>
-								<form:select path="role">																
-										<option value="3" selected>Role_Standard</option>
+								<form:select path="role">
 										<c:forEach items="${userGroups}" var="userGroup">																																
 										<option value="${userGroup.usergroupid}">${userGroup.name}</option>
 										</c:forEach>
@@ -86,7 +85,7 @@
 							<tr>
 								<td><spring:message code="project" />:</td>
 								<td>
-								<form:select path="project">
+								<form:select path="project">								
 								<c:forEach items="${projects}" var="project">
 									<option value="${project.name}">${project.name}</option>
 								</c:forEach>
