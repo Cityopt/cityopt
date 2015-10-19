@@ -1303,9 +1303,9 @@ public class OptimizationController {
 				
 				if (fileTimeSeries != null)
 				{
-					File file3 = new File("temp");
-					bytes = fileTimeSeries.getBytes();
-					Files.write(bytes, file3);
+					File file3 = new File("temp2");
+					byte[] bytes2 = fileTimeSeries.getBytes();
+					Files.write(bytes2, file3);
 					path3 = file3.toPath();
 				}
 				
