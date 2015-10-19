@@ -81,6 +81,8 @@
 								</form:select>
 								</td>								
 							</tr>
+														
+							
 							<tr>
 								<td><spring:message code="project" />:</td>
 								<td>
