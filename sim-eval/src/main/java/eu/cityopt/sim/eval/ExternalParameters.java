@@ -56,6 +56,11 @@ public class ExternalParameters implements EvaluationContext {
         return bindingLayer.putString(null, externalName, value);
     }
 
+    /** Whether the named external parameter has been set. */
+    public boolean contains(String externalName) {
+        return bindingLayer.contains(null, externalName);
+    }
+
     /** Return whether all external parameters have been set. */
     public boolean isComplete() {
         return bindingLayer.isComplete();
