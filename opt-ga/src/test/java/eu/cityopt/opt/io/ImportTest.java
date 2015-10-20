@@ -169,7 +169,7 @@ public class ImportTest {
         EvaluationSetup setup = new EvaluationSetup(
                 new Evaluator(), Instant.EPOCH);
         SimulationStructure s = OptimisationProblemIO.readStructureCsv(
-                res.getDir().resolve("test-project.csv"), setup);
+                res.getDir().resolve("test-project.csv"), setup, null);
         assertNull(s.model);
         assertEquals(8, s.namespace.components.size());
 
@@ -225,7 +225,7 @@ public class ImportTest {
         for (Path tsfile : tm.tsfiles) {
             tsd.read(tsfile);
         }
-        OptimisationProblem p = OptimisationProblemIO.readProblemCsv(tm.pfile, tsd);
+        OptimisationProblem p = OptimisationProblemIO.readProblemCsv(tm.pfile, tsd, null);
         checkProblem(p);
         assertNull(p.model);
         TimeSeriesI ts = p.getExternalParameters().getTS("fuel_cost");

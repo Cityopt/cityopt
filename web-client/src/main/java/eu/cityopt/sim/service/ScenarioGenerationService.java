@@ -197,7 +197,7 @@ public class ScenarioGenerationService
 
         OptimisationProblem problem = loadOptimisationProblem(project, scenarioGenerator);
         if (problem.decisionVars.isEmpty()) {
-        	throw new ConfigurationException("No decision variables defined");
+            throw new ConfigurationException("No decision variables defined");
         }
         final SimulationModel model = simulationService.loadSimulationModel(project);
         problem.model = model;
@@ -263,7 +263,7 @@ public class ScenarioGenerationService
        String status;
 
        public String toString() {
-    	   return "Started: " + started + "; Deadline: " + deadline + "; Status: " + status;
+           return "Started: " + started + "; Deadline: " + deadline + "; Status: " + status;
        }
     }
 
@@ -537,13 +537,14 @@ public class ScenarioGenerationService
             ScenarioGenerator scenarioGenerator, SimulationInput constantInput,
             Map<String, Map<String, InputParameter>> inputParameterMap, Namespace namespace) {
         for (Component component : scenarioGenerator.getProject().getComponents()) {
+            String componentName = component.getName();
             for (InputParameter inputParameter : component.getInputparameters()) {
-                Object value = constantInput.get(component.getName(), inputParameter.getName());
-                if (value != null) {
+                String inputName = inputParameter.getName();
+                if (constantInput.contains(componentName, inputName)) {
                     ModelParameter modelParameter = new ModelParameter();
                     modelParameter.setInputparameter(inputParameter);
-                    Type type = namespace.getInputType(
-                            component.getName(), inputParameter.getName());
+                    Type type = namespace.getInputType(componentName, inputName);
+                    Object value = constantInput.get(componentName, inputName);
                     String valueString = type.format(value, namespace);
                     modelParameter.setValue(valueString);
 

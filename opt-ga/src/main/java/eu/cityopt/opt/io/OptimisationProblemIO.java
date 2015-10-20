@@ -43,37 +43,39 @@ public class OptimisationProblemIO {
                     JacksonCsvModule.getTsWriter(tsMapper));
     
     public static OptimisationProblem readProblemCsv(
-            Path path, TimeSeriesData timeSeriesData)
+            Path path, TimeSeriesData timeSeriesData, Namespace ns)
                     throws ParseException, ScriptException, IOException {
         try (FileInputStream fis = new FileInputStream(path.toFile())) {
-            return readProblemCsv(fis, timeSeriesData);
+            return readProblemCsv(fis, timeSeriesData, ns);
         }
     }
 
     public static OptimisationProblem readProblemCsv(
-            InputStream problemStream, TimeSeriesData timeSeriesData)
+            InputStream problemStream, TimeSeriesData timeSeriesData, Namespace ns)
                     throws ParseException, ScriptException, IOException {
         JacksonBinder binder = new JacksonBinder(reader, problemStream);
         EvaluationSetup setup = timeSeriesData.getEvaluationSetup();
-        Namespace ns = binder.makeNamespace(setup.evaluator, setup.timeOrigin);
+        if (ns == null)
+            ns = binder.makeNamespace(setup.evaluator, setup.timeOrigin);
         return binder.buildWith(
                 new ProblemBuilder(null, ns, timeSeriesData))
                 .getResult();
     }
 
     public static SimulationStructure readStructureCsv(
-            Path path, EvaluationSetup setup)
+            Path path, EvaluationSetup setup, Namespace ns)
                     throws ParseException, ScriptException, IOException {
         try (FileInputStream fis = new FileInputStream(path.toFile())) {
-            return readStructureCsv(fis, setup);
+            return readStructureCsv(fis, setup, ns);
         }
     }
 
     public static SimulationStructure readStructureCsv(
-            InputStream structureStream, EvaluationSetup setup)
+            InputStream structureStream, EvaluationSetup setup, Namespace ns)
                     throws ParseException, ScriptException, IOException {
         JacksonBinder binder = new JacksonBinder(reader, structureStream);
-        Namespace ns = binder.makeNamespace(setup.evaluator, setup.timeOrigin);
+        if (ns == null)
+            ns = binder.makeNamespace(setup.evaluator, setup.timeOrigin);
         SimulationStructureBuilder bld = new SimulationStructureBuilder(
                 new SimulationStructure(null, ns));
         return binder.buildWith(bld).getResult();
@@ -144,9 +146,9 @@ public class OptimisationProblemIO {
     }
 
     public static List<ScenarioItem> readMulti(Path inFile) throws IOException {
-    	JacksonBinderScenario
-    	    binder = new JacksonBinderScenario(screader, inFile);
-    	return binder.getItems();
+        JacksonBinderScenario
+        binder = new JacksonBinderScenario(screader, inFile);
+        return binder.getItems();
     }
 
     public static List<ScenarioItem> readMulti(InputStream inStream)

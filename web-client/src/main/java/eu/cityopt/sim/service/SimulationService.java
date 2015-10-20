@@ -359,14 +359,14 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                 String extName = extParamVal.getExtparam().getName();
                 Type extType = namespace.externals.get(extName);
                 if (extType != null) {
-	                Object simValue;
-	                if (extType.isTimeSeriesType()) {
-	                    simValue = loadTimeSeries(extParamVal.getTimeseries(), extType,
-	                            namespace.evaluator, namespace.timeOrigin);
-	                } else {
-	                    simValue = extType.parse(extParamVal.getValue(), namespace);
-	                }
-	                simExternals.put(extName, simValue);
+                    Object simValue;
+                    if (extType.isTimeSeriesType()) {
+                        simValue = loadTimeSeries(extParamVal.getTimeseries(), extType,
+                                namespace.evaluator, namespace.timeOrigin);
+                    } else {
+                        simValue = extType.parse(extParamVal.getValue(), namespace);
+                    }
+                    simExternals.put(extName, simValue);
                 }
             }
         }
@@ -496,13 +496,13 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     }
 
     /**
-	 * Returns a non-specific {@link EvaluationSetup} that can be used for data
-	 * validation, but does not guarantee correct evaluation of expressions.
-	 * Please use {@link #makeProjectNamespace(int)} to get an
-	 * {@link EvaluationSetup} for actual evaluation purposes.
-	 */
+     * Returns a non-specific {@link EvaluationSetup} that can be used for data
+     * validation, but does not guarantee correct evaluation of expressions.
+     * Please use {@link #makeProjectNamespace(int)} to get an
+     * {@link EvaluationSetup} for actual evaluation purposes.
+     */
     public EvaluationSetup getDummyEvaluationSetup() {
-    	return new EvaluationSetup(getEvaluator(), Instant.EPOCH);
+        return new EvaluationSetup(getEvaluator(), Instant.EPOCH);
     }
 
     /**
@@ -618,7 +618,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         for (ExtParam extParam : project.getExtparams()) {
             String extName = extParam.getName();
             Type simType = namespace.externals.get(extName);
-            if (simType != null) {
+            if (simType != null && simExternals.contains(extName)) {
                 eu.cityopt.model.Type type = typeRepository.findByNameLike(simType.name);
                 ExtParamVal extParamVal = new ExtParamVal();
                 extParamVal.setExtparam(extParam);

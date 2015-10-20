@@ -46,7 +46,7 @@
   <extparamval value="100"/>
   <extparamval value="0.01"/>
   <extparamval value="[null]"/>
-  <extparamval value="100"/>
+  <extparamval value="100.0"/>
   <algoparamval/>
   <inputparamval value="2015-01-01T00:00:00Z"/>
   <inputparamval value="2015-01-01T00:00:00Z"/>
