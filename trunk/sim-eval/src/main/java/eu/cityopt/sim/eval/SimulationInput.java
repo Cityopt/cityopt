@@ -118,6 +118,11 @@ public class SimulationInput implements EvaluationContext {
         }
     }
 
+    /** Whether the named input parameter has a value. */
+    public boolean contains(String componentName, String inputName) {
+        return bindingLayer.contains(componentName, inputName);
+    }
+
     /** Returns whether all input parameters have a value. */
     public boolean isComplete() {
         return bindingLayer.isComplete();

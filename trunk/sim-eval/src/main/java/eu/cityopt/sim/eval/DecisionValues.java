@@ -98,6 +98,11 @@ public class DecisionValues implements EvaluationContext {
         return bindingLayer.putString(componentName, decisionName, value);
     }
 
+    /** Whether the named decision variable has a value. */
+    public boolean contains(String componentName, String decisionName) {
+        return bindingLayer.contains(componentName, decisionName);
+    }
+
     /** Returns whether all decision variables have a value. */
     public boolean isComplete() {
         return bindingLayer.isComplete();

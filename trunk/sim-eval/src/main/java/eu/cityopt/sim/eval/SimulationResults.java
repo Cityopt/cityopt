@@ -59,6 +59,11 @@ public class SimulationResults extends SimulationOutput implements
         return bindingLayer.putString(componentName, outputName, value);
     }
 
+    /** Whether the named output variable has a value. */
+    public boolean contains(String componentName, String outputName) {
+        return bindingLayer.contains(componentName, outputName);
+    }
+
     /** Returns whether all output variables have values. */
     public boolean isComplete() {
         return bindingLayer.isComplete();

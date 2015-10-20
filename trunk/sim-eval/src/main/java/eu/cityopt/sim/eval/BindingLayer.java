@@ -262,6 +262,12 @@ class BindingLayer {
         }
     }
 
+    /** Whether a specific name has been given a value on this layer. */
+    boolean contains(String componentName, String name) {
+        validate(componentName, name);
+        return localBindings.get(componentName).containsKey(name);
+    }
+
     /** Whether all names on this layer have been given a value. */
     boolean isComplete() {
         for (String componentName : namespace.components.keySet()) {
