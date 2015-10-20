@@ -417,6 +417,21 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         return simInput;
     }
 
+    /** Loads the default input parameter values of a project. */
+    public SimulationInput loadDefaultInput(Project project, ExternalParameters simExternals)
+            throws ParseException {
+        SimulationInput simInput = new SimulationInput(simExternals);
+        for (Component component : project.getComponents()) {
+            for (InputParameter inputParameter : component.getInputparameters()) {
+                if (inputParameter.getDefaultvalue() != null) {
+                    simInput.putString(component.getName(), inputParameter.getName(),
+                            inputParameter.getDefaultvalue());
+                }
+            }
+        }
+        return simInput;
+    }
+
     /**
      * Loads the simulation result data of a scenario.
      * @param scenarioId
