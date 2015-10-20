@@ -14,10 +14,10 @@ external parameter sets.
 
 ## General syntax and structure
 
-Comma is used as the column separator.  The decimal point is used.  No
-commas or spaces may appear in numbers.  It may take some effort to
-make a spreadsheet program produce this format.  Changing locale
-settings often helps.
+Comma is used as the field (column) separator.  The decimal point is
+used.  No commas or spaces may appear in numbers.  It may take some
+effort to make a spreadsheet program produce this format.  Changing
+locale settings often helps.
 
 Each CSV file is parsed as a list of records with each record a list
 of fields as specified in [RFC 4180][].  In particular RFC 4180
@@ -30,9 +30,9 @@ according to type:
   model.
 * Lists are given as JSON arrays: enclosed in brackets, values
   separated by comma.  ISO 8601 timestamps in lists are given as JSON
-  strings, i.e., must be surrounded by quotes.  As with all fields,
-  RFC 4180 quoting must be applied on top of that.  There will be
-  quite a few quotation marks when it is all done:
+  strings, i.e., surrounded by quotes.  As with all fields, RFC 4180
+  quoting must be applied on top of that.  There will be quite a few
+  quotation marks when it is all done:
 
         "[""2015-10-15T00:00Z"", ""2015-10-15T01:00Z""]"
 
@@ -41,10 +41,10 @@ according to type:
 * For strings there is no more processing after RFC 4180 quoting rules.
 
 The header line defined as optional in RFC 4180 is required by
-Cityopt: the first row of each file consists of field names (parsed
-as strings).  Fields are identified by these names and may thus be
-in any order.  Fields with unrecognized names are ignored, but
-future versions of the file formats may recognize new field names.
+Cityopt: the first row of each file consists of field names, parsed as
+strings.  Fields are identified by these names and may thus be in any
+order.  Fields with unrecognized names are ignored, but future
+versions of the file formats may recognize new field names.
 
 [RFC 4180]: https://tools.ietf.org/html/rfc4180
 [JSON]: https://www.json.org
@@ -52,7 +52,7 @@ future versions of the file formats may recognize new field names.
 
 ## Single scenario data
 
-Single scenario data files have the following columns: **kind**,
+Single scenario data files have the following fields: **kind**,
 **component**, **name**, **type**, **value**, **lower**, **upper** and
 **expression**.  Note that the names are all in lowercase.  **kind**
 defines which kind of item each row represents, and **name** names the
@@ -132,26 +132,36 @@ is a zero-order hold, i.e., a value given for some point in time
 remains constant until the next given time, when it is replaced by a
 new value.  `TimeSeries/linear` is continuous, interpolating linearly
 between the given times.  For time series **value** is the name of
-a column in the time series file.  If not given, it defaults to the
+a field in the time series file.  If not given, it defaults to the
 qualified name of the item.
 
 When values are imported, the scenario and external parameter set
 names must be specified in the user interface as they are not named in
 the file.
 
-## Multiscenario data
+## Multi-scenario data
 
 Data for multiple scenarios or external parameter sets may be given in
 a variant of the single scenario format.  This multiscenario format
-adds two new columns: **scenarioname** and **extparamvalsetname**.
+adds two new fields: **scenarioname** and **extparamvalsetname**.
 **scenarioname** is required for inputs and outputs,
 **extparamvalsetname** for external parameters, and metric values
-include both new columns.  Only these kinds can be exported in the
+include both new fields.  Only these kinds can be exported in the
 multiscenario format.  Only inputs and outputs (not metric values) can
-be imported.  Explicit time series keys (given in the **value** field)
-must be used to distinguish scenarios and external parameter sets.
-Export uses "qualified name@scenario,extparamvalset" but the default
-for import is still just the qualified name.
+be imported.  Other kinds are ignored.  **type** must be the same for
+all rows referring to the same variable.  Explicit time series keys
+(given in the **value** field) must be used to distinguish scenarios
+and external parameter sets.  Export uses "qualified
+name@scenario,extparamvalset" but the default for import is still just
+the qualified name.
 
 ## Time series
 
+Time series files must have a field named **timestamp**, which
+contains either timestamps or numeric values as described in
+[General syntax and structure][].  Other fields contain series values
+and are referenced by name from the **value** fields of
+[Single scenario data][] or [Multi-scenario data][] (**value**
+defaults to the qualified name of the item).  Time series values are
+floating point numbers (type `Double`).  Values may be omitted from
+some rows, causing the series not to have a point at that time.
