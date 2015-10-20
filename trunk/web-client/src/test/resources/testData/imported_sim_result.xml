@@ -93,7 +93,7 @@
   <algorithm description="grid search"/>
   <algorithm description="genetic algorithm"/>
   <scenariogenerator/>
-  <scenario description="Imported from import_sim_scenarios.csv" status="SUCCESS"/>
+  <scenario description="Imported from /testData/import_sim_scenarios.csv" status="SUCCESS"/>
   <optconstraint/>
   <objectivefunction/>
   <optimizationset/>
