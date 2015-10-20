@@ -480,7 +480,8 @@ public class ImportExportService {
      *   The project must also have a SimulationModel with a defined time origin
      *   in the database.
      * @param name name for the ScenarioGenerator row.  The same name is used for
-     *   the created ExtParamValSet.
+     *   the created ExtParamValSet.  The name should not be used by an existing
+     *   ScenarioGenerator.
      * @param problemStream defines the objectives and constraints
      * @param algorithmId identifies the optimisation algorithm.  May be left
      *   null, in which case the algorithm can be set in algorithm parameters.
@@ -508,6 +509,8 @@ public class ImportExportService {
     {
         Project project = projectRepository.findOne(projectId);
         Namespace projectNamespace = simulationService.makeProjectNamespace(projectId);
+        SimulationInput defaultInput = simulationService.loadDefaultInput(
+                project, new ExternalParameters(projectNamespace));
 
         AlgorithmParameters algorithmParameters = null;
         if (algorithmParameterStream != null) {
@@ -520,6 +523,8 @@ public class ImportExportService {
             algorithm = algorithmRepository.findOne(algorithmId);
         } else if (algorithmParameters != null) {
             algorithm = findAlgorithm(algorithmParameters);
+        } else {
+            algorithm = findAlgorithm("genetic algorithm");
         }
 
         TimeSeriesData timeSeriesData =
@@ -527,6 +532,7 @@ public class ImportExportService {
         OptimisationProblem problem =
                 OptimisationProblemIO.readProblemCsv(
                         problemStream, timeSeriesData, projectNamespace);
+        problem.fillDefaultInput(defaultInput);
 
         return saveOptimisationProblem(project, name, problem,
                                        algorithm, algorithmParameters);
@@ -1002,13 +1008,17 @@ public class ImportExportService {
             throws ConfigurationException {
         String name = algorithmParameters.getString(KEY_ALGORITHM_NAME, null);
         if (name != null) {
-            for (Algorithm algorithm : algorithmRepository.findAll()) {
-                if (algorithm.getDescription().equalsIgnoreCase(name)) {
-                    return algorithm;
-                }
-            }
-            throw new ConfigurationException("Unknown algorithm " + name);
+            return findAlgorithm(name);
         }
         return null;
+    }
+
+    private Algorithm findAlgorithm(String name) throws ConfigurationException {
+        for (Algorithm algorithm : algorithmRepository.findAll()) {
+            if (algorithm.getDescription().equalsIgnoreCase(name)) {
+                return algorithm;
+            }
+        }
+        throw new ConfigurationException("Unknown algorithm " + name);
     }
 }
