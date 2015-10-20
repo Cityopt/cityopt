@@ -886,50 +886,41 @@ public class ScenarioController {
 	}
 	
 	@RequestMapping(value = "importscenarios", method = RequestMethod.POST)
-	public String uploadCSVFileHandler(Map<String, Object> model, 
-		@RequestParam("file") MultipartFile file,
-		@RequestParam("timeSeriesFile1") MultipartFile timeSeriesMPFile1) {
-	
-		if (!file.isEmpty()) {
-	        try {
-	            ProjectDTO project = (ProjectDTO) model.get("project");
-				
-				if (project == null)
-				{
-					return "error";
-				}
-				
-				try {
-					project = projectService.findByID(project.getPrjid());
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-				model.put("project", project);
-				
-				File scenarioFile = new File("temp_scenario");
-				byte[] bytes = file.getBytes();
-				Files.write(bytes, scenarioFile);
+	public String uploadCSVFileHandler(
+	        Map<String, Object> model,
+	        @RequestParam("file") MultipartFile file,
+	        @RequestParam("timeSeriesFile1") MultipartFile timeSeriesMPFile1) {
 
-				List<File> listTSFiles = new ArrayList<File>();
-				File timeSeriesFile1 = null;
-				byte[] timeSeriesBytes1 = null;
-				
-				if (timeSeriesMPFile1 != null)
-				{
-					timeSeriesFile1 = new File("temp_timeseries");
-					timeSeriesBytes1 = timeSeriesMPFile1.getBytes();
-					Files.write(timeSeriesBytes1, timeSeriesFile1);
-					listTSFiles.add(timeSeriesFile1);
-				}
-				
-				importExportService.importScenarioData(project.getPrjid(), scenarioFile.toPath(), timeSeriesFile1.toPath());
+	    if (!file.isEmpty()) {
+	        try (InputStream scenarios = file.getInputStream();
+	             InputStream timeSeries
+	                 = (timeSeriesMPFile1 != null
+	                    ? timeSeriesMPFile1.getInputStream() : null)) {
+	            ProjectDTO project = (ProjectDTO) model.get("project");
+
+	            if (project == null)
+	            {
+	                return "error";
+	            }
+
+	            try {
+	                project = projectService.findByID(project.getPrjid());
+	            } catch (Exception e1) {
+	                e1.printStackTrace();
+	            }
+	            model.put("project", project);
+
+	            importExportService.importScenarioData(
+	                    project.getPrjid(), scenarios,
+	                    "Imported from " + file.getOriginalFilename(),
+	                    timeSeries);
 	        } catch (Exception e) {
 	            e.printStackTrace();
-	        	return "You failed to upload => " + e.getMessage();
+	            return "You failed to upload => " + e.getMessage();
 	        }
 	    } else {
 	    }
-		return "importdata";
+	    return "importdata";
 	}
 
 	@RequestMapping(value = "exportscenarios", method = RequestMethod.GET)

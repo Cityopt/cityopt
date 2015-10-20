@@ -643,143 +643,166 @@ public class ImportExportService {
 	 * the scenarios are computed with current metric expressions and default
 	 * external parameter value set (whichever set is picked).
 	 * 
-	 * @param projectId
-	 * @param scenarioFile
-	 * @param timeSeriesFiles
+	 * @param projectId Project to import data into
+	 * @param scenarios Input stream in the multi-scenario CSV format.
+         * @param description A description text applied to all imported
+         *      scenarios.  May be null.  You might want to mention the import
+         *      file name here.
+	 * @param timeSeries Time series streams.
+	 * @param tsNames Names for the time series streams for diagnostics,
+	 *      may be null, passed to {@link #readTimeSeriesCsv}.
 	 * @throws ParseException
 	 */
     @Transactional
-    public void importScenarioData(int projectId, Path scenarioFile, Path... timeSeriesFiles)
+    public void importScenarioData(
+            int projectId, InputStream scenarios,
+            String description,
+            InputStream[] timeSeries,
+            String[] tsNames)
     		throws IOException, ParseException {
         Project project = projectRepository.findOne(projectId);
-		CsvTimeSeriesData tsd = makeTimeSeriesReader(project);
-        for (Path tsPath : timeSeriesFiles) {
-        	tsd.read(tsPath);
-        }
-        List<JacksonBinderScenario.ScenarioItem> items = OptimisationProblemIO.readMulti(scenarioFile);
+        TimeSeriesData tsd = readTimeSeriesCsv(project, timeSeries, tsNames);
+        List<JacksonBinderScenario.ScenarioItem>
+        items = OptimisationProblemIO.readMulti(scenarios);
         Map<String, List<JacksonBinder.ExtParam>> epsEXT = new HashMap<>();
         Map<String, List<JacksonBinder.Input>> scenIN = new HashMap<>(); 
         Map<String, List<JacksonBinder.Output>> scenOUT = new HashMap<>();
         for (ScenarioItem si : items) {
-        	switch (si.getKind()) {
-        	case EXT:
-        		epsEXT.computeIfAbsent(si.extparamvalsetname, k -> new ArrayList<>())
-        		.add((JacksonBinder.ExtParam) si.getItem());
-        		break;
-        	case IN: {
-        		JacksonBinder.Input input = (JacksonBinder.Input) si.getItem();
-        		scenIN.computeIfAbsent(si.scenarioname, k -> new ArrayList<>())
-        		.add(input);
-        		break;
-        	}
-        	case OUT: {
-        		JacksonBinder.Output output = (JacksonBinder.Output) si.getItem();
-        		scenOUT.computeIfAbsent(si.scenarioname, k -> new ArrayList<>())
-        		.add(output);
-        	}
-    		default: //Ignore
-        	}
+            switch (si.getKind()) {
+            case EXT:
+                epsEXT.computeIfAbsent(si.extparamvalsetname,
+                                       k -> new ArrayList<>())
+                        .add((JacksonBinder.ExtParam)si.getItem());
+                break;
+            case IN: {
+                JacksonBinder.Input input = (JacksonBinder.Input)si.getItem();
+                scenIN.computeIfAbsent(si.scenarioname,
+                                       k -> new ArrayList<>()).add(input);
+                break;
+            }
+            case OUT: {
+                JacksonBinder.Output
+                    output = (JacksonBinder.Output)si.getItem();
+                scenOUT.computeIfAbsent(si.scenarioname,
+                                        k -> new ArrayList<>()).add(output);
+            }
+            default: //Ignore
+            }
         }
 
         Namespace ns = simulationService.makeProjectNamespace(projectId);
         List<MetricExpression> metricExpressions = null;
         try {
-        	metricExpressions = simulationService.loadMetricExpressions(project, ns);
+            metricExpressions = simulationService.loadMetricExpressions(
+                    project, ns);
         } catch (ScriptException e) { /* ignore */ }
 
         Map<String, ExternalParameters> externals = new HashMap<>();
         List<Runnable> idUpdateList = new ArrayList<>();
         ExternalParameters defaultExternals = new ExternalParameters(ns);
         ExtParamValSet defaultEPS = null;
-        for (Map.Entry<String, List<JacksonBinder.ExtParam>> entry : epsEXT.entrySet()) {
-        	ExternalParameters externalData = new ExternalParameters(ns);
-        	String setName = entry.getKey();
-        	for (JacksonBinder.ExtParam ep : entry.getValue()) {
-        		Type type = ns.externals.get(ep.name);
-        		if (type != null) {
-	        		if (type.isTimeSeriesType()) {
-	        			Series series = tsd.getSeries(ep.tsKey());
-	        			if (series != null) {
-	            			externalData.put(ep.name,
-	            					ns.evaluator.makeTS(type, series.getTimes(), series.getValues()));
-	        			}
-	        		} else {
-	            		externalData.putString(ep.name, ep.value);
-	        		}
-        		}
-        	}
-        	externals.put(setName, externalData);
-        	defaultEPS = simulationService.saveExternalParameterValues(
-        			project, externalData, setName, idUpdateList);
-	    	project = projectRepository.findOne(projectId);
-        	defaultExternals = externalData;
+        for (Map.Entry<String, List<JacksonBinder.ExtParam>>
+                 entry : epsEXT.entrySet()) {
+            ExternalParameters externalData = new ExternalParameters(ns);
+            String setName = entry.getKey();
+            for (JacksonBinder.ExtParam ep : entry.getValue()) {
+                Type type = ns.externals.get(ep.name);
+                if (type != null) {
+                    if (type.isTimeSeriesType()) {
+                        Series series = tsd.getSeries(ep.tsKey());
+                        if (series != null) {
+                            externalData.put(
+                                    ep.name,
+                                    ns.evaluator.makeTS(
+                                            type, series.getTimes(),
+                                            series.getValues()));
+                        }
+                    } else {
+                        externalData.putString(ep.name, ep.value);
+                    }
+                }
+            }
+            externals.put(setName, externalData);
+            defaultEPS = simulationService.saveExternalParameterValues(
+                    project, externalData, setName, idUpdateList);
+            project = projectRepository.findOne(projectId);
+            defaultExternals = externalData;
         }
         if (defaultEPS != null) {
-	        // XXX the default ExtParamValSet is set randomly if there are multiple
-	    	// ExtParamValSets in the data.
-	    	project.setDefaultextparamvalset(defaultEPS);
-	    	project = projectRepository.save(project);
+            // XXX the default ExtParamValSet is set randomly if there are
+            // multiple ExtParamValSets in the data.
+            project.setDefaultextparamvalset(defaultEPS);
+            project = projectRepository.save(project);
         }
 
         Map<String, SimulationInput> inputs = new HashMap<>();
         for (Map.Entry<String, List<JacksonBinder.Input>> entry : scenIN.entrySet()) {
-        	String scenName = entry.getKey();
-        	if (scenName != null) {
-        		SimulationInput inputData = new SimulationInput(defaultExternals);
-        		for (JacksonBinder.Input in : entry.getValue()) {
-            		Type type = ns.getInputType(in.comp, in.name);
-            		if (type != null) {
-            			inputData.putString(in.comp, in.name, in.value);
-            		}
-        		}
-        		inputs.put(scenName, inputData);
-        	}
+            String scenName = entry.getKey();
+            if (scenName != null) {
+                SimulationInput inputData = new SimulationInput(defaultExternals);
+                for (JacksonBinder.Input in : entry.getValue()) {
+                    Type type = ns.getInputType(in.comp, in.name);
+                    if (type != null) {
+                        inputData.putString(in.comp, in.name, in.value);
+                    }
+                }
+                inputs.put(scenName, inputData);
+            }
         }
 
         Map<String, SimulationResults> results = new HashMap<>();
         for (Map.Entry<String, List<JacksonBinder.Output>> entry : scenOUT.entrySet()) {
-        	String scenName = entry.getKey();
-    		SimulationInput inputData = inputs.get(scenName);
-    		if (inputData != null) {
-    			SimulationResults resultData = new SimulationResults(inputData, "");
-    			for (JacksonBinder.Output out : entry.getValue()) {
-            		Type type = ns.getOutputType(out.comp, out.name);
-            		if (type != null) {
-		        		if (type.isTimeSeriesType()) {
-		        			Series series = tsd.getSeries(out.tsKey());
-		        			if (series != null) {
-		            			resultData.put(out.comp, out.name,
-		            					ns.evaluator.makeTS(type, series.getTimes(), series.getValues()));
-		        			}
-		        		} else {
-		        			resultData.putString(out.comp, out.name, out.value);
-		        		}
-            		}
-    			}
-    			results.put(scenName, resultData);
-    		}
+            String scenName = entry.getKey();
+            SimulationInput inputData = inputs.get(scenName);
+            if (inputData != null) {
+                SimulationResults resultData = new SimulationResults(inputData, "");
+                for (JacksonBinder.Output out : entry.getValue()) {
+                    Type type = ns.getOutputType(out.comp, out.name);
+                    if (type != null) {
+                        if (type.isTimeSeriesType()) {
+                            Series series = tsd.getSeries(out.tsKey());
+                            if (series != null) {
+                                resultData.put(out.comp, out.name,
+                                        ns.evaluator.makeTS(type, series.getTimes(), series.getValues()));
+                            }
+                        } else {
+                            resultData.putString(out.comp, out.name, out.value);
+                        }
+                    }
+                }
+                results.put(scenName, resultData);
+            }
         }
 
-        String description = "Imported from " + scenarioFile.getFileName().toString();
         SimulationStorage storage = simulationService.makeDbSimulationStorage(
-        		projectId, defaultExternals);
+                projectId, defaultExternals);
         Set<String> scenNames = new HashSet<>(inputs.keySet());
         scenNames.addAll(results.keySet());
         for (String scenName : scenNames) {
-        	if (scenName != null) {
-	        	SimulationStorage.Put put = new SimulationStorage.Put(
-	        			inputs.get(scenName), new String[] { scenName, description });
-	        	SimulationResults resultData = results.get(scenName); 
-	        	put.output = resultData;
-	        	if (metricExpressions != null) {
-		        	try {
-		        		put.metricValues = new MetricValues(resultData, metricExpressions);
-		        	} catch (ScriptException e) { /* ignore */ }
-	        	}
-        		storage.put(put);
-        	}
+            if (scenName != null) {
+                SimulationStorage.Put put = new SimulationStorage.Put(
+                        inputs.get(scenName), new String[] { scenName, description });
+                SimulationResults resultData = results.get(scenName); 
+                put.output = resultData;
+                if (metricExpressions != null) {
+                    try {
+                        put.metricValues = new MetricValues(resultData, metricExpressions);
+                    } catch (ScriptException e) { /* ignore */ }
+                }
+                storage.put(put);
+            }
         }
     }
+    
+    @Transactional
+    public void importScenarioData(
+            int projectId, InputStream scenarios,
+            String description,
+            InputStream... timeSeries) throws IOException, ParseException {
+        importScenarioData(projectId, scenarios, description,
+                           timeSeries, null);
+    }
+
 
     /**
      * Exports the data of all scenarios in a project, together with
@@ -794,8 +817,9 @@ public class ImportExportService {
      * @throws ScriptException 
      */
     @Transactional(readOnly=true)
-    public void exportScenarioData(int projectId, Path scenarioFile, Path timeSeriesFile)
-    				throws ParseException, IOException, ScriptException {
+    public void exportScenarioData(
+            int projectId, Path scenarioFile, Path timeSeriesFile)
+                    throws ParseException, IOException, ScriptException {
         Project project = projectRepository.findOne(projectId);
         Namespace ns = simulationService.makeProjectNamespace(projectId); 
         List<MetricExpression> metrics = simulationService.loadMetricExpressions(project, ns);

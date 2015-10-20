@@ -5,9 +5,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.concurrent.BlockingQueue;
@@ -40,7 +39,6 @@ import eu.cityopt.model.Scenario;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.SimulationOutput;
-import eu.cityopt.sim.eval.util.TempDir;
 
 /**
  * Test simulation runs via the SimulationService class.
@@ -182,21 +180,27 @@ public class TestSimulationService extends SimulationTestBase {
     @ExpectedDatabase(value="classpath:/testData/imported_sim_result.xml",
             assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testSimulateImportedScenario() throws Exception {
-        Project project = projectRepository.findByNameContainingIgnoreCase("Empty test project").get(0);
+        Project project = projectRepository.findByNameContainingIgnoreCase(
+                "Empty test project").get(0);
         byte[] modelData = getResourceBytes("/ost.zip");
         importExportService.importSimulationModel(
                 project.getPrjid(), null, "test project",
                 modelData, "Apros-Combustion-5.13.06-64bit",
                 Instant.parse("2015-01-01T00:00:00Z"));
-        try (TempDir tempDir = new TempDir("testimport")) {
-            Path scenarioPath = copyResource("/testData/import_sim_scenarios.csv", tempDir);
-            Path tsPath = copyResource("/testData/import_sim_timeseries.csv", tempDir);
-            try (FileInputStream fis = new FileInputStream(scenarioPath.toFile())) {
-                importExportService.importSimulationStructure(project.getPrjid(), fis);
-            }
-            importExportService.importScenarioData(project.getPrjid(), scenarioPath,  tsPath);
+        String scenarioRes = "/testData/import_sim_scenarios.csv"; 
+        try (InputStream in = openResource(scenarioRes)) {
+            importExportService.importSimulationStructure(
+                    project.getPrjid(), in);
         }
-        Scenario scenario = scenarioRepository.findByNameContaining("new scen 789").get(0);
+        try (InputStream scenarios = openResource(scenarioRes);
+             InputStream ts = openResource(
+                     "/testData/import_sim_timeseries.csv")){
+            importExportService.importScenarioData(
+                    project.getPrjid(), scenarios,
+                    "Imported from " + scenarioRes, ts);
+        }
+        Scenario scenario = scenarioRepository.findByNameContaining(
+                "new scen 789").get(0);
         runSimulation(scenario.getScenid());
         dumpTables("imported_sim");
     }

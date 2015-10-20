@@ -144,8 +144,16 @@ public class OptimisationProblemIO {
     }
 
     public static List<ScenarioItem> readMulti(Path inFile) throws IOException {
-    	JacksonBinderScenario binder = new JacksonBinderScenario(screader, inFile);
+    	JacksonBinderScenario
+    	    binder = new JacksonBinderScenario(screader, inFile);
     	return binder.getItems();
+    }
+
+    public static List<ScenarioItem> readMulti(InputStream inStream)
+            throws IOException {
+        JacksonBinderScenario
+            binder = new JacksonBinderScenario(screader, inStream);
+        return binder.getItems();
     }
 
     /**
