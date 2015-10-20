@@ -182,17 +182,21 @@ public class TestImportExportService extends SimulationTestBase {
         assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testImportScenarioData() throws Exception {
         Project project = projectRepository.findByNameContainingIgnoreCase("Empty test project").get(0);
-        try (InputStream in = getClass().getResource("/ost-problem-gs.csv").openStream()) {
+        try (InputStream in = openResource("/ost-problem-gs.csv")) {
             importExportService.importSimulationStructure(project.getPrjid(), in);
         }
-        try (TempDir tempDir = new TempDir("testimport")) {
-        	Path scenarioPath = copyResource("/testData/CSV_testData/gs_scenarios_main.csv", tempDir);
-            Path tsPath = copyResource("/testData/CSV_testData/gs_scenarios_timeseries.csv", tempDir);
-            importExportService.importScenarioData(project.getPrjid(), scenarioPath, tsPath);
+        try (InputStream scens = openResource(
+                "/testData/CSV_testData/gs_scenarios_main.csv");
+             InputStream ts = openResource(
+                     "/testData/CSV_testData/gs_scenarios_timeseries.csv")) {
+            importExportService.importScenarioData(
+                    project.getPrjid(), scens,
+                    "Imported from gs_scenarios_main.csv", ts);
         }
         importExportService.exportScenarioData(
-        		project.getPrjid(), makeTempPath("imported_scenarios_main.csv"),
-        		makeTempPath("imported_scenarios_timeseries.csv"));
+                project.getPrjid(),
+                makeTempPath("imported_scenarios_main.csv"),
+                makeTempPath("imported_scenarios_timeseries.csv"));
         dumpTables("import_scenarios");
     }
 }
