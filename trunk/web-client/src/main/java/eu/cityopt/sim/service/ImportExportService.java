@@ -232,7 +232,7 @@ public class ImportExportService {
         EvaluationSetup setup =
                 new EvaluationSetup(simulationService.getEvaluator(), Instant.EPOCH);
         SimulationStructure structure =
-                OptimisationProblemIO.readStructureCsv(structureStream, setup);
+                OptimisationProblemIO.readStructureCsv(structureStream, setup, null);
 
         saveSimulationStructure(project, structure);
     }
@@ -297,7 +297,7 @@ public class ImportExportService {
     }
 
     public void saveNamespaceComponents(Project project, Namespace namespace,
-    		Map<String, Map<String, String>> units) {
+            Map<String, Map<String, String>> units) {
         Map<String, Component> oldComponents = new HashMap<>();
         for (Component component : project.getComponents()) {
             oldComponents.put(component.getName(), component);
@@ -322,7 +322,7 @@ public class ImportExportService {
     }
 
     public void saveComponentInputParameters(Component component, Map<String, Type> inputs,
-    		Map<String, String> units) {
+            Map<String, String> units) {
         List<InputParameter> changedInputParameters = new ArrayList<>();
         Map<String, InputParameter> oldInputParameters = new HashMap<>();
         for (InputParameter inputParameter : component.getInputparameters()) {
@@ -356,7 +356,7 @@ public class ImportExportService {
     }
 
     public void saveComponentOutputVariables(Component component, Map<String, Type> outputs,
-    		Map<String, String> units) {
+            Map<String, String> units) {
         Map<String, OutputVariable> oldOutputVariables = new HashMap<>();
         for (OutputVariable outputVariable : component.getOutputvariables()) {
             oldOutputVariables.put(outputVariable.getName(), outputVariable);
@@ -390,26 +390,26 @@ public class ImportExportService {
     }
 
     private Unit findOrCreateUnit(Map<String, String> units, String key) {
-    	if (units != null && key != null) {
-    		String unitName = units.get(key);
-    		if (unitName != null) {
-    			unitName = unitName.trim();
-	    		if (!unitName.isEmpty()) {
-		    		Unit unit = unitRepository.findByName(unitName);
-		    		if (unit != null) {
-		    			return unit;
-		    		} else {
-			    		unit = new Unit();
-			    		unit.setName(unitName);
-			    		return unitRepository.save(unit);
-		    		}
-	    		}
-    		}
-    	}
-		return null;
-	}
+        if (units != null && key != null) {
+            String unitName = units.get(key);
+            if (unitName != null) {
+                unitName = unitName.trim();
+                if (!unitName.isEmpty()) {
+                    Unit unit = unitRepository.findByName(unitName);
+                    if (unit != null) {
+                        return unit;
+                    } else {
+                        unit = new Unit();
+                        unit.setName(unitName);
+                        return unitRepository.save(unit);
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
-	public void saveMetrics(Project project, Namespace namespace,
+    public void saveMetrics(Project project, Namespace namespace,
             Collection<MetricExpression> metricExpressions) {
         Map<String, Metric> oldMetrics = new HashMap<>();
         for (Metric metric : project.getMetrics()) {
@@ -507,6 +507,7 @@ public class ImportExportService {
                            ParseException, ScriptException
     {
         Project project = projectRepository.findOne(projectId);
+        Namespace projectNamespace = simulationService.makeProjectNamespace(projectId);
 
         AlgorithmParameters algorithmParameters = null;
         if (algorithmParameterStream != null) {
@@ -525,7 +526,7 @@ public class ImportExportService {
                 readTimeSeriesCsv(project, timeSeriesStreams, timeSeriesNames);
         OptimisationProblem problem =
                 OptimisationProblemIO.readProblemCsv(
-                        problemStream, timeSeriesData);
+                        problemStream, timeSeriesData, projectNamespace);
 
         return saveOptimisationProblem(project, name, problem,
                                        algorithm, algorithmParameters);
@@ -594,12 +595,13 @@ public class ImportExportService {
                    throws IOException, ParseException, ScriptException
     {
         Project project = projectRepository.findOne(projectId);
+        Namespace projectNamespace = simulationService.makeProjectNamespace(projectId);
 
         TimeSeriesData timeSeriesData =
                 readTimeSeriesCsv(project, timeSeriesStreams, timeSeriesNames);
         //TODO should have a specific method for reading an optimization set
-        OptimisationProblem problem =
-                OptimisationProblemIO.readProblemCsv(problemStream, timeSeriesData);
+        OptimisationProblem problem = OptimisationProblemIO.readProblemCsv(
+                problemStream, timeSeriesData, projectNamespace);
 
         return optimisationSupport.saveOptimisationSet(project, userId, name, problem);
     }
@@ -629,37 +631,37 @@ public class ImportExportService {
     }
 
     /**
-	 * Imports external parameter values, input parameter values and simulation
-	 * results for scenarios of a project. Existing scenarios are replaced when
-	 * their name matches, and otherwise kept unchanged.  The project default
-	 * external parameter value set is replaced with some external parameter value
-	 * set from the input; if there is more than one then one is chosen at random.
-	 * <p>
-	 * External parameter values are optional.  For each scenario, there may be
-	 * only input parameter values, or both input parameter values and simulation
-	 * results, or neither.
-	 * <p>
-	 * Metric values in the input are ignored, and instead new metric values for
-	 * the scenarios are computed with current metric expressions and default
-	 * external parameter value set (whichever set is picked).
-	 * 
-	 * @param projectId Project to import data into
-	 * @param scenarios Input stream in the multi-scenario CSV format.
-         * @param description A description text applied to all imported
-         *      scenarios.  May be null.  You might want to mention the import
-         *      file name here.
-	 * @param timeSeries Time series streams.
-	 * @param tsNames Names for the time series streams for diagnostics,
-	 *      may be null, passed to {@link #readTimeSeriesCsv}.
-	 * @throws ParseException
-	 */
+     * Imports external parameter values, input parameter values and simulation
+     * results for scenarios of a project. Existing scenarios are replaced when
+     * their name matches, and otherwise kept unchanged.  The project default
+     * external parameter value set is replaced with some external parameter value
+     * set from the input; if there is more than one then one is chosen at random.
+     * <p>
+     * External parameter values are optional.  For each scenario, there may be
+     * only input parameter values, or both input parameter values and simulation
+     * results, or neither.
+     * <p>
+     * Metric values in the input are ignored, and instead new metric values for
+     * the scenarios are computed with current metric expressions and default
+     * external parameter value set (whichever set is picked).
+     * 
+     * @param projectId Project to import data into
+     * @param scenarios Input stream in the multi-scenario CSV format.
+     * @param description A description text applied to all imported
+     *      scenarios.  May be null.  You might want to mention the import
+     *      file name here.
+     * @param timeSeries Time series streams.
+     * @param tsNames Names for the time series streams for diagnostics,
+     *      may be null, passed to {@link #readTimeSeriesCsv}.
+     * @throws ParseException
+     */
     @Transactional
     public void importScenarioData(
             int projectId, InputStream scenarios,
             String description,
             InputStream[] timeSeries,
             String[] tsNames)
-    		throws IOException, ParseException {
+            throws IOException, ParseException {
         Project project = projectRepository.findOne(projectId);
         TimeSeriesData tsd = readTimeSeriesCsv(project, timeSeries, tsNames);
         List<JacksonBinderScenario.ScenarioItem>
@@ -827,17 +829,17 @@ public class ImportExportService {
         ExtParamValSet set = project.getDefaultextparamvalset();
         String epsName = (set != null) ? set.getName() : "";
         ExternalParameters ext = simulationService.loadExternalParametersFromSet(set, ns);
-    	bld.add(ext, epsName);
+        bld.add(ext, epsName);
         for (Scenario scen : project.getScenarios()) {
             SimulationInput in = simulationService.loadSimulationInput(scen, ext);
             bld.add(in, scen.getName());
             SimulationOutput out = simulationService.loadSimulationOutput(scen, in);
             if (out instanceof SimulationResults) {
                 bld.add((SimulationResults)out, scen.getName());
-	            bld.add(new MetricValues((SimulationResults)out, metrics),
-	                    scen.getName(), epsName);
-	        }
-	    }
+                bld.add(new MetricValues((SimulationResults)out, metrics),
+                        scen.getName(), epsName);
+            }
+        }
         OptimisationProblemIO.writeMulti(bld, scenarioFile);
         OptimisationProblemIO.writeTimeSeries(bld, timeSeriesFile);
     }
