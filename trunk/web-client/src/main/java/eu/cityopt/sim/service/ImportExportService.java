@@ -79,6 +79,13 @@ import eu.cityopt.sim.opt.SimulationStructure;
  * Importing and exporting data between the database and specially formatted CSV
  * and property files.
  * 
+ * It is unspecified whether the import methods close their InputStreams after
+ * reading.  Hence the caller must close them (InputStreams are Closeable,
+ * thus closing them twice is harmless), and must not attempt to read them
+ * after the import call (there wouldn't be any point even if the stream
+ * were open: the file formats are such that all streams are read to EOF
+ * by import).
+ * 
  * @author Hannu Rummukainen
  */
 @Named
