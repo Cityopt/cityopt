@@ -185,15 +185,12 @@ public class ProjectServiceImpl implements ProjectService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public int getDefaultExtParamSetId(int prjid){
-		Project p = projectRepository.findOne(prjid);
-		
-		if(p == null)
-			return 0;
-		
-		return p.getDefaultextparamvalset() != null 
-				? p.getDefaultextparamvalset().getExtparamvalsetid()
-				: 0;
+	public Integer getDefaultExtParamSetId(int prjid){
+	    Project p = projectRepository.findOne(prjid);
+	    if(p == null)
+	        return 0;
+	    ExtParamValSet x = p.getDefaultextparamvalset();
+	    return x != null ? x.getExtparamvalsetid() : 0;
 	}
 	
 	@Transactional(readOnly = true)
@@ -292,15 +289,12 @@ public class ProjectServiceImpl implements ProjectService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public int getSimulationmodelId(int prjid) {
-		Project p = projectRepository.findOne(prjid);
-		
-		if(p == null)
-			return 0;
-		
-		return p.getSimulationmodel() != null 
-				? p.getSimulationmodel().getModelid() 
-				: null;
+	public Integer getSimulationmodelId(int prjid) {
+	    Project p = projectRepository.findOne(prjid);
+	    if(p == null)
+	        return null;
+	    SimulationModel m = p.getSimulationmodel();
+	    return m != null ? m.getModelid() : null;
 	}
 
 	@Transactional
