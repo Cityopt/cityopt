@@ -49,9 +49,9 @@ public interface ProjectService extends CityOptService<ProjectDTO> {
 	 */
 	ProjectDTO update(ProjectDTO toUpdate, int simulationModelId, int extParamValSetId) throws EntityNotFoundException;
 	
-	int getSimulationmodelId(int prjid);
+	Integer getSimulationmodelId(int prjid);
 	
-	int getDefaultExtParamSetId(int prjid);
+	Integer getDefaultExtParamSetId(int prjid);
 
 	Set<ScenarioDTO> getScenarios(int prjid);
 
