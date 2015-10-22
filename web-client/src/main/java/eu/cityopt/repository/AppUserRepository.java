@@ -11,11 +11,15 @@ import eu.cityopt.model.AppUser;
 
 @Repository("userRepository")
 public interface AppUserRepository extends JpaRepository<AppUser,Integer> {
+	
 	@Query("select u from AppUser u where Lower(u.name) like CONCAT('%',Lower(:userName),'%') order by u.name")
 	List<AppUser> findByUserName(@Param("userName") String userName);
 	
 	@Query("select u from AppUser u where u.name = :userName and u.password = :password")
 	AppUser authenticateUser(@Param("userName") String userName,
 			@Param("password") String password);
+	
+	AppUser findByName(@Param("userName") String userName);
+	
 	
 }

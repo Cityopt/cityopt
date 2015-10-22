@@ -1,3 +1,4 @@
+
 package eu.cityopt.service;
 
 import static org.junit.Assert.*;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
+import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.UserGroupProjectDTO;
 import eu.cityopt.service.impl.GrantedAuthorityImpl;
 
@@ -61,6 +63,15 @@ public class UserGroupProjectServiceTest {
 		assertEquals(2, ugpList.size());
 		for(UserGroupProjectDTO ugp : ugpList)
 			assertTrue(ugp.getAppuser().getName().equals("Michael"));
+	}
+	
+	@Test
+	public void findByUserName() throws EntityNotFoundException {
+		AppUserDTO appUser_1 = userService.findByName("Michael");
+		assertNotNull(appUser_1);
+		
+		AppUserDTO appUser_2 = userService.findByName("Michael Test");
+		assertNull(appUser_2);
 	}
 	
 	@Test
@@ -112,7 +123,7 @@ public class UserGroupProjectServiceTest {
 
 	@Test
 	public void findByUserAndProject() {
-		UserGroupProjectDTO ugp = userGroupProjectService.findByUserAndProject(1, 1);
+		UserGroupProjectDTO ugp = userGroupProjectService.findByUserAndProject(1, null);
 		assertNotNull(ugp);
 		assertEquals(1, ugp.getUsergroup().getUsergroupid());
 	}
