@@ -19,8 +19,12 @@ import eu.cityopt.model.ExtParamVal;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
+import eu.cityopt.model.Type;
+import eu.cityopt.model.Unit;
 import eu.cityopt.repository.ExtParamRepository;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.repository.TypeRepository;
+import eu.cityopt.repository.UnitRepository;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ExtParamService;
 
@@ -35,6 +39,12 @@ public class ExtParamServiceImpl implements ExtParamService {
 	@Autowired
 	private ProjectRepository projectRepository;
 	
+	@Autowired
+	private TypeRepository typeRepository;
+
+	@Autowired
+	private UnitRepository unitRepository;
+
 	@Transactional(readOnly = true)
 	public List<ExtParamDTO> findAll() {
 		return modelMapper.map(extParamRepository.findAll(), 
@@ -54,6 +64,14 @@ public class ExtParamServiceImpl implements ExtParamService {
 		ExtParam eparam = modelMapper.map(u, ExtParam.class);
 		Project p = projectRepository.findOne(prjid);
 		eparam.setProject(p);
+		if (eparam.getUnit() != null) {
+			Unit unit = unitRepository.getOne(eparam.getUnit().getUnitid());
+			eparam.setUnit(unit);
+		}
+		if (eparam.getType() != null) {
+			Type type = typeRepository.getOne(eparam.getType().getTypeid());
+			eparam.setType(type);
+		}
 		eparam = extParamRepository.save(eparam);
 		return modelMapper.map(eparam, ExtParamDTO.class);
 	}
