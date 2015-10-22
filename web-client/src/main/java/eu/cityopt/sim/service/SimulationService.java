@@ -685,6 +685,16 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         return timeSeries;
     }
     
+    /**
+     * Set the values of the given time series.
+     * Any existing values of timeSeries are deleted.  Then the values
+     * are set from the given arrays and saved into the database.  timeSeries
+     * is modified accordingly.
+     * @param timeSeries Time series to modify 
+     * @param times Time points as seconds from timeOrigin
+     * @param values Series values at the time points.
+     * @param timeOrigin Time origin for converting seconds to timestamps.
+     */
     @Transactional
     public void saveTimeSeriesVals(
             TimeSeries timeSeries, double[] times, double[] values,
