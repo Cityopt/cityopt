@@ -30,9 +30,8 @@ import eu.cityopt.sim.eval.util.DelayedDeleter;
 @Configuration
 @PropertySource("classpath:/application.properties")
 public class AprosConfig implements InitializingBean, DisposableBean {
-    //XXX Is this right logger?  It is for the Apros simulation server.
     private static final PrintStream
-        logStream = IoBuilder.forLogger(AprosConfig.class)
+        logStream = IoBuilder.forLogger(AprosManager.class)
                 .setLevel(Level.TRACE).setAutoFlush(true).buildPrintStream();
 
     private static final long DELETE_PERIOD_MINUTES = 60;
