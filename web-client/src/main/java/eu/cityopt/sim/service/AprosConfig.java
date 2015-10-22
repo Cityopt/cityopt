@@ -32,7 +32,7 @@ import eu.cityopt.sim.eval.util.DelayedDeleter;
 public class AprosConfig implements InitializingBean, DisposableBean {
     private static final PrintStream
         logStream = IoBuilder.forLogger(AprosManager.class)
-                .setLevel(Level.TRACE).setAutoFlush(true).buildPrintStream();
+                .setLevel(Level.DEBUG).setAutoFlush(true).buildPrintStream();
 
     private static final long DELETE_PERIOD_MINUTES = 60;
 
