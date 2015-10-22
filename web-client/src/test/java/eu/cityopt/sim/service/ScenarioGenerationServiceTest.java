@@ -58,7 +58,7 @@ import eu.cityopt.sim.opt.Solution;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionDbUnitTestExecutionListener.class })
-public class TestScenarioGenerationService extends SimulationTestBase {
+public class ScenarioGenerationServiceTest extends SimulationTestBase {
     @Inject ScenarioGenerationService scenarioGenerationService;
     @Inject ScenarioGeneratorRepository scenarioGeneratorRepository;
     @Inject AlgorithmRepository algorithmRepository;

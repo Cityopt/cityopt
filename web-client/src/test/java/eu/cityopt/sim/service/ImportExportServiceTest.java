@@ -35,7 +35,7 @@ import eu.cityopt.sim.eval.util.TempDir;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionDbUnitTestExecutionListener.class })
-public class TestImportExportService extends SimulationTestBase {
+public class ImportExportServiceTest extends SimulationTestBase {
     @Inject ImportExportService importExportService;
     @Inject ProjectRepository projectRepository;
     @Inject OptimizationSetRepository optimisationSetRepository;

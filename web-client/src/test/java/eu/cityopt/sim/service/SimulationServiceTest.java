@@ -60,7 +60,7 @@ import eu.cityopt.sim.eval.SimulationOutput;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionDbUnitTestExecutionListener.class })
-public class TestSimulationService extends SimulationTestBase {
+public class SimulationServiceTest extends SimulationTestBase {
     @Autowired
     SimulationService simulationService;
 
