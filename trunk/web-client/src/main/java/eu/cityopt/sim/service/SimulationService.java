@@ -677,8 +677,21 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         }
         TimeSeries timeSeries = new TimeSeries();
         timeSeries.setType(type);
-        double[] times = simTS.getTimes();
-        double[] values = simTS.getValues();
+        saveTimeSeriesVals(timeSeries, simTS.getTimes(), simTS.getValues(),
+                           timeOrigin);
+        timeSeries = timeSeriesRepository.save(timeSeries);
+        // Copy the database row id.
+        simTS.setTimeSeriesId(timeSeries.getTseriesid());
+        return timeSeries;
+    }
+    
+    @Transactional
+    public void saveTimeSeriesVals(
+            TimeSeries timeSeries, double[] times, double[] values,
+            Instant timeOrigin) {
+        Set<TimeSeriesVal> tsvals = timeSeries.getTimeseriesvals();
+        timeSeriesValRepository.delete(tsvals);
+        tsvals.clear();
         int n = times.length;
         for (int i = 0; i < n; ++i) {
             TimeSeriesVal timeSeriesVal = new TimeSeriesVal();
@@ -687,13 +700,9 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             timeSeriesVal.setValue(Double.toString(values[i]));
 
             timeSeriesVal.setTimeseries(timeSeries);
-            timeSeries.getTimeseriesvals().add(timeSeriesVal);
+            tsvals.add(timeSeriesVal);
         }
-        timeSeriesValRepository.save(timeSeries.getTimeseriesvals());
-        timeSeriesRepository.save(timeSeries);
-        // Copy the database row id once it is available.
-        idUpdateList.add(() -> simTS.setTimeSeriesId(timeSeries.getTseriesid()));
-        return timeSeries;
+        timeSeriesValRepository.save(tsvals);
     }
 
     @Override
