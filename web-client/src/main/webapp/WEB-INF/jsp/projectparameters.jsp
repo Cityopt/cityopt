@@ -177,12 +177,15 @@
 													<col style="width:200px">
 													<col style="width:200px">
 													<col style="width:100px">
+													<col style="width:100px">
 													<col style="width:50px">
 													<tr height="20">
 														<!-- Name -->
 													    <th><spring:message code="name"/></th>
 													    <!-- Comment -->
 													    <th><spring:message code="comment"/></th>
+													    <!-- Type -->
+													    <th><spring:message code="type"/></th>
 													    <!-- Value -->
 													    <th><spring:message code="value"/></th>
 													    <!-- Edit -->
@@ -193,7 +196,18 @@
 													<tr>
 														<td>${extParamVal.extparam.name}</td>
 														<td>${extParamVal.comment}</td>
-												    	<td>${extParamVal.value}</td>
+														
+														<c:choose>
+															<c:when test="${eu.cityopt.sim.eval.Type.getByName(extParamVal.extparam.getType().getName()).isTimeSeriesType()}">
+																<td>Time series</td>
+																<td>...</td>
+															</c:when>
+															<c:otherwise>
+																<td>Value</td>
+																<td>${extParamVal.value}</td>
+															</c:otherwise>
+														</c:choose>
+
 												    	<td>
 															<a href="<c:url value='editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}'/>">
 																<button align="right" type="button" value="Edit"><spring:message code="edit"/></button>
