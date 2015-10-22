@@ -55,7 +55,7 @@ public class AprosModelTest extends AprosTestBase {
 
     private SimulationInput findInputsAndOutputs(String modelResource) throws Exception {
         try (SimulatorManager manager = new AprosManager(
-                profileDir, Executors.newSingleThreadExecutor());
+                profileDir, Executors.newSingleThreadExecutor(), System.out);
              InputStream in = getClass().getResourceAsStream(modelResource)) {
             SimulationModel model = manager.parseModel(profileName, in);
 

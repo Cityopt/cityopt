@@ -29,7 +29,8 @@ public class AprosTestBase {
         profileDir = dataDir.resolve(
                 props.getProperty("profile_dir"));
         profileName = props.getProperty("profile");
-        AprosManager.register(profileDir, Executors.newSingleThreadExecutor());
+        AprosManager.register(
+                profileDir, Executors.newSingleThreadExecutor(), System.out);
     }
     
     @AfterClass
