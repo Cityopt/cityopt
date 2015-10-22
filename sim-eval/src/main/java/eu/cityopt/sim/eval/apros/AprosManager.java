@@ -2,6 +2,7 @@ package eu.cityopt.sim.eval.apros;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,14 +64,15 @@ public class AprosManager implements SimulatorManager {
      * names.  The SimulatorManager instances will use the given Executor
      * for concurrency.
      */
-    public static void register(Path profileDir, Executor executor) throws IOException {
+    public static void register(Path profileDir, Executor executor,
+                                PrintStream log) throws IOException {
         AprosManager manager = null;
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(profileDir, PROFILE_GLOB)) {
             for (Path entry : stream) {
                 if (isProfileDirectory(entry)) {
                     String profileName = entry.getFileName().toString();
                     if (manager == null) {
-                        manager = new AprosManager(profileDir, executor);
+                        manager = new AprosManager(profileDir, executor, log);
                     }
                     SimulatorManagers.register(profileName, manager);
                 }
@@ -78,7 +80,7 @@ public class AprosManager implements SimulatorManager {
         }
     }
 
-    AprosManager(Path profileDir, Executor executor) {
+    AprosManager(Path profileDir, Executor executor, PrintStream log) {
         this.profileDir = profileDir;
         this.executor = executor;
         try {
@@ -86,7 +88,7 @@ public class AprosManager implements SimulatorManager {
             try {
                 server = ServerFactory.createLocalServer(
                         Files.createDirectory(tmp.getPath().resolve("srv")));
-                StatusLoggingUtils.logServerStatus(System.out, server);
+                StatusLoggingUtils.logServerStatus(log, server);
             } catch (Exception e) {
                 tmp.close();
                 throw e;

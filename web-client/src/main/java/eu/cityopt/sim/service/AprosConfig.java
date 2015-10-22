@@ -1,13 +1,14 @@
 package eu.cityopt.sim.service;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
-
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.io.IoBuilder;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,11 @@ import eu.cityopt.sim.eval.util.DelayedDeleter;
 @Configuration
 @PropertySource("classpath:/application.properties")
 public class AprosConfig implements InitializingBean, DisposableBean {
+    //XXX Is this right logger?  It is for the Apros simulation server.
+    private static final PrintStream
+        logStream = IoBuilder.forLogger(AprosConfig.class)
+                .setLevel(Level.TRACE).setAutoFlush(true).buildPrintStream();
+
     private static final long DELETE_PERIOD_MINUTES = 60;
 
     /** Apros profile directory */
@@ -71,7 +77,7 @@ public class AprosConfig implements InitializingBean, DisposableBean {
             Path path = Paths.get(profilePath);
             if (Files.isDirectory(path)) {
                 try {
-                    AprosManager.register(path, executor);
+                    AprosManager.register(path, executor, logStream);
                 } catch (IOException e) {
                     if (checkProfile) {
                         throw new IOException(

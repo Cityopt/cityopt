@@ -39,7 +39,8 @@ public class AprosFactory extends ModelFactory {
             String aprosDir)
                     throws IOException, ConfigurationException {
         AprosManager.register(
-                Paths.get(aprosDir), Executors.newCachedThreadPool());
+                Paths.get(aprosDir), Executors.newCachedThreadPool(),
+                System.out);
     }
     
     /**
