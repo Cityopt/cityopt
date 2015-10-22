@@ -14,7 +14,7 @@
 	<usergroup usergroupid="2" name="ROLE_Editor" version="1"/>
 	<usergroup usergroupid="3" name="ROLE_Reader" version="1"/>
 	
-	<usergroupproject userid="1" usergroupid="1" prjid="1" version="1"/>
+	<usergroupproject userid="1" usergroupid="1" version="1"/>
 	<usergroupproject userid="1" usergroupid="3" prjid="2" version="1"/>
 	<usergroupproject userid="3" usergroupid="1" prjid="1" version="1"/>
 	<usergroupproject userid="2" usergroupid="3" prjid="1" version="1"/>

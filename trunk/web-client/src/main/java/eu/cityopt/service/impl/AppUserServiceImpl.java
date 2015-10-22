@@ -92,6 +92,16 @@ public class AppUserServiceImpl implements AppUserService {
 	
 	@Transactional(readOnly = true)
 	@Override
+	public AppUserDTO findByName(String userName) {
+		if(appuserRepository.findByName(userName) == null) {
+			return null;
+		}
+		
+		return modelMapper.map(appuserRepository.findByName(userName), AppUserDTO.class);
+	}	
+	
+	@Transactional(readOnly = true)
+	@Override
 	public AppUserDTO findByNameAndPassword(String name, String password) throws EntityNotFoundException {
 		if(appuserRepository.authenticateUser(name, password) == null) {
 			throw new EntityNotFoundException();
