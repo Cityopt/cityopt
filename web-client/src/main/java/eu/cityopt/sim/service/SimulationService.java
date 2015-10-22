@@ -675,33 +675,28 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             }
             simTS.setTimeSeriesId(null);
         }
-        TimeSeries timeSeries = new TimeSeries();
-        timeSeries.setType(type);
-        saveTimeSeriesVals(timeSeries, simTS.getTimes(), simTS.getValues(),
-                           timeOrigin);
-        timeSeries = timeSeriesRepository.save(timeSeries);
+        TimeSeries timeSeries = saveTimeSeries(
+                simTS.getTimes(), simTS.getValues(), type, timeOrigin);
         // Copy the database row id.
         simTS.setTimeSeriesId(timeSeries.getTseriesid());
         return timeSeries;
     }
     
     /**
-     * Set the values of the given time series.
-     * Any existing values of timeSeries are deleted.  Then the values
-     * are set from the given arrays and saved into the database.  timeSeries
-     * is modified accordingly.
-     * @param timeSeries Time series to modify 
+     * Save a time series into the database.
      * @param times Time points as seconds from timeOrigin
      * @param values Series values at the time points.
+     * @param type Type attribute of the time series.  We save it but
+     *   I don't think it is used for anything currently. 
      * @param timeOrigin Time origin for converting seconds to timestamps.
      */
     @Transactional
-    public void saveTimeSeriesVals(
-            TimeSeries timeSeries, double[] times, double[] values,
-            Instant timeOrigin) {
+    public TimeSeries saveTimeSeries(
+            double[] times, double[] values,
+            eu.cityopt.model.Type type, Instant timeOrigin) {
+        TimeSeries timeSeries = new TimeSeries();
+        timeSeries.setType(type);
         Set<TimeSeriesVal> tsvals = timeSeries.getTimeseriesvals();
-        timeSeriesValRepository.delete(tsvals);
-        tsvals.clear();
         int n = times.length;
         for (int i = 0; i < n; ++i) {
             TimeSeriesVal timeSeriesVal = new TimeSeriesVal();
@@ -713,6 +708,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             tsvals.add(timeSeriesVal);
         }
         timeSeriesValRepository.save(tsvals);
+        return timeSeriesRepository.save(timeSeries);
     }
 
     @Override
