@@ -14,5 +14,6 @@ public class ObjResultsToObjResultsDTOMap extends PropertyMap<ObjectiveFunctionR
 		map().setScengenid(source.getScengenresult().getScengenresultid());
 		map().setValue(source.getValue());
 		map().setVersion(source.getVersion());		
+		map().setScenID(source.getScengenresult().getScenario().getScenid());
 	}
 }
