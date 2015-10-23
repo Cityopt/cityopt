@@ -3,6 +3,7 @@ package eu.cityopt.sim.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -22,6 +23,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.script.ScriptException;
 
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.model.Algorithm;
@@ -35,6 +37,7 @@ import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
+import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.Unit;
 import eu.cityopt.opt.io.CsvTimeSeriesData;
 import eu.cityopt.opt.io.ExportBuilder;
@@ -56,8 +59,10 @@ import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.SimulationModelRepository;
+import eu.cityopt.repository.TimeSeriesRepository;
 import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.repository.UnitRepository;
+import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.ExternalParameters;
@@ -109,6 +114,7 @@ public class ImportExportService {
     @Inject private InputParameterRepository inputParameterRepository;
     @Inject private OutputVariableRepository outputVariableRepository;
     @Inject private MetricRepository metricRepository;
+    @Inject private TimeSeriesRepository timeSeriesRepository;
     @Inject private TypeRepository typeRepository;
     @Inject private OptimizationSetRepository optimizationSetRepository;
     @Inject private ExtParamValSetRepository extParamValSetRepository;
@@ -132,12 +138,13 @@ public class ImportExportService {
      * @return id of the created SimulationModel row
      * @throws ConfigurationException
      * @throws IOException
+     * @throws EntityNotFoundException if projectId is non-null but invalid
      */
     @Transactional
     public int importSimulationModel(Integer projectId, Integer userId,
             String description, byte[] modelData,
             String simulatorName, Instant overrideTimeOrigin)
-                    throws ConfigurationException, IOException {
+                    throws ConfigurationException, IOException, EntityNotFoundException {
         try (SimulationModel model = SimulatorManagers.parseModel(simulatorName, modelData)) {
             Instant timeOrigin = (overrideTimeOrigin != null)
                     ? overrideTimeOrigin : model.getTimeOrigin();
@@ -156,7 +163,8 @@ public class ImportExportService {
             simulationModel = simulationModelRepository.save(simulationModel);
     
             if (projectId != null) {
-                Project project = projectRepository.findOne(projectId);
+                Project project = fetchOne(
+                        projectRepository, projectId, "project");
                 project.setSimulationmodel(simulationModel);
                 simulationModel.getProjects().add(project);
                 projectRepository.save(project);
@@ -185,11 +193,14 @@ public class ImportExportService {
      *   e.g. if there are invalid component or variable names.
      * @throws ConfigurationException
      * @throws IOException
+     * @throws EntityNotFoundException 
      */
     @Transactional
     public String importModelInputsAndOutputs(
-            int projectId, int detailLevel) throws ConfigurationException, IOException {
-        Project project = projectRepository.findOne(projectId);
+            int projectId, int detailLevel)
+                    throws ConfigurationException, IOException,
+                           EntityNotFoundException {
+        Project project = fetchOne(projectRepository, projectId, "project");
         try (SimulationModel model = simulationService.loadSimulationModel(project)) {
             Instant timeOrigin = simulationService.loadTimeOrigin(project.getSimulationmodel());
             Namespace namespace = new Namespace(simulationService.getEvaluator(), timeOrigin);
@@ -216,7 +227,7 @@ public class ImportExportService {
      * does not include units for now (only types), the method leaves
      * units null.
      * 
-     * @param projectId the associate project.  Any existing external
+     * @param projectId the target project.  Any existing external
      *   parameters, input parameters, output variables and metrics
      *   will be overwritten in case of name clashes, and otherwise left
      *   untouched.
@@ -228,11 +239,13 @@ public class ImportExportService {
      * @throws ParseException
      * @throws IOException
      * @throws ScriptException
+     * @throws EntityNotFoundException 
      */
     @Transactional
     public void importSimulationStructure(int projectId, InputStream structureStream)
-            throws IOException, ParseException, ScriptException {
-        Project project = projectRepository.findOne(projectId);
+            throws IOException, ParseException, ScriptException,
+                   EntityNotFoundException {
+        Project project = fetchOne(projectRepository, projectId, "project");
 
         // Note: We use a dummy timeOrigin because there is no time series data
         // here, and the constructed Namespace is discarded immediately.
@@ -248,14 +261,13 @@ public class ImportExportService {
      * Export external parameters, inputs, outputs and metrics.
      * This is the inverse of importSimulationStructure.
      * @param projectId project to export
-     * @param out output stream.
-     * @throws ScriptException 
-     * @throws IOException 
+     * @param out output stream
+     * @throws ScriptException if a metric expression fails to compile.
      */
     @Transactional(readOnly=true)
     public void exportSimulationStructure(int projectId, OutputStream out)
-            throws ScriptException, IOException {
-        Project project = projectRepository.findOne(projectId);
+            throws ScriptException, IOException, EntityNotFoundException {
+        Project project = fetchOne(projectRepository, projectId, "project");
         Namespace ns = simulationService.makeProjectNamespace(project);
         SimulationStructure sim = new SimulationStructure(null, ns);
         sim.metrics = simulationService.loadMetricExpressions(project, ns);
@@ -503,6 +515,7 @@ public class ImportExportService {
      * @throws ConfigurationException 
      * @throws ParseException 
      * @throws ScriptException 
+     * @throws EntityNotFoundException if projectId lookup fails.
      */
     @Transactional
     public int importOptimisationProblem(
@@ -512,9 +525,9 @@ public class ImportExportService {
             InputStream[] timeSeriesStreams,
             String[] timeSeriesNames) 
                     throws IOException, ConfigurationException,
-                           ParseException, ScriptException
+                           ParseException, ScriptException, EntityNotFoundException
     {
-        Project project = projectRepository.findOne(projectId);
+        Project project = fetchOne(projectRepository, projectId, "project");
         Namespace projectNamespace = simulationService.makeProjectNamespace(projectId);
         SimulationInput defaultInput = simulationService.loadDefaultInput(
                 project, new ExternalParameters(projectNamespace));
@@ -555,7 +568,7 @@ public class ImportExportService {
             InputStream algorithmParameterStream,
             InputStream... timeSeriesStreams)
                     throws IOException, ConfigurationException,
-                           ParseException, ScriptException {
+                           ParseException, ScriptException, EntityNotFoundException {
         return importOptimisationProblem(
                 projectId, name, problemStream, algorithmId,
                 algorithmParameterStream, timeSeriesStreams, null);
@@ -566,8 +579,10 @@ public class ImportExportService {
     public void exportOptimisationProblem(
             int sgid, Path problemFile, Path timeSeriesFile)
                     throws ScriptException, ParseException,
-                            ConfigurationException, IOException {
-        ScenarioGenerator sg = scenarioGeneratorRepository.findOne(sgid);
+                            ConfigurationException, IOException,
+                            EntityNotFoundException {
+        ScenarioGenerator sg = fetchOne(scenarioGeneratorRepository, sgid,
+                                        "ScenarioGenerator");
         OptimisationProblem
                 p = scenarioGenerationService.loadOptimisationProblem(
                         sg.getProject(), sg);
@@ -598,6 +613,7 @@ public class ImportExportService {
      * @throws IOException 
      * @throws ParseException 
      * @throws ScriptException 
+     * @throws EntityNotFoundException 
      */
     @Transactional
     public int importOptimisationSet(
@@ -605,9 +621,10 @@ public class ImportExportService {
             String name, InputStream problemStream,
             InputStream[] timeSeriesStreams,
             String[] timeSeriesNames) 
-                   throws IOException, ParseException, ScriptException
+                   throws IOException, ParseException, ScriptException,
+                          EntityNotFoundException
     {
-        Project project = projectRepository.findOne(projectId);
+        Project project = fetchOne(projectRepository, projectId, "project");
         Namespace projectNamespace = simulationService.makeProjectNamespace(projectId);
 
         TimeSeriesData timeSeriesData =
@@ -626,7 +643,8 @@ public class ImportExportService {
     public int importOptimisationSet(
             int prjid, Integer userId, String name,
             InputStream problem, InputStream... timeSeries)
-                    throws IOException, ParseException, ScriptException {
+                    throws IOException, ParseException, ScriptException,
+                           EntityNotFoundException {
         return importOptimisationSet(prjid, userId, name, problem,
                                      timeSeries, null);
     }
@@ -634,13 +652,62 @@ public class ImportExportService {
     @Transactional(readOnly=true)
     public void exportOptimisationSet(
             int optSetId, Path problemFile, Path timeSeriesFile)
-                    throws ParseException, ScriptException, IOException {
-        OptimizationSet os = optimizationSetRepository.findOne(optSetId);
+                    throws ParseException, ScriptException, IOException,
+                           EntityNotFoundException {
+        OptimizationSet os = fetchOne(
+                optimizationSetRepository, optSetId, "optimisation set");
         Project proj = os.getProject();
         OptimisationProblem prob = optimisationSupport.loadOptimisationProblem(
                 proj, os);
         OptimisationProblemIO.writeProblemCsv(
                 prob, problemFile, timeSeriesFile);
+    }
+    
+    /**
+     * Save time series data into the database.
+     * Creates a new time series.
+     *  
+     * @param tsname Name of the series in tsdata
+     * @param tsdata Time series data to read from
+     * @param type Type attribute of the time series.  Saved but
+     *   probably not used for anything currently.
+     * @return the id of the created time series.
+     * @throws IllegalArgumentException if tsname is not found in tsdata.
+     */
+    @Transactional
+    public int saveTimeSeriesVals(String tsname, TimeSeriesData tsdata,
+                                  Type type)
+                    throws EntityNotFoundException {
+        eu.cityopt.model.Type mtype = typeRepository.findByNameLike(type.name);
+        TimeSeriesData.Series s = tsdata.getSeries(tsname);
+        if (s == null) {
+            throw new IllegalArgumentException(
+                    "No data for series named " + tsname);
+        }
+        return simulationService.saveTimeSeries(
+                s.getTimes(), s.getValues(), mtype,
+                tsdata.getEvaluationSetup().timeOrigin)
+                .getTseriesid();
+    }
+    
+    /**
+     * Import external parameter time series values from streams.
+     * @param projectId Project id 
+     * @param extParamValSetId ExtParamValSet to import into.
+     * @param tsStreams Input data streams
+     * @param tsNames Names for the input data streams in error messages
+     */
+    @Transactional
+    public void importExtParamTimeSeries(
+            int projectId, int extParamValSetId,
+            InputStream[] tsStreams, String[] tsNames)
+                    throws IOException, ParseException,
+                           EntityNotFoundException {
+        Project prj = fetchOne(projectRepository, projectId, "project");
+        ExtParamValSet xpvs = fetchOne(
+                extParamValSetRepository, extParamValSetId, "ExtParamValSet");
+        TimeSeriesData tsd = readTimeSeriesCsv(prj, tsStreams, tsNames);
+        //TODO
     }
 
     /**
@@ -667,6 +734,7 @@ public class ImportExportService {
      * @param tsNames Names for the time series streams for diagnostics,
      *      may be null, passed to {@link #readTimeSeriesCsv}.
      * @throws ParseException
+     * @throws EntityNotFoundException 
      */
     @Transactional
     public void importScenarioData(
@@ -674,8 +742,8 @@ public class ImportExportService {
             String description,
             InputStream[] timeSeries,
             String[] tsNames)
-            throws IOException, ParseException {
-        Project project = projectRepository.findOne(projectId);
+            throws IOException, ParseException, EntityNotFoundException {
+        Project project = fetchOne(projectRepository, projectId, "project");
         TimeSeriesData tsd = readTimeSeriesCsv(project, timeSeries, tsNames);
         List<JacksonBinderScenario.ScenarioItem>
         items = OptimisationProblemIO.readMulti(scenarios);
@@ -811,9 +879,10 @@ public class ImportExportService {
     
     @Transactional
     public void importScenarioData(
-            int projectId, InputStream scenarios,
-            String description,
-            InputStream... timeSeries) throws IOException, ParseException {
+            int projectId, InputStream scenarios, String description,
+            InputStream... timeSeries)
+                    throws IOException, ParseException,
+                           EntityNotFoundException {
         importScenarioData(projectId, scenarios, description,
                            timeSeries, null);
     }
@@ -830,12 +899,14 @@ public class ImportExportService {
      * @throws ParseException
      * @throws IOException 
      * @throws ScriptException 
+     * @throws EntityNotFoundException 
      */
     @Transactional(readOnly=true)
     public void exportScenarioData(
             int projectId, Path scenarioFile, Path timeSeriesFile)
-                    throws ParseException, IOException, ScriptException {
-        Project project = projectRepository.findOne(projectId);
+                    throws ParseException, IOException, ScriptException,
+                           EntityNotFoundException {
+        Project project = fetchOne(projectRepository, projectId, "project");
         Namespace ns = simulationService.makeProjectNamespace(projectId); 
         List<MetricExpression> metrics = simulationService.loadMetricExpressions(project, ns);
         ExportBuilder bld = new ExportBuilder(ns);
@@ -864,11 +935,13 @@ public class ImportExportService {
     @Transactional(readOnly=true)
     public void exportExtParamValSets(
             Path scenarioFile, Path timeSeriesFile, int projectId,
-            int... setIds) throws ParseException, IOException {
+            int... setIds) throws ParseException, IOException,
+                                  EntityNotFoundException {
         Namespace ns = simulationService.makeProjectNamespace(projectId); 
         ExportBuilder bld = new ExportBuilder(ns);
         for (int setId : setIds) {
-            ExtParamValSet set = extParamValSetRepository.findOne(setId);
+            ExtParamValSet set = fetchOne(
+                    extParamValSetRepository, setId, "ExtParamValSet");
             ExternalParameters ext = simulationService
                     .loadExternalParametersFromSet(set, ns);
             bld.add(ext, set.getName());
@@ -886,12 +959,13 @@ public class ImportExportService {
     @Transactional(readOnly=true)
     public void exportSimulationResults(
             Path scenarioFile, Path timeSeriesFile, int projectId,
-            int... scenIds) throws ParseException, IOException {
+            int... scenIds) throws ParseException, IOException,
+                                   EntityNotFoundException {
         ExternalParameters ext = simulationService.loadExternalParameters(
                 projectId, null);
         ExportBuilder bld = new ExportBuilder(ext.getEvaluationSetup());
         for (int scenId : scenIds) {
-            Scenario scen = scenarioRepository.findOne(scenId);
+            Scenario scen = fetchOne(scenarioRepository, scenId, "scenario");
             SimulationInput in = simulationService.loadSimulationInput(
                     scen, ext);
             bld.add(in, scen.getName());
@@ -919,18 +993,21 @@ public class ImportExportService {
     public void exportMetricValues(
             Path scenarioFile, Path timeSeriesFile, int projectId,
             Set<Integer> xpvSetIds, Set<Integer> scenIds)
-                    throws ParseException, ScriptException, IOException {
-        Project prj = projectRepository.findOne(projectId);
+                    throws ParseException, ScriptException, IOException,
+                           EntityNotFoundException {
+        Project prj = fetchOne(projectRepository, projectId, "projectid");
         Namespace ns = simulationService.makeProjectNamespace(prj);
         List<MetricExpression>
                 metrics = simulationService.loadMetricExpressions(prj, ns);
         ExportBuilder bld = new ExportBuilder(ns);
         for (Integer setId : xpvSetIds) {
-            ExtParamValSet xpvs = extParamValSetRepository.findOne(setId);
+            ExtParamValSet xpvs = fetchOne(
+                    extParamValSetRepository, setId, "ExtParamValSet");
             ExternalParameters ext = simulationService
                     .loadExternalParametersFromSet(xpvs, ns);
             for (int scenId : scenIds) {
-                Scenario scen = scenarioRepository.findOne(scenId);
+                Scenario scen = fetchOne(
+                        scenarioRepository, scenId, "scenario");
                 SimulationInput
                         in = simulationService.loadSimulationInput(scen, ext);
                 SimulationOutput out = simulationService.loadSimulationOutput(
@@ -1008,6 +1085,28 @@ public class ImportExportService {
         AlgorithmParameters ap = new AlgorithmParameters();
         ap.load(stream);
         return ap;
+    }
+    
+    /**
+     * Retrieve an object by id from a repository.
+     * Equal to {@link CrudRepository#findOne} except that we throw if the
+     * object is not found.
+     * 
+     * @param repository Repository to fetch from
+     * @param id Id to look up
+     * @param typename Name for the type of objects in repository.  Used in
+     *   the error message.
+     * @return the retrieved object
+     */
+    public static <T, Id extends Serializable> T fetchOne(
+            CrudRepository<T, Id> repository, Id id, String typename)
+                    throws EntityNotFoundException {
+        T x = repository.findOne(id);
+        if (x == null) {
+            throw new EntityNotFoundException(
+                    "No " + typename + " with id " + id);
+        }
+        return x;
     }
 
     /** Returns the Algorithm named in parameters, or null if not set. */
