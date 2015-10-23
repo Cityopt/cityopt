@@ -684,14 +684,18 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     
     /**
      * Save a time series into the database.
+     * Because this returns a TimeSeries rather than a TimeSeriesDTO,
+     * it is unlikely to be useful outside the .sim.service package.
+     * Hence the visibility.
      * @param times Time points as seconds from timeOrigin
      * @param values Series values at the time points.
      * @param type Type attribute of the time series.  We save it but
      *   I don't think it is used for anything currently. 
      * @param timeOrigin Time origin for converting seconds to timestamps.
+     * @return the saved TimeSeries.
      */
     @Transactional
-    public TimeSeries saveTimeSeries(
+    TimeSeries saveTimeSeries(
             double[] times, double[] values,
             eu.cityopt.model.Type type, Instant timeOrigin) {
         TimeSeries timeSeries = new TimeSeries();
