@@ -690,25 +690,6 @@ public class ImportExportService {
                 .getTseriesid();
     }
     
-    /**
-     * Import external parameter time series values from streams.
-     * @param projectId Project id 
-     * @param extParamValSetId ExtParamValSet to import into.
-     * @param tsStreams Input data streams
-     * @param tsNames Names for the input data streams in error messages
-     */
-    @Transactional
-    public void importExtParamTimeSeries(
-            int projectId, int extParamValSetId,
-            InputStream[] tsStreams, String[] tsNames)
-                    throws IOException, ParseException,
-                           EntityNotFoundException {
-        Project prj = fetchOne(projectRepository, projectId, "project");
-        ExtParamValSet xpvs = fetchOne(
-                extParamValSetRepository, extParamValSetId, "ExtParamValSet");
-        TimeSeriesData tsd = readTimeSeriesCsv(prj, tsStreams, tsNames);
-        //TODO
-    }
 
     /**
      * Imports external parameter values, input parameter values and simulation
@@ -1063,6 +1044,11 @@ public class ImportExportService {
                       : String.format("<timeSeriesStreams[%d]>", i))); 
         }
         return tsd;
+    }
+
+    public TimeSeriesData readTimeSeriesCsv(Project prj,
+            InputStream... tsStreams) throws IOException, ParseException {
+        return readTimeSeriesCsv(prj, tsStreams, null);
     }
 
     /**
