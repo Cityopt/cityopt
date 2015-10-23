@@ -609,7 +609,8 @@ public class ProjectController {
 
         try {
             importExportService.exportSimulationStructure(project.getPrjid(), outputStream);
-        } catch (ScriptException e) {
+        } catch (EntityNotFoundException | ScriptException e) {
+            //FIXME This is not the right way to handle exceptions.
             e.printStackTrace();
         }
 
