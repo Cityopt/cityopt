@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,10 +28,13 @@ import javax.script.ScriptException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.model.Algorithm;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.ExtParam;
+import eu.cityopt.model.ExtParamVal;
 import eu.cityopt.model.ExtParamValSet;
+import eu.cityopt.model.ExtParamValSetComp;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.Metric;
 import eu.cityopt.model.OptimizationSet;
@@ -743,6 +748,49 @@ public class ImportExportService {
             loadTimeSeriesVals(ent.getValue(), ent.getKey(), tsd);
         }
         OptimisationProblemIO.writeTimeSeries(tsd, out);
+    }
+    
+    /**
+     * Export some external parameter time series.
+     * All parameters must belong to the same project.
+     * This method does not close the output stream.
+     * @param xpvsetid ExtParamValSet id
+     * @param out Output stream
+     * @param extParams Parameters to export
+     * @throws EntityNotFoundException if xpvsetid is not found or some
+     *   of extParams do not have time series in it (e.g., because
+     *   the parameter is scalar).
+     */
+    @Transactional
+    public void exportExtParamTimeSeries(
+            int xpvsetid, OutputStream out, ExtParamDTO... extParams)
+                    throws EntityNotFoundException, IOException {
+        if (extParams.length == 0)
+            return;
+        ExtParamValSet xpvs = fetchOne(extParamValSetRepository, xpvsetid,
+                                       "ExtParamValSet");
+        Map<Integer, ExtParamVal>
+            xpvals = xpvs.getExtparamvalsetcomps().stream()
+                    .map(ExtParamValSetComp::getExtparamval)
+                    .collect(Collectors.toMap(
+                            val -> val.getExtparam().getExtparamid(),
+                            Function.identity()));
+        Map<String, Integer> tsids = new HashMap<>();
+        for (ExtParamDTO xp : extParams) {
+            String name = xp.getName();
+            ExtParamVal xpv = xpvals.get(xp.getExtparamid());
+            if (xpv == null)
+                throw new EntityNotFoundException(
+                        "Parameter " + name
+                        + " not found in ExtParamValSet " + xpvs.getName());
+            TimeSeries ts = xpv.getTimeseries();
+            if (ts == null)
+                throw new EntityNotFoundException(
+                        "No time series for " + name
+                        + " in ExtParamValSet " + xpvs.getName());
+            tsids.put(name, ts.getTseriesid());
+        }
+        exportTimeSeries(extParams[0].getProject().getPrjid(), tsids, out);
     }
 
     /**
