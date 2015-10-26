@@ -94,6 +94,7 @@ public class JacksonBinder {
     
     public abstract static class Var extends Item {
         public Type type;
+        public String unit;
         
         public String getType() {
             return (type == Type.DYNAMIC) ? "" : type.name;
