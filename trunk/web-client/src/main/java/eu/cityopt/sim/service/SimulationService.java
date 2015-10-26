@@ -41,6 +41,7 @@ import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesVal;
+import eu.cityopt.opt.io.TimeSeriesData;
 import eu.cityopt.repository.ExtParamValRepository;
 import eu.cityopt.repository.ExtParamValSetCompRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
@@ -361,8 +362,8 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                 if (extType != null) {
                     Object simValue;
                     if (extType.isTimeSeriesType()) {
-                        simValue = loadTimeSeries(extParamVal.getTimeseries(), extType,
-                                namespace.evaluator, namespace.timeOrigin);
+                        simValue = loadTimeSeries(extParamVal.getTimeseries(),
+                                                  extType, namespace);
                     } else {
                         simValue = extType.parse(extParamVal.getValue(), namespace);
                     }
@@ -375,9 +376,24 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
 
     /** Loads the data of a time series. */
     public TimeSeriesI loadTimeSeries(TimeSeries timeseries, 
-            Type timeSeriesType, Evaluator evaluator, Instant timeOrigin) {
+            Type timeSeriesType, EvaluationSetup evsup) {
+        TimeSeriesData.Series s = loadTimeSeriesData(
+                timeseries.getTseriesid(), evsup.timeOrigin);
+        TimeSeriesI ts = evaluator.makeTS(
+                timeSeriesType, s.getTimes(), s.getValues());
+        ts.setTimeSeriesId(timeseries.getTseriesid());
+        return ts;
+    }
+    
+    /**
+     * Load the data of a time series.
+     * @param tsid time series id
+     * @param timeOrigin for translating timestamps to seconds
+     */
+    public TimeSeriesData.Series loadTimeSeriesData(
+            int tsid, Instant timeOrigin) {
         List<TimeSeriesVal> timeSeriesVals =
-                timeSeriesValRepository.findTimeSeriesValOrderedByTime(timeseries.getTseriesid());
+                timeSeriesValRepository.findTimeSeriesValOrderedByTime(tsid);
         int n = timeSeriesVals.size();
         double[] times = new double[n];
         double[] values = new double[n];
@@ -386,11 +402,9 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             times[i] = TimeUtils.toSimTime(tsVal.getTime(), timeOrigin);
             values[i] = Double.valueOf(tsVal.getValue());
         }
-        TimeSeriesI ts = evaluator.makeTS(timeSeriesType, times, values);
-        ts.setTimeSeriesId(timeseries.getTseriesid());
-        return ts;
+        return new TimeSeriesData.Series(times, values);
     }
-
+    
     /**
      * Loads the simulation input parameter values of a scenario.
      * @param scenarioId
@@ -460,8 +474,9 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                 if (nsComponent != null) {
                     Type outputType = nsComponent.outputs.get(mOutput.getName());
                     if (outputType != null) {
-                        Object simValue = loadTimeSeries(mResult.getTimeseries(), outputType,
-                                namespace.evaluator, namespace.timeOrigin);
+                        Object simValue = loadTimeSeries(
+                                mResult.getTimeseries(), outputType,
+                                namespace);
                         simResults.put(componentName, mOutput.getName(), simValue);
                     }
                 }
@@ -502,12 +517,27 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         return metricExpressions;
     }
 
-    /** Loads the time origin of a simulation model. */
+    /**
+     * Loads the time origin of a simulation model.
+     * Return a default value if simulationModel or its time origin is null.
+     */
     public Instant loadTimeOrigin(eu.cityopt.model.SimulationModel simulationModel) {
         Date timeOriginDate = (simulationModel != null)
                 ? simulationModel.getTimeorigin() : null;
         return (timeOriginDate != null)
                 ? timeOriginDate.toInstant() : DEFAULT_TIME_ORIGIN;
+    }
+    
+    /** 
+     * Load the time origin of the simulation model of the project.
+     * Return a default value if project is null.  
+     */
+    public Instant loadTimeOrigin(eu.cityopt.model.Project prj) {
+        return loadTimeOrigin(prj == null ? null : prj.getSimulationmodel());
+    }
+    
+    public EvaluationSetup getEvaluationSetup(eu.cityopt.model.Project prj) {
+        return new EvaluationSetup(getEvaluator(), loadTimeOrigin(prj));
     }
 
     /**
@@ -562,7 +592,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
      *    instance from which names and types of decision variables will be loaded 
      */
     public Namespace makeProjectNamespace(Project project, ScenarioGenerator scenarioGenerator) {
-        Instant timeOrigin = loadTimeOrigin(project.getSimulationmodel());
+        Instant timeOrigin = loadTimeOrigin(project);
         Namespace namespace = new Namespace(evaluator, timeOrigin, (scenarioGenerator != null));
         for (ExtParam mExternal : project.getExtparams()) {
             Type extType = getType(mExternal.getType());
@@ -694,7 +724,6 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
      * @param timeOrigin Time origin for converting seconds to timestamps.
      * @return the saved TimeSeries.
      */
-    @Transactional
     TimeSeries saveTimeSeries(
             double[] times, double[] values,
             eu.cityopt.model.Type type, Instant timeOrigin) {

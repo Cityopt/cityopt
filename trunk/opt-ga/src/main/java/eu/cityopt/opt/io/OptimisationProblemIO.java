@@ -41,7 +41,7 @@ public class OptimisationProblemIO {
     private static CsvTimeSeriesWriter
             tswriter = new CsvTimeSeriesWriter(
                     JacksonCsvModule.getTsWriter(tsMapper));
-    
+
     public static OptimisationProblem readProblemCsv(
             Path path, TimeSeriesData timeSeriesData, Namespace ns)
                     throws ParseException, ScriptException, IOException {
@@ -80,7 +80,7 @@ public class OptimisationProblemIO {
                 new SimulationStructure(null, ns));
         return binder.buildWith(bld).getResult();
     }
-    
+
     /**
      * Export an OptimisationProblem to CSV files.
      * The output streams are left open.
@@ -94,9 +94,12 @@ public class OptimisationProblemIO {
         ExportBuilder bld = new ExportBuilder(problem.getNamespace());
         ExportDirectors.build(problem, bld, null);
         writeSingle(bld, problemOut);
-        writeTimeSeries(bld, tsOut);
+        TimeSeriesData tsd = bld.getTimeSeriesData();
+        if (!tsd.isEmpty()) {
+            writeTimeSeries(tsd, tsOut);
+        }
     }
-    
+
     /**
      * Export a SimulationStructure to a CSV file.
      * The output stream is left open.
@@ -109,7 +112,7 @@ public class OptimisationProblemIO {
         ExportDirectors.buildStructure(sim, bld);
         wtr.writeValue(out, bld.getBinder());
     }
-    
+
     /**
      * Export an OptimisationProblem to CSV files.
      * Only creates tsFile if there are time series to export.
@@ -120,11 +123,12 @@ public class OptimisationProblemIO {
         ExportBuilder bld = new ExportBuilder(problem.getNamespace());
         ExportDirectors.build(problem, bld, null);
         writeSingle(bld, problemFile);
-        if (!bld.getTimeSeriesData().isEmpty()) {
-            writeTimeSeries(bld, tsFile);
+        TimeSeriesData tsd = bld.getTimeSeriesData();
+        if (!tsd.isEmpty()) {
+            writeTimeSeries(tsd, tsFile);
         }
     }
-    
+
     /**
      * Write out multi-scenario data.
      * Scenario and external parameter set names are included.  Does not
@@ -135,7 +139,7 @@ public class OptimisationProblemIO {
         scwriter.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
                 .writeValue(out, builder.getScenarioBinder());
     }
-    
+
     /**
      * Write out multi-scenario data.
      * @see #writeMulti(ExportBuilder, OutputStream)
@@ -178,22 +182,30 @@ public class OptimisationProblemIO {
             throws IOException {
         prwriter.writeValue(outFile.toFile(), builder.getBinder());
     }
-    
+
     /**
      * Write out time series data.  Does not close the stream.
      */
-    public static void writeTimeSeries(ExportBuilder builder, OutputStream out)
+    public static void writeTimeSeries(TimeSeriesData tsd, OutputStream out)
             throws IOException {
-        tswriter.write(out, builder.getTimeSeriesData());
+        tswriter.write(out, tsd);
     }
-    
+
     /**
      * Write out time series data.
      */
-    public static void writeTimeSeries(ExportBuilder builder, Path outFile)
+    public static void writeTimeSeries(TimeSeriesData tsd, Path outFile)
             throws IOException {
         try (OutputStream out = Files.newOutputStream(outFile)) {
-            tswriter.write(out, builder.getTimeSeriesData());
+            writeTimeSeries(tsd, out);
         }
+    }
+
+    /**
+     * Write out time series data.
+     */
+    public static void writeTimeSeries(ExportBuilder bld, Path outFile)
+            throws IOException {
+        writeTimeSeries(bld.getTimeSeriesData(), outFile);
     }
 }

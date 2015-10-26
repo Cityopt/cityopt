@@ -16,7 +16,14 @@ public class TimeSeriesData {
     public static class Series {
         double[] times;
         double[] values;
-        
+
+        public Series(double[] times, double[] values) {
+            this.times = times;
+            this.values = values;
+        }
+
+        Series() {}
+
         public double[] getTimes(){
 			return times;
 		}
@@ -43,19 +50,28 @@ public class TimeSeriesData {
         return seriesData.get(seriesName);
     }
     
+    /** Return the underlying map.
+     */
+    public Map<String, TimeSeriesData.Series> getMap() {
+        return seriesData;
+    }
+    
     public boolean isEmpty() {return seriesData.isEmpty();}
 
     /** Store data for a time series. */
     public void put(String name, double[] times, double[] values) {
-        Series s = new Series();
-        s.times = times;
-        s.values = values;
+        Series s = new Series(times, values);
         seriesData.put(name, s);
     }
     
     /** Store a time series. */
     public void put(String name, TimeSeriesI series) {
         put(name, series.getTimes(), series.getValues());
+    }
+    
+    /** Store a time series. */
+    public void put(String name, TimeSeriesData.Series series) {
+        seriesData.put(name, series);
     }
 
     public EvaluationSetup getEvaluationSetup() {return evaluationSetup;}

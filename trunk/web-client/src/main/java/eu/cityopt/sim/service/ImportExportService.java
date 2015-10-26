@@ -83,12 +83,16 @@ import eu.cityopt.sim.opt.SimulationStructure;
 /**
  * Importing and exporting data between the database and specially formatted CSV
  * and property files.
- * 
- * It is unspecified whether the import methods close their InputStreams after
- * reading.  Hence the caller must close them (InputStreams are Closeable,
- * thus closing them twice is harmless), and must not attempt to read them
- * after the import call (there wouldn't be any point even if the stream
- * were open: the file formats are such that all streams are read to EOF
+ * <p>
+ * Terminology: load retrieves from the database into memory, save stores
+ * from memory into the database, read and write transfer between streams
+ * and memory, import combines read and save, export combines load and write.
+ * <p>
+ * It is unspecified whether the read and import methods close their
+ * InputStreams after reading. Hence the caller must close them (InputStreams
+ * are Closeable, thus closing them twice is harmless), and must not attempt to
+ * read them after the import call (there wouldn't be any point even if the
+ * stream were open: the file formats are such that all streams are read to EOF
  * by import).
  * 
  * @author Hannu Rummukainen
@@ -202,7 +206,7 @@ public class ImportExportService {
                            EntityNotFoundException {
         Project project = fetchOne(projectRepository, projectId, "project");
         try (SimulationModel model = simulationService.loadSimulationModel(project)) {
-            Instant timeOrigin = simulationService.loadTimeOrigin(project.getSimulationmodel());
+            Instant timeOrigin = simulationService.loadTimeOrigin(project);
             Namespace namespace = new Namespace(simulationService.getEvaluator(), timeOrigin);
             namespace.initConfigComponent();
             Map<String, Map<String, String>> units = new HashMap<>();
@@ -690,6 +694,56 @@ public class ImportExportService {
                 .getTseriesid();
     }
     
+    
+    /**
+     * Load time series values from the database.
+     * The values are added to tsdata under tsname.  Any existing series
+     * there with the same name is overwritten.
+     * @param tsid Time series to retrieve
+     * @param tsname Series (column) name to store the values under.
+     * @param tsdata {@link TimeSeriesData} to add to.
+     */
+    public void loadTimeSeriesVals(
+            int tsid, String tsname, TimeSeriesData tsdata) {
+        tsdata.put(tsname, simulationService.loadTimeSeriesData(
+                tsid, tsdata.getEvaluationSetup().timeOrigin));
+    }
+    
+    /**
+     * Create an empty TimeSeriesData for serialising time series values.
+     * The time origin is relevant only if the data will be written
+     * out in numeric mode (times as seconds rather than timestamps).
+     * @param projectId project id for time origin lookup or null to use
+     *   a global default.
+     * @throws EntityNotFoundException if project id is non-null but invalid. 
+     */
+    public TimeSeriesData makeTimeSeriesData(Integer projectId)
+            throws EntityNotFoundException {
+        Project prj = projectId == null ? null : fetchOne(
+                projectRepository, projectId, "project");
+        return new TimeSeriesData(simulationService.getEvaluationSetup(prj));
+    }
+    
+    /**
+     * Export time series data.
+     * Does not close the output stream.
+     * @param projectId Project id for obtaining the time origin, may be null
+     *   to use a global default 
+     * @param tsids Defines the exported series and their column names in
+     *   the output.  Map of series names to database ids.
+     * @param out Output stream
+     * @throws EntityNotFoundException if projectId is non-null but invalid
+     */
+    @Transactional
+    public void exportTimeSeries(
+            Integer projectId, Map<String, Integer> tsids, OutputStream out)
+                    throws EntityNotFoundException, IOException {
+        TimeSeriesData tsd = makeTimeSeriesData(projectId);
+        for (Map.Entry<String, Integer> ent : tsids.entrySet()) {
+            loadTimeSeriesVals(ent.getValue(), ent.getKey(), tsd);
+        }
+        OptimisationProblemIO.writeTimeSeries(tsd, out);
+    }
 
     /**
      * Imports external parameter values, input parameter values and simulation
@@ -1057,9 +1111,8 @@ public class ImportExportService {
      *   simulation model data
      */
     public CsvTimeSeriesData makeTimeSeriesReader(Project project) {
-        Instant timeOrigin = simulationService.loadTimeOrigin(project.getSimulationmodel());
-        EvaluationSetup setup = new EvaluationSetup(simulationService.getEvaluator(), timeOrigin);
-        return new CsvTimeSeriesData(setup);
+        return new CsvTimeSeriesData(
+                simulationService.getEvaluationSetup(project));
     }
 
     /**
