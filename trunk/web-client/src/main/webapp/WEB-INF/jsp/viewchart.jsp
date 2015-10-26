@@ -304,7 +304,7 @@
 														<td>
 															<!-- Remove selections -->
 															<a href="viewchart.html?action=removeall"><button type="button" style="width: 150px">
-															"<spring:message code="remove_selection"/>"</button></a>
+															<spring:message code="remove_selection"/></button></a>
 														</td>
 													</tr>
 													<tr>
@@ -312,14 +312,14 @@
 															<!-- Refresh chart -->
 															<a href="viewchart.html?action=refreshchart">
 															<button type="button" style="width: 150px">
-															"<spring:message code="refresh_chart"/>"</button></a>
+															<spring:message code="refresh_chart"/></button></a>
 														</td>
 													</tr>
 													<tr>
 														<td>
 															<!--Open chart window -->
 															<a href="viewchart.html?action=openwindow"><button type="button" style="width: 150px">
-															"<spring:message code="open_chart_window"/>"</button></a>
+															<spring:message code="open_chart_window"/></button></a>
 														</td>
 													</tr>
 												</table>

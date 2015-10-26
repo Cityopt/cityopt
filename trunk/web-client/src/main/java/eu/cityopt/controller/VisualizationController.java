@@ -31,9 +31,12 @@ import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.MetricValDTO;
+import eu.cityopt.DTO.ObjectiveFunctionDTO;
+import eu.cityopt.DTO.ObjectiveFunctionResultDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.ScenarioGeneratorDTO;
 import eu.cityopt.DTO.SimulationResultDTO;
 import eu.cityopt.DTO.TimeSeriesDTO;
 import eu.cityopt.DTO.TimeSeriesValDTO;
@@ -761,7 +764,158 @@ public class VisualizationController {
 			//JFreeChart chart = new JFreeChart();
 		}
 	}
-	
+
+	@RequestMapping("gachart.png")
+	public void renderGAChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
+		UserSession userSession = (UserSession) model.get("usersession");
+
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+		
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+
+		if (scenGen == null)
+		{
+			return;
+		}
+		
+		if (userSession.getSelectedGAObjFuncIds().size() != 2)
+		{
+			return;
+		}
+		
+	    Iterator<Integer> iterator = userSession.getSelectedGAObjFuncIds().iterator();
+		int objFunc1Id = iterator.next();
+		int objFunc2Id = iterator.next();
+
+		ObjectiveFunctionDTO objFunc1 = objFuncService.findByID(objFunc1Id);
+		ObjectiveFunctionDTO objFunc2 = objFuncService.findByID(objFunc2Id);
+		
+		// Get metrics time series (max 2 metrics)
+		if (userSession.getSelectedGAObjFuncIds().size() == 1)
+		{
+			// TODO if needed
+			/*timeSeriesCollection.removeAllSeries();
+			XYSeriesCollection collection = new XYSeriesCollection();
+			DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
+			DefaultPieDataset pieDataset = new DefaultPieDataset();
+
+			int metric1Id = iterator.next(); 
+		    int index = 0;
+		    
+			try {
+				MetricDTO metric1 = metricService.findByID(metric1Id);
+				
+				Set<Integer> scenarioIds = userSession.getScenarioIds();
+				Iterator<Integer> scenIter = scenarioIds.iterator();
+				
+				while (scenIter.hasNext())
+				{
+					Integer scenarioId = (Integer) scenIter.next();
+					int nScenarioId = (int)scenarioId;
+					ScenarioDTO scenarioTemp = scenarioService.findByID(nScenarioId);
+					MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
+					DefaultXYDataset dataset = new DefaultXYDataset();
+
+					if (userSession.getChartType() == 0)
+					{
+						userSession.setChartType(1);
+					}
+					else if (userSession.getChartType() == 2) 
+					{
+						categoryDataset.addValue(Double.parseDouble(metricVal1.getValue()), scenarioTemp.getName(), metric1.getName());
+					} 
+					else if (userSession.getChartType() == 3) 
+					{
+						pieDataset.setValue(scenarioTemp.getName(), Double.parseDouble(metricVal1.getValue()));
+					}
+					
+					index++;
+				}				
+			
+				JFreeChart chart = null;
+				
+				if (userSession.getChartType() == 0) {
+					// No time series type for metrics
+					userSession.setChartType(1);
+				}
+				
+				if (userSession.getChartType() == 2) {
+					chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "", "");
+				} else if (userSession.getChartType() == 3) {
+					chart = PieChartVisualization.createChart(pieDataset, "Pie chart " + metric1.getName(), "", "");
+				}
+				
+				if (chart != null)
+				{
+					ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+				}
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}*/
+		}
+		else if (userSession.getSelectedGAObjFuncIds().size() == 2)
+		{
+			XYSeriesCollection collection = new XYSeriesCollection();
+
+			try {
+				ArrayList<ObjectiveFunctionResultDTO> listResults1 = (ArrayList<ObjectiveFunctionResultDTO>) objFuncService.findResultsByScenarioGenerator(scenGen.getScengenid(), objFunc1Id);
+				ArrayList<ObjectiveFunctionResultDTO> listResults2 = (ArrayList<ObjectiveFunctionResultDTO>) objFuncService.findResultsByScenarioGenerator(scenGen.getScengenid(), objFunc2Id);
+				
+				Iterator<ObjectiveFunctionResultDTO> resultIter = listResults1.iterator();
+				
+				while (resultIter.hasNext())
+				{
+					ObjectiveFunctionResultDTO result = (ObjectiveFunctionResultDTO) resultIter.next();
+					ScenarioDTO scenarioTemp = scenarioService.findByID(result.getScenID());
+
+					String value1 = result.getValue();
+					String value2 = "";
+					
+					Iterator<ObjectiveFunctionResultDTO> resultIter2 = listResults2.iterator();
+					
+					while(resultIter2.hasNext())
+					{
+						ObjectiveFunctionResultDTO result2 = (ObjectiveFunctionResultDTO) resultIter2.next();
+						
+						if (result2.getScenID() == result.getScenID())
+						{
+							value2 = result2.getValue();
+							break;
+						}
+					}
+					
+					if (userSession.getChartType() == 1) 
+					{
+						XYSeries series = new XYSeries(scenarioTemp.getName());
+						series.add(Double.parseDouble(value1), Double.parseDouble(value2));
+						collection.addSeries(series);						
+					} 
+				}				
+			
+				JFreeChart chart = null;
+				
+				if (userSession.getChartType() != 0) {
+					// No other types for GA results
+					userSession.setChartType(1);
+				}
+				
+				if (userSession.getChartType() == 1) {
+					chart = ScatterPlotVisualization.createChart(collection, "Optimization (GA) results", objFunc1.getName(), objFunc2.getName(), false);
+				} 
+				
+				if (chart != null)
+				{
+					ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+				}
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	@RequestMapping(value="viewtable", method=RequestMethod.GET)
 	public String getViewTable(Map<String, Object> model, 
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
@@ -1009,4 +1163,119 @@ public class VisualizationController {
 		
 		return "viewtable";
 	}
+	
+	@RequestMapping(value="gachart", method=RequestMethod.GET)
+	public String makeGAChart(Map<String, Object> model, 
+		@RequestParam(value="scenarioid", required=false) String scenarioId,
+		@RequestParam(value="objfuncid", required=false) String objfuncid,
+		@RequestParam(value="action", required=false) String action,
+		@RequestParam(value="resetselections", required=false) String reset,
+		@RequestParam(value="charttype", required=false) String charttype) {
+
+		UserSession userSession = (UserSession) model.get("usersession");
+		
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+
+		model.put("usersession", userSession);
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+		
+		if (charttype != null)
+		{
+			userSession.setChartType(Integer.parseInt(charttype));
+		}
+		
+		if (action != null)
+		{
+			if (action.equals("removeall"))
+			{
+				userSession.removeAllExtVarIds();
+				userSession.removeAllOutputVarIds();
+				userSession.removeAllMetricIds();
+				userSession.removeAllScenarioIds();
+			}
+		}
+
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+
+		if (scenGen == null)
+		{
+			return "error";
+		}
+
+		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
+		model.put("scenarios", scenarios);
+		
+		if (scenarioId != null && action != null)
+		{
+			int nScenarioId = Integer.parseInt(scenarioId);
+			
+			if (action.equals("add"))
+			{
+				userSession.addSelectedGAScenarioId(nScenarioId);
+			}
+			else if (action.equals("remove"))
+			{
+				userSession.removeSelectedGAScenarioId(nScenarioId);
+			}
+		}
+
+		List<ObjectiveFunctionDTO> objFuncs = null;
+		
+		try {
+			objFuncs = scenGenService.getObjectiveFunctions(scenGen.getScengenid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		model.put("objFuncs", objFuncs);
+
+		// Reset selections
+		if (reset != null && reset.equalsIgnoreCase("true"))
+		{
+			userSession.removeAllSelectedGAScenarioIds();
+			
+			for (ScenarioDTO scenario : scenarios)
+			{
+				userSession.addSelectedGAScenarioId(scenario.getScenid());
+			}
+
+			userSession.removeAllSelectedGAObjFuncIds();
+			
+			for (ObjectiveFunctionDTO objFunc : objFuncs)
+			{
+				userSession.addSelectedGAObjFuncId(objFunc.getObtfunctionid());
+				
+				if (userSession.getSelectedGAObjFuncIds().size() >= 2)
+				{
+					break;
+				}
+			}
+		}
+
+		if (objfuncid != null && action != null)
+		{
+			if (action.equals("add"))
+			{
+				userSession.addSelectedGAObjFuncId(Integer.parseInt(objfuncid));
+			}
+			else if (action.equals("remove"))
+			{
+				userSession.removeSelectedGAObjFuncId(Integer.parseInt(objfuncid));
+			}
+		}
+
+		model.put("usersession", userSession);
+		
+		return "gachart";
+	}
+
 }

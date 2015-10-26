@@ -18,6 +18,8 @@ public class UserSession {
 	private String strObjFuncValue;
 	private String strOptResultString;
 	private int nGAResultScenario;
+	private HashSet<Integer> selectedGAScenarioIds = new HashSet<Integer>();
+	private HashSet<Integer> selectedGAObjFuncIds = new HashSet<Integer>();
 	private int nComponentId;
 	private int nChartType;
 	private String strUserName;
@@ -145,6 +147,46 @@ public class UserSession {
 	public int getGAResultScenarioId()
 	{
 		return nGAResultScenario;
+	}
+
+	public HashSet<Integer> getSelectedGAScenarioIds() {
+		return selectedGAScenarioIds;
+	}
+
+	public void addSelectedGAScenarioId(int selectedGAScenarioId) {
+		selectedGAScenarioIds.add(selectedGAScenarioId);
+	}
+
+	public boolean hasSelectedGAScenarioId(int selectedGAScenarioId) {
+		return selectedGAScenarioIds.contains(selectedGAScenarioId);
+	}
+
+	public void removeAllSelectedGAScenarioIds() {
+		selectedGAScenarioIds.clear();
+	}
+
+	public void removeAllSelectedGAObjFuncIds() {
+		selectedGAObjFuncIds.clear();
+	}
+
+	public void removeSelectedGAScenarioId(int id) {
+		selectedGAScenarioIds.remove(id);
+	}
+
+	public HashSet<Integer> getSelectedGAObjFuncIds() {
+		return selectedGAObjFuncIds;
+	}
+
+	public void addSelectedGAObjFuncId(int selectedGAObjFuncId) {
+		selectedGAObjFuncIds.add(selectedGAObjFuncId);
+	}
+
+	public void removeSelectedGAObjFuncId(int selectedGAObjFuncId) {
+		selectedGAObjFuncIds.remove(selectedGAObjFuncId);
+	}
+	
+	public boolean hasSelectedGAObjFuncId(int selectedGAObjFuncId) {
+		return selectedGAObjFuncIds.contains(selectedGAObjFuncId);
 	}
 
 	public HashSet<Integer> getSelectedChartOutputVarIds() {
