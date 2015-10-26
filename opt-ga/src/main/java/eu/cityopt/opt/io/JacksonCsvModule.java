@@ -107,7 +107,8 @@ public class JacksonCsvModule extends AbstractModule {
     
     private static final CsvSchema problemSchema = CsvSchema.builder()
             .addColumn("kind").addColumn("component")
-            .addColumn("name").addColumn("type").addColumn("value")
+            .addColumn("name").addColumn("type")
+            .addColumn("value").addColumn("unit")
             .addColumn("lower").addColumn("upper").addColumn("expression")
             .build();
 
