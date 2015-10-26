@@ -23,9 +23,13 @@ import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
+import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.model.Project;
+import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.OptimizationSetRepository;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.service.ExtParamService;
+import eu.cityopt.service.ExtParamValSetService;
 import eu.cityopt.sim.eval.util.TempDir;
 
 @Transactional
@@ -39,6 +43,7 @@ public class ImportExportServiceTest extends SimulationTestBase {
     @Inject ImportExportService importExportService;
     @Inject ProjectRepository projectRepository;
     @Inject OptimizationSetRepository optimisationSetRepository;
+    @Inject ExtParamService extParamService;
 
     @Test
     @DatabaseSetup("classpath:/testData/empty_project.xml")
@@ -95,6 +100,15 @@ public class ImportExportServiceTest extends SimulationTestBase {
             Files.copy(pout, System.out);
             Files.copy(tsout, System.out);
         }
+    }
+    
+    @Test
+    @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
+    public void testExportExtParamTimeSeries() throws Exception {
+        int xpvset = 1;
+        ExtParamDTO xp = extParamService.findByName("fuel_cost").get(0);
+        //TODO check the result (how?)
+        importExportService.exportExtParamTimeSeries(xpvset, System.out, xp);
     }
 
     @Test
