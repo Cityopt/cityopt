@@ -129,11 +129,11 @@ parsed as described in [General syntax and structure][].  `Dynamic` is
 parsed as a Python expression.  The two time series types require a
 list of times and data values from a separate file.  `TimeSeries/step`
 is a zero-order hold, i.e., a value given for some point in time
-remains constant until the next given time, when it is replaced by a
-new value.  `TimeSeries/linear` is continuous, interpolating linearly
-between the given times.  For time series **value** is the name of
-a field in the time series file.  If not given, it defaults to the
-qualified name of the item.
+remains in effect until the next given time, at which it is replaced
+by a new value.  `TimeSeries/linear` is continuous with linear
+interpolation between the given times.  For time series **value** is
+the name of a field in the time series file.  If not given, it
+defaults to the qualified name of the item.
 
 When values are imported, the scenario and external parameter set
 names must be specified in the user interface as they are not named in
@@ -158,10 +158,10 @@ the qualified name.
 ## Time series
 
 Time series files must have a field named **timestamp**, which
-contains either timestamps or numeric values as described in
-[General syntax and structure][].  Other fields contain series values
-and are referenced by name from the **value** fields of
-[Single scenario data][] or [Multi-scenario data][] (**value**
-defaults to the qualified name of the item).  Time series values are
-floating point numbers (type `Double`).  Values may be omitted from
-some rows, causing the series not to have a point at that time.
+contains timestamps as described in [General syntax and structure][].
+Other fields contain series values and are referenced by name from the
+**value** fields of [Single scenario data][] or
+[Multi-scenario data][] (**value** defaults to the qualified name of
+the item).  Time series values are floating point numbers (type
+`Double`).  Values may be omitted from some rows, causing the series
+not to have a point at that time.
