@@ -124,6 +124,7 @@ public class UserGroupProjectServiceImpl implements UserGroupProjectService {
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public UserGroupProjectDTO findByUserAndProject(int userId,
 			Integer projectId) {
 		

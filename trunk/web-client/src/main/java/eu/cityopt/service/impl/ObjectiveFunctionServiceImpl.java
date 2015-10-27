@@ -132,6 +132,7 @@ public class ObjectiveFunctionServiceImpl implements ObjectiveFunctionService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<ObjectiveFunctionResultDTO> findResultsByScenarioGenerator(int scenGenID,
 			int objectiveFunctionId) {
 		
