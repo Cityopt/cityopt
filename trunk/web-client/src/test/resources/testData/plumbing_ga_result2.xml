@@ -1,0 +1,702 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <datareliability datarelid="1" datareldesc="Actual data"/>
+  <datareliability datarelid="2" datareldesc="Technical report"/>
+  <datareliability datarelid="3" datareldesc="Scientific bibliography"/>
+  <datareliability datarelid="4" datareldesc="Expert opinion"/>
+  <extparamvalset extparamvalsetid="0" name="defaults" version="1"/>
+  <extparamvalset extparamvalsetid="1" name="scengentest" version="1"/>
+  <project prjid="1"  name="Project 1" location="dummy" version="1"/>
+  <project prjid="2"  name="Plumbing test project" location="Helsinki" defaultextparamvalsetid="0" version="1"/>
+  <component componentid="0" prjid="1" name="dummy" version="1"/>
+  <component componentid="1" prjid="2" name="C01" version="1"/>
+  <component componentid="2" prjid="2" name="PIP01" version="1"/>
+  <component componentid="3" prjid="2" name="CITYOPT" version="1"/>
+  <type typeid="1" name="Double"/>
+  <type typeid="2" name="Integer"/>
+  <type typeid="3" name="String"/>
+  <type typeid="4" name="Timestamp"/>
+  <type typeid="5" name="TimeSeries/step"/>
+  <type typeid="6" name="TimeSeries/linear"/>
+  <type typeid="7" name="List of Double"/>
+  <type typeid="8" name="List of Integer"/>
+  <type typeid="9" name="List of Timestamp"/>
+  <unit/>
+  <inputparameter inputid="1" name="typ" componentid="1" defaultvalue="2" typeid="2" version="1"/>
+  <inputparameter inputid="2" name="simulation_start" componentid="3" defaultvalue="2015-01-01T00:00:00" typeid="4" version="1"/>
+  <inputparameter inputid="3" name="simulation_end" componentid="3" defaultvalue="2015-01-01T00:00:00" typeid="4" version="1"/>
+  <algorithm algorithmid="1" description="grid search"/>
+  <algorithm algorithmid="2" description="genetic algorithm"/>
+  <algorithm algorithmid="50" description="genetic algorithm" version="0"/>
+  <algorithm algorithmid="51" description="genetic algorithm" version="0"/>
+  <algorithm algorithmid="52" description="genetic algorithm" version="0"/>
+  <algorithm algorithmid="53" description="grid search" version="0"/>
+  <algorithm algorithmid="100" description="genetic algorithm" version="0"/>
+  <algorithm algorithmid="101" description="genetic algorithm" version="0"/>
+  <algorithm algorithmid="102" description="genetic algorithm" version="0"/>
+  <scenariogenerator scengenid="1" prjid="2" algorithmid="102" extparamvalsetid="1" status="COMPLETED_RESULTS : FEASIBLE" log="" name="scengentest" version="3"/>
+  <scenario scenid="159" prjid="2" name="scengentest-2" description="C01.typ = 1; CONSTRAINTS: con1 over +0.06864849001833345; OBJECTIVES: N/A" createdon="2015-10-27 09:59:33.02" updatedon="2015-10-27 10:00:37.681" scengenid="1" runstart="2015-10-27 09:59:25.54" runend="2015-10-27 10:00:33.257" status="SUCCESS" log="Compile...&#xD;&#xA;Execute...&#xD;&#xA;Initializing apros with AprosPreferences[commons=Commons:&#xA;&#09;NAME=Extreme&#xA;&#09;CHAR=260000000 items (260 MB)&#xA;&#09;COMPLEX=30000 items (0.24 MB)&#xA;&#09;DOUBLE=20000000 items (160 MB)&#xA;&#09;INTEGER=80000000 items (320 MB)&#xA;&#09;LOGICAL=3500000 items (14 MB)&#xA;&#09;REAL=40000000 items (160 MB)&#xA;&#09;TOTAL REQUIRED=914.24 MB, dllConfiguration=PRODUCTION, hashSizeMultiplier=2.5, allocateOnlaunch=true, false]&#xD;&#xA;Initializing Apros at C:/Users/tteruh/AppData/Local/Temp/cityopt_apros2651658712410712892/srv/profiles/Apros-Combustion-5.13.06-64bit/plugins/fi.vtt.apros.solver.combustion_5_13_06_5.13.6.201502030915/&#xD;&#xA;ALLOCATE_COMMONS&#xA; --- ALLOCATION ---------------------------&#xD;&#xA; CHC(   260000000 )&#xD;&#xA; INC(    80000000 )&#xD;&#xA; REC(    40000000 )&#xD;&#xA; DOC(    20000000 )&#xD;&#xA; COC(       30000 )&#xD;&#xA; LOC(     3500000 )&#xD;&#xA; HASIND(     6000000 )&#xD;&#xA; LLNEXT(    12000000 )&#xD;&#xA; LLNTIN(    12000000 )&#xD;&#xA; LLFREE(    12000000 )&#xD;&#xA; EMPTYS(     3000000 )&#xD;&#xA; ALPLIS(     3000000 )&#xD;&#xA; NAMTYP(     3000000 )&#xD;&#xA; REFEFR(     3000000 )&#xD;&#xA; REFETO(     3000000 )&#xD;&#xA; NAMRFR(     3000000 )&#xD;&#xA; NAMIND(     3000000 )&#xD;&#xA; APSBUF(     3000000 )&#xD;&#xA; LOCKOD(     3000000 )&#xD;&#xA;INIT_SUBSYSTEMS&#xA; Licence check            1&#xD;&#xA; Call APVERI&#xD;&#xA; Call APINI0&#xD;&#xA; Call IOLL&#xD;&#xA; Call APWSIN&#xD;&#xA; Call APROS_APRSRIN&#xD;&#xA;assignSysinc&#xA;bundleName = fi.vtt.apros.solver.combustion_5_13_06.win32.x86_64&#xD;&#xA;readSnapfile plumbing.snp&#xD;&#xA;Cannot write a message to Java callback because jniEnv or a callback object is not set. Prints the message instead to stderr. This message is shown only once.&#xA;M6&gt; Version information of executable:&#xA;M6&gt; APROS version: 5.13.07.07 - 22122014&#xA;M6&gt; Operating system where APROS has been compiled:&#xA;M6&gt;   Microsoft Windows Vista Business 2007 Service Pack 2&#xA;M6&gt; C-compiler: Microsoft (R) 32-bit Version 16.00&#xA;M6&gt; FORTRAN-compiler: Intel(R) IA-32, Build 20121008&#xA;M6&gt; Size and type of APROS: normal size, combustion&#xA;M6&gt; Product name: Apros&#xA;M6&gt;  &#xA;M6&gt; Version information of database:&#xA;M6&gt; APROS version: 5.13.06 - 08042014&#xA;M6&gt; Operating system where APROS has been compiled:&#xA;M6&gt;   Microsoft Windows Vista Business 2007 Service Pack 2&#xA;M6&gt; C-compiler: Microsoft (R) 32-bit Version 16.00&#xA;M6&gt; FORTRAN-compiler: Intel(R) IA-32, Build 20121008&#xA;M6&gt; Size and type of APROS: normal size, paper&#xA;M6&gt; Product name: AprosPaper&#xA;M6&gt;  &#xA;M6&gt; Ex: executive system          05.13 2014/04/03&#xA;M6&gt; Db: executive system          05.13 2014/04/03&#xA;M6&gt; Ex: automation system         08.01 2013/11/21&#xA;M6&gt; Db: automation system         08.01 2013/11/21&#xA;M6&gt; Ex: boiler components         11.02 2013/10/28&#xA;M6&gt; Db: boiler components         11.02 2013/10/28&#xA;M6&gt; Ex: electrical system         10.02 2013/11/29&#xA;M6&gt; Db: electrical system         10.02 2013/11/29&#xA;M6&gt; Ex: equation solver           04.02 2013/10/23&#xA;M6&gt; Db: equation solver           04.02 2013/10/23&#xA;M6&gt; Ex: multidimensional flow     05.03 2012/04/11&#xA;M6&gt; Db: multidimensional flow     05.03 2012/04/11&#xA;M6&gt; Ex: process components        24.11 2014/01/23&#xA;M6&gt; Db: process components        24.11 2014/01/23&#xA;M6&gt; Ex: reactor components        00.00 0000/00/08&#xA;M6&gt; Db: reactor components        00.00 0000/00/08&#xA;M6&gt; Ex: thermohydraulics          28.09 2014/04/03&#xA;M6&gt; Db: thermohydraulics          28.09 2014/04/03&#xA;M6&gt; Ex: five equation             09.20 2013/10/07&#xA;M6&gt; Db: five equation             09.20 2013/10/07&#xA;M6&gt; Ex: six equation              23.10 2014/03/03&#xA;M6&gt; Db: six equation              23.10 2014/03/03&#xA;M6&gt; Ex: training simulator        02.04 2012/12/03&#xA;M6&gt; Db: training simulator        02.04 2012/12/03&#xA;M6&gt; Ex: containment               00.00 0000/00/14&#xA;M6&gt; Db: containment               00.00 0000/00/14&#xA;M6&gt; Ex: diesel engine             01.04 2010/12/20&#xA;M6&gt; Db: diesel engine             01.04 2010/12/20&#xA;M6&gt; Ex: external models           02.09 2012/05/11&#xA;M6&gt; Db: external models           02.09 2012/05/11&#xA;M6&gt; Ex: IO                        02.13 2013/08/21&#xA;M6&gt; Db: IO                        02.13 2013/08/21&#xA;M6&gt; Ex: graphical interface       00.00 0000/00/19&#xA;M6&gt; Db: graphical interface       01.29 2014/02/05&#xA;M6&gt; Ex: 3D reactor                00.00 0000/00/20&#xA;M6&gt; Db: 3D reactor                00.00 0000/00/20&#xA;M6&gt; Ex: paper mill                03.22 2013/10/28&#xA;M6&gt; Db: paper mill                03.22 2013/10/28&#xA;M6&gt; Ex: material properties       06.21 2013/09/26&#xA;M6&gt; Db: material properties       06.21 2013/09/26&#xA;M6&gt; Ex: concentration solution    05.01 2014/01/08&#xA;M6&gt; Db: concentration solution    05.01 2014/01/08&#xA;M6&gt; Ex: plug flow                 02.03 2005/09/19&#xA;M6&gt; Db: plug flow                 02.03 2005/09/19&#xA;M6&gt; Ex: level 0 thermohydraulics  04.12 2013/09/26&#xA;M6&gt; Db: level 0 thermohydraulics  04.12 2013/09/26&#xA;M6&gt; Ex: common thermohydraulics   03.12 2013/09/11&#xA;M6&gt; Db: common thermohydraulics   03.12 2013/09/11&#xA;M6&gt; Ex: level 1 thermohydraulics  04.12 2013/10/07&#xA;M6&gt; Db: level 1 thermohydraulics  04.12 2013/10/07&#xA;M6&gt; Ex: boundary condition module 02.02 2013/10/23&#xA;M6&gt; Db: boundary condition module 02.02 2013/10/23&#xA;M6&gt; Ex: fuel cell                 05.13 2014/01/09&#xA;M6&gt; Db: fuel cell                 05.13 2014/01/09&#xA;M6&gt; Ex: heat structure            01.28 2014/04/07&#xA;M6&gt; Db: heat structure            01.28 2014/04/07&#xA;M6&gt; Ex: severe accident           00.00 0000/00/31&#xA;M6&gt; Db: severe accident           00.00 0000/00/00&#xA;M6&gt; Ex: weather models            01.04 2012/02/23&#xA;M6&gt; Db: weather models            00.00 0000/00/00&#xA;OK&#xD;&#xA;&gt; MODI SPEED SC_SPEED 1e9&#xD;&#xA;&gt; DO&#xD;&#xA;M8: Experiment activated&#xD;&#xA;M8: EXPO&#xD;&#xA;M8: PREPARING EXPO                     TIME 0.000000&#xD;&#xA;M8: MODULES IN SIMULATION&#xD;&#xA;M8: HEAT STRUCTURE PREPARATION&#xD;&#xA;M8: LEVEL 0 THERMOHYDRAULICS PREPARATION - PART 1&#xD;&#xA;M8: PLUG FLOW PREPARATION&#xD;&#xA;M8:   - DATA_QUEUE PREPARATION&#xD;&#xA;M8:   - PLUG FLOW PIPE PREPARATION&#xD;&#xA;M8:   - MULTI_DELAY_PIPE PREPARATION&#xD;&#xA;M8:   - CONTROL_VALVE PLUG FLOW PREPARATION&#xD;&#xA;M8:   - BASIC_PUMP PLUG FLOW PREPARATION&#xD;&#xA;M8:   - TANK_ADV PREPARATION&#xD;&#xA;M8:   - PLUG FLOW POINT PREPARATION&#xD;&#xA;M8: LEVEL 0 THERMOHYDRAULICS PREPARATION - PART 2&#xD;&#xA;M8: COMPOSITION PREPARATION&#xD;&#xA;M8: LEVEL 1 THERMOHYDRAULICS PREPARATION&#xD;&#xA;M8: THERMOHYDRAULICS PREPARATION&#xD;&#xA;M7:  ERROR     6154 IN T2CHE      Branch too short&#xD;&#xA;M7: PIP01_BR1&#xD;&#xA;M8: 5-EQ THERMOHYDRAULICS PREPARATION&#xD;&#xA;M8: 6-EQ THERMOHYDRAULICS PREPARATION&#xD;&#xA;M8: LEVEL 0 THERMOHYDRAULICS PREPARATION - PART 3&#xD;&#xA;M8: PREPARATION OF ACTUATORS&#xD;&#xA;M8: PAPER MACHINE COMPONENTS PREPARATION&#xD;&#xA;M8:   - PAPER WEB MODULES PREPARATION&#xD;&#xA;M8:   - WEB STRUCTURE PREPARATION&#xD;&#xA;M8:   - WEB_HS_CONTACT PREPARATION&#xD;&#xA;M8:   - WEB_CONNECT_POINT PREPARATION&#xD;&#xA;M8:   - WEB_BRANCH PREPARATION&#xD;&#xA;M8:   - WEB_TRANSFER PREPARATION&#xD;&#xA;M8:   - PRESS PREPARATION&#xD;&#xA;M8:   - SLICE PREPARATION&#xD;&#xA;M8:   - FREEDRAW PREPARATION&#xD;&#xA;M8:   - CYLINDER PREPARATION&#xD;&#xA;M8:   - SIZE_PRESS PREPARATION&#xD;&#xA;M8:   - IR_DRYER PREPARATION&#xD;&#xA;M8:   - AIR_FOIL PREPARATION&#xD;&#xA;M8:   - COATING PREPARATION&#xD;&#xA;M8:   - FOIL_BOX PREPARATION&#xD;&#xA;M8:   - WEB_CONNECTOR PREPARATION&#xD;&#xA;M8:   - TRIMMER_PULPER PREPARATION&#xD;&#xA;M8:   - WEBDIVIDER PREPARATION&#xD;&#xA;M8:   - DRYING_GROUP PREPARATION&#xD;&#xA;M8:   - WEB_TRANSFORMATION PREPARATION&#xD;&#xA;M8:   - DISC_FILTER PREPARATION&#xD;&#xA;M8:   - DRUM_FILTER PREPARATION&#xD;&#xA;M8:   - DIGESTER PREPARATION&#xD;&#xA;M8:   - HEADBOX_HYDR INITIALIZATION&#xD;&#xA;M8:   - HEADBOX INITIALIZATION&#xD;&#xA;M8:   - SPLITTER PREPARATION&#xD;&#xA;M8: VESSEL PREPARATION&#xD;&#xA;M8: AUTOMATION PREPARATION&#xD;&#xA;M8: SOLUTION PREPARATION&#xD;&#xA;M8: IO SYSTEM v1.3 PREPARATION&#xD;&#xA;M8: TS CONTROL v 1.0 PREPARATION&#xD;&#xA;M8: MALFUNC_TRIGGER PREPARATION&#xD;&#xA;M8: 3D FLOW PREPARATION&#xD;&#xA;&gt; MODI PIP01 PI12_DIAMETER 3.0&#xD;&#xA;&gt; modi is01 io_file_name results.dat&#xD;&#xA;&gt; io open is01&#xD;&#xA;&gt; STOP&#xD;&#xA;M9: OK&#xD;&#xA; =&#xD;&#xA;&gt; MODI ECCO SIMULATION_CURRENT_TIME 0.0&#xD;&#xA;&gt; DO&#xD;&#xA;M8: Experiment activated&#xD;&#xA;M8: EXPO&#xD;&#xA;M8: PREPARING EXPO                     TIME 0.000000&#xD;&#xA;M8: MODULES IN SIMULATION&#xD;&#xA;M8: PLUG FLOW PREPARATION&#xD;&#xA;M8:   - DATA_QUEUE PREPARATION&#xD;&#xA;M8:   - PLUG FLOW PIPE PREPARATION&#xD;&#xA;M8:   - MULTI_DELAY_PIPE PREPARATION&#xD;&#xA;M8:   - CONTROL_VALVE PLUG FLOW PREPARATION&#xD;&#xA;M8:   - BASIC_PUMP PLUG FLOW PREPARATION&#xD;&#xA;M8:   - TANK_ADV PREPARATION&#xD;&#xA;M8:   - PLUG FLOW POINT PREPARATION&#xD;&#xA;M8: LEVEL 0 THERMOHYDRAULICS PREPARATION - PART 2&#xD;&#xA;M8: COMPOSITION PREPARATION&#xD;&#xA;M8: THERMOHYDRAULICS PREPARATION&#xD;&#xA;M7:  ERROR     6154 IN T2CHE      Branch too short&#xD;&#xA;M7: PIP01_BR1&#xD;&#xA;M8: PAPER MACHINE COMPONENTS PREPARATION&#xD;&#xA;M8:   - WEB_BRANCH PREPARATION&#xD;&#xA;M8:   - WEB_TRANSFER PREPARATION&#xD;&#xA;M8:   - SLICE PREPARATION&#xD;&#xA;M8:   - FREEDRAW PREPARATION&#xD;&#xA;M8:   - CYLINDER PREPARATION&#xD;&#xA;M8:   - SIZE_PRESS PREPARATION&#xD;&#xA;M8:   - IR_DRYER PREPARATION&#xD;&#xA;M8:   - AIR_FOIL PREPARATION&#xD;&#xA;M8:   - COATING PREPARATION&#xD;&#xA;M8:   - FOIL_BOX PREPARATION&#xD;&#xA;M8:   - TRIMMER_PULPER PREPARATION&#xD;&#xA;M8:   - WEBDIVIDER PREPARATION&#xD;&#xA;M8:   - DRYING_GROUP PREPARATION&#xD;&#xA;M8:   - WEB_TRANSFORMATION PREPARATION&#xD;&#xA;M8:   - DIGESTER PREPARATION&#xD;&#xA;M8:   - HEADBOX_HYDR INITIALIZATION&#xD;&#xA;M8:   - HEADBOX INITIALIZATION&#xD;&#xA;M8:   - SPLITTER PREPARATION&#xD;&#xA;M8: VESSEL PREPARATION&#xD;&#xA;M8: IO SYSTEM v1.3 PREPARATION&#xD;&#xA;M8: TS CONTROL v 1.0 PREPARATION&#xD;&#xA;M8: MALFUNC_TRIGGER PREPARATION&#xD;&#xA;M8: 3D FLOW PREPARATION&#xD;&#xA;M6: 2&#xD;&#xA;M6:  SIMULATION TIME&#xD;&#xA;M6:  PIP01 PI12_MIX_MASS_FLOW&#xD;&#xA;&gt; io close is01&#xD;&#xA;" version="22"/>
+  <scenario scenid="160" prjid="2" name="scengentest-8" description="C01.typ = 2; CONSTRAINTS: con1 ok; OBJECTIVES: obj1 = 13.770240904399932" createdon="2015-10-27 09:59:41.421" updatedon="2015-10-27 10:00:45.834" scengenid="1" runstart="2015-10-27 09:59:25.555" runend="2015-10-27 10:00:43.662" status="SUCCESS" log="Compile...&#xD;&#xA;Execute...&#xD;&#xA;Initializing apros with AprosPreferences[commons=Commons:&#xA;&#09;NAME=Extreme&#xA;&#09;CHAR=260000000 items (260 MB)&#xA;&#09;COMPLEX=30000 items (0.24 MB)&#xA;&#09;DOUBLE=20000000 items (160 MB)&#xA;&#09;INTEGER=80000000 items (320 MB)&#xA;&#09;LOGICAL=3500000 items (14 MB)&#xA;&#09;REAL=40000000 items (160 MB)&#xA;&#09;TOTAL REQUIRED=914.24 MB, dllConfiguration=PRODUCTION, hashSizeMultiplier=2.5, allocateOnlaunch=true, false]&#xD;&#xA;Initializing Apros at C:/Users/tteruh/AppData/Local/Temp/cityopt_apros2651658712410712892/srv/profiles/Apros-Combustion-5.13.06-64bit/plugins/fi.vtt.apros.solver.combustion_5_13_06_5.13.6.201502030915/&#xD;&#xA;ALLOCATE_COMMONS&#xA; --- ALLOCATION ---------------------------&#xD;&#xA; CHC(   260000000 )&#xD;&#xA; INC(    80000000 )&#xD;&#xA; REC(    40000000 )&#xD;&#xA; DOC(    20000000 )&#xD;&#xA; COC(       30000 )&#xD;&#xA; LOC(     3500000 )&#xD;&#xA; HASIND(     6000000 )&#xD;&#xA; LLNEXT(    12000000 )&#xD;&#xA; LLNTIN(    12000000 )&#xD;&#xA; LLFREE(    12000000 )&#xD;&#xA; EMPTYS(     3000000 )&#xD;&#xA; ALPLIS(     3000000 )&#xD;&#xA; NAMTYP(     3000000 )&#xD;&#xA; REFEFR(     3000000 )&#xD;&#xA; REFETO(     3000000 )&#xD;&#xA; NAMRFR(     3000000 )&#xD;&#xA; NAMIND(     3000000 )&#xD;&#xA; APSBUF(     3000000 )&#xD;&#xA; LOCKOD(     3000000 )&#xD;&#xA;INIT_SUBSYSTEMS&#xA; Licence check            1&#xD;&#xA; Call APVERI&#xD;&#xA; Call APINI0&#xD;&#xA; Call IOLL&#xD;&#xA; Call APWSIN&#xD;&#xA; Call APROS_APRSRIN&#xD;&#xA;assignSysinc&#xA;bundleName = fi.vtt.apros.solver.combustion_5_13_06.win32.x86_64&#xD;&#xA;readSnapfile plumbing.snp&#xD;&#xA;Cannot write a message to Java callback because jniEnv or a callback object is not set. Prints the message instead to stderr. This message is shown only once.&#xA;M6&gt; Version information of executable:&#xA;M6&gt; APROS version: 5.13.07.07 - 22122014&#xA;M6&gt; Operating system where APROS has been compiled:&#xA;M6&gt;   Microsoft Windows Vista Business 2007 Service Pack 2&#xA;M6&gt; C-compiler: Microsoft (R) 32-bit Version 16.00&#xA;M6&gt; FORTRAN-compiler: Intel(R) IA-32, Build 20121008&#xA;M6&gt; Size and type of APROS: normal size, combustion&#xA;M6&gt; Product name: Apros&#xA;M6&gt;  &#xA;M6&gt; Version information of database:&#xA;M6&gt; APROS version: 5.13.06 - 08042014&#xA;M6&gt; Operating system where APROS has been compiled:&#xA;M6&gt;   Microsoft Windows Vista Business 2007 Service Pack 2&#xA;M6&gt; C-compiler: Microsoft (R) 32-bit Version 16.00&#xA;M6&gt; FORTRAN-compiler: Intel(R) IA-32, Build 20121008&#xA;M6&gt; Size and type of APROS: normal size, paper&#xA;M6&gt; Product name: AprosPaper&#xA;M6&gt;  &#xA;M6&gt; Ex: executive system          05.13 2014/04/03&#xA;M6&gt; Db: executive system          05.13 2014/04/03&#xA;M6&gt; Ex: automation system         08.01 2013/11/21&#xA;M6&gt; Db: automation system         08.01 2013/11/21&#xA;M6&gt; Ex: boiler components         11.02 2013/10/28&#xA;M6&gt; Db: boiler components         11.02 2013/10/28&#xA;M6&gt; Ex: electrical system         10.02 2013/11/29&#xA;M6&gt; Db: electrical system         10.02 2013/11/29&#xA;M6&gt; Ex: equation solver           04.02 2013/10/23&#xA;M6&gt; Db: equation solver           04.02 2013/10/23&#xA;M6&gt; Ex: multidimensional flow     05.03 2012/04/11&#xA;M6&gt; Db: multidimensional flow     05.03 2012/04/11&#xA;M6&gt; Ex: process components        24.11 2014/01/23&#xA;M6&gt; Db: process components        24.11 2014/01/23&#xA;M6&gt; Ex: reactor components        00.00 0000/00/08&#xA;M6&gt; Db: reactor components        00.00 0000/00/08&#xA;M6&gt; Ex: thermohydraulics          28.09 2014/04/03&#xA;M6&gt; Db: thermohydraulics          28.09 2014/04/03&#xA;M6&gt; Ex: five equation             09.20 2013/10/07&#xA;M6&gt; Db: five equation             09.20 2013/10/07&#xA;M6&gt; Ex: six equation              23.10 2014/03/03&#xA;M6&gt; Db: six equation              23.10 2014/03/03&#xA;M6&gt; Ex: training simulator        02.04 2012/12/03&#xA;M6&gt; Db: training simulator        02.04 2012/12/03&#xA;M6&gt; Ex: containment               00.00 0000/00/14&#xA;M6&gt; Db: containment               00.00 0000/00/14&#xA;M6&gt; Ex: diesel engine             01.04 2010/12/20&#xA;M6&gt; Db: diesel engine             01.04 2010/12/20&#xA;M6&gt; Ex: external models           02.09 2012/05/11&#xA;M6&gt; Db: external models           02.09 2012/05/11&#xA;M6&gt; Ex: IO                        02.13 2013/08/21&#xA;M6&gt; Db: IO                        02.13 2013/08/21&#xA;M6&gt; Ex: graphical interface       00.00 0000/00/19&#xA;M6&gt; Db: graphical interface       01.29 2014/02/05&#xA;M6&gt; Ex: 3D reactor                00.00 0000/00/20&#xA;M6&gt; Db: 3D reactor                00.00 0000/00/20&#xA;M6&gt; Ex: paper mill                03.22 2013/10/28&#xA;M6&gt; Db: paper mill                03.22 2013/10/28&#xA;M6&gt; Ex: material properties       06.21 2013/09/26&#xA;M6&gt; Db: material properties       06.21 2013/09/26&#xA;M6&gt; Ex: concentration solution    05.01 2014/01/08&#xA;M6&gt; Db: concentration solution    05.01 2014/01/08&#xA;M6&gt; Ex: plug flow                 02.03 2005/09/19&#xA;M6&gt; Db: plug flow                 02.03 2005/09/19&#xA;M6&gt; Ex: level 0 thermohydraulics  04.12 2013/09/26&#xA;M6&gt; Db: level 0 thermohydraulics  04.12 2013/09/26&#xA;M6&gt; Ex: common thermohydraulics   03.12 2013/09/11&#xA;M6&gt; Db: common thermohydraulics   03.12 2013/09/11&#xA;M6&gt; Ex: level 1 thermohydraulics  04.12 2013/10/07&#xA;M6&gt; Db: level 1 thermohydraulics  04.12 2013/10/07&#xA;M6&gt; Ex: boundary condition module 02.02 2013/10/23&#xA;M6&gt; Db: boundary condition module 02.02 2013/10/23&#xA;M6&gt; Ex: fuel cell                 05.13 2014/01/09&#xA;M6&gt; Db: fuel cell                 05.13 2014/01/09&#xA;M6&gt; Ex: heat structure            01.28 2014/04/07&#xA;M6&gt; Db: heat structure            01.28 2014/04/07&#xA;M6&gt; Ex: severe accident           00.00 0000/00/31&#xA;M6&gt; Db: severe accident           00.00 0000/00/00&#xA;M6&gt; Ex: weather models            01.04 2012/02/23&#xA;M6&gt; Db: weather models            00.00 0000/00/00&#xA;OK&#xD;&#xA;&gt; MODI SPEED SC_SPEED 1e9&#xD;&#xA;&gt; DO&#xD;&#xA;M8: Experiment activated&#xD;&#xA;M8: EXPO&#xD;&#xA;M8: PREPARING EXPO                     TIME 0.000000&#xD;&#xA;M8: MODULES IN SIMULATION&#xD;&#xA;M8: HEAT STRUCTURE PREPARATION&#xD;&#xA;M8: LEVEL 0 THERMOHYDRAULICS PREPARATION - PART 1&#xD;&#xA;M8: PLUG FLOW PREPARATION&#xD;&#xA;M8:   - DATA_QUEUE PREPARATION&#xD;&#xA;M8:   - PLUG FLOW PIPE PREPARATION&#xD;&#xA;M8:   - MULTI_DELAY_PIPE PREPARATION&#xD;&#xA;M8:   - CONTROL_VALVE PLUG FLOW PREPARATION&#xD;&#xA;M8:   - BASIC_PUMP PLUG FLOW PREPARATION&#xD;&#xA;M8:   - TANK_ADV PREPARATION&#xD;&#xA;M8:   - PLUG FLOW POINT PREPARATION&#xD;&#xA;M8: LEVEL 0 THERMOHYDRAULICS PREPARATION - PART 2&#xD;&#xA;M8: COMPOSITION PREPARATION&#xD;&#xA;M8: LEVEL 1 THERMOHYDRAULICS PREPARATION&#xD;&#xA;M8: THERMOHYDRAULICS PREPARATION&#xD;&#xA;M7:  ERROR     6154 IN T2CHE      Branch too short&#xD;&#xA;M7: PIP01_BR1&#xD;&#xA;M8: 5-EQ THERMOHYDRAULICS PREPARATION&#xD;&#xA;M8: 6-EQ THERMOHYDRAULICS PREPARATION&#xD;&#xA;M8: LEVEL 0 THERMOHYDRAULICS PREPARATION - PART 3&#xD;&#xA;M8: PREPARATION OF ACTUATORS&#xD;&#xA;M8: PAPER MACHINE COMPONENTS PREPARATION&#xD;&#xA;M8:   - PAPER WEB MODULES PREPARATION&#xD;&#xA;M8:   - WEB STRUCTURE PREPARATION&#xD;&#xA;M8:   - WEB_HS_CONTACT PREPARATION&#xD;&#xA;M8:   - WEB_CONNECT_POINT PREPARATION&#xD;&#xA;M8:   - WEB_BRANCH PREPARATION&#xD;&#xA;M8:   - WEB_TRANSFER PREPARATION&#xD;&#xA;M8:   - PRESS PREPARATION&#xD;&#xA;M8:   - SLICE PREPARATION&#xD;&#xA;M8:   - FREEDRAW PREPARATION&#xD;&#xA;M8:   - CYLINDER PREPARATION&#xD;&#xA;M8:   - SIZE_PRESS PREPARATION&#xD;&#xA;M8:   - IR_DRYER PREPARATION&#xD;&#xA;M8:   - AIR_FOIL PREPARATION&#xD;&#xA;M8:   - COATING PREPARATION&#xD;&#xA;M8:   - FOIL_BOX PREPARATION&#xD;&#xA;M8:   - WEB_CONNECTOR PREPARATION&#xD;&#xA;M8:   - TRIMMER_PULPER PREPARATION&#xD;&#xA;M8:   - WEBDIVIDER PREPARATION&#xD;&#xA;M8:   - DRYING_GROUP PREPARATION&#xD;&#xA;M8:   - WEB_TRANSFORMATION PREPARATION&#xD;&#xA;M8:   - DISC_FILTER PREPARATION&#xD;&#xA;M8:   - DRUM_FILTER PREPARATION&#xD;&#xA;M8:   - DIGESTER PREPARATION&#xD;&#xA;M8:   - HEADBOX_HYDR INITIALIZATION&#xD;&#xA;M8:   - HEADBOX INITIALIZATION&#xD;&#xA;M8:   - SPLITTER PREPARATION&#xD;&#xA;M8: VESSEL PREPARATION&#xD;&#xA;M8: AUTOMATION PREPARATION&#xD;&#xA;M8: SOLUTION PREPARATION&#xD;&#xA;M8: IO SYSTEM v1.3 PREPARATION&#xD;&#xA;M8: TS CONTROL v 1.0 PREPARATION&#xD;&#xA;M8: MALFUNC_TRIGGER PREPARATION&#xD;&#xA;M8: 3D FLOW PREPARATION&#xD;&#xA;&gt; MODI PIP01 PI12_DIAMETER 5.0&#xD;&#xA;&gt; modi is01 io_file_name results.dat&#xD;&#xA;&gt; io open is01&#xD;&#xA;&gt; STOP&#xD;&#xA;M9: OK&#xD;&#xA; =&#xD;&#xA;&gt; MODI ECCO SIMULATION_CURRENT_TIME 0.0&#xD;&#xA;&gt; DO&#xD;&#xA;M8: Experiment activated&#xD;&#xA;M8: EXPO&#xD;&#xA;M8: PREPARING EXPO                     TIME 0.000000&#xD;&#xA;M8: MODULES IN SIMULATION&#xD;&#xA;M8: PLUG FLOW PREPARATION&#xD;&#xA;M8:   - DATA_QUEUE PREPARATION&#xD;&#xA;M8:   - PLUG FLOW PIPE PREPARATION&#xD;&#xA;M8:   - MULTI_DELAY_PIPE PREPARATION&#xD;&#xA;M8:   - CONTROL_VALVE PLUG FLOW PREPARATION&#xD;&#xA;M8:   - BASIC_PUMP PLUG FLOW PREPARATION&#xD;&#xA;M8:   - TANK_ADV PREPARATION&#xD;&#xA;M8:   - PLUG FLOW POINT PREPARATION&#xD;&#xA;M8: LEVEL 0 THERMOHYDRAULICS PREPARATION - PART 2&#xD;&#xA;M8: COMPOSITION PREPARATION&#xD;&#xA;M8: THERMOHYDRAULICS PREPARATION&#xD;&#xA;M7:  ERROR     6154 IN T2CHE      Branch too short&#xD;&#xA;M7: PIP01_BR1&#xD;&#xA;M8: PAPER MACHINE COMPONENTS PREPARATION&#xD;&#xA;M8:   - WEB_BRANCH PREPARATION&#xD;&#xA;M8:   - WEB_TRANSFER PREPARATION&#xD;&#xA;M8:   - SLICE PREPARATION&#xD;&#xA;M8:   - FREEDRAW PREPARATION&#xD;&#xA;M8:   - CYLINDER PREPARATION&#xD;&#xA;M8:   - SIZE_PRESS PREPARATION&#xD;&#xA;M8:   - IR_DRYER PREPARATION&#xD;&#xA;M8:   - AIR_FOIL PREPARATION&#xD;&#xA;M8:   - COATING PREPARATION&#xD;&#xA;M8:   - FOIL_BOX PREPARATION&#xD;&#xA;M8:   - TRIMMER_PULPER PREPARATION&#xD;&#xA;M8:   - WEBDIVIDER PREPARATION&#xD;&#xA;M8:   - DRYING_GROUP PREPARATION&#xD;&#xA;M8:   - WEB_TRANSFORMATION PREPARATION&#xD;&#xA;M8:   - DIGESTER PREPARATION&#xD;&#xA;M8:   - HEADBOX_HYDR INITIALIZATION&#xD;&#xA;M8:   - HEADBOX INITIALIZATION&#xD;&#xA;M8:   - SPLITTER PREPARATION&#xD;&#xA;M8: VESSEL PREPARATION&#xD;&#xA;M8: IO SYSTEM v1.3 PREPARATION&#xD;&#xA;M8: TS CONTROL v 1.0 PREPARATION&#xD;&#xA;M8: MALFUNC_TRIGGER PREPARATION&#xD;&#xA;M8: 3D FLOW PREPARATION&#xD;&#xA;M6: 2&#xD;&#xA;M6:  SIMULATION TIME&#xD;&#xA;M6:  PIP01 PI12_MIX_MASS_FLOW&#xD;&#xA;&gt; io close is01&#xD;&#xA;" version="28"/>
+  <inputparamval inputparamvalid="399" scenid="159" inputid="1" value="1" createdon="2015-10-27 09:59:33.02" version="0"/>
+  <inputparamval inputparamvalid="900" scenid="159" inputid="3" value="2015-01-01T00:01:00Z" createdon="2015-10-27 09:59:33.02" version="0"/>
+  <inputparamval inputparamvalid="901" scenid="159" inputid="2" value="2015-01-01T00:00:00Z" createdon="2015-10-27 09:59:33.02" version="0"/>
+  <inputparamval inputparamvalid="902" scenid="160" inputid="3" value="2015-01-01T00:01:00Z" createdon="2015-10-27 09:59:41.421" version="0"/>
+  <inputparamval inputparamvalid="903" scenid="160" inputid="1" value="2" createdon="2015-10-27 09:59:41.421" version="0"/>
+  <inputparamval inputparamvalid="904" scenid="160" inputid="2" value="2015-01-01T00:00:00Z" createdon="2015-10-27 09:59:41.421" version="0"/>
+  <optconstraint optconstid="1" prjid="2" name="con1" expression="mean(PIP01.PI12_MIX_MASS_FLOW)" lowerbound="0.1" upperbound="1.0" version="1"/>
+  <objectivefunction obtfunctionid="1" prjid="2" typeid="1" name="obj1" expression="integrate(PIP01.PI12_MIX_MASS_FLOW * C01.typ, 0, Infinity)" ismaximise="true" version="1"/>
+  <optimizationset/>
+  <optsearchconst/>
+  <optsetscenarios/>
+  <metric metid="65" prjid="1" name="dummy" expression="C01.typ" typeid="1" version="1"/>
+  <metric metid="66" prjid="2" name="symmetric" expression="d + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]" typeid="1" version="1"/>
+  <scenariometrics scenmetricid="256" scenid="159" extparamvalsetid="1" version="0"/>
+  <scenariometrics scenmetricid="260" scenid="160" extparamvalsetid="1" version="0"/>
+  <timeseries tseriesid="338" version="0" typeid="6"/>
+  <timeseries tseriesid="342" version="0" typeid="6"/>
+  <metricval metricvalid="217" metid="66" scenmetricid="256" value="101.03143398" version="0"/>
+  <metricval metricvalid="221" metid="66" scenmetricid="260" value="102.1154875" version="0"/>
+  <decisionvariable decisionvarid="1" scengenid="1" lowerbound="1" upperbound="d/50" typeid="2" inputid="1" version="1"/>
+  <scengenresult scengenresultid="102" feasible="false" paretooptimal="false" scengenid="1" scenid="159" version="1"/>
+  <scengenresult scengenresultid="103" feasible="true" paretooptimal="true" scengenid="1" scenid="160" version="1"/>
+  <decisionvariableresult decvarresultid="102" value="1" scengenresultid="102" decisionvarid="1" version="0"/>
+  <decisionvariableresult decvarresultid="103" value="2" scengenresultid="103" decisionvarid="1" version="0"/>
+  <objectivefunctionresult objectivefunctionresultid="101" scengenresultid="103" obtfunctionid="1" value="13.770240904399932" version="0"/>
+  <optconstraintresult optconstresultid="102" optconstid="1" scengenresultid="102" infeasibility="0.06864849001833345" version="0"/>
+  <optconstraintresult optconstresultid="103" optconstid="1" scengenresultid="103" infeasibility="0.0" version="0"/>
+  <outputvariable outvarid="1" name="PI12_MIX_MASS_FLOW" componentid="2" typeid="6" version="1"/>
+  <simulationresult simresid="280" scenid="159" outvarid="1" tseriesid="338" version="0"/>
+  <simulationresult simresid="284" scenid="160" outvarid="1" tseriesid="342" version="0"/>
+  <scengenoptconstraint sgoptconstraintid="1" scengenid="1" optconstid="1" version="1"/>
+  <modelparameter modelparamid="1" scengenid="1" inputid="1" expression="C01.typ" version="1"/>
+  <modelparameter modelparamid="2" scengenid="1" inputid="2" expression="" value="2015-01-01T00:00:00" version="1"/>
+  <modelparameter modelparamid="3" scengenid="1" inputid="3" value="2015-01-01T00:01:00" version="1"/>
+  <extparam extparamid="1" prjid="2" name="d" typeid="1" version="1"/>
+  <extparamval extparamvalid="0" extparamid="1" value="99" version="1"/>
+  <extparamval extparamvalid="1" extparamid="1" value="100.0" version="1"/>
+  <extparamvalsetcomp id="134" extparamvalsetid="0" extparamvalid="0" version="1"/>
+  <extparamvalsetcomp id="135" extparamvalsetid="1" extparamvalid="1" version="1"/>
+  <scengenobjectivefunction sgobfunctionid="1" scengenid="1" optfunctionid="1" version="1"/>
+  <algoparam aparamsid="1" algorithmid="1" defaultvalue="1000000" name="max runtime [minutes]"/>
+  <algoparam aparamsid="2" algorithmid="1" defaultvalue="100" name="max parallel evaluations"/>
+  <algoparam aparamsid="3" algorithmid="1" defaultvalue="10000" name="max scenarios"/>
+  <algoparam aparamsid="4" algorithmid="2" defaultvalue="1000000" name="max runtime [minutes]"/>
+  <algoparam aparamsid="5" algorithmid="2" defaultvalue="100" name="max parallel evaluations"/>
+  <algoparam aparamsid="6" algorithmid="2" defaultvalue="1" name="seed of the random number generator"/>
+  <algoparam aparamsid="7" algorithmid="2" defaultvalue="10" name="number of generations"/>
+  <algoparam aparamsid="8" algorithmid="2" defaultvalue="100" name="population size"/>
+  <algoparam aparamsid="9" algorithmid="2" defaultvalue="25" name="number of parents per generation"/>
+  <algoparam aparamsid="10" algorithmid="2" defaultvalue="25" name="number of offspring per generation"/>
+  <algoparam aparamsid="11" algorithmid="2" defaultvalue="0.95" name="crossover rate"/>
+  <algoparamval aparamvalid="67" aparamsid="1" ascengenid="1" value="1" version="1"/>
+  <algoparamval aparamvalid="68" aparamsid="2" ascengenid="1" value="1000" version="1"/>
+  <algoparamval aparamvalid="69" aparamsid="4" ascengenid="1" value="1" version="1"/>
+  <algoparamval aparamvalid="70" aparamsid="5" ascengenid="1" value="2" version="1"/>
+  <algoparamval aparamvalid="71" aparamsid="6" ascengenid="1" value="3" version="1"/>
+  <algoparamval aparamvalid="72" aparamsid="7" ascengenid="1" value="2" version="1"/>
+  <algoparamval aparamvalid="73" aparamsid="8" ascengenid="1" value="2" version="1"/>
+  <algoparamval aparamvalid="74" aparamsid="9" ascengenid="1" value="1" version="1"/>
+  <appuser/>
+  <usergroup/>
+  <usergroupproject/>
+  <timeseriesval tseriesvalid="460408" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:02.6" version="1"/>
+  <timeseriesval tseriesvalid="460409" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:59.4" version="1"/>
+  <timeseriesval tseriesvalid="460410" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:29.6" version="1"/>
+  <timeseriesval tseriesvalid="460411" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:29.8" version="1"/>
+  <timeseriesval tseriesvalid="460412" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:21.0" version="1"/>
+  <timeseriesval tseriesvalid="460413" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:38.4" version="1"/>
+  <timeseriesval tseriesvalid="460414" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:46.2" version="1"/>
+  <timeseriesval tseriesvalid="460415" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:35.8" version="1"/>
+  <timeseriesval tseriesvalid="460416" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:11.2" version="1"/>
+  <timeseriesval tseriesvalid="460417" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:44.6" version="1"/>
+  <timeseriesval tseriesvalid="460418" tseriesid="338" value="0.03143566" time="2015-01-01 00:00:01.8" version="1"/>
+  <timeseriesval tseriesvalid="460419" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:04.4" version="1"/>
+  <timeseriesval tseriesvalid="460420" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:28.6" version="1"/>
+  <timeseriesval tseriesvalid="460421" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:11.8" version="1"/>
+  <timeseriesval tseriesvalid="460422" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:13.2" version="1"/>
+  <timeseriesval tseriesvalid="460423" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:22.2" version="1"/>
+  <timeseriesval tseriesvalid="460424" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:35.4" version="1"/>
+  <timeseriesval tseriesvalid="460425" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:53.0" version="1"/>
+  <timeseriesval tseriesvalid="460426" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:33.4" version="1"/>
+  <timeseriesval tseriesvalid="460427" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:41.0" version="1"/>
+  <timeseriesval tseriesvalid="460428" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:06.0" version="1"/>
+  <timeseriesval tseriesvalid="460429" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:16.0" version="1"/>
+  <timeseriesval tseriesvalid="460430" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:47.0" version="1"/>
+  <timeseriesval tseriesvalid="460431" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:22.4" version="1"/>
+  <timeseriesval tseriesvalid="460432" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:26.6" version="1"/>
+  <timeseriesval tseriesvalid="460433" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:30.2" version="1"/>
+  <timeseriesval tseriesvalid="460434" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:54.8" version="1"/>
+  <timeseriesval tseriesvalid="460435" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:56.6" version="1"/>
+  <timeseriesval tseriesvalid="460436" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:43.6" version="1"/>
+  <timeseriesval tseriesvalid="460437" tseriesid="338" value="0.031434" time="2015-01-01 00:00:02.4" version="1"/>
+  <timeseriesval tseriesvalid="460438" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:42.6" version="1"/>
+  <timeseriesval tseriesvalid="460439" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:26.0" version="1"/>
+  <timeseriesval tseriesvalid="460440" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:03.6" version="1"/>
+  <timeseriesval tseriesvalid="460441" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:24.0" version="1"/>
+  <timeseriesval tseriesvalid="460442" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:29.4" version="1"/>
+  <timeseriesval tseriesvalid="460443" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:25.8" version="1"/>
+  <timeseriesval tseriesvalid="460444" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:20.8" version="1"/>
+  <timeseriesval tseriesvalid="460445" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:38.2" version="1"/>
+  <timeseriesval tseriesvalid="460446" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:38.6" version="1"/>
+  <timeseriesval tseriesvalid="460447" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:52.4" version="1"/>
+  <timeseriesval tseriesvalid="460448" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:27.6" version="1"/>
+  <timeseriesval tseriesvalid="460449" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:31.2" version="1"/>
+  <timeseriesval tseriesvalid="460450" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:22.6" version="1"/>
+  <timeseriesval tseriesvalid="460451" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:25.2" version="1"/>
+  <timeseriesval tseriesvalid="460452" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:43.2" version="1"/>
+  <timeseriesval tseriesvalid="460453" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:09.0" version="1"/>
+  <timeseriesval tseriesvalid="460454" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:32.6" version="1"/>
+  <timeseriesval tseriesvalid="460455" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:50.8" version="1"/>
+  <timeseriesval tseriesvalid="460456" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:06.6" version="1"/>
+  <timeseriesval tseriesvalid="460457" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:09.6" version="1"/>
+  <timeseriesval tseriesvalid="460458" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:49.8" version="1"/>
+  <timeseriesval tseriesvalid="460459" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:18.8" version="1"/>
+  <timeseriesval tseriesvalid="460460" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:26.4" version="1"/>
+  <timeseriesval tseriesvalid="460461" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:26.2" version="1"/>
+  <timeseriesval tseriesvalid="460462" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:38.8" version="1"/>
+  <timeseriesval tseriesvalid="460463" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:07.8" version="1"/>
+  <timeseriesval tseriesvalid="460464" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:31.6" version="1"/>
+  <timeseriesval tseriesvalid="460465" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:05.8" version="1"/>
+  <timeseriesval tseriesvalid="460466" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:21.6" version="1"/>
+  <timeseriesval tseriesvalid="460467" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:50.0" version="1"/>
+  <timeseriesval tseriesvalid="460468" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:42.4" version="1"/>
+  <timeseriesval tseriesvalid="460469" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:43.0" version="1"/>
+  <timeseriesval tseriesvalid="460470" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:44.2" version="1"/>
+  <timeseriesval tseriesvalid="460471" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:39.0" version="1"/>
+  <timeseriesval tseriesvalid="460472" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:54.6" version="1"/>
+  <timeseriesval tseriesvalid="460473" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:28.8" version="1"/>
+  <timeseriesval tseriesvalid="460474" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:32.4" version="1"/>
+  <timeseriesval tseriesvalid="460475" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:33.6" version="1"/>
+  <timeseriesval tseriesvalid="460476" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:57.0" version="1"/>
+  <timeseriesval tseriesvalid="460477" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:13.4" version="1"/>
+  <timeseriesval tseriesvalid="460478" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:45.8" version="1"/>
+  <timeseriesval tseriesvalid="460479" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:08.6" version="1"/>
+  <timeseriesval tseriesvalid="460480" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:41.8" version="1"/>
+  <timeseriesval tseriesvalid="460481" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:11.4" version="1"/>
+  <timeseriesval tseriesvalid="460482" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:59.6" version="1"/>
+  <timeseriesval tseriesvalid="460483" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:18.2" version="1"/>
+  <timeseriesval tseriesvalid="460484" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:18.4" version="1"/>
+  <timeseriesval tseriesvalid="460485" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:33.8" version="1"/>
+  <timeseriesval tseriesvalid="460486" tseriesid="338" value="0.03144058" time="2015-01-01 00:00:01.6" version="1"/>
+  <timeseriesval tseriesvalid="460487" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:30.8" version="1"/>
+  <timeseriesval tseriesvalid="460488" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:04.6" version="1"/>
+  <timeseriesval tseriesvalid="460489" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:25.4" version="1"/>
+  <timeseriesval tseriesvalid="460490" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:15.8" version="1"/>
+  <timeseriesval tseriesvalid="460491" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:33.0" version="1"/>
+  <timeseriesval tseriesvalid="460492" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:47.8" version="1"/>
+  <timeseriesval tseriesvalid="460493" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:08.2" version="1"/>
+  <timeseriesval tseriesvalid="460494" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:16.6" version="1"/>
+  <timeseriesval tseriesvalid="460495" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:47.4" version="1"/>
+  <timeseriesval tseriesvalid="460496" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:12.4" version="1"/>
+  <timeseriesval tseriesvalid="460497" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:43.8" version="1"/>
+  <timeseriesval tseriesvalid="460498" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:55.2" version="1"/>
+  <timeseriesval tseriesvalid="460499" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:10.6" version="1"/>
+  <timeseriesval tseriesvalid="460500" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:18.0" version="1"/>
+  <timeseriesval tseriesvalid="460501" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:47.6" version="1"/>
+  <timeseriesval tseriesvalid="460502" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:20.2" version="1"/>
+  <timeseriesval tseriesvalid="460503" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:34.4" version="1"/>
+  <timeseriesval tseriesvalid="460504" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:35.2" version="1"/>
+  <timeseriesval tseriesvalid="460505" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:45.6" version="1"/>
+  <timeseriesval tseriesvalid="460506" tseriesid="338" value="0.03182488" time="2015-01-01 00:00:01.0" version="1"/>
+  <timeseriesval tseriesvalid="460507" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:48.0" version="1"/>
+  <timeseriesval tseriesvalid="460508" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:07.4" version="1"/>
+  <timeseriesval tseriesvalid="460509" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:13.8" version="1"/>
+  <timeseriesval tseriesvalid="460510" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:57.2" version="1"/>
+  <timeseriesval tseriesvalid="460511" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:35.0" version="1"/>
+  <timeseriesval tseriesvalid="460512" tseriesid="338" value="0.03153494" time="2015-01-01 00:00:01.2" version="1"/>
+  <timeseriesval tseriesvalid="460513" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:17.2" version="1"/>
+  <timeseriesval tseriesvalid="460514" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:37.4" version="1"/>
+  <timeseriesval tseriesvalid="460515" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:21.2" version="1"/>
+  <timeseriesval tseriesvalid="460516" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:40.2" version="1"/>
+  <timeseriesval tseriesvalid="460517" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:41.4" version="1"/>
+  <timeseriesval tseriesvalid="460518" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:36.2" version="1"/>
+  <timeseriesval tseriesvalid="460519" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:06.4" version="1"/>
+  <timeseriesval tseriesvalid="460520" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:37.0" version="1"/>
+  <timeseriesval tseriesvalid="460521" tseriesid="338" value="0.03143409" time="2015-01-01 00:00:02.2" version="1"/>
+  <timeseriesval tseriesvalid="460522" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:28.0" version="1"/>
+  <timeseriesval tseriesvalid="460523" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:12.0" version="1"/>
+  <timeseriesval tseriesvalid="460524" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:11.6" version="1"/>
+  <timeseriesval tseriesvalid="460525" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:44.8" version="1"/>
+  <timeseriesval tseriesvalid="460526" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:31.4" version="1"/>
+  <timeseriesval tseriesvalid="460527" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:19.8" version="1"/>
+  <timeseriesval tseriesvalid="460528" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:45.2" version="1"/>
+  <timeseriesval tseriesvalid="460529" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:54.2" version="1"/>
+  <timeseriesval tseriesvalid="460530" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:20.6" version="1"/>
+  <timeseriesval tseriesvalid="460531" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:36.6" version="1"/>
+  <timeseriesval tseriesvalid="460532" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:37.6" version="1"/>
+  <timeseriesval tseriesvalid="460533" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:55.6" version="1"/>
+  <timeseriesval tseriesvalid="460534" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:02.8" version="1"/>
+  <timeseriesval tseriesvalid="460535" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:49.4" version="1"/>
+  <timeseriesval tseriesvalid="460536" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:13.0" version="1"/>
+  <timeseriesval tseriesvalid="460537" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:30.4" version="1"/>
+  <timeseriesval tseriesvalid="460538" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:53.6" version="1"/>
+  <timeseriesval tseriesvalid="460539" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:58.2" version="1"/>
+  <timeseriesval tseriesvalid="460540" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:20.4" version="1"/>
+  <timeseriesval tseriesvalid="460541" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:24.8" version="1"/>
+  <timeseriesval tseriesvalid="460542" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:56.8" version="1"/>
+  <timeseriesval tseriesvalid="460543" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:45.0" version="1"/>
+  <timeseriesval tseriesvalid="460544" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:03.8" version="1"/>
+  <timeseriesval tseriesvalid="460545" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:46.0" version="1"/>
+  <timeseriesval tseriesvalid="460546" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:05.6" version="1"/>
+  <timeseriesval tseriesvalid="460547" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:14.6" version="1"/>
+  <timeseriesval tseriesvalid="460548" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:55.0" version="1"/>
+  <timeseriesval tseriesvalid="460549" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:09.2" version="1"/>
+  <timeseriesval tseriesvalid="460550" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:04.0" version="1"/>
+  <timeseriesval tseriesvalid="460551" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:21.4" version="1"/>
+  <timeseriesval tseriesvalid="460552" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:51.8" version="1"/>
+  <timeseriesval tseriesvalid="460553" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:50.4" version="1"/>
+  <timeseriesval tseriesvalid="460554" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:24.4" version="1"/>
+  <timeseriesval tseriesvalid="460555" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:40.8" version="1"/>
+  <timeseriesval tseriesvalid="460556" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:42.2" version="1"/>
+  <timeseriesval tseriesvalid="460557" tseriesid="338" value="0.0" time="2015-01-01 00:00:00.0" version="1"/>
+  <timeseriesval tseriesvalid="460558" tseriesid="338" value="0.036506" time="2015-01-01 00:00:00.6" version="1"/>
+  <timeseriesval tseriesvalid="460559" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:13.6" version="1"/>
+  <timeseriesval tseriesvalid="460560" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:57.6" version="1"/>
+  <timeseriesval tseriesvalid="460561" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:57.8" version="1"/>
+  <timeseriesval tseriesvalid="460562" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:36.4" version="1"/>
+  <timeseriesval tseriesvalid="460563" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:36.0" version="1"/>
+  <timeseriesval tseriesvalid="460564" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:58.8" version="1"/>
+  <timeseriesval tseriesvalid="460565" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:36.8" version="1"/>
+  <timeseriesval tseriesvalid="460566" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:05.4" version="1"/>
+  <timeseriesval tseriesvalid="460567" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:17.8" version="1"/>
+  <timeseriesval tseriesvalid="460568" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:40.6" version="1"/>
+  <timeseriesval tseriesvalid="460569" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:09.8" version="1"/>
+  <timeseriesval tseriesvalid="460570" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:52.2" version="1"/>
+  <timeseriesval tseriesvalid="460571" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:48.6" version="1"/>
+  <timeseriesval tseriesvalid="460572" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:54.0" version="1"/>
+  <timeseriesval tseriesvalid="460573" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:31.0" version="1"/>
+  <timeseriesval tseriesvalid="460574" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:57.4" version="1"/>
+  <timeseriesval tseriesvalid="460575" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:49.2" version="1"/>
+  <timeseriesval tseriesvalid="460576" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:17.4" version="1"/>
+  <timeseriesval tseriesvalid="460577" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:15.6" version="1"/>
+  <timeseriesval tseriesvalid="460578" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:19.6" version="1"/>
+  <timeseriesval tseriesvalid="460579" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:26.8" version="1"/>
+  <timeseriesval tseriesvalid="460580" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:16.2" version="1"/>
+  <timeseriesval tseriesvalid="460581" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:05.0" version="1"/>
+  <timeseriesval tseriesvalid="460582" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:07.2" version="1"/>
+  <timeseriesval tseriesvalid="460583" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:14.2" version="1"/>
+  <timeseriesval tseriesvalid="460584" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:23.6" version="1"/>
+  <timeseriesval tseriesvalid="460585" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:10.4" version="1"/>
+  <timeseriesval tseriesvalid="460586" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:16.4" version="1"/>
+  <timeseriesval tseriesvalid="460587" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:41.6" version="1"/>
+  <timeseriesval tseriesvalid="460588" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:04.8" version="1"/>
+  <timeseriesval tseriesvalid="460589" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:46.4" version="1"/>
+  <timeseriesval tseriesvalid="460590" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:39.6" version="1"/>
+  <timeseriesval tseriesvalid="460591" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:46.6" version="1"/>
+  <timeseriesval tseriesvalid="460592" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:58.4" version="1"/>
+  <timeseriesval tseriesvalid="460593" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:04.2" version="1"/>
+  <timeseriesval tseriesvalid="460594" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:06.2" version="1"/>
+  <timeseriesval tseriesvalid="460595" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:58.0" version="1"/>
+  <timeseriesval tseriesvalid="460596" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:10.2" version="1"/>
+  <timeseriesval tseriesvalid="460597" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:12.8" version="1"/>
+  <timeseriesval tseriesvalid="460598" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:40.4" version="1"/>
+  <timeseriesval tseriesvalid="460599" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:34.0" version="1"/>
+  <timeseriesval tseriesvalid="460600" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:23.0" version="1"/>
+  <timeseriesval tseriesvalid="460601" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:40.0" version="1"/>
+  <timeseriesval tseriesvalid="460602" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:39.8" version="1"/>
+  <timeseriesval tseriesvalid="460603" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:37.8" version="1"/>
+  <timeseriesval tseriesvalid="460604" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:59.8" version="1"/>
+  <timeseriesval tseriesvalid="460605" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:35.6" version="1"/>
+  <timeseriesval tseriesvalid="460606" tseriesid="338" value="0.03290266" time="2015-01-01 00:00:00.8" version="1"/>
+  <timeseriesval tseriesvalid="460607" tseriesid="338" value="2.825945E-4" time="2015-01-01 00:00:00.2" version="1"/>
+  <timeseriesval tseriesvalid="460608" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:50.6" version="1"/>
+  <timeseriesval tseriesvalid="460609" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:47.2" version="1"/>
+  <timeseriesval tseriesvalid="460610" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:48.2" version="1"/>
+  <timeseriesval tseriesvalid="460611" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:15.0" version="1"/>
+  <timeseriesval tseriesvalid="460612" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:51.0" version="1"/>
+  <timeseriesval tseriesvalid="460613" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:23.2" version="1"/>
+  <timeseriesval tseriesvalid="460614" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:22.8" version="1"/>
+  <timeseriesval tseriesvalid="460615" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:55.4" version="1"/>
+  <timeseriesval tseriesvalid="460616" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:49.0" version="1"/>
+  <timeseriesval tseriesvalid="460617" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:52.0" version="1"/>
+  <timeseriesval tseriesvalid="460618" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:20.0" version="1"/>
+  <timeseriesval tseriesvalid="460619" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:25.0" version="1"/>
+  <timeseriesval tseriesvalid="460620" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:12.2" version="1"/>
+  <timeseriesval tseriesvalid="460621" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:59.2" version="1"/>
+  <timeseriesval tseriesvalid="460622" tseriesid="338" value="0.03143441" time="2015-01-01 00:00:02.0" version="1"/>
+  <timeseriesval tseriesvalid="460623" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:15.2" version="1"/>
+  <timeseriesval tseriesvalid="460624" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:50.2" version="1"/>
+  <timeseriesval tseriesvalid="460625" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:52.8" version="1"/>
+  <timeseriesval tseriesvalid="460626" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:38.0" version="1"/>
+  <timeseriesval tseriesvalid="460627" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:17.6" version="1"/>
+  <timeseriesval tseriesvalid="460628" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:48.8" version="1"/>
+  <timeseriesval tseriesvalid="460629" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:48.4" version="1"/>
+  <timeseriesval tseriesvalid="460630" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:28.2" version="1"/>
+  <timeseriesval tseriesvalid="460631" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:42.8" version="1"/>
+  <timeseriesval tseriesvalid="460632" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:53.2" version="1"/>
+  <timeseriesval tseriesvalid="460633" tseriesid="338" value="0.04646617" time="2015-01-01 00:00:00.4" version="1"/>
+  <timeseriesval tseriesvalid="460634" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:11.0" version="1"/>
+  <timeseriesval tseriesvalid="460635" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:32.8" version="1"/>
+  <timeseriesval tseriesvalid="460636" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:51.6" version="1"/>
+  <timeseriesval tseriesvalid="460637" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:53.8" version="1"/>
+  <timeseriesval tseriesvalid="460638" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:10.8" version="1"/>
+  <timeseriesval tseriesvalid="460639" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:27.2" version="1"/>
+  <timeseriesval tseriesvalid="460640" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:19.2" version="1"/>
+  <timeseriesval tseriesvalid="460641" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:21.8" version="1"/>
+  <timeseriesval tseriesvalid="460642" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:45.4" version="1"/>
+  <timeseriesval tseriesvalid="460643" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:27.0" version="1"/>
+  <timeseriesval tseriesvalid="460644" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:51.2" version="1"/>
+  <timeseriesval tseriesvalid="460645" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:08.8" version="1"/>
+  <timeseriesval tseriesvalid="460646" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:37.2" version="1"/>
+  <timeseriesval tseriesvalid="460647" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:41.2" version="1"/>
+  <timeseriesval tseriesvalid="460648" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:39.2" version="1"/>
+  <timeseriesval tseriesvalid="460649" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:42.0" version="1"/>
+  <timeseriesval tseriesvalid="460650" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:10.0" version="1"/>
+  <timeseriesval tseriesvalid="460651" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:46.8" version="1"/>
+  <timeseriesval tseriesvalid="460652" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:51.4" version="1"/>
+  <timeseriesval tseriesvalid="460653" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:06.8" version="1"/>
+  <timeseriesval tseriesvalid="460654" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:32.0" version="1"/>
+  <timeseriesval tseriesvalid="460655" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:03.2" version="1"/>
+  <timeseriesval tseriesvalid="460656" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:14.0" version="1"/>
+  <timeseriesval tseriesvalid="460657" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:15.4" version="1"/>
+  <timeseriesval tseriesvalid="460658" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:44.0" version="1"/>
+  <timeseriesval tseriesvalid="460659" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:22.0" version="1"/>
+  <timeseriesval tseriesvalid="460660" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:17.0" version="1"/>
+  <timeseriesval tseriesvalid="460661" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:34.8" version="1"/>
+  <timeseriesval tseriesvalid="460662" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:31.8" version="1"/>
+  <timeseriesval tseriesvalid="460663" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:23.4" version="1"/>
+  <timeseriesval tseriesvalid="460664" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:59.0" version="1"/>
+  <timeseriesval tseriesvalid="460665" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:29.2" version="1"/>
+  <timeseriesval tseriesvalid="460666" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:25.6" version="1"/>
+  <timeseriesval tseriesvalid="460667" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:08.4" version="1"/>
+  <timeseriesval tseriesvalid="460668" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:08.0" version="1"/>
+  <timeseriesval tseriesvalid="460669" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:56.4" version="1"/>
+  <timeseriesval tseriesvalid="460670" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:24.6" version="1"/>
+  <timeseriesval tseriesvalid="460671" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:27.4" version="1"/>
+  <timeseriesval tseriesvalid="460672" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:54.4" version="1"/>
+  <timeseriesval tseriesvalid="460673" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:24.2" version="1"/>
+  <timeseriesval tseriesvalid="460674" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:29.0" version="1"/>
+  <timeseriesval tseriesvalid="460675" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:34.6" version="1"/>
+  <timeseriesval tseriesvalid="460676" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:44.4" version="1"/>
+  <timeseriesval tseriesvalid="460677" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:43.4" version="1"/>
+  <timeseriesval tseriesvalid="460678" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:09.4" version="1"/>
+  <timeseriesval tseriesvalid="460679" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:18.6" version="1"/>
+  <timeseriesval tseriesvalid="460680" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:58.6" version="1"/>
+  <timeseriesval tseriesvalid="460681" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:56.0" version="1"/>
+  <timeseriesval tseriesvalid="460682" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:28.4" version="1"/>
+  <timeseriesval tseriesvalid="460683" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:30.0" version="1"/>
+  <timeseriesval tseriesvalid="460684" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:49.6" version="1"/>
+  <timeseriesval tseriesvalid="460685" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:12.6" version="1"/>
+  <timeseriesval tseriesvalid="460686" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:56.2" version="1"/>
+  <timeseriesval tseriesvalid="460687" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:07.6" version="1"/>
+  <timeseriesval tseriesvalid="460688" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:03.0" version="1"/>
+  <timeseriesval tseriesvalid="460689" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:05.2" version="1"/>
+  <timeseriesval tseriesvalid="460690" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:39.4" version="1"/>
+  <timeseriesval tseriesvalid="460691" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:19.4" version="1"/>
+  <timeseriesval tseriesvalid="460692" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:33.2" version="1"/>
+  <timeseriesval tseriesvalid="460693" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:14.8" version="1"/>
+  <timeseriesval tseriesvalid="460694" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:19.0" version="1"/>
+  <timeseriesval tseriesvalid="460695" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:23.8" version="1"/>
+  <timeseriesval tseriesvalid="460696" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:34.2" version="1"/>
+  <timeseriesval tseriesvalid="460697" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:53.4" version="1"/>
+  <timeseriesval tseriesvalid="460698" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:30.6" version="1"/>
+  <timeseriesval tseriesvalid="460699" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:52.6" version="1"/>
+  <timeseriesval tseriesvalid="460700" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:07.0" version="1"/>
+  <timeseriesval tseriesvalid="460701" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:16.8" version="1"/>
+  <timeseriesval tseriesvalid="460702" tseriesid="338" value="0.03143398" time="2015-01-01 00:01:00.0" version="1"/>
+  <timeseriesval tseriesvalid="460703" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:55.8" version="1"/>
+  <timeseriesval tseriesvalid="460704" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:27.8" version="1"/>
+  <timeseriesval tseriesvalid="460705" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:14.4" version="1"/>
+  <timeseriesval tseriesvalid="460706" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:32.2" version="1"/>
+  <timeseriesval tseriesvalid="460707" tseriesid="338" value="0.03143398" time="2015-01-01 00:00:03.4" version="1"/>
+  <timeseriesval tseriesvalid="461608" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:15.8" version="1"/>
+  <timeseriesval tseriesvalid="461609" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:05.8" version="1"/>
+  <timeseriesval tseriesvalid="461610" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:26.2" version="1"/>
+  <timeseriesval tseriesvalid="461611" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:55.2" version="1"/>
+  <timeseriesval tseriesvalid="461612" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:19.8" version="1"/>
+  <timeseriesval tseriesvalid="461613" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:40.4" version="1"/>
+  <timeseriesval tseriesvalid="461614" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:25.8" version="1"/>
+  <timeseriesval tseriesvalid="461615" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:11.2" version="1"/>
+  <timeseriesval tseriesvalid="461616" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:55.6" version="1"/>
+  <timeseriesval tseriesvalid="461617" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:58.0" version="1"/>
+  <timeseriesval tseriesvalid="461618" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:17.8" version="1"/>
+  <timeseriesval tseriesvalid="461619" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:10.2" version="1"/>
+  <timeseriesval tseriesvalid="461620" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:34.0" version="1"/>
+  <timeseriesval tseriesvalid="461621" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:07.0" version="1"/>
+  <timeseriesval tseriesvalid="461622" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:24.0" version="1"/>
+  <timeseriesval tseriesvalid="461623" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:49.8" version="1"/>
+  <timeseriesval tseriesvalid="461624" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:57.0" version="1"/>
+  <timeseriesval tseriesvalid="461625" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:06.0" version="1"/>
+  <timeseriesval tseriesvalid="461626" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:06.2" version="1"/>
+  <timeseriesval tseriesvalid="461627" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:49.6" version="1"/>
+  <timeseriesval tseriesvalid="461628" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:57.8" version="1"/>
+  <timeseriesval tseriesvalid="461629" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:12.0" version="1"/>
+  <timeseriesval tseriesvalid="461630" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:46.2" version="1"/>
+  <timeseriesval tseriesvalid="461631" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:30.0" version="1"/>
+  <timeseriesval tseriesvalid="461632" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:42.4" version="1"/>
+  <timeseriesval tseriesvalid="461633" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:33.0" version="1"/>
+  <timeseriesval tseriesvalid="461634" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:42.0" version="1"/>
+  <timeseriesval tseriesvalid="461635" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:29.6" version="1"/>
+  <timeseriesval tseriesvalid="461636" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:15.4" version="1"/>
+  <timeseriesval tseriesvalid="461637" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:14.0" version="1"/>
+  <timeseriesval tseriesvalid="461638" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:19.4" version="1"/>
+  <timeseriesval tseriesvalid="461639" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:39.4" version="1"/>
+  <timeseriesval tseriesvalid="461640" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:11.0" version="1"/>
+  <timeseriesval tseriesvalid="461641" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:38.8" version="1"/>
+  <timeseriesval tseriesvalid="461642" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:26.8" version="1"/>
+  <timeseriesval tseriesvalid="461643" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:30.6" version="1"/>
+  <timeseriesval tseriesvalid="461644" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:46.8" version="1"/>
+  <timeseriesval tseriesvalid="461645" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:21.2" version="1"/>
+  <timeseriesval tseriesvalid="461646" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:26.6" version="1"/>
+  <timeseriesval tseriesvalid="461647" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:24.6" version="1"/>
+  <timeseriesval tseriesvalid="461648" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:06.6" version="1"/>
+  <timeseriesval tseriesvalid="461649" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:31.0" version="1"/>
+  <timeseriesval tseriesvalid="461650" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:47.6" version="1"/>
+  <timeseriesval tseriesvalid="461651" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:36.2" version="1"/>
+  <timeseriesval tseriesvalid="461652" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:06.4" version="1"/>
+  <timeseriesval tseriesvalid="461653" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:09.2" version="1"/>
+  <timeseriesval tseriesvalid="461654" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:54.6" version="1"/>
+  <timeseriesval tseriesvalid="461655" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:58.4" version="1"/>
+  <timeseriesval tseriesvalid="461656" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:14.4" version="1"/>
+  <timeseriesval tseriesvalid="461657" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:53.6" version="1"/>
+  <timeseriesval tseriesvalid="461658" tseriesid="342" value="0.1154851" time="2015-01-01 00:00:01.8" version="1"/>
+  <timeseriesval tseriesvalid="461659" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:18.4" version="1"/>
+  <timeseriesval tseriesvalid="461660" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:27.6" version="1"/>
+  <timeseriesval tseriesvalid="461661" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:50.0" version="1"/>
+  <timeseriesval tseriesvalid="461662" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:18.2" version="1"/>
+  <timeseriesval tseriesvalid="461663" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:40.0" version="1"/>
+  <timeseriesval tseriesvalid="461664" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:40.6" version="1"/>
+  <timeseriesval tseriesvalid="461665" tseriesid="342" value="0.1154873" time="2015-01-01 00:00:02.2" version="1"/>
+  <timeseriesval tseriesvalid="461666" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:34.8" version="1"/>
+  <timeseriesval tseriesvalid="461667" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:50.8" version="1"/>
+  <timeseriesval tseriesvalid="461668" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:42.6" version="1"/>
+  <timeseriesval tseriesvalid="461669" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:44.0" version="1"/>
+  <timeseriesval tseriesvalid="461670" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:42.8" version="1"/>
+  <timeseriesval tseriesvalid="461671" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:20.8" version="1"/>
+  <timeseriesval tseriesvalid="461672" tseriesid="342" value="0.1138293" time="2015-01-01 00:00:00.8" version="1"/>
+  <timeseriesval tseriesvalid="461673" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:41.8" version="1"/>
+  <timeseriesval tseriesvalid="461674" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:43.2" version="1"/>
+  <timeseriesval tseriesvalid="461675" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:45.4" version="1"/>
+  <timeseriesval tseriesvalid="461676" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:23.4" version="1"/>
+  <timeseriesval tseriesvalid="461677" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:36.4" version="1"/>
+  <timeseriesval tseriesvalid="461678" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:52.0" version="1"/>
+  <timeseriesval tseriesvalid="461679" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:53.2" version="1"/>
+  <timeseriesval tseriesvalid="461680" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:49.0" version="1"/>
+  <timeseriesval tseriesvalid="461681" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:05.2" version="1"/>
+  <timeseriesval tseriesvalid="461682" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:05.6" version="1"/>
+  <timeseriesval tseriesvalid="461683" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:15.0" version="1"/>
+  <timeseriesval tseriesvalid="461684" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:32.8" version="1"/>
+  <timeseriesval tseriesvalid="461685" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:49.4" version="1"/>
+  <timeseriesval tseriesvalid="461686" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:56.2" version="1"/>
+  <timeseriesval tseriesvalid="461687" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:40.2" version="1"/>
+  <timeseriesval tseriesvalid="461688" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:40.8" version="1"/>
+  <timeseriesval tseriesvalid="461689" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:59.8" version="1"/>
+  <timeseriesval tseriesvalid="461690" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:12.6" version="1"/>
+  <timeseriesval tseriesvalid="461691" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:54.0" version="1"/>
+  <timeseriesval tseriesvalid="461692" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:56.4" version="1"/>
+  <timeseriesval tseriesvalid="461693" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:09.8" version="1"/>
+  <timeseriesval tseriesvalid="461694" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:16.2" version="1"/>
+  <timeseriesval tseriesvalid="461695" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:58.2" version="1"/>
+  <timeseriesval tseriesvalid="461696" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:47.0" version="1"/>
+  <timeseriesval tseriesvalid="461697" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:24.8" version="1"/>
+  <timeseriesval tseriesvalid="461698" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:52.4" version="1"/>
+  <timeseriesval tseriesvalid="461699" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:17.4" version="1"/>
+  <timeseriesval tseriesvalid="461700" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:24.2" version="1"/>
+  <timeseriesval tseriesvalid="461701" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:47.2" version="1"/>
+  <timeseriesval tseriesvalid="461702" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:27.0" version="1"/>
+  <timeseriesval tseriesvalid="461703" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:11.8" version="1"/>
+  <timeseriesval tseriesvalid="461704" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:27.2" version="1"/>
+  <timeseriesval tseriesvalid="461705" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:53.0" version="1"/>
+  <timeseriesval tseriesvalid="461706" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:43.8" version="1"/>
+  <timeseriesval tseriesvalid="461707" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:09.0" version="1"/>
+  <timeseriesval tseriesvalid="461708" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:23.2" version="1"/>
+  <timeseriesval tseriesvalid="461709" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:29.4" version="1"/>
+  <timeseriesval tseriesvalid="461710" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:19.0" version="1"/>
+  <timeseriesval tseriesvalid="461711" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:21.8" version="1"/>
+  <timeseriesval tseriesvalid="461712" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:33.2" version="1"/>
+  <timeseriesval tseriesvalid="461713" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:08.6" version="1"/>
+  <timeseriesval tseriesvalid="461714" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:18.8" version="1"/>
+  <timeseriesval tseriesvalid="461715" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:22.2" version="1"/>
+  <timeseriesval tseriesvalid="461716" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:30.8" version="1"/>
+  <timeseriesval tseriesvalid="461717" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:39.8" version="1"/>
+  <timeseriesval tseriesvalid="461718" tseriesid="342" value="0.1153678" time="2015-01-01 00:00:01.2" version="1"/>
+  <timeseriesval tseriesvalid="461719" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:48.4" version="1"/>
+  <timeseriesval tseriesvalid="461720" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:07.2" version="1"/>
+  <timeseriesval tseriesvalid="461721" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:25.0" version="1"/>
+  <timeseriesval tseriesvalid="461722" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:04.8" version="1"/>
+  <timeseriesval tseriesvalid="461723" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:36.8" version="1"/>
+  <timeseriesval tseriesvalid="461724" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:11.4" version="1"/>
+  <timeseriesval tseriesvalid="461725" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:08.2" version="1"/>
+  <timeseriesval tseriesvalid="461726" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:31.2" version="1"/>
+  <timeseriesval tseriesvalid="461727" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:39.6" version="1"/>
+  <timeseriesval tseriesvalid="461728" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:04.4" version="1"/>
+  <timeseriesval tseriesvalid="461729" tseriesid="342" value="0.1090506" time="2015-01-01 00:00:00.6" version="1"/>
+  <timeseriesval tseriesvalid="461730" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:23.6" version="1"/>
+  <timeseriesval tseriesvalid="461731" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:19.2" version="1"/>
+  <timeseriesval tseriesvalid="461732" tseriesid="342" value="0.0" time="2015-01-01 00:00:00.0" version="1"/>
+  <timeseriesval tseriesvalid="461733" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:12.8" version="1"/>
+  <timeseriesval tseriesvalid="461734" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:52.2" version="1"/>
+  <timeseriesval tseriesvalid="461735" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:59.0" version="1"/>
+  <timeseriesval tseriesvalid="461736" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:31.4" version="1"/>
+  <timeseriesval tseriesvalid="461737" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:59.2" version="1"/>
+  <timeseriesval tseriesvalid="461738" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:22.4" version="1"/>
+  <timeseriesval tseriesvalid="461739" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:57.4" version="1"/>
+  <timeseriesval tseriesvalid="461740" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:59.6" version="1"/>
+  <timeseriesval tseriesvalid="461741" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:42.2" version="1"/>
+  <timeseriesval tseriesvalid="461742" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:31.6" version="1"/>
+  <timeseriesval tseriesvalid="461743" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:48.0" version="1"/>
+  <timeseriesval tseriesvalid="461744" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:54.4" version="1"/>
+  <timeseriesval tseriesvalid="461745" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:16.6" version="1"/>
+  <timeseriesval tseriesvalid="461746" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:20.2" version="1"/>
+  <timeseriesval tseriesvalid="461747" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:21.0" version="1"/>
+  <timeseriesval tseriesvalid="461748" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:37.6" version="1"/>
+  <timeseriesval tseriesvalid="461749" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:10.4" version="1"/>
+  <timeseriesval tseriesvalid="461750" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:08.4" version="1"/>
+  <timeseriesval tseriesvalid="461751" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:55.8" version="1"/>
+  <timeseriesval tseriesvalid="461752" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:58.6" version="1"/>
+  <timeseriesval tseriesvalid="461753" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:16.0" version="1"/>
+  <timeseriesval tseriesvalid="461754" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:41.6" version="1"/>
+  <timeseriesval tseriesvalid="461755" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:07.6" version="1"/>
+  <timeseriesval tseriesvalid="461756" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:32.0" version="1"/>
+  <timeseriesval tseriesvalid="461757" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:23.8" version="1"/>
+  <timeseriesval tseriesvalid="461758" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:38.4" version="1"/>
+  <timeseriesval tseriesvalid="461759" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:20.6" version="1"/>
+  <timeseriesval tseriesvalid="461760" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:35.0" version="1"/>
+  <timeseriesval tseriesvalid="461761" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:46.6" version="1"/>
+  <timeseriesval tseriesvalid="461762" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:29.2" version="1"/>
+  <timeseriesval tseriesvalid="461763" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:25.2" version="1"/>
+  <timeseriesval tseriesvalid="461764" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:38.6" version="1"/>
+  <timeseriesval tseriesvalid="461765" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:52.8" version="1"/>
+  <timeseriesval tseriesvalid="461766" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:03.8" version="1"/>
+  <timeseriesval tseriesvalid="461767" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:12.4" version="1"/>
+  <timeseriesval tseriesvalid="461768" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:39.2" version="1"/>
+  <timeseriesval tseriesvalid="461769" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:33.8" version="1"/>
+  <timeseriesval tseriesvalid="461770" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:09.6" version="1"/>
+  <timeseriesval tseriesvalid="461771" tseriesid="342" value="0.1154868" time="2015-01-01 00:00:02.0" version="1"/>
+  <timeseriesval tseriesvalid="461772" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:46.0" version="1"/>
+  <timeseriesval tseriesvalid="461773" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:50.6" version="1"/>
+  <timeseriesval tseriesvalid="461774" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:26.4" version="1"/>
+  <timeseriesval tseriesvalid="461775" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:43.4" version="1"/>
+  <timeseriesval tseriesvalid="461776" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:21.6" version="1"/>
+  <timeseriesval tseriesvalid="461777" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:27.4" version="1"/>
+  <timeseriesval tseriesvalid="461778" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:07.8" version="1"/>
+  <timeseriesval tseriesvalid="461779" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:52.6" version="1"/>
+  <timeseriesval tseriesvalid="461780" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:22.8" version="1"/>
+  <timeseriesval tseriesvalid="461781" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:14.6" version="1"/>
+  <timeseriesval tseriesvalid="461782" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:34.6" version="1"/>
+  <timeseriesval tseriesvalid="461783" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:55.4" version="1"/>
+  <timeseriesval tseriesvalid="461784" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:16.4" version="1"/>
+  <timeseriesval tseriesvalid="461785" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:20.0" version="1"/>
+  <timeseriesval tseriesvalid="461786" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:25.4" version="1"/>
+  <timeseriesval tseriesvalid="461787" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:33.4" version="1"/>
+  <timeseriesval tseriesvalid="461788" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:28.4" version="1"/>
+  <timeseriesval tseriesvalid="461789" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:34.2" version="1"/>
+  <timeseriesval tseriesvalid="461790" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:03.6" version="1"/>
+  <timeseriesval tseriesvalid="461791" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:39.0" version="1"/>
+  <timeseriesval tseriesvalid="461792" tseriesid="342" value="0.07549949" time="2015-01-01 00:00:00.4" version="1"/>
+  <timeseriesval tseriesvalid="461793" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:23.0" version="1"/>
+  <timeseriesval tseriesvalid="461794" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:02.8" version="1"/>
+  <timeseriesval tseriesvalid="461795" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:02.6" version="1"/>
+  <timeseriesval tseriesvalid="461796" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:28.0" version="1"/>
+  <timeseriesval tseriesvalid="461797" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:47.8" version="1"/>
+  <timeseriesval tseriesvalid="461798" tseriesid="342" value="0.115044" time="2015-01-01 00:00:01.0" version="1"/>
+  <timeseriesval tseriesvalid="461799" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:28.2" version="1"/>
+  <timeseriesval tseriesvalid="461800" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:45.6" version="1"/>
+  <timeseriesval tseriesvalid="461801" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:03.4" version="1"/>
+  <timeseriesval tseriesvalid="461802" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:49.2" version="1"/>
+  <timeseriesval tseriesvalid="461803" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:08.8" version="1"/>
+  <timeseriesval tseriesvalid="461804" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:57.2" version="1"/>
+  <timeseriesval tseriesvalid="461805" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:36.6" version="1"/>
+  <timeseriesval tseriesvalid="461806" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:30.4" version="1"/>
+  <timeseriesval tseriesvalid="461807" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:29.8" version="1"/>
+  <timeseriesval tseriesvalid="461808" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:36.0" version="1"/>
+  <timeseriesval tseriesvalid="461809" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:08.0" version="1"/>
+  <timeseriesval tseriesvalid="461810" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:10.6" version="1"/>
+  <timeseriesval tseriesvalid="461811" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:03.0" version="1"/>
+  <timeseriesval tseriesvalid="461812" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:17.0" version="1"/>
+  <timeseriesval tseriesvalid="461813" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:22.0" version="1"/>
+  <timeseriesval tseriesvalid="461814" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:12.2" version="1"/>
+  <timeseriesval tseriesvalid="461815" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:53.4" version="1"/>
+  <timeseriesval tseriesvalid="461816" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:56.8" version="1"/>
+  <timeseriesval tseriesvalid="461817" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:26.0" version="1"/>
+  <timeseriesval tseriesvalid="461818" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:50.2" version="1"/>
+  <timeseriesval tseriesvalid="461819" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:03.2" version="1"/>
+  <timeseriesval tseriesvalid="461820" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:41.0" version="1"/>
+  <timeseriesval tseriesvalid="461821" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:51.4" version="1"/>
+  <timeseriesval tseriesvalid="461822" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:04.6" version="1"/>
+  <timeseriesval tseriesvalid="461823" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:25.6" version="1"/>
+  <timeseriesval tseriesvalid="461824" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:27.8" version="1"/>
+  <timeseriesval tseriesvalid="461825" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:35.6" version="1"/>
+  <timeseriesval tseriesvalid="461826" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:41.2" version="1"/>
+  <timeseriesval tseriesvalid="461827" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:56.6" version="1"/>
+  <timeseriesval tseriesvalid="461828" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:57.6" version="1"/>
+  <timeseriesval tseriesvalid="461829" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:20.4" version="1"/>
+  <timeseriesval tseriesvalid="461830" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:35.8" version="1"/>
+  <timeseriesval tseriesvalid="461831" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:17.6" version="1"/>
+  <timeseriesval tseriesvalid="461832" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:51.8" version="1"/>
+  <timeseriesval tseriesvalid="461833" tseriesid="342" value="0.1154787" time="2015-01-01 00:00:01.6" version="1"/>
+  <timeseriesval tseriesvalid="461834" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:56.0" version="1"/>
+  <timeseriesval tseriesvalid="461835" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:13.0" version="1"/>
+  <timeseriesval tseriesvalid="461836" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:50.4" version="1"/>
+  <timeseriesval tseriesvalid="461837" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:44.6" version="1"/>
+  <timeseriesval tseriesvalid="461838" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:47.4" version="1"/>
+  <timeseriesval tseriesvalid="461839" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:28.8" version="1"/>
+  <timeseriesval tseriesvalid="461840" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:44.2" version="1"/>
+  <timeseriesval tseriesvalid="461841" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:29.0" version="1"/>
+  <timeseriesval tseriesvalid="461842" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:45.0" version="1"/>
+  <timeseriesval tseriesvalid="461843" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:43.6" version="1"/>
+  <timeseriesval tseriesvalid="461844" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:45.2" version="1"/>
+  <timeseriesval tseriesvalid="461845" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:54.2" version="1"/>
+  <timeseriesval tseriesvalid="461846" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:13.2" version="1"/>
+  <timeseriesval tseriesvalid="461847" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:28.6" version="1"/>
+  <timeseriesval tseriesvalid="461848" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:16.8" version="1"/>
+  <timeseriesval tseriesvalid="461849" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:07.4" version="1"/>
+  <timeseriesval tseriesvalid="461850" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:32.4" version="1"/>
+  <timeseriesval tseriesvalid="461851" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:37.8" version="1"/>
+  <timeseriesval tseriesvalid="461852" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:15.2" version="1"/>
+  <timeseriesval tseriesvalid="461853" tseriesid="342" value="0.1154875" time="2015-01-01 00:01:00.0" version="1"/>
+  <timeseriesval tseriesvalid="461854" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:10.0" version="1"/>
+  <timeseriesval tseriesvalid="461855" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:51.2" version="1"/>
+  <timeseriesval tseriesvalid="461856" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:14.2" version="1"/>
+  <timeseriesval tseriesvalid="461857" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:15.6" version="1"/>
+  <timeseriesval tseriesvalid="461858" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:31.8" version="1"/>
+  <timeseriesval tseriesvalid="461859" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:24.4" version="1"/>
+  <timeseriesval tseriesvalid="461860" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:17.2" version="1"/>
+  <timeseriesval tseriesvalid="461861" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:32.2" version="1"/>
+  <timeseriesval tseriesvalid="461862" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:44.8" version="1"/>
+  <timeseriesval tseriesvalid="461863" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:34.4" version="1"/>
+  <timeseriesval tseriesvalid="461864" tseriesid="342" value="0.001306271" time="2015-01-01 00:00:00.2" version="1"/>
+  <timeseriesval tseriesvalid="461865" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:22.6" version="1"/>
+  <timeseriesval tseriesvalid="461866" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:38.0" version="1"/>
+  <timeseriesval tseriesvalid="461867" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:35.2" version="1"/>
+  <timeseriesval tseriesvalid="461868" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:33.6" version="1"/>
+  <timeseriesval tseriesvalid="461869" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:43.0" version="1"/>
+  <timeseriesval tseriesvalid="461870" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:44.4" version="1"/>
+  <timeseriesval tseriesvalid="461871" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:48.2" version="1"/>
+  <timeseriesval tseriesvalid="461872" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:21.4" version="1"/>
+  <timeseriesval tseriesvalid="461873" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:38.2" version="1"/>
+  <timeseriesval tseriesvalid="461874" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:46.4" version="1"/>
+  <timeseriesval tseriesvalid="461875" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:51.6" version="1"/>
+  <timeseriesval tseriesvalid="461876" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:53.8" version="1"/>
+  <timeseriesval tseriesvalid="461877" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:41.4" version="1"/>
+  <timeseriesval tseriesvalid="461878" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:06.8" version="1"/>
+  <timeseriesval tseriesvalid="461879" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:05.0" version="1"/>
+  <timeseriesval tseriesvalid="461880" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:10.8" version="1"/>
+  <timeseriesval tseriesvalid="461881" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:54.8" version="1"/>
+  <timeseriesval tseriesvalid="461882" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:45.8" version="1"/>
+  <timeseriesval tseriesvalid="461883" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:55.0" version="1"/>
+  <timeseriesval tseriesvalid="461884" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:05.4" version="1"/>
+  <timeseriesval tseriesvalid="461885" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:13.8" version="1"/>
+  <timeseriesval tseriesvalid="461886" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:13.4" version="1"/>
+  <timeseriesval tseriesvalid="461887" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:18.0" version="1"/>
+  <timeseriesval tseriesvalid="461888" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:14.8" version="1"/>
+  <timeseriesval tseriesvalid="461889" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:51.0" version="1"/>
+  <timeseriesval tseriesvalid="461890" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:13.6" version="1"/>
+  <timeseriesval tseriesvalid="461891" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:48.6" version="1"/>
+  <timeseriesval tseriesvalid="461892" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:09.4" version="1"/>
+  <timeseriesval tseriesvalid="461893" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:37.4" version="1"/>
+  <timeseriesval tseriesvalid="461894" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:30.2" version="1"/>
+  <timeseriesval tseriesvalid="461895" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:32.6" version="1"/>
+  <timeseriesval tseriesvalid="461896" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:37.2" version="1"/>
+  <timeseriesval tseriesvalid="461897" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:18.6" version="1"/>
+  <timeseriesval tseriesvalid="461898" tseriesid="342" value="0.1154874" time="2015-01-01 00:00:02.4" version="1"/>
+  <timeseriesval tseriesvalid="461899" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:58.8" version="1"/>
+  <timeseriesval tseriesvalid="461900" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:35.4" version="1"/>
+  <timeseriesval tseriesvalid="461901" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:48.8" version="1"/>
+  <timeseriesval tseriesvalid="461902" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:04.2" version="1"/>
+  <timeseriesval tseriesvalid="461903" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:37.0" version="1"/>
+  <timeseriesval tseriesvalid="461904" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:19.6" version="1"/>
+  <timeseriesval tseriesvalid="461905" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:04.0" version="1"/>
+  <timeseriesval tseriesvalid="461906" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:11.6" version="1"/>
+  <timeseriesval tseriesvalid="461907" tseriesid="342" value="0.1154875" time="2015-01-01 00:00:59.4" version="1"/>
+</dataset>

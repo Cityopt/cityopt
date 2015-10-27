@@ -43,6 +43,7 @@ import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
+import eu.cityopt.DTO.ObjectiveFunctionResultDTO;
 import eu.cityopt.DTO.OpenOptimizationSetDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ProjectScenariosDTO;
@@ -92,6 +93,17 @@ public class ObjectiveFunctionServiceDTOTest {
 		assertTrue(objectiveFunctionService.existsByName(1, "ObjectiveFunction 1"));
 		
 		assertFalse(objectiveFunctionService.existsByName(1, "ObjectiveFunction 2"));			
+	}
+	
+	@Test
+	@DatabaseSetup({"classpath:/testData/plumbing_ga_result2.xml"})
+	public void findObjectiveFunctionResults()
+	{
+		List<ObjectiveFunctionResultDTO> results = objectiveFunctionService.findResultsByScenarioGenerator(1, 1);
+		assertEquals(1,results.size());
+		
+		assertEquals(160,results.get(0).getScenID());
+		
 	}
 	
 }
