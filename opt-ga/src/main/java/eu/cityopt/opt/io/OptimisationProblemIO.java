@@ -7,8 +7,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
-import java.util.List;
-
 import javax.script.ScriptException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -16,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 
-import eu.cityopt.opt.io.JacksonBinderScenario.ScenarioItem;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.opt.OptimisationProblem;
@@ -73,26 +70,39 @@ public class OptimisationProblemIO {
     public static SimulationStructure readStructureCsv(
             InputStream structureStream, EvaluationSetup setup, Namespace ns)
                     throws ParseException, ScriptException, IOException {
-        JacksonBinder binder = new JacksonBinder(reader, structureStream);
+        return buildStructure(readSingle(structureStream), setup, ns);
+    }
+    
+    public static SimulationStructure buildStructure(
+            JacksonBinder binder, EvaluationSetup setup, Namespace ns)
+                    throws ParseException, ScriptException {
         if (ns == null)
             ns = binder.makeNamespace(setup.evaluator, setup.timeOrigin);
         SimulationStructureBuilder bld = new SimulationStructureBuilder(
                 new SimulationStructure(null, ns));
         return binder.buildWith(bld).getResult();
     }
+    
+    public static UnitMap buildUnitMap(JacksonBinder binder) {
+        return binder.buildWith(new UnitBuilder()).getResult();
+    }
 
     /**
      * Export an OptimisationProblem to CSV files.
      * The output streams are left open.
      * @param problem Problem to export
+     * @param units an UnitMap or null
      * @param problemOut Output stream for the problem description
      * @param tsOut Output stream for time series data
      */
     public static void writeProblemCsv(
-            OptimisationProblem problem,
+            OptimisationProblem problem, UnitMap units,
             OutputStream problemOut, OutputStream tsOut) throws IOException {
         ExportBuilder bld = new ExportBuilder(problem.getNamespace());
         ExportDirectors.build(problem, bld, null);
+        if (units != null) {
+            units.apply(bld);
+        }
         writeSingle(bld, problemOut);
         TimeSeriesData tsd = bld.getTimeSeriesData();
         if (!tsd.isEmpty()) {
@@ -105,12 +115,14 @@ public class OptimisationProblemIO {
      * The output stream is left open.
      */
     public static void writeStructureCsv(
-            SimulationStructure sim, OutputStream out) throws IOException {
-        ObjectWriter wtr = prwriter.without(
-                JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+            SimulationStructure sim, UnitMap units, OutputStream out)
+                    throws IOException {
         ExportBuilder bld = new ExportBuilder(sim.getNamespace());
         ExportDirectors.buildStructure(sim, bld);
-        wtr.writeValue(out, bld.getBinder());
+        if (units != null) {
+            units.apply(bld);
+        }
+        writeSingle(bld, out);
     }
 
     /**
@@ -118,10 +130,14 @@ public class OptimisationProblemIO {
      * Only creates tsFile if there are time series to export.
      */
     public static void writeProblemCsv(
-            OptimisationProblem problem, Path problemFile, Path tsFile)
+            OptimisationProblem problem, UnitMap units,
+            Path problemFile, Path tsFile)
                     throws IOException {
         ExportBuilder bld = new ExportBuilder(problem.getNamespace());
         ExportDirectors.build(problem, bld, null);
+        if (units != null) {
+            units.apply(bld);
+        }
         writeSingle(bld, problemFile);
         TimeSeriesData tsd = bld.getTimeSeriesData();
         if (!tsd.isEmpty()) {
@@ -148,18 +164,15 @@ public class OptimisationProblemIO {
             throws IOException {
         scwriter.writeValue(outFile.toFile(), builder.getScenarioBinder());
     }
-
-    public static List<ScenarioItem> readMulti(Path inFile) throws IOException {
-        JacksonBinderScenario
-        binder = new JacksonBinderScenario(screader, inFile);
-        return binder.getItems();
+    
+    public static JacksonBinder readSingle(InputStream inStream)
+            throws IOException {
+        return new JacksonBinder(reader, inStream);
     }
 
-    public static List<ScenarioItem> readMulti(InputStream inStream)
+    public static JacksonBinderScenario readMulti(InputStream inStream)
             throws IOException {
-        JacksonBinderScenario
-            binder = new JacksonBinderScenario(screader, inStream);
-        return binder.getItems();
+        return new JacksonBinderScenario(screader, inStream);
     }
 
     /**

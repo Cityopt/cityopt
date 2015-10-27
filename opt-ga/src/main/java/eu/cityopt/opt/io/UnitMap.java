@@ -1,26 +1,16 @@
 package eu.cityopt.opt.io;
 
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Unit information for CSV import/export purposes.
  */
-public class UnitMap {
-    public Map<JacksonBinder.Kind, Map<String, String>>
-        byKind = new EnumMap<>(JacksonBinder.Kind.class);
-    
-    public void put(JacksonBinder.Kind kind, String qname, String unit) {
-        byKind.computeIfAbsent(kind, k -> new HashMap<>())
-                .put(qname, unit);
-    }
+public abstract class UnitMap {
+    public abstract String get(JacksonBinder.Kind kind, String qname);
 
-    public String get(JacksonBinder.Kind kind, String qname) {
-        Map<String, String> byName = byKind.get(kind);
-        return byName == null ? null : byName.get(qname);
-    }
-    
+    public abstract void put(JacksonBinder.Kind kind, String qname, String unit);
+
     /**
      * Loop through the binder and set the unit of every item that
      * we know of. 
@@ -30,7 +20,7 @@ public class UnitMap {
             setUnit(it);
         }
     }
-    
+
     /**
      * Loop through the binder and set the unit of every item that
      * we know of. 
@@ -40,7 +30,16 @@ public class UnitMap {
             setUnit(it.getItem());
         }
     }
-    
+
+    /**
+     * Loop through the internal binder of the ExportBuilder and
+     * set the unit of every item that we know of.
+     */
+    public void apply(ExportBuilder builder) {
+        // N.B.: not getBinder()
+        apply(builder.getScenarioBinder());
+    }
+
     private void setUnit(JacksonBinder.Item it) {
         if (it instanceof JacksonBinder.Var) {
             JacksonBinder.Var var = (JacksonBinder.Var)it;
@@ -50,4 +49,5 @@ public class UnitMap {
             }
         }
     }
+
 }

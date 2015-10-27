@@ -285,13 +285,19 @@ public class JacksonBinder {
     }
 
     /**
-     * Apply a NamespaceBuilder.  Special case because they don't throw.
+     * Apply a builder.
      * @return the builder
      */
-    public NamespaceBuilder buildWith(NamespaceBuilder builder) {
+    public <Builder extends RobustImportBuilder>
+    Builder buildWith(Builder builder) {
         items.forEach(builder::add);
         return builder;
     }
+    
+    /**
+     * Apply a UnitBuilder.  Another special case bacause it doesn't throw.
+     * @return builder;
+     */
 
     /**
      * Create a {@link Namespace} and populate it with our items.

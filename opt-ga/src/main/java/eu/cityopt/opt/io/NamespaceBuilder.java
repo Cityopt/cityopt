@@ -26,7 +26,8 @@ import eu.cityopt.sim.eval.Type;
  * @author ttekth
  *
  */
-public class NamespaceBuilder extends AbstractBuilder<Namespace> {
+public class NamespaceBuilder
+extends AbstractBuilder<Namespace> implements RobustImportBuilder {
     /**
      * Build on an existing Namespace.
      * N.B.: Namespaces must not be changed when in use.
