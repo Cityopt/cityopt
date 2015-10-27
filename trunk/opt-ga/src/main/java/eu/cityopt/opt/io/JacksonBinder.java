@@ -295,11 +295,6 @@ public class JacksonBinder {
     }
     
     /**
-     * Apply a UnitBuilder.  Another special case bacause it doesn't throw.
-     * @return builder;
-     */
-
-    /**
      * Create a {@link Namespace} and populate it with our items.
      * @param evaluator
      * @param timeOrigin time stamp corresponding to t = 0
