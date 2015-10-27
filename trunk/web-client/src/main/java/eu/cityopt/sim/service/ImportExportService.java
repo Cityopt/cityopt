@@ -47,11 +47,13 @@ import eu.cityopt.model.Unit;
 import eu.cityopt.opt.io.CsvTimeSeriesData;
 import eu.cityopt.opt.io.ExportBuilder;
 import eu.cityopt.opt.io.JacksonBinder;
+import eu.cityopt.opt.io.JacksonBinder.Kind;
 import eu.cityopt.opt.io.JacksonBinderScenario;
 import eu.cityopt.opt.io.JacksonBinderScenario.ScenarioItem;
 import eu.cityopt.opt.io.OptimisationProblemIO;
 import eu.cityopt.opt.io.TimeSeriesData;
 import eu.cityopt.opt.io.TimeSeriesData.Series;
+import eu.cityopt.opt.io.UnitMap;
 import eu.cityopt.repository.AlgorithmRepository;
 import eu.cityopt.repository.ComponentRepository;
 import eu.cityopt.repository.ExtParamRepository;
@@ -129,7 +131,115 @@ public class ImportExportService {
     @Inject private ExtParamValSetRepository extParamValSetRepository;
     @Inject private ScenarioRepository scenarioRepository;
     @Inject private UnitRepository unitRepository;
+    
+    /**
+     * A UnitMap is backed by the database.
+     * External parameters, metrics, inputs and outputs are supported.
+     * {@link #put} saves modifications back to the database.  If you
+     * are going to use it, you should do it in the same transaction
+     * you got prj from.
+     */
+    public class DbUnitMap extends UnitMap {
+        Map<String, ExtParam> exts;
+        Map<String, Metric> mets;
+        Map<String, InputParameter> ins = new HashMap<>();
+        Map<String, OutputVariable> outs = new HashMap<>();
+        
+        /**
+         * Populate the map with project members.
+         * @param prj Project to extract units from
+         */
+        public DbUnitMap(Project prj) {
+            exts = makeMap(prj.getExtparams(), ExtParam::getName);
+            mets = makeMap(prj.getMetrics(), Metric::getName);
+            for (Component c : prj.getComponents()) {
+                final String prefix = c.getName() + ".";
+                addToMap(c.getInputparameters(),
+                         ip -> prefix + ip.getName(), ins);
+                addToMap(c.getOutputvariables(),
+                         ov -> prefix + ov.getName(), outs);
+            }
+        }
+       
+        public DbUnitMap(ScenarioGenerator sg) {
+            this(sg.getProject());
+            // If decision variables ever get units, set that up here.
+        }
 
+        @Override
+        public String get(Kind kind, String qname) {
+            Unit u = getUnit(kind, qname);
+            return u == null ? null : u.getName();
+        }
+        
+        private Unit getUnit(Kind kind, String qname) {
+            switch (kind) {
+            case EXT:
+                ExtParam xp = exts.get(qname);
+                return xp == null ? null : xp.getUnit();
+            case MET:
+                Metric m = mets.get(qname);
+                return m == null ? null : m.getUnit();
+            case IN:
+                InputParameter in = ins.get(qname);
+                return in == null ? null : in.getUnit();
+            case OUT:
+                OutputVariable out = outs.get(qname);
+                return out == null ? null : out.getUnit();
+            default:
+                return null;
+            }
+        }
+
+        /**
+         * If the specified item exists in the project,
+         * set its unit.  If the item is not found, do nothing.
+         * New units are created as necessary.
+         */
+        @Override
+        public void put(Kind kind, String qname, String unit) {
+            if (unit.equals(get(kind, qname)))
+                return;
+            switch (kind) {
+            case EXT:
+                exts.computeIfPresent(qname, (k, v) -> {
+                    v.setUnit(findOrMake(unit));
+                    return extParamRepository.save(v);
+                });
+                break;
+            case MET:
+                mets.computeIfPresent(qname, (k, v) -> {
+                    v.setUnit(findOrMake(unit));
+                    return metricRepository.save(v);
+                });
+                break;
+            case IN:
+                ins.computeIfPresent(qname, (k, v) -> {
+                    v.setUnit(findOrMake(unit));
+                    return inputParameterRepository.save(v);
+                });
+                break;
+            case OUT:
+                outs.computeIfPresent(qname, (k, v) -> {
+                    v.setUnit(findOrMake(unit));
+                    return outputVariableRepository.save(v);
+                });
+                break;
+            default:
+            }
+        }
+        
+        public Unit findOrMake(String uname) {
+            Unit u = unitRepository.findByName(uname);
+            if (u == null) {
+                u = new Unit();
+                u.setName(uname);
+                u = unitRepository.save(u);
+            }
+            return u;
+        }
+    }
+    
     /**
      * Creates a SimulationModel row in the database.
      * The imageblob field of the SimulationModel is left null.
@@ -280,7 +390,8 @@ public class ImportExportService {
         Namespace ns = simulationService.makeProjectNamespace(project);
         SimulationStructure sim = new SimulationStructure(null, ns);
         sim.metrics = simulationService.loadMetricExpressions(project, ns);
-        OptimisationProblemIO.writeStructureCsv(sim, out);
+        OptimisationProblemIO.writeStructureCsv(
+                sim, new DbUnitMap(project), out);
     }
     
 
@@ -595,7 +706,9 @@ public class ImportExportService {
         OptimisationProblem
                 p = scenarioGenerationService.loadOptimisationProblem(
                         sg.getProject(), sg);
-        OptimisationProblemIO.writeProblemCsv(p, problemFile, timeSeriesFile);
+        OptimisationProblemIO.writeProblemCsv(
+                p, new DbUnitMap(sg),
+                problemFile, timeSeriesFile);
         //TODO algorithm and parameters?
     }
 
@@ -669,7 +782,7 @@ public class ImportExportService {
         OptimisationProblem prob = optimisationSupport.loadOptimisationProblem(
                 proj, os);
         OptimisationProblemIO.writeProblemCsv(
-                prob, problemFile, timeSeriesFile);
+                prob, new DbUnitMap(proj), problemFile, timeSeriesFile);
     }
     
     /**
@@ -828,12 +941,12 @@ public class ImportExportService {
             throws IOException, ParseException, EntityNotFoundException {
         Project project = fetchOne(projectRepository, projectId, "project");
         TimeSeriesData tsd = readTimeSeriesCsv(project, timeSeries, tsNames);
-        List<JacksonBinderScenario.ScenarioItem>
-        items = OptimisationProblemIO.readMulti(scenarios);
+        JacksonBinderScenario
+            binder = OptimisationProblemIO.readMulti(scenarios);
         Map<String, List<JacksonBinder.ExtParam>> epsEXT = new HashMap<>();
         Map<String, List<JacksonBinder.Input>> scenIN = new HashMap<>(); 
         Map<String, List<JacksonBinder.Output>> scenOUT = new HashMap<>();
-        for (ScenarioItem si : items) {
+        for (ScenarioItem si : binder.getItems()) {
             switch (si.getKind()) {
             case EXT:
                 epsEXT.computeIfAbsent(si.extparamvalsetname,
@@ -1213,5 +1326,17 @@ public class ImportExportService {
             }
         }
         throw new ConfigurationException("Unknown algorithm " + name);
+    }
+    
+    private static <Key, Val>
+    Map<Key, Val> makeMap(Collection<Val> vals, Function<Val, Key> key) {
+        return vals.stream().collect(
+                Collectors.toMap(key, Function.identity()));
+    }
+    
+    private static <Key, Val>
+    void addToMap(Collection<Val> vals, Function<Val, Key> key,
+                  Map<Key, Val> map) {
+        vals.forEach(val -> map.put(key.apply(val), val));
     }
 }
