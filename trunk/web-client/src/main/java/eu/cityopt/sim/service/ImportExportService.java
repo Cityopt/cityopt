@@ -193,12 +193,14 @@ public class ImportExportService {
 
         /**
          * If the specified item exists in the project,
-         * set its unit.  If the item is not found, do nothing.
+         * set its unit.  If unit is null or empty, do nothing
+         * (do not erase units).  If the item is not found, do nothing.
          * New units are created as necessary.
          */
         @Override
         public void put(Kind kind, String qname, String unit) {
-            if (unit.equals(get(kind, qname)))
+            if (unit == null || unit.isEmpty()
+                    || unit.equals(get(kind, qname)))
                 return;
             switch (kind) {
             case EXT:
