@@ -123,9 +123,13 @@ public class UserGroupProjectServiceTest {
 
 	@Test
 	public void findByUserAndProject() {
-		UserGroupProjectDTO ugp = userGroupProjectService.findByUserAndProject(1, null);
-		assertNotNull(ugp);
-		assertEquals(1, ugp.getUsergroup().getUsergroupid());
+		UserGroupProjectDTO ugp_1 = userGroupProjectService.findByUserAndProject(1, null);
+		assertNotNull(ugp_1);
+		assertEquals(1, ugp_1.getUsergroup().getUsergroupid());
+		
+		UserGroupProjectDTO ugp_2 = userGroupProjectService.findByUserAndProject(1, 2);
+		assertNotNull(ugp_2);
+		assertEquals(3, ugp_2.getUsergroup().getUsergroupid());		
 	}
 	
 	@Test
