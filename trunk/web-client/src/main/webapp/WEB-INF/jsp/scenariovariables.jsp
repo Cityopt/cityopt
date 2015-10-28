@@ -50,6 +50,7 @@
 								<th><spring:message code="value"/></th>
 								<!-- Edit -->
 							    <th><spring:message code="edit"/></th>
+							 						 
 							</tr>
 																					
 							<c:set var="tooltip_edit"><spring:message code="tooltip_edit_scenariovariables"/></c:set>
@@ -78,9 +79,8 @@
 									<a href="editscenario.html"><button type="button">
 									<spring:message code="close"/></button></a>
 							    </td>
-							</tr>
-							      
-						</table>
+							</tr>							      
+						</table>					
 					</td>
 				</tr>
 			</table>

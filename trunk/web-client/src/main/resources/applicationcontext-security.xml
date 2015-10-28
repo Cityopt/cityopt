@@ -10,7 +10,8 @@
               <constructor-arg name="strength" value="12" />
     </bean>
 	
-	<security:http use-expressions="true">			
+	<security:http use-expressions="true">
+		<security:expression-handler ref="webExpressionHandler"/>			
 		<security:intercept-url	pattern="/assets/css/**" access="permitAll"/>
 		<security:intercept-url pattern="/assets/img/**" access="permitAll"/>
 		<security:intercept-url pattern="/login.html" access="permitAll"/>
@@ -20,6 +21,12 @@
 		
 		
 	</security:http>
+	<bean id="webExpressionHandler"
+         class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+         <property name="permissionEvaluator" ref="permissionEvaluator" />
+    </bean>
+    <bean id ="permissionEvaluator" class="eu.cityopt.validators.ProjectPermissionEvaluator"/>
+	
 	<security:authentication-manager>
 		<security:authentication-provider>
 			<!-- Enables encryption -->

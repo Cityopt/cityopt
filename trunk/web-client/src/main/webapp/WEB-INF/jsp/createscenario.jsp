@@ -21,19 +21,18 @@
 		<td valign="top">
 			<table>
 				<tr>
-					<td>
-						<!-- Create scenario -->
+					<td class="title_create_scenario">						
 						<h2><spring:message code="create_scenario"/></h2>																								
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<table>
-							<tr>
-								<!-- Scenario name -->								
-								<td><spring:message code="scenario_name"/>:</td>
+							<tr class="scenario_name">															
+								<td>*<spring:message code="scenario_name"/>:</td>
 								<c:set var="tooltip_name"><spring:message code="tooltip_create_scenario_name"/></c:set>
 								<td><form:input type="text" path="name"  title="${tooltip_name}" style="width: 200px"/></td>
+								<td><form:errors path="name" cssClass="error"/></td>
 								<td></td>
 								<td></td>
 							</tr>
@@ -44,7 +43,7 @@
 								<td></td>
 							</tr>
 							
-							<tr>
+							<tr class="description">
 								<!-- Description -->						
 								<td><spring:message code="description"/>:</td>
 								<c:set var="tooltip_description"><spring:message code="tooltip_create_scenario_description"/></c:set>

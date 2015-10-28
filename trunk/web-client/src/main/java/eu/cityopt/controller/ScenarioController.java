@@ -226,8 +226,14 @@ public class ScenarioController {
 
 	@RequestMapping(value="createscenario",method=RequestMethod.POST)
 	@Transactional
-	public String getCreateScenarioPost(ScenarioDTO formScenario, Map<String, Object> model) {
+	public String getCreateScenarioPost(Map<String, Object> model, 
+			@Validated @ModelAttribute ("newScenario") ScenarioDTO formScenario, BindingResult bindingResult) {
 
+		 if (bindingResult.hasErrors()) {
+
+	            return "createscenario";
+	        }
+		
 		if (model.containsKey("project") && formScenario != null)
 		{
 			ProjectDTO project = (ProjectDTO) model.get("project");
@@ -248,15 +254,16 @@ public class ScenarioController {
 				scenario.setName(formScenario.getName().trim());
 				scenario.setDescription(formScenario.getDescription().trim());
 				scenario.getScenid();
-				model.put("successful", "Scenario succesfully created.");
-				List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-				model.put("components", components);
+				
+				List<ComponentDTO> components = projectService.getComponents(project.getPrjid());				
 				try {
 					scenario = scenarioService.saveWithDefaultInputValues(scenario, project.getPrjid());
 				} catch (EntityNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				model.put("components", components);
+				model.put("successful", "Scenario succesfully created.");
 				model.put("scenario",  scenario);
 			} else {
 				model.put("newScenario", formScenario);

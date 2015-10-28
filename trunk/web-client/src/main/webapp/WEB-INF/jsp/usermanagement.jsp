@@ -91,8 +91,6 @@
 </head>
 <body>
 	<table cellspacing="0" cellpadding="0">
-
-
 		<tr>
 			<td><%@include file='mainmenu.inc'%></td>
 			<td width="30"></td>

@@ -105,6 +105,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -426,10 +427,21 @@ public class ProjectController {
 
         return "openproject";
     }	
-
+   
+    //@PreAuthorize("hasPermission(#prjid,'ROLE_Administrator')")
+    @PreAuthorize("hasRole('ROLE_Administrator') or"
+    +" isAuthenticated() and ("
+    	+" hasPermission(#prjid,'ROLE_Administrator') or"
+    	+" hasPermission(#prjid,'ROLE_Expert') or"
+    	+" hasPermission(#prjid,'ROLE_Standard') or"
+    	+" hasPermission(#prjid,'ROLE_Guest')"
+    						+ ")") 
     @RequestMapping(value="editproject", method=RequestMethod.GET)
     public String getEditProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid) {
-        if (prjid != null)
+       
+    	System.out.println("invoked");
+    	
+    	if (prjid != null)
         {
             AppUserDTO user = (AppUserDTO) model.get("user");
 
@@ -806,7 +818,13 @@ public class ProjectController {
     }	
      */
     
-    @Secured({"ROLE_Administrator","ROLE_Expert"})
+    //@Secured({"ROLE_Administrator","ROLE_Expert"})
+    @PreAuthorize("hasRole('ROLE_Administrator') or"
+    	    +" isAuthenticated() and ("
+    	    	+" hasPermission(#prjid,'ROLE_Administrator') or"
+    	    	+" hasPermission(#prjid,'ROLE_Expert'))") 
+    
+    
     @RequestMapping(value="deleteproject",method=RequestMethod.GET)
     public String getDeleteProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid){
         if (prjid != null)
@@ -874,6 +892,153 @@ public class ProjectController {
           }
     	return project;
     }
+    
+
+    
+    //@author Markus Turunen Usemanagement
+    //--------------
+    /*
+    @Secured({"ROLE_Administrator"})
+    @RequestMapping(value="usermanagement", method=RequestMethod.GET)
+    public String getUserManagement(Map<String, Object> model) {
+
+        AppUserDTO user = (AppUserDTO) model.get("user");      
+        if (user != null){
+            	initializeUserManagement(model);                
+                return "usermanagement";
+            }        
+        return "error";
+    }
+    /*
+    @RequestMapping(value="usermanagement",method=RequestMethod.POST)
+    public String getEditUser(Map<String, Object> model,
+    		UserManagementForm form) {    	
+    	 
+    	//	Test print of Form:
+    	/*
+    		System.out.println("usemanagement: invoked");
+    		System.out.println(form.getUser().keySet()+" "+form.getUser().values());    		
+    		System.out.println(form.getPassword().keySet()+" "+form.getPassword().values());
+    		System.out.println(form.getUserRole().keySet()+" "+form.getUserRole().values());
+    		System.out.println(form.getProject().keySet()+" "+form.getProject().values());
+    		System.out.println(form.getEnabled().keySet()+" "+form.getEnabled().values());
+    		*/
+  /*  	
+    		Iterator<Integer> keySetIterator = form.getUser().keySet().iterator();
+    		String username;
+    		
+    		while(keySetIterator.hasNext()){    		
+    		Integer key = keySetIterator.next();
+    			AppUserDTO user=null;
+				try {user = userService.findByID(key);} catch (EntityNotFoundException e) 
+				{	// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				// Handles user and password
+    			user.setName(form.getUser().get(key).trim());
+    			user.setPassword(form.getPassword().get(key).trim());    			
+    			
+    			// Set up Boolean Checkbox Bug fix Form Checkbox get nulls; 
+    			if(form.getEnabled().get(key)!=null){
+    				user.setEnabled(true);
+    			}else{
+    				user.setEnabled(false);
+    			}    			    					   			
+    			//userService.save(user);
+    			try {userService.update(user);} catch (EntityNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}    					
+			initializeUserManagement(model);
+			return "usermanagement";   	
+    
+    		} 
+      */ 
+    //@author Markus Turunen
+    // Initialize the UserManagementForms set up the model;
+    // Made class to reduce repetition in my code.    
+    public void initializeUserManagement(Map<String, Object> model){
+    	
+    	//Set up Variables 
+    	List<AppUserDTO> users = userService.findAll();
+        List<UserGroupDTO> userGroups= userGroupService.findAll();
+        List<ProjectDTO> projects = projectService.findAll();        
+        List<UserGroupProjectDTO> usergroupprojects= userGroupProjectService.findAll();
+        UserForm userForm = new UserForm();        
+    	UserManagementForm form = this.CreateUsemanagementForm(users);
+    	    	
+    	//Put Front controller using model attribute.
+    	model.put("UserForm",userForm);
+    	model.put("UserGroupProject", usergroupprojects);
+    	model.put("UserManagementForm", form);	
+        model.put("projects", projects);                
+        model.put("userGroups", userGroups);
+        model.put("users", users);
+        List<UserGroupProjectDTO> listUserGroupProjects = userGroupProjectService.findAll();       
+        model.put("userRoles", listUserGroupProjects);        
+    }    
+    
+    
+
+	// Form Factory: 
+    public UserManagementForm CreateUsemanagementForm(List<AppUserDTO> users){    
+   
+    	UserManagementForm form = new UserManagementForm();
+    	UserGroupProject usergroup; 
+    	
+	for (Iterator i = users.iterator(); i.hasNext(); ){	
+		
+		AppUserDTO appuser=(AppUserDTO) i.next();
+		int id = appuser.getUserid();
+		String name = appuser.getName();
+		String password=  appuser.getPassword();		
+		int ugpResult = 0;
+		String project="";
+		
+		List <UserGroupProjectDTO> list = userGroupProjectService.findByUser(name);
+			for(UserGroupProjectDTO ugp : list ){
+				if(ugp.getProject()==null){
+					ugpResult=ugp.getUsergroup().getUsergroupid();
+					project += "null";
+				}else{
+				project += ugp.getProject().getName();
+				}					
+			}
+				
+		form.getProject().put(id, project);	
+		form.getUserRole().put(id, ugpResult);		
+		form.getUser().put(id,name);
+		form.getPassword().put(id, password);		
+		}
+	
+	return form;   
+	}            	
+    
+    // Usergroup Help Methods;
+    public UserGroupProjectDTO CreateUserGroupDTO(UserGroupDTO usergroup, 
+    		ProjectDTO project, AppUserDTO appuser){    	
+    	UserGroupProjectDTO userGroupDTO=new UserGroupProjectDTO();
+    	userGroupDTO.setProject(project);
+    	userGroupDTO.setProject(project);
+    	userGroupDTO.setAppuser(appuser);    	
+    	return userGroupDTO;
+    }
+    
+    public void saveGroupProject(UserGroupProjectDTO userproject){    	
+    	userGroupProjectService.save(userproject);
+    }
+    
+    
+    // Try to make something to print user's projects and Roles,
+    public void UserProjectGroups(AppUserDTO user,UserGroupProjectDTO userGroup){
+    	
+    	
+    	    	
+    	
+    	
+    }
+    
     
     //------
 
@@ -1151,7 +1316,7 @@ public class ProjectController {
         {
             return "error";
         }
-
+        
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
@@ -1205,6 +1370,16 @@ public class ProjectController {
         return "projectparameters";
     }
 
+    
+    //@author Olli ToDO: edited by Markus
+    // I might need to rewrite this part of the application again yet same functionality:
+    
+    
+    
+    
+    
+    
+    
     @RequestMapping(value="selectextparamset", method=RequestMethod.GET)
     public String getSelectExtParamSet(Map<String, Object> model, 
             @RequestParam(value="selectedextparamsetid", required=false) String selectedExtParamSetId) {
@@ -1499,6 +1674,10 @@ public class ProjectController {
         return "projectparameters";
     }
 
+    
+    
+    
+    
     @RequestMapping(value="createextparam", method=RequestMethod.GET)
     public String getCreateExtParam(Map<String, Object> model) {
         ProjectDTO project = (ProjectDTO) model.get("project");

@@ -25,7 +25,7 @@
 						<h2><spring:message code="delete_project"/></h2>
 						<table class="tablestyle" width="400" border="1">
 
-							<tr height="20">
+							<tr class="DeleteTables" height="20">
 								<!-- Name -->
 								<th><spring:message code="name"/></th>
 								<!-- ID -->
@@ -43,7 +43,7 @@
 									<td>${project.name}</td>
 									<td>${project.prjid}</td>
 									<td>${project.location}</td>
-									<td></td>
+									<td>${project.description}</td>
 									<td><a
 										<c:set var="tooltip_delete"><spring:message code="tooltip_delete_project"/></c:set>										
 										href="<c:url value='deleteproject.html?prjid=${project.prjid}'/>" title="${tooltip_delete}"

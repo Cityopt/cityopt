@@ -25,8 +25,7 @@
 			<td><%@ include file="mainmenu.inc"%></td>
 			<td width=30></td>
 			<td valign="top">
-				<div
-					style="overflow: scroll; height: 800px; width: 800px; overflow: auto">
+				<div style="overflow: scroll; height: 800px; width: 800px; overflow: auto">
 					<form:form method="post" modelAttribute="UserForm" name="form1">
 						<!-- csrt support (version 4.0) -->
 						<input type="hidden" name="${_csrf.parameterName}"
@@ -46,22 +45,22 @@
 							</tr>
 							<col style="width: 150px">
 							<col style="width: 300px">
-							<tr>
+							
+							<tr class="username">
 								<td>
-									<!--Username--> <spring:message code="username" />
+									<spring:message code="username" />
 								</td>
 								<td><form:input style="width:300px" type="text" path="name" />
 								</td>
 							</tr>
-							<tr>
+							<tr class="password">
 								<td>
-									<!--Password--> <spring:message code="password" />
+									<spring:message code="password" />
 								</td>
 								<td><form:input style="width:300px" type="text"
 										path="password" /></td>
 							</tr>
-							<tr>
-								<!--Activate user-->
+							<tr class="enabled">	
 								<td><spring:message code="activate" />
 								<td><form:radiobutton path="enabled" value="true"
 										checked="checked" /> <spring:message code="yes" /> <form:radiobutton
@@ -69,8 +68,7 @@
 								</td>
 								<td>
 							</tr>
-							<tr>
-								<!-- Main Role  -->								
+							<tr class="role">							
 								<td><spring:message code="role" />:</td>
 								<td>
 								<form:select path="role">
@@ -82,7 +80,7 @@
 							</tr>
 														
 							
-							<tr>
+							<tr class="project">
 								<td><spring:message code="project" />:</td>
 								<td>
 								<form:select path="project">								
@@ -96,21 +94,21 @@
 										<spring:message code="create_project" /></button></a>
 								</td>							
 							</tr>
-							
-							<tr height=50px;>							
-							<td></td>							
-							<!-- Create submit and Cancel button -->
-							<td align="right"><input style="width: 100px" type="submit"
-								value="<spring:message code="create"/>" />
-							<td><a href="usermanagement.html"><button
-										style="width: 100px" type="button" value="Cancel">
+
+							<tr class="submit" height=50px;>
+								<td></td>
+								<!-- Create submit and Cancel button -->
+								<td align="right"><input style="width: 100px" type="submit"
+									value="<spring:message code="create"/>" /> <td>
+									<a href="usermanagement.html">
+									<button	style="width: 100px" type="button" value="Cancel">
 										<spring:message code="cancel" />
 									</button></a></td>
 							</tr>
 							</form:form>
-							</div>
-							</td>
-							</tr>
+									</div></td>
+								
+			</tr>
 	</table>
 </body>
 </html>
