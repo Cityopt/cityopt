@@ -137,7 +137,7 @@ public class ImportExportService {
      * External parameters, metrics, inputs and outputs are supported.
      * {@link #put} saves modifications back to the database.  If you
      * are going to use it, you should do it in the same transaction
-     * you got prj from.
+     * you got prj from.  prj may become stale after modifications.
      */
     public class DbUnitMap extends UnitMap {
         Map<String, ExtParam> exts;
@@ -231,7 +231,7 @@ public class ImportExportService {
             }
         }
         
-        public Unit findOrMake(String uname) {
+        private Unit findOrMake(String uname) {
             Unit u = unitRepository.findByName(uname);
             if (u == null) {
                 u = new Unit();
@@ -370,12 +370,15 @@ public class ImportExportService {
 
         // Note: We use a dummy timeOrigin because there is no time series data
         // here, and the constructed Namespace is discarded immediately.
-        EvaluationSetup setup =
-                new EvaluationSetup(simulationService.getEvaluator(), Instant.EPOCH);
-        SimulationStructure structure =
-                OptimisationProblemIO.readStructureCsv(structureStream, setup, null);
+        EvaluationSetup setup = new EvaluationSetup(
+                simulationService.getEvaluator(), Instant.EPOCH);
+        JacksonBinder
+            binder = OptimisationProblemIO.readSingle(structureStream);
+        SimulationStructure structure = OptimisationProblemIO.buildStructure(
+                binder, setup, null);
 
-        saveSimulationStructure(project, structure);
+        project = saveSimulationStructure(project, structure);
+        OptimisationProblemIO.buildUnitMap(binder, new DbUnitMap(project));
     }
     
     /**
@@ -397,12 +400,12 @@ public class ImportExportService {
     }
     
 
-    public void saveSimulationStructure(
+    public Project saveSimulationStructure(
             Project project, SimulationStructure structure) {
         saveExternalParameters(project, structure.getNamespace());
         saveNamespaceComponents(project, structure.getNamespace(), null);
         saveMetrics(project, structure.getNamespace(), structure.metrics);
-        projectRepository.save(project);
+        return projectRepository.save(project);
     }
 
     public void saveExternalParameters(Project project, Namespace namespace) {

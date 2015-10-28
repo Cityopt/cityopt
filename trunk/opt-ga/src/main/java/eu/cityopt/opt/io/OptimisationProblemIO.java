@@ -83,8 +83,8 @@ public class OptimisationProblemIO {
         return binder.buildWith(bld).getResult();
     }
     
-    public static UnitMap buildUnitMap(JacksonBinder binder) {
-        return binder.buildWith(new UnitBuilder()).getResult();
+    public static void buildUnitMap(JacksonBinder binder, UnitMap units) {
+        binder.buildWith(new UnitBuilder(units));
     }
 
     /**
