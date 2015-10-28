@@ -22,13 +22,13 @@
 		</td>
 		<td width="20"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:100%;width:1130px;overflow:auto">
+			<div style="overflow:scroll;height:100%;width:1200px;overflow:auto">
 			<table width="1100px">
 				<col style="width:300px">
 				<col style="width:30px">
 				<col style="width:800px">
 				<tr>
-					<td><h2>Optimization (GA) results</h2></td>
+					<td><h2>Genetic optimization results</h2></td>
 					<td></td>
 					<td></td>
 				</tr>
@@ -129,51 +129,6 @@
 									<table width="100%">
 										<tr>
 											<td align="right">
-												<table>
-													<tr>
-														<td>
-															<!-- Select chart type -->	
-											 				<b><spring:message code="select_chart_type"/></b>
-										 				</td>
-									 				</tr>
-									 				<tr>	
-														<td>
-									 					<c:choose>
-															<c:when test="${userSession.getChartType() == 0}">
-																<!-- Time series -->
-										 						<b><a href="gachart.html?charttype=0">
-										 						<spring:message code="time_series"/></a></b>
-															</c:when>
-															<c:otherwise>
-																<a href="gachart.html?charttype=0">
-																<spring:message code="time_series"/></a>
-															</c:otherwise>
-														</c:choose>
-								 						</td>
-							 						</tr>
-							 						<tr>
-							 							<td>
-							 								<!-- Scatterplot -->
-												 			<a href="gachart.html?charttype=1">
-												 			<spring:message code="scatter_plot"/></a>
-											 				
-											 			</td>
-									 				</tr>
-									 				<tr>
-									 					<td>
-									 						<!-- Bar chart -->
-												 			<a href="gachart.html?charttype=2">
-												 			<spring:message code="bar_chart"/></a>
-											 			</td>
-										 			</tr>
-										 			<tr>
-														<td>
-															<!-- Pie chart -->
-												 			<a href="gachart.html?charttype=3">
-												 			<spring:message code="pie_chart"/></a>
-											 			</td>
-										 			</tr>
-									 			</table>
 											</td>
 											<td align="right">
 												<table>
