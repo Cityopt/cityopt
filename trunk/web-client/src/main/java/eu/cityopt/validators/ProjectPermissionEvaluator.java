@@ -58,13 +58,13 @@ public class ProjectPermissionEvaluator implements PermissionEvaluator {
 		@Autowired
 		UserGroupProjectRepository userGroupProjectRepository;
 	    
-	  @Autowired
+	    @Autowired
 	    AppUserService userService;
 	  
-	  @Autowired
+	    @Autowired
 	    UserGroupProjectService userGroupProjectService;
 	  
-	  @Autowired
+	    @Autowired
 	    UserGroupService userGroupService;
 	  
 	    
@@ -84,7 +84,7 @@ public class ProjectPermissionEvaluator implements PermissionEvaluator {
 			AppUserDTO appuserdto;
 			appuserdto=this.FindAuthenticatedUser(authentication);
 			
-			
+			// Find UserGroup Project based on found user account and project
 			int userID = appuserdto.getUserid();					
 			UserGroupProjectDTO usergroupprojectdto = userGroupProjectService.findByUserAndProject(userID, projectIDn);
 			if(usergroupprojectdto==null){
