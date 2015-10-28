@@ -792,7 +792,8 @@ public class VisualizationController {
 
 		ObjectiveFunctionDTO objFunc1 = objFuncService.findByID(objFunc1Id);
 		ObjectiveFunctionDTO objFunc2 = objFuncService.findByID(objFunc2Id);
-		
+
+
 		// Get metrics time series (max 2 metrics)
 		if (userSession.getSelectedGAObjFuncIds().size() == 1)
 		{
@@ -869,6 +870,12 @@ public class VisualizationController {
 				while (resultIter.hasNext())
 				{
 					ObjectiveFunctionResultDTO result = (ObjectiveFunctionResultDTO) resultIter.next();
+					
+					if (!userSession.hasSelectedGAScenarioId(result.getScenID()))
+					{
+						continue;
+					}
+					
 					ScenarioDTO scenarioTemp = scenarioService.findByID(result.getScenID());
 
 					String value1 = result.getValue();
@@ -887,12 +894,9 @@ public class VisualizationController {
 						}
 					}
 					
-					if (userSession.getChartType() == 1) 
-					{
-						XYSeries series = new XYSeries(scenarioTemp.getName());
-						series.add(Double.parseDouble(value1), Double.parseDouble(value2));
-						collection.addSeries(series);						
-					} 
+					XYSeries series = new XYSeries(scenarioTemp.getName());
+					series.add(Double.parseDouble(value1), Double.parseDouble(value2));
+					collection.addSeries(series);						
 				}				
 			
 				JFreeChart chart = null;
@@ -902,14 +906,14 @@ public class VisualizationController {
 					userSession.setChartType(1);
 				}
 				
-				if (userSession.getChartType() == 1) {
-					chart = ScatterPlotVisualization.createChart(collection, "Optimization (GA) results", objFunc1.getName(), objFunc2.getName(), false);
-				} 
+				chart = ScatterPlotVisualization.createChart(collection, "Genetic optimization results", objFunc1.getName(), objFunc2.getName(), false);
 				
 				if (chart != null)
 				{
 					ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
 				}
+
+				model.put("usersession", userSession);
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -1178,8 +1182,6 @@ public class VisualizationController {
 		{
 			userSession = new UserSession();
 		}
-
-		model.put("usersession", userSession);
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
