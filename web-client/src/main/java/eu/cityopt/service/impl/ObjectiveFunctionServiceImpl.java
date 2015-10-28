@@ -111,6 +111,7 @@ public class ObjectiveFunctionServiceImpl implements ObjectiveFunctionService {
 				new TypeToken<Set<OptimizationSetDTO>>(){}.getType());
 	}
 
+	@Transactional(readOnly=true)
 	@Override
 	public ObjectiveFunctionDTO findByName(int prjID, String name) throws EntityNotFoundException {
 		ObjectiveFunction of = objectiveFunctionRepository.findByName(prjID, name);
@@ -121,6 +122,7 @@ public class ObjectiveFunctionServiceImpl implements ObjectiveFunctionService {
 		return modelMapper.map(of, ObjectiveFunctionDTO.class);
 	}
 	
+	@Transactional(readOnly=true)
 	@Override
 	public Boolean existsByName(int prjID, String name)  {
 		ObjectiveFunction of = objectiveFunctionRepository.findByName(prjID, name);
