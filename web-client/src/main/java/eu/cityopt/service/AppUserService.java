@@ -15,4 +15,8 @@ public interface AppUserService extends CityOptService<AppUserDTO>{
 
 	AppUserDTO findByName(String userName) throws EntityNotFoundException;
 	
+	//ToDo: findByName(String name);
+	//Required because we need to find a single userDTO object 
+	//from AppUserTable to make Project based authorization.
+	
 }
