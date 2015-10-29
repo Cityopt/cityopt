@@ -24,31 +24,37 @@ u1{
 </style>
 
 </head>
-<body>
-<h2>CityOpt Info: Create Project</h2>
-
-<p>
-Create project window you can create a project.
-Projects represent a city district in energy simulation optimization.
-You can also Organize your organization within projects in User management.
-</p>
-<p>
-   To create a project you need just fill the form.
-   All fields of the form nessessary to be filled in order to proceed in project creation.
-</p>
-<p> 
-	<ul>    
-   <li>Name is the name of the project.</li>
-   <li>Location is current location of the simulation model representation.</li>
-   <li>Design target is a the purpose of the simulations.</li>
-   <li>Description is a short description information that is sometimes useful for
-    identifying project.</li>
-    </ul> 
-</p>
-<p>     
-    Next button is a quick shortcut into the edit project.
-    Info text button obviously is where this information is given.       
-</p>
-  
-</body>
+	<body>
+	<h2>CityOpt Info: Create Project</h2>
+	
+		<div>
+			<p>
+			Create project window you can create a project.
+			Projects represent a city district in energy simulation optimization.
+			You can also Organize your organization within projects in User management.
+			</p>
+		</div>
+		<div>
+		<p>
+		   To create a project you need just fill the form.
+		   All fields of the form nessessary to be filled in order to proceed in project creation.
+		</p>
+		<div>
+			<p> 
+				<ul>    
+		  		 <li>Name is the name of the project.</li>
+		  		 <li>Location is current location of the simulation model representation.</li>
+		   		 <li>Design target is a the purpose of the simulations.</li>
+		  		 <li>Description is a short description information that is sometimes useful for
+		    		identifying project.</li>
+		    	</ul> 
+			</p>
+		</div>		
+		<div>
+			<p>     
+		    Next button is a quick shortcut into the edit project.
+		    Info text button obviously is where this information is given.       
+			</p>
+		</div>  
+	</body>
 </html>
