@@ -40,6 +40,7 @@
 				<tr>
 					<td></td>
 					<td>
+						<form:form modelAttribute="scenarioParamForm" method="post" action="scenarioParam.html?selectedcompid=${selectedcompid}">
 						<table>
 							<col style="width:250px">
 							<col style="width:50px">
@@ -105,7 +106,6 @@
 										<c:set var="tooltip_edit_inputparameter"><spring:message code="tooltip_edit_scenario_parameter"/></c:set>
 										
 										<!-- Edit input parameterForm -->
-										<form:form modelAttribute="scenarioParamForm" method="post" action="scenarioParam.html?selectedcompid=${selectedcompid}">
 										<c:forEach items="${inputParamVals}" var="inputParamVal">
 										<tr>
 											<td>${inputParamVal.inputparameter.name}</td>
@@ -132,7 +132,6 @@
 										</c:forEach>
 										<c:set var="tooltip_update"><spring:message code="tooltip_update"/></c:set>										
 																				
-										</form:form>
 									</table>
 								</td>
 							</tr>
@@ -150,6 +149,7 @@
 							    </td>
 							</tr>
 						</table>
+						</form:form>
 					</td>
 				</tr>	
 			</table>
