@@ -1199,10 +1199,8 @@ public class VisualizationController {
 		{
 			if (action.equals("removeall"))
 			{
-				userSession.removeAllExtVarIds();
-				userSession.removeAllOutputVarIds();
-				userSession.removeAllMetricIds();
-				userSession.removeAllScenarioIds();
+				userSession.removeAllSelectedGAObjFuncIds();
+				userSession.removeAllSelectedGAScenarioIds();
 			}
 		}
 
