@@ -659,7 +659,7 @@ public class ProjectController {
 	        	extParamValSetIds.add(extValSet.getExtparamvalsetid());
 	        }
 
-	        List<ScenarioDTO> scenarios = scenarioService.findAll();
+	        Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
 	        Set<Integer> scenarioIds = new HashSet<Integer>();
 	        
 	        for (ScenarioDTO scenarioTemp : scenarios)
