@@ -103,7 +103,7 @@ public class OptimisationProblemIO {
         if (units != null) {
             units.apply(bld);
         }
-        writeSingle(bld, problemOut);
+        writeSingle(bld.getBinder(), problemOut);
         TimeSeriesData tsd = bld.getTimeSeriesData();
         if (!tsd.isEmpty()) {
             writeTimeSeries(tsd, tsOut);
@@ -122,7 +122,7 @@ public class OptimisationProblemIO {
         if (units != null) {
             units.apply(bld);
         }
-        writeSingle(bld, out);
+        writeSingle(bld.getBinder(), out);
     }
 
     /**
@@ -138,7 +138,7 @@ public class OptimisationProblemIO {
         if (units != null) {
             units.apply(bld);
         }
-        writeSingle(bld, problemFile);
+        writeSingle(bld.getBinder(), problemFile);
         TimeSeriesData tsd = bld.getTimeSeriesData();
         if (!tsd.isEmpty()) {
             writeTimeSeries(tsd, tsFile);
@@ -150,21 +150,31 @@ public class OptimisationProblemIO {
      * Scenario and external parameter set names are included.  Does not
      * close the stream.
      */
-    public static void writeMulti(ExportBuilder builder, OutputStream out)
-            throws IOException {
+    public static void writeMulti(
+            JacksonBinderScenario binder, OutputStream out)
+                    throws IOException {
         scwriter.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
-                .writeValue(out, builder.getScenarioBinder());
+                .writeValue(out, binder);
     }
 
     /**
      * Write out multi-scenario data.
-     * @see #writeMulti(ExportBuilder, OutputStream)
+     * @see #writeMulti(JacksonBinderScenario, OutputStream)
      */
-    public static void writeMulti(ExportBuilder builder, Path outFile)
+    public static void writeMulti(JacksonBinderScenario binder, Path outFile)
             throws IOException {
-        scwriter.writeValue(outFile.toFile(), builder.getScenarioBinder());
+        scwriter.writeValue(outFile.toFile(), binder);
     }
     
+    /**
+     * Write out multi-scenario data.
+     * @see #writeMulti(JacksonBinderScenario, OutputStream)
+     */
+    public static void writeMulti(ExportBuilder bld, Path scenarioFile)
+            throws IOException {
+        writeMulti(bld.getScenarioBinder(), scenarioFile);
+    }
+
     public static JacksonBinder readSingle(InputStream inStream)
             throws IOException {
         return new JacksonBinder(reader, inStream);
@@ -181,19 +191,19 @@ public class OptimisationProblemIO {
      * should not be used on data containing multiple scenarios or external
      * parameter sets.  Does not close the stream.
      */
-    public static void writeSingle(ExportBuilder builder, OutputStream out)
+    public static void writeSingle(JacksonBinder binder, OutputStream out)
             throws IOException {
         prwriter.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
-                .writeValue(out, builder.getBinder());
+                .writeValue(out, binder);
     }
 
     /**
      * Write out single scenario data.
-     * @see #writeSingle(ExportBuilder, OutputStream)
+     * @see #writeSingle(JacksonBinder, OutputStream)
      */
-    public static void writeSingle(ExportBuilder builder, Path outFile)
+    public static void writeSingle(JacksonBinder binder, Path outFile)
             throws IOException {
-        prwriter.writeValue(outFile.toFile(), builder.getBinder());
+        prwriter.writeValue(outFile.toFile(), binder);
     }
 
     /**
