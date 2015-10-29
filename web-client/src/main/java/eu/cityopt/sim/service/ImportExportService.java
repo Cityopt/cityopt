@@ -28,6 +28,8 @@ import javax.script.ScriptException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Sets;
+
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.model.Algorithm;
 import eu.cityopt.model.Component;
@@ -1188,7 +1190,11 @@ public class ImportExportService {
      * Metric values for all available external parameter set and scenario
      * combinations are output.  Absent results are silently omitted.  For
      * now the metric values are computed, not fetched from the database,
-     * but that may change at some point.  
+     * but that may change at some point.
+     * <p>
+     * If xpvSetIds is null or empty, the project is assumed to have no
+     * external parameters.  Metric values are then exported for each
+     * scenario in scenIds.
      */
     @Transactional(readOnly=true)
     public void exportMetricValues(
@@ -1196,16 +1202,20 @@ public class ImportExportService {
             Set<Integer> xpvSetIds, Set<Integer> scenIds)
                     throws ParseException, ScriptException, IOException,
                            EntityNotFoundException {
+        if (xpvSetIds == null || xpvSetIds.isEmpty()) {
+            xpvSetIds = Sets.newHashSet((Integer)null);
+        }
         Project prj = fetchOne(projectRepository, projectId, "projectid");
         Namespace ns = simulationService.makeProjectNamespace(prj);
         List<MetricExpression>
                 metrics = simulationService.loadMetricExpressions(prj, ns);
         ExportBuilder bld = new ExportBuilder(ns);
         for (Integer setId : xpvSetIds) {
-            ExtParamValSet xpvs = fetchOne(
+            ExtParamValSet xpvs = setId == null ? null : fetchOne(
                     extParamValSetRepository, setId, "ExtParamValSet");
             ExternalParameters ext = simulationService
                     .loadExternalParametersFromSet(xpvs, ns);
+            String xpvsname = xpvs == null ? null : xpvs.getName();
             for (int scenId : scenIds) {
                 Scenario scen = fetchOne(
                         scenarioRepository, scenId, "scenario");
@@ -1215,7 +1225,7 @@ public class ImportExportService {
                         scen, in);
                 if (out instanceof SimulationResults) {
                     bld.add(new MetricValues((SimulationResults)out, metrics),
-                            scen.getName(), xpvs.getName());
+                            scen.getName(), xpvsname);
                 }
             }
         }
