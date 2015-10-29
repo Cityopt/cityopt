@@ -28,7 +28,12 @@
 				<col style="width:30px">
 				<col style="width:800px">
 				<tr>
-					<td><h2>Genetic optimization results</h2></td>
+					<td><h2>Genetic optimization results</h2>
+						<p>Please select at least 1 scenario and 2 objective functions</p></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
 					<td></td>
 					<td></td>
 				</tr>
