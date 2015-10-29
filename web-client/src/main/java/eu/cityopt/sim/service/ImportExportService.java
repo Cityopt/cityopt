@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,8 +28,6 @@ import javax.script.ScriptException;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.google.common.collect.Sets;
 
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.model.Algorithm;
@@ -1203,7 +1202,7 @@ public class ImportExportService {
                     throws ParseException, ScriptException, IOException,
                            EntityNotFoundException {
         if (xpvSetIds == null || xpvSetIds.isEmpty()) {
-            xpvSetIds = Sets.newHashSet((Integer)null);
+            xpvSetIds = Collections.singleton((Integer)null);
         }
         Project prj = fetchOne(projectRepository, projectId, "projectid");
         Namespace ns = simulationService.makeProjectNamespace(prj);
