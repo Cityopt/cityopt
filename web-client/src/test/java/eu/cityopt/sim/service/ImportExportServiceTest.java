@@ -5,10 +5,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.*;
+import static org.junit.Assert.*;
+
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -24,12 +28,16 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import eu.cityopt.DTO.ExtParamDTO;
+import eu.cityopt.model.ExtParamValSet;
 import eu.cityopt.model.Project;
+import eu.cityopt.model.Scenario;
+import eu.cityopt.opt.io.JacksonBinder;
+import eu.cityopt.opt.io.JacksonBinderScenario;
+import eu.cityopt.opt.io.OptimisationProblemIO;
 import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.OptimizationSetRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.ExtParamService;
-import eu.cityopt.service.ExtParamValSetService;
 import eu.cityopt.sim.eval.util.TempDir;
 
 @Transactional
@@ -43,6 +51,7 @@ public class ImportExportServiceTest extends SimulationTestBase {
     @Inject ImportExportService importExportService;
     @Inject ProjectRepository projectRepository;
     @Inject OptimizationSetRepository optimisationSetRepository;
+    @Inject ExtParamValSetRepository extParamValSetRepository;
     @Inject ExtParamService extParamService;
 
     @Test
@@ -212,5 +221,39 @@ public class ImportExportServiceTest extends SimulationTestBase {
                 makeTempPath("imported_scenarios_main.csv"),
                 makeTempPath("imported_scenarios_timeseries.csv"));
         dumpTables("import_scenarios");
+    }
+    
+    @Test
+    @DatabaseSetup({"classpath:/testData/plumbing_ga_result2.xml"})
+    public void testExportMetrics() throws Exception {
+        Project prj = projectRepository.findByNameContainingIgnoreCase(
+                "Plumbing test").get(0);
+        Set<Integer>
+            xpvsIds = extParamValSetRepository.findByProject(prj.getPrjid())
+                    .stream().map(ExtParamValSet::getExtparamvalsetid)
+                    .collect(Collectors.toSet()),
+            scenIds = prj.getScenarios().stream().map(Scenario::getScenid)
+                    .collect(Collectors.toSet());
+        try (TempDir tmp = new TempDir("testExportMetrics")) {
+            Path
+                scfile = tmp.getPath().resolve("scenarios.csv"),
+                tsfile = tmp.getPath().resolve("timeseries.csv");
+            importExportService.exportMetricValues(
+                    scfile, tsfile, prj.getPrjid(), xpvsIds, scenIds);
+            assertFalse("Empty time series file created",
+                        Files.exists(tsfile));
+            try (InputStream sc = Files.newInputStream(scfile)) {
+                JacksonBinderScenario
+                    binder = OptimisationProblemIO.readMulti(sc);
+                assertEquals("Wrong number of items",
+                        4, binder.getItems().size());
+                for (JacksonBinderScenario.ScenarioItem
+                        it : binder.getItems()) {
+                    assertEquals(JacksonBinder.Kind.MET, it.getKind());
+                    //TODO Check values or something.
+                }
+                OptimisationProblemIO.writeMulti(binder, System.out);
+            }
+        }
     }
 }
