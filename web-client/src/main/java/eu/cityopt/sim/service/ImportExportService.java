@@ -1229,7 +1229,9 @@ public class ImportExportService {
             }
         }
         OptimisationProblemIO.writeMulti(bld, scenarioFile);
-        OptimisationProblemIO.writeTimeSeries(bld, timeSeriesFile);
+        if (!bld.getTimeSeriesData().isEmpty()) {
+            OptimisationProblemIO.writeTimeSeries(bld, timeSeriesFile);
+        }
     }
 
     public int saveOptimisationProblem(
