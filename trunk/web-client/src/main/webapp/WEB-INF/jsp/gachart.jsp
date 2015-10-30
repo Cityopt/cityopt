@@ -29,20 +29,13 @@
 				<col style="width:800px">
 				<tr>
 					<td><h2>Genetic optimization results</h2>
-						<p>Please select at least 1 scenario and 2 objective functions</p></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
+						<p>To draw a scatter plot, please select 1 or more scenarios and 2 objective functions.</p></td>
 					<td></td>
 					<td></td>
 				</tr>
 				<tr>
 					<td>
 						<table>
-							<tr height="10">
-							</tr>
-							
 							<tr>
 								<td>
 									<!-- Scenarios --><b><spring:message code="scenarios"/></b>
@@ -125,7 +118,7 @@
 					<td valign="top">
 						<table>
 							<tr>
-								<td valign="top">
+								<td valign="top" style="width: 750px; height: 400px; border-style: solid; border-radius: 1em">
 									<img src="gachart.png">
 								</td>
 							</tr>

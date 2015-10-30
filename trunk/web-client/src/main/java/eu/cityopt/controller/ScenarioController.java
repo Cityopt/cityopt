@@ -1731,6 +1731,6 @@ public class ScenarioController {
 		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
 		model.put("scenarios", scenarios);
 		
-		return "viewchart";
+		return "timeserieschart";
 	}	
 }

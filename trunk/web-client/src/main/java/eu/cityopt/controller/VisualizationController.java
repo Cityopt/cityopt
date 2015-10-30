@@ -167,8 +167,8 @@ public class VisualizationController {
 	@Autowired
 	ImportExportService importExportService;
 
-	@RequestMapping(value="viewchart", method=RequestMethod.GET)
-	public String getViewChart(Map<String, Object> model, 
+	@RequestMapping(value="timeserieschart", method=RequestMethod.GET)
+	public String getTimeSeriesChart(Map<String, Object> model, 
 		@RequestParam(value="scenarioid", required=false) String scenarioId,
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
 		@RequestParam(value="outputvarid", required=false) String outputvarid,
@@ -222,7 +222,12 @@ public class VisualizationController {
 		
 		if (charttype != null)
 		{
-			userSession.setChartType(Integer.parseInt(charttype));
+			userSession.setTimeSeriesChartType(Integer.parseInt(charttype));
+			model.put("charttype", Integer.parseInt(charttype));
+		}
+		else
+		{
+			model.put("charttype", userSession.getTimeSeriesChartType());
 		}
 		
 		if (action != null)
@@ -231,28 +236,9 @@ public class VisualizationController {
 			{
 				userSession.removeAllExtVarIds();
 				userSession.removeAllOutputVarIds();
-				userSession.removeAllMetricIds();
-				userSession.removeAllScenarioIds();
 			}
 		}
 
-		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
-		model.put("scenarios", scenarios);
-		
-		if (scenarioId != null && action != null)
-		{
-			int nScenarioId = Integer.parseInt(scenarioId);
-			
-			if (action.equals("add"))
-			{
-				userSession.addScenarioId(nScenarioId);
-			}
-			else if (action.equals("remove"))
-			{
-				userSession.removeScenarioId(nScenarioId);
-			}
-		}
-		
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
 
@@ -296,18 +282,6 @@ public class VisualizationController {
 			else if (action.equals("remove"))
 			{
 				userSession.removeExtVarId(Integer.parseInt(extparamid));
-			}
-		}
-
-		if (metricid != null && action != null)
-		{
-			if (action.equals("add"))
-			{
-				userSession.addMetricId(Integer.parseInt(metricid));
-			}
-			else if (action.equals("remove"))
-			{
-				userSession.removeMetricId(Integer.parseInt(metricid));
 			}
 		}
 
@@ -379,7 +353,129 @@ public class VisualizationController {
 				}
 		    }
 
-			iterator = userSession.getSelectedChartMetricIds().iterator();
+			if (timeSeriesCollection.getSeriesCount() > 0)
+			{
+				if (userSession.getTimeSeriesChartType() == 0) {
+					TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName(), timeSeriesCollection, "Time", "");
+				} else if (userSession.getTimeSeriesChartType() == 1) {
+					ScatterPlotVisualization demo = new ScatterPlotVisualization(project.getName(), timeSeriesCollection, "Date", "Value", true);
+				}
+			}
+		}
+		
+		model.put("usersession", userSession);
+		
+		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
+		model.put("extParamVals", extParamVals);
+		
+		return "timeserieschart";
+	}
+
+	@RequestMapping(value="summarychart", method=RequestMethod.GET)
+	public String getSummaryChart(Map<String, Object> model, 
+		@RequestParam(value="scenarioid", required=false) String scenarioId,
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
+		@RequestParam(value="outputvarid", required=false) String outputvarid,
+		@RequestParam(value="extparamid", required=false) String extparamid,
+		@RequestParam(value="metricid", required=false) String metricid,
+		@RequestParam(value="action", required=false) String action,
+		@RequestParam(value="charttype", required=false) String charttype) {
+
+		UserSession userSession = (UserSession) model.get("usersession");
+		
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+
+		model.put("usersession", userSession);
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		
+		if (project == null || scenario == null)
+		{
+			return "error";
+		}
+		
+		AppUserDTO user = (AppUserDTO) model.get("user");
+
+		// TODO
+		if (user != null && project != null)
+		{
+			//if (hasStandardRights(user.getUserid()))
+			{
+			
+			}
+		}
+
+		try {
+			scenario = scenarioService.findByID(scenario.getScenid());
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		
+		model.put("scenario", scenario);
+		String status = scenario.getStatus();
+		
+		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+			status = "RUNNING";
+		}
+		
+		model.put("status", status);
+		
+		if (charttype != null)
+		{
+			userSession.setSummaryChartType(Integer.parseInt(charttype));
+			model.put("charttype", Integer.parseInt(charttype));
+		}
+		else
+		{
+			model.put("charttype", userSession.getSummaryChartType());
+		}
+		
+		if (action != null)
+		{
+			if (action.equals("removeall"))
+			{
+				userSession.removeAllMetricIds();
+				userSession.removeAllScenarioIds();
+			}
+		}
+
+		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
+		model.put("scenarios", scenarios);
+		
+		if (scenarioId != null && action != null)
+		{
+			int nScenarioId = Integer.parseInt(scenarioId);
+			
+			if (action.equals("add"))
+			{
+				userSession.addScenarioId(nScenarioId);
+			}
+			else if (action.equals("remove"))
+			{
+				userSession.removeScenarioId(nScenarioId);
+			}
+		}
+		
+		if (metricid != null && action != null)
+		{
+			if (action.equals("add"))
+			{
+				userSession.addMetricId(Integer.parseInt(metricid));
+			}
+			else if (action.equals("remove"))
+			{
+				userSession.removeMetricId(Integer.parseInt(metricid));
+			}
+		}
+
+		if (action != null && action.equals("openwindow") && status != null && !status.isEmpty())
+		{
+			TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
+			Iterator<Integer> iterator = userSession.getSelectedChartMetricIds().iterator();
 			
 			// Get metrics time series (max 2 metrics)
 			if (userSession.getSelectedChartMetricIds().size() == 2)
@@ -414,14 +510,14 @@ public class VisualizationController {
 						//timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
 						
 						
-						if (userSession.getChartType() == 0) 
+						if (userSession.getSummaryChartType() == 0) 
 						{
 							/*TimeSeries timeSeries = new TimeSeries(scenarioTemp.getName());
 							timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
 							System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
 							timeSeriesCollection.addSeries(timeSeries);*/
 						} 
-						else if (userSession.getChartType() == 1) 
+						else if (userSession.getSummaryChartType() == 1) 
 						{
 							XYSeries series = new XYSeries(scenarioTemp.getName());
 							series.add(Double.parseDouble(metricVal1.getValue()), Double.parseDouble(metricVal2.getValue()));
@@ -432,12 +528,12 @@ public class VisualizationController {
 						    //System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
 							collection.addSeries(series);						
 						} 
-						else if (userSession.getChartType() == 2) 
+						else if (userSession.getSummaryChartType() == 2) 
 						{
 							categoryDataset.addValue(Double.parseDouble(metricVal1.getValue()), scenarioTemp.getName(), metric1.getName());
 							categoryDataset.addValue(Double.parseDouble(metricVal2.getValue()), scenarioTemp.getName(), metric2.getName());
 						} 
-						else if (userSession.getChartType() == 3) 
+						else if (userSession.getSummaryChartType() == 3) 
 						{
 							pieDataset.setValue(scenarioTemp.getName(), Double.parseDouble(metricVal1.getValue()));
 						}
@@ -449,15 +545,15 @@ public class VisualizationController {
 				
 					//JFreeChart chart = null;
 				
-					if (userSession.getChartType() == 0) {
-						userSession.setChartType(1);
+					if (userSession.getSummaryChartType() == 0) {
+						userSession.setSummaryChartType(1);
 					}
 					
 					// TODO
-					if (userSession.getChartType() == 1) {
+					if (userSession.getSummaryChartType() == 1) {
 						//ScatterPlotVisualization demo = new ScatterPlotVisualization("Scatter plot", dataset, "", "", false);
 						//chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", metric1.getName(), metric2.getName());
-					} else if (userSession.getChartType() == 2) {
+					} else if (userSession.getSummaryChartType() == 2) {
 						//chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", metric1.getName(), metric2.getName(), false);
 					}
 
@@ -469,40 +565,18 @@ public class VisualizationController {
 					e.printStackTrace();
 				}
 			}
-			else
-			{
-				if (timeSeriesCollection.getSeriesCount() > 0)
-				{
-					if (userSession.getChartType() == 0) {
-						TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName(), timeSeriesCollection, "Time", "");
-					} else if (userSession.getChartType() == 1) {
-						ScatterPlotVisualization demo = new ScatterPlotVisualization(project.getName(), timeSeriesCollection, "Date", "Value", true);
-					}
-				}
-			}
 		}
 		
 		model.put("usersession", userSession);
 		
-		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
-		model.put("extParamVals", extParamVals);
-		
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 		model.put("metrics", metrics);
 		
-		/*try {
-			simService.updateMetricValues(project.getPrjid(), null);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (ScriptException e) {
-			e.printStackTrace();
-		}*/
-		
-		return "viewchart";
+		return "summarychart";
 	}
 
-	@RequestMapping("chart.png")
-	public void renderChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
+	@RequestMapping("timeserieschart.png")
+	public void renderTimeSeriesChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
 		UserSession userSession = (UserSession) model.get("usersession");
 
 		if (userSession == null)
@@ -527,7 +601,7 @@ public class VisualizationController {
 		while(iterator.hasNext()) {
 			int outputVarId = iterator.next(); 
 	    
-			// TODO Add values from all selected scenarios
+			// TODO Add values from all selected scenarios?
 			
 			try {
 				OutputVariableDTO outputVar = outputVarService.findByID(outputVarId);
@@ -596,6 +670,53 @@ public class VisualizationController {
 		
 		iterator = userSession.getSelectedChartMetricIds().iterator();
 		   
+		if (timeSeriesCollection.getSeriesCount() > 0)
+		{
+			JFreeChart chart = null;
+			
+			if (userSession.getTimeSeriesChartType() > 1)
+			{
+				userSession.setTimeSeriesChartType(0);
+			}
+			
+			if (userSession.getTimeSeriesChartType() == 0) {
+				chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", "Date", "Value");
+			} else if (userSession.getTimeSeriesChartType() == 1) {
+				chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", "Date", "Value", true);
+			} 
+			
+			ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+		}
+		else
+		{
+			//JFreeChart chart = new JFreeChart();
+		}
+	}
+
+	@RequestMapping("summarychart.png")
+	public void renderSummaryChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
+		UserSession userSession = (UserSession) model.get("usersession");
+
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+		
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		int nScenId = scenario.getScenid();
+		
+		String status = scenario.getStatus();
+		
+		if (status == null || status.isEmpty())
+		{
+			return;
+		}
+		
+		Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
+	    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
+		
+	    iterator = userSession.getSelectedChartMetricIds().iterator();
+		   
 		// Get metrics time series (max 2 metrics)
 		if (userSession.getSelectedChartMetricIds().size() == 1)
 		{
@@ -621,15 +742,15 @@ public class VisualizationController {
 					MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
 					DefaultXYDataset dataset = new DefaultXYDataset();
 
-					if (userSession.getChartType() == 0)
+					if (userSession.getSummaryChartType() == 0)
 					{
-						userSession.setChartType(1);
+						userSession.setSummaryChartType(1);
 					}
-					else if (userSession.getChartType() == 2) 
+					else if (userSession.getSummaryChartType() == 2) 
 					{
 						categoryDataset.addValue(Double.parseDouble(metricVal1.getValue()), scenarioTemp.getName(), metric1.getName());
 					} 
-					else if (userSession.getChartType() == 3) 
+					else if (userSession.getSummaryChartType() == 3) 
 					{
 						pieDataset.setValue(scenarioTemp.getName(), Double.parseDouble(metricVal1.getValue()));
 					}
@@ -639,14 +760,14 @@ public class VisualizationController {
 			
 				JFreeChart chart = null;
 				
-				if (userSession.getChartType() == 0) {
+				if (userSession.getSummaryChartType() == 0) {
 					// No time series type for metrics
-					userSession.setChartType(1);
+					userSession.setSummaryChartType(1);
 				}
 				
-				if (userSession.getChartType() == 2) {
+				if (userSession.getSummaryChartType() == 2) {
 					chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "", "");
-				} else if (userSession.getChartType() == 3) {
+				} else if (userSession.getSummaryChartType() == 3) {
 					chart = PieChartVisualization.createChart(pieDataset, "Pie chart " + metric1.getName(), "", "");
 				}
 				
@@ -684,18 +805,21 @@ public class VisualizationController {
 					Integer scenarioId = (Integer) scenIter.next();
 					int nScenarioId = (int)scenarioId;
 					ScenarioDTO scenarioTemp = scenarioService.findByID(nScenarioId);
+					
+					// Takes only single values
 					MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
 					MetricValDTO metricVal2 = metricService.getMetricVals(metric2Id, nScenarioId).get(0);
+
 					DefaultXYDataset dataset = new DefaultXYDataset();
 
-					if (userSession.getChartType() == 0) 
+					if (userSession.getSummaryChartType() == 0) 
 					{
 						TimeSeries timeSeries = new TimeSeries(scenarioTemp.getName());
 						timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
 						System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
 						timeSeriesCollection.addSeries(timeSeries);
 					} 
-					else if (userSession.getChartType() == 1) 
+					else if (userSession.getSummaryChartType() == 1) 
 					{
 						XYSeries series = new XYSeries(scenarioTemp.getName());
 						series.add(Double.parseDouble(metricVal1.getValue()), Double.parseDouble(metricVal2.getValue()));
@@ -706,12 +830,12 @@ public class VisualizationController {
 					    //System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
 						collection.addSeries(series);						
 					} 
-					else if (userSession.getChartType() == 2) 
+					else if (userSession.getSummaryChartType() == 2) 
 					{
 						categoryDataset.addValue(Double.parseDouble(metricVal1.getValue()), scenarioTemp.getName(), metric1.getName());
 						categoryDataset.addValue(Double.parseDouble(metricVal2.getValue()), scenarioTemp.getName(), metric2.getName());
 					} 
-					else if (userSession.getChartType() == 3) 
+					else if (userSession.getSummaryChartType() == 3) 
 					{
 						pieDataset.setValue(scenarioTemp.getName(), Double.parseDouble(metricVal1.getValue()));
 					}
@@ -721,16 +845,16 @@ public class VisualizationController {
 			
 				JFreeChart chart = null;
 				
-				if (userSession.getChartType() == 0) {
+				if (userSession.getSummaryChartType() == 0) {
 					// No time series type for metrics
-					userSession.setChartType(1);
+					userSession.setSummaryChartType(1);
 				}
 				
-				if (userSession.getChartType() == 1) {
+				if (userSession.getSummaryChartType() == 1) {
 					chart = ScatterPlotVisualization.createChart(collection, "Scatter plot", metric1.getName(), metric2.getName(), false);
-				} else if (userSession.getChartType() == 2) {
+				} else if (userSession.getSummaryChartType() == 2) {
 					chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "", "");
-				} else if (userSession.getChartType() == 3) {
+				} else if (userSession.getSummaryChartType() == 3) {
 					chart = PieChartVisualization.createChart(pieDataset, "Pie chart", metric1.getName(), metric2.getName());
 				}
 				
@@ -741,27 +865,6 @@ public class VisualizationController {
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
-		}
-		else if (timeSeriesCollection.getSeriesCount() > 0)
-		{
-			JFreeChart chart = null;
-			
-			if (userSession.getChartType() > 1)
-			{
-				userSession.setChartType(0);
-			}
-			
-			if (userSession.getChartType() == 0) {
-				chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", "Date", "Value");
-			} else if (userSession.getChartType() == 1) {
-				chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", "Date", "Value", true);
-			} 
-			
-			ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
-		}
-		else
-		{
-			//JFreeChart chart = new JFreeChart();
 		}
 	}
 
@@ -899,14 +1002,7 @@ public class VisualizationController {
 					collection.addSeries(series);						
 				}				
 			
-				JFreeChart chart = null;
-				
-				if (userSession.getChartType() != 0) {
-					// No other types for GA results
-					userSession.setChartType(1);
-				}
-				
-				chart = ScatterPlotVisualization.createChart(collection, "Genetic optimization results", objFunc1.getName(), objFunc2.getName(), false);
+				JFreeChart chart = ScatterPlotVisualization.createChart(collection, "Genetic optimization results", objFunc1.getName(), objFunc2.getName(), false);
 				
 				if (chart != null)
 				{
@@ -1188,11 +1284,6 @@ public class VisualizationController {
 		if (project == null)
 		{
 			return "error";
-		}
-		
-		if (charttype != null)
-		{
-			userSession.setChartType(Integer.parseInt(charttype));
 		}
 		
 		if (action != null)
