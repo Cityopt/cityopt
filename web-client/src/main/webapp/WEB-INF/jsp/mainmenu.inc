@@ -368,9 +368,57 @@
 		<tr>
 			<td></td>
 			<td>
-				<a href="viewchart.html">
-				<spring:message code="chart"/></a>
-			</td></tr>
+				<a href="timeserieschart.html">Time series chart</a>
+			</td>
+		</tr>
+	</c:when>
+	<c:otherwise>
+		<tr>
+			<td></td>
+			<td>
+				Time series chart
+			</td>
+		</tr>
+	</c:otherwise>
+</c:choose>
+<c:choose>
+	<c:when test="${not empty project}">
+		<tr>
+			<td></td>
+			<td>
+				<a href="summarychart.html">Summary chart</a>
+			</td>
+		</tr>
+	</c:when>
+	<c:otherwise>
+		<tr>
+			<td></td>
+			<td>
+				Summary chart
+			</td>
+		</tr>
+	</c:otherwise>
+</c:choose>
+<c:choose>
+	<c:when test="${not empty scengenerator}">
+		<tr>
+			<td></td>
+			<td>
+				<a href="gachart.html">Genetic optimization chart</a>
+			</td>
+		</tr>
+	</c:when>
+	<c:otherwise>
+		<tr>
+			<td></td>
+			<td>
+				Genetic optimization chart
+			</td>
+		</tr>
+	</c:otherwise>
+</c:choose>
+<c:choose>
+	<c:when test="${not empty scenario}">
 		<tr>
 			<td></td>
 			<td>
@@ -383,12 +431,7 @@
 		<tr>
 			<td></td>
 			<td>
-				<spring:message code="chart"/>
-			</td></tr>
-		<tr>
-			<td></td>
-			<td>
-				<spring:message code="table"/>
+				View table
 			</td>
 		</tr>
 	</c:otherwise>

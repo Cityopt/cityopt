@@ -21,12 +21,17 @@ public class UserSession {
 	private HashSet<Integer> selectedGAScenarioIds = new HashSet<Integer>();
 	private HashSet<Integer> selectedGAObjFuncIds = new HashSet<Integer>();
 	private int nComponentId;
-	private int nChartType;
+	private int nTimeSeriesChartType;
+	private int nSummaryChartType;
 	private String strUserName;
 	private String nMultiScenarioId;
 	private String nMultiVariableId;
 	private String nSelectedInputId;
 
+	public UserSession() {
+		nTimeSeriesChartType = 0;
+	}
+	
 	public String getMultiVariableId() {
 		return nMultiVariableId;
 	}
@@ -285,14 +290,22 @@ public class UserSession {
 		this.nComponentId = nComponentId;
 	}
 	
-	public int getChartType() {
-		return nChartType;
+	public int getTimeSeriesChartType() {
+		return nTimeSeriesChartType;
 	}
 	
-	public void setChartType(int type) {
-		nChartType = type;
+	public void setTimeSeriesChartType(int type) {
+		nTimeSeriesChartType = type;
+	}
+
+	public int getSummaryChartType() {
+		return nSummaryChartType;
 	}
 	
+	public void setSummaryChartType(int type) {
+		nSummaryChartType = type;
+	}
+
 	public String getOptResultString() {
 		return strOptResultString;
 	}
