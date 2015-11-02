@@ -391,9 +391,8 @@ public class VisualizationController {
 		model.put("usersession", userSession);
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
-		if (project == null || scenario == null)
+		if (project == null)
 		{
 			return "error";
 		}
@@ -408,21 +407,6 @@ public class VisualizationController {
 			
 			}
 		}
-
-		try {
-			scenario = scenarioService.findByID(scenario.getScenid());
-		} catch (EntityNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		
-		model.put("scenario", scenario);
-		String status = scenario.getStatus();
-		
-		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
-			status = "RUNNING";
-		}
-		
-		model.put("status", status);
 		
 		if (charttype != null)
 		{
@@ -472,7 +456,7 @@ public class VisualizationController {
 			}
 		}
 
-		if (action != null && action.equals("openwindow") && status != null && !status.isEmpty())
+		if (action != null && action.equals("openwindow"))
 		{
 			TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
 			Iterator<Integer> iterator = userSession.getSelectedChartMetricIds().iterator();
@@ -784,7 +768,6 @@ public class VisualizationController {
 			timeSeriesCollection.removeAllSeries();
 			XYSeriesCollection collection = new XYSeriesCollection();
 			DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
-			DefaultPieDataset pieDataset = new DefaultPieDataset();
 
 			int metric1Id = iterator.next(); 
 			int metric2Id = iterator.next(); 
@@ -835,10 +818,6 @@ public class VisualizationController {
 						categoryDataset.addValue(Double.parseDouble(metricVal1.getValue()), scenarioTemp.getName(), metric1.getName());
 						categoryDataset.addValue(Double.parseDouble(metricVal2.getValue()), scenarioTemp.getName(), metric2.getName());
 					} 
-					else if (userSession.getSummaryChartType() == 3) 
-					{
-						pieDataset.setValue(scenarioTemp.getName(), Double.parseDouble(metricVal1.getValue()));
-					}
 					
 					index++;
 				}				
@@ -854,8 +833,6 @@ public class VisualizationController {
 					chart = ScatterPlotVisualization.createChart(collection, "Scatter plot", metric1.getName(), metric2.getName(), false);
 				} else if (userSession.getSummaryChartType() == 2) {
 					chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "", "");
-				} else if (userSession.getSummaryChartType() == 3) {
-					chart = PieChartVisualization.createChart(pieDataset, "Pie chart", metric1.getName(), metric2.getName());
 				}
 				
 				if (chart != null)
