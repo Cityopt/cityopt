@@ -83,9 +83,8 @@
 													<tr style="background-color: #D4D4D4">													
 													<td>
 													<!-- Remove button -->
-													(<spring:message code="added"/>) 
-													(<a href="summarychart.html?action=remove&scenarioid=${scenario.scenid}">
-													<spring:message code="remove"/></a>)
+													<spring:message code="added"/> 
+													(<a href="summarychart.html?action=remove&scenarioid=${scenario.scenid}"><spring:message code="remove"/></a>)
 													</td>
 												</c:when>
 												<c:otherwise>
