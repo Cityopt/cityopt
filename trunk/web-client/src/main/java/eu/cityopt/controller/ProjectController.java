@@ -69,7 +69,6 @@ import eu.cityopt.DTO.UserGroupProjectDTO;
 import eu.cityopt.config.AppMetadata;
 //Contains Forms for UI
 import eu.cityopt.forms.ExternParamIDForm;
-
 import eu.cityopt.sim.eval.Type;
 
 import java.io.BufferedInputStream;
@@ -1367,19 +1366,12 @@ public class ProjectController {
         List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
         model.put("components", components);
 
+        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+        model.put("extParams", extParams);
+        
         return "projectparameters";
     }
 
-    
-    //@author Olli ToDO: edited by Markus
-    // I might need to rewrite this part of the application again yet same functionality:
-    
-    
-    
-    
-    
-    
-    
     @RequestMapping(value="selectextparamset", method=RequestMethod.GET)
     public String getSelectExtParamSet(Map<String, Object> model, 
             @RequestParam(value="selectedextparamsetid", required=false) String selectedExtParamSetId) {
@@ -1427,6 +1419,9 @@ public class ProjectController {
             List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
             model.put("components", components);
 
+            Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+            model.put("extParams", extParams);
+            
             return "projectparameters";
         }
 
@@ -1622,6 +1617,8 @@ public class ProjectController {
         if (strSelectedCompId == null || strSelectedCompId.isEmpty())
         {
             model.put("project", project);
+            Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+            model.put("extParams", extParams);
             return "projectparameters";
         }
 
@@ -1671,6 +1668,9 @@ public class ProjectController {
         model.put("selectedComponent",  component);
         model.put("project", project);
 
+        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+        model.put("extParams", extParams);
+        
         return "projectparameters";
     }
 
@@ -1773,6 +1773,62 @@ public class ProjectController {
         return "projectparameters";
     }
 
+    @RequestMapping(value="deleteextparam", method=RequestMethod.GET)
+    public String getDeleteExtParam(Map<String, Object> model,
+        @RequestParam(value="extparamid", required=true) String strExtParamId) {
+        ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+
+        try {
+            project = projectService.findByID(project.getPrjid());
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+        model.put("project", project);
+
+        try {
+			extParamService.delete(Integer.parseInt(strExtParamId));
+		} catch (NumberFormatException | EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+        
+        ExtParamDTO extParam = new ExtParamDTO();
+        model.put("extParam", extParam);
+
+        List<ExtParamValDTO> extParamVals = null;
+
+        int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+        if (defaultExtParamValSetId != 0)
+        {
+            try {
+                ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
+                model.put("extParamValSet", extParamValSet);
+            } catch (EntityNotFoundException e1) {
+                e1.printStackTrace();
+            }
+
+            try {
+                extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
+            } catch (EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            model.put("extParamVals", extParamVals);
+        }
+
+        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+        model.put("components", components);
+
+        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+        model.put("extParams", extParams);
+        
+        return "projectparameters";
+    }
+    
     @RequestMapping(value="editextparam", method=RequestMethod.GET)
     public String getEditExtParam(Map<String, Object> model,
             @RequestParam(value="extparamid", required=true) String extparamid) {
@@ -1918,6 +1974,9 @@ public class ProjectController {
         List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
         model.put("components", components);
 
+        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+        model.put("extParams", extParams);
+        
         return "projectparameters";
     }
 
@@ -2049,6 +2108,9 @@ public class ProjectController {
         List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
         model.put("components", components);
 
+        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+        model.put("extParams", extParams);
+        
         return "projectparameters";
     }
 

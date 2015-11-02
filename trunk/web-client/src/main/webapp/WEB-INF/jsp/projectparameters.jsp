@@ -28,7 +28,7 @@
 		</td>
 		<td width="30"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:600px;width:1000px;overflow:auto">
+			<div style="overflow:scroll;height:1200px;width:1000px;overflow:auto">
 			<table>
 				<col style="width:30px">
 				<col style="width:750px">	
@@ -160,7 +160,7 @@
 							</tr>
 							<tr>
 								<td>
-									<b><spring:message code="selected_external_parameter_sets"/>:</b>  
+									<b><spring:message code="selected_external_parameter_set"/>:</b>  
 									${extParamValSet.name}
 									<br>
 									<table class="tablestyle">
@@ -170,7 +170,7 @@
 							</tr>
 							<tr>
 								<td>
-									<table width="100%">
+									<table width="750">
 										<tr>
 											<td>
 												<table class="tablestyle" width="750">
@@ -217,17 +217,66 @@
 													</c:forEach>
 												</table>
 											</td>
-											<td valign="top">
-												<a href="createextparam.html"><button type="button" style="width: 150px"><spring:message code="create_external_parameter"/></button></a>
+											
+										</tr>
+										<tr>
+											<td align="right">
+												<a href="selectextparamset.html"><button type="button"><spring:message code="select_external_parameter_set"/></button></a>
+											</td>
+										</tr>
+										<tr height="20"></tr>
+										<tr>
+											<td><b>Project external parameters</b></td>
+										</tr>
+										<tr>
+											<td>
+												<table class="tablestyle" width="750">
+													<col style="width:200px">
+													<col style="width:100px">
+													<col style="width:50px">
+													<tr height="20">
+														<!-- Name -->
+													    <th><spring:message code="name"/></th>
+													    <!-- Type -->
+													    <th><spring:message code="type"/></th>
+													    <!-- Remove -->
+													    <th><spring:message code="remove"/></th>
+													</tr>
+													
+													<c:forEach items="${extParams}" var="extParam">
+													<tr>
+														<td>${extParam.name}</td>
+														
+														<c:choose>
+															<c:when test="${eu.cityopt.sim.eval.Type.getByName(extParam.getType().getName()).isTimeSeriesType()}">
+																<td>Time series</td>
+															</c:when>
+															<c:otherwise>
+																<td>Value</td>
+															</c:otherwise>
+														</c:choose>
+
+												    	<td>
+															<a href="<c:url value='deleteextparam.html?extparamid=${extParam.extparamid}'/>">
+																<button align="right" type="button" value="Remove"><spring:message code="remove"/></button>
+															</a>
+														</td>
+												   	</tr>
+													</c:forEach>
+												</table>
 											</td>
 										</tr>
 										<tr>
-											<td width="400" align="right">
-												<a href="selectextparamset.html"><button type="button"><spring:message code="select_external_parameter_set"/></button></a>
-												<a href="editproject.html"><button type="button"><spring:message code="close"/></button></a>
+											<td width="750" align="right">
+												<a href="createextparam.html"><button type="button" style="width: 150px"><spring:message code="create_external_parameter"/></button></a>
 											</td>
 										</tr>
 									</table>
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									<a href="editproject.html"><button type="button"><spring:message code="close"/></button></a>
 								</td>
 							</tr>
 						</table>

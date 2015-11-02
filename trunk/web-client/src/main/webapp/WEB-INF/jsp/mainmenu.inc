@@ -1,4 +1,4 @@
-<table class="menustyle" height=800 align="left">
+<table class="menustyle" height=1000 align="left">
 <col style="width: 60px">
 <col style="width: 150px">
 <tr>
