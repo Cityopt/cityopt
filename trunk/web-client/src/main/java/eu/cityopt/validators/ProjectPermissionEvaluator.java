@@ -89,7 +89,8 @@ public class ProjectPermissionEvaluator implements PermissionEvaluator {
 			UserGroupProjectDTO usergroupprojectdto = userGroupProjectService.findByUserAndProject(userID, projectIDn);
 			if(usergroupprojectdto==null){
 				return false;
-			}			
+			}
+			// Find Usergroup of the target usergroup project.
 			UserGroupDTO usergroupdto = usergroupprojectdto.getUsergroup();
 			String userGroupName=usergroupdto.getName();
 			
@@ -134,9 +135,7 @@ public class ProjectPermissionEvaluator implements PermissionEvaluator {
 		}
 		return appuserdto;
 	}
-	
-	
-
+		
 	@Override
 	public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
 		
