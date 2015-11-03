@@ -9,10 +9,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class InfoController {
-
+		
 	@RequestMapping(value ="createproject_info", method=RequestMethod.GET)
-	public String InfoCreateProject(){
-		return "createproject_info";
+	public String InfoCreateProject(){		
+		return "createproject_info";				
 	}
-	
+		
+	// Pagination test
+	@RequestMapping(value ="pagination_prototype", method=RequestMethod.GET)
+	public String PaginationPrototype(){
+		return "pagination_prototype";
+	}
 }

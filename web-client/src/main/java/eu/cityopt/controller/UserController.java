@@ -352,36 +352,7 @@ public class UserController {
 
     		return  "start";
     	}
-    	/*
-		@RequestMapping(value="/login", params="errorLogin")
-		public String directToLoginPageWithError(Model model){
-		 // Adding an attribute to flag that an error happened at login
-		 model.addAttribute("loginFailed", true);
 
-		 return "myLoginPage";
-		}
-		@RequestMapping(method=RequestMethod.GET, value="/securityTest")
-		@PreAuthorize("@securityService.hasPermission('sampleCheckOnController')")
-		public String displaySecurityTestPage(){
-		 return "springsecurity";
-		}
-     */
-    	
-    /*
-    @RequestMapping(value="logout", method=RequestMethod.GET)
-    public String getLogout(Map<String, Object> model, HttpServletRequest request)
-    {
-        model.remove("project");
-        model.remove("scenario");
-        model.remove("optimizationset");
-        model.remove("scengenerator");
-        model.remove("optresults");
-        model.remove("usersession");
-        model.remove("user");
-        request.getSession().invalidate();
-        return "logout";
-    }	
-     */
     
     @RequestMapping(value="index", method=RequestMethod.GET)
     public String getIndex(Map<String, Object> model) {
@@ -503,9 +474,7 @@ public class UserController {
         List<UserGroupProjectDTO> usergroupprojects= userGroupProjectService.findAll();
         UserForm userForm = new UserForm();        
     	UserManagementForm form = this.CreateUsemanagementForm(users);
-    	
-    	
-    	
+    	    	  	
     	//Put Front controller using model attribute.
     	model.put("UserForm",userForm);
     	model.put("UserGroupProject", usergroupprojects);
@@ -667,6 +636,7 @@ public class UserController {
         model.put("userRoles", listUserGroupProjects);
     
     }
+    
     //user.setName(form.getUser());
     //List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
     //@RequestParam(value="userid", required=true) String userid
@@ -845,8 +815,7 @@ public class UserController {
 
         List<AppUserDTO> users = userService.findAll();
         //model.addAttribute("users", users);
-        this.initializeUserManagement(model);
-        
+        this.initializeUserManagement(model);        
         return "usermanagement";
     }
 
