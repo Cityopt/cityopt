@@ -852,11 +852,7 @@ public class ParameterController {
         return "projectparameters";
     }
     
-    
-    
-    
-    
-    
+        
     ///------- Help Methods-------////	
 	// Finds project By model and project id;
     public ProjectDTO GetProject(Map<String,Object> model){    	
