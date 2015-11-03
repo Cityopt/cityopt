@@ -12,6 +12,14 @@
 <title>CityOpt <spring:message code="openproject"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+
+<style type="text/css">
+table.tablestyle{
+margin: 5%;
+}
+</style>
+
+
 </head>
 
 <body>

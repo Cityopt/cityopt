@@ -637,27 +637,7 @@ public class UserController {
     
     }
     
-    //user.setName(form.getUser());
-    //List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
-    //@RequestParam(value="userid", required=true) String userid
-    	//for (InputParamValDTO inputParameterValue : inputParamVals) {
-    	
-    	/*
-        int nUserId = 0;
-        AppUserDTO user = null;
-        nUserId = Integer.parseInt(userid);
-        try {
-            user = userService.findByID(nUserId);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        model.put("user", user);
-        List<UserGroupProjectDTO> listUserGroupProjects = userGroupProjectService.findByUser(nUserId);
-        model.put("userRoles", listUserGroupProjects);
-
-        return "edituser";
-        */
+   
    
     @RequestMapping(value="edituser", method=RequestMethod.POST)
 	public String getEditUserPost(UserForm userForm, Map<String, Object> model,

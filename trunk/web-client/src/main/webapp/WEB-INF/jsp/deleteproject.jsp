@@ -10,6 +10,15 @@
 <title>CityOpt Delete project</title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+<style type="text/css">
+table.tablestyle{
+margin: 5%;
+width: 500px;
+border: 1px; 
+}
+</style>
+
+
 </head>
 
 <body>
@@ -19,7 +28,7 @@
 			<td width="30"></td>
 			<td valign="top">
 				<div
-					style="overflow: scroll; height: 800px; width: 500px; overflow: auto">
+					style="overflow: scroll; height: 100%; width: 100%; overflow: auto">
 					<form:form method="post" action="deleteproject.html">
 						<!-- Delete Project -->
 						<h2><spring:message code="delete_project"/></h2>
