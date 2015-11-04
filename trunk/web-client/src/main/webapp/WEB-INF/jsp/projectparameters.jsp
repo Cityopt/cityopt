@@ -29,7 +29,6 @@ padding-top: 20%;
 table.extern{
 margin-top: 5%;
 padding-top: 5%;
-
 padding-right: 5%;
 }	
 
