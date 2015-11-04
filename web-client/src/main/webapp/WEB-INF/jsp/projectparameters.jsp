@@ -20,54 +20,27 @@
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
 <style type="text/css">
-table.alltables {
-	background-color: #DDF4FD;
-	border-style: medium;
-	border-color: black;
-	solid border-width: 5px;
-	padding: 4%;
-	margin: 0%;
-	outline: #064861 inset thick;
+
+table.external_parameter_sets{
+margin-top: 20%;
+padding-top: 20%;
 }
 
-table.external_parameters {
-	background-color: #DDF4FD;
-	border-style: medium;
-	border-color: black;
-	solid border-width: 5px;
-	padding: 5%;
-	margin-top: 5%;
-	outline: #064861 inset thick;
-}
+table.extern{
+margin-top: 5%;
+padding-top: 5%;
 
-table.external_parameters_tables {
-	background-color: #DDF4FD;
-	border-style: medium;
-	border-color: black;
-	solid border-width: 5px;
-	padding: 4%;
-	margin: 5%;
-	outline: #064861 inset thick;
-}
+padding-right: 5%;
+}	
 
-td.external_parameters {
-	/*background-color: #00537D;*/
-	border-style: medium;
-	border-color: black;
-	solid border-width: 5px;
-	padding: 4%;
-	margin: 5%;
-	outline: #064861 outset thick;
-}
 </style>
 </head>
-
 <body>
 	<table cellspacing="0" cellpadding="0">
 		<tr>
 			<td valign="top"><%@ include file="mainmenu.inc"%>
 			</td>
-			<td width="30"></td>
+			<td width="5%"></td>
 			<td valign="top">
 				<div
 					style="overflow: scroll; height: 100%; width: 100%; overflow: auto">
@@ -84,10 +57,10 @@ td.external_parameters {
 						<tr class="content_tables">
 							<td></td>
 							<td class="external_parameters">
-								<table class="alltables">
+								<table class="tablegroup">
 									<tr>
 										<td>
-											<table width="80%" class="input_parameter_table">
+											<table width="100%" class="input_parameter_table">
 												<col style="width: 200px">
 												<col style="width: 50px">
 												<col style="width: 500px">
@@ -217,24 +190,18 @@ td.external_parameters {
 										</td>
 									</tr>
 
-									<table width="800" class="external_parameters">
-										<tr class="height_adjustment" height="50">
-											<col style="width: 5%">
-											<col style="width: 100%">
-											<td></td>
-										</tr>
-										<tr>
+									<table width="800" class="extern" >										
 										<tr class="external_parameter_sets">
 											<td><b><spring:message
 														code="selected_external_parameter_set" />:</b>
 												${extParamValSet.name} <br>
 												<table class="tablestyle">
 
-												</table></td>
+											</table></td>
 										</tr>
 										<tr class="external_parameter_tables">
 											<td>
-												<table width="785" class="external_parameter_tables">
+												<table width="780" class="external_parameter_tables">
 													<tr>
 														<td>
 															<table class="tablestyle" width="750">
@@ -346,14 +313,17 @@ td.external_parameters {
 										</tr>
 									</table>
 
-									<tr align="right">
-										<td><a href="editproject.html"><button type="button">
-													<spring:message code="close" />
-												</button></a></td>
-									</tr>
+									
 								</table>
 							</td>
 						</tr>
+							<table class="close_button" >
+								<tr>														
+									<td><a href="editproject.html"><button class="action" type="button">
+													<spring:message code="close" />
+									</button></a></td>
+								</tr>
+							</table>
 					</table>
 				</div>
 			</td>
