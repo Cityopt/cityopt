@@ -290,7 +290,12 @@ a.tooltip span {
 
 .tablestyle th {
 	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
-	background: #47AFE2;
+	background: -webkit-linear-gradient(-90deg, #47AFE2 , #2093CB);
+ 	background: -o-linear-gradient(-90deg, #47AFE2, #2093CB); 
+    background: -moz-linear-gradient(-90deg right, #47AFE2, #2093CB); 
+    background: linear-gradient(-90deg right, #47AFE2 , #2093CB);
+	
+	/*background: #47AFE2;*/
 	height: 30px;
 }
 
