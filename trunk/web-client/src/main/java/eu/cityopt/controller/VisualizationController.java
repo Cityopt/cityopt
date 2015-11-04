@@ -580,6 +580,7 @@ public class VisualizationController {
 		
 		Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
 	    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
+		String unit = "";
 		
 	    // Get output variable results
 		while(iterator.hasNext()) {
@@ -590,11 +591,16 @@ public class VisualizationController {
 			try {
 				OutputVariableDTO outputVar = outputVarService.findByID(outputVarId);
 				SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, nScenId);
-					
+				
+				if (outputVar.getUnit() != null)
+				{
+					unit = "(" + outputVar.getUnit().getName() + ")";
+				}
+				
 				if (simResult != null)
 				{
 					List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
-					TimeSeries timeSeries = new TimeSeries(outputVar.getComponent().getName() + "." + outputVar.getName());
+					TimeSeries timeSeries = new TimeSeries(outputVar.getComponent().getName() + "." + outputVar.getName() + " " + unit);
 	
 					for (int i = 0; i < timeSeriesVals.size(); i++)
 					{
@@ -621,10 +627,15 @@ public class VisualizationController {
 				ExtParamValDTO extVarVal = extParamValService.findByID(extVarId);
 				TimeSeriesDTO timeSeriesDTO = extVarVal.getTimeseries();
 				
+				if (extVarVal.getExtparam().getUnit() != null)
+				{
+					unit = "(" + extVarVal.getExtparam().getUnit().getName() + ")";
+				}
+
 				if (timeSeriesDTO != null)
 				{
 					List<TimeSeriesValDTO> timeSeriesVals = timeSeriesValService.findByTimeSeriesIdOrderedByTime(timeSeriesDTO.getTseriesid());
-					TimeSeries timeSeries = new TimeSeries(extVarVal.getExtparam().getName());
+					TimeSeries timeSeries = new TimeSeries(extVarVal.getExtparam().getName() + " " + unit);
 					Iterator<TimeSeriesValDTO> timeSeriesIter = timeSeriesVals.iterator();
 					
 					while(timeSeriesIter.hasNext()) {
@@ -636,7 +647,7 @@ public class VisualizationController {
 				}
 				else
 				{
-					TimeSeries timeSeries = new TimeSeries(extVarVal.getExtparam().getName());
+					TimeSeries timeSeries = new TimeSeries(extVarVal.getExtparam().getName() + " " + unit);
 					double value = 0;
 					
 					if (!extVarVal.getValue().isEmpty()) {
@@ -795,14 +806,7 @@ public class VisualizationController {
 
 					DefaultXYDataset dataset = new DefaultXYDataset();
 
-					if (userSession.getSummaryChartType() == 0) 
-					{
-						TimeSeries timeSeries = new TimeSeries(scenarioTemp.getName());
-						timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
-						System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
-						timeSeriesCollection.addSeries(timeSeries);
-					} 
-					else if (userSession.getSummaryChartType() == 1) 
+					if (userSession.getSummaryChartType() == 1) 
 					{
 						XYSeries series = new XYSeries(scenarioTemp.getName());
 						series.add(Double.parseDouble(metricVal1.getValue()), Double.parseDouble(metricVal2.getValue()));
@@ -830,7 +834,20 @@ public class VisualizationController {
 				}
 				
 				if (userSession.getSummaryChartType() == 1) {
-					chart = ScatterPlotVisualization.createChart(collection, "Scatter plot", metric1.getName(), metric2.getName(), false);
+					String unit1 = "";
+					String unit2 = "";
+					
+					if (metric1.getUnit() != null)
+					{
+						unit1 = "(" + metric1.getUnit().getName() + ")";
+					}
+					
+					if (metric2.getUnit() != null)
+					{
+						unit2 = "(" + metric2.getUnit().getName() + ")";
+					}
+
+					chart = ScatterPlotVisualization.createChart(collection, "Scatter plot", metric1.getName() + " " + unit1, metric2.getName() + " " + unit2, false);
 				} else if (userSession.getSummaryChartType() == 2) {
 					chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "", "");
 				}
@@ -872,7 +889,6 @@ public class VisualizationController {
 
 		ObjectiveFunctionDTO objFunc1 = objFuncService.findByID(objFunc1Id);
 		ObjectiveFunctionDTO objFunc2 = objFuncService.findByID(objFunc2Id);
-
 
 		// Get metrics time series (max 2 metrics)
 		if (userSession.getSelectedGAObjFuncIds().size() == 1)
