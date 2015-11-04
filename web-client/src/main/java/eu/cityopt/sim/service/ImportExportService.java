@@ -345,9 +345,7 @@ public class ImportExportService {
 
     /**
      * Creates external parameters, input parameters, output variables
-     * and/or metrics from text files.  As the supported text format
-     * does not include units for now (only types), the method leaves
-     * units null.
+     * and/or metrics from text files.
      * 
      * @param projectId the target project.  Any existing external
      *   parameters, input parameters, output variables and metrics
