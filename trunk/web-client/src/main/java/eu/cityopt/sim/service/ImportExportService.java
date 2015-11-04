@@ -1274,10 +1274,23 @@ public class ImportExportService {
         }
         return tsd;
     }
+    
+    /** @see #readTimeSeriesCsv(Project, InputStream[], String[]) */
+    public TimeSeriesData readTimeSeriesCsv(Integer projectId,
+                                            InputStream[] timeSeriesStreams,
+                                            String[] timeSeriesNames)
+            throws IOException, ParseException, EntityNotFoundException {
+        return readTimeSeriesCsv(
+                projectId == null
+                ? null : fetchOne(projectRepository, projectId, "project"),
+                timeSeriesStreams, timeSeriesNames);
+    }
 
-    public TimeSeriesData readTimeSeriesCsv(Project prj,
-            InputStream... tsStreams) throws IOException, ParseException {
-        return readTimeSeriesCsv(prj, tsStreams, null);
+    /** @see #readTimeSeriesCsv(Project, InputStream[], String[]) */
+    public TimeSeriesData readTimeSeriesCsv(Integer projectId, 
+                                            InputStream... tsStreams)
+            throws IOException, ParseException, EntityNotFoundException {
+        return readTimeSeriesCsv(projectId, tsStreams, null);
     }
 
     /**
