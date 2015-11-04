@@ -35,6 +35,7 @@ import org.omg.IOP.Encoding;
 import org.python.google.common.io.Files;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -1409,6 +1410,13 @@ public class OptimizationController {
         return "editoptimizationset";
     }
 
+    
+    @PreAuthorize("hasRole('ROLE_Administrator') or ("
+		    +" hasAnyRole('ROLE_Expert','ROLE_Standard') and ("
+		    	+" hasPermission(#model,'ROLE_Administrator') or"
+		    	+" hasPermission(#model,'ROLE_Expert') or"
+		    	+" hasPermission(#model,'ROLE_Standard')" 
+		    	   						+ "))")
     @RequestMapping(value="openoptimizationset",method=RequestMethod.GET)
     public String getOpenOptimizationSet(Map<String, Object> model,
             @RequestParam(value="optsetid", required=false) String optsetid,

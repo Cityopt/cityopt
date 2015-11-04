@@ -13,7 +13,7 @@
 
 <script>
     function openInfoWindow() {
-    	   window.open("createproject_info.html",'Info: Create Project','width=400,height=800');
+    	   window.open("createproject_info.html",'Info: Create Project','width=600,height=800');
     }
 </script> 
 </head>

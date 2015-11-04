@@ -414,18 +414,16 @@ public class ProjectController {
     }	
    
     //@PreAuthorize("hasPermission(#prjid,'ROLE_Administrator')")
-    @PreAuthorize("hasRole('ROLE_Administrator') or"
+    @PreAuthorize("hasRole('ROLE_Administrator') or("
     +" isAuthenticated() and ("
     	+" hasPermission(#prjid,'ROLE_Administrator') or"
     	+" hasPermission(#prjid,'ROLE_Expert') or"
     	+" hasPermission(#prjid,'ROLE_Standard') or"
     	+" hasPermission(#prjid,'ROLE_Guest')"
-    						+ ")") 
+    						+ "))") 
     @RequestMapping(value="editproject", method=RequestMethod.GET)
     public String getEditProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid) {
        
-    	System.out.println("invoked");
-    	
     	if (prjid != null)
         {
             AppUserDTO user = (AppUserDTO) model.get("user");
