@@ -316,6 +316,15 @@ a.tooltip span {
     background-color: #E6E6E6;
 }
 
+table.tablegroup{	
+	border-style: medium;
+	border-color: black;
+	solid border-width: 5px;
+	padding: 4%;
+	margin: 0%;
+	outline: #064861 inset thick;
+}
+
 .frametable td {
 	vertical-align: top;
 }
