@@ -25,7 +25,7 @@ margin: 5%;
 <body>
 <table cellspacing="0px" cellpadding="0px">
 	<tr>
-		<td>
+		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
 
