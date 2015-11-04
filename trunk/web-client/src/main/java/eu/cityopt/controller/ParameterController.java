@@ -8,6 +8,8 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -93,13 +95,22 @@ public class ParameterController {
     @Autowired
     TypeService typeService;
     
-
+   
+       
+    //private void checkScenarioParameterModirfySecurityClearance(){    
     
     // Front Controllers;
+    
+    @PreAuthorize("hasRole('ROLE_Administrator') or ("
+		    +" hasRole('ROLE_Expert') and ("
+		    	+" hasPermission(#model,'ROLE_Administrator') or"
+		    	+" hasPermission(#model,'ROLE_Expert')"
+		    	   						+ "))")
     @RequestMapping(value="projectparameters", method=RequestMethod.GET)
     public String getProjectParameters(Map<String, Object> model, 
             @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
-            	    	
+     
+    	
     	ProjectDTO project = this.GetProject(model);
     	if (this.NullCheck(project)){return "error";}
         this.SetUpSelectedComponent(model, selectedCompId);

@@ -2,6 +2,7 @@ package eu.cityopt.validators;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -118,10 +119,16 @@ public class ProjectPermissionEvaluator implements PermissionEvaluator {
 		}else if(targetDomainObject instanceof Integer){
 			int projectIDn= (int) targetDomainObject;
 			return projectIDn;
+		}else if(targetDomainObject instanceof Map<?,?>){			
+			@SuppressWarnings("unchecked")
+			Map<String, Object> model = (Map<String, Object>) targetDomainObject;
+			ProjectDTO project = (ProjectDTO) model.get("project");
+			return project.getPrjid();			
 		}
 		else{
 			throw new Exception("Target domain object credential type not supported");				
 		}
+		
 	}
 	
 	public AppUserDTO FindAuthenticatedUser(Authentication authentication) throws Exception{

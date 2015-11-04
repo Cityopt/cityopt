@@ -11,11 +11,11 @@
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <style type="text/css">
-table.tablestyle{
-margin: 5%;
-width: 500px;
-border: 1px; 
-}
+	table.tablestyle{
+		margin: 5%;
+		width: 500px;
+		border: 1px; 
+	}
 </style>
 
 

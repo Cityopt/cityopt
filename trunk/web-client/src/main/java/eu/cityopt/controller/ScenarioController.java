@@ -31,6 +31,7 @@ import org.python.google.common.io.Files;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -204,6 +205,12 @@ public class ScenarioController {
 	@Autowired
 	ModelParameterService modelParamService;
 	
+	@PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert') or ("
+		    +" hasRole('ROLE_Standard') and ("
+		    	+" hasPermission(#model,'ROLE_Administrator') or"
+		    	+" hasPermission(#model,'ROLE_Expert') or"
+		    	+" hasPermission(#model,'ROLE_Standard')" 
+		    	   						+ "))")
 	@RequestMapping(value="createscenario",method=RequestMethod.GET)
 	public String getCreateScenario(Map<String, Object> model) {
 		
@@ -223,7 +230,13 @@ public class ScenarioController {
 		model.put("newScenario", scenario);
 		return "createscenario";
 	}
-
+	
+	@PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert') or ("
+		    +" hasRole('ROLE_Standard') and ("
+		    	+" hasPermission(#model,'ROLE_Administrator') or"
+		    	+" hasPermission(#model,'ROLE_Expert') or"
+		    	+" hasPermission(#model,'ROLE_Standard')" 
+		    	   						+ "))")
 	@RequestMapping(value="createscenario",method=RequestMethod.POST)
 	@Transactional
 	public String getCreateScenarioPost(Map<String, Object> model, 
@@ -316,6 +329,12 @@ public class ScenarioController {
 			}		
 	}
 	
+	@PreAuthorize("hasRole('ROLE_Administrator') or ("
+		    +" hasAnyRole('ROLE_Expert','ROLE_Standard') and ("
+		    	+" hasPermission(#model,'ROLE_Administrator') or"
+		    	+" hasPermission(#model,'ROLE_Expert') or"
+		    	+" hasPermission(#model,'ROLE_Standard')" 
+		    	   						+ "))")
 	@RequestMapping(value="openscenario",method=RequestMethod.GET)
 	public String getOpenScenario (Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid)
 	{
