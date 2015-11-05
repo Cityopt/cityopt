@@ -1124,7 +1124,8 @@ public class ImportExportService {
                         scen.getName(), epsName);
             }
         }
-        OptimisationProblemIO.writeMulti(bld, scenarioFile);
+        OptimisationProblemIO.writeMulti(
+                bld, new DbUnitMap(project), scenarioFile);
         OptimisationProblemIO.writeTimeSeries(bld, timeSeriesFile);
     }
 
@@ -1137,7 +1138,8 @@ public class ImportExportService {
             Path scenarioFile, Path timeSeriesFile, int projectId,
             int... setIds) throws ParseException, IOException,
                                   EntityNotFoundException {
-        Namespace ns = simulationService.makeProjectNamespace(projectId); 
+        Project prj = fetchOne(projectRepository, projectId, "project");
+        Namespace ns = simulationService.makeProjectNamespace(prj); 
         ExportBuilder bld = new ExportBuilder(ns);
         for (int setId : setIds) {
             ExtParamValSet set = fetchOne(
@@ -1146,10 +1148,11 @@ public class ImportExportService {
                     .loadExternalParametersFromSet(set, ns);
             bld.add(ext, set.getName());
         }
-        OptimisationProblemIO.writeMulti(bld, scenarioFile);
+        OptimisationProblemIO.writeMulti(
+                bld, new DbUnitMap(prj), scenarioFile);
         OptimisationProblemIO.writeTimeSeries(bld, timeSeriesFile);
     }
-    
+
     /**
      * Export scenario inputs and simulation results.
      * All exported scenarios must be related to the same project.
@@ -1161,6 +1164,7 @@ public class ImportExportService {
             Path scenarioFile, Path timeSeriesFile, int projectId,
             int... scenIds) throws ParseException, IOException,
                                    EntityNotFoundException {
+        Project prj = fetchOne(projectRepository, projectId, "project");
         ExternalParameters ext = simulationService.loadExternalParameters(
                 projectId, null);
         ExportBuilder bld = new ExportBuilder(ext.getEvaluationSetup());
@@ -1175,7 +1179,8 @@ public class ImportExportService {
                 bld.add((SimulationResults)out, scen.getName());
             }
         }
-        OptimisationProblemIO.writeMulti(bld, scenarioFile);
+        OptimisationProblemIO.writeMulti(
+                bld, new DbUnitMap(prj), scenarioFile);
         if (timeSeriesFile != null) {
             OptimisationProblemIO.writeTimeSeries(bld, timeSeriesFile);
         }
@@ -1226,7 +1231,8 @@ public class ImportExportService {
                 }
             }
         }
-        OptimisationProblemIO.writeMulti(bld, scenarioFile);
+        OptimisationProblemIO.writeMulti(
+                bld, new DbUnitMap(prj), scenarioFile);
         if (!bld.getTimeSeriesData().isEmpty()) {
             OptimisationProblemIO.writeTimeSeries(bld, timeSeriesFile);
         }
