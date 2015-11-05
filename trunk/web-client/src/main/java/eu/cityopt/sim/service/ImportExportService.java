@@ -1282,6 +1282,7 @@ public class ImportExportService {
     }
     
     /** @see #readTimeSeriesCsv(Project, InputStream[], String[]) */
+    @Transactional(readOnly=true)
     public TimeSeriesData readTimeSeriesCsv(Integer projectId,
                                             InputStream[] timeSeriesStreams,
                                             String[] timeSeriesNames)
@@ -1293,6 +1294,7 @@ public class ImportExportService {
     }
 
     /** @see #readTimeSeriesCsv(Project, InputStream[], String[]) */
+    @Transactional(readOnly=true)
     public TimeSeriesData readTimeSeriesCsv(Integer projectId, 
                                             InputStream... tsStreams)
             throws IOException, ParseException, EntityNotFoundException {
