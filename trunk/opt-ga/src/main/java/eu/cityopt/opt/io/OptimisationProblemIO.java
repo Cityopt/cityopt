@@ -168,10 +168,15 @@ public class OptimisationProblemIO {
     
     /**
      * Write out multi-scenario data.
+     * Apply units first unless null.
      * @see #writeMulti(JacksonBinderScenario, OutputStream)
      */
-    public static void writeMulti(ExportBuilder bld, Path scenarioFile)
+    public static void writeMulti(ExportBuilder bld, UnitMap units,
+                                  Path scenarioFile)
             throws IOException {
+        if (units != null) {
+            units.apply(bld);
+        }
         writeMulti(bld.getScenarioBinder(), scenarioFile);
     }
 
