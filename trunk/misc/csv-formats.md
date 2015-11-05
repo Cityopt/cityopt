@@ -53,33 +53,35 @@ versions of the file formats may recognize new field names.
 ## Single scenario data
 
 Single scenario data files have the following fields: **kind**,
-**component**, **name**, **type**, **value**, **lower**, **upper** and
-**expression**.  Note that the names are all in lowercase.  **kind**
-defines which kind of item each row represents, and **name** names the
-item.  These two fields are mandatory for every row.  Which other
-fields are required depends on **kind**.  Possible values for **kind** are:
+**component**, **name**, **type**, **value**, **unit**, **lower**,
+**upper** and **expression**.  Note that the names are all in
+lowercase.  **kind** defines which kind of item each row represents,
+and **name** names the item.  These two fields are mandatory for every
+row.  Which other fields are required depends on **kind**.  Possible
+values for **kind** are:
 
 in
-:   Input parameter.  **component** is required.  **type** and either
-    **value** or **expression** may be present.  **expression** is
-    used in optimisation problem definitions and defines the value of
-    the input parameter in terms of external parameters and decision
-    variables.
+:   Input parameter.  **component** is required.  **type**, **unit** and
+    either **value** or **expression** may be present.  **expression**
+    is used in optimisation problem definitions and defines the value
+    of the input parameter in terms of external parameters and
+    decision variables.
 
 out
-:	Output variable.  **component** and **type** are required.
-    **value** may be given for importing externally computed
-    simulation results.
+:	Output variable.  **component** and **type** are required,
+    **unit** is optional.  **value** may be given for importing
+    externally computed simulation results.
 
 ext
-:	External parameter.  **type** is required, **value** optional.
+:	External parameter.  **type** is required, **unit** and **value**
+    optional.
 
 met
-:	Metric.  **type** is required.  **expression** and **value** may
-    be present.  Metric values cannot currently be imported, thus
-    **value** is only used when metric values are exported.
-    **expression** may refer to inputs, outputs and external
-    parameters.
+:	Metric.  **type** is required.  **unit**, **expression** and
+    **value** may be present.  Metric values cannot currently
+    be imported, thus **value** is only used when metric values are
+    exported.  **expression** may refer to inputs, outputs and
+    external parameters.
 
 dv
 :   Decision variable.  These are used in scenario generation.
