@@ -41,8 +41,7 @@ padding-right: 5%;
 			</td>
 			<td width="5%"></td>
 			<td valign="top">
-				<div
-					style="overflow: scroll; height: 100%; width: 100%; overflow: auto">
+				<div style="overflow: scroll; height: 100%; width: 100%; overflow: auto">
 					<table>
 						<col style="width: 5%">
 						<col style="width: 95%">
@@ -112,16 +111,14 @@ padding-right: 5%;
 																	</c:when>
 																	<c:otherwise>
 																		<tr>
-																			<td><a
-																				href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}'/>"
+																			<td><a href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}'/>"
 																				title="${tooltip_select}"> <spring:message
 																						code="select" /></a></td>
 																	</c:otherwise>
 																</c:choose>
 																<td>${component.name}</td>
 																<td>${component.componentid}</td>
-																<td><a
-																	href="<c:url value='editcomponent.html?componentid=${component.componentid}'/>">
+																<td><a href="<c:url value='editcomponent.html?componentid=${component.componentid}'/>">
 																		<button align="right"
 																			title="${tooltip_projectparameters}" type="button"
 																			value="Edit">
@@ -191,8 +188,7 @@ padding-right: 5%;
 
 									<table width="800" class="extern" >										
 										<tr class="external_parameter_sets">
-											<td><b><spring:message
-														code="selected_external_parameter_set" />:</b>
+											<td><b><spring:message code="selected_external_parameter_set" />:</b>
 												${extParamValSet.name} <br>
 												<table class="tablestyle">
 
@@ -209,6 +205,7 @@ padding-right: 5%;
 																<col style="width: 100px">
 																<col style="width: 100px">
 																<col style="width: 50px">
+																<col style="width: 50px">
 																<tr height="20">
 																	<!-- Name -->
 																	<th><spring:message code="name" /></th>
@@ -220,6 +217,7 @@ padding-right: 5%;
 																	<th><spring:message code="value" /></th>
 																	<!-- Edit -->
 																	<th><spring:message code="edit" /></th>
+																	<th>Export</th>
 																</tr>
 
 																<c:forEach items="${extParamVals}" var="extParamVal">
@@ -228,8 +226,7 @@ padding-right: 5%;
 																		<td>${extParamVal.comment}</td>
 
 																		<c:choose>
-																			<c:when
-																				test="${eu.cityopt.sim.eval.Type.getByName(extParamVal.extparam.getType().getName()).isTimeSeriesType()}">
+																			<c:when	test="${eu.cityopt.sim.eval.Type.getByName(extParamVal.extparam.getType().getName()).isTimeSeriesType()}">
 																				<td>Time series</td>
 																				<td>...</td>
 																			</c:when>
@@ -238,12 +235,20 @@ padding-right: 5%;
 																				<td>${extParamVal.value}</td>
 																			</c:otherwise>
 																		</c:choose>
-																		<td><a
-																			href="<c:url value='editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}'/>">
+																		<td>
+																			<a href="<c:url value='editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}'/>">
 																				<button align="right" type="button" value="Edit">
 																					<spring:message code="edit" />
 																				</button>
-																		</a></td>
+																			</a>
+																		</td>
+																		<td>
+																			<a href="<c:url value='exportextparam.html?extparamvalid=${extParamVal.extparamvalid}'/>">
+																				<button align="right" type="button" value="Export">
+																					Export
+																				</button>
+																			</a>
+																		</td>
 																	</tr>
 																</c:forEach>
 															</table>
@@ -263,8 +268,8 @@ padding-right: 5%;
 													<tr>
 														<td>
 															<table class="tablestyle" width="750">
+																<col style="width: 500px">
 																<col style="width: 200px">
-																<col style="width: 100px">
 																<col style="width: 50px">
 																<tr height="20">
 																	<!-- Name -->
@@ -280,8 +285,7 @@ padding-right: 5%;
 																		<td>${extParam.name}</td>
 
 																		<c:choose>
-																			<c:when
-																				test="${eu.cityopt.sim.eval.Type.getByName(extParam.getType().getName()).isTimeSeriesType()}">
+																			<c:when	test="${eu.cityopt.sim.eval.Type.getByName(extParam.getType().getName()).isTimeSeriesType()}">
 																				<td>Time series</td>
 																			</c:when>
 																			<c:otherwise>
@@ -289,8 +293,7 @@ padding-right: 5%;
 																			</c:otherwise>
 																		</c:choose>
 
-																		<td><a
-																			href="<c:url value='deleteextparam.html?extparamid=${extParam.extparamid}'/>">
+																		<td><a href="<c:url value='deleteextparam.html?extparamid=${extParam.extparamid}'/>">
 																				<button align="right" type="button" value="Remove">
 																					<spring:message code="remove" />
 																				</button>
@@ -301,11 +304,12 @@ padding-right: 5%;
 														</td>
 													</tr>
 													<tr>
-														<td width="750" align="right"><a
-															href="createextparam.html"><button type="button"
-																	style="width: 150px">
+														<td width="750" align="right">
+															<a href="createextparam.html"><button type="button"	style="width: 150px">
 																	<spring:message code="create_external_parameter" />
-																</button></a></td>
+																</button>
+															</a>
+														</td>
 													</tr>
 												</table>
 											</td>

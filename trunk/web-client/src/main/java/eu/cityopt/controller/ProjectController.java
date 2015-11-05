@@ -142,6 +142,7 @@ import eu.cityopt.config.AppMetadata;
 //Contains Forms for UI
 import eu.cityopt.forms.ExternParamIDForm;
 import eu.cityopt.model.UserGroupProject;
+import eu.cityopt.opt.io.TimeSeriesData;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.AprosService;
@@ -560,7 +561,7 @@ public class ProjectController {
 
                 InputStream structureStream = file.getInputStream();
                 importExportService.importSimulationStructure(project.getPrjid(), structureStream);
-
+                structureStream.close();
             } catch (Exception e) {
             	//System.out.println("" + e.getStackTrace().toString());
             	e.printStackTrace();
@@ -721,10 +722,96 @@ public class ProjectController {
 			}
 			response.flushBuffer();
 			zos.close();
+			out.close();
 		} catch (Exception e) {
 	    	e.printStackTrace();
 	    }
 	}
+
+    @RequestMapping(value = "importextparam", method = RequestMethod.POST)
+    public String importExtParamFile(Map<String, Object> model, @RequestParam("file") MultipartFile file) {
+
+        if (!file.isEmpty()) {
+            try {
+                ProjectDTO project = (ProjectDTO) model.get("project");
+
+                if (project == null)
+                {
+                    return "error";
+                }
+
+                try {
+                    project = projectService.findByID(project.getPrjid());
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+                model.put("project", project);
+
+                InputStream stream = file.getInputStream();
+                System.out.println("Starting import time series");
+                TimeSeriesData data = importExportService.readTimeSeriesCsv(project.getPrjid(), stream);
+                
+                /*ExtParamDTO extParam = new ExtParamDTO();
+                ExtParamValDTO extParamVal = new ExtParamValDTO();
+                extParamVal.s*/
+                
+                stream.close();
+                System.out.println("Finished importing time series");
+            } catch (Exception e) {
+            	e.printStackTrace();
+            }
+        } else {
+        }
+        return "importdata";
+    }
+
+    @RequestMapping(value = "exportextparam", method = RequestMethod.GET)
+    public void exportExtParam(Map<String, Object> model, 
+		@RequestParam(value="extparamid", required=true) String strExtParamId, 
+		@RequestParam(value="extparamvalsetid", required=true) String strExtParamValSetId,
+   		HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        ProjectDTO project = null;
+        ExtParamDTO extParam = null;
+        ExtParamValSetDTO extParamSet = null;
+        
+        try {
+            project = (ProjectDTO) model.get("project");
+
+            if (project == null)
+            {
+                return;
+            }
+
+            try {
+                project = projectService.findByID(project.getPrjid());
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            model.put("project", project);
+            
+            extParam = extParamService.findByID(Integer.parseInt(strExtParamId));
+        } catch (Exception e) {
+        	e.printStackTrace();
+            return;
+        }
+        
+        // set headers for the response
+        response.setContentType("text/csv");
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=\"project.csv\"");
+        response.setHeader(headerKey, headerValue);
+
+        OutputStream outputStream = response.getOutputStream();
+
+        try {
+            importExportService.exportExtParamTimeSeries(Integer.parseInt(strExtParamValSetId), outputStream, extParam);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        outputStream.close();
+    }
 
     @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="editproject", method=RequestMethod.POST)
@@ -1055,6 +1142,7 @@ public class ProjectController {
 			}
 			response.flushBuffer();
 			zos.close();
+			out.close();
 		} catch (Exception e) {
 	    	e.printStackTrace();
 	    }
