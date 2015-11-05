@@ -751,9 +751,12 @@ public class ProjectController {
                 System.out.println("Starting import time series");
                 TimeSeriesData data = importExportService.readTimeSeriesCsv(project.getPrjid(), stream);
                 
+                importExportService.saveTimeSeriesVals("time_series_test", data, Type.TIMESERIES_STEP);
+                //extParamValSetService.updateOrClone(extParamValSet, extParamVals, timeSeriesByParamId);
+                
                 /*ExtParamDTO extParam = new ExtParamDTO();
                 ExtParamValDTO extParamVal = new ExtParamValDTO();
-                extParamVal.s*/
+                */
                 
                 stream.close();
                 System.out.println("Finished importing time series");

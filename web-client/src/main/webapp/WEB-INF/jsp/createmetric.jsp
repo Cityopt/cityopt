@@ -21,7 +21,7 @@
 		</td>
 		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:1000px;width:1000px;overflow:auto">
+			<div style="overflow:scroll;height:1100px;width:1000px;overflow:auto">
 			<form:form method="post" action="createmetric.html" modelAttribute="metric">
 			<table>
 				<tr>
@@ -29,6 +29,13 @@
 						<!-- Create metric -->
 						<h2><spring:message code="create_metric"/></h2>
 					</td>
+				</tr>
+				<tr>
+					<td><p>Create a metric by giving a name for it and writing an expression using the parameters 
+					listed in the page. The parameters must be written with their component combined to them 
+					with a dot: <i>"component.parameter"</i>. Mathematical operators +, -, * and / can be 
+					used in the expression.</p>
+					<p>Example expression: <i>"integrate(HOUR_HEAT.SP_VALUE, 0, Infinity) / 3600"</i></p></td>
 				</tr>
 				<tr>
 					<td>
@@ -206,12 +213,6 @@
 								<td></td>
 							</tr>
 							<tr height="20"></tr>
-							<tr height="20">
-								<td></td>
-								<td colspan="3">
-									Example: <i>"integrate(HOUR_HEAT.SP_VALUE, 0, Infinity) / 3600"</i>
-								</td>
-							</tr>
 							<tr height="20"></tr>
 							<tr>
 								<td></td>
