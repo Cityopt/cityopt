@@ -311,7 +311,27 @@ padding-right: 5%;
 															</a>
 														</td>
 													</tr>
-												</table>
+													<tr height="20"></tr>
+													<tr>
+														<td>
+															<table style="width: 600px">
+																<tr>
+																	<td>
+																		<!-- Import external parameter -->					
+																		<b>Import external parameter</b>
+																	</td>
+																	<td></td>
+																</tr>
+																<form:form method="POST" action="importextparam.html" enctype="multipart/form-data">
+										        					<tr>
+										        						<td>Import external time series file (CSV)</td>
+																		<td><input id="file" name="file" type="file"/><input type="submit" value="Import file"></td>	
+																	</tr>
+									    						</form:form>
+									    					</table>
+								    					</td>
+							    					</tr>
+						    					</table>
 											</td>
 										</tr>
 									</table>

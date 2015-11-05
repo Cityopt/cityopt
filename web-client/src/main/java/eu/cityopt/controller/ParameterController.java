@@ -110,7 +110,6 @@ public class ParameterController {
     public String getProjectParameters(Map<String, Object> model, 
             @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
      
-    	
     	ProjectDTO project = this.GetProject(model);
     	if (this.NullCheck(project)){return "error";}
         this.SetUpSelectedComponent(model, selectedCompId);
