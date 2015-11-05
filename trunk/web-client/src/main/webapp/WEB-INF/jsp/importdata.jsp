@@ -225,29 +225,7 @@
 										<col style="width:150px">	
 										<col style="width:200px">	
 										<col style="width:200px">	
-										<tr>
-											<td>
-											<!-- Import external parameter -->					
-												<b>Import external parameter</b>
-											</td>
-											<td>Time series file</td>
-											<td></td>
-										</tr>
-										<form:form method="POST" action="importextparam.html" enctype="multipart/form-data">
-				        					<tr>
-				        						<td>Import external parameter file (CSV)</td>
-												<td><input id="file" name="file" type="file"/></td>
-												<td></td>
-											</tr>
-											<tr>	
-				       							<td></td>
-												<td>
-				        							<!-- Import file -->
-				        							<input type="submit" value="Import files">
-				       							</td>
-				   							</tr>	
-			    						</form:form>
-			    						<tr align="right">	
+										<tr align="right">	
 			    							<td></td>
 			    							<td></td>					
 											<!-- Show scenarios -->

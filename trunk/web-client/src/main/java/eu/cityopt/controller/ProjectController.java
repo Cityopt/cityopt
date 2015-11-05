@@ -751,7 +751,7 @@ public class ProjectController {
                 System.out.println("Starting import time series");
                 TimeSeriesData data = importExportService.readTimeSeriesCsv(project.getPrjid(), stream);
                 
-                importExportService.saveTimeSeriesVals("time_series_test", data, Type.TIMESERIES_STEP);
+                importExportService.saveTimeSeriesVals("electricity_cost_test", data, Type.TIMESERIES_STEP);
                 //extParamValSetService.updateOrClone(extParamValSet, extParamVals, timeSeriesByParamId);
                 
                 /*ExtParamDTO extParam = new ExtParamDTO();
@@ -760,12 +760,38 @@ public class ProjectController {
                 
                 stream.close();
                 System.out.println("Finished importing time series");
+
+                List<ExtParamValDTO> extParamVals = null;
+                int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+             
+                if (defaultExtParamValSetId != 0)
+        		{
+                	try {
+	                    ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
+	                    model.put("extParamValSet", extParamValSet);
+	                } catch (EntityNotFoundException e1) {
+	                    e1.printStackTrace();
+	                }
+	
+	                try {
+	                    extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
+	                } catch (EntityNotFoundException e) {
+	                    e.printStackTrace();
+	                }
+	
+	                 model.put("extParamVals", extParamVals);
+	            }
+	        	List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+	            model.put("components", components);
+	            Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+	            model.put("extParams", extParams);
+
             } catch (Exception e) {
             	e.printStackTrace();
             }
         } else {
         }
-        return "importdata";
+        return "projectparameters";
     }
 
     @RequestMapping(value = "exportextparam", method = RequestMethod.GET)
