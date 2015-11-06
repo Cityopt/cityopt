@@ -7,7 +7,6 @@ import java.util.Set;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.TimeSeriesDTOX;
-import eu.cityopt.DTO.TimeSeriesValDTO;
 
 public interface ExtParamValSetService extends CityOptService<ExtParamValSetDTO>{
 	
@@ -27,9 +26,12 @@ public interface ExtParamValSetService extends CityOptService<ExtParamValSetDTO>
 	/**
 	 * Updates the values in the set, cloning it first if the set is used in
 	 * historical scenario data (ScenarioMetrics).
-	 * @param extParamValSet indicates the id of the set, and its new name.
-	 * @param extParamVals
-	 * @param timeSeriesByParamId map from extParamId to time series data
+	 * @param extParamValSet contains the id of the set, and its new name.
+	 * @param extParamVals list of /all/ external parameter values to be included
+	 *   in the set.  For time series valued parameters, the value is left null.
+	 * @param timeSeriesByParamId map from extParamId to time series data.
+	 *   Must contain a TimeSeriesDTOX for every external parameter whose value
+	 *   should be a time series.
 	 */
 	public ExtParamValSetDTO updateOrClone(
 			ExtParamValSetDTO extParamValSet, List<ExtParamValDTO> extParamVals,
