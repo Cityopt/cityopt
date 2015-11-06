@@ -179,6 +179,15 @@ public class ScenarioServiceImpl implements ScenarioService {
 		Set<SimulationResult> simRes = scen.getSimulationresults();
 		return modelMapper.map(simRes, new TypeToken<Set<SimulationResultDTO>>() {}.getType());
 	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public ScenarioDTO findByNameAndProject(int prjid, String name) {
+		Scenario scen = scenarioRepository.findByNamePrjid(name, prjid);
+		if(scen != null)
+			return modelMapper.map(scen, ScenarioDTO.class);
+		return null;
+	}
 	
 //	public List<ScenarioDTO> findByCreationDate(Date dateLower, Date dateUpper){
 //		return scenarioRepository.findByCreationDate(dateLower, dateUpper);

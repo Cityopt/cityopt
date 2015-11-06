@@ -29,6 +29,8 @@ public interface ScenarioService extends CityOptService<ScenarioDTO>{
 	
 	List<ScenarioDTO> findByNameContaining(String name);
 	
+	ScenarioDTO findByNameAndProject(int prjid, String name);
+	
 	ScenarioDTO findByName(String name);
 	
 	Set<SimulationResultDTO> getSimulationResults(int scenId);
