@@ -74,5 +74,15 @@ public class UnitServiceImpl implements UnitService {
 		
 		return modelMapper.map(unitRepository.findOne(id), UnitDTO.class);
 	}
+
+	@Override
+	public UnitDTO findByName(String name) throws EntityNotFoundException {
+		if(unitRepository.findByName(name)==null)
+		{
+			throw new EntityNotFoundException();
+		}
+		
+		return modelMapper.map(unitRepository.findByName(name), UnitDTO.class);
+	}
 	
 }

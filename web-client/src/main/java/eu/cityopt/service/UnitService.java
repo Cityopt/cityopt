@@ -12,4 +12,6 @@ public interface UnitService extends CityOptService<UnitDTO> {
 	public UnitDTO update(UnitDTO toUpdate) throws EntityNotFoundException;
 
 	public UnitDTO findByID(int id) throws EntityNotFoundException;
+	
+	public UnitDTO findByName(String name) throws EntityNotFoundException;
 }
