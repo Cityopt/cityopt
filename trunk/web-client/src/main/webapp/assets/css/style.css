@@ -426,6 +426,9 @@ table.tablegroup{
 	text-decoration: underline;
 }
 
+
+
+
 button, input[type="button"], input[type="submit"] {
 	background: #c7e3f5;
     background-image: -webkit-linear-gradient(top, #c7e3f5, #458ee0);
@@ -449,7 +452,6 @@ button, input[type="button"], input[type="submit"] {
 	border-radius: 6px;*/
 }
 
-
 button:hover, input[type="button"]:hover, input[type="submit"]:hover {
 	 background: #ebf7ff;
  	 background-image: -webkit-linear-gradient(top, #ebf7ff, #3b9ccc);
@@ -458,6 +460,8 @@ button:hover, input[type="button"]:hover, input[type="submit"]:hover {
   	 background-image: -o-linear-gradient(top, #ebf7ff, #3b9ccc);
  	 background-image: linear-gradient(to bottom, #ebf7ff, #3b9ccc);
 	
+	
+	
 	/*background-color:#47AFE2;*/
 }
 
@@ -465,6 +469,8 @@ button:active, input[type="button"]:active, input[type="submit"]:active {
 	position:relative;
 	background-color:#47AFE2;
 }
+
+.big{ font-size: 200%; }
 
 .round-button {
 	width: 12%;
@@ -499,7 +505,11 @@ button:active, input[type="button"]:active, input[type="submit"]:active {
     text-decoration:none;
 }
 
-
+.right{
+	float: right;
+	right: 0px;
+	margin-right: 2%;
+	}
 
 
 .postdate {
