@@ -13,7 +13,7 @@
 <style type="text/css">
 	
 	table.tablestyle{
-		margin-left: 30%;
+		margin-left: 35%;
 		margin-top: 5%;
 		width: 500px;
 		border: 1px;	
@@ -23,6 +23,11 @@
     top: 0px;
     left: 0px;
     width: 260px;
+	}
+	
+	h2{
+	margin-left: 35%;
+	margin-top: 5%;
 	}
 	
 </style>
@@ -40,6 +45,8 @@
 					<form:form method="post" action="deleteproject.html">
 						<!-- Delete Project -->
 						<h2><spring:message code="delete_project"/></h2>
+						
+						
 						<table class="tablestyle" width="400" border="1">
 
 							<tr class="DeleteTables" height="20">
