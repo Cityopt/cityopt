@@ -145,7 +145,39 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
 		}
 	}
 
-	@Override
+    @Override
+    @Transactional
+    public void updateExtParamValInSetOrClone(
+            int extParamValSetId, ExtParamValDTO epvDTO, TimeSeriesDTOX tsDTO)
+                    throws EntityNotFoundException {
+        ExtParamValSet epvs = extParamValSetRepository.findOne(extParamValSetId);
+        if (epvs == null) {
+            throw new EntityNotFoundException();
+        }
+        epvs = cloneSetIfReferenced(epvs);
+
+        // Find matching value to alter
+        int extParamId = epvDTO.getExtparam().getExtparamid();
+        boolean found = false;
+        for (ExtParamValSetComp epvsc : epvs.getExtparamvalsetcomps()) {
+            ExtParamVal epv = epvsc.getExtparamval();
+            if (extParamId == epv.getExtparam().getExtparamid()) {
+                if (epv.getTimeseries() != null) {
+                    timeSeriesRepository.delete(epv.getTimeseries());
+                }
+                updateExtParamVal(epv, epvDTO, tsDTO);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            // Add new value
+            saveExtParamValInSet(epvs, epvDTO, tsDTO);
+        }
+        extParamValSetRepository.save(epvs);
+    }
+
+    @Override
 	@Transactional
 	public ExtParamValSetDTO updateOrClone(
 			ExtParamValSetDTO extParamValSetDTO, List<ExtParamValDTO> extParamVals,
@@ -154,16 +186,7 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
 		if (epvs == null) {
 			throw new EntityNotFoundException();
 		}
-		if ( ! epvs.getScenariometricses().isEmpty()) {
-			// Let ScenarioMetrics point to the existing ExtParamValSet in the database,
-			// but change the name of the old ExtParamValSet, and make a copy for modification.
-			String oldName = epvs.getName();
-			epvs.setName(oldName + "(" + epvs.getExtparamvalsetid() + ")");
-			epvs = extParamValSetRepository.save(epvs);
-			extParamValSetRepository.flush();
-
-			epvs = copyService.copyExtParamValSet(epvs, oldName);
-		}
+		epvs = cloneSetIfReferenced(epvs);
 		epvs.setName(extParamValSetDTO.getName());
 
 		Map<Integer, ExtParamValDTO> newValuesById = new HashMap<>();
@@ -188,31 +211,51 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
 		// Add new values
 		for (ExtParamValDTO epvDTO : newValuesById.values()) {
 			int extParamId = epvDTO.getExtparam().getExtparamid();
-			ExtParam ep = extParamRepository.findOne(extParamId);
-			if (ep == null) {
-				throw new EntityNotFoundException();
-			}
-			ExtParamVal epv = modelMapper.map(epvDTO, ExtParamVal.class);
-			epv.setExtparam(ep);
-			updateExtParamVal(epv, epvDTO, timeSeriesByParamId.get(extParamId));
-			epv = extParamValRepository.save(epv);
-
-			ExtParamValSetComp epvsc = new ExtParamValSetComp();
-			epvsc.setExtparamval(epv);
-			epvsc.setExtparamvalset(epvs);
-			extParamValSetCompRepository.save(epvsc);
+			saveExtParamValInSet(epvs, epvDTO, timeSeriesByParamId.get(extParamId));
 		}
 		extParamValSetRepository.save(epvs);
 
 		return extParamValSetDTO;
 	}
 
-	private void updateExtParamVal(ExtParamVal epv, ExtParamValDTO epvDTO, TimeSeriesDTOX timeSeries) {
-		epv.setComment(epvDTO.getComment());
-		epv.setValue(epvDTO.getValue());
-		epv.setTimeseries((timeSeries == null) ? null
-				: timeSeriesService.save(timeSeries));
-	}
+    private ExtParamValSet cloneSetIfReferenced(ExtParamValSet epvs) {
+        if ( ! epvs.getScenariometricses().isEmpty()) {
+            // Let ScenarioMetrics point to the existing ExtParamValSet in the database,
+            // but change the name of the old ExtParamValSet, and make a copy for modification.
+            String oldName = epvs.getName();
+            epvs.setName(oldName + "(" + epvs.getExtparamvalsetid() + ")");
+            epvs = extParamValSetRepository.save(epvs);
+            extParamValSetRepository.flush();
+
+            epvs = copyService.copyExtParamValSet(epvs, oldName);
+        }
+        return epvs;
+    }
+
+    private void saveExtParamValInSet(ExtParamValSet epvs,
+            ExtParamValDTO epvDTO, TimeSeriesDTOX tsDTO) throws EntityNotFoundException {
+        int extParamId = epvDTO.getExtparam().getExtparamid();
+        ExtParam ep = extParamRepository.findOne(extParamId);
+        if (ep == null) {
+            throw new EntityNotFoundException();
+        }
+        ExtParamVal epv = modelMapper.map(epvDTO, ExtParamVal.class);
+        epv.setExtparam(ep);
+        updateExtParamVal(epv, epvDTO, tsDTO);
+        epv = extParamValRepository.save(epv);
+
+        ExtParamValSetComp epvsc = new ExtParamValSetComp();
+        epvsc.setExtparamval(epv);
+        epvsc.setExtparamvalset(epvs);
+        extParamValSetCompRepository.save(epvsc);
+    }
+
+    private void updateExtParamVal(ExtParamVal epv, ExtParamValDTO epvDTO, TimeSeriesDTOX timeSeries) {
+        epv.setComment(epvDTO.getComment());
+        epv.setValue(epvDTO.getValue());
+        epv.setTimeseries((timeSeries == null) ? null
+                : timeSeriesService.save(timeSeries));
+    }
 
 	@Override	
 	@Transactional

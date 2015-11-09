@@ -3,7 +3,9 @@ package eu.cityopt.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +27,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
+import eu.cityopt.DTO.TimeSeriesDTOX;
 import eu.cityopt.repository.ExtParamRepository;
 
 @Transactional
@@ -100,5 +103,55 @@ public class ExtParamValSetServiceTest {
 		assertEquals(1, epv.size());
 		assertEquals(epv.iterator().next().getExtparam().getName(), val.getExtparam().getName());
 	}
-	
+
+	@Test
+	public void updateValueInSetOrClone() throws EntityNotFoundException {
+        List<ExtParamDTO> epList = extParamService.findByName("Cost_of_the_N_Gas");
+        ExtParamValDTO newEPV = new ExtParamValDTO();
+        newEPV.setExtparam(epList.iterator().next());
+        newEPV.setValue("20.0");
+
+        extParamValSetService.updateExtParamValInSetOrClone(1, newEPV, null);
+
+        List<ExtParamValDTO> epv = extParamValSetService.getExtParamVals(1);   
+        assertEquals(3, epv.size());
+        
+        String [] epArr = new String [] { "Specific_Heat_Water", "Cost_of_the_N_Gas", "Emissions_N_Gas"};
+        List<String> epListRes = Arrays.asList(epArr);
+        
+        for(ExtParamValDTO epvDTO : epv){
+            assertTrue( epListRes.contains(epvDTO.getExtparam().getName()) );
+            if (epvDTO.getExtparam().getName().equals("Cost_of_the_N_Gas")) {
+                assertEquals("20.0", epvDTO.getValue());
+            }
+        }
+	}
+
+    @Test
+    public void updateTimeSeriesInSetOrClone() throws EntityNotFoundException {
+        List<ExtParamDTO> epList = extParamService.findByName("Cost_of_the_N_Gas");
+        ExtParamValDTO newEPV = new ExtParamValDTO();
+        newEPV.setExtparam(epList.iterator().next());
+        TimeSeriesDTOX tsDTO = new TimeSeriesDTOX();
+        tsDTO.setTimes(new Date[] {
+                Date.from(Instant.parse("2015-01-01T00:00:00Z")),
+                Date.from(Instant.parse("2016-01-01T00:00:00Z"))
+                });
+        tsDTO.setValues(new double[] { 10.0, 100.0 });
+
+        extParamValSetService.updateExtParamValInSetOrClone(1, newEPV, tsDTO);
+
+        List<ExtParamValDTO> epv = extParamValSetService.getExtParamVals(1);   
+        assertEquals(3, epv.size());
+        
+        String [] epArr = new String [] { "Specific_Heat_Water", "Cost_of_the_N_Gas", "Emissions_N_Gas"};
+        List<String> epListRes = Arrays.asList(epArr);
+        
+        for(ExtParamValDTO epvDTO : epv){
+            assertTrue( epListRes.contains(epvDTO.getExtparam().getName()) );
+            if (epvDTO.getExtparam().getName().equals("Cost_of_the_N_Gas")) {
+                assertEquals(null, epvDTO.getValue());
+            }
+        }
+    }
 }
