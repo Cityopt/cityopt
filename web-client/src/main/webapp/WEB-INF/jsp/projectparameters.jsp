@@ -295,6 +295,7 @@ padding-right: 5%;
 
 																		<td><a href="<c:url value='deleteextparam.html?extparamid=${extParam.extparamid}'/>">
 																				<button align="right" type="button" value="Remove">
+																			 
 																					<spring:message code="remove" />
 																				</button>
 																		</a></td>

@@ -77,7 +77,7 @@
           			  <c:when test="${success!=null && success==true}">
             			   <h2 class="successful"> <spring:message code="projectSuccess"/></h2>
             			   <c:set var="tooltip_next"><spring:message code="tooltip_next"/></c:set>
-            			   <a href="editproject.html"><button style="width:100px" type="button" value="Next" title="${tooltip_next}">
+            			   <a href="editproject.html"><button style="width:100px" class="rewardGreen" type="button" value="Next" title="${tooltip_next}">
             			   <spring:message code="next"/></button></a>
             		</c:when>
             		<c:when test="${success!=null && success==false}">
