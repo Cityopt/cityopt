@@ -80,4 +80,19 @@ public class TimeUtils {
         return Instant.ofEpochMilli(
                 timeOrigin.toEpochMilli() + (long) (simtime * 1000 + 0.5));
     }
+
+    /**
+     * Converts an array of simulation time values to Date objects.
+     * @param simtimes simulation time values in seconds from simulation time origin
+     * @param timeOrigin simulation time origin
+     * @return an array of Date objects representing the same points in time
+     */
+    public static Date[] toDate(double[] simtimes, Instant timeOrigin) {
+        int n = simtimes.length;
+        Date[] d = new Date[n];
+        for (int i = 0; i < n; ++i) {
+            d[i] = toDate(simtimes[i], timeOrigin);
+        }
+        return d;
+    }
 }

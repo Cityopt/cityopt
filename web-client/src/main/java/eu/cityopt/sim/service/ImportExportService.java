@@ -30,6 +30,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.DTO.ExtParamDTO;
+import eu.cityopt.DTO.TimeSeriesDTOX;
 import eu.cityopt.model.Algorithm;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.ExtParam;
@@ -67,7 +68,6 @@ import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.SimulationModelRepository;
-import eu.cityopt.repository.TimeSeriesRepository;
 import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.repository.UnitRepository;
 import eu.cityopt.service.EntityNotFoundException;
@@ -84,6 +84,7 @@ import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.Type;
+import eu.cityopt.sim.eval.util.TimeUtils;
 import eu.cityopt.sim.opt.AlgorithmParameters;
 import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.SimulationStructure;
@@ -126,7 +127,6 @@ public class ImportExportService {
     @Inject private InputParameterRepository inputParameterRepository;
     @Inject private OutputVariableRepository outputVariableRepository;
     @Inject private MetricRepository metricRepository;
-    @Inject private TimeSeriesRepository timeSeriesRepository;
     @Inject private TypeRepository typeRepository;
     @Inject private OptimizationSetRepository optimizationSetRepository;
     @Inject private ExtParamValSetRepository extParamValSetRepository;
@@ -788,7 +788,7 @@ public class ImportExportService {
         OptimisationProblemIO.writeProblemCsv(
                 prob, new DbUnitMap(proj), problemFile, timeSeriesFile);
     }
-    
+
     /**
      * Save time series data into the database.
      * Creates a new time series.
@@ -1283,20 +1283,28 @@ public class ImportExportService {
     
     /** @see #readTimeSeriesCsv(Project, InputStream[], String[]) */
     @Transactional(readOnly=true)
-    public TimeSeriesData readTimeSeriesCsv(Integer projectId,
-                                            InputStream[] timeSeriesStreams,
-                                            String[] timeSeriesNames)
+    public Map<String, TimeSeriesDTOX> readTimeSeriesCsv(
+            int projectId, InputStream[] timeSeriesStreams,
+            String[] timeSeriesNames)
             throws IOException, ParseException, EntityNotFoundException {
-        return readTimeSeriesCsv(
-                projectId == null
-                ? null : fetchOne(projectRepository, projectId, "project"),
+        TimeSeriesData timeSeriesData = readTimeSeriesCsv(
+                fetchOne(projectRepository, projectId, "project"),
                 timeSeriesStreams, timeSeriesNames);
+        Instant timeOrigin = timeSeriesData.getEvaluationSetup().timeOrigin;
+        Map<String, TimeSeriesDTOX> results = new HashMap<>();
+        timeSeriesData.getMap().forEach((name, data) -> {
+            TimeSeriesDTOX tsDTO = new TimeSeriesDTOX();
+            tsDTO.setTimes(TimeUtils.toDate(data.getTimes(), timeOrigin));
+            tsDTO.setValues(data.getValues());
+            results.put(name, tsDTO);
+        });
+        return results;
     }
 
     /** @see #readTimeSeriesCsv(Project, InputStream[], String[]) */
     @Transactional(readOnly=true)
-    public TimeSeriesData readTimeSeriesCsv(Integer projectId, 
-                                            InputStream... tsStreams)
+    public Map<String, TimeSeriesDTOX> readTimeSeriesCsv(
+            int projectId, InputStream... tsStreams)
             throws IOException, ParseException, EntityNotFoundException {
         return readTimeSeriesCsv(projectId, tsStreams, null);
     }

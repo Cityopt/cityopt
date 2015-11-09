@@ -1,18 +1,21 @@
 package eu.cityopt.sim.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import org.junit.*;
-import static org.junit.Assert.*;
-
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -28,7 +31,11 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import eu.cityopt.DTO.ExtParamDTO;
+import eu.cityopt.DTO.ExtParamValDTO;
+import eu.cityopt.DTO.TimeSeriesDTOX;
+import eu.cityopt.model.ExtParamVal;
 import eu.cityopt.model.ExtParamValSet;
+import eu.cityopt.model.ExtParamValSetComp;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.opt.io.JacksonBinder;
@@ -37,7 +44,9 @@ import eu.cityopt.opt.io.OptimisationProblemIO;
 import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.OptimizationSetRepository;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.repository.TimeSeriesRepository;
 import eu.cityopt.service.ExtParamService;
+import eu.cityopt.service.ExtParamValSetService;
 import eu.cityopt.sim.eval.util.TempDir;
 
 @Transactional
@@ -52,7 +61,9 @@ public class ImportExportServiceTest extends SimulationTestBase {
     @Inject ProjectRepository projectRepository;
     @Inject OptimizationSetRepository optimisationSetRepository;
     @Inject ExtParamValSetRepository extParamValSetRepository;
+    @Inject ExtParamValSetService extParamValSetService;
     @Inject ExtParamService extParamService;
+    @Inject TimeSeriesRepository timeSeriesRepository;
 
     @Test
     @DatabaseSetup("classpath:/testData/empty_project.xml")
@@ -118,6 +129,33 @@ public class ImportExportServiceTest extends SimulationTestBase {
         ExtParamDTO xp = extParamService.findByName("fuel_cost").get(0);
         //TODO check the result (how?)
         importExportService.exportExtParamTimeSeries(xpvset, System.out, xp);
+    }
+
+    @Test
+    @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
+    public void testImportExtParamTimeSeries() throws Exception {
+        Project project = scenarioRepository.findByNameContaining("testscenario").get(0).getProject();
+        int xpvset = 1;
+        ExtParamDTO xp = extParamService.findByName("x").get(0);
+        Map<String, TimeSeriesDTOX> tsd = null;
+        try (InputStream in = getClass().getResource("/timeseries.csv").openStream()) {
+            tsd = importExportService.readTimeSeriesCsv(project.getPrjid(), in);
+        }
+        TimeSeriesDTOX ts = tsd.get("fuel_cost");
+        assertNotNull(ts);
+        ExtParamValDTO xpv = new ExtParamValDTO();
+        xpv.setExtparam(xp);
+        extParamValSetService.updateExtParamValInSetOrClone(xpvset, xpv, ts);
+
+        ExtParamValSet epvs = extParamValSetRepository.findOne(xpvset);
+        assertEquals(3, epvs.getExtparamvalsetcomps().size());
+        for (ExtParamValSetComp epvsc : epvs.getExtparamvalsetcomps()) {
+            ExtParamVal epv = epvsc.getExtparamval();
+            if (epv.getExtparam().getName().equals("x")) {
+                assertEquals(3, epv.getTimeseries().getTimeseriesvals().size());
+            }
+        }
+        dumpTables("import_extparamts");
     }
 
     @Test
