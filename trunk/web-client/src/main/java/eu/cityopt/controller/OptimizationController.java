@@ -693,15 +693,18 @@ public class OptimizationController {
 
                 int nDefaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 
-                ExtParamValSetDTO extParamValSet = null;
+                if (nDefaultExtParamValSetId > 0)
+                {
+	                ExtParamValSetDTO extParamValSet = null;
+	                
+					try {
+						extParamValSet = extParamValSetService.findByID(nDefaultExtParamValSetId);
+					} catch (EntityNotFoundException e) {
+						e.printStackTrace();
+					}
+	                optSet.setExtparamvalset(extParamValSet);
+                }
                 
-				try {
-					extParamValSet = extParamValSetService.findByID(nDefaultExtParamValSetId);
-				} catch (EntityNotFoundException e) {
-					e.printStackTrace();
-				}
-                optSet.setExtparamvalset(extParamValSet);
-
                 optSet = optSetService.save(optSet);
                 model.put("optimizationset", optSet);
 
