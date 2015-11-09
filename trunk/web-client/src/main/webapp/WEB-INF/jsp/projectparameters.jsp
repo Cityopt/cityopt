@@ -30,6 +30,18 @@ table.extern{
 margin-top: 5%;
 padding-top: 5%;
 padding-right: 5%;
+}
+
+table.close_button{
+right: 0px;
+margin-right:5%;
+width:100%;
+}
+
+.big{
+float:right;
+margin-right: 16%;
+margin-bottom: 5%;
 }	
 
 </style>
@@ -342,8 +354,9 @@ padding-right: 5%;
 							</td>
 						</tr>
 							<table class="close_button" >
+								<td><td>
 								<tr>														
-									<td><a href="editproject.html"><button class="action" type="button">
+									<td><a href="editproject.html"><button class="big" type="button">
 													<spring:message code="close" />
 									</button></a></td>
 								</tr>

@@ -54,8 +54,7 @@ h2.error {
 	font-size 10px;	
 	text-shadow: 1px 1px 1px black, 0 0 4px #a7ed7c, 0 0 4px #43AF11;	
 	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
-	
-	
+		
 }
 
 .rewardGreen{
@@ -65,11 +64,9 @@ h2.error {
     background-image: -o-linear-gradient(top, #a7ed7c, #43AF11);
     background-image: linear-gradient(to bottom,  #a7ed7c, #43AF11);
 }
+
 .rewardGreen:Hover{
-	/*
-	background-color: #aff874;
-	background-color: #15ce56;
-	*/
+	
 	background-image: -webkit-linear-gradient(top, #aff874, #15ce56);
     background-image: -moz-linear-gradient(top, #aff874, #15ce56);
     background-image: -ms-linear-gradient(top, #aff874, #15ce56);
