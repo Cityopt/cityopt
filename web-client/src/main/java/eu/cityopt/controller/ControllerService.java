@@ -121,7 +121,7 @@ public class ControllerService {
 	         }
 	    }
 	    
-	  // Set up component and External parameter Values according to project and model attributes.  
+	    // Set up component and External parameter Values according to project and model attributes.  
 	    public void SetComponentAndExternalParamValues(Map<String,Object> model, ProjectDTO project ){
 	    	List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 	        model.put("components", components);
@@ -148,7 +148,7 @@ public class ControllerService {
 		            return nSelectedExtParamSetId;		            
 	    }    	
 	    	
-	  // Find External Parameter Value Set by it's id.
+	    // Find External Parameter Value Set by it's id.
 	    public List<ExtParamValDTO> FindExtParamVals(int nSelectedExtParamSetId){
 	    	
 	    List<ExtParamValDTO> extParamVals = null;

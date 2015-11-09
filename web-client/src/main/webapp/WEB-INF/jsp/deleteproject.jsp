@@ -11,20 +11,28 @@
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <style type="text/css">
+	
 	table.tablestyle{
-		margin: 5%;
+		margin-left: 30%;
+		margin-top: 5%;
 		width: 500px;
-		border: 1px; 
+		border: 1px;	
 	}
+	td.mainmenu{
+	position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 260px;
+	}
+	
 </style>
-
 
 </head>
 
 <body>
 	<table cellspacing="0px" cellpadding="0px">
 		<tr>
-			<td><%@ include file="mainmenu.inc"%></td>
+			<td class="mainmenu" ><%@ include file="mainmenu.inc"%></td>
 			<td width="30"></td>
 			<td valign="top">
 				<div
