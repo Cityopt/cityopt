@@ -11,6 +11,25 @@
 <title>CityOpt create metric</title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+
+<style>
+td.collapseBorderTop{
+	border-collapse: collapse;
+	border-top: 2px solid black;
+}
+
+tr.collapseLeft{
+	border-collapse: collapse;
+	border-left: 2px solid black;
+}
+
+tr.collapseRight{
+	border-collapse: collapse;
+	border-left: 2px solid black;
+}
+
+
+</style>
 </head>
 
 <body>
@@ -49,18 +68,17 @@
 
 							<tr>
 								<td></td>
-								<td>
+								<td class="collapseBorderTop">
 									<!-- Components -->
-									<spring:message code="components"/>
-									
+									<spring:message code="components"/>									
 								</td>
-								<td></td>
-								<td>
+								<td class="collapseBorderTop"></td>
+								<td class="collapseBorderTop">
 									<!-- Input variables -->
 									<spring:message code="input_variables"/>
 								</td>
 								<td></td>
-								<td>
+								<td >
 									<!--Output variables  -->
 									<spring:message code="output_variables"/>
 								</td>

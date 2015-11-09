@@ -13,6 +13,12 @@ pageEncoding="UTF-8"%>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Virtual City Login</title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+<style>
+td.login{
+baground-color:#FBBA00;
+}
+</style>
+
 </head>
 
 <!-- onload='document.f.username.focus();'  -->
@@ -68,7 +74,7 @@ pageEncoding="UTF-8"%>
 							
 							<tr height="10"></tr>
 							<tr>
-								<td align="center"><input type="submit"
+								<td class="login" align="center"><input type="submit" 
 									style="width: 100px" value="<spring:message code="login"/>" />
 								</td>
 							</tr>
