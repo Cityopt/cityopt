@@ -51,10 +51,34 @@ h2.error {
 
 .successful {
 	color:#FFFFFF;
-	font-size 2px;	
-	text-shadow: 1px 1px 1px black, 0 0 2px #47AFE2, 0 0 1px #057ec7;
+	font-size 10px;	
+	text-shadow: 1px 1px 1px black, 0 0 4px #a7ed7c, 0 0 4px #43AF11;	
 	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
+	
+	
 }
+
+.rewardGreen{
+	background-image: -webkit-linear-gradient(top, #a7ed7c, #43AF11);
+    background-image: -moz-linear-gradient(top, #a7ed7c, #43AF11);
+    background-image: -ms-linear-gradient(top, #a7ed7c, #43AF11);
+    background-image: -o-linear-gradient(top, #a7ed7c, #43AF11);
+    background-image: linear-gradient(to bottom,  #a7ed7c, #43AF11);
+}
+.rewardGreen:Hover{
+	/*
+	background-color: #aff874;
+	background-color: #15ce56;
+	*/
+	background-image: -webkit-linear-gradient(top, #aff874, #15ce56);
+    background-image: -moz-linear-gradient(top, #aff874, #15ce56);
+    background-image: -ms-linear-gradient(top, #aff874, #15ce56);
+    background-image: -o-linear-gradient(top, #aff874, #15ce56);
+    background-image: linear-gradient(to bottom,  #aff874, #15ce56);
+}
+
+
+
 
 h3 {
 	color: #B3B3B3;
@@ -426,8 +450,23 @@ table.tablegroup{
 	text-decoration: underline;
 }
 
+.DarkBlue{
+	/*color: #47AFE2  and #0B3144; */
+	background-image: -webkit-linear-gradient(top, #47AFE2, #0B3144);
+    background-image: -moz-linear-gradient(top, #47AFE2, #0B3144);
+    background-image: -ms-linear-gradient(top, #47AFE2, #0B3144);
+    background-image: -o-linear-gradient(top, #47AFE2, #0B3144);
+    background-image: linear-gradient(to bottom,  #47AFE2,  #0B3144);
+}
 
-
+.GreenYellow{
+	/*color: #47AFE2  and #0B3144; */
+	background-image: -webkit-linear-gradient(top, #aee247, #61e247);
+    background-image: -moz-linear-gradient(top, #aee247, #61e247);
+    background-image: -ms-linear-gradient(top, #aee247, #61e247);
+    background-image: -o-linear-gradient(top, #aee247, #61e247);
+    background-image: linear-gradient(to bottom,  #aee247, #61e247);
+}
 
 button, input[type="button"], input[type="submit"] {
 	background: #c7e3f5;
