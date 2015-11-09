@@ -980,23 +980,22 @@ public class ProjectController {
         // ;(projectid, clonename, true, false, true, false);
     }
     
-    
     // Get Project from database based on model and projectID
     public ProjectDTO ParseProjectIDtoProjectDTO(Map<String, Object> model, String projectid){
-    	 
+    	
     	ProjectDTO project = (ProjectDTO) model.get("project");
-          int nProjectId = Integer.parseInt(projectid);
-          try {
-              project = projectService.findByID(nProjectId);
-          } catch (EntityNotFoundException e1) {
-              // TODO Auto-generated catch block
-              e1.printStackTrace();
-          }
+    	int nProjectId = Integer.parseInt(projectid);
+    	
+    	try {
+    		project = projectService.findByID(nProjectId);
+    	} catch (EntityNotFoundException e1) {
+    		e1.printStackTrace();
+    	}
+    	
+    	model.put("project", project);
     	return project;
     }
     
-
-
     @RequestMapping(value="units", method=RequestMethod.GET)
     public String getUnits(Model model){
         List<UnitDTO> units = unitService.findAll();

@@ -260,10 +260,9 @@ public class ScenarioController {
 			model.put("project", project);			
 			ScenarioDTO scenario = new ScenarioDTO();			
 			
-			//Fix #10457 By:Markus Turunen Checking no other entries. Too wide			
-			//List<ScenarioDTO> elements = scenarioService.findByNameContaining(formScenario.getName());
+			ScenarioDTO scenarioTest = scenarioService.findByNameAndProject(project.getPrjid(), formScenario.getName());
 			
-			if (scenarioService.findByName(formScenario.getName())==null){			
+			if (scenarioTest==null){			
 				scenario.setName(formScenario.getName().trim());
 				scenario.setDescription(formScenario.getDescription().trim());
 				scenario.getScenid();
@@ -272,7 +271,6 @@ public class ScenarioController {
 				try {
 					scenario = scenarioService.saveWithDefaultInputValues(scenario, project.getPrjid());
 				} catch (EntityNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				model.put("components", components);
@@ -377,7 +375,7 @@ public class ScenarioController {
 			
 			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
 			
-			// Get simulatino start and end times
+			// Get simulation start and end times
 			while(iter.hasNext())
 			{
 				InputParamValDTO inputParamVal = iter.next();
