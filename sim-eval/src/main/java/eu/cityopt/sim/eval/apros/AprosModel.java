@@ -11,11 +11,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.StandardCopyOption;
-import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -60,7 +61,8 @@ public class AprosModel implements SimulationModel {
     TempDir modelDir;
     String[] resultFilePatterns;
     final Document uc_props;
-    Instant timeOrigin;
+    final Defaults defaults = new Defaults();
+    final Map<String, String> descriptions = new HashMap<>(); 
     List<String[]> modelOutputs;
 
     AprosModel(String profileName, InputStream inputStream, AprosManager manager)
@@ -147,8 +149,14 @@ public class AprosModel implements SimulationModel {
                     value.split(Pattern.quote(System.getProperty("path.separator")));
                 break;
             case "timeOrigin":
-                this.timeOrigin = TimeUtils.parseISO8601(value);
+                defaults.timeOrigin = TimeUtils.parseISO8601(value);
                 break;
+            case "simulationStart":
+            	defaults.simulationStart = TimeUtils.parseISO8601(value);
+            	break;
+            case "simulationEnd":
+            	defaults.simulationEnd = TimeUtils.parseISO8601(value);
+            	break;
             case "aprosProfile":
                 if (this.profileName == null) {
                     if (!manager.checkProfile(value)) {
@@ -158,8 +166,18 @@ public class AprosModel implements SimulationModel {
                 }
                 break;
             default:
-                throw new ConfigurationException(
-                        "Unknown property " + key + " in " + MODEL_CONFIGURATION_FILENAME);
+            	String DESCR_PREFIX = "description_";
+            	if (key.startsWith(DESCR_PREFIX)) {
+            		String lang = key.substring(DESCR_PREFIX.length());
+            		if (!Arrays.asList(Locale.getISOLanguages()).contains(lang)) {
+            			throw new ConfigurationException(
+                				"Unknown language " + lang + " in " + MODEL_CONFIGURATION_FILENAME);
+            		}
+            		descriptions.put(lang, value);
+            	} else {
+            		throw new ConfigurationException(
+            				"Unknown property " + key + " in " + MODEL_CONFIGURATION_FILENAME);
+            	}
             }
         }
     }
@@ -213,13 +231,14 @@ public class AprosModel implements SimulationModel {
     }
 
     @Override
-    public Instant getTimeOrigin() {
-        return timeOrigin;
+    public Defaults getDefaults() {
+        return defaults;
     }
 
     @Override
-    public Document getAprosUserComponentStructure() {
-        return uc_props;
+    public String getDescription(List<Locale.LanguageRange> priorityList) {
+        String tag = Locale.lookupTag(priorityList, descriptions.keySet());
+        return (tag != null) ? descriptions.get(tag) : null;
     }
 
     @Override

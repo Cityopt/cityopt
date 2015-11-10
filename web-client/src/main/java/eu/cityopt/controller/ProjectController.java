@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -526,7 +527,8 @@ public class ProjectController {
                 String simulatorName = simulatorNames.iterator().next();
                 Instant timeOrigin =  Instant.parse("2015-01-01T00:00:00Z");
 
-                importExportService.importSimulationModel(project.getPrjid(), 0, "Imported energy model " + Instant.now(), bytes, simulatorName, timeOrigin);
+                List<Locale.LanguageRange> languageList = Locale.LanguageRange.parse("en");
+                importExportService.importSimulationModel(project.getPrjid(), 0, languageList, bytes, simulatorName, timeOrigin);
                 importExportService.importModelInputsAndOutputs(project.getPrjid(), 0);
                 
                 model.put("success",true);

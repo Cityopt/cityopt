@@ -59,7 +59,7 @@ public class AprosModelTest extends AprosTestBase {
              InputStream in = getClass().getResourceAsStream(modelResource)) {
             SimulationModel model = manager.parseModel(profileName, in);
 
-            Namespace ns = new Namespace(new Evaluator(), model.getTimeOrigin());
+            Namespace ns = new Namespace(new Evaluator(), model.getDefaults().timeOrigin);
             Map<String, Map<String, String>> units = new HashMap<>();
             ns.initConfigComponent();
             StringWriter warnings = new StringWriter();
@@ -88,5 +88,23 @@ public class AprosModelTest extends AprosTestBase {
             }
             return defaultInput;
         }
+    }
+
+    @Test
+    public void testDescriptions() throws Exception {
+        SimulationModel model;
+        try (SimulatorManager manager = new AprosManager(
+                profileDir, Executors.newSingleThreadExecutor(), System.out);
+             InputStream in = getClass().getResourceAsStream(props.getProperty("testzip"))) {
+            model = manager.parseModel(profileName, in);
+        }
+        assertEquals("en förenklad modell för programtestning", model.getDescription("sv"));
+        assertNotNull(model.getDescription("en"));
+        assertNotNull(model.getDescription("fi"));
+        assertNotNull(model.getDescription("de"));
+        assertNull(model.getDescription("et"));
+        assertNotNull(model.getDescription("et,en"));
+        assertNotNull(model.getDescription("*-*"));
+        assertEquals("a simplified model for software testing", model.getDescription("*-*;q=0.1,en"));
     }
 }

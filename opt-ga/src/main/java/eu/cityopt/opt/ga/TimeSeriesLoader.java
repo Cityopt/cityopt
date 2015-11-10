@@ -33,7 +33,7 @@ public class TimeSeriesLoader implements Provider<TimeSeriesData> {
             @Named("timeSeries") ObjectReader reader,
             @Named("timeseries") Path... paths)
                     throws IOException, ParseException {
-        Instant timeOrigin = t0 != null ? t0 : model.getTimeOrigin();
+        Instant timeOrigin = t0 != null ? t0 : model.getDefaults().timeOrigin;
         EvaluationSetup setup = new EvaluationSetup(evaluator, timeOrigin);
         CsvTimeSeriesData tsd = new CsvTimeSeriesData(reader, setup);
         for (Path p : paths) {
