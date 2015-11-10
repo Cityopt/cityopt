@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import eu.cityopt.DTO.UserGroupProjectDTO;
+import eu.cityopt.model.AppUser;
 import eu.cityopt.model.UserGroupProject;
 
 @Repository("userGroupProjectRepository")
@@ -38,5 +39,9 @@ public interface UserGroupProjectRepository extends JpaRepository<UserGroupProje
 			+ " where u.appuser.userid = :userId"
 			+ " and  u.project.prjid is null")
 	UserGroupProject findByUserAndProjectIsNull(@Param("userId") int userId);
+	
+	 
+	@Query("select u.appuser from UserGroupProject u where u.project.prjid= :prjId")
+	List<AppUser> findAppUserOfProject(@Param("prjId") int prjId);
 	
 }

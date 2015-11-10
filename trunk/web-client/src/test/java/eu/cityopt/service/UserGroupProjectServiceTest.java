@@ -133,6 +133,16 @@ public class UserGroupProjectServiceTest {
 	}
 	
 	@Test
+	public void findUserOfProject() {
+		
+		List<AppUserDTO> listUser_1 = userGroupProjectService.findUsersOfProject(1);
+		assertEquals(2,listUser_1.size());
+		
+		List<AppUserDTO> listUser_2 = userGroupProjectService.findUsersOfProject(100);
+		assertNull(listUser_2);
+	}
+	
+	@Test
 	public void addUserToGroupAndProject() throws EntityNotFoundException {
 		userService.addToUserGroupProject(4, 1, 2);
 		UserGroupProjectDTO ugp = userGroupProjectService.findByUserAndProject(4, 2);

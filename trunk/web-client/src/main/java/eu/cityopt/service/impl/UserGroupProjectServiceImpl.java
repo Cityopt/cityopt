@@ -15,6 +15,7 @@ import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.UserGroupProjectDTO;
+import eu.cityopt.model.AppUser;
 import eu.cityopt.model.UserGroupProject;
 import eu.cityopt.repository.UserGroupProjectRepository;
 import eu.cityopt.service.EntityNotFoundException;
@@ -144,6 +145,18 @@ public class UserGroupProjectServiceImpl implements UserGroupProjectService {
 		if(ugp == null)
 			return null;
 		return modelMapper.map(ugp, UserGroupProjectDTO.class);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<AppUserDTO> findUsersOfProject(int projectID) {
+		
+		List<AppUser> listAppUser = userGroupProjectRepository.findAppUserOfProject(projectID);
+		if(listAppUser==null || listAppUser.size()==0)
+			return null;
+		
+		return modelMapper.map(listAppUser,new TypeToken<List<AppUserDTO>>() {}.getType());	
+		
 	}
 	
 	
