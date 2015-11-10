@@ -85,7 +85,9 @@ the following properties:
   Any value given in the user interface overrides the value in the
   cityopt.properties file. 
 
-- description_en is a human-readable model description text in English.
+- description_en is a human-readable model description text in English.  For
+  example: "description_en = Model of the energy system of the Helsinki
+  Kalasatama area, version 1.2 developed by N.N.  The model includes..."
 
 - description_es is a human-readable model description text in Spanish.
 
