@@ -44,7 +44,7 @@ public class ProblemFromBinder implements Provider<OptimisationProblem> {
                              Evaluator evaluator)
                                      throws ParseException, ScriptException {
         Namespace ns = binder.buildWith(new NamespaceBuilder(
-                evaluator, t0 != null ? t0 : model.getTimeOrigin()))
+                evaluator, t0 != null ? t0 : model.getDefaults().timeOrigin))
                 .getResult(); 
         p = binder.buildWith(
                 new ProblemBuilder(model, ns, tsdata)).getResult();

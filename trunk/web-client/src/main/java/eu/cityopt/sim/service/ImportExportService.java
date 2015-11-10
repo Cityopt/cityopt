@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -247,10 +248,13 @@ public class ImportExportService {
      * Creates a SimulationModel row in the database.
      * The imageblob field of the SimulationModel is left null.
      * 
-     * @param projectId id of the project in which the model is initially inserted,
-     *    or null if the model is not inserted in any project.
+     * @param projectId id of the project in which the model is initially
+     *    inserted, or null if the model is not inserted in any project.
      * @param userId id of the creating user, or null
-     * @param description model description
+     * @param languageList determines the language of the model description.
+     *   The choice depends on the availability of description text in the
+     *   model data.
+     *   See {@link java.util.Locale.LanguageRange#parse(String)}.
      * @param modelData the binary model data (e.g. zip file bytes)
      * @param simulatorName a simulator name from {@link SimulatorManagers}.
      *    If null, reading the model will be attempted with support code for
@@ -264,12 +268,12 @@ public class ImportExportService {
      */
     @Transactional
     public int importSimulationModel(Integer projectId, Integer userId,
-            String description, byte[] modelData,
+            List<Locale.LanguageRange> languageList, byte[] modelData,
             String simulatorName, Instant overrideTimeOrigin)
                     throws ConfigurationException, IOException, EntityNotFoundException {
         try (SimulationModel model = SimulatorManagers.parseModel(simulatorName, modelData)) {
             Instant timeOrigin = (overrideTimeOrigin != null)
-                    ? overrideTimeOrigin : model.getTimeOrigin();
+                    ? overrideTimeOrigin : model.getDefaults().timeOrigin;
             if (timeOrigin == null) {
                 throw new ConfigurationException("No time origin provided");
             }
@@ -278,7 +282,7 @@ public class ImportExportService {
                     new eu.cityopt.model.SimulationModel();
             simulationModel.setCreatedby(userId);
             simulationModel.setCreatedon(new Date());
-            simulationModel.setDescription(description);
+            simulationModel.setDescription(model.getDescription(languageList));
             simulationModel.setModelblob(modelData);
             simulationModel.setSimulator(model.getSimulatorName());
             simulationModel.setTimeorigin(Date.from(timeOrigin));

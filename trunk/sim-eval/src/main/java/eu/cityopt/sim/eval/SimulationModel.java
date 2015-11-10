@@ -4,9 +4,9 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.Instant;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-
-import org.w3c.dom.Document;
 
 /**
  * Simulator-agnostic handle to a simulation model.
@@ -20,8 +20,34 @@ public interface SimulationModel extends Closeable {
     /** Returns the name of the specific simulator variant to be used. */
     String getSimulatorName();
 
-    /** Returns origin of simulation time, or null if not known. */
-    Instant getTimeOrigin();
+    /** Default configuration for a model. May be incomplete. */
+    public class Defaults {
+    	/// Origin of simulation time, or null if not known.
+    	public Instant timeOrigin;
+    	/// Default simulation start time, or null if there is no default.
+    	public Instant simulationStart;
+    	/// Default simulation end time, or null if there is no default.
+    	public Instant simulationEnd;
+    }
+
+    /** Returns default configuration for the model, filled so far as known. */
+    Defaults getDefaults();
+
+    /**
+     * Returns a human-readable model description in a preferred language,
+     * or null if not available.
+     * @see java.util.Locale.LanguageRange#parse(String)
+     */
+    String getDescription(List<Locale.LanguageRange> priorityList);
+
+    /**
+     * Returns a human-readable model description in a preferred language,
+     * or null if not available.
+     * @see java.util.Locale.LanguageRange#parse(String)
+     */
+    default String getDescription(String languageRanges) {
+        return getDescription(Locale.LanguageRange.parse(languageRanges));
+    }
 
     /**
      * Determines the available model input parameters and output variables
@@ -45,7 +71,4 @@ public interface SimulationModel extends Closeable {
     SimulationInput findInputsAndOutputs(Namespace newNamespace,
     		Map<String, Map<String, String>> units,
             int detailLevel, Writer warningWriter) throws IOException;
-
-    /** Access to Apros user component structure, or null if not available. */
-    Document getAprosUserComponentStructure();
 }

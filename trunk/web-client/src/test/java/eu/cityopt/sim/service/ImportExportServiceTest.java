@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -73,7 +74,7 @@ public class ImportExportServiceTest extends SimulationTestBase {
         int projectId = projectRepository.findByNameContainingIgnoreCase("Empty test project").get(0).getPrjid();
         byte[] modelData = getResourceBytes("/testmodel.zip");
         importExportService.importSimulationModel(
-                projectId, null, "test project",
+                projectId, null, Locale.LanguageRange.parse("la"),
                 modelData, null, null);
         String warnings = importExportService.importModelInputsAndOutputs(projectId, 0);
         if (warnings != null) {

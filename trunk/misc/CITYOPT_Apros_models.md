@@ -25,6 +25,9 @@ What is stored in the database for an Apros simulation model
   to a simulation time of 0.
   [timeOrigin in table SimulationModel]
 
+- human-readable description in a selected language
+  [description in table SimulationModel]
+
 The other fields in table SimulationModel are ignored by the simulation
 code.
 
@@ -55,8 +58,7 @@ the following properties:
 - aprosProfile is the name of the Apros simulation server profile that should
   be used, for example: "aprosProfile = Apros-Combustion-5.13.06-64bit".
   An Apros profile is essentially a special command line version of Apros.
-  The profile can also be specified while importing the model in the CITYOPT
-  tool; the profile specified in the user interface overrides the value in the
+  Any profile specified in the user interface overrides the value in the
   cityopt.properties file.
 
 - resultFiles is a semicolon-separated list of output file patterns,
@@ -68,9 +70,28 @@ the following properties:
 - timeOrigin indicates the real-world time that corresponds to a simulation
   time of 0.  It is in ISO-8601 format, for example:
   "timeOrigin = 2014-04-23T04:30:45.123+01:00".
-  The value can also be given while importing the model in the CITYOPT tool;
-  the value given in the user interface overrides the value in the
+  Any value given in the user interface overrides the value in the
+  cityopt.properties file.
+
+- simulationStart indicates the default simulation start time.
+  It is in ISO-8601 format, for example:
+  "simulationStart = 2014-04-23T04:30:45.123+01:00".
+  Any value given in the user interface overrides the value in the
   cityopt.properties file. 
+
+- simulationEnd indicates the default simulation end time.
+  It is in ISO-8601 format, for example:
+  "simulationEnd = 2015-04-23T04:30:45.123+01:00".
+  Any value given in the user interface overrides the value in the
+  cityopt.properties file. 
+
+- description_en is a human-readable model description text in English.
+
+- description_es is a human-readable model description text in Spanish.
+
+- description_fi is a human-readable model description text in Finnish.
+
+- description_de is a human-readable model description text in German.
 
 Model result files can also be included in the zip file.  They will be used to
 find which model output variables are available, before performing any
