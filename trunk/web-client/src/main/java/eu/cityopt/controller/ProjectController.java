@@ -63,6 +63,8 @@ import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.TimeSeriesDTO;
+import eu.cityopt.DTO.TimeSeriesDTOX;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.DTO.UserGroupDTO;
@@ -753,40 +755,60 @@ public class ProjectController {
                 model.put("project", project);
 
                 InputStream stream = file.getInputStream();
+                String extParamName = "electricity_cost_test";
                 System.out.println("Starting import time series");
-                TimeSeriesData data = importExportService.readTimeSeriesCsv(project.getPrjid(), stream);
                 
-                importExportService.saveTimeSeriesVals("electricity_cost_test", data, Type.TIMESERIES_STEP);
-                //extParamValSetService.updateOrClone(extParamValSet, extParamVals, timeSeriesByParamId);
-                
-                /*ExtParamDTO extParam = new ExtParamDTO();
-                ExtParamValDTO extParamVal = new ExtParamValDTO();
-                */
-                
-                stream.close();
-                System.out.println("Finished importing time series");
-
                 List<ExtParamValDTO> extParamVals = null;
                 int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-             
+                ExtParamValSetDTO extParamValSet = null;
+                
                 if (defaultExtParamValSetId != 0)
         		{
                 	try {
-	                    ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
+	                    extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
 	                    model.put("extParamValSet", extParamValSet);
 	                } catch (EntityNotFoundException e1) {
 	                    e1.printStackTrace();
 	                }
-	
+	    		}
+                
+                if (extParamValSet != null)
+                {
+	                Map<String, TimeSeriesDTOX> tsData = importExportService.readTimeSeriesCsv(project.getPrjid(), stream);
+	                TimeSeriesDTOX ts = tsData.get(extParamName);
+	                ExtParamDTO extParam = new ExtParamDTO();
+	                
+	                if (extParamService.findByName(extParamName) != null)
+	                {
+	                	extParamName += "_" + System.currentTimeMillis();
+	                }
+	                
+	                extParam.setName(extParamName);
+	                TypeDTO type = typeService.findByName(eu.cityopt.sim.eval.Type.TIMESERIES_STEP.name);
+	                extParam.setType(type);
+	                extParam = extParamService.save(extParam, project.getPrjid());
+	                
+	                ExtParamValDTO extParamVal = new ExtParamValDTO();
+	                extParamVal.setExtparam(extParam);
+	                extParamVal = extParamValService.save(extParamVal);
+	                
+	                extParamValSetService.updateExtParamValInSetOrClone(extParamValSet.getExtparamvalsetid(), extParamVal, ts);
+	                
+	                extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
+	                model.put("extParamValSet", extParamValSet);
+	                
 	                try {
 	                    extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
 	                } catch (EntityNotFoundException e) {
 	                    e.printStackTrace();
 	                }
-	
-	                 model.put("extParamVals", extParamVals);
-	            }
-	        	List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+	                model.put("extParamVals", extParamVals);
+                }
+                
+                stream.close();
+                System.out.println("Finished importing time series");
+
+                List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 	            model.put("components", components);
 	            Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
 	            model.put("extParams", extParams);
@@ -801,7 +823,7 @@ public class ProjectController {
 
     @RequestMapping(value = "exportextparam", method = RequestMethod.GET)
     public void exportExtParam(Map<String, Object> model, 
-		@RequestParam(value="extparamid", required=true) String strExtParamId, 
+		@RequestParam(value="extparamvalid", required=true) String strExtParamId, 
 		@RequestParam(value="extparamvalsetid", required=true) String strExtParamValSetId,
    		HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -833,7 +855,7 @@ public class ProjectController {
         // set headers for the response
         response.setContentType("text/csv");
         String headerKey = "Content-Disposition";
-        String headerValue = String.format("attachment; filename=\"project.csv\"");
+        String headerValue = String.format("attachment; filename=\"external_parameters.csv\"");
         response.setHeader(headerKey, headerValue);
 
         OutputStream outputStream = response.getOutputStream();
