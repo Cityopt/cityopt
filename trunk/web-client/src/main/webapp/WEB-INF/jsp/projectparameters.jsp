@@ -34,14 +34,14 @@ padding-right: 5%;
 
 table.close_button{
 right: 0px;
-margin-right:5%;
 width:100%;
 }
 
 .big{
 float:right;
-margin-right: 16%;
-margin-bottom: 5%;
+margin-right: 2%;
+margin-top: 5%;
+margin-bottom: 10%;
 }	
 
 </style>
@@ -53,7 +53,7 @@ margin-bottom: 5%;
 			</td>
 			<td width="5%"></td>
 			<td valign="top">
-				<div style="overflow: scroll; height: 100%; width: 100%; overflow: auto">
+				<div style="overflow: auto; height: 100%; width: 100%; overflow: auto;">
 					<table>
 						<col style="width: 5%">
 						<col style="width: 95%">
@@ -341,6 +341,14 @@ margin-bottom: 5%;
 																		<td><input id="file" name="file" type="file"/><input type="submit" value="Import file"></td>	
 																	</tr>
 									    						</form:form>
+									    							<table class="close_button" >
+																		<td><td>
+																		<tr>														
+																			<td><a href="editproject.html"><button class="big" type="button">
+																			<spring:message code="close" />
+																			</button></a></td>
+																			</tr>
+																	</table>
 									    					</table>
 								    					</td>
 							    					</tr>
@@ -348,19 +356,10 @@ margin-bottom: 5%;
 											</td>
 										</tr>
 									</table>
-
-									
 								</table>
 							</td>
 						</tr>
-							<table class="close_button" >
-								<td><td>
-								<tr>														
-									<td><a href="editproject.html"><button class="big" type="button">
-													<spring:message code="close" />
-									</button></a></td>
-								</tr>
-							</table>
+						
 					</table>
 				</div>
 			</td>
