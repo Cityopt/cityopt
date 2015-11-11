@@ -95,27 +95,28 @@ public class ParameterController {
     @Autowired
     TypeService typeService;
     
-   
-       
+    @Autowired
+    ControllerService controlerService;
+          
     //private void checkScenarioParameterModirfySecurityClearance(){    
-    
+    //#model.get('project').getPrjid()
     // Front Controllers;
     
     @PreAuthorize("hasRole('ROLE_Administrator') or ("
 		    +" hasRole('ROLE_Expert') and ("
-		    	+" hasPermission(#model,'ROLE_Administrator') or"
-		    	+" hasPermission(#model,'ROLE_Expert')"
-		    	   						+ "))")
+		    	+" hasPermission(#model.get('project'),'ROLE_Administrator') or"
+		    	+" hasPermission(#model.get('project'),'ROLE_Expert')))")
+    
     @RequestMapping(value="projectparameters", method=RequestMethod.GET)
     public String getProjectParameters(Map<String, Object> model, 
             @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
      
-    	ProjectDTO project = this.GetProject(model);
-    	if (this.NullCheck(project)){return "error";}
-        this.SetUpSelectedComponent(model, selectedCompId);
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+    	if (controlerService.NullCheck(project)){return "error";}
+    	controlerService.SetUpSelectedComponent(model, selectedCompId);
         model.put("project", project);
-        this.SetProjectExternalParameterValues(model,project);        
-        this.SetComponentAndExternalParamValues(model,project);        
+        controlerService.SetProjectExternalParameterValues(model,project);        
+        controlerService.SetComponentAndExternalParamValues(model,project);        
         return "projectparameters";
     }
     
