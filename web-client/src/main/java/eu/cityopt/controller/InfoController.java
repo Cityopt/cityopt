@@ -20,4 +20,10 @@ public class InfoController {
 	public String PaginationPrototype(){
 		return "pagination_prototype";
 	}
+	
+	@RequestMapping( value="importdata_info", method=RequestMethod.GET)
+	public String ImportDataInfo(){		
+		return "importdata_info";
+	}
+	
 }

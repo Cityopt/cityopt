@@ -120,9 +120,14 @@ public class ProjectPermissionEvaluator implements PermissionEvaluator {
 			int projectIDn= (int) targetDomainObject;
 			return projectIDn;
 		}else if(targetDomainObject instanceof Map<?,?>){			
-			@SuppressWarnings("unchecked")
+			@SuppressWarnings("unchecked")			
 			Map<String, Object> model = (Map<String, Object>) targetDomainObject;
+			System.out.println("Security Warning: Unsafe Type used as Permission evaluation");
 			ProjectDTO project = (ProjectDTO) model.get("project");
+			return project.getPrjid();			
+		}
+		else if(targetDomainObject instanceof ProjectDTO){			
+			ProjectDTO project = (ProjectDTO) targetDomainObject;
 			return project.getPrjid();			
 		}
 		else{

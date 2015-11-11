@@ -10,7 +10,20 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>CityOpt import data</title>
 
+<script>
+    function openInfoWindow() {
+    	   window.open("importdata_info.html",'Info: Create Project','width=600,height=800');
+    }
+</script>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+<style>
+div.infoButton{
+
+}
+td.info{
+margin-right:10%;
+}
+</style>
 </head>
 
 <body>
@@ -19,28 +32,38 @@
 		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-
 		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:800px;width:1200px;overflow:auto">
+			<div style="overflow:scroll;height:100%;width:100%;overflow:auto">
 			<table>
 				<col style="width:600px">	
-				<col style="width:700px">	
-			
+				<col style="width:700px">					
 				<tr>
 					<td>
 						<!-- Import data -->
 						<h2><spring:message code="import_data"/></h2>
 					</td>
-					<td align="right">						
-						<!-- Download project templates & download button -->
+						<!-- Info Button -->
+																				
+						<td class=info align="right">						
+						<!-- Download project templates & download button -->												
+						<c:set var="tooltip_info"><spring:message code="tooltip_info"/></c:set>
+						<div class="round-button" title="${tooltip_info}">
+						<div class="round-button-circle" onclick="openInfoWindow()">
+							<a>?</a>		
+							</div> 
+						</div>											
 						<p><spring:message code="download_project_templates"/><a href="">						
 						<button><spring:message code="download"/></button></a></p>
 						
 						<!-- Download scenario templates & download button -->
 						<p><spring:message code="download_scenario_templates"/><a href="">
 						<button><spring:message code="download"/></button></a></p>
-					</td>
+						</td>			
+											
+					
+						
+					
 				</tr>
 				<tr>
 					<td valign="top">

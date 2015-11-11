@@ -5,15 +5,18 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.ProjectDTO;
+import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentService;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ExtParamService;
@@ -59,14 +62,26 @@ public class ControllerService {
 	    @Autowired
 	    TypeService typeService;
 		
+	    @Autowired
+	    AppUserService userService;
+	    
 		// Finds project By model and project id;
-	    public ProjectDTO GetProject(Map<String,Object> model){    	
-	    	ProjectDTO project =(ProjectDTO) model.get("project");       
-	    	try {
-	            project = projectService.findByID(project.getPrjid());
-	        } catch (EntityNotFoundException e1) {
-	            e1.printStackTrace();
-	        }    	
+	     
+	    public AppUserDTO FindAuthenticatedUser(Authentication authentication) throws Exception{
+			
+			String authenticatedUserName = authentication.getName();			
+			AppUserDTO appuserdto;
+			try {
+				appuserdto = userService.findByName(authenticatedUserName);
+			} catch (EntityNotFoundException e) {
+				throw new Exception("User dosen't exist in database or being authorized");			
+			}
+			return appuserdto;
+		}
+	    	    
+	   
+	    public static ProjectDTO GetProject(Map<String,Object> model){    	
+	    	ProjectDTO project =(ProjectDTO) model.get("project");	    	  	
 	    	return project;
 	    }
 	    
