@@ -10,14 +10,14 @@
 <title>CityOpt Delete project</title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
-<style type="text/css">
-	
+<style type="text/css">	
 	table.tablestyle{
 		margin-left: 35%;
 		margin-top: 5%;
 		width: 500px;
 		border: 1px;	
 	}
+	
 	td.mainmenu{
 	position: absolute;
     top: 0px;
