@@ -236,17 +236,8 @@ margin-bottom: 10%;
 																	<tr>
 																		<td>${extParamVal.extparam.name}</td>
 																		<td>${extParamVal.comment}</td>
-
-																		<c:choose>
-																			<c:when	test="${eu.cityopt.sim.eval.Type.getByName(extParamVal.extparam.getType().getName()).isTimeSeriesType()}">
-																				<td>Time series</td>
-																				<td>...</td>
-																			</c:when>
-																			<c:otherwise>
-																				<td>Value</td>
-																				<td>${extParamVal.value}</td>
-																			</c:otherwise>
-																		</c:choose>
+																		<td>${extParamVal.extparam.getType().getName()}</td>
+																		<td>${extParamVal.value}</td>
 																		<td>
 																			<a href="<c:url value='editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}'/>">
 																				<button align="right" type="button" value="Edit">
@@ -255,7 +246,7 @@ margin-bottom: 10%;
 																			</a>
 																		</td>
 																		<td>
-																			<a href="<c:url value='exportextparam.html?extparamvalid=${extParamVal.extparamvalid}'/>">
+																			<a href="<c:url value='exportextparam.html?extparamvalid=${extParamVal.extparamvalid}&extparamvalsetid=${extParamValSet.extparamvalsetid}'/>">
 																				<button align="right" type="button" value="Export">
 																					Export
 																				</button>
@@ -295,15 +286,7 @@ margin-bottom: 10%;
 																<c:forEach items="${extParams}" var="extParam">
 																	<tr>
 																		<td>${extParam.name}</td>
-
-																		<c:choose>
-																			<c:when	test="${eu.cityopt.sim.eval.Type.getByName(extParam.getType().getName()).isTimeSeriesType()}">
-																				<td>Time series</td>
-																			</c:when>
-																			<c:otherwise>
-																				<td>Value</td>
-																			</c:otherwise>
-																		</c:choose>
+																		<td>${extparam.type.name}</td>
 
 																		<td><a href="<c:url value='deleteextparam.html?extparamid=${extParam.extparamid}'/>">
 																				<button align="right" type="button" value="Remove">

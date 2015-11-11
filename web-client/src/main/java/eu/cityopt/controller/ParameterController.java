@@ -410,6 +410,7 @@ public class ParameterController {
         InputParameterDTO inputParam = new InputParameterDTO();
         inputParam.setName(inputParamForm.getName().trim());
         inputParam.setDefaultvalue(inputParamForm.getDefaultvalue());
+        inputParam.setType(typeService.findByName(eu.cityopt.sim.eval.Type.DOUBLE.name));
         UnitDTO unit = unitService.save(new UnitDTO());
         inputParamService.save(inputParam, component.getComponentid(), unit.getUnitid());
 

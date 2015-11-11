@@ -14,7 +14,7 @@
 <form:form modelAttribute="modelparamform" method="post" action="editsgmodelparams.html">
 <table cellspacing="0" cellpadding="0">
 	<tr>
-		<td>
+		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width="30"></td>
