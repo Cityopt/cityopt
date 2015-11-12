@@ -5,7 +5,10 @@ import java.util.List;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import eu.cityopt.DTO.AppUserDTO;
+import eu.cityopt.DTO.ProjectDTO;
+import eu.cityopt.DTO.UserGroupDTO;
 import eu.cityopt.DTO.UserGroupProjectDTO;
+import eu.cityopt.model.UserGroup;
 import eu.cityopt.model.UserGroupProject;
 
 public interface UserGroupProjectService extends CityOptService<UserGroupProjectDTO>{
@@ -29,7 +32,9 @@ public interface UserGroupProjectService extends CityOptService<UserGroupProject
 	
 	List<AppUserDTO> findUsersOfProject(int projectID);
 	
-	//List <UserGroupProjectDTO> FindProjectsOwnedByUser(int userId, UserRole role);
+	List<ProjectDTO> findProjectsByUser(int userId);
+	
+	List <ProjectDTO> findProjectsByUser(int userId, UserGroupDTO usergroup);
 
 	
 	

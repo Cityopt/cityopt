@@ -14,8 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.AppUserDTO;
+import eu.cityopt.DTO.ProjectDTO;
+import eu.cityopt.DTO.UserGroupDTO;
 import eu.cityopt.DTO.UserGroupProjectDTO;
 import eu.cityopt.model.AppUser;
+import eu.cityopt.model.Project;
 import eu.cityopt.model.UserGroupProject;
 import eu.cityopt.repository.UserGroupProjectRepository;
 import eu.cityopt.service.EntityNotFoundException;
@@ -157,6 +160,31 @@ public class UserGroupProjectServiceImpl implements UserGroupProjectService {
 		
 		return modelMapper.map(listAppUser,new TypeToken<List<AppUserDTO>>() {}.getType());	
 		
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<ProjectDTO> findProjectsByUser(int userId) {		
+		List<Project> listProjects = userGroupProjectRepository.findProjectsByUser(userId);
+		
+		if(listProjects==null || listProjects.size()==0)
+			return null;
+		
+		return modelMapper.map(listProjects,new TypeToken<List<ProjectDTO>>() {}.getType());
+			
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<ProjectDTO> findProjectsByUser(int userId,
+			UserGroupDTO usergroup) {
+		
+		List<Project> listProjects = userGroupProjectRepository.findProjectsByUser(userId,usergroup.getName());
+		
+		if(listProjects==null || listProjects.size()==0)
+			return null;
+		
+		return modelMapper.map(listProjects,new TypeToken<List<ProjectDTO>>() {}.getType());
 	}
 	
 	
