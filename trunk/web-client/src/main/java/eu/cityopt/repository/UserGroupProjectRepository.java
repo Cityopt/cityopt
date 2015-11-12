@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.cityopt.DTO.UserGroupProjectDTO;
 import eu.cityopt.model.AppUser;
+import eu.cityopt.model.Project;
 import eu.cityopt.model.UserGroupProject;
 
 @Repository("userGroupProjectRepository")
@@ -43,5 +44,13 @@ public interface UserGroupProjectRepository extends JpaRepository<UserGroupProje
 	 
 	@Query("select u.appuser from UserGroupProject u where u.project.prjid= :prjId")
 	List<AppUser> findAppUserOfProject(@Param("prjId") int prjId);
+	
+	@Query("select u.project from UserGroupProject u "
+			+ " where u.appuser.userid = :userId")
+	List<Project> findProjectsByUser(@Param("userId") int userId);
+	
+	@Query("select u.project from UserGroupProject u "
+			+ " where u.appuser.userid = :userId and u.usergroup.name= :userGroup")
+	List<Project> findProjectsByUser(@Param("userId") int userId,@Param("userGroup") String userGroup);
 	
 }

@@ -26,6 +26,8 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.DTO.AppUserDTO;
+import eu.cityopt.DTO.ProjectDTO;
+import eu.cityopt.DTO.UserGroupDTO;
 import eu.cityopt.DTO.UserGroupProjectDTO;
 import eu.cityopt.service.impl.GrantedAuthorityImpl;
 
@@ -140,6 +142,25 @@ public class UserGroupProjectServiceTest {
 		
 		List<AppUserDTO> listUser_2 = userGroupProjectService.findUsersOfProject(100);
 		assertNull(listUser_2);
+	}
+	
+	@Test
+	public void findProjectsByUser() {
+		
+		UserGroupDTO userGroupReader = new UserGroupDTO();
+		userGroupReader.setName("ROLE_Reader");
+		
+		UserGroupDTO userGroupExpert = new UserGroupDTO();
+		userGroupExpert.setName("ROLE_Expert");
+		
+		List<ProjectDTO> listProjects_1 = userGroupProjectService.findProjectsByUser(2);
+		assertEquals(2, listProjects_1.size());
+		
+		List<ProjectDTO> listProjects_2 = userGroupProjectService.findProjectsByUser(2,userGroupReader);
+		assertEquals(2, listProjects_2.size());
+		
+		listProjects_2 = userGroupProjectService.findProjectsByUser(2,userGroupExpert);
+		assertNull(listProjects_2);				
 	}
 	
 	@Test
