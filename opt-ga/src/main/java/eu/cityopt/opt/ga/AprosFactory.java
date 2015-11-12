@@ -49,16 +49,54 @@ public class AprosFactory extends ModelFactory {
      * unpredictably.  For reliable results you should call this either
      * never or always after constructing a AprosFactory, always with the
      * same file.  Fortunately that is what happens if you create your
-     * factories with Guice (unless you change the config file contents,
+     * factories with Guice (unless you change the config file,
      * so don't).
-     * @param config node configuration file containing a JSON object array
+     * @param config node configuration or null to stick with the AprosManager
+     *   default.
      */
     @Inject(optional=true)
-    public void setNodeConfig(@Named("nodeConfig") Path config)
+    public void setNodeConfig(
+            @Named("nodeConfig") List<Map<String, String>> config) {
+        nodes = config;
+    }
+    
+    /**
+     * A combination of {@link #readNodeConfig} and
+     * {@link #setNodeConfig(List)}.
+     */
+    public void setNodeConfig(Path config) throws IOException {
+        setNodeConfig(readNodeConfig(config));
+    }
+            
+    
+    /**
+     * Read and return a node configuration from a JSON file.  The file
+     * should contain a JSON array of objects, all fields strings.
+     */
+    public static List<Map<String, String>> readNodeConfig(Path conffile)
             throws IOException {
-        nodes = (new ObjectMapper()).readValue(
-                config.toFile(),
+        return (new ObjectMapper()).readValue(
+                conffile.toFile(),
                 new TypeReference<List<Map<String, String>>>() {});
+    }
+    
+    private static int parseCpus(String s) {
+        try {
+            return s == null ? 1 : Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return 1;
+        }
+    }
+    
+    /**
+     * Return the total number of CPUs in the given node configuration.
+     * The number of CPUs in each node is expected to be stored under key
+     * "cpu".  These map values are parsed as ints and summed over nodes.
+     * Parse errors and missing values are treated as 1.
+     */
+    public static Integer numCpus(List<Map<String, String>> config) {
+        return config.stream().map(m -> m.get("cpu"))
+                .mapToInt(AprosFactory::parseCpus).sum();
     }
 
     @Override
