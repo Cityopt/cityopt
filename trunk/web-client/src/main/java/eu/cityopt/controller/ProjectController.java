@@ -35,6 +35,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -167,6 +168,7 @@ import eu.cityopt.service.OptConstraintService;
 import eu.cityopt.service.OptSearchConstService;
 import eu.cityopt.service.OptimizationSetService;
 import eu.cityopt.service.OutputVariableService;
+import eu.cityopt.service.ProjectManagementService;
 import eu.cityopt.service.ProjectService;
 import eu.cityopt.service.ScenarioGeneratorService;
 import eu.cityopt.service.ScenarioService;
@@ -300,7 +302,8 @@ public class ProjectController {
     @Autowired
     MessageSource resource;
     
-   
+    @Autowired
+    ProjectManagementService projectManagementService;
     
     
     
@@ -368,8 +371,18 @@ public class ProjectController {
 				userGroupProject.setUsergroup(userGroup);
 				userGroupProject = userGroupProjectService.save(userGroupProject);
                  */
+                
+                
 
-                project = projectService.save(project, 0, 0);               
+                project = projectService.save(project, 0, 0);      
+                
+                
+                // Set up the project Rights.
+                Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                String user= ((UserDetails)principal).getUsername();
+                projectManagementService.createProjectWithAdminUser(project, user);
+                
+                
                 model.put("project", project);
                 model.remove("scenario");               
                 model.remove("optimizationset");
@@ -414,7 +427,41 @@ public class ProjectController {
     @RequestMapping(value="openproject", method=RequestMethod.GET)
     public String getStringProjects(Map<String, Object> model)
     {
-        List<ProjectDTO> projects = projectService.findAll();
+    	// Fine if Administrator
+    	List<ProjectDTO> projects= new ArrayList<ProjectDTO>();    			
+    	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if ( principal != null && principal instanceof UserDetails) {
+            Collection<? extends GrantedAuthority> authorites = ((UserDetails)principal).getAuthorities();
+           
+            
+            for(int i=0;authorites.size()>i;i++){
+            	GrantedAuthority accessProvided = (GrantedAuthority) authorites.toArray()[i];
+            	if (accessProvided.getAuthority().equals("ROLE_Administrator")){
+            		projects = projectService.findAll();
+               
+            	}     	
+            }
+            if(projects.size()==0){
+            	 String username= ((UserDetails)principal).getUsername();
+            	 int userID;
+				try {
+					userID = userService.findByName(username).getUserid();
+					projects = userGroupProjectService.findProjectsByUser(userID);
+				} catch (EntityNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            	
+            	 
+            }
+            
+        } else {
+        	//
+        }
+    	
+        
+        
         model.put("projects", projects);
 
         return "openproject";
