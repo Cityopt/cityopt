@@ -98,10 +98,7 @@ public class ParameterController {
     @Autowired
     ControllerService controlerService;
           
-    //private void checkScenarioParameterModirfySecurityClearance(){    
-    //#model.get('project').getPrjid()
-    // Front Controllers;
-    
+       
     @PreAuthorize("hasRole('ROLE_Administrator') or ("
 		    +" hasRole('ROLE_Expert') and ("
 		    	+" hasPermission(#model.get('project'),'ROLE_Administrator') or"
@@ -119,8 +116,7 @@ public class ParameterController {
         controlerService.SetComponentAndExternalParamValues(model,project);        
         return "projectparameters";
     }
-    
-
+        
     @RequestMapping(value="selectextparamset", method=RequestMethod.GET)
     public String getSelectExtParamSet(Map<String, Object> model, 
             @RequestParam(value="selectedextparamsetid", required=false) String selectedExtParamSetId) {
@@ -423,10 +419,6 @@ public class ParameterController {
         
         return "projectparameters";
     }
-
-    
-    
-    
     
     @RequestMapping(value="createextparam", method=RequestMethod.GET)
     public String getCreateExtParam(Map<String, Object> model) {
@@ -864,7 +856,6 @@ public class ParameterController {
         return "projectparameters";
     }
     
-        
     ///------- Help Methods-------////	
 	// Finds project By model and project id;
     public ProjectDTO GetProject(Map<String,Object> model){    	
