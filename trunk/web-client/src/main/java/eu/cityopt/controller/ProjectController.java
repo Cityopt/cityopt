@@ -755,7 +755,6 @@ public class ProjectController {
                 model.put("project", project);
 
                 InputStream stream = file.getInputStream();
-                String extParamName = "electricity_cost_test";
                 System.out.println("Starting import time series");
                 
                 List<ExtParamValDTO> extParamVals = null;
@@ -775,25 +774,42 @@ public class ProjectController {
                 if (extParamValSet != null)
                 {
 	                Map<String, TimeSeriesDTOX> tsData = importExportService.readTimeSeriesCsv(project.getPrjid(), stream);
-	                TimeSeriesDTOX ts = tsData.get(extParamName);
-	                ExtParamDTO extParam = new ExtParamDTO();
+	                Set<String> keys = tsData.keySet();
+	                Iterator<String> iter = keys.iterator();
 	                
-	                if (extParamService.findByName(extParamName) != null)
+	                while (iter.hasNext())
 	                {
-	                	extParamName += "_" + System.currentTimeMillis();
-	                }
-	                
-	                extParam.setName(extParamName);
-	                TypeDTO type = typeService.findByName(eu.cityopt.sim.eval.Type.TIMESERIES_STEP.name);
-	                extParam.setType(type);
-	                extParam = extParamService.save(extParam, project.getPrjid());
-	                
-	                ExtParamValDTO extParamVal = new ExtParamValDTO();
-	                extParamVal.setExtparam(extParam);
-	                extParamVal = extParamValService.save(extParamVal);
-	                
-	                extParamValSetService.updateExtParamValInSetOrClone(extParamValSet.getExtparamvalsetid(), extParamVal, ts);
-	                
+	                	String extParamName = iter.next();
+	                    TimeSeriesDTOX ts = tsData.get(extParamName);
+		                
+	                	ExtParamDTO extParam = new ExtParamDTO();
+	                	List<ExtParamDTO> testExtParams = extParamService.findByName(extParamName);
+	                	boolean bFound = false;
+	                	
+	                	for (int i = 0; i < testExtParams.size(); i++)
+	                	{
+	                		if (testExtParams.get(i).getName().equalsIgnoreCase(extParamName))
+	                		{
+	                			bFound = true;
+	                		}
+	                	}
+	                	
+		                if (bFound)
+		                {
+		                	extParamName += "_" + System.currentTimeMillis();
+		                }
+		                
+		                extParam.setName(extParamName);
+		                TypeDTO type = typeService.findByName(eu.cityopt.sim.eval.Type.TIMESERIES_STEP.name);
+		                extParam.setType(type);
+		                extParam = extParamService.save(extParam, project.getPrjid());
+		                
+		                ExtParamValDTO extParamVal = new ExtParamValDTO();
+		                extParamVal.setExtparam(extParam);
+		                extParamVal = extParamValService.save(extParamVal);
+		                
+		                extParamValSetService.updateExtParamValInSetOrClone(extParamValSet.getExtparamvalsetid(), extParamVal, ts);
+	                }	                
 	                extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
 	                model.put("extParamValSet", extParamValSet);
 	                
