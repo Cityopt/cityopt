@@ -305,13 +305,13 @@ public class ProjectController {
     @Autowired
     ProjectManagementService projectManagementService;
     
-    
-    
+    // Page where user is redirected if authorization fails.    
     @RequestMapping(value = "/403", method = RequestMethod.GET)
     public String accessDenied(Map<String, Object> model) {      
     	 	return "403";
     }  
 
+    
     @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="createproject", method=RequestMethod.GET)
     public String getCreateProject(Map<String, Object> model) {
@@ -328,7 +328,7 @@ public class ProjectController {
         return "createproject";
     }
 
-    @Secured({"ROLE_Administrator","ROLE_Expert"})
+        @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value = "createproject", method = RequestMethod.POST)
     public String getCreateProjectPost(Map<String, Object> model,
             @Validated @ModelAttribute("newProject") ProjectDTO projectForm, BindingResult bindingResult) {
@@ -397,6 +397,7 @@ public class ProjectController {
             }
         }
     }
+    
     /*
 			Locale locale = LocaleContextHolder.getLocale();			
 			// TODO fix
@@ -422,8 +423,8 @@ public class ProjectController {
 			}	
 			//return "error";
      */
-
-
+    
+    @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard','ROLE_Guest')")   
     @RequestMapping(value="openproject", method=RequestMethod.GET)
     public String getStringProjects(Map<String, Object> model)
     {
@@ -438,8 +439,7 @@ public class ProjectController {
             for(int i=0;authorites.size()>i;i++){
             	GrantedAuthority accessProvided = (GrantedAuthority) authorites.toArray()[i];
             	if (accessProvided.getAuthority().equals("ROLE_Administrator")){
-            		projects = projectService.findAll();
-               
+            		projects = projectService.findAll();               
             	}     	
             }
             if(projects.size()==0){
@@ -451,19 +451,12 @@ public class ProjectController {
 				} catch (EntityNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
-            	
-            	 
-            }
-            
+				}            	 
+            }            
         } else {
         	//
-        }
-    	
-        
-        
+        }                
         model.put("projects", projects);
-
         return "openproject";
     }	
    
@@ -1009,11 +1002,9 @@ public class ProjectController {
     
     //@Secured({"ROLE_Administrator","ROLE_Expert"})
     @PreAuthorize("hasRole('ROLE_Administrator') or"
-    	    +" isAuthenticated() and ("
+    	    	+" isAuthenticated() and ("
     	    	+" hasPermission(#prjid,'ROLE_Administrator') or"
-    	    	+" hasPermission(#prjid,'ROLE_Expert'))") 
-    
-    
+    	    	+" hasPermission(#prjid,'ROLE_Expert'))")    
     @RequestMapping(value="deleteproject",method=RequestMethod.GET)
     public String getDeleteProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid){
         if (prjid != null)
@@ -1044,6 +1035,7 @@ public class ProjectController {
     // @author Markus Turunen
     // date: 25.6.2015
     // This method handles project cloning.	
+    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="cloneproject", method=RequestMethod.GET)
     public String CloneScenario(Map<String, Object> model, @RequestParam(value = "projectid") String projectid) {
       
@@ -1077,8 +1069,7 @@ public class ProjectController {
     		project = projectService.findByID(nProjectId);
     	} catch (EntityNotFoundException e1) {
     		e1.printStackTrace();
-    	}
-    	
+    	}    	
     	model.put("project", project);
     	return project;
     }
@@ -1087,8 +1078,6 @@ public class ProjectController {
     public String getUnits(Model model){
         List<UnitDTO> units = unitService.findAll();
         model.addAttribute("units", units);
-        
-
         return "units";
     }
 
@@ -1265,8 +1254,7 @@ public class ProjectController {
 	    	e.printStackTrace();
 	    }
 	}
-    
-
+ 
     @RequestMapping(value="projectdata", method=RequestMethod.GET)
     public String getProjectData(Map<String, Object> model, 
             @RequestParam(value="selectedcompid", required=false) String selectedCompId,
@@ -1325,8 +1313,6 @@ public class ProjectController {
 
         return "projectdata";
     }
-
-
 
     @RequestMapping(value="coordinates",method=RequestMethod.GET)
     public String getCoordinates(Map<String, Object> model){
@@ -1809,4 +1795,5 @@ public class ProjectController {
     {
         return "error";
     }	
+    
 }
