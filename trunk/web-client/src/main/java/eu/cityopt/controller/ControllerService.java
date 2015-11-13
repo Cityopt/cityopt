@@ -16,6 +16,7 @@ import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.ProjectDTO;
+import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentService;
 import eu.cityopt.service.EntityNotFoundException;
@@ -64,6 +65,8 @@ public class ControllerService {
 		
 	    @Autowired
 	    AppUserService userService;
+	    
+	   
 	    
 		// Finds project By model and project id;
 	     
@@ -245,7 +248,15 @@ public class ControllerService {
 	        }
 	        extParamValSet.setName(newName);
 	       return extParamValSet;
-	    }	
+	    }
+	    
+	    public void SetupModelUnits(Map<String,Object> model){	    	
+	    	List<UnitDTO> Units = unitService.findAll();
+	    	model.put("units", Units);	    	
+	    }
+	    
+	    
+	    
 	    
 	}
 

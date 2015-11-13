@@ -57,7 +57,7 @@
 								<td><form:textarea title="${tooltip_description}" type="text" rows="3" path="description"  style="width:250px"></form:textarea></td>
 							</tr>
 							<tr>
-								<td></td>
+								<td></td>								
 								<!-- Save project -->
 								<c:set var="tooltip_save"><spring:message code="tooltip_edit_project_save"/></c:set>
 								<td><input type="submit" title="${tooltip_save}" value=<spring:message code="save_project"/> style="width:120px"></td>

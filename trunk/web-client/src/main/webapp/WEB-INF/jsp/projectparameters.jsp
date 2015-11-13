@@ -155,6 +155,8 @@ margin-bottom: 10%;
 																<th><spring:message code="id" /></th>
 																<!-- Default value -->
 																<th><spring:message code="default_value" /></th>
+																<!-- Units -->
+																<th><spring:message code="units" /></th>
 																<!-- Edit -->
 																<th><spring:message code="edit" /></th>
 															</tr>
@@ -164,6 +166,7 @@ margin-bottom: 10%;
 																	<td>${inputParam.name}</td>
 																	<td>${inputParam.inputid}</td>
 																	<td>${inputParam.defaultvalue}</td>
+																	<td>${inputParam.unit.name}</td>
 																	<td><a
 																		href="<c:url value='editinputparameter.html?inputparameterid=${inputParam.inputid}'/>">
 																			<button align="right" type="button" value="Edit">
