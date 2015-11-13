@@ -290,7 +290,10 @@ public class ParameterController {
             e.printStackTrace();
         }
         model.addAttribute("inputParam", inputParam);
-
+        List<UnitDTO> units = unitService.findAll();
+        model.addAttribute("units", units);
+        
+        
         return "editinputparameter";
     }
 
@@ -345,6 +348,9 @@ public class ParameterController {
         model.put("components", components);
         List<InputParameterDTO> inputParams = componentService.getInputParameters(componentId);
         model.put("inputParameters", inputParams);
+        
+        
+        
 
         return "projectparameters";
     }

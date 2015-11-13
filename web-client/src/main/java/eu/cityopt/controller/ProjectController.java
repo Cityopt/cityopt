@@ -305,6 +305,9 @@ public class ProjectController {
     @Autowired
     ProjectManagementService projectManagementService;
     
+    @Autowired
+    ControllerService controllerService;
+    
     // Page where user is redirected if authorization fails.    
     @RequestMapping(value = "/403", method = RequestMethod.GET)
     public String accessDenied(Map<String, Object> model) {      
@@ -374,13 +377,13 @@ public class ProjectController {
                 
                 
 
-                project = projectService.save(project, 0, 0);      
+                //project = projectService.save(project, 0, 0);      
                 
                 
                 // Set up the project Rights.
                 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 String user= ((UserDetails)principal).getUsername();
-                projectManagementService.createProjectWithAdminUser(project, user);
+                project = projectManagementService.createProjectWithAdminUser(project, user);
                 
                 
                 model.put("project", project);
@@ -423,8 +426,9 @@ public class ProjectController {
 			}	
 			//return "error";
      */
-    
+        
     @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard','ROLE_Guest')")   
+    // This security annotation allow access to every authorized user.
     @RequestMapping(value="openproject", method=RequestMethod.GET)
     public String getStringProjects(Map<String, Object> model)
     {

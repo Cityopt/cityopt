@@ -45,8 +45,21 @@
 					<td>
 						<form:input style="width:300px" type="text" path="defaultvalue"/>
 					</td>
-				</tr>				
+				</tr>			
 				<!-- ToDO implement Drag panel and use Units in it. -->
+				<tr>
+					<td>
+						Unit
+					</td>
+					<td>					
+						<form:select path="unit">
+							<option value="${inputParam.unit.name}" selected>${inputParam.unit.name}</option>
+							<c:forEach items="${units}" var="unit">																																
+								<option value="${unit.name}">${unit.name}</option>
+							</c:forEach>
+						</form:select>				
+					</td>
+				</tr>
 				
 				<tr height="10">
 					<td>
