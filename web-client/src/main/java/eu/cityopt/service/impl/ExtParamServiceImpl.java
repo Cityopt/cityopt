@@ -54,6 +54,8 @@ public class ExtParamServiceImpl implements ExtParamService {
 	@Transactional(readOnly = true)
 	public List<ExtParamDTO> findByName(String name) {
 		List<ExtParam> extparams = extParamRepository.findByName(name);
+		if(extparams==null || extparams.size()==0)
+			return null;
 		List<ExtParamDTO> result 
 			= modelMapper.map(extparams, new TypeToken<List<ExtParamDTO>>() {}.getType());
 		return result;
@@ -114,8 +116,11 @@ public class ExtParamServiceImpl implements ExtParamService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public ExtParamDTO findByName(String name, int prjid) {
 		ExtParam extparam = extParamRepository.findByName(name,prjid);
+		if(extparam==null)
+			return null;
 		ExtParamDTO result 
 			= modelMapper.map(extparam, new TypeToken<List<ExtParamDTO>>() {}.getType());
 		return result;
