@@ -124,6 +124,7 @@ tr.collapseRight{
 											<th><spring:message code="input_parameter"/></th>
 											<th><spring:message code="id"/></th>
 											<th><spring:message code="default_value"/></th>
+											<th><spring:message code="unit"/></th>
 										</tr>
 										
 										<c:forEach items="${inputParameters}" var="inputParam">
@@ -131,6 +132,7 @@ tr.collapseRight{
 											<td>${inputParam.name}</td>
 									    	<td>${inputParam.inputid}</td>
 									    	<td>${inputParam.defaultvalue}</td>
+									    	<td>${inputParam.unit.name}</td>
 									   	</tr>
 										</c:forEach>
 									</table>

@@ -17,6 +17,13 @@ pageEncoding="UTF-8"%>
 td.login{
 baground-color:#FBBA00;
 }
+
+.login{
+color: #4D4D4D;
+
+}
+
+}
 </style>
 
 </head>
