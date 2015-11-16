@@ -90,11 +90,26 @@
                     <input type="submit" value="Ok">
                     <a href="geneticalgorithm.html"><button type="button" style="width: 100px">Cancel</button></a>
                   </td>
-              </tr>   
+              </tr>
+              <tr>
+              	<td><b>Groups</b></td>
+           	  </tr>   
+              <tr>
+              	<td>
+              	  <table class="tablestyle" style="width: 200px">
+              	  	<th>Group name</th>
+					 <c:forEach items="${groups}" var="group">
+                       <tr>
+                       	 <td>${group}</td>
+                       </tr>
+                     </c:forEach>
+                   </table>
+                </td>
+              </tr>        			
               <tr>
                   <td>
-                    <input type="submit" name="newgroup" value="New Group">
-                    <input type="submit" name="cleangroups" value="Delete Empty Groups">
+                  	<input type="submit" name="newgroup" value="New Group">
+                  	<input type="submit" name="cleangroups" value="Delete Empty Groups">
                   </td>
               </tr>   
 			</table>
