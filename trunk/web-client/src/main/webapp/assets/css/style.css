@@ -465,6 +465,16 @@ table.tablegroup{
     background-image: linear-gradient(to bottom,  #aee247, #61e247);
 }
 
+.Yellow{
+	/*color: #47AFE2  and #0B3144; */
+	background-image: -webkit-linear-gradient(top, #aee247, #FBBA00);
+    background-image: -moz-linear-gradient(top, #aee247, FBBA00);
+    background-image: -ms-linear-gradient(top, #aee247, FBBA00);
+    background-image: -o-linear-gradient(top, #aee247, FBBA00);
+    background-image: linear-gradient(to bottom,  #aee247, FBBA00);
+}
+
+
 button, input[type="button"], input[type="submit"] {
 	background: #c7e3f5;
     background-image: -webkit-linear-gradient(top, #c7e3f5, #458ee0);
