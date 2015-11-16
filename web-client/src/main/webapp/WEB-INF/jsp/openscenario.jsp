@@ -12,6 +12,17 @@
 <title>CityOpt Open scenario</title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+<style type="text/css">
+table.tablestyle{
+margin: 5%;
+}
+
+h2{
+margin-left: 5%;
+}
+
+</style>
+
 </head>
 
 <body>

@@ -53,9 +53,9 @@
 					</td>
 					<td>					
 						<form:select path="unit">
-							<option value="${inputParam.unit.name}" selected>${inputParam.unit.name}</option>
+							<option value="${inputParam.unit}" selected>${inputParam.unit.name}</option>
 							<c:forEach items="${units}" var="unit">																																
-								<option value="${unit.name}">${unit.name}</option>
+								<option value="${unit}">${unit.name}</option>
 							</c:forEach>
 						</form:select>				
 					</td>
