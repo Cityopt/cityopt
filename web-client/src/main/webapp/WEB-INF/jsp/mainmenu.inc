@@ -178,14 +178,6 @@
 					<spring:message code="delete_scenario"/></a>
 				</td>
 			</tr>
-			<tr>
-				<td></td>
-				<td>
-					<!-- Run multi-scenario link -->
-					<a href="runmultiscenario.html">
-					<spring:message code="run_multi_scenario"/></a>
-				</td>
-			</tr>
 		</c:when>	
 		<c:otherwise>
 			<tr>
@@ -215,12 +207,6 @@
 				<td>
 					<!-- Delete scenario -->
 					<spring:message code="delete_scenario"/>		
-				</td></tr>
-			<tr>
-				<td></td>
-				<td>
-					<!--Run multi-scenario-->
-					<spring:message code="run_multi_scenario"/>
 				</td></tr>
 	</c:otherwise>
 </c:choose>
