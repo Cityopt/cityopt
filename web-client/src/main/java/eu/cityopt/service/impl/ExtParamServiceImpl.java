@@ -112,4 +112,12 @@ public class ExtParamServiceImpl implements ExtParamService {
 		Set<ExtParamVal> inputParamVals = eparam.getExtparamvals();
 		return modelMapper.map(inputParamVals, new TypeToken<Set<ExtParamVal>>() {}.getType());
 	}
+
+	@Override
+	public ExtParamDTO findByName(String name, int prjid) {
+		ExtParam extparam = extParamRepository.findByName(name,prjid);
+		ExtParamDTO result 
+			= modelMapper.map(extparam, new TypeToken<List<ExtParamDTO>>() {}.getType());
+		return result;
+	}
 }

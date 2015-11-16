@@ -17,4 +17,6 @@ public interface ExtParamService extends CityOptService<ExtParamDTO> {
 	public Set<ExtParamValDTO> getExtParamVals(int id);
 	
 	List<ExtParamDTO> findByName(String name);
+	
+	ExtParamDTO findByName(String name,int prjid);
 }
