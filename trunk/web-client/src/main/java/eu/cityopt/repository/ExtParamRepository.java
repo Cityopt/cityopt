@@ -11,6 +11,6 @@ import eu.cityopt.model.ExtParam;
 
 @Repository
 public interface ExtParamRepository extends JpaRepository<ExtParam, Integer>{
-	@Query("select e from ExtParam e where Lower(e.name) like CONCAT('%',Lower(:name),'%')")
+	@Query("select e from ExtParam e where e.name=:name")
 	List<ExtParam> findByName(@Param("name") String name);
 }
