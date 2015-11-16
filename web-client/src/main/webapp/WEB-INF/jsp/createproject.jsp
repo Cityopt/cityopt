@@ -15,7 +15,19 @@
     function openInfoWindow() {
     	   window.open("createproject_info.html",'Info: Create Project','width=600,height=800');
     }
-</script> 
+</script>
+
+<style type="text/css">
+table.tablestyle{
+margin: 5%;
+}
+
+table.ProjectCreationForm{
+margin-left: 30px;
+}
+
+
+</style> 
 </head>
 <body>
 <%@ include file="mainmenu.inc"%>
