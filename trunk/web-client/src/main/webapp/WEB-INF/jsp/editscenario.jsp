@@ -87,13 +87,6 @@
 								<td><a href="scenariovariables.html"><button type="button" title="${tooltip_scenario_externalparameters}" style="width:100px">
 								<spring:message code="set"/></button></a></td>
 							</tr>
-							<tr>
-								<!-- Multi scenarios -->					
-								<td><spring:message code="multi_scenarios"/>:</td>
-								<c:set var="tooltip_multiscenarios"><spring:message code="tooltip_edit_multiskenarios"/></c:set>
-								<td><a href="setmultiscenario.html"><button type="button" title="${tooltip_multiscenarios}" style="width:100px">
-								<spring:message code="set"/></button></a></td>
-							</tr>
 							<tr height="15"></tr>
 							<tr>
 								<!-- Scenario simulation status -->
