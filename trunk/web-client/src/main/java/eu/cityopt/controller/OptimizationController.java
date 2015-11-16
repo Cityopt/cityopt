@@ -2610,7 +2610,7 @@ public class OptimizationController {
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) 
-        	return "redirect:/openproject.html";
+        	return "error";
 
         return getGeneticAlgorithm(project, scenGen, model);
     }
@@ -2659,7 +2659,14 @@ public class OptimizationController {
             return "error";
         }
 
-        return "geneticalgorithm";
+        if (scenGen.getAlgorithm().getAlgorithmid() == 1)
+        {
+        	return "gridsearch";
+        }
+        else
+        {
+        	return "geneticalgorithm";
+        }
     }
 
     private List<ComponentDTO> pickInputComponents(
