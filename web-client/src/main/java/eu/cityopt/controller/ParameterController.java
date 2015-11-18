@@ -97,13 +97,15 @@ public class ParameterController {
     
     @Autowired
     ControllerService controlerService;
+    
+    @Autowired
+    SecurityAuthorization securityAuthorization;
           
        
     @PreAuthorize("hasRole('ROLE_Administrator') or ("
 		    +" hasRole('ROLE_Expert') and ("
 		    	+" hasPermission(#model.get('project'),'ROLE_Administrator') or"
-		    	+" hasPermission(#model.get('project'),'ROLE_Expert')))")
-    
+		    	+" hasPermission(#model.get('project'),'ROLE_Expert')))")    
     @RequestMapping(value="projectparameters", method=RequestMethod.GET)
     public String getProjectParameters(Map<String, Object> model, 
             @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
@@ -122,11 +124,13 @@ public class ParameterController {
             @RequestParam(value="selectedextparamsetid", required=false) String selectedExtParamSetId) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
-
         if (project == null)
         {
             return "error";
-        }
+        }        
+        // Security authorization check----
+        securityAuthorization.atLeastExpert_expert(project);
+        //---
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -176,10 +180,11 @@ public class ParameterController {
 
         return "selectextparamset";
     }
-
+    
+    @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert')")
     @RequestMapping(value="createcomponent", method=RequestMethod.GET)
     public String getCreateComponent(Model model){
-
+    	securityAuthorization.atLeastExpert_expert(model);
         ComponentDTO newComponent = new ComponentDTO();
         model.addAttribute("component", newComponent);
 
@@ -194,6 +199,8 @@ public class ParameterController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
+        
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
@@ -219,10 +226,12 @@ public class ParameterController {
 
         return "projectparameters";
     }
-
+   
+    @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert')")
     @RequestMapping(value="editcomponent", method=RequestMethod.GET)
     public String getEditComponent(Model model, @RequestParam(value="componentid", required=true) String componentid) {
-        int nCompId = Integer.parseInt(componentid);
+    	
+    	int nCompId = Integer.parseInt(componentid);
         ComponentDTO component = null;
         try {
             component = componentService.findByID(nCompId);
@@ -244,6 +253,8 @@ public class ParameterController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
+        
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
@@ -278,7 +289,7 @@ public class ParameterController {
 
         return "projectparameters";
     }
-
+    
     @RequestMapping(value="editinputparameter", method=RequestMethod.GET)
     public String getEditInputParameter(Model model, @RequestParam(value="inputparameterid", required=true) String inputid) {
         int nInputId = Integer.parseInt(inputid);
@@ -306,6 +317,8 @@ public class ParameterController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
+        
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
@@ -364,6 +377,7 @@ public class ParameterController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
         if (strSelectedCompId == null || strSelectedCompId.isEmpty())
         {
@@ -400,6 +414,7 @@ public class ParameterController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
         int nSelectedCompId = Integer.parseInt(strSelectedCompId);
         ComponentDTO component = null;
@@ -434,6 +449,7 @@ public class ParameterController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -457,6 +473,7 @@ public class ParameterController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -530,6 +547,7 @@ public class ParameterController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -586,6 +604,7 @@ public class ParameterController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -615,6 +634,7 @@ public class ParameterController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -647,6 +667,7 @@ public class ParameterController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -677,6 +698,7 @@ public class ParameterController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -736,6 +758,7 @@ public class ParameterController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -825,6 +848,7 @@ public class ParameterController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -902,6 +926,7 @@ public class ParameterController {
          }
     }
     
+    // SetProjectxternalParameterValues
     public void SetProjectExternalParameterValues(Map<String,Object> model, ProjectDTO project ){
     	 List<ExtParamValDTO> extParamVals = null;
          int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
@@ -923,8 +948,10 @@ public class ParameterController {
              model.put("extParamVals", extParamVals);
          }
     }
+   
+    
     public void SetComponentAndExternalParamValues(Map<String,Object> model, ProjectDTO project ){
-    	List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+    List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
         model.put("components", components);
         Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
         model.put("extParams", extParams);
