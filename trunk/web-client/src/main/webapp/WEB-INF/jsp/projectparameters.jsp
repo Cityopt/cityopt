@@ -330,7 +330,7 @@ margin-bottom: 10%;
 									    							<table class="close_button" >
 																		<td><td>
 																		<tr>														
-																			<td><a href="editproject.html"><button class="big" type="button">
+																			<td><a href='editproject.html?prjid=${project.prjid}'><button class="big" type="button">
 																			<spring:message code="close" />
 																			</button></a></td>
 																			</tr>
