@@ -33,41 +33,38 @@
 						<h2><spring:message code="external_parameters"/></h2>
 					</td>
 				</tr>
+				<tr class="external_parameter_sets">
+					<td><b><spring:message code="selected_external_parameter_set" />:</b>
+						${extParamValSet.name} <br>
+					</td>
+				</tr>
 				<tr>
 					<td>
-						<table class="tablestyle" width="450">
-							<col style="width:200px">
-							<col style="width:100px">
-							<col style="width:100px">
-							<col style="width:50px">
-									
-							<tr height="20">
-								<!-- Name -->
-							    <th><spring:message code="name"/></th>
-							    <!-- ID -->
-							    <th><spring:message code="id"/></th>
-							    <!-- Value -->
-								<th><spring:message code="value"/></th>
-								<!-- Edit -->
-							    <th><spring:message code="edit"/></th>
-							 						 
-							</tr>
-																					
-							<c:set var="tooltip_edit"><spring:message code="tooltip_edit_scenariovariables"/></c:set>
-							<c:forEach items="${extParamVals}" var="extParamVal">
+					<table class="tablestyle" width="750">
+						<col style="width: 200px">
+						<col style="width: 200px">
+						<col style="width: 100px">
+						<col style="width: 100px">
+						<tr height="20">
+							<!-- Name -->
+							<th><spring:message code="name" /></th>
+							<!-- Comment -->
+							<th><spring:message code="comment" /></th>
+							<!-- Type -->
+							<th><spring:message code="type" /></th>
+							<!-- Value -->
+							<th><spring:message code="value" /></th>
+						</tr>
+
+						<c:forEach items="${extParamVals}" var="extParamVal">
 							<tr>
 								<td>${extParamVal.extparam.name}</td>
-						    	<td>${extParamVal.extparamvalid}</td>
-						    	<td>${extParamVal.value}</td>
-						    	<td>
-									<a href="<c:url value='editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}'/>">
-										<button align="right" title="${tooltip_edit}" type="button" value="Edit">
-										<spring:message code="edit"/></button>
-									</a>
-								</td>
-						   	</tr>
-							</c:forEach>
-						</table>						
+								<td>${extParamVal.comment}</td>
+								<td>${extParamVal.extparam.getType().getName()}</td>
+								<td>${extParamVal.value}</td>
+							</tr>
+						</c:forEach>
+					</table>
 						<table width="100%">
 						
 							<tr height="30">
