@@ -238,6 +238,17 @@ public class ControllerService {
 			return component;
 	    }
 	  
+	    public AppUserDTO FindUserbyUserID(int userID){
+	    	AppUserDTO user = null;
+            try {
+                user = userService.findByID(userID);
+            } catch (EntityNotFoundException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+			return user;
+	    	
+	    }
 	    
 	    public ExtParamValSetDTO SetExtParamValsetName(ExtParamValSetDTO extParamValSet, ProjectDTO project){
 	    	String newName = extParamValSet.getName();

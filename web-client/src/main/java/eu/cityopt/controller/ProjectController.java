@@ -308,6 +308,9 @@ public class ProjectController {
     @Autowired
     ControllerService controllerService;
     
+    @Autowired
+    SecurityAuthorization securityAuthorization;
+    
     // Page where user is redirected if authorization fails.    
     @RequestMapping(value = "/403", method = RequestMethod.GET)
     public String accessDenied(Map<String, Object> model) {      
@@ -360,10 +363,7 @@ public class ProjectController {
 			project.setExtparamvalset(extParamValSet);*/
 
             if (projectService.findByName(project.getName()) == null) {
-                project = projectService.save(project, 0, 0);			
-                model.put("project", project);
-                model.remove("scenario");
-                model.remove("optimizationset");
+               
                 /*
 				AppUserDTO user = (AppUserDTO) model.get("user");				
 				UserGroupProjectDTO userGroupProject = new UserGroupProjectDTO();
@@ -373,8 +373,7 @@ public class ProjectController {
 				UserGroupDTO userGroup = userGroupService.findByGroupName("Administrator").get(0);
 				userGroupProject.setUsergroup(userGroup);
 				userGroupProject = userGroupProjectService.save(userGroupProject);
-                 */
-                
+                 */           
                 
 
                 //project = projectService.save(project, 0, 0);      
@@ -385,6 +384,12 @@ public class ProjectController {
                 String user= ((UserDetails)principal).getUsername();
                 project = projectManagementService.createProjectWithAdminUser(project, user);
                 
+                /*
+                project = projectService.save(project, 0, 0);			
+                model.put("project", project);
+                model.remove("scenario");
+                model.remove("optimizationset");
+                */
                 
                 model.put("project", project);
                 model.remove("scenario");               
@@ -464,26 +469,18 @@ public class ProjectController {
         return "openproject";
     }	
    
-    //@PreAuthorize("hasPermission(#prjid,'ROLE_Administrator')")
-    @PreAuthorize("hasRole('ROLE_Administrator') or("
-    +" isAuthenticated() and ("
-    	+" hasPermission(#prjid,'ROLE_Administrator') or"
-    	+" hasPermission(#prjid,'ROLE_Expert') or"
-    	+" hasPermission(#prjid,'ROLE_Standard') or"
-    	+" hasPermission(#prjid,'ROLE_Guest')"
-    						+ "))") 
+    //@PreAuthorize("hasPermission(#prjid,'ROLE_Administrator')")     
     @RequestMapping(value="editproject", method=RequestMethod.GET)
     public String getEditProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid) {
        
     	if (prjid != null)
         {
+    		securityAuthorization.atLeastGuest_guest(prjid);
+    		
             AppUserDTO user = (AppUserDTO) model.get("user");
 
             int nProjectId = Integer.parseInt(prjid);
-
-            if (true)//userGroupProjectService.findByUserAndProject(user.getUserid(), nProjectId) != null)
-            {				
-                ProjectDTO project = null;
+            ProjectDTO project = null;
                 try {
                     project = projectService.findByID(nProjectId);
 
@@ -493,21 +490,16 @@ public class ProjectController {
                     e.printStackTrace();
                 }
                 model.put("project", project);
+               
+                // WHY?!!?!
                 model.remove("scenario");
-            }
-            else
-            {
-                model.put("error", "User " + user.getName() + " doesn't have rights to open project.");
-
-                List<ProjectDTO> projects = projectService.findAll();
-                model.put("projects", projects);
-
-                return "openproject";
-            }
+                // Why -end--
+           
         }
         else if (model.containsKey("project"))
         {
             ProjectDTO project = (ProjectDTO) model.get("project");
+            securityAuthorization.atLeastGuest_guest(project);
 
             try {
                 project = projectService.findByID(project.getPrjid());
@@ -779,6 +771,7 @@ public class ProjectController {
 	    }
 	}
 
+    
     @RequestMapping(value = "importextparam", method = RequestMethod.POST)
     public String importExtParamFile(Map<String, Object> model, @RequestParam("file") MultipartFile file) {
 
