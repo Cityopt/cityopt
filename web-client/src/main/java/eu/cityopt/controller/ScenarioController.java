@@ -813,6 +813,11 @@ public class ScenarioController {
 
 			if (simService.getRunningSimulations().contains(scenario.getScenid())) {
 				statusMsg = "RUNNING";
+				model.put("disableEdit", true);
+			}
+			else if (statusMsg.equals("SUCCESS"))
+			{
+				model.put("disableEdit", true);
 			}
 			
 			model.put("status", statusMsg);
@@ -1308,6 +1313,14 @@ public class ScenarioController {
 			e1.printStackTrace();
 		}
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		
+		String statusMsg = scenario.getStatus();
+
+		if (statusMsg != null && statusMsg.equals("SUCCESS"))
+		{
+			model.put("disableEdit", true);
+		}
+				
 		ComponentDTO selectedComponent = null;
 		int nSelectedCompId = 0;
 		
@@ -1336,7 +1349,6 @@ public class ScenarioController {
 	        model.put("scenarioParamForm", form);			
 			model.put("selectedcompid", selectedCompId);
 			model.put("selectedComponent",  selectedComponent);
-
 			
 			//List<ComponentInputParamDTO> componentInputParamVals = componentInputParamService.findAllByComponentId(nSelectedCompId);
 			model.put("inputParamVals", inputParamVals);

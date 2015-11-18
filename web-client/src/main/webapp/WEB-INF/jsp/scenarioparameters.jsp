@@ -4,6 +4,7 @@
 <%--@elvariable id="inputParamVal" type="com.cityopt.DTO.InputParamValDTO"--%>
 <%--@elvariable id="extParam" type="com.cityopt.DTO.ExtParamDTO"--%>
 <%--@elvariable id="componentInputParamVal" type="com.cityopt.DTO.ComponentInputParamDTO"--%>
+<%--@elvariable id="disableEdit" type="boolean"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -32,11 +33,22 @@
 				<col style="width:750px">	
 				<tr>
 					<td></td>
-					<td height="80">
+					<td height="20">
 						<!-- Scenario parameters -->
 						<h2><spring:message code="scenario_parameters"/></h2>
 					</td>
 				</tr>
+				<c:choose>
+		    		<c:when test="${disableEdit}">
+		    			<tr>
+							<td></td>
+							<td><p>Please note that the scenario has been simulated and it cannot be edited.</p></td>
+						</tr>
+		    		</c:when>
+		    		<c:otherwise>
+			    	</c:otherwise>
+		    	</c:choose>
+				
 				<tr>
 					<td></td>
 					<td>
@@ -109,13 +121,18 @@
 										<c:forEach items="${inputParamVals}" var="inputParamVal">
 										<tr>
 											<td>${inputParamVal.inputparameter.name}</td>
-											<!--<td>${inputParamVal.value}</td>-->
-									    	<td>
-									    	<form:input type="text" 
-									    	title="${tooltip_edit_inputparameter}" 
-									    	value="${inputParamVal.value}" 
-									    	path="valueByInputId[${inputParamVal.inputparamvalid}]"/>
-									    	
+											<td>
+												<c:choose>
+										    		<c:when test="${disableEdit}">
+										    			${inputParamVal.value}
+										    		</c:when>
+										    		<c:otherwise>
+											    		<form:input type="text" 
+											    			title="${tooltip_edit_inputparameter}" 
+											    			value="${inputParamVal.value}" 
+											    			path="valueByInputId[${inputParamVal.inputparamvalid}]"/>
+											    	</c:otherwise>
+										    	</c:choose>
 									    	</td>
 									    <td>${inputParamVal.inputparameter.unit.name}</td>
 									    	
@@ -140,8 +157,13 @@
 								<td></td>
 								<td align="right">
 									<!-- Update -button -->
-									
-									<input style="width:100px" title="${tooltip_update}"  type="submit" value="Update"/>
+									<c:choose>
+										<c:when test="${disableEdit}">
+							    		</c:when>
+							    		<c:otherwise>
+											<input style="width:100px" title="${tooltip_update}"  type="submit" value="Update"/>
+								    	</c:otherwise>
+									</c:choose>
 									<!-- Close -button -->
 									<c:set var="tooltip_close"><spring:message code="tooltip_close"/></c:set>
 									<a href="editscenario.html"><button title="${tooltip_close}" type="button">
