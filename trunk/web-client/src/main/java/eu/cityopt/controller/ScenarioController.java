@@ -1443,9 +1443,6 @@ public class ScenarioController {
 		return "scenarioparameters";
 	}
 	
-	
-	
-	
 	@RequestMapping(value="scenariovariables",method=RequestMethod.GET)
 	public String getScenarioVariables(Map<String, Object> model,
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
@@ -1464,9 +1461,28 @@ public class ScenarioController {
 		}
 		
 		model.put("project", project);
-		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
-		model.put("extParamVals", extParamVals);
 		
+		List<ExtParamValDTO> extParamVals = null;
+        int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+        
+        if (defaultExtParamValSetId != 0)
+        {
+            try {
+                ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
+                model.put("extParamValSet", extParamValSet);
+            } catch (EntityNotFoundException e1) {
+                e1.printStackTrace();
+            }
+
+            try {
+                extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
+            } catch (EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            model.put("extParamVals", extParamVals);
+        }
+        
 		return "scenariovariables";
 	}
 		
