@@ -815,7 +815,7 @@ public class ScenarioController {
 				statusMsg = "RUNNING";
 				model.put("disableEdit", true);
 			}
-			else if (statusMsg.equals("SUCCESS"))
+			else if (statusMsg != null && statusMsg.equals("SUCCESS"))
 			{
 				model.put("disableEdit", true);
 			}
