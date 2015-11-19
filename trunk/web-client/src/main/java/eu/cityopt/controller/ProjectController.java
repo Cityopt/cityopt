@@ -490,11 +490,6 @@ public class ProjectController {
                     e.printStackTrace();
                 }
                 model.put("project", project);
-               
-                // WHY?!!?!
-                model.remove("scenario");
-                // Why -end--
-           
         }
         else if (model.containsKey("project"))
         {
@@ -795,56 +790,68 @@ public class ProjectController {
                 System.out.println("Starting import time series");
                 
                 List<ExtParamValDTO> extParamVals = null;
-                int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
                 ExtParamValSetDTO extParamValSet = null;
                 
-                if (defaultExtParamValSetId != 0)
-        		{
-                	try {
-	                    extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
-	                    model.put("extParamValSet", extParamValSet);
-	                } catch (EntityNotFoundException e1) {
-	                    e1.printStackTrace();
-	                }
-	    		}
+                Map<String, TimeSeriesDTOX> tsData = importExportService.readTimeSeriesCsv(project.getPrjid(), stream);
+                Set<String> keys = tsData.keySet();
+                Iterator<String> iter = keys.iterator();
                 
-                if (extParamValSet != null)
+                while (iter.hasNext())
                 {
-	                Map<String, TimeSeriesDTOX> tsData = importExportService.readTimeSeriesCsv(project.getPrjid(), stream);
-	                Set<String> keys = tsData.keySet();
-	                Iterator<String> iter = keys.iterator();
+                	String extParamName = iter.next();
+                	String baseName = extParamName;
+                    TimeSeriesDTOX ts = tsData.get(extParamName);
 	                
-	                while (iter.hasNext())
-	                {
-	                	String extParamName = iter.next();
-	                    TimeSeriesDTOX ts = tsData.get(extParamName);
-		                
-	                	ExtParamDTO extParam = new ExtParamDTO();
-	                	List<ExtParamDTO> testExtParams = extParamService.findByName(extParamName);
-	                	boolean bFound = false;
-	                	
-	                	for (int i = 0; i < testExtParams.size(); i++)
+                	ExtParamDTO extParam = new ExtParamDTO();
+                	boolean bFoundName = true;
+                	int i = 2;
+                	
+                	// Find if the name is already used and create a new name
+                	while (bFoundName)
+                	{
+                		System.out.println("Finding name " + extParamName);
+                        
+	                	ExtParamDTO testExtParam = extParamService.findByName(extParamName, project.getPrjid());
+
+	                	if (testExtParam != null)
 	                	{
-	                		if (testExtParams.get(i).getName().equalsIgnoreCase(extParamName))
-	                		{
-	                			bFound = true;
-	                		}
+	                		bFoundName = true;
 	                	}
-	                	
-		                if (bFound)
-		                {
-		                	extParamName += "_" + System.currentTimeMillis();
+	                	else
+	                	{
+	                		bFoundName = false;
+	                		break;
+	                	}
+
+	                	extParamName = baseName + "_" + i;
+	                	i++;
+                	}
+	                
+	                extParam.setName(extParamName);
+	                TypeDTO type = typeService.findByName(eu.cityopt.sim.eval.Type.TIMESERIES_STEP.name);
+	                extParam.setType(type);
+	                extParam = extParamService.save(extParam, project.getPrjid());
+	                
+	                ExtParamValDTO extParamVal = new ExtParamValDTO();
+	                extParamVal.setExtparam(extParam);
+	                extParamVal = extParamValService.save(extParamVal);
+
+	                int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+	                
+	                System.out.println("Default ext param set id " + defaultExtParamValSetId);
+                    
+	                if (defaultExtParamValSetId != 0)
+	        		{
+	                	try {
+		                    extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
+		                    model.put("extParamValSet", extParamValSet);
+		                } catch (EntityNotFoundException e1) {
+		                    e1.printStackTrace();
 		                }
-		                
-		                extParam.setName(extParamName);
-		                TypeDTO type = typeService.findByName(eu.cityopt.sim.eval.Type.TIMESERIES_STEP.name);
-		                extParam.setType(type);
-		                extParam = extParamService.save(extParam, project.getPrjid());
-		                
-		                ExtParamValDTO extParamVal = new ExtParamValDTO();
-		                extParamVal.setExtparam(extParam);
-		                extParamVal = extParamValService.save(extParamVal);
-		                
+		    		}
+	                
+	                if (extParamValSet != null)
+	                {
 		                extParamValSetService.updateExtParamValInSetOrClone(extParamValSet.getExtparamvalsetid(), extParamVal, ts);
 	                }	                
 	                extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
