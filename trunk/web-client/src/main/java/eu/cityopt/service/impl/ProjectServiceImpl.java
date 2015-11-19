@@ -188,9 +188,9 @@ public class ProjectServiceImpl implements ProjectService{
 	public Integer getDefaultExtParamSetId(int prjid){
 	    Project p = projectRepository.findOne(prjid);
 	    if(p == null)
-	        return 0;
+	        return null;
 	    ExtParamValSet x = p.getDefaultextparamvalset();
-	    return x != null ? x.getExtparamvalsetid() : 0;
+	    return x != null ? x.getExtparamvalsetid() : null;
 	}
 	
 	@Transactional(readOnly = true)
