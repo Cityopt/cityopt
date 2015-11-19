@@ -289,7 +289,7 @@ margin-bottom: 10%;
 																<c:forEach items="${extParams}" var="extParam">
 																	<tr>
 																		<td>${extParam.name}</td>
-																		<td>${extparam.type.name}</td>
+																		<td>${extParam.type.name}</td>
 
 																		<td><a href="<c:url value='deleteextparam.html?extparamid=${extParam.extparamid}'/>">
 																				<button align="right" type="button" value="Remove">
