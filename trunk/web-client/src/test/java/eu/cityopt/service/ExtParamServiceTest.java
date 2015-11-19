@@ -56,5 +56,19 @@ public class ExtParamServiceTest {
 		assertNotNull(newParam.getUnit().getName());
 		assertEquals(newParam.getUnit().getName(), unit.getName());
 	}
+	
+	@Test
+	public void extParam_findByName() throws EntityNotFoundException
+	{
+		ProjectDTO prj = projectService.findByID(1);
+		ExtParamDTO extParam_1 = extParamService.findByName("Emissions_N_Gas", prj.getPrjid());
+		ExtParamDTO extParam_2 = extParamService.findByName("Emissions_N_Gas_Null", prj.getPrjid());
+		
+		assertNotNull(extParam_1);
+		assertNull(extParam_2);
+		
+		
+		
+	}
 
 }

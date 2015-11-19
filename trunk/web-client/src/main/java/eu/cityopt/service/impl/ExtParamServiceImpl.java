@@ -16,12 +16,15 @@ import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.model.ExtParam;
 import eu.cityopt.model.ExtParamVal;
+import eu.cityopt.model.ExtParamValSet;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.Type;
 import eu.cityopt.model.Unit;
 import eu.cityopt.repository.ExtParamRepository;
+import eu.cityopt.repository.ExtParamValRepository;
+import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.repository.UnitRepository;
@@ -35,6 +38,9 @@ public class ExtParamServiceImpl implements ExtParamService {
 	
 	@Autowired
 	private ExtParamRepository extParamRepository;
+	
+	@Autowired
+	private ExtParamValSetRepository extParamValSetRepository;
 	
 	@Autowired
 	private ProjectRepository projectRepository;
@@ -75,6 +81,18 @@ public class ExtParamServiceImpl implements ExtParamService {
 			eparam.setType(type);
 		}
 		eparam = extParamRepository.save(eparam);
+		
+		/*
+		if(p.getDefaultextparamvalset()==null)
+		{
+			ExtParamValSet extParamValSet = new ExtParamValSet();
+			extParamValSet = extParamValSetRepository.save(extParamValSet);
+			p.setDefaultextparamvalset(extParamValSet);
+			
+			projectRepository.save(p);			
+
+		}
+		*/
 		return modelMapper.map(eparam, ExtParamDTO.class);
 	}
 
@@ -122,7 +140,7 @@ public class ExtParamServiceImpl implements ExtParamService {
 		if(extparam==null)
 			return null;
 		ExtParamDTO result 
-			= modelMapper.map(extparam, new TypeToken<List<ExtParamDTO>>() {}.getType());
+			= modelMapper.map(extparam, new TypeToken<ExtParamDTO>() {}.getType());
 		return result;
 	}
 }
