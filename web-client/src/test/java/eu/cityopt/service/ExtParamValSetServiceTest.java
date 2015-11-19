@@ -1,7 +1,6 @@
 package eu.cityopt.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -27,6 +26,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
+import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.TimeSeriesDTOX;
 import eu.cityopt.repository.ExtParamRepository;
 
@@ -47,6 +47,9 @@ public class ExtParamValSetServiceTest {
 	
 	@Autowired
 	private ExtParamService extParamService;
+	
+	@Autowired
+	private ProjectService projectService;
 	
 	@Test
 	public void getExtParamVals() throws EntityNotFoundException {
@@ -154,4 +157,24 @@ public class ExtParamValSetServiceTest {
             }
         }
     }
+    
+    @Test
+    public void addExtParam()
+    {
+    	ExtParamDTO extParam = new ExtParamDTO();
+    	extParam.setName("MyNewTestParam");
+    	
+    	Integer extParamValSetID = projectService.getDefaultExtParamSetId(1);
+    	
+    	assertNull(extParamValSetID);
+    	
+    	extParamService.save(extParam, 1);    	
+    	
+    	extParamValSetID = projectService.getDefaultExtParamSetId(1);
+    	
+    	assertNotNull(extParamValSetID);   	
+    	
+    }
+    
+    
 }
