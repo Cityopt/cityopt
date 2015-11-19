@@ -1318,27 +1318,6 @@ public class ProjectController {
         return "projectdata";
     }
 
-    @RequestMapping(value="coordinates",method=RequestMethod.GET)
-    public String getCoordinates(Map<String, Object> model){
-        ProjectDTO project = (ProjectDTO) model.get("project");
-
-        if (project == null)
-        {
-            return "error";
-        }
-
-        try {
-            project = projectService.findByID(project.getPrjid());
-        } catch (EntityNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-        model.put("components", components);
-
-        return "coordinates";
-    }
-    
     @RequestMapping(value="metricdefinition",method=RequestMethod.GET)
     public String getMetricDefinition(Map<String, Object> model,
             @RequestParam(value="metricid", required=false) String metricid,
