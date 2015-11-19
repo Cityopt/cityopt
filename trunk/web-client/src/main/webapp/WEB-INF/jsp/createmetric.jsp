@@ -28,7 +28,6 @@ tr.collapseRight{
 	border-left: 2px solid black;
 }
 
-
 </style>
 </head>
 

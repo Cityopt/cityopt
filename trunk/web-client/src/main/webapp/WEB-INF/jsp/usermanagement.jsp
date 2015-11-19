@@ -137,8 +137,10 @@
 														<td><form:input path="user[${user.userid}]"
 																value="${user.name}" /></td>
 														<td><form:input path="password[${user.userid}]"
-																value="${user.password}" /></td>													
-														<td></td>																								
+																value="${user.password}" /></td>
+													
+														<!-- User's Projects -->													
+														<td>${projectRole.project.name}</td>																					
 														
 														<!-- Enabled -->
 														<td align="center"><c:if

@@ -5,6 +5,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 //@author Markus Turunen.
+/*
+* @author Markus Turunen  
+* My code is under Apache Licence (ASL) * This code library implement Spring Security 4.0.1 / April 23, 2015 
+* 
+* The Apache License (ASL) is a free software license written by the Apache Software Foundation (ASF).
+* The Apache License requires preservation of the copyright notice and disclaimer. 
+* Like other free software licenses, the license allows the user of the software the 
+* freedom to use the software for any purpose, to distribute it, to modify it, and to distribute modified 
+* versions of the software, under the terms of the license, without concern for royalties.
+* 
 
 /* These are Spring security annotations, 
  * They are invoked before the method call the and intercept the method call if they fail
@@ -18,7 +28,11 @@ import org.springframework.stereotype.Component;
 public class SecurityAuthorization {
 	
 	@PreAuthorize("hasRole('ROLE_Administrator')")
-	public void atLeastAdmin(Object project){		
+	public void atLeastAdmin(){		
+	
+	}
+	@PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert')")
+	public void atLeastExpert(){		
 	
 	}
 	
@@ -61,7 +75,7 @@ public class SecurityAuthorization {
 	}	
 	
 	@PreAuthorize("hasRole('ROLE_Administrator') or ("
-		    +" hasRole('ROLE_Expert') or hasRole('ROLE_Standard') and ("
+		    +" hasAnyRole('ROLE_Expert','ROLE_Standard') and ("
 			+" hasPermission(#project,'ROLE_Administrator')"
 										+ "))")
 	public void atLeastStandard_admin(Object project){
@@ -69,7 +83,7 @@ public class SecurityAuthorization {
 		    }
 	
 	@PreAuthorize("hasRole('ROLE_Administrator') or ("
-		    +" hasRole('ROLE_Expert') or hasRole('ROLE_Standard') and ("
+		    +" hasAnyRole('ROLE_Expert','ROLE_Standard') and ("
 			+" hasPermission(#project,'ROLE_Administrator') or"
 			+" hasPermission(#project,'ROLE_Expert')"
 										+ "))")
@@ -78,7 +92,7 @@ public class SecurityAuthorization {
 		    }
 	
 	@PreAuthorize("hasRole('ROLE_Administrator') or ("
-		    +" hasRole('ROLE_Expert') or hasRole('ROLE_Standard') and ("
+		    +" hasAnyRole('ROLE_Expert','ROLE_Standard') and ("
 			+" hasPermission(#project,'ROLE_Administrator') or"
 			+" hasPermission(#project,'ROLE_Expert') or"
 			+" hasPermission(#project,'ROLE_Standard')"
@@ -88,7 +102,7 @@ public class SecurityAuthorization {
 		    }
 		
 	@PreAuthorize("hasRole('ROLE_Administrator') or ("
-				+" hasRole('ROLE_Expert') or hasRole('ROLE_Standard') and ("
+				+" hasAnyRole('ROLE_Expert','ROLE_Standard') and ("
 		    	+" hasPermission(#project,'ROLE_Administrator') or"
 		    	+" hasPermission(#project,'ROLE_Expert') or"
 		    	+" hasPermission(#project,'ROLE_Standard') or"
@@ -98,7 +112,7 @@ public class SecurityAuthorization {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_Administrator') or ("
-		    +" isAuthenticated() and ("
+		    	+" hasAnyRole('ROLE_Expert','ROLE_Standard','ROLE_Guest') and ("
 		    	+" hasPermission(#project,'ROLE_Administrator') or"
 		    	+" hasPermission(#project,'ROLE_Expert') or"
 		    	+" hasPermission(#project,'ROLE_Standard') or"

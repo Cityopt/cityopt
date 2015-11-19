@@ -102,18 +102,13 @@ public class ParameterController {
     SecurityAuthorization securityAuthorization;
           
        
-    @PreAuthorize("hasRole('ROLE_Administrator') or ("
-		    +" hasRole('ROLE_Expert') and ("
-		    	+" hasPermission(#model.get('project'),'ROLE_Administrator') or"
-		    	+" hasPermission(#model.get('project'),'ROLE_Expert')))")    
+       
     @RequestMapping(value="projectparameters", method=RequestMethod.GET)
     public String getProjectParameters(Map<String, Object> model, 
             @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
-     
+     	
     	ProjectDTO project = (ProjectDTO) model.get("project");
-    	if (controllerService.NullCheck(project)){return "error";}
-    	controllerService.SetUpSelectedComponent(model, selectedCompId);
-        model.put("project", project);
+		securityAuthorization.atLeastExpert_expert(project);        model.put("project", project);
         controllerService.SetProjectExternalParameterValues(model,project);        
         controllerService.SetComponentAndExternalParamValues(model,project);        
         return "projectparameters";
@@ -128,9 +123,9 @@ public class ParameterController {
         {
             return "error";
         }        
-        // Security authorization check----
+        // SECURITY ///  Security authorization check----
         securityAuthorization.atLeastExpert_expert(project);
-        //---
+        //---////
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -207,7 +202,8 @@ public class ParameterController {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-
+        securityAuthorization.atLeastExpert_expert(project);
+        
         ComponentDTO component = new ComponentDTO();
         component.setName(componentForm.getName().trim());
         componentService.save(component, project.getPrjid());

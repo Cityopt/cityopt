@@ -18,7 +18,7 @@
 		<security:intercept-url pattern="/loginerror.html" access="permitAll"/>		
 		<security:intercept-url pattern="/**" access="hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard','ROLE_Guest')" />	
 		<security:form-login login-page="/login.html" authentication-failure-url="/loginerror.html" default-target-url="/loginOK.html" username-parameter="name" password-parameter="password"/>			
-		
+		<security:access-denied-handler error-page="/accessDenied.html"/>
 		
 	</security:http>
 	<bean id="webExpressionHandler"
