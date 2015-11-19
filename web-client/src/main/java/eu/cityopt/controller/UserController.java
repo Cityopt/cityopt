@@ -314,6 +314,14 @@ public class UserController {
     @Autowired
     ControllerService controllerService;
 
+    
+    @RequestMapping(method=RequestMethod.GET, value="/accessDenied")
+    public String AccessDenied(){
+    	System.out.println("AccessDenied");
+    	return "403";
+    }
+    
+    
     //@author Markus Display the log-in page.
     // This is the method where Security is redirecting the user for login.
     @RequestMapping(method=RequestMethod.GET, value="/login")
@@ -433,10 +441,10 @@ public class UserController {
     }
     
     //@author Markus Turunen: User management get request
-    @Secured({"ROLE_Administrator"})
     @RequestMapping(value="usermanagement", method=RequestMethod.GET)
     public String getUserManagement(Map<String, Object> model) {
 
+    	securityAuthorization.atLeastAdmin();
         AppUserDTO user = (AppUserDTO) model.get("user");      
         if (user != null){
             	initializeUserManagement(model);                
@@ -446,12 +454,11 @@ public class UserController {
     }
     
     //@author Markus Turunen:  This class handles the user management post request.
-    @Secured({"ROLE_Administrator"})
+  
     @RequestMapping(value="usermanagement",method=RequestMethod.POST)
     public String getEditUser(Map<String, Object> model,
     		UserManagementForm form) {    	
-    	 
-    	//	Test print of Form: uncomment if you need to see user information collected from form.
+//    	Test print of Form: uncomment if you need to see user information collected from form.
     	/*
     		System.out.println("usemanagement: invoked");
     		System.out.println(form.getUser().keySet()+" "+form.getUser().values());    		
@@ -460,6 +467,8 @@ public class UserController {
     		System.out.println(form.getProject().keySet()+" "+form.getProject().values());
     		System.out.println(form.getEnabled().keySet()+" "+form.getEnabled().values());
     	*/
+    	
+    		securityAuthorization.atLeastAdmin();    	
     	
     		// Iterator to handle form logic.
     		Iterator<Integer> keySetIterator = form.getUser().keySet().iterator();
@@ -499,9 +508,9 @@ public class UserController {
     		} 
     
     //@author Markus Turunen: This is helper method construct the user management -classes
-    @PreAuthorize("hasRole('ROLE_Administrator')")
+   
     public void initializeUserManagement(Map<String, Object> model){
-    	   	
+    	securityAuthorization.atLeastAdmin();   	
     	//Set up Variables 
     	List<AppUserDTO> users = userService.findAll();
         List<UserGroupDTO> userGroups= userGroupService.findAll();
@@ -525,9 +534,9 @@ public class UserController {
     }    
   
 	//@author Marus Turunen Form Factory: This method creates the user management -form. 
-    @PreAuthorize("hasRole('ROLE_Administrator')")
+    
     public UserManagementForm CreateUsemanagementForm(List<AppUserDTO> users){    
-   
+    	securityAuthorization.atLeastAdmin();
     // Set up initial variables.
     	UserManagementForm form = new UserManagementForm();
     	UserGroupProject usergroup; 
@@ -564,10 +573,11 @@ public class UserController {
 	}            	
     
     //@author Markus Turunen: This Method Creates a UserGroupDTO -object based on the parameters given.
-    @PreAuthorize("hasRole('ROLE_Administrator')")
+   
     public UserGroupProjectDTO CreateUserGroupDTO(UserGroupDTO usergroup, 
-    		ProjectDTO project, AppUserDTO appuser){    	
+    		ProjectDTO project, AppUserDTO appuser){   
     	
+    	securityAuthorization.atLeastAdmin();
     	UserGroupProjectDTO userGroupDTO=new UserGroupProjectDTO();
     	userGroupDTO.setProject(project);
     	userGroupDTO.setProject(project);
@@ -575,20 +585,15 @@ public class UserController {
     	return userGroupDTO;
     }
 
-    //@author Markus Turunen: Save method for UserGroupProjectDTO
-    @Secured({"ROLE_Administrator"})
-    public void saveGroupProject(UserGroupProjectDTO userproject){    	
+    //@author Markus Turunen: Save method for UserGroupProjectDTO  
+    public void saveGroupProject(UserGroupProjectDTO userproject){
+    	securityAuthorization.atLeastAdmin();
     	userGroupProjectService.save(userproject);
     }
-    
-    //@author Markus Turunen: Try to make something to print user's projects and Roles,
-    public void UserProjectGroups(AppUserDTO user,UserGroupProjectDTO userGroup){    	
-    	
-    }
-    
+
     //@author Markus Turunen: List of User's Projects warning very very complex structure.. 
     public void FindUsersProjects(Map<String, Object> model){   
-    	
+    	securityAuthorization.atLeastAdmin();
     	List<AppUserDTO> users= userService.findAll();
     	ArrayList <List <ProjectDTO> > ListOfUserProjects = new ArrayList<List <ProjectDTO>>();
     	   	
@@ -597,6 +602,7 @@ public class UserController {
     		ListOfUserProjects.add(userProject);
     	}    	
     	model.put("UserProject",ListOfUserProjects);
+    	
     	// TODO make parser in JSP-page to utilize this resource.
     	// I made this to display user projects in user management,
     	// could not figure out how to utilize it in JSP.
@@ -604,17 +610,19 @@ public class UserController {
     }
     
     //@author Markus Turunen: Create user page get request.
-    @Secured({"ROLE_Administrator"})
+    
     @RequestMapping(value="createuser",method=RequestMethod.GET)
-    public String getCreateUser(Map<String, Object> model) {       
+    public String getCreateUser(Map<String, Object> model) {
+    	securityAuthorization.atLeastAdmin();
         this.initializeUserManagement(model);        
         return "createuser";
     }
     
     //@author Markus Turunen: Create user Post request.
-    @Secured({"ROLE_Administrator"})
+   
     @RequestMapping(value="createuser", method=RequestMethod.POST)
     public String getCreateUserPost(UserForm userForm, Map<String, Object> model) {
+    	 securityAuthorization.atLeastAdmin();
     	 if (userForm.getName() != null && userForm.getPassword() != null)
          {
              AppUserDTO user = new AppUserDTO();
@@ -663,17 +671,18 @@ public class UserController {
      }
     
     //@author Markus Turunen: Edit user GetRequest
-    @Secured({"ROLE_Administrator"})
+    
     @RequestMapping(value="edituser",method=RequestMethod.GET)
     public String getEditUser(Map<String, Object> model, 
             @RequestParam(value="userid", required=true) String userid) {
-    	
+    	securityAuthorization.atLeastAdmin();
     	this.InitiateEditUser(model, userid);    	
         return "edituser";
     }      
     
     //@author Markus Turunen: Other classes going to use this service:
     public void InitiateEditUser(Map<String, Object> model, String userid){
+    	securityAuthorization.atLeastAdmin();
     	int nUserId = 0;
         AppUserDTO user = null;
         nUserId = Integer.parseInt(userid);        
@@ -696,11 +705,12 @@ public class UserController {
     }
     
     //@author Markus Turunen: This method removes a role from usergroup -table.
-    @PreAuthorize("hasRole('ROLE_Administrator')")
+   
     @RequestMapping(value="edituser", method=RequestMethod.POST)
 	public String getEditUserPost(UserForm userForm, Map<String, Object> model,
 		@RequestParam(value="userid", required=true) String userId) {
     	
+    	securityAuthorization.atLeastAdmin();    	
     	AppUserDTO user = this.ParseUserIDtoUser(userId);
     	
     	if (userForm.getName() != null)
@@ -721,7 +731,7 @@ public class UserController {
     	@RequestParam(value="userid", required=true) String userid,
     	@RequestParam(value="projectid", required=true) String projectid) {
     	
-    	securityAuthorization.atLeastAdmin(projectid);
+    	securityAuthorization.atLeastAdmin();
         //int nUserId = Integer.parseInt(userid); 
     	
     	// Test prints
@@ -757,11 +767,12 @@ public class UserController {
     }
     
     //@author Markus Turunen: This method set up the createrole -page.
-    @Secured({"ROLE_Administrator"})
+  
     @RequestMapping(value="createrole", method=RequestMethod.GET)
     public String getAddRole(Map<String, Object> model, 
             @RequestParam(value="userid", required=true) String userid) {
         
+    	securityAuthorization.atLeastAdmin();
     	AppUserDTO user=ParseUserIDtoUser(userid);
     	List<ProjectDTO> projects = projectService.findAll();
         model.put("projects", projects);
@@ -772,12 +783,12 @@ public class UserController {
         return "createrole";
     }
     
-    //@author Markus Turunen: This method creates a role.
-    @Secured({"ROLE_Administrator"})
+    //@author Markus Turunen: This method creates a role.    
     @RequestMapping(value="createrole", method=RequestMethod.POST)
     public String getCreateRolePost(Map<String, Object> model, HttpServletRequest request, 
             @RequestParam(value="userid", required=true) String userid) {
     	
+    	securityAuthorization.atLeastAdmin();
     	AppUserDTO user= ParseUserIDtoUser(userid);
         model.put("user", user);
         String role = request.getParameter("roleType");
@@ -835,10 +846,11 @@ public class UserController {
     }
 
     //@author Markus Turunen: deletes user.
-    @Secured({"ROLE_Administrator"})
+    
     @RequestMapping(value="deleteuser", method=RequestMethod.GET)
     public String getDeleteUser(Map<String, Object> model, @RequestParam(value="userid") String userid) {
-        
+    	
+    	securityAuthorization.atLeastAdmin();
     	int nUserId = Integer.parseInt(userid);
         if (nUserId >= 0)
         {

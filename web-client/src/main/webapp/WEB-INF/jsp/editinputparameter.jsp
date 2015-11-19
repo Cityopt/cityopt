@@ -48,7 +48,8 @@
 				</tr>			
 				<!-- ToDO implement Drag panel and use Units in it. -->
 				<tr>
-					<td>
+					<!--  
+					<td>					
 						Unit
 					</td>
 					<td>					
@@ -59,6 +60,7 @@
 							</c:forEach>
 						</form:select>				
 					</td>
+					-->
 				</tr>
 				
 				<tr height="10">

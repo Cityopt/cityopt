@@ -316,7 +316,6 @@ public class ProjectController {
     public String accessDenied(Map<String, Object> model) {      
     	 	return "403";
     }  
-
     
     @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="createproject", method=RequestMethod.GET)
@@ -334,7 +333,7 @@ public class ProjectController {
         return "createproject";
     }
 
-        @Secured({"ROLE_Administrator","ROLE_Expert"})
+    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value = "createproject", method = RequestMethod.POST)
     public String getCreateProjectPost(Map<String, Object> model,
             @Validated @ModelAttribute("newProject") ProjectDTO projectForm, BindingResult bindingResult) {
@@ -516,6 +515,7 @@ public class ProjectController {
         return "editproject";
     }
 
+    
     @RequestMapping(value = "uploadFile", method = RequestMethod.POST)
     public String uploadFileHandler(Map<String, Object> model, @RequestParam(value="detailLevel", required=false) String detailLevel,
             @RequestParam("file") MultipartFile file) {
@@ -543,11 +543,12 @@ public class ProjectController {
                 //        + serverFile.getAbsolutePath());
 
                 ProjectDTO project = (ProjectDTO) model.get("project");
-
                 if (project == null)
                 {
                     return "error";
                 }
+                securityAuthorization.atLeastStandard_standard(project);
+                
 
                 try {
                     project = projectService.findByID(project.getPrjid());
@@ -623,6 +624,8 @@ public class ProjectController {
             {
                 return;
             }
+            securityAuthorization.atLeastStandard_guest(project);
+            
 
             try {
                 project = projectService.findByID(project.getPrjid());
@@ -661,7 +664,8 @@ public class ProjectController {
 		if (project == null)
 		{
 			return;
-		}
+		}		
+		securityAuthorization.atLeastStandard_guest(project);
 
 		Path timeSeriesPath = null;
 		Path scenarioPath = null;
@@ -765,7 +769,6 @@ public class ProjectController {
 	    	e.printStackTrace();
 	    }
 	}
-
     
     @RequestMapping(value = "importextparam", method = RequestMethod.POST)
     public String importExtParamFile(Map<String, Object> model, @RequestParam("file") MultipartFile file) {
@@ -778,6 +781,7 @@ public class ProjectController {
                 {
                     return "error";
                 }
+                securityAuthorization.atLeastStandard_standard(project);
 
                 try {
                     project = projectService.findByID(project.getPrjid());
@@ -898,6 +902,7 @@ public class ProjectController {
             {
                 return;
             }
+            securityAuthorization.atLeastStandard_standard(project);
 
             try {
                 project = projectService.findByID(project.getPrjid());
@@ -953,6 +958,7 @@ public class ProjectController {
                 {
                     return "error";
                 }
+                securityAuthorization.atLeastExpert_admin(project);
 
                 try {
                     //project = projectService.findByID(project.getPrjid());                	
@@ -977,6 +983,7 @@ public class ProjectController {
         return "editproject";
     }
 
+    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="closeproject", method=RequestMethod.GET)
     public String getCloseProjects(Map<String, Object> model, HttpServletRequest request)
     {
@@ -1077,7 +1084,8 @@ public class ProjectController {
     	model.put("project", project);
     	return project;
     }
-    
+   
+    @Secured({"ROLE_Administrator"})
     @RequestMapping(value="units", method=RequestMethod.GET)
     public String getUnits(Model model){
         List<UnitDTO> units = unitService.findAll();
@@ -1085,6 +1093,7 @@ public class ProjectController {
         return "units";
     }
 
+    @Secured({"ROLE_Administrator"})
     @RequestMapping(value="createunit", method=RequestMethod.GET)
     public String getCreateUnit(Model model) {
 
@@ -1104,6 +1113,7 @@ public class ProjectController {
         return "createunit";
     }
 
+    @Secured({"ROLE_Administrator"})
     @RequestMapping(value="createunit", method=RequestMethod.POST)
     public String getCreateUnitPost(UnitForm unitForm, Model model) {
 
@@ -1136,24 +1146,27 @@ public class ProjectController {
         return "units";
     }
 
+    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="paramreliability", method=RequestMethod.GET)
     public String getParamReliability(Model model){
 
         return "paramreliability";
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard')")
     @RequestMapping(value="importdata", method=RequestMethod.GET)
     public String getImportData(Model model){
-
         return "importdata";
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard')")
     @RequestMapping(value="exportdata", method=RequestMethod.GET)
     public String getExportData(Model model){
 
         return "exportdata";
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard')")
     @RequestMapping(value="exportextparamsets", method=RequestMethod.GET)
     public void getExportExtParamSets(Map<String, Object> model, HttpServletRequest request, 
     	HttpServletResponse response) {
@@ -1164,6 +1177,7 @@ public class ProjectController {
 		{
 			return;
 		}
+		securityAuthorization.atLeastStandard_guest(project);
 
 		Path timeSeriesPath = null;
 		Path scenarioPath = null;
@@ -1329,6 +1343,7 @@ public class ProjectController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -1469,6 +1484,7 @@ public class ProjectController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
         MetricDTO metric = new MetricDTO();
         metric.setName(metricForm.getName().trim());
@@ -1503,6 +1519,7 @@ public class ProjectController {
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
         try { 
             metric = metricService.findByID(nMetricId);
@@ -1557,6 +1574,7 @@ public class ProjectController {
         return "editmetric";
     }
 
+   
     @RequestMapping(value="editmetric", method=RequestMethod.POST)
     public String getEditMetricPost(MetricDTO metric, Map<String, Object> model,
             @RequestParam(value="metricid", required=true) String metricid) {
@@ -1599,6 +1617,7 @@ public class ProjectController {
         return "metricdefinition";
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard')")
     @RequestMapping(value="uploaddiagram", method=RequestMethod.GET)
     public String getUploadDiagram(HttpServletRequest request, Map<String, Object> model){
         

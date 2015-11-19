@@ -1061,8 +1061,7 @@ public class OptimizationController {
 		
 		return "extparamsets";       
     }   
-    
-    
+        
     /*@RequestMapping("?id={number}")
     public String printIndex( Map<String, Object> model, @PathVariable("id") int number){
     	ProjectDTO project = (ProjectDTO) model.get("project");
@@ -1084,8 +1083,7 @@ public class OptimizationController {
 		}
 		return "extparamsets";   
     }*/
-    
-    
+        
     /* Ajax Testing 
     @RequestMapping(value="ajax", method=RequestMethod.GET, produces="application/json")
     @ResponseBody
@@ -1412,7 +1410,6 @@ public class OptimizationController {
 
         return "editoptimizationset";
     }
-
     
     @PreAuthorize("hasRole('ROLE_Administrator') or ("
 		    +" hasAnyRole('ROLE_Expert','ROLE_Standard') and ("
@@ -2304,8 +2301,7 @@ public class OptimizationController {
         model.put("error",true);
         return "editsgobjfunction";       
     	}	
-    
-    
+        
     @RequestMapping(value="deletesgobjfunction", method=RequestMethod.POST)
     public String postDeleteSGObjFunction(
             ModelMap model, @RequestParam("objid") int objid) {

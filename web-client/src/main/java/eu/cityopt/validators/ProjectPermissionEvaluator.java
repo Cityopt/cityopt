@@ -52,6 +52,25 @@ import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
 
 
+//@author Markus Turunen.
+/* @author Markus Turunen  
+ * My code is under Apache Licence (ASL) * This code library implement Spring Security 4.0.1 / April 23, 2015 
+ * 
+ * The Apache License (ASL) is a free software license written by the Apache Software Foundation (ASF).
+ * The Apache License requires preservation of the copyright notice and disclaimer. 
+ * Like other free software licenses, the license allows the user of the software the 
+ * freedom to use the software for any purpose, to distribute it, to modify it, and to distribute modified 
+ * versions of the software, under the terms of the license, without concern for royalties.
+ *   
+ */
+
+/* This is Project Permission evaluator, It's purpose is to authenticate user.
+ * When spring annotations invoke the method it calls has permission method.
+ * If anything is wrong it cancels the permission rights.
+ * If the Authentication is passed it pass the authorization and invoke the method call.
+ * If the credentials fail the user dosen't have access to the secured content medthod is intercepted.
+ * and user is thrown into  into 404 error Access denied page.
+*/
 
 public class ProjectPermissionEvaluator implements PermissionEvaluator {
 	  
@@ -112,13 +131,18 @@ public class ProjectPermissionEvaluator implements PermissionEvaluator {
 	// Implementation methods:	
 	public int TargetDomainTypeConverter(Object targetDomainObject) throws Exception{
 
+		// if the TargetDomainObject is instance of String.
 		if ( targetDomainObject instanceof String){				
 			String projectID = (String) targetDomainObject;	
 			int projectIDn= Integer.parseInt(projectID);
 			return projectIDn;
+			
+		// if the TargetDomainObject is instance of Integer.	
 		}else if(targetDomainObject instanceof Integer){
 			int projectIDn= (int) targetDomainObject;
 			return projectIDn;
+			
+		// if the TargetDomainObject is instance of ModelMap (WARNING: Unsafe declaration.)	
 		}else if(targetDomainObject instanceof Map<?,?>){			
 			@SuppressWarnings("unchecked")			
 			Map<String, Object> model = (Map<String, Object>) targetDomainObject;
@@ -126,10 +150,15 @@ public class ProjectPermissionEvaluator implements PermissionEvaluator {
 			ProjectDTO project = (ProjectDTO) model.get("project");
 			return project.getPrjid();			
 		}
+		
+		// If the Target  domain object is instance of ProjectDTO class.
 		else if(targetDomainObject instanceof ProjectDTO){			
 			ProjectDTO project = (ProjectDTO) targetDomainObject;
 			return project.getPrjid();			
 		}
+		
+		// If target domain object isn't any of the following type exception is is thrown because
+		// users who don't use supported credentials are usually hackers.
 		else{
 			throw new Exception("Target domain object credential type not supported");				
 		}
@@ -137,8 +166,9 @@ public class ProjectPermissionEvaluator implements PermissionEvaluator {
 	}
 	
 	public AppUserDTO FindAuthenticatedUser(Authentication authentication) throws Exception{
-				
-		String authenticatedUserName = authentication.getName();			
+		
+		// Authentication is the information stored into Spring security during authorization.
+		String authenticatedUserName = authentication.getName();		
 		AppUserDTO appuserdto;
 		try {
 			appuserdto = userService.findByName(authenticatedUserName);

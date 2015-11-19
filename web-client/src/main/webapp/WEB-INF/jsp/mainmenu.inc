@@ -20,7 +20,11 @@
 				<td>Build date: </td><td>27.8.2015</td>
 			</tr>
 			<tr>
-				<td>User: </td><td>${user.name} (<a href="logout.html">logout</a>)</td>
+				<td>User:
+				
+				</td><td><%= ((org.springframework.security.core.userdetails.UserDetails)org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername() %>
+				<!--${user.name}-->
+				(<a href="logout.html">logout</a>)</td>
 			</tr>
 			<tr>
 				<td><spring:message code="language"/>:&nbsp;</td>
