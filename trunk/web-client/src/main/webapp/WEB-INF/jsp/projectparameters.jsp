@@ -168,7 +168,7 @@ margin-bottom: 10%;
 																	<td>${inputParam.defaultvalue}</td>
 																	<td>${inputParam.unit.name}</td>
 																	<td><a
-																		href="<c:url value='editinputparameter.html?inputparameterid=${inputParam.inputid}'/>">
+																		href="<c:url value='editinputparameter.html?inputparamid=${inputParam.inputid}'/>">
 																			<button align="right" type="button" value="Edit">
 																				<spring:message code="edit" />
 																			</button>

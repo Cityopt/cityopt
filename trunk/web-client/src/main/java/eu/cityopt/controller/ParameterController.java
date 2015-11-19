@@ -96,7 +96,7 @@ public class ParameterController {
     TypeService typeService;
     
     @Autowired
-    ControllerService controlerService;
+    ControllerService controllerService;
     
     @Autowired
     SecurityAuthorization securityAuthorization;
@@ -111,11 +111,11 @@ public class ParameterController {
             @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
      
     	ProjectDTO project = (ProjectDTO) model.get("project");
-    	if (controlerService.NullCheck(project)){return "error";}
-    	controlerService.SetUpSelectedComponent(model, selectedCompId);
+    	if (controllerService.NullCheck(project)){return "error";}
+    	controllerService.SetUpSelectedComponent(model, selectedCompId);
         model.put("project", project);
-        controlerService.SetProjectExternalParameterValues(model,project);        
-        controlerService.SetComponentAndExternalParamValues(model,project);        
+        controllerService.SetProjectExternalParameterValues(model,project);        
+        controllerService.SetComponentAndExternalParamValues(model,project);        
         return "projectparameters";
     }
         
@@ -291,27 +291,28 @@ public class ParameterController {
     }
     
     @RequestMapping(value="editinputparameter", method=RequestMethod.GET)
-    public String getEditInputParameter(Model model, @RequestParam(value="inputparameterid", required=true) String inputid) {
+    public String getEditInputParameter(Model model, @RequestParam(value="inputparamid", required=true) String inputid) {
         int nInputId = Integer.parseInt(inputid);
         InputParameterDTO inputParam = null;
+        
         try {
             inputParam = inputParamService.findByID(nInputId);
         } catch (EntityNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
         model.addAttribute("inputParam", inputParam);
         List<UnitDTO> units = unitService.findAll();
         model.addAttribute("units", units);
-        
         
         return "editinputparameter";
     }
 
     @RequestMapping(value="editinputparameter", method=RequestMethod.POST)
-    public String getEditInputParameterPost(InputParameterDTO inputParam, Map<String, Object> model,
-            @RequestParam(value="inputparamid", required=true) String inputParamId){
-        ProjectDTO project = (ProjectDTO) model.get("project");
+    public String editInputParameterPost(InputParameterDTO inputParam, Map<String, Object> model,
+        @RequestParam(value="inputparamid", required=true) String inputParamId){
+        
+    	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
         {
@@ -362,9 +363,6 @@ public class ParameterController {
         List<InputParameterDTO> inputParams = componentService.getInputParameters(componentId);
         model.put("inputParameters", inputParams);
         
-        
-        
-
         return "projectparameters";
     }
 
