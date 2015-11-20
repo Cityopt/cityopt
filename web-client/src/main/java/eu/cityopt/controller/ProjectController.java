@@ -560,9 +560,10 @@ public class ProjectController {
                 }
                 model.put("project", project);
 
-                Set<String> simulatorNames = SimulatorManagers.getSimulatorNames();
-                String simulatorName = simulatorNames.iterator().next();
-                Instant timeOrigin =  Instant.parse("2015-01-01T00:00:00Z");
+                // Put in the right values if known.  If unknown, leave null.
+                //Set<String> simulatorNames = SimulatorManagers.getSimulatorNames();
+                String simulatorName = null;
+                Instant timeOrigin = null;
 
                 List<Locale.LanguageRange> languageList = Locale.LanguageRange.parse(
                         RequestContextUtils.getLocale(request).getLanguage() + ",en");
