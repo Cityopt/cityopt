@@ -74,7 +74,7 @@ public class ImportExportServiceTest extends SimulationTestBase {
         int projectId = projectRepository.findByNameContainingIgnoreCase("Empty test project").get(0).getPrjid();
         byte[] modelData = getResourceBytes("/testmodel.zip");
         importExportService.importSimulationModel(
-                projectId, null, Locale.LanguageRange.parse("la"),
+                projectId, null, Locale.LanguageRange.parse("en"),
                 modelData, null, null);
         String warnings = importExportService.importModelInputsAndOutputs(projectId, 0);
         if (warnings != null) {

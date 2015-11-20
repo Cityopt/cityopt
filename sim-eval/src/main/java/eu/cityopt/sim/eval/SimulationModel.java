@@ -35,7 +35,7 @@ public interface SimulationModel extends Closeable {
 
     /**
      * Returns a human-readable model description in a preferred language,
-     * or null if not available.
+     * or null if not available.  The text may contain HTML formatting.
      * @see java.util.Locale.LanguageRange#parse(String)
      */
     String getDescription(List<Locale.LanguageRange> priorityList);
@@ -48,6 +48,12 @@ public interface SimulationModel extends Closeable {
     default String getDescription(String languageRanges) {
         return getDescription(Locale.LanguageRange.parse(languageRanges));
     }
+
+    /**
+     * Returns an overview image representing the model for users,
+     * or null if not available.  The image data is in PNG format.
+     */
+    byte[] getOverviewImageData();
 
     /**
      * Determines the available model input parameters and output variables
