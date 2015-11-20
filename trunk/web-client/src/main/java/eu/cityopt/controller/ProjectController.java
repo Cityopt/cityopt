@@ -973,8 +973,15 @@ public class ProjectController {
                     project.setLocation(projectForm.getLocation().trim());
                     project.setDesigntarget(projectForm.getDesigntarget().trim());
 
-                    project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()),
-                            projectService.getDefaultExtParamSetId(project.getPrjid()));
+                    Integer defaultExtSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+                    int nDefaultExtSetId = 0;
+                    
+                    if (defaultExtSetId != null)
+                    {
+                    	nDefaultExtSetId = defaultExtSetId;
+                    }
+                    
+                    project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()), nDefaultExtSetId);
 
                 } catch(ObjectOptimisticLockingFailureException e) {
                     model.put("errorMessage", "This project has been updated in the meantime, please reload.");
@@ -1201,7 +1208,14 @@ public class ProjectController {
 	        	extParamValSetIds.add(extValSet.getExtparamvalsetid());
 	        }
 
-	    	importExportService.exportExtParamValSets(scenarioPath, timeSeriesPath, project.getPrjid(), projectService.getDefaultExtParamSetId(project.getPrjid()));
+	        Integer defaultExtSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+	        
+	        if (defaultExtSetId == null)
+	        {
+	        	return;
+	        }
+	        
+	    	importExportService.exportExtParamValSets(scenarioPath, timeSeriesPath, project.getPrjid(), defaultExtSetId);
 
 	        fileTimeSeries = timeSeriesPath.toFile();
 	        fileScenario = scenarioPath.toFile();
@@ -1236,8 +1250,7 @@ public class ProjectController {
 					fis = new FileInputStream(file);
 				} catch (FileNotFoundException fnfe) {
 					// If the file does not exists, write an error entry instead of
-					// file
-					// contents
+					// file contents
 					
 					try {
 						zos.write(("ERROR could not find file " + file.getName()).getBytes());
@@ -1318,11 +1331,12 @@ public class ProjectController {
         model.put("extParamValSets", extParamValSets);
 
         List<ExtParamValDTO> extParamVals = null;
-
-        if (selectedExtParamValSetId != null)
+        Integer defaultExtSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+        
+        if (selectedExtParamValSetId != null && defaultExtSetId != null)
         {
             try {
-                extParamVals = extParamValSetService.getExtParamVals(projectService.getDefaultExtParamSetId(project.getPrjid()));
+                extParamVals = extParamValSetService.getExtParamVals(defaultExtSetId);
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
             }
@@ -1445,7 +1459,7 @@ public class ProjectController {
         }
 
         List<ExtParamValDTO> extParamVals = null;
-        int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 
         if (defaultExtParamValSetId != 0)
         {
@@ -1553,7 +1567,7 @@ public class ProjectController {
         }
 
         List<ExtParamValDTO> extParamVals = null;
-        int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 
         if (defaultExtParamValSetId != 0) {
             try {
