@@ -4,9 +4,7 @@ package eu.cityopt.sim.service;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Locale;
@@ -32,14 +30,13 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
-import eu.cityopt.model.Algorithm;
+import eu.cityopt.DTO.AlgorithmDTO;
+import eu.cityopt.DTO.ScenarioGeneratorDTO;
 import eu.cityopt.model.Project;
-import eu.cityopt.model.ScenarioGenerator;
-import eu.cityopt.repository.AlgorithmRepository;
 import eu.cityopt.repository.ProjectRepository;
-import eu.cityopt.repository.ScenarioGeneratorRepository;
+import eu.cityopt.service.AlgorithmService;
 import eu.cityopt.service.EntityNotFoundException;
-import eu.cityopt.sim.eval.util.TempDir;
+import eu.cityopt.service.ScenarioGeneratorService;
 import eu.cityopt.sim.opt.OptimisationResults;
 import eu.cityopt.sim.opt.Solution;
 
@@ -61,8 +58,8 @@ import eu.cityopt.sim.opt.Solution;
     TransactionDbUnitTestExecutionListener.class })
 public class ScenarioGenerationServiceTest extends SimulationTestBase {
     @Inject ScenarioGenerationService scenarioGenerationService;
-    @Inject ScenarioGeneratorRepository scenarioGeneratorRepository;
-    @Inject AlgorithmRepository algorithmRepository;
+    @Inject ScenarioGeneratorService scenarioGeneratorService;
+    @Inject AlgorithmService algorithmService;
     @Inject ImportExportService importExportService;
     @Inject ProjectRepository projectRepository;
 
@@ -171,11 +168,10 @@ public class ScenarioGenerationServiceTest extends SimulationTestBase {
     }
 
     private void runScenarioGeneration(String algorithmName) throws Exception {
-        ScenarioGenerator scenarioGenerator =
-                scenarioGeneratorRepository.findAll().iterator().next();
-        scenarioGenerator.setAlgorithm(
-                algorithmRepository.save(findAlgorithm(algorithmName)));
-        scenarioGeneratorRepository.save(scenarioGenerator);
+        ScenarioGeneratorDTO scenarioGenerator =
+                scenarioGeneratorService.findAll().iterator().next();
+        scenarioGenerator.setAlgorithm(findAlgorithm(algorithmName));
+        scenarioGeneratorService.update(scenarioGenerator);
         runScenarioGeneration(scenarioGenerator.getScengenid(), algorithmName);
     }
 
@@ -200,8 +196,8 @@ public class ScenarioGenerationServiceTest extends SimulationTestBase {
         System.out.println("}");
     }
 
-    private Algorithm findAlgorithm(String name) throws EntityNotFoundException {
-        for (Algorithm a : algorithmRepository.findAll()) {
+    private AlgorithmDTO findAlgorithm(String name) throws EntityNotFoundException {
+        for (AlgorithmDTO a : algorithmService.findAll()) {
             if (a.getDescription().equalsIgnoreCase(name)) {
                 return a;
             }
