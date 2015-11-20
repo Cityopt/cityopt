@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
@@ -216,7 +218,6 @@ public class ControllerService {
 	         try {
 	             component = componentService.findByID(nCompId);
 	         } catch (EntityNotFoundException e) {
-	             // TODO Auto-generated catch block
 	             e.printStackTrace();
 	         }
 			return component;
@@ -266,8 +267,18 @@ public class ControllerService {
 	    	model.put("units", Units);	    	
 	    }
 	    
-	    
-	    
+	    public void clearSession(Map<String, Object> model, HttpServletRequest request)
+	    {
+	    	// Clear all except version
+	        model.remove("project");
+	        model.remove("scenario");
+	        model.remove("optimizationset");
+	        model.remove("scengenerator");
+	        model.remove("optresults");
+	        model.remove("usersession");
+	        model.remove("user");
+	        request.getSession().invalidate();
+	    }
 	    
 	}
 

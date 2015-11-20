@@ -471,25 +471,29 @@ public class ProjectController {
    
     //@PreAuthorize("hasPermission(#prjid,'ROLE_Administrator')")     
     @RequestMapping(value="editproject", method=RequestMethod.GET)
-    public String getEditProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid) {
+    public String getEditProject(Map<String, Object> model, HttpServletRequest request, 
+		@RequestParam(value="prjid", required=false) String prjid) {
        
     	if (prjid != null)
         {
+    		// Open a new project
+    		
     		securityAuthorization.atLeastGuest_guest(prjid);
     		
             AppUserDTO user = (AppUserDTO) model.get("user");
-
             int nProjectId = Integer.parseInt(prjid);
             ProjectDTO project = null;
-                try {
-                    project = projectService.findByID(nProjectId);
 
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                } catch (EntityNotFoundException e) {
-                    e.printStackTrace();
-                }
-                model.put("project", project);
+            try {
+                project = projectService.findByID(nProjectId);
+
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            } catch (EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+            controllerService.clearSession(model, request);
+            model.put("project", project);
         }
         else if (model.containsKey("project"))
         {
@@ -515,7 +519,6 @@ public class ProjectController {
 
         return "editproject";
     }
-
     
     @RequestMapping(value = "uploadFile", method = RequestMethod.POST)
     public String uploadFileHandler(Map<String, Object> model,
