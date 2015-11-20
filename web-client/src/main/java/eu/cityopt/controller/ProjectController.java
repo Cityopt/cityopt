@@ -125,6 +125,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
@@ -517,8 +518,10 @@ public class ProjectController {
 
     
     @RequestMapping(value = "uploadFile", method = RequestMethod.POST)
-    public String uploadFileHandler(Map<String, Object> model, @RequestParam(value="detailLevel", required=false) String detailLevel,
-            @RequestParam("file") MultipartFile file) {
+    public String uploadFileHandler(Map<String, Object> model,
+            @RequestParam(value="detailLevel", required=false) String detailLevel,
+            @RequestParam("file") MultipartFile file,
+            HttpServletRequest request) {
 
         if (!file.isEmpty()) {
             try {
@@ -561,7 +564,8 @@ public class ProjectController {
                 String simulatorName = simulatorNames.iterator().next();
                 Instant timeOrigin =  Instant.parse("2015-01-01T00:00:00Z");
 
-                List<Locale.LanguageRange> languageList = Locale.LanguageRange.parse("en");
+                List<Locale.LanguageRange> languageList = Locale.LanguageRange.parse(
+                        RequestContextUtils.getLocale(request).getLanguage() + ",en");
                 importExportService.importSimulationModel(project.getPrjid(), 0, languageList, bytes, simulatorName, timeOrigin);
                 importExportService.importModelInputsAndOutputs(project.getPrjid(), 0);
                 
