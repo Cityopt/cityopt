@@ -391,7 +391,7 @@ public class UserController {
     	// We check model because project dosen't exist yet.
     	securityAuthorization.atLeastGuest_guest(model);  
     	
-    	System.out.println("Index invoked");
+    	//System.out.println("Index invoked");
         AppUserDTO user = new AppUserDTO();
         model.put("user", user);
 
