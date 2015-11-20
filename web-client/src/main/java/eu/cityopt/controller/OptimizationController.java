@@ -271,9 +271,9 @@ public class OptimizationController {
         }
 
         List<ExtParamValDTO> extParamVals = null;
-        int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 
-        if (defaultExtParamValSetId != 0)
+        if (defaultExtParamValSetId != null)
         {
             try {
                 ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
@@ -691,9 +691,9 @@ public class OptimizationController {
 
                 //TODO clone project's defaultExtParamValSet?
 
-                int nDefaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+                Integer nDefaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 
-                if (nDefaultExtParamValSetId > 0)
+                if (nDefaultExtParamValSetId != null)
                 {
 	                ExtParamValSetDTO extParamValSet = null;
 	                
@@ -728,17 +728,20 @@ public class OptimizationController {
             {
                 ScenarioGeneratorDTO scenGen = scenGenService.create(project.getPrjid(), openOptSet.getName());
 
-                int nDefaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+                Integer nDefaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 
-                ExtParamValSetDTO extParamValSet = null;
+                if (nDefaultExtParamValSetId != null)
+                {
+	                ExtParamValSetDTO extParamValSet = null;
+	                
+					try {
+						extParamValSet = extParamValSetService.findByID(nDefaultExtParamValSetId);
+					} catch (EntityNotFoundException e) {
+						e.printStackTrace();
+					}
+	                scenGen.setExtparamvalset(extParamValSet);
+                }
                 
-				try {
-					extParamValSet = extParamValSetService.findByID(nDefaultExtParamValSetId);
-				} catch (EntityNotFoundException e) {
-					e.printStackTrace();
-				}
-                scenGen.setExtparamvalset(extParamValSet);
-
                 scenGen = scenGenService.save(scenGen);
                 model.put("scengenerator", scenGen);
 
@@ -1034,9 +1037,7 @@ public class OptimizationController {
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
 		model.put("extParamValSets", extParamValSets);
-		int extParamValSetId = 0;
-	
-		extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+		Integer extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 		
 		// If Time This update should be done Ajax with partial update.
 		// ToD0 Get Data From AjaX to enable this variables:
@@ -1046,7 +1047,7 @@ public class OptimizationController {
 			extParamValSetId = Integer.parseInt(id);
 		}
 		
-		if (extParamValSetId != 0) {
+		if (extParamValSetId != null) {
 			List<ExtParamValDTO> extParamVals = null;
 			try {
 				extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
@@ -1152,14 +1153,13 @@ public class OptimizationController {
 		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
 		model.put("extParamValSets", extParamValSets);
 	
-		int extParamValSetId = 0;
-		extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+		Integer extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 		
 		if (id != null) {
 			extParamValSetId = Integer.parseInt(id);
 		}
 		
-		if (extParamValSetId != 0) {
+		if (extParamValSetId != null) {
 			List<ExtParamValDTO> extParamVals = null;
 			try {
 				extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
@@ -2720,15 +2720,13 @@ public class OptimizationController {
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
 		model.put("extParamValSets", extParamValSets);
-		int extParamValSetId = 0;
-	
-		extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+		Integer extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 		
 		if (id != null) {
 			extParamValSetId = Integer.parseInt(id);
 		}
 		
-		if (extParamValSetId != 0) {
+		if (extParamValSetId != null) {
 			List<ExtParamValDTO> extParamVals = null;
 			try {
 				extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);

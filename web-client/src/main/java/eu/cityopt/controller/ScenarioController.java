@@ -431,7 +431,7 @@ public class ScenarioController {
             // TODO write something smarter?
             scenGen.setAlgorithm(algorithms.get(0));
 
-            int nDefaultExtParamSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+            Integer nDefaultExtParamSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
             ExtParamValSetDTO extParamSet = null;
 			
             try {
@@ -1463,7 +1463,7 @@ public class ScenarioController {
 		model.put("project", project);
 		
 		List<ExtParamValDTO> extParamVals = null;
-        int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
         
         if (defaultExtParamValSetId != 0)
         {

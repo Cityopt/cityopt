@@ -101,8 +101,6 @@ public class ParameterController {
     @Autowired
     SecurityAuthorization securityAuthorization;
           
-       
-       
     @RequestMapping(value="projectparameters", method=RequestMethod.GET)
     public String getProjectParameters(Map<String, Object> model, 
             @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
@@ -175,7 +173,7 @@ public class ParameterController {
 
         return "selectextparamset";
     }
-    
+        
     @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert')")
     @RequestMapping(value="createcomponent", method=RequestMethod.GET)
     public String getCreateComponent(Model model){
@@ -202,8 +200,7 @@ public class ParameterController {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-        securityAuthorization.atLeastExpert_expert(project);
-        
+
         ComponentDTO component = new ComponentDTO();
         component.setName(componentForm.getName().trim());
         componentService.save(component, project.getPrjid());
@@ -448,7 +445,6 @@ public class ParameterController {
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         model.put("project", project);
@@ -511,7 +507,8 @@ public class ParameterController {
         }
 
         List<ExtParamValDTO> extParamVals = null;
-        int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+        
         if (defaultExtParamValSetId != 0)
         {
             try {
@@ -561,7 +558,7 @@ public class ParameterController {
 
         List<ExtParamValDTO> extParamVals = null;
 
-        int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
         if (defaultExtParamValSetId != 0)
         {
             try {
@@ -716,7 +713,7 @@ public class ParameterController {
 
         List<ExtParamValDTO> extParamVals = null;
 
-        int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
         if (defaultExtParamValSetId != 0)
         {
             try {
@@ -851,26 +848,31 @@ public class ParameterController {
         }
 
         String newName = extParamValSet.getName();
+        Integer defaultExtSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 
-        try {
-            extParamValSet = extParamValSetService.findByID(projectService.getDefaultExtParamSetId(project.getPrjid()));
-        } catch (EntityNotFoundException e2) {
-            e2.printStackTrace();
+        if (defaultExtSetId != null)
+        {
+	        try {
+	            extParamValSet = extParamValSetService.findByID(defaultExtSetId);
+	        } catch (EntityNotFoundException e2) {
+	            e2.printStackTrace();
+	        }
+	        extParamValSet.setName(newName);
+	        extParamValSet = extParamValSetService.save(extParamValSet);
+	
+	        model.put("project", project);
+	        List<ExtParamValDTO> listExtParamVals = null;
+	
+	        try {
+	            listExtParamVals = extParamValSetService.getExtParamVals(extParamValSet.getExtparamvalsetid());
+	        } catch (EntityNotFoundException e) {
+	            e.printStackTrace();
+	        }
+	
+	        model.put("extParamValSet", extParamValSet);
+	        model.put("extParamVals", listExtParamVals);
         }
-        extParamValSet.setName(newName);
-        extParamValSet = extParamValSetService.save(extParamValSet);
-
-        model.put("project", project);
-        List<ExtParamValDTO> listExtParamVals = null;
-
-        try {
-            listExtParamVals = extParamValSetService.getExtParamVals(extParamValSet.getExtparamvalsetid());
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        model.put("extParamValSet", extParamValSet);
-        model.put("extParamVals", listExtParamVals);
+        
         List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
         model.put("components", components);
 
@@ -923,7 +925,7 @@ public class ParameterController {
     // SetProjectxternalParameterValues
     public void SetProjectExternalParameterValues(Map<String,Object> model, ProjectDTO project ){
     	 List<ExtParamValDTO> extParamVals = null;
-         int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+         Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
          if (defaultExtParamValSetId != 0)
          {
              try {
