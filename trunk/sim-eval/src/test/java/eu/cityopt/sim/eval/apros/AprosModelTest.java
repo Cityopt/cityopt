@@ -105,6 +105,6 @@ public class AprosModelTest extends AprosTestBase {
         assertNull(model.getDescription("et"));
         assertNotNull(model.getDescription("et,en"));
         assertNotNull(model.getDescription("*-*"));
-        assertEquals("a simplified model for software testing", model.getDescription("*-*;q=0.1,en"));
+        assertEquals("test project", model.getDescription("*-*;q=0.1,en"));
     }
 }

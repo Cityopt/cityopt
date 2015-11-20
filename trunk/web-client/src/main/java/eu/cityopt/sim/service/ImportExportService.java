@@ -284,6 +284,7 @@ public class ImportExportService {
             simulationModel.setCreatedon(new Date());
             simulationModel.setDescription(model.getDescription(languageList));
             simulationModel.setModelblob(modelData);
+            simulationModel.setImageblob(model.getOverviewImageData());
             simulationModel.setSimulator(model.getSimulatorName());
             simulationModel.setTimeorigin(Date.from(timeOrigin));
             simulationModel = simulationModelRepository.save(simulationModel);
@@ -437,6 +438,7 @@ public class ImportExportService {
                 extParam.setProject(project);
                 extParam.setType(typeRepository.findByNameLike(type.name));
                 project.getExtparams().add(extParam);
+                //FIXME: add to sets
                 changed.add(extParam);
             }
         }

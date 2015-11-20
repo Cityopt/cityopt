@@ -85,22 +85,27 @@ the following properties:
   Any value given in the user interface overrides the value in the
   cityopt.properties file. 
 
-- description_en is a human-readable model description text in English.  For
-  example: "description_en = Model of the energy system of the Helsinki
-  Kalasatama area, version 1.2 developed by N.N.  The model includes..."
-
-- description_es is a human-readable model description text in Spanish.
-
-- description_fi is a human-readable model description text in Finnish.
-
-- description_de is a human-readable model description text in German.
-
 Model result files can also be included in the zip file.  They will be used to
 find which model output variables are available, before performing any
 simulations in the CITYOPT tool.  The result files are detected by file name:
 see the description of resultFiles above.  The actual data values in the
 included result files do not matter: only the header lines defining the
 variables are read by the tool.
+
+The zip file may also contain any of the following documentation files:
+
+- overview.png is an overview diagram of the model.  It is an image file
+  in PNG format.
+
+- README.html or README_en.html is a description of the model in English.
+  Either ISO-8859-1 or Windows-1252 encoding must be used.
+  The file may be plain text, or contain HTML formatting.
+
+- README_es.html is a description of the model in Spanish.
+
+- README_fi.html is a description of the model in Finnish.
+
+- README_de.html is a description of the model in German.
 
 
 User component properties of an Apros model

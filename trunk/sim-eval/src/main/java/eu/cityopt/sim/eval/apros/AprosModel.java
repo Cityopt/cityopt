@@ -1,6 +1,7 @@
 package eu.cityopt.sim.eval.apros;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -55,6 +57,9 @@ import eu.cityopt.sim.eval.util.UncloseableInputStream;
 public class AprosModel implements SimulationModel {
     private static String USER_COMPONENT_PROPERTIES_FILENAME = "uc_props.xml";
     private static String MODEL_CONFIGURATION_FILENAME = "cityopt.properties";
+    private static String OVERVIEW_IMAGE_FILENAME = "overview.png";
+    private static final Pattern DESCRIPTION_FILENAME_PATTERN =
+            Pattern.compile("^README(?:_(.*)|)[.]html?$", Pattern.CASE_INSENSITIVE);
 
     AprosManager manager;
     String profileName;
@@ -62,8 +67,9 @@ public class AprosModel implements SimulationModel {
     String[] resultFilePatterns;
     final Document uc_props;
     final Defaults defaults = new Defaults();
-    final Map<String, String> descriptions = new HashMap<>(); 
     List<String[]> modelOutputs;
+    final Map<String, String> descriptions = new HashMap<>();
+    byte[] overviewImageBytes;
 
     AprosModel(String profileName, InputStream inputStream, AprosManager manager)
             throws IOException, ConfigurationException {
@@ -90,17 +96,25 @@ public class AprosModel implements SimulationModel {
             while ((entry = zis.getNextEntry()) != null) {
                 String name = entry.getName();
                 Path target = dir.resolve(name);
+                Matcher descr = DESCRIPTION_FILENAME_PATTERN.matcher(name);
                 if (entry.isDirectory()) {
                     Files.createDirectories(target);
                 } else if (name.equalsIgnoreCase(USER_COMPONENT_PROPERTIES_FILENAME)) {
                     if (ucs != null) {
                         throw new ConfigurationException(
                                 "Model package contains multiple "
-                                + USER_COMPONENT_PROPERTIES_FILENAME + " files");
+                                + USER_COMPONENT_PROPERTIES_FILENAME
+                                + " files");
                     }
                     ucs = loadUserComponentProperties(zis);
                 } else if (name.equalsIgnoreCase(MODEL_CONFIGURATION_FILENAME)) {
                     loadModelConfiguration(new UncloseableInputStream(zis));
+                } else if (descr.matches()) {
+                    byte[] bytes = getEntryBytes(entry, zis);
+                    String text = new String(bytes, "Windows-1252");
+                    setDescription(descr.group(1), text, name);
+                } else if (name.equalsIgnoreCase(OVERVIEW_IMAGE_FILENAME)) {
+                    overviewImageBytes = getEntryBytes(entry, zis);
                 } else {
                     Files.createDirectories(target.getParent());
                     Files.copy(new UncloseableInputStream(zis),
@@ -122,6 +136,16 @@ public class AprosModel implements SimulationModel {
         }
         filterSampleOutputs(modelFiles);
         return ucs;
+    }
+
+    private byte[] getEntryBytes(ZipEntry entry, ZipInputStream zis)
+            throws IOException {
+        byte[] bytes = new byte[(int)entry.getSize()];
+        try (DataInputStream dis = new DataInputStream(
+                new UncloseableInputStream(zis))) {
+            dis.readFully(bytes);
+        }
+        return bytes;
     }
 
     private Document loadUserComponentProperties(ZipInputStream zis)
@@ -166,20 +190,22 @@ public class AprosModel implements SimulationModel {
                 }
                 break;
             default:
-            	String DESCR_PREFIX = "description_";
-            	if (key.startsWith(DESCR_PREFIX)) {
-            		String lang = key.substring(DESCR_PREFIX.length());
-            		if (!Arrays.asList(Locale.getISOLanguages()).contains(lang)) {
-            			throw new ConfigurationException(
-                				"Unknown language " + lang + " in " + MODEL_CONFIGURATION_FILENAME);
-            		}
-            		descriptions.put(lang, value);
-            	} else {
-            		throw new ConfigurationException(
-            				"Unknown property " + key + " in " + MODEL_CONFIGURATION_FILENAME);
-            	}
+        		throw new ConfigurationException(
+        				"Unknown property " + key + " in " + MODEL_CONFIGURATION_FILENAME);
             }
         }
+    }
+
+    private void setDescription(String lang, String text, String context)
+            throws ConfigurationException {
+        if (lang == null) {
+            lang = "en";
+        }
+        if (!Arrays.asList(Locale.getISOLanguages()).contains(lang)) {
+            throw new ConfigurationException(
+                    "Unknown language " + lang + " in " + context);
+        }
+        descriptions.put(lang, text);
     }
 
     private void filterSampleOutputs(Set<Path> modelFiles) throws IOException {
@@ -239,6 +265,11 @@ public class AprosModel implements SimulationModel {
     public String getDescription(List<Locale.LanguageRange> priorityList) {
         String tag = Locale.lookupTag(priorityList, descriptions.keySet());
         return (tag != null) ? descriptions.get(tag) : null;
+    }
+
+    @Override
+    public byte[] getOverviewImageData() {
+        return overviewImageBytes;
     }
 
     @Override

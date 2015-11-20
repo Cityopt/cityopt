@@ -121,7 +121,7 @@ public class ScenarioGenerationServiceTest extends SimulationTestBase {
         Project project = projectRepository.findByNameContainingIgnoreCase("Empty test project").get(0);
         byte[] modelData = getResourceBytes("/ost.zip");
         importExportService.importSimulationModel(
-                project.getPrjid(), null, Locale.LanguageRange.parse("la"),
+                project.getPrjid(), null, Locale.LanguageRange.parse("en"),
                 modelData, "Apros-Combustion-5.13.06-64bit",
                 Instant.parse("2015-01-01T00:00:00Z"));
         Integer scId = null;
@@ -147,7 +147,7 @@ public class ScenarioGenerationServiceTest extends SimulationTestBase {
         Project project = projectRepository.findByNameContainingIgnoreCase("Empty test project").get(0);
         byte[] modelData = getResourceBytes("/ost.zip");
         importExportService.importSimulationModel(
-                project.getPrjid(), null, Locale.LanguageRange.parse("la"),
+                project.getPrjid(), null, Locale.LanguageRange.parse("en"),
                 modelData, "Apros-Combustion-5.13.06-64bit",
                 Instant.parse("2015-01-01T00:00:00Z"));
         Integer scId = null;
