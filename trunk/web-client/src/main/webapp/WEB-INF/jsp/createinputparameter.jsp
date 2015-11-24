@@ -1,4 +1,4 @@
-<%--@elvariable id="inputParam" type="eu.cityopt.DTO.InputParameterDTO"--%>
+<%--@elvariable id="inputParamForm" type="eu.cityopt.web.InputParamForm"--%>
 <%--@elvariable id="selectedcompid" type="int"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -21,9 +21,9 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width=30></td>
-		<td>
+		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="createinputparameter.html?selectedcompid=${selectedcompid}" modelAttribute="inputParam">
+			<form:form method="post" action="createinputparameter.html?selectedcompid=${selectedcompid}" modelAttribute="inputParamForm">
 			<!-- Create input parameter -->
 			<h2><spring:message code="create_input_parameter"/></h2>
 
@@ -46,7 +46,20 @@
 						<spring:message code="default_value"/>
 					</td>
 					<td>
-						<form:input style="width:300px" type="text" path="defaultvalue"/>
+						<form:input style="width:300px" type="text" path="value"/>
+					</td>
+				</tr>
+				<tr>
+					<td>					
+						Unit
+					</td>
+					<td>					
+						<form:select path="unit">
+							<option value="${inputParam.unit.name}" selected>${inputParam.unit.name}</option>
+							<c:forEach items="${units}" var="unit">																																
+								<option value="${unit.name}">${unit.name}</option>
+							</c:forEach>
+						</form:select>				
 					</td>
 				</tr>
 				<tr height="10">
@@ -55,7 +68,7 @@
 				</tr>
 				<tr>
 					<td></td>
-					<!-- Create & Cansel button -->
+					<!-- Create & Cancel button -->
 					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create"/>"/>
 					<a href="projectparameters.html"><button style="width:100px" type="button" value="Cancel"><spring:message code="cancel"/></button></a></td>
 				</tr>

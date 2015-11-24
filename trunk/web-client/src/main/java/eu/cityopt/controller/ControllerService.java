@@ -38,7 +38,7 @@ import eu.cityopt.service.UnitService;
     "usersession", "user", "version"})
 public class ControllerService {
 	
-	 @Autowired
+	 	@Autowired
 	    ProjectService projectService; 
 	    
 	    @Autowired
@@ -90,6 +90,16 @@ public class ControllerService {
 	    	return project;
 	    }
 	    
+	    public void updateProject(Map<String,Object> model, ProjectDTO project) {    	
+	        
+	        try {
+				project = projectService.findByID(project.getPrjid());
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
+	        model.put("project", project);
+	    }
+	    
 	    // Check if any object is null
 	    public boolean NullCheck(Object obj){
 	    	if (obj==null){
@@ -101,7 +111,7 @@ public class ControllerService {
 	    }
 	    
 	    //Set up SelectedComponent
-	    public void SetUpSelectedComponent(Map<String,Object> model,String selectedCompId){
+	    public void SetUpSelectedComponent(Map<String,Object> model, String selectedCompId) {
 	    	ComponentDTO selectedComponent = null; 
 	    	if (selectedCompId != null)
 	         {
@@ -119,9 +129,10 @@ public class ControllerService {
 	    }
 	    
 	    // Set up the project External Parameter values.
-	    public void SetProjectExternalParameterValues(Map<String,Object> model, ProjectDTO project ){
+	    public void getProjectExternalParameterValues(Map<String,Object> model, ProjectDTO project ){
 	    	 List<ExtParamValDTO> extParamVals = null;
-	         int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+	         Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+	         
 	         if (defaultExtParamValSetId != 0)
 	         {
 	             try {
@@ -142,7 +153,7 @@ public class ControllerService {
 	    }
 	    
 	    // Set up component and External parameter Values according to project and model attributes.  
-	    public void SetComponentAndExternalParamValues(Map<String,Object> model, ProjectDTO project ){
+	    public void getComponentAndExternalParamValues(Map<String,Object> model, ProjectDTO project ){
 	    	List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 	        model.put("components", components);
 	        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
@@ -164,8 +175,8 @@ public class ControllerService {
 	    // Finds an ExternalParameter id with String formatted data.
 	    public int ParseExternalParameterValIDFromString(String selectedExtParamSetId){  	
 	    
-		            int nSelectedExtParamSetId = Integer.parseInt(selectedExtParamSetId);
-		            return nSelectedExtParamSetId;		            
+		    int nSelectedExtParamSetId = Integer.parseInt(selectedExtParamSetId);
+		    return nSelectedExtParamSetId;		            
 	    }    	
 	    	
 	    // Find External Parameter Value Set by it's id.
@@ -192,7 +203,7 @@ public class ControllerService {
 	            } catch (EntityNotFoundException e) {
 	                e.printStackTrace();
 	            }
-	    	return selectedExtParamValSet;	    	
+	            return selectedExtParamValSet;	    	
 	        }
 	        return selectedExtParamValSet;
 	    }
