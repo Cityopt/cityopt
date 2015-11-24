@@ -1108,6 +1108,39 @@ public class ProjectController {
         return "units";
     }
 
+    //@Secured({"ROLE_Administrator","ROLE_Expert"})
+    @PreAuthorize("hasRole('ROLE_Administrator') or"
+    	+" isAuthenticated() and ("
+    	+" hasPermission(#prjid,'ROLE_Administrator') or"
+    	+" hasPermission(#prjid,'ROLE_Expert'))")    
+    @RequestMapping(value="deleteunit",method=RequestMethod.GET)
+    public String getDeleteUnit(Map<String, Object> model, @RequestParam(value="unitid", required=true) String unitid) {
+        if (unitid != null)
+        {
+            UnitDTO unit = null;
+            int nUnitId = Integer.parseInt(unitid);
+            
+            try {
+                unit = unitService.findByID(Integer.parseInt(unitid));
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
+            try {
+                unitService.delete(nUnitId);
+            } catch (EntityNotFoundException e) {
+                e.printStackTrace();
+            } catch(ObjectOptimisticLockingFailureException e) {
+                model.put("errorMessage", "This project has been updated in the meantime, please reload.");
+            }
+        }
+
+        List<UnitDTO> units = unitService.findAll();
+        model.put("units", units);
+
+        return "units";
+    }
+
     @Secured({"ROLE_Administrator"})
     @RequestMapping(value="createunit", method=RequestMethod.GET)
     public String getCreateUnit(Model model) {
