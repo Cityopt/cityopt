@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,7 +60,7 @@ import eu.cityopt.service.UserGroupProjectService;
 import eu.cityopt.service.UserGroupService;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
-
+import eu.cityopt.web.InputParamForm;
 
 
 @Controller
@@ -106,9 +107,14 @@ public class ParameterController {
             @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
      	
     	ProjectDTO project = (ProjectDTO) model.get("project");
-		securityAuthorization.atLeastExpert_expert(project);        model.put("project", project);
-        controllerService.SetProjectExternalParameterValues(model,project);        
-        controllerService.SetComponentAndExternalParamValues(model,project);        
+		if (controllerService.NullCheck(project)){return "error";}
+		model.put("project", project);
+
+		securityAuthorization.atLeastExpert_expert(project);  
+    	
+		controllerService.SetUpSelectedComponent(model, selectedCompId);
+        controllerService.getProjectExternalParameterValues(model,project);        
+        controllerService.getComponentAndExternalParamValues(model,project);        
         return "projectparameters";
     }
         
@@ -157,13 +163,9 @@ public class ParameterController {
             }
             model.put("extParamVals", extParamVals);
             model.put("project", project);
-
-            List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-            model.put("components", components);
-
-            Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
-            model.put("extParams", extParams);
             
+            controllerService.getComponentAndExternalParamValues(model,project);   
+                        
             return "projectparameters";
         }
 
@@ -211,12 +213,9 @@ public class ParameterController {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
-        model.put("extParams", extParams);
-        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-        model.put("components", components);
 
-
+        controllerService.getComponentAndExternalParamValues(model, project);        
+        
         return "projectparameters";
     }
    
@@ -275,10 +274,7 @@ public class ParameterController {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
-        model.put("extParams", extParams);
-        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-        model.put("components", components);
+        controllerService.getComponentAndExternalParamValues(model, project);        
 
         return "projectparameters";
     }
@@ -295,6 +291,12 @@ public class ParameterController {
         }
         
         model.addAttribute("inputParam", inputParam);
+        
+        InputParamForm inputParamForm = new InputParamForm();
+        inputParamForm.setName(inputParam.getName());
+        inputParamForm.setValue(inputParam.getDefaultvalue());
+        model.addAttribute("inputParamForm", inputParamForm);
+
         List<UnitDTO> units = unitService.findAll();
         model.addAttribute("units", units);
         
@@ -302,8 +304,9 @@ public class ParameterController {
     }
 
     @RequestMapping(value="editinputparameter", method=RequestMethod.POST)
-    public String editInputParameterPost(InputParameterDTO inputParam, Map<String, Object> model,
-        @RequestParam(value="inputparamid", required=true) String inputParamId){
+    public String editInputParameterPost(Map<String, Object> model, 
+		InputParamForm inputParamForm,
+        @RequestParam(value="inputparamid", required=false) String inputParamId) {
         
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -328,9 +331,17 @@ public class ParameterController {
             e.printStackTrace();
         }
         
-        updatedInputParam.setName(inputParam.getName());
-        updatedInputParam.setDefaultvalue(inputParam.getDefaultvalue());
-        UnitDTO unit = unitService.save(new UnitDTO());
+        updatedInputParam.setName(inputParamForm.getName());
+        updatedInputParam.setDefaultvalue(inputParamForm.getValue());
+        String strUnit = inputParamForm.getUnit();
+        UnitDTO unit = null;
+        
+		try {
+			unit = unitService.findByName(strUnit);
+		} catch (EntityNotFoundException e2) {
+			e2.printStackTrace();
+		}
+        
         updatedInputParam.setUnit(unit);
         int componentId = updatedInputParam.getComponentComponentid();//inputParamService.getComponentId(updatedInputParam.getInputid());
 
@@ -349,10 +360,9 @@ public class ParameterController {
         }
 
         model.put("project", project);
-        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
-        model.put("extParams", extParams);
-        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-        model.put("components", components);
+        
+        controllerService.getComponentAndExternalParamValues(model, project);        
+        
         List<InputParameterDTO> inputParams = componentService.getInputParameters(componentId);
         model.put("inputParameters", inputParams);
         
@@ -373,8 +383,7 @@ public class ParameterController {
         if (strSelectedCompId == null || strSelectedCompId.isEmpty())
         {
             model.put("project", project);
-            Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
-            model.put("extParams", extParams);
+            controllerService.getComponentAndExternalParamValues(model, project);        
             return "projectparameters";
         }
 
@@ -393,18 +402,27 @@ public class ParameterController {
         model.put("inputParam", newInputParameter);
         model.put("selectedcompid", nSelectedCompId);
 
+        InputParamForm inputParamForm = new InputParamForm();
+        model.put("inputParamForm", inputParamForm);
+
+        List<UnitDTO> units = unitService.findAll();
+        model.put("units", units);
+        
         return "createinputparameter";
     }
 
     @RequestMapping(value="createinputparameter", method=RequestMethod.POST)
-    public String getCreateInputParamPost(InputParameterDTO inputParamForm, Map<String, Object> model,
-            @RequestParam(value="selectedcompid", required=true) String strSelectedCompId) {
-        ProjectDTO project = (ProjectDTO) model.get("project");
+    public String getCreateInputParamPost(InputParamForm inputParamForm, Map<String, Object> model,
+        @RequestParam(value="selectedcompid", required=true) String strSelectedCompId) {
+        
+    	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
         {
             return "error";
         }
+        
+        controllerService.updateProject(model, project);
         securityAuthorization.atLeastExpert_expert(project);
 
         int nSelectedCompId = Integer.parseInt(strSelectedCompId);
@@ -416,18 +434,24 @@ public class ParameterController {
         }
 
         InputParameterDTO inputParam = new InputParameterDTO();
-        inputParam.setName(inputParamForm.getName().trim());
-        inputParam.setDefaultvalue(inputParamForm.getDefaultvalue());
+        inputParam.setName(inputParamForm.getName());
+        inputParam.setDefaultvalue(inputParamForm.getValue());
+        String strUnit = inputParamForm.getUnit();
+        UnitDTO unit = null;
+        
+		try {
+			unit = unitService.findByName(strUnit);
+		} catch (EntityNotFoundException e2) {
+			e2.printStackTrace();
+		}
+        
+        inputParam.setUnit(unit);
         inputParam.setType(typeService.findByName(eu.cityopt.sim.eval.Type.DOUBLE.name));
-        UnitDTO unit = unitService.save(new UnitDTO());
         inputParamService.save(inputParam, component.getComponentid(), unit.getUnitid());
 
-        model.put("selectedcompid", nSelectedCompId);
-        model.put("selectedComponent",  component);
-        model.put("project", project);
-
-        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
-        model.put("extParams", extParams);
+        controllerService.SetUpSelectedComponent(model, strSelectedCompId);
+        controllerService.getProjectExternalParameterValues(model, project);
+        controllerService.getComponentAndExternalParamValues(model, project);        
         
         return "projectparameters";
     }
@@ -521,10 +545,8 @@ public class ParameterController {
         }
 
         model.put("project", project);
-        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
-        model.put("extParams", extParams);
-        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-        model.put("components", components);
+       
+        controllerService.getComponentAndExternalParamValues(model, project);
 
         return "projectparameters";
     }
@@ -577,11 +599,7 @@ public class ParameterController {
             model.put("extParamVals", extParamVals);
         }
 
-        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-        model.put("components", components);
-
-        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
-        model.put("extParams", extParams);
+        controllerService.getComponentAndExternalParamValues(model, project);
         
         return "projectparameters";
     }
@@ -732,11 +750,7 @@ public class ParameterController {
             model.put("extParamVals", extParamVals);
         }
 
-        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-        model.put("components", components);
-
-        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
-        model.put("extParams", extParams);
+        controllerService.getComponentAndExternalParamValues(model, project);
         
         return "projectparameters";
     }
@@ -873,11 +887,7 @@ public class ParameterController {
 	        model.put("extParamVals", listExtParamVals);
         }
         
-        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-        model.put("components", components);
-
-        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
-        model.put("extParams", extParams);
+        controllerService.getComponentAndExternalParamValues(model, project);
         
         return "projectparameters";
     }

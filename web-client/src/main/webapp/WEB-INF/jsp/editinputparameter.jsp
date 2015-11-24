@@ -1,3 +1,4 @@
+<%--@elvariable id="inputParamForm" type="eu.cityopt.web.InputParamForm"--%>
 <%--@elvariable id="inputParam" type="eu.cityopt.DTO.InputParameterDTO"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -23,7 +24,7 @@
 		<td width=30></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="editinputparameter.html?inputparamid=${inputParam.inputid}" modelAttribute="inputParam">
+			<form:form method="post" action="editinputparameter.html?inputparamid=${inputParam.inputid}" modelAttribute="inputParamForm">
 			<h2>Edit input parameter</h2>
 
 			<table align="center">
@@ -43,24 +44,21 @@
 						Default value
 					</td>
 					<td>
-						<form:input style="width:300px" type="text" path="defaultvalue"/>
+						<form:input style="width:300px" type="text" path="value"/>
 					</td>
 				</tr>			
-				<!-- ToDO implement Drag panel and use Units in it. -->
 				<tr>
-					<!--  
 					<td>					
 						Unit
 					</td>
 					<td>					
 						<form:select path="unit">
-							<option value="${inputParam.unit}" selected>${inputParam.unit.name}</option>
+							<option value="${inputParam.unit.name}" selected>${inputParam.unit.name}</option>
 							<c:forEach items="${units}" var="unit">																																
-								<option value="${unit}">${unit.name}</option>
+								<option value="${unit.name}">${unit.name}</option>
 							</c:forEach>
 						</form:select>				
 					</td>
-					-->
 				</tr>
 				
 				<tr height="10">
