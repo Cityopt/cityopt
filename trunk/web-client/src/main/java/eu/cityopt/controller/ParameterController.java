@@ -396,9 +396,6 @@ public class ParameterController {
         }
 
         InputParameterDTO newInputParameter = new InputParameterDTO();
-        UnitDTO unit = unitService.save(new UnitDTO());
-        newInputParameter.setUnit(unit);
-        //		newInputParameter.setComponent(component);
         model.put("inputParam", newInputParameter);
         model.put("selectedcompid", nSelectedCompId);
 
