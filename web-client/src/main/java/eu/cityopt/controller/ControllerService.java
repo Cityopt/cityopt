@@ -129,11 +129,11 @@ public class ControllerService {
 	    }
 	    
 	    // Set up the project External Parameter values.
-	    public void getProjectExternalParameterValues(Map<String,Object> model, ProjectDTO project ){
+	    public void getProjectExternalParameterValues(Map<String,Object> model, ProjectDTO project) {
 	    	 List<ExtParamValDTO> extParamVals = null;
 	         Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 	         
-	         if (defaultExtParamValSetId != 0)
+	         if (defaultExtParamValSetId != null)
 	         {
 	             try {
 	                 ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
