@@ -41,6 +41,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -313,6 +314,9 @@ public class UserController {
     
     @Autowired
     ControllerService controllerService;
+    
+    @Autowired
+    Validator validator;
 
     
     @RequestMapping(method=RequestMethod.GET, value="/accessDenied")
@@ -457,7 +461,7 @@ public class UserController {
   
     @RequestMapping(value="usermanagement",method=RequestMethod.POST)
     public String getEditUser(Map<String, Object> model,
-    		UserManagementForm form) {    	
+    		 UserManagementForm form, BindingResult bindingResult) {    	
 //    	Test print of Form: uncomment if you need to see user information collected from form.
     	/*
     		System.out.println("usemanagement: invoked");
@@ -467,12 +471,39 @@ public class UserController {
     		System.out.println(form.getProject().keySet()+" "+form.getProject().values());
     		System.out.println(form.getEnabled().keySet()+" "+form.getEnabled().values());
     	*/
+    	 
+    		
     	
     		securityAuthorization.atLeastAdmin();    	
     	
     		// Iterator to handle form logic.
     		Iterator<Integer> keySetIterator = form.getUser().keySet().iterator();
     		String username;
+    		
+    		while(keySetIterator.hasNext()){ 
+    			Integer key = keySetIterator.next();    			
+    			AppUserDTO user=null;
+				try {user = userService.findByID(key);} catch (EntityNotFoundException e) 
+				{	// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				// Handles
+    			user.setName(form.getUser().get(key).trim());
+    			String passwordfield = form.getPassword().get(key).trim();
+    			user.setPassword(passwordfield);
+    			
+    			validator.validate(user, bindingResult);
+    			if (bindingResult.hasErrors()){ 
+    				initializeUserManagement(model);
+    				model.put("bindingError", true);
+    				return "usermanagement";
+    			}
+    			
+    			
+    		}
+    		
+    		keySetIterator = form.getUser().keySet().iterator();    		
     		
     		while(keySetIterator.hasNext()){    		
     		Integer key = keySetIterator.next();
@@ -484,9 +515,23 @@ public class UserController {
 					e.printStackTrace();
 				}
 				
-				// Handles user and password
+				// Handles
     			user.setName(form.getUser().get(key).trim());
-    			user.setPassword(form.getPassword().get(key).trim());    			
+    			
+    			// Password and it's encryption
+    			
+    			String passwordfield = form.getPassword().get(key).trim();
+    			if(!(user.getPassword().equals(passwordfield))){
+    				// uncrypted set method.
+    				//user.setPassword(form.getPassword().get(key).trim());
+    				
+    				BCryptPasswordEncoder passwordEnconder = new BCryptPasswordEncoder(12);
+                    String hashedPassword = passwordEnconder.encode(passwordfield);
+                    user.setPassword(passwordfield);
+                    user.setPassword(hashedPassword);
+    			}
+    			
+    			    			
     			
     			// Set up Boolean Checkbox Bug fix Form Checkbox get nulls; 
     			if(form.getEnabled().get(key)!=null){
@@ -499,8 +544,8 @@ public class UserController {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-    		}
     		
+    	 }
     		// Set up the usemanagement page again with modirfied fields.
 			initializeUserManagement(model);
 			return "usermanagement";   	
@@ -539,7 +584,8 @@ public class UserController {
     	securityAuthorization.atLeastAdmin();
     // Set up initial variables.
     	UserManagementForm form = new UserManagementForm();
-    	UserGroupProject usergroup; 
+    	UserGroupProject usergroup;	
+
     	
     // This iterates all users and set up their information from database 
 	for (Iterator i = users.iterator(); i.hasNext(); ){	
@@ -566,7 +612,8 @@ public class UserController {
 		form.getProject().put(id, project);	
 		form.getUserRole().put(id, ugpResult);		
 		form.getUser().put(id,name);
-		form.getPassword().put(id, password);		
+		form.getPassword().put(id, password);	
+		
 		}
 	
 	return form;   
@@ -609,26 +656,53 @@ public class UserController {
     	    	
     }
     
-    //@author Markus Turunen: Create user page get request.
-    
+    //@author Markus Turunen: Create user page get request.    
     @RequestMapping(value="createuser",method=RequestMethod.GET)
     public String getCreateUser(Map<String, Object> model) {
-    	securityAuthorization.atLeastAdmin();
-        this.initializeUserManagement(model);        
+    	
+    	securityAuthorization.atLeastAdmin();    	
+    	UserForm UserForm = new UserForm();
+        model.put("userForm", UserForm);        
+        this.initializeUserManagement(model);      
+        
         return "createuser";
     }
     
-    //@author Markus Turunen: Create user Post request.
-   
+    
+    //@author Markus Turunen: Create user Post request.   
     @RequestMapping(value="createuser", method=RequestMethod.POST)
-    public String getCreateUserPost(UserForm userForm, Map<String, Object> model) {
-    	 securityAuthorization.atLeastAdmin();
+    public String getCreateUserPost( @Validated @ModelAttribute("UserForm") UserForm userForm, 
+    		BindingResult bindingResult, Map<String, Object> model ) {    	    	
+    	 
+    	securityAuthorization.atLeastAdmin();
+    	try{  		
+    	
+    	 if (bindingResult.hasErrors()) {
+    		 throw new Exception();
+    		// initializeUserManagement(model);    	 
+    	 }
+    	 
     	 if (userForm.getName() != null && userForm.getPassword() != null)
          {
              AppUserDTO user = new AppUserDTO();
-             user.setName(userForm.getName().trim());
-             user.setPassword(userForm.getPassword().trim());
+             user.setName(userForm.getName().trim()); 
              user.setEnabled(userForm.getEnabled());
+             user.setPassword(userForm.getPassword().trim());
+             
+             // Validates the user according to UserDTO validation
+             validator.validate(user, bindingResult);
+             if (bindingResult.hasErrors()){
+            	 throw new Exception();
+             }
+             
+             BCryptPasswordEncoder passwordEnconder = new BCryptPasswordEncoder(12);
+             String hashedPassword = passwordEnconder.encode(userForm.getPassword().trim());
+             user.setPassword(hashedPassword);
+                          
+             //user.setEnabled(userForm.getEnabled());
+             
+             
+             
              user = userService.save(user);
              	   try {
              		   	userService.update(user);
@@ -649,7 +723,7 @@ public class UserController {
  				// TODO Auto-generated catch block
  				e.printStackTrace();
  			}
-             usergroupDTO.setUsergroup(newUser);             
+             usergroupDTO.setUsergroup(newUser);
              userGroupProjectService.save(usergroupDTO);
              
              
@@ -657,7 +731,7 @@ public class UserController {
              UserGroupProjectDTO usergroup2 = usergroupDTO;
              String userProject = userForm.getProject();
              ProjectDTO project = projectService.findByName(userProject);	
-             usergroup2.setProject(project);
+             usergroup2.setProject(project);            
              userGroupProjectService.save(usergroup2); 
              
              	   
@@ -666,6 +740,13 @@ public class UserController {
          else{
          	return "createuser";
          }
+    	}catch(Exception e){
+    		List<UserGroupDTO> userGroups= userGroupService.findAll();
+    	    List<ProjectDTO> projects = projectService.findAll();
+    	    model.put("projects", projects);                
+    	    model.put("userGroups", userGroups);    		
+    		return "createuser";
+    	}
         
          return "usermanagement"; 
      }

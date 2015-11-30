@@ -2,6 +2,8 @@ package eu.cityopt.DTO;
 
 import java.util.Set;
 
+import javax.validation.constraints.Size;
+
 import lombok.Getter;
 import lombok.Setter;
 

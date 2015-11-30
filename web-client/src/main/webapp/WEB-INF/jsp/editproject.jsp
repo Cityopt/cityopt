@@ -9,6 +9,13 @@
 <!-- CityObt edit project -->
 <title>CityOpt <spring:message code="editproject"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+
+<script>
+    function openInfoWindow() {
+    	   window.open("createproject_info.html",'Info: Create Project','width=600,height=800');
+    }
+</script>
+
 </head>
 <body>
 <table cellspacing="0px" cellpadding="0px">
@@ -26,7 +33,13 @@
 						<!-- EditProject -->
 						<h2><spring:message code="editproject"/></h2>
 					</td>
-				</tr>
+					<td align="right"><div class="round-button">
+						<div class="round-button-circle" onclick="openInfoWindow()">
+							<a>?</a>		
+						</div> 
+					</div></td>				
+				</tr>				
+				
 				<tr>
 					<td>
 						<table>

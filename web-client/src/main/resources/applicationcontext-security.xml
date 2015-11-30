@@ -17,7 +17,7 @@
 		<security:intercept-url pattern="/login.html" access="permitAll"/>
 		<security:intercept-url pattern="/loginerror.html" access="permitAll"/>		
 		<security:intercept-url pattern="/**" access="hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard','ROLE_Guest')" />	
-		<security:form-login login-page="/login.html" authentication-failure-url="/loginerror.html" default-target-url="/loginOK.html" username-parameter="name" password-parameter="password"/>			
+		<security:form-login login-page="/login.html" authentication-failure-url="/loginerror.html" default-target-url="/loginOK.html" always-use-default-target="true" username-parameter="name" password-parameter="password"/>			
 		<security:access-denied-handler error-page="/accessDenied.html"/>
 		
 	</security:http>
@@ -30,7 +30,7 @@
 	<security:authentication-manager>
 		<security:authentication-provider>
 			<!-- Enables encryption -->
-			<!-- <security:password-encoder ref="encoder"></security:password-encoder>-->
+			<security:password-encoder ref="encoder"></security:password-encoder>
 			<security:jdbc-user-service data-source-ref="dataSource"
                           users-by-username-query=
                             "select us.name, us.password, us.enabled from appuser us where us.name = ?"

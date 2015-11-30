@@ -10,26 +10,13 @@
 
 <style>
 
-div.info{
-	border-style: medium;
-	border-color: black;
-	solid border-width: 10px;
-	padding: 4%;
-	margin-left: 10%;
-	margin-top: 5%;
-	margin-right: 5%;
-	margin-bottom: 10%;
-	outline: #064861 inset thick;
-	font: Blanch;
-	color: #4D4D4D;
-	background-color: #ffffff;
-}
 
-h2 {	
+
+h2{	
 	margin: 5%;
 }
 
-p {
+p{
 	display: block;
 	margin-top: 1em;
 	margin-bottom: 1em;
@@ -39,46 +26,29 @@ p {
 	font-size: 100%;
 }
 
-li {
+li{
 	margin-top: 1em;
 	margin-bottom: 1em;
 	margin-left: 11%;
 	margin-right: 10%;
 }
 
-u1 {
+u1{
 	margin-top: 1em;
 	margin-bottom: 1em;
 	margin-left: 12%;
 	margin-right: 10%;
 	color: #4D4D4D;
 }
-visualInfoCanvas{
-	height: 100%;
-	width: 100%;
-	background: #4dd2ff;
-
-}
-
-table.InfoVisual{
-	background: #47AFE2;	
-	margin: 1px;
 
 
-}
-
-h1.info{
+h1{
 	margin-left:5%;
 	margin-right:5%;
 	margin-background: #99ddff;
 }
 
-div.infoBlackGray{
-	background-color: #cef3fd;
-}
-div.yellow {
-	background-color: #FBBA00;
-}
+
 
 </style>
 

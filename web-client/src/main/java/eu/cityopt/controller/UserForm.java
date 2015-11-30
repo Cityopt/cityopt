@@ -14,7 +14,7 @@ public class UserForm {
 
 	@Size(min=5,message="At least 5 characters")
 	@Getter @Setter private String name;	
-	@Size(min=5,message="At least 5 characters")
+	//@Size(min=5,message="At least 5 characters")
 	@Getter @Setter private String password;	
 	@Getter @Setter private Boolean enabled;	
 	@Getter @Setter private int role;

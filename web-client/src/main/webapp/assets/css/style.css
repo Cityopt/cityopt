@@ -74,9 +74,6 @@ h2.error {
     background-image: linear-gradient(to bottom,  #aff874, #15ce56);
 }
 
-
-
-
 h3 {
 	color: #B3B3B3;
 	font-family: 'blanchcaps', PT Sans, arial;
@@ -97,6 +94,41 @@ img.alignright {
 	display: inline;
 	float: right;
 	margin: 4px 0px 5px 10px;
+}
+
+div.info{
+	border-style: medium;
+	border-color: black;
+	solid border-width: 10px;
+	padding: 4%;
+	margin-left: 10%;
+	margin-top: 5%;
+	margin-right: 5%;
+	margin-bottom: 10%;
+	outline: #064861 inset thick;
+	font: Blanch;
+	color: #4D4D4D;
+	background-color: #ffffff;
+}
+
+visualInfoCanvas{
+	height: 100%;
+	width: 100%;
+	background: #4dd2ff;
+
+}
+
+table.InfoVisual{
+	background: #47AFE2;	
+	margin: 1px;
+}
+
+div.infoBlackGray{
+	background-color: #cef3fd;
+}
+
+div.yellow {
+	background-color: #FBBA00;
 }
 
 ul {

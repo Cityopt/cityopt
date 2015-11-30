@@ -8,6 +8,12 @@
 <head>
 <title>CityOpt Database optimization</title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+<script>
+    function openInfoWindow() {
+    	   window.open("createproject_info.html",'Info: Create Project','width=600,height=800');
+    }
+</script>
+
 </head>
 <body>
 <table cellpadding="0" cellspacing="0">
@@ -23,7 +29,15 @@
 			<col style="width: 450px;">
 									
 			<!--Title Create database optimization set-->
-			<tr><td colspan="2"><h2><spring:message code="create_optimization_set"/></h2></td></tr>
+			<tr>
+			<td colspan="2"><h2><spring:message code="create_optimization_set"/></h2></td>
+			<td align="right"><div class="round-button">
+								<div class="round-button-circle" onclick="openInfoWindow()">
+									<a>?</a>		
+								</div> 
+							</div></td>
+			</tr>
+			
 			<tr>
 				<td colspan="2">
 					<table>

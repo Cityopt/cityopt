@@ -8,6 +8,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>CityOpt Open optimization set</title>
+<script>
+    function openInfoWindow() {
+    	   window.open("createproject_info.html",'Info: Create Project','width=600,height=800');
+    }
+</script>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -22,6 +27,8 @@
 			
 			<!-- Open optimization set -->
 			<h2><spring:message code="open_optimization_set"/></h2>
+			
+			
 			<table class="tablestyle" width="500" border="1">
 				<col style="width: 250px">
 				<col style="width: 150px">

@@ -13,6 +13,13 @@
 <head>
 <title>CityOpt edit scenario</title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+
+<script>
+    function openInfoWindow() {
+    	   window.open("createproject_info.html",'Info: Create Project','width=600,height=800');
+    }
+</script>
+
 </head>
 <body>
 <table cellspacing="0" cellpadding="0">
@@ -30,7 +37,14 @@
 					<!-- Edit Scenario -->
 						<h2><spring:message code="edit_scenario"/></h2>
 					</td>
+					
+				<td align="right"><div class="round-button">
+						<div class="round-button-circle" onclick="openInfoWindow()">
+							<a>?</a>		
+						</div> 
+					</div></td>
 				</tr>
+				
 				<tr>
 					<td>
 						<table>

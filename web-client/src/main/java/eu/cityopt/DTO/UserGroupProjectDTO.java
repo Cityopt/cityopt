@@ -16,6 +16,8 @@ public class UserGroupProjectDTO extends BaseDTO {
 	@Getter @Setter private UserGroupDTO usergroup;
 	@Getter @Setter private ProjectDTO project;
 	@Getter @Setter private AppUserDTO appuser;
+	
+	
 
 }
 
