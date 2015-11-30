@@ -10,6 +10,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>CityOpt export data</title>
 
+<script>
+    function openInfoWindow() {
+    	   window.open("createproject_info.html",'Info: Create Project','width=600,height=800');
+    }
+</script>
+
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -26,19 +32,25 @@
 				<div
 					style="overflow: scroll; height: 800px; width: 1100px; overflow: auto">
 					<table style="width:100%">
-						<col  style="width: 100%">						
-						<col  style="width: 100%">
+						<col  style="width: 70%">						
+						<col  style="width: 20%">
 						<col  style="width: 100%">
 						
 						<!-- 
 						<tr style="height: 54px;"></tr>												
 						<tr style= background-color:#FBBA00>
 						 -->
-							<td>														
-								<!-- Export data --><!--  style="background-color:#FBBA00"-->								
-								<h2><spring:message code="export_data" /></h2>												
-							</td>
+						<tr>
+							<td><h2><spring:message code="export_data" /></h2></td>
+							
+						<td align="right" style="margin-right:5%"><div class="round-button">
+							<div class="round-button-circle" onclick="openInfoWindow()">
+								<a>?</a>		
+							</div> 
+						</div></td>
+						
 						</tr>
+						
 						<tr>
 							<td valign="top">
 								<table>

@@ -103,7 +103,11 @@
 									<!-- Users -->
 									<td><h2>
 											<spring:message code="usermanagement" />
-										</h2></td>
+										</h2>
+										
+										
+										</td>
+										
 								</tr>
 								<tr>
 									<td><form:form modelAttribute="UserManagementForm"
@@ -114,7 +118,9 @@
 												<col style="width: 50px">
 												<col style="width: 50px">
 												<col style="width: 50px">
-
+												
+												
+																										
 												<!-- Username -->
 												<th><spring:message code="username" /></th>
 												<!-- Password -->
@@ -131,9 +137,11 @@
 												<th><spring:message code="delete" /></th>
 
 												</tr>
+											 				
 											 													
 												<c:forEach items="${users}" var="user">													
 													<tr>
+																											
 														<td><form:input path="user[${user.userid}]"
 																value="${user.name}" /></td>
 														<td><form:input path="password[${user.userid}]"
@@ -181,7 +189,13 @@
 													
 													 -->
 												</c:forEach>
-											</table>
+												
+												<c:if test="${bindingError eq true}">
+												<tr><spring:message code="error" /></tr>
+												</c:if>
+												
+											</table>							
+											
 											<tr height="0">
 												<td></td>
 											</tr>
@@ -195,6 +209,9 @@
 														</button></a>
 												</td>
 											</tr>
+											
+											
+																						
 									</form:form></td>
 								</tr>
 							</table>

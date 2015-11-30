@@ -10,7 +10,8 @@
 <head>
 <!-- JavaSript for 2 form submissions. -->
 <script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+</script>
 
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -26,10 +27,9 @@
 			<td width=30></td>
 			<td valign="top">
 				<div style="overflow: scroll; height: 800px; width: 800px; overflow: auto">
-					<form:form method="post" modelAttribute="UserForm" name="form1">
+					<form:form modelAttribute="UserForm" method="post">
 						<!-- csrt support (version 4.0) -->
-						<input type="hidden" name="${_csrf.parameterName}"
-							value="${_csrf.token}" />
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 
 						<h2>
 							<spring:message code="account_creation" />
@@ -46,44 +46,47 @@
 							<col style="width: 150px">
 							<col style="width: 300px">
 							
-							<tr class="username">
-								<td>
-									<spring:message code="username" />
-								</td>
-								<td><form:input style="width:300px" type="text" path="name" />
-								</td>
+							<tr class="username">								
+								<td><label for="projectname">*<spring:message code="username" />:</label></td>
+								<c:set var="tooltip_name"><spring:message code="tooltip_create_user_name"/></c:set>									
+								<td><form:input style="width:300px" type="text" path="name" title="${tooltip_name}"/></td>
+								<td><form:errors path="name" cssClass="error"/></td>								
 							</tr>
-							<tr class="password">
-								<td>
-									<spring:message code="password" />
-								</td>
-								<td><form:input style="width:300px" type="text"
-										path="password" /></td>
+							
+							<tr class="password">							
+								<td><label for="location">*<spring:message code="password" />:</label></td>
+								<c:set var="tooltip_password"><spring:message code="tooltip_create_user_password"/></c:set>								
+								<td><form:input style="width:300px" type="text"	path="password" title="${tooltip_password}" /></td>
+								<td><form:errors path="password" cssClass="error"/></td>
 							</tr>
+							
 							<tr class="enabled">	
 								<td><spring:message code="activate" />
-								<td><form:radiobutton path="enabled" value="true"
-										checked="checked" /> <spring:message code="yes" /> <form:radiobutton
-										path="enabled" value="false" /> <spring:message code="no" />
+								<c:set var="tooltip_enabled"><spring:message code="tooltip_enable_user"/></c:set>
+								<td><form:radiobutton path="enabled" value="true" checked="checked" title="${tooltip_enabled}" /> 
+								<spring:message code="yes" /> 
+									<form:radiobutton path="enabled" value="false" title="${tooltip_enabled}" /> 
+								<spring:message code="no" />
 								</td>
 								<td>
 							</tr>
+							
 							<tr class="role">							
 								<td><spring:message code="role" />:</td>
 								<td>
-								<form:select path="role">
-										<c:forEach items="${userGroups}" var="userGroup">																																
+								<c:set var="tooltip_role"><spring:message code="tooltip_role"/></c:set>	
+								<form:select path="role" title="${tooltip_role}" >
+									<c:forEach items="${userGroups}" var="userGroup">																																
 										<option value="${userGroup.usergroupid}">${userGroup.name}</option>
-										</c:forEach>
+									</c:forEach>
 								</form:select>
 								</td>								
-							</tr>
-														
-							
+							</tr>						
 							<tr class="project">
 								<td><spring:message code="project" />:</td>
 								<td>
-								<form:select path="project">								
+								<c:set var="tooltip_project"><spring:message code="tooltip_assign_project"/></c:set>
+								<form:select path="project" title="${tooltip_project}">																
 								<c:forEach items="${projects}" var="project">
 									<option value="${project.name}">${project.name}</option>
 								</c:forEach>
@@ -104,11 +107,9 @@
 									<button	style="width: 100px" type="button" value="Cancel">
 										<spring:message code="cancel" />
 									</button></a></td>
-							</tr>
-							</form:form>
-									</div></td>
-								
-			</tr>
-	</table>
+														
+	
+							</tr></table></form:form></div></td></tr>						
+						</table>	
 </body>
 </html>
