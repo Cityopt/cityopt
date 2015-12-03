@@ -9,7 +9,7 @@ import lombok.Setter;
 public class SimulationModelDTO extends BaseDTO {
 
 	@Getter @Setter private int modelid;
-	@Getter @Setter private byte[] modelblob;
+	//@Getter @Setter private byte[] modelblob;
 	@Getter @Setter private byte[] imageblob;
 	@Getter @Setter private String description;
 	@Getter @Setter private String simulator;
