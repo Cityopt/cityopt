@@ -1,4 +1,5 @@
 <%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
+<%--@elvariable id="showInfo" type="boolean"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
@@ -6,16 +7,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<!-- CityObt edit project -->
+<!-- CityOpt edit project -->
 <title>CityOpt <spring:message code="editproject"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
-
 <script>
     function openInfoWindow() {
-    	   window.open("createproject_info.html",'Info: Create Project','width=600,height=800');
+    	   window.open("infopage.html",'Model info','width=600,height=800');
     }
 </script>
-
 </head>
 <body>
 <table cellspacing="0px" cellpadding="0px">
@@ -78,7 +77,7 @@
 							</form:form>							
 							<form:form method="POST" action="uploadFile.html?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
 	        					<tr>
-	        					<!-- Energy model to upload: -->
+	        						<!-- Energy model to upload: -->
 	        						<c:set var="tooltip_energymodel"><spring:message code="tooltip_edit_project_energymodel"/></c:set>
 									<td><spring:message code="energy_model_to_upload"/>:</td>
 									<td><input type="file" name="file" title="${tooltip_energymodel}"></td>
@@ -90,7 +89,17 @@
 	        						
 	        							<c:set var="tip_load_energymodel"><spring:message code="tooltip_edit_project_load_energymodel"/></c:set>
 	        							<input type="submit" title="${tip_load_energymodel}" value="<spring:message code="load_file"/>">
-	        							
+									</td>
+								</tr>
+								</form:form>
+								<tr>
+									<td></td>
+									<td>
+										<c:if test="${showInfo}">
+											<button type="button" onmousedown="openInfoWindow()">
+												Show model info		
+											</button> 
+										</c:if>					        							
 	        							 <c:choose>
 	        							 	<c:when test="${success!=null && success==true}">
 	        							 	<br><br><spring:message code="simulation_uploaded"/>
@@ -99,11 +108,8 @@
 	        							 	<br><br><h2 class="error"><spring:message code="simulation_upload_failed"/></h2>
 	        							 	</c:when>
 	        							 </c:choose>
-	        							     	
-	        							
 	       							</td>
 	   							</tr>	
-   							</form:form>
 						</table>
 					</td>
 					<td align="right">

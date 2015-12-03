@@ -452,7 +452,57 @@ public class ParameterController {
         
         return "projectparameters";
     }
-    
+
+    @RequestMapping(value="deleteinputparameter", method=RequestMethod.GET)
+    public String getDeleteInputParam(Map<String, Object> model,
+        @RequestParam(value="inputparamid", required=true) String strInputParamId) {
+        ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+        securityAuthorization.atLeastExpert_expert(project);
+
+        try {
+            project = projectService.findByID(project.getPrjid());
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+        model.put("project", project);
+
+        try {
+			inputParamService.delete(Integer.parseInt(strInputParamId));
+		} catch (NumberFormatException | EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+        
+        List<ExtParamValDTO> extParamVals = null;
+
+        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+        if (defaultExtParamValSetId != 0)
+        {
+            try {
+                ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
+                model.put("extParamValSet", extParamValSet);
+            } catch (EntityNotFoundException e1) {
+                e1.printStackTrace();
+            }
+
+            try {
+                extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
+            } catch (EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            model.put("extParamVals", extParamVals);
+        }
+
+        controllerService.getComponentAndExternalParamValues(model, project);
+        
+        return "projectparameters";
+    }
+
     @RequestMapping(value="createextparam", method=RequestMethod.GET)
     public String getCreateExtParam(Map<String, Object> model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -530,7 +580,7 @@ public class ParameterController {
         List<ExtParamValDTO> extParamVals = null;
         Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
         
-        if (defaultExtParamValSetId != 0)
+        if (defaultExtParamValSetId != null)
         {
             try {
                 extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);

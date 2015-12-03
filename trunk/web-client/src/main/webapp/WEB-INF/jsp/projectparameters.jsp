@@ -160,6 +160,7 @@ margin-bottom: 10%;
 															<col style="width: 60px">
 															<col style="width: 150px">
 															<col style="width: 60px">
+															<col style="width: 60px">
 															<tr>
 																<!-- Input parameter -->
 																<th><spring:message code="input_parameter" /></th>
@@ -171,6 +172,8 @@ margin-bottom: 10%;
 																<th><spring:message code="units" /></th>
 																<!-- Edit -->
 																<th><spring:message code="edit" /></th>
+																<!-- Delete -->
+																<th><spring:message code="remove" /></th>
 															</tr>
 
 															<c:forEach items="${inputParameters}" var="inputParam">
@@ -179,10 +182,14 @@ margin-bottom: 10%;
 																	<td>${inputParam.inputid}</td>
 																	<td>${inputParam.defaultvalue}</td>
 																	<td>${inputParam.unit.name}</td>
-																	<td><a
-																		href="<c:url value='editinputparameter.html?inputparamid=${inputParam.inputid}'/>">
+																	<td><a href="<c:url value='editinputparameter.html?inputparamid=${inputParam.inputid}'/>">
 																			<button align="right" type="button" value="Edit">
 																				<spring:message code="edit" />
+																			</button>
+																	</a></td>
+																	<td><a href="<c:url value='deleteinputparameter.html?inputparamid=${inputParam.inputid}'/>">
+																			<button align="right" type="button" value="Remove">
+																				<spring:message code="remove" />
 																			</button>
 																	</a></td>
 																</tr>

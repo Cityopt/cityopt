@@ -405,14 +405,14 @@ public class UserController {
     //@author Markus Turunen Adding security feature:    
     @RequestMapping(value="index", method=RequestMethod.POST)
     public String getIndexPost(Map<String, Object> model, AppUserDTO userForm) {
-    	// We check model because project dosen't exist yet.
+    	// We check model because project doesn't exist yet.
     	securityAuthorization.atLeastGuest_guest(model);
     	
         String version = appMetaData.getVersion();
         model.put("version", version);
             
        // BCryptPasswordEncoder passwordEnconder = new BCryptPasswordEncoder(12);       
-       // Password dosen't help in trimming or does it?
+       // Password doesn't help in trimming or does it?
         
         String username = userForm.getName();
         String password = userForm.getPassword();

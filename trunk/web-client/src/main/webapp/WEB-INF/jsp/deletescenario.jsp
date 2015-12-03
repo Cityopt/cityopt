@@ -21,7 +21,7 @@
 		<td width="30"></td>
 		<td valign="top">
 			<!--Delete scenario title-->	
-			<div style="overflow:scroll;height:400px;width:600px;overflow:auto">
+			<div style="overflow:scroll;height:1000px;width:1000px;overflow:auto">
 			<form:form method="post" action="deletescenario.html">			
 			<h2><spring:message code="delete_scenario"/></h2>
 			<table class="tablestyle" width="600" border="1">

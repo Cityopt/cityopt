@@ -146,9 +146,9 @@ margin-right:10%;
     													
     						<form:form method="POST" action="importoptimizationset.html" enctype="multipart/form-data">
 	        					<tr>
-	        						<td><b>Import optimization set</b></td>
+	        						<td><b>Import database optimization set</b></td>
 									<!-- Import optimization set file CSV -->
-	        						<td>Optimization set file (CSV)</td>
+	        						<td>Database optimization set file (CSV)</td>
 									<td>Time series</td>
 								</tr>
 								<tr>
@@ -168,9 +168,8 @@ margin-right:10%;
 							</tr>
     						<form:form method="POST" action="importoptimizationproblem.html" enctype="multipart/form-data">
 	        					<tr>
-	        						<td><b>Import optimization problem</b></td>
-									<!-- Import optimization set file CSV -->
-	        						<td>Optimization problem file (CSV)</td>
+	        						<td><b>Import genetic optimization set</b></td>
+									<td>Genetic optimization set file (CSV)</td>
 									<td>Time series (CSV)</td>
 								</tr>
 								<tr>
