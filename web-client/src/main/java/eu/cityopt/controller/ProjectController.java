@@ -173,6 +173,7 @@ import eu.cityopt.service.ProjectManagementService;
 import eu.cityopt.service.ProjectService;
 import eu.cityopt.service.ScenarioGeneratorService;
 import eu.cityopt.service.ScenarioService;
+import eu.cityopt.service.SimulationModelService;
 import eu.cityopt.service.SimulationResultService;
 import eu.cityopt.service.TimeSeriesService;
 import eu.cityopt.service.TimeSeriesValService;
@@ -256,6 +257,9 @@ public class ProjectController {
     SimulationService simService;
 
     @Autowired
+    SimulationModelService simModelService;
+
+    @Autowired
     SimulationResultService simResultService;
 
     @Autowired
@@ -337,7 +341,9 @@ public class ProjectController {
     @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value = "createproject", method = RequestMethod.POST)
     public String getCreateProjectPost(Map<String, Object> model,
-            @Validated @ModelAttribute("newProject") ProjectDTO projectForm, BindingResult bindingResult) {
+            @Validated @ModelAttribute("newProject") ProjectDTO projectForm, 
+            BindingResult bindingResult,
+            HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
 
@@ -391,9 +397,8 @@ public class ProjectController {
                 model.remove("optimizationset");
                 */
                 
+                controllerService.clearSession(model, request);
                 model.put("project", project);
-                model.remove("scenario");               
-                model.remove("optimizationset");
                 model.put("success",true);              
 
                 return "createproject";
@@ -492,6 +497,14 @@ public class ProjectController {
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
             }
+            
+            Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
+            
+            if (nSimulationModelId != null)
+            {
+            	model.put("showInfo", true);
+            }
+
             controllerService.clearSession(model, request);
             model.put("project", project);
         }
@@ -507,6 +520,14 @@ public class ProjectController {
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
             }
+            
+            Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
+            
+            if (nSimulationModelId != null)
+            {
+            	model.put("showInfo", true);
+            }
+            
             model.put("project", project);
         }
         else if (!model.containsKey("project"))
@@ -529,32 +550,12 @@ public class ProjectController {
         if (!file.isEmpty()) {
             try {
                 byte[] bytes = file.getBytes();
-
-                // Creating the directory to store file
-                /*String rootPath = "~" + File.separator;//System.getProperty("java.home");
-	            File dir = new File(rootPath);// + File.separator + "modelFiles");
-
-	            //if (!dir.exists())
-	            //    dir.mkdirs();
-
-	            // Create the file on server
-	            File serverFile = new File(dir.getAbsolutePath()
-	                    + File.separator + file.getName());
-	            BufferedOutputStream stream = new BufferedOutputStream(
-	                    new FileOutputStream(serverFile));
-	            stream.write(bytes);
-	            stream.close();*/
-
-                //logger.info("Server File Location="
-                //        + serverFile.getAbsolutePath());
-
                 ProjectDTO project = (ProjectDTO) model.get("project");
                 if (project == null)
                 {
                     return "error";
                 }
                 securityAuthorization.atLeastStandard_standard(project);
-                
 
                 try {
                     project = projectService.findByID(project.getPrjid());
@@ -572,14 +573,19 @@ public class ProjectController {
                         RequestContextUtils.getLocale(request).getLanguage() + ",en");
                 importExportService.importSimulationModel(project.getPrjid(), 0, languageList, bytes, simulatorName, timeOrigin);
                 importExportService.importModelInputsAndOutputs(project.getPrjid(), 0);
+                System.out.println("Model imported");
+                
+                Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
                 
                 model.put("success",true);
-
-                //Path path = new Path(file.getOriginalFilename());
-                //importExportService.importSimulationStructure(project.getPrjid(), path);
+                model.put("title", "Energy model description");
+                model.put("infotext", simModelService.findByID(nSimulationModelId).getDescription());
+                model.put("redirect", "editproject.html");
+                
+                //return "infopage";
             } catch (Exception e) {
-            	
             	model.put("success",false);
+            	e.printStackTrace();
                 return "You failed to upload => " + e.getMessage();
             }
         } else {
@@ -1498,7 +1504,7 @@ public class ProjectController {
         List<ExtParamValDTO> extParamVals = null;
         Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 
-        if (defaultExtParamValSetId != 0)
+        if (defaultExtParamValSetId != null)
         {
             try {
                 ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
@@ -1845,6 +1851,28 @@ public class ProjectController {
         }
 
         return "editproject";
+    }	
+
+    @RequestMapping(value="infopage", method=RequestMethod.GET)
+    public String getInfoPage(Map<String, Object> model)
+    {
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+        Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
+        
+        if (nSimulationModelId == null)
+        {
+        	return "error";
+        }
+        
+        model.put("title", "Energy model description");
+
+        try {
+			model.put("infotext", simModelService.findByID(nSimulationModelId).getDescription());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+
+        return "infopage";
     }	
 
     @RequestMapping(value="error", method=RequestMethod.GET)

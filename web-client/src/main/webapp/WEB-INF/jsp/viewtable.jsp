@@ -17,7 +17,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt view table</title>
+<title>CityOpt time series table</title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -37,7 +37,7 @@
 				<tr>
 					<td colspan="2" height="80">
 						<!-- View table -->
-						<h2><spring:message code="view_table"/></h2>
+						<h2>Time series table</h2>
 					</td>
 				</tr>
 				<tr>

@@ -413,7 +413,7 @@
 			<td></td>
 			<td>
 				<a href="viewtable.html">
-				<spring:message code="table"/></a>
+				Time series table</a>
 			</td>
 		</tr>
 	</c:when>
@@ -421,7 +421,7 @@
 		<tr>
 			<td></td>
 			<td>
-				View table
+				Time series table
 			</td>
 		</tr>
 	</c:otherwise>

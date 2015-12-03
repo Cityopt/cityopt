@@ -1249,7 +1249,7 @@ public class ScenarioController {
 	}
 	
 	@RequestMapping(value="deletescenario",method=RequestMethod.GET)
-	public String getDeleteScenario(Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid){
+	public String getDeleteScenario(Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid) {
 	
 		if (scenarioid != null)
 		{

@@ -42,8 +42,6 @@
 						    <th><spring:message code="name"/></th>
 						    <!-- Data reliability -->
 						    <th><spring:message code="data_reliability"/></th>
-						    <!-- Type -->
-						    <th><spring:message code="type"/></th>
 						    <!-- Delete -->
 						    <th><spring:message code="delete"/></th>
 						</tr>
@@ -51,8 +49,6 @@
 						<c:forEach items="${units}" var="unit">
 						<tr>
 							<td>${unit.name}</td>
-							<td>
-							</td>
 							<td>
 							</td>
 							<td><a href="<c:url value='deleteunit.html?unitid=${unit.unitid}'/>">
