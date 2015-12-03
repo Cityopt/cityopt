@@ -81,8 +81,8 @@ color: #4D4D4D;
 							
 							<tr height="10"></tr>
 							<tr>
-								<td class="login" align="center"><input type="submit" 
-									style="width: 100px" value="<spring:message code="login"/>" />
+								<td class="login" align="center">
+									<input type="submit" style="width: 100px" value="<spring:message code="login"/>" />
 								</td>
 							</tr>
 							

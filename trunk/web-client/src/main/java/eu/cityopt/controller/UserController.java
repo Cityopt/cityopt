@@ -330,64 +330,57 @@ public class UserController {
     // This is the method where Security is redirecting the user for login.
     @RequestMapping(method=RequestMethod.GET, value="/login")
     public String displayLoginPage(Map<String, Object> model){    		 		   		 
-    		 AppUserDTO user = new AppUserDTO();
-    	     model.put("user", user);
-    		 return "login";		 
+    	AppUserDTO user = new AppUserDTO();
+    	model.put("user", user);
+    	return "login";		 
 	}
     
     //@author Markus Get the Authenticated user information. 
     private String getPrincipal(){
-            String userName = null;
-            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-            if (principal instanceof UserDetails) {
-                userName = ((UserDetails)principal).getUsername();
-            } else {
-                userName = principal.toString();
-            }
-            return userName;
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails)principal).getUsername();
+        } else {
+            userName = principal.toString();
         }
+        return userName;
+    }
     
     //@author Markus everyone can log out the system even intruders.
     @RequestMapping(value="/logout",  method=RequestMethod.GET)
     public String logoutPage(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) {
     		    		
-    		model.remove("project");
-            model.remove("scenario");
-            model.remove("optimizationset");
-            model.remove("scengenerator");
-            model.remove("optresults");
-            model.remove("usersession");
-            model.remove("user");
-            request.getSession().invalidate();        
-    		
-                    Authentication aut = SecurityContextHolder.getContext().getAuthentication();
-                    if (aut != null) {
-                                SecurityContextLogoutHandler ctxLogOut = new SecurityContextLogoutHandler();
-                                ctxLogOut.logout(request, response, aut);
-                    }               
-                                    
-                    return "redirect:/login.html?logout";
-        }
+		controllerService.clearSession(model, request);       
+		
+        Authentication aut = SecurityContextHolder.getContext().getAuthentication();
+        if (aut != null) {
+                    SecurityContextLogoutHandler ctxLogOut = new SecurityContextLogoutHandler();
+                    ctxLogOut.logout(request, response, aut);
+        }               
+                        
+        return "redirect:/login.html?logout";
+    }
     
     //@author Markus Turunen Event what happens if credentials given are not valid.
     @RequestMapping(value="/loginerror",  method=RequestMethod.GET)
     public String loginError(Map<String, Object> model) {
-    		return "redirect:/login.html?error";
+		return "redirect:/login.html?error";
     }
     
     //@author Markus Turunen When user is Authenticated into system the system redirect user to welcome screen.
     @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard','ROLE_Guest')") 
     @RequestMapping(value="/loginOK", method=RequestMethod.GET)
     public String loginOK(Map<String, Object> model){
-    		// We check model because project dosen't exist yet.
+		// We check model because project dosen't exist yet.
     		
-    		AppUserDTO user = new AppUserDTO();
-    		user.setName(this.getPrincipal());
-    		model.put("user", user);
+		AppUserDTO user = new AppUserDTO();
+		user.setName(this.getPrincipal());
+		model.put("user", user);
 
-    		return  "start";
-    	}
+		return  "start";
+	}
     
     //@author Markus Turunen This is the index page get method
     @RequestMapping(value="index", method=RequestMethod.GET)
@@ -399,49 +392,7 @@ public class UserController {
         AppUserDTO user = new AppUserDTO();
         model.put("user", user);
 
-        return "index";
-    }
-    
-    //@author Markus Turunen Adding security feature:    
-    @RequestMapping(value="index", method=RequestMethod.POST)
-    public String getIndexPost(Map<String, Object> model, AppUserDTO userForm) {
-    	// We check model because project doesn't exist yet.
-    	securityAuthorization.atLeastGuest_guest(model);
-    	
-        String version = appMetaData.getVersion();
-        model.put("version", version);
-            
-       // BCryptPasswordEncoder passwordEnconder = new BCryptPasswordEncoder(12);       
-       // Password doesn't help in trimming or does it?
-        
-        String username = userForm.getName();
-        String password = userForm.getPassword();
-       
-        AppUserDTO user = null;
-
-        try {
-            user = userService.findByNameAndPassword(username, password);
-            
-            // ToDo Implement theese:            
-            //user = userService.findByName(username);
-            // String (encrypted password) getEncryptedPasswordByName(username);
-            // passwordEnconder.matches(rawPassword, encodedPassword)
-            
-        } catch (EntityNotFoundException e) {
-            System.out.println("User " + username + " not found");
-        }
-
-        if (user != null)
-        {
-            model.put("user", user);
-            return "start";
-        }
-        else
-        {
-            model.put("errorMsg", "Login error");
-            model.put("user",  new AppUserDTO());
-            return "index";
-        }
+        return "login";
     }
     
     //@author Markus Turunen: User management get request
@@ -451,9 +402,9 @@ public class UserController {
     	securityAuthorization.atLeastAdmin();
         AppUserDTO user = (AppUserDTO) model.get("user");      
         if (user != null){
-            	initializeUserManagement(model);                
-                return "usermanagement";
-            }        
+        	initializeUserManagement(model);                
+            return "usermanagement";
+        }        
         return "error";
     }
     
@@ -471,86 +422,80 @@ public class UserController {
     		System.out.println(form.getProject().keySet()+" "+form.getProject().values());
     		System.out.println(form.getEnabled().keySet()+" "+form.getEnabled().values());
     	*/
-    	 
-    		
     	
-    		securityAuthorization.atLeastAdmin();    	
-    	
-    		// Iterator to handle form logic.
-    		Iterator<Integer> keySetIterator = form.getUser().keySet().iterator();
-    		String username;
+		securityAuthorization.atLeastAdmin();    	
+	
+		// Iterator to handle form logic.
+		Iterator<Integer> keySetIterator = form.getUser().keySet().iterator();
+		String username;
+		
+		while(keySetIterator.hasNext()){ 
+			Integer key = keySetIterator.next();    			
+			AppUserDTO user=null;
+			try {user = userService.findByID(key);} catch (EntityNotFoundException e) 
+			{	// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			// Handles
+			user.setName(form.getUser().get(key).trim());
+			String passwordfield = form.getPassword().get(key).trim();
+			user.setPassword(passwordfield);
+			
+			validator.validate(user, bindingResult);
+			if (bindingResult.hasErrors()){ 
+				initializeUserManagement(model);
+				model.put("bindingError", true);
+				return "usermanagement";
+			}
+   		}
     		
-    		while(keySetIterator.hasNext()){ 
-    			Integer key = keySetIterator.next();    			
-    			AppUserDTO user=null;
-				try {user = userService.findByID(key);} catch (EntityNotFoundException e) 
-				{	// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		keySetIterator = form.getUser().keySet().iterator();    		
+		
+		while(keySetIterator.hasNext()){    		
+		Integer key = keySetIterator.next();
+			
+			// Finds ID for identifying element.
+			AppUserDTO user=null;
+			try {user = userService.findByID(key);} catch (EntityNotFoundException e) 
+			{	// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			// Handles
+			user.setName(form.getUser().get(key).trim());
+			
+			// Password and it's encryption
+			
+			String passwordfield = form.getPassword().get(key).trim();
+			if(!(user.getPassword().equals(passwordfield))){
+				// uncrypted set method.
+				//user.setPassword(form.getPassword().get(key).trim());
 				
-				// Handles
-    			user.setName(form.getUser().get(key).trim());
-    			String passwordfield = form.getPassword().get(key).trim();
-    			user.setPassword(passwordfield);
-    			
-    			validator.validate(user, bindingResult);
-    			if (bindingResult.hasErrors()){ 
-    				initializeUserManagement(model);
-    				model.put("bindingError", true);
-    				return "usermanagement";
-    			}
-    			
-    			
-    		}
-    		
-    		keySetIterator = form.getUser().keySet().iterator();    		
-    		
-    		while(keySetIterator.hasNext()){    		
-    		Integer key = keySetIterator.next();
-    			
-    			// Finds ID for identifying element.
-    			AppUserDTO user=null;
-				try {user = userService.findByID(key);} catch (EntityNotFoundException e) 
-				{	// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				// Handles
-    			user.setName(form.getUser().get(key).trim());
-    			
-    			// Password and it's encryption
-    			
-    			String passwordfield = form.getPassword().get(key).trim();
-    			if(!(user.getPassword().equals(passwordfield))){
-    				// uncrypted set method.
-    				//user.setPassword(form.getPassword().get(key).trim());
-    				
-    				BCryptPasswordEncoder passwordEnconder = new BCryptPasswordEncoder(12);
-                    String hashedPassword = passwordEnconder.encode(passwordfield);
-                    user.setPassword(passwordfield);
-                    user.setPassword(hashedPassword);
-    			}
-    			
-    			    			
-    			
-    			// Set up Boolean Checkbox Bug fix Form Checkbox get nulls; 
-    			if(form.getEnabled().get(key)!=null){
-    				user.setEnabled(true);
-    			}else{
-    				user.setEnabled(false);
-    			}    			    					   			
-    			//userService.save(user);
-    			try {userService.update(user);} catch (EntityNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-    		
+				BCryptPasswordEncoder passwordEnconder = new BCryptPasswordEncoder(12);
+                String hashedPassword = passwordEnconder.encode(passwordfield);
+                user.setPassword(passwordfield);
+                user.setPassword(hashedPassword);
+			}
+			
+			    			
+			
+			// Set up Boolean Checkbox Bug fix Form Checkbox get nulls; 
+			if(form.getEnabled().get(key)!=null){
+				user.setEnabled(true);
+			}else{
+				user.setEnabled(false);
+			}    			    					   			
+			//userService.save(user);
+			try {userService.update(user);} catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	 }
-    		// Set up the usemanagement page again with modirfied fields.
-			initializeUserManagement(model);
-			return "usermanagement";   	
-    
-    		} 
+		// Set up the user management page again with modified fields.
+		initializeUserManagement(model);
+		return "usermanagement";   	
+	} 
     
     //@author Markus Turunen: This is helper method construct the user management -classes
    
