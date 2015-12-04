@@ -498,12 +498,7 @@ public class ProjectController {
                 e.printStackTrace();
             }
             
-            Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
-            
-            if (nSimulationModelId != null)
-            {
-            	model.put("showInfo", true);
-            }
+            controllerService.getEnergyModelInfo(model, project.getPrjid());
 
             controllerService.clearSession(model, request);
             model.put("project", project);
@@ -521,13 +516,8 @@ public class ProjectController {
                 e.printStackTrace();
             }
             
-            Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
-            
-            if (nSimulationModelId != null)
-            {
-            	model.put("showInfo", true);
-            }
-            
+            controllerService.getEnergyModelInfo(model, project.getPrjid());
+                        
             model.put("project", project);
         }
         else if (!model.containsKey("project"))
@@ -577,10 +567,14 @@ public class ProjectController {
                 
                 Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
                 
+                if (nSimulationModelId != null)
+                {
+                	model.put("showInfo", true);
+                }
+                
+                controllerService.getEnergyModelInfo(model, project.getPrjid());
+                
                 model.put("success",true);
-                model.put("title", "Energy model description");
-                model.put("infotext", simModelService.findByID(nSimulationModelId).getDescription());
-                model.put("redirect", "editproject.html");
                 
                 //return "infopage";
             } catch (Exception e) {
@@ -992,7 +986,7 @@ public class ProjectController {
                     }
                     
                     project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()), nDefaultExtSetId);
-
+                    controllerService.getEnergyModelInfo(model, project.getPrjid());
                 } catch(ObjectOptimisticLockingFailureException e) {
                     model.put("errorMessage", "This project has been updated in the meantime, please reload.");
                 } catch (Exception e1) {

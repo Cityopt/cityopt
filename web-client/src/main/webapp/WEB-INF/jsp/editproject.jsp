@@ -74,7 +74,21 @@
 								<c:set var="tooltip_save"><spring:message code="tooltip_edit_project_save"/></c:set>
 								<td><input type="submit" title="${tooltip_save}" value=<spring:message code="save_project"/> style="width:120px"></td>
 							</tr>
-							</form:form>							
+							</form:form>
+							<tr height=20></tr>	
+							<tr>
+								<td>Loaded energy model:</td>
+								<td>${loadedEnergyModel}</td>
+							<tr>
+								<td></td>
+								<td>
+									<c:if test="${showInfo}">
+										<button type="button" onmousedown="openInfoWindow()">
+											Show model info		
+										</button> 
+									</c:if>									
+								</td>
+							</tr>
 							<form:form method="POST" action="uploadFile.html?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
 	        					<tr>
 	        						<!-- Energy model to upload: -->
@@ -95,11 +109,7 @@
 								<tr>
 									<td></td>
 									<td>
-										<c:if test="${showInfo}">
-											<button type="button" onmousedown="openInfoWindow()">
-												Show model info		
-											</button> 
-										</c:if>					        							
+												        							
 	        							 <c:choose>
 	        							 	<c:when test="${success!=null && success==true}">
 	        							 	<br><br><spring:message code="simulation_uploaded"/>

@@ -28,6 +28,7 @@ import eu.cityopt.service.ExtParamValSetService;
 import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.ProjectService;
+import eu.cityopt.service.SimulationModelService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 
@@ -68,7 +69,8 @@ public class ControllerService {
 	    @Autowired
 	    AppUserService userService;
 	    
-	   
+	    @Autowired
+	    SimulationModelService simModelService;
 	    
 		// Finds project By model and project id;
 	     
@@ -276,6 +278,27 @@ public class ControllerService {
 	    public void SetupModelUnits(Map<String,Object> model){	    	
 	    	List<UnitDTO> Units = unitService.findAll();
 	    	model.put("units", Units);	    	
+	    }
+	    
+	    public void getEnergyModelInfo(Map<String, Object> model, int prjId) {
+    		Integer nSimulationModelId = projectService.getSimulationmodelId(prjId);
+            
+            if (nSimulationModelId != null)
+            {
+            	model.put("showInfo", true);
+            	String description = "";
+            	
+				try {
+					description = simModelService.findByID(nSimulationModelId).getDescription();
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+                
+				String modelName = description.substring(0, description.indexOf(Character.LINE_SEPARATOR));
+                model.put("title", "Energy model description");
+                model.put("loadedEnergyModel", modelName);
+                model.put("infotext", description);
+            }
 	    }
 	    
 	    public void clearSession(Map<String, Object> model, HttpServletRequest request)
