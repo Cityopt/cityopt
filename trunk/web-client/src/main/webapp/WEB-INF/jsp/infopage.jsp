@@ -89,7 +89,7 @@ div.yellow {
 <body class="Info">	
 
 
-<div class="yellow"><h1 class="info">CityOpt: Info</h1></div>		
+<div class="yellow"><h1 class="info">CityOpt model info</h1></div>		
 	<div>	
 	<table class="InfoVisual" style="height: 100%; width: 100%">
 	
