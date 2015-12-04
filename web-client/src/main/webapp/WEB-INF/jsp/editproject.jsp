@@ -79,43 +79,48 @@
 							<tr>
 								<td>Loaded energy model:</td>
 								<td>${loadedEnergyModel}</td>
-							<tr>
-								<td></td>
-								<td>
-									<c:if test="${showInfo}">
-										<button type="button" onmousedown="openInfoWindow()">
-											Show model info		
-										</button> 
-									</c:if>									
-								</td>
 							</tr>
-							<form:form method="POST" action="uploadFile.html?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
-	        					<tr>
-	        						<!-- Energy model to upload: -->
-	        						<c:set var="tooltip_energymodel"><spring:message code="tooltip_edit_project_energymodel"/></c:set>
-									<td><spring:message code="energy_model_to_upload"/>:</td>
-									<td><input type="file" name="file" title="${tooltip_energymodel}"></td>
-								</tr>
-	       						<tr>	
-	       							<td></td>
-	        						<td>
-	        						<!-- Load File -->
-	        						
-	        							<c:set var="tip_load_energymodel"><spring:message code="tooltip_edit_project_load_energymodel"/></c:set>
-	        							<input type="submit" title="${tip_load_energymodel}" value="<spring:message code="load_file"/>">
-									</td>
-								</tr>
-								</form:form>
+							<c:choose>
+								<c:when test="${showInfo}">
+									<tr>
+										<td></td>
+										<td>
+												<button type="button" onmousedown="openInfoWindow()">
+													Show model info		
+												</button> 
+										</td>
+									</tr>
+								</c:when>
+								<c:otherwise>									
+									<form:form method="POST" action="uploadFile.html?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
+			        					<tr>
+			        						<!-- Energy model to upload: -->
+			        						<c:set var="tooltip_energymodel"><spring:message code="tooltip_edit_project_energymodel"/></c:set>
+											<td><spring:message code="energy_model_to_upload"/>:</td>
+											<td><input type="file" name="file" title="${tooltip_energymodel}"></td>
+										</tr>
+			       						<tr>	
+			       							<td></td>
+			        						<td>
+			        						<!-- Load File -->
+			        						
+			        							<c:set var="tip_load_energymodel"><spring:message code="tooltip_edit_project_load_energymodel"/></c:set>
+			        							<input type="submit" title="${tip_load_energymodel}" value="<spring:message code="load_file"/>">
+											</td>
+										</tr>
+									</form:form>
+								</c:otherwise>
+							</c:choose>
 								<tr>
 									<td></td>
 									<td>
 												        							
 	        							 <c:choose>
 	        							 	<c:when test="${success!=null && success==true}">
-	        							 	<br><br><spring:message code="simulation_uploaded"/>
+	        							 		<spring:message code="simulation_uploaded"/>
 	        							 	</c:when>
 	        							 	<c:when test="${success!=null && success==false}">
-	        							 	<br><br><h2 class="error"><spring:message code="simulation_upload_failed"/></h2>
+	        							 		<h2 class="error"><spring:message code="simulation_upload_failed"/></h2>
 	        							 	</c:when>
 	        							 </c:choose>
 	       							</td>
