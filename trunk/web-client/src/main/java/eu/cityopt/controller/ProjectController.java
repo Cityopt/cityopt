@@ -895,13 +895,12 @@ public class ProjectController {
 
     @RequestMapping(value = "exportextparam", method = RequestMethod.GET)
     public void exportExtParam(Map<String, Object> model, 
-		@RequestParam(value="extparamvalid", required=true) String strExtParamId, 
+		@RequestParam(value="extparamvalid", required=true) String strExtParamValId, 
 		@RequestParam(value="extparamvalsetid", required=true) String strExtParamValSetId,
    		HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         ProjectDTO project = null;
-        ExtParamDTO extParam = null;
-        ExtParamValSetDTO extParamSet = null;
+        ExtParamValDTO extParamVal = null;
         
         try {
             project = (ProjectDTO) model.get("project");
@@ -919,7 +918,7 @@ public class ProjectController {
             }
             model.put("project", project);
             
-            extParam = extParamService.findByID(Integer.parseInt(strExtParamId));
+            extParamVal = extParamValService.findByID(Integer.parseInt(strExtParamValId));
         } catch (Exception e) {
         	e.printStackTrace();
             return;
@@ -934,7 +933,7 @@ public class ProjectController {
         OutputStream outputStream = response.getOutputStream();
 
         try {
-            importExportService.exportExtParamTimeSeries(Integer.parseInt(strExtParamValSetId), outputStream, extParam);
+            importExportService.exportExtParamTimeSeries(Integer.parseInt(strExtParamValSetId), outputStream, extParamVal.getExtparam());
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
