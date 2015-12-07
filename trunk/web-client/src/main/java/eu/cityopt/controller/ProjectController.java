@@ -1458,8 +1458,14 @@ public class ProjectController {
     }
 
     @RequestMapping(value="createmetric", method=RequestMethod.GET)
-    public String getCreateMetric(Map<String, Object> model,
-            @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+    public String createMetric(Map<String, Object> model,
+        @RequestParam(value="reset", required=false) String reset,
+        @RequestParam(value="selectedcompid", required=false) String selectedCompId,
+    	@RequestParam(value="inputparamid", required=false) String inputParamId,
+        @RequestParam(value="outputparamid", required=false) String outputParamId,
+    	@RequestParam(value="metricid", required=false) String metricId,
+        @RequestParam(value="extparamid", required=false) String extParamId,
+    	@RequestParam(value="text", required=false) String text) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1475,6 +1481,11 @@ public class ProjectController {
             userSession = new UserSession();
         }
 
+        if (reset != null && reset.equalsIgnoreCase("true"))
+        {
+        	userSession.setExpression("");
+        }
+        
         List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
         model.put("components", components);
 
@@ -1495,43 +1506,130 @@ public class ProjectController {
             model.put("selectedcompid", nSelectedCompId);
         }
 
-        List<ExtParamValDTO> extParamVals = null;
-        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-
-        if (defaultExtParamValSetId != null)
+        if (inputParamId != null && !inputParamId.isEmpty())
         {
-            try {
-                ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
-                model.put("extParamValSet", extParamValSet);
-            } catch (EntityNotFoundException e1) {
-                e1.printStackTrace();
+            int nInputParamId = Integer.parseInt(inputParamId);
+            InputParameterDTO inputParam = null;
+            
+            if (nInputParamId > 0)
+            {
+            	try {
+    				inputParam = inputParamService.findByID(nInputParamId);
+    			} catch (EntityNotFoundException e1) {
+    				e1.printStackTrace();
+    			}
+                String expression = userSession.getExpression();
+                expression += inputParam.getQualifiedName();
+                userSession.setExpression(expression);
             }
-
-            try {
-                extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            model.put("extParamVals", extParamVals);
         }
 
-        MetricDTO newMetric = new MetricDTO();
-        model.put("metric", newMetric);
+        if (outputParamId != null && !outputParamId.isEmpty())
+        {
+            int nOutputParamId = Integer.parseInt(outputParamId);
+            OutputVariableDTO outputVar = null;
+            
+            if (nOutputParamId > 0)
+            {
+            	try {
+            		outputVar = outputVarService.findByID(nOutputParamId);
+    			} catch (EntityNotFoundException e1) {
+    				e1.printStackTrace();
+    			}
+                String expression = userSession.getExpression();
+                expression += outputVar.getQualifiedName();
+                userSession.setExpression(expression);
+            }
+        }
 
+        if (metricId != null && !metricId.isEmpty())
+        {
+            int nMetricId = Integer.parseInt(metricId);
+            MetricDTO metric = null;
+            
+            if (nMetricId > 0)
+            {
+            	try {
+            		metric = metricService.findByID(nMetricId);
+    			} catch (EntityNotFoundException e1) {
+    				e1.printStackTrace();
+    			}
+                String expression = userSession.getExpression();
+                expression += metric.getName();
+                userSession.setExpression(expression);
+            }
+        }
+
+        if (extParamId != null && !extParamId.isEmpty())
+        {
+            int nExtParamId = Integer.parseInt(extParamId);
+            ExtParamDTO extParam = null;
+            
+            if (nExtParamId > 0)
+            {
+            	try {
+            		extParam = extParamService.findByID(nExtParamId);
+    			} catch (EntityNotFoundException e1) {
+    				e1.printStackTrace();
+    			}
+                String expression = userSession.getExpression();
+                expression += extParam.getName();
+                userSession.setExpression(expression);
+            }
+        }
+
+        if (text != null) {
+        	if (text.equalsIgnoreCase("plus")) {
+            	userSession.setExpression(userSession.getExpression() + "+");
+        	} else {
+        		userSession.setExpression(userSession.getExpression() + text);
+        	}
+        }
+        
+        model.put("usersession", userSession);
+        
+        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+        model.put("extParams", extParams);
+        
         Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
         model.put("metrics", metrics);
 
         return "createmetric";
     }
 
-    @RequestMapping(value="createmetric", method=RequestMethod.POST)
-    public String getCreateMetricPost(MetricDTO metricForm, Map<String, Object> model) {
+    @RequestMapping(value="updatemetric", method=RequestMethod.GET)
+    public String updateMetric(Map<String, Object> model) {
+
+        ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+
+        UserSession userSession = (UserSession) model.get("usersession");
+
+        if (userSession == null)
+        {
+            userSession = new UserSession();
+        }
+
+        model.put("usersession", userSession);
+
+        MetricDTO metric = new MetricDTO();
+        metric.setExpression(userSession.getExpression());
+        
+        model.put("metric", metric);
+        
+        return "updatemetric";
+    }
+
+    @RequestMapping(value="updatemetric", method=RequestMethod.POST)
+    public String updateMetricPost(MetricDTO metricForm, Map<String, Object> model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
 
@@ -1541,16 +1639,21 @@ public class ProjectController {
         }
         securityAuthorization.atLeastExpert_expert(project);
 
-        MetricDTO metric = new MetricDTO();
-        metric.setName(metricForm.getName().trim());
-        metric.setExpression(metricForm.getExpression());
-        metric.setProject (project);
-        metric = metricService.save(metric);
-
+        String name = metricForm.getName();
+        String expression = metricForm.getExpression();
+        
+        if (name != null && expression != null)
+        {
+	        MetricDTO metric = new MetricDTO();
+	        metric.setName(name.trim());
+	        metric.setExpression(expression);
+	        metric.setProject (project);
+	        metric = metricService.save(metric);
+        }
+        
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
