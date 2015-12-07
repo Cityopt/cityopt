@@ -13,5 +13,7 @@ public class OutputVariableDTO extends BaseDTO {
 	@Getter @Setter private TypeDTO type;
 //	@Getter @Setter private Set<SimulationResult> simulationresults = new HashSet<SimulationResult>(
 //			0);
-
+	public String getQualifiedName() {
+		return component.getName() + "." + name;
+	}
 }

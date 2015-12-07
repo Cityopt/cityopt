@@ -27,6 +27,15 @@ public class UserSession {
 	private String nMultiScenarioId;
 	private String nMultiVariableId;
 	private String nSelectedInputId;
+	private String strExpression;
+	
+	public String getExpression() {
+		return strExpression;
+	}
+
+	public void setExpression(String strExpression) {
+		this.strExpression = strExpression;
+	}
 
 	public UserSession() {
 		nTimeSeriesChartType = 0;

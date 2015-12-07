@@ -372,8 +372,8 @@ a.tooltip span {
 table.tablegroup{	
 	border-style: medium;
 	border-color: black;
-	solid border-width: 5px;
-	padding: 4%;
+	solid border-width: 2px;
+	padding: 1%;
 	margin: 0%;
 	outline: #064861 inset thick;
 }
@@ -549,6 +549,16 @@ button:active, input[type="button"]:active, input[type="submit"]:active {
 }
 
 .big{ font-size: 200%; }
+
+.number-button {
+	width: 40px;
+	height: 40px;
+}
+
+.number-button-wide {
+	width: 90px;
+	height: 40px;
+}
 
 .round-button {
 	width: 12%;

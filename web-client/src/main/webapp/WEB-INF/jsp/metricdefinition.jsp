@@ -25,7 +25,7 @@
 		<td><%@ include file="mainmenu.inc"%></td>
 		<td width="50"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:800px;width:1000px;overflow:auto">
+			<div style="overflow:scroll;height:100%;width:1000px;overflow:auto">
 			<table>
 				<tr>
 				<!-- Project metrics -->
@@ -102,7 +102,7 @@
 					<td align="right">
 						<a href="exportmetrics.html"><button type="button">Export metrics</button></a>
 			   			<c:set var="tooltipcreatemetric"><spring:message code="tooltip_create_metric"/></c:set>
-			   			<a href="createmetric.html"><button title="${tooltipcreatemetric}" type="button">
+			   			<a href="createmetric.html?reset=true"><button title="${tooltipcreatemetric}" type="button">
 			   			<spring:message code="create_metric"/></button></a>
 			   		</td>
 				</tr>
