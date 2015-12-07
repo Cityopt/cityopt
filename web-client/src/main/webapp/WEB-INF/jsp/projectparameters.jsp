@@ -268,11 +268,18 @@ margin-bottom: 10%;
 																					</a>
 																				</td>
 																				<td>
-																					<a href="<c:url value='exportextparam.html?extparamvalid=${extParamVal.extparamvalid}&extparamvalsetid=${extParamValSet.extparamvalsetid}'/>">
-																						<button align="right" type="button" value="Export">
-																							Export
-																						</button>
-																					</a>
+																					<c:choose>
+																						<c:when test="${extParamVal.extparam.getType().getTypeid() >= 5}">
+																							<a href="<c:url value='exportextparam.html?extparamvalid=${extParamVal.extparamvalid}&extparamvalsetid=${extParamValSet.extparamvalsetid}'/>">
+																								<button align="right" type="button" value="Export">
+																									Export
+																								</button>
+																							</a>
+																						</c:when>
+																						<c:otherwise>
+																						
+																						</c:otherwise>
+																					</c:choose>
 																				</td>
 																			</tr>
 																		</c:forEach>
