@@ -1647,16 +1647,24 @@ public class ProjectController {
         
         if (name != null && expression != null)
         {
-        	MetricDTO metric = new MetricDTO();
-	        metric.setName(name.trim());
-	        metric.setExpression(expression.trim());
-	        metric.setProject (project);
+        	MetricDTO newMetric = new MetricDTO();
+	        newMetric.setName(name.trim());
+	        newMetric.setExpression(expression.trim());
+	        newMetric.setProject (project);
 	        
 	        if (action.equals("create")) {
-	        	metric = metricService.save(metric);
+	        	newMetric = metricService.save(newMetric);
 	        } else if (action.equals("edit")) {
 	        	int nMetricId = Integer.parseInt(metricId);
-	        	metric.setMetid(nMetricId);
+	        	MetricDTO metric = null;
+				try {
+					metric = metricService.findByID(nMetricId);
+				} catch (EntityNotFoundException e1) {
+					e1.printStackTrace();
+				} 
+	        	
+	        	metric.setName(newMetric.getName());
+	        	metric.setExpression(newMetric.getExpression());
 	        	
 	        	try {
 					metric = metricService.update(metric);
