@@ -23,7 +23,7 @@
 		<td width=30></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:100%;width:1000px;overflow:auto">
-			<form:form method="post" action="updatemetric.html" modelAttribute="metric">
+			<form:form method="post" action="updatemetric.html?action=${action}&metricid=${metricid}" modelAttribute="metric">
 			<table>
 				<tr>
 					<td>

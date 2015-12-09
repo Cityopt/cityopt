@@ -1619,13 +1619,17 @@ public class ProjectController {
         metric.setExpression(userSession.getExpression());
         
         model.put("metric", metric);
-        
+        model.put("action", "create");
+
         return "updatemetric";
     }
 
     @RequestMapping(value="updatemetric", method=RequestMethod.POST)
-    public String updateMetricPost(MetricDTO metricForm, Map<String, Object> model) {
-        ProjectDTO project = (ProjectDTO) model.get("project");
+    public String updateMetricPost(MetricDTO metricForm, Map<String, Object> model,
+		@RequestParam(value="action", required=true) String action,
+		@RequestParam(value="metricid", required=false) String metricId) {
+        
+    	ProjectDTO project = (ProjectDTO) model.get("project");
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
@@ -1643,11 +1647,23 @@ public class ProjectController {
         
         if (name != null && expression != null)
         {
-	        MetricDTO metric = new MetricDTO();
+        	MetricDTO metric = new MetricDTO();
 	        metric.setName(name.trim());
-	        metric.setExpression(expression);
+	        metric.setExpression(expression.trim());
 	        metric.setProject (project);
-	        metric = metricService.save(metric);
+	        
+	        if (action.equals("create")) {
+	        	metric = metricService.save(metric);
+	        } else if (action.equals("edit")) {
+	        	int nMetricId = Integer.parseInt(metricId);
+	        	metric.setMetid(nMetricId);
+	        	
+	        	try {
+					metric = metricService.update(metric);
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+	        }
         }
         
         try {
@@ -1665,8 +1681,7 @@ public class ProjectController {
 
     @RequestMapping(value="editmetric", method=RequestMethod.GET)
     public String getEditMetric(Map<String, Object> model, 
-            @RequestParam(value="metricid", required=true) String metricid, 
-            @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+        @RequestParam(value="metricid", required=true) String metricid) {
 
         int nMetricId = Integer.parseInt(metricid);
         MetricDTO metric = null;
@@ -1684,53 +1699,11 @@ public class ProjectController {
             e.printStackTrace();
         }
         model.put("metric", metric);
-
-        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-        model.put("components", components);
-
-        if (selectedCompId != null && !selectedCompId.isEmpty()) {
-            int nSelectedCompId = Integer.parseInt(selectedCompId);
-
-            if (nSelectedCompId > 0) {
-                // userSession.setComponentId(nSelectedCompId);
-
-                List<InputParameterDTO> inputParams = componentService
-                        .getInputParameters(nSelectedCompId);
-                model.put("inputParameters", inputParams);
-
-                List<OutputVariableDTO> outputVars = componentService
-                        .getOutputVariables(nSelectedCompId);
-                model.put("outputVars", outputVars);
-            }
-            model.put("selectedcompid", nSelectedCompId);
-        }
-
-        List<ExtParamValDTO> extParamVals = null;
-        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-
-        if (defaultExtParamValSetId != 0) {
-            try {
-                ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
-                model.put("extParamValSet", extParamValSet);
-            } catch (EntityNotFoundException e1) {
-                e1.printStackTrace();
-            }
-
-            try {
-                extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            model.put("extParamVals", extParamVals);
-        }
-
-        Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-        model.put("metrics", metrics);
-
-        return "editmetric";
+        model.put("action", "edit");
+        model.put("metricid", nMetricId);
+        
+        return "updatemetric";
     }
-
    
     @RequestMapping(value="editmetric", method=RequestMethod.POST)
     public String getEditMetricPost(MetricDTO metric, Map<String, Object> model,
