@@ -29,6 +29,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.simantics.simulation.scheduling.Experiment;
 import org.simantics.simulation.scheduling.JobConfiguration;
 import org.simantics.simulation.scheduling.applications.Application;
@@ -198,7 +199,7 @@ public class AprosRunner implements SimulationRunner {
                 for (Map.Entry<String, String>
                          pkv : ckv.getValue().entrySet()) {
                     inp.printf("%s = %s%n", pkv.getValue(),
-                               input.get(ckv.getKey(), pkv.getKey()));
+                               repr(input.get(ckv.getKey(), pkv.getKey())));
                 }
             }            
         }
@@ -208,6 +209,18 @@ public class AprosRunner implements SimulationRunner {
            Wonkiness in the simulation server or client library.
            No harm if there are more arguments than SCL main takes. */
         return new String[] {"sequence.scl", "0"};
+    }
+    
+    /**
+     * Return a SCL representation of obj.  Must work with any types
+     * usable as input parameters.
+     */
+    private static String repr(Object obj) {
+        if (obj instanceof String) {
+            return "\"" + StringEscapeUtils.escapeJava((String)obj) + "\"";
+        } else {
+            return obj.toString();
+        }
     }
 
     private static Templates loadXSL() {
