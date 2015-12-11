@@ -60,7 +60,7 @@ import eu.cityopt.service.UserGroupProjectService;
 import eu.cityopt.service.UserGroupService;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
-import eu.cityopt.web.InputParamForm;
+import eu.cityopt.web.ParamForm;
 
 
 @Controller
@@ -292,7 +292,7 @@ public class ParameterController {
         
         model.addAttribute("inputParam", inputParam);
         
-        InputParamForm inputParamForm = new InputParamForm();
+        ParamForm inputParamForm = new ParamForm();
         inputParamForm.setName(inputParam.getName());
         inputParamForm.setValue(inputParam.getDefaultvalue());
         model.addAttribute("inputParamForm", inputParamForm);
@@ -305,7 +305,7 @@ public class ParameterController {
 
     @RequestMapping(value="editinputparameter", method=RequestMethod.POST)
     public String editInputParameterPost(Map<String, Object> model, 
-		InputParamForm inputParamForm,
+		ParamForm inputParamForm,
         @RequestParam(value="inputparamid", required=false) String inputParamId) {
         
     	ProjectDTO project = (ProjectDTO) model.get("project");
@@ -399,7 +399,7 @@ public class ParameterController {
         model.put("inputParam", newInputParameter);
         model.put("selectedcompid", nSelectedCompId);
 
-        InputParamForm inputParamForm = new InputParamForm();
+        ParamForm inputParamForm = new ParamForm();
         model.put("inputParamForm", inputParamForm);
 
         List<UnitDTO> units = unitService.findAll();
@@ -409,7 +409,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="createinputparameter", method=RequestMethod.POST)
-    public String getCreateInputParamPost(InputParamForm inputParamForm, Map<String, Object> model,
+    public String getCreateInputParamPost(ParamForm inputParamForm, Map<String, Object> model,
         @RequestParam(value="selectedcompid", required=true) String strSelectedCompId) {
         
     	ProjectDTO project = (ProjectDTO) model.get("project");
@@ -678,11 +678,14 @@ public class ParameterController {
         }
         model.put("extParam", extParam);
 
+        List<UnitDTO> units = unitService.findAll();
+        model.put("units", units);
+        
         return "editextparam";
     }
 
     @RequestMapping(value="editextparam", method=RequestMethod.POST)
-    public String getEditExtParamPost(ExtParamDTO extParam, Map<String, Object> model,
+    public String getEditExtParamPost(ParamForm paramForm, Map<String, Object> model,
             @RequestParam(value="extparamid", required=true) String extParamId){
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -705,8 +708,19 @@ public class ParameterController {
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
-        updatedExtParam.setName(extParam.getName());
+        updatedExtParam.setName(paramForm.getName());
 
+        String strUnit = paramForm.getUnit();
+        UnitDTO unit = null;
+        
+		try {
+			unit = unitService.findByName(strUnit);
+		} catch (EntityNotFoundException e2) {
+			e2.printStackTrace();
+		}
+        
+		updatedExtParam.setUnit(unit);
+        
         extParamService.save(updatedExtParam, project.getPrjid());
 
         model.put("project", project);
@@ -740,13 +754,26 @@ public class ParameterController {
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
+        
+        ParamForm paramForm = new ParamForm();
+        paramForm.setName(extParamVal.getExtparam().getName());
+        paramForm.setValue(extParamVal.getValue());
+        
+        if (extParamVal.getExtparam().getUnit() != null) {
+        	paramForm.setUnit(extParamVal.getExtparam().getUnit().getName());
+        }
+        
         model.put("extParamVal", extParamVal);
+        model.put("paramForm", paramForm);
 
+        List<UnitDTO> units = unitService.findAll();
+        model.put("units", units);
+        
         return "editextparamvalue";
     }
 
     @RequestMapping(value="editextparamvalue", method=RequestMethod.POST)
-    public String getEditExtParamValPost(ExtParamValDTO extParamVal, Map<String, Object> model,
+    public String getEditExtParamValPost(ParamForm paramForm, Map<String, Object> model,
             @RequestParam(value="extparamvalid", required=true) String extParamValId){
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -771,8 +798,27 @@ public class ParameterController {
             e.printStackTrace();
         }
 
-        updatedExtParamVal.setValue(extParamVal.getValue());
+        updatedExtParamVal.setValue(paramForm.getValue());
         extParamValService.save(updatedExtParamVal);
+
+        ExtParamDTO extParam = updatedExtParamVal.getExtparam();
+        try {
+			extParam = extParamService.findByID(extParam.getExtparamid());
+		} catch (EntityNotFoundException e3) {
+			e3.printStackTrace();
+		}
+        
+        String strUnit = paramForm.getUnit();
+        UnitDTO unit = null;
+        
+		try {
+			unit = unitService.findByName(strUnit);
+		} catch (EntityNotFoundException e2) {
+			e2.printStackTrace();
+		}
+        
+		extParam.setUnit(unit);
+		extParamService.save(extParam, project.getPrjid());
 
         model.put("project", project);
 

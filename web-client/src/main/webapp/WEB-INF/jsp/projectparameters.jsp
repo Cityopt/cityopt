@@ -240,6 +240,7 @@ margin-bottom: 10%;
 																		<col style="width: 100px">
 																		<col style="width: 50px">
 																		<col style="width: 50px">
+																		<col style="width: 50px">
 																		<tr height="20">
 																			<!-- Name -->
 																			<th><spring:message code="name" /></th>
@@ -249,6 +250,8 @@ margin-bottom: 10%;
 																			<th><spring:message code="type" /></th>
 																			<!-- Value -->
 																			<th><spring:message code="value" /></th>
+																			<!-- Unit -->
+																			<th><spring:message code="unit" /></th>
 																			<!-- Edit -->
 																			<th><spring:message code="edit" /></th>
 																			<th>Export</th>
@@ -260,6 +263,7 @@ margin-bottom: 10%;
 																				<td>${extParamVal.comment}</td>
 																				<td>${extParamVal.extparam.getType().getName()}</td>
 																				<td>${extParamVal.value}</td>
+																				<td>${extParamVal.extparam.unit.name}</td>
 																				<td>
 																					<a href="<c:url value='editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}'/>">
 																						<button align="right" type="button" value="Edit">
@@ -305,11 +309,14 @@ margin-bottom: 10%;
 																		<col style="width: 500px">
 																		<col style="width: 200px">
 																		<col style="width: 50px">
+																		<col style="width: 50px">
 																		<tr height="20">
 																			<!-- Name -->
 																			<th><spring:message code="name" /></th>
 																			<!-- Type -->
 																			<th><spring:message code="type" /></th>
+																			<!-- Unit -->
+																			<th><spring:message code="unit" /></th>
 																			<!-- Remove -->
 																			<th><spring:message code="remove" /></th>
 																		</tr>
@@ -318,6 +325,7 @@ margin-bottom: 10%;
 																			<tr>
 																				<td>${extParam.name}</td>
 																				<td>${extParam.type.name}</td>
+																				<td>${extParam.unit.name}</td>
 		
 																				<td><a href="<c:url value='deleteextparam.html?extparamid=${extParam.extparamid}'/>">
 																						<button align="right" type="button" value="Remove">

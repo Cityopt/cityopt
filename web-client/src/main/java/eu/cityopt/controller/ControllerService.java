@@ -294,9 +294,15 @@ public class ControllerService {
 					e.printStackTrace();
 				}
                 
-				String modelName = description.substring(0, description.indexOf(Character.LINE_SEPARATOR));
-                model.put("title", "Energy model description");
-                model.put("loadedEnergyModel", modelName);
+				int index = description.indexOf(Character.LINE_SEPARATOR);
+				
+				if (index > 0)
+				{
+					String modelName = description.substring(0, index);
+		            model.put("loadedEnergyModel", modelName);
+				}
+				
+				model.put("title", "Energy model description");
                 model.put("infotext", description);
             }
 	    }

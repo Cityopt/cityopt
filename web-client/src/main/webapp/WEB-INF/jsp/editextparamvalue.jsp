@@ -23,7 +23,7 @@
 		<td width=30></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}" modelAttribute="extParamVal">
+			<form:form method="post" action="editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}" modelAttribute="paramForm">
 			<!--Edit external parameter value-->
 			<h2><spring:message code="edit_external_parameter_value"/></h2>
 
@@ -37,7 +37,7 @@
 						<spring:message code="name"/>
 					</td>
 					<td>
-						${extParamVal.extparam.name}
+						${paramForm.name}
 					</td>
 				</tr>
 				<tr>
@@ -47,6 +47,19 @@
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="value"/>
+					</td>
+				</tr>
+				<tr>
+					<td>					
+						Unit
+					</td>
+					<td>					
+						<form:select path="unit">
+							<option value="${paramForm.unit}" selected>${paramForm.unit}</option>
+							<c:forEach items="${units}" var="unit">																																
+								<option value="${unit.name}">${unit.name}</option>
+							</c:forEach>
+						</form:select>				
 					</td>
 				</tr>
 				<tr height="10">

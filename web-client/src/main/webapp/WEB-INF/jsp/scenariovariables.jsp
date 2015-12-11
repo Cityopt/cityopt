@@ -45,6 +45,7 @@
 						<col style="width: 200px">
 						<col style="width: 100px">
 						<col style="width: 100px">
+						<col style="width: 100px">
 						<tr height="20">
 							<!-- Name -->
 							<th><spring:message code="name" /></th>
@@ -52,6 +53,8 @@
 							<th><spring:message code="comment" /></th>
 							<!-- Type -->
 							<th><spring:message code="type" /></th>
+							<!-- Unit -->
+							<th><spring:message code="unit" /></th>
 							<!-- Value -->
 							<th><spring:message code="value" /></th>
 						</tr>
@@ -61,6 +64,7 @@
 								<td>${extParamVal.extparam.name}</td>
 								<td>${extParamVal.comment}</td>
 								<td>${extParamVal.extparam.getType().getName()}</td>
+								<td>${extParamVal.extparam.unit.name}</td>
 								<td>${extParamVal.value}</td>
 							</tr>
 						</c:forEach>
