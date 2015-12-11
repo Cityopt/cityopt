@@ -1713,48 +1713,6 @@ public class ProjectController {
         return "updatemetric";
     }
    
-    @RequestMapping(value="editmetric", method=RequestMethod.POST)
-    public String getEditMetricPost(MetricDTO metric, Map<String, Object> model,
-            @RequestParam(value="metricid", required=true) String metricid) {
-        ProjectDTO project = (ProjectDTO) model.get("project");
-
-        if (project == null) 
-        {
-            return "error";
-        }
-
-        try {
-            project = projectService.findByID(project.getPrjid());
-        } catch (EntityNotFoundException e1) {
-            e1.printStackTrace();
-        }
-
-        if (project == null)
-        {
-            return "error";
-        }
-
-        int nMetricId = Integer.parseInt(metricid);
-        MetricDTO oldMetric = null;
-
-        try {
-            oldMetric = metricService.findByID(nMetricId);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        oldMetric.setName(metric.getName());
-        oldMetric.setExpression(metric.getExpression());
-
-        metricService.save(oldMetric);
-
-        model.put("project", project);
-        Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-        model.put("metrics", metrics);
-
-        return "metricdefinition";
-    }
-
     @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard')")
     @RequestMapping(value="uploaddiagram", method=RequestMethod.GET)
     public String getUploadDiagram(HttpServletRequest request, Map<String, Object> model){

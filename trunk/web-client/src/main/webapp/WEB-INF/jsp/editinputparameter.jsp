@@ -1,4 +1,4 @@
-<%--@elvariable id="inputParamForm" type="eu.cityopt.web.InputParamForm"--%>
+<%--@elvariable id="inputParamForm" type="eu.cityopt.web.ParamForm"--%>
 <%--@elvariable id="inputParam" type="eu.cityopt.DTO.InputParameterDTO"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
