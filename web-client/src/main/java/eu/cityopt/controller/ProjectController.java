@@ -185,6 +185,7 @@ import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.web.ParamForm;
 import eu.cityopt.web.RoleForm;
 import eu.cityopt.web.ScenarioParamForm;
 import eu.cityopt.web.UnitForm;
@@ -1422,6 +1423,7 @@ public class ProjectController {
                 cloneMetric.setName(metric.getName() + "_new");
                 cloneMetric.setExpression(metric.getExpression());
                 cloneMetric.setProject(project);
+                cloneMetric.setUnit(metric.getUnit());
                 cloneMetric = metricService.save(cloneMetric);
             }
             else if (action.equals("delete")) {
@@ -1618,14 +1620,25 @@ public class ProjectController {
         MetricDTO metric = new MetricDTO();
         metric.setExpression(userSession.getExpression());
         
-        model.put("metric", metric);
+        ParamForm paramForm = new ParamForm();
+        paramForm.setName(metric.getName());
+        paramForm.setValue(metric.getExpression());
+        
+        if (metric.getUnit() != null) {
+        	paramForm.setUnit(metric.getUnit().getName());
+        }
+        
+        model.put("paramForm", paramForm);
         model.put("action", "create");
 
+        List<UnitDTO> units = unitService.findAll();
+        model.put("units", units);
+        
         return "updatemetric";
     }
 
     @RequestMapping(value="updatemetric", method=RequestMethod.POST)
-    public String updateMetricPost(MetricDTO metricForm, Map<String, Object> model,
+    public String updateMetricPost(ParamForm paramForm, Map<String, Object> model,
 		@RequestParam(value="action", required=true) String action,
 		@RequestParam(value="metricid", required=false) String metricId) {
         
@@ -1642,8 +1655,9 @@ public class ProjectController {
         }
         securityAuthorization.atLeastExpert_expert(project);
 
-        String name = metricForm.getName();
-        String expression = metricForm.getExpression();
+        String name = paramForm.getName();
+        String expression = paramForm.getValue();
+        String unit = paramForm.getUnit();
         
         if (name != null && expression != null)
         {
@@ -1651,6 +1665,12 @@ public class ProjectController {
 	        newMetric.setName(name.trim());
 	        newMetric.setExpression(expression.trim());
 	        newMetric.setProject (project);
+	        
+	        try {
+				newMetric.setUnit(unitService.findByName(unit));
+			} catch (EntityNotFoundException e2) {
+				e2.printStackTrace();
+			}
 	        
 	        if (action.equals("create")) {
 	        	newMetric = metricService.save(newMetric);
@@ -1665,6 +1685,7 @@ public class ProjectController {
 	        	
 	        	metric.setName(newMetric.getName());
 	        	metric.setExpression(newMetric.getExpression());
+	        	metric.setUnit(newMetric.getUnit());
 	        	
 	        	try {
 					metric = metricService.update(metric);
@@ -1706,10 +1727,22 @@ public class ProjectController {
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
-        model.put("metric", metric);
+
+        ParamForm paramForm = new ParamForm();
+        paramForm.setName(metric.getName());
+        paramForm.setValue(metric.getExpression());
+        
+        if (metric.getUnit() != null) {
+        	paramForm.setUnit(metric.getUnit().getName());
+        }
+        
+        model.put("paramForm", paramForm);
         model.put("action", "edit");
         model.put("metricid", nMetricId);
-        
+
+        List<UnitDTO> units = unitService.findAll();
+        model.put("units", units);
+
         return "updatemetric";
     }
    

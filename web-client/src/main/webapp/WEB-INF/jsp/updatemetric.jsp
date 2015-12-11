@@ -23,7 +23,7 @@
 		<td width=30></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:100%;width:1000px;overflow:auto">
-			<form:form method="post" action="updatemetric.html?action=${action}&metricid=${metricid}" modelAttribute="metric">
+			<form:form method="post" action="updatemetric.html?action=${action}&metricid=${metricid}" modelAttribute="paramForm">
 			<table>
 				<tr>
 					<td>
@@ -100,8 +100,25 @@
 							<tr>
 								<td></td>
 								<c:set var="expressiontip"><spring:message code="tooltip_expression"/></c:set>
-								<td colspan="3"><form:input style="width:100%" title="${expressiontip}" type="text" path="expression"/></td>
+								<td colspan="3"><form:input style="width:100%" title="${expressiontip}" type="text" path="value"/></td>
 								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>					
+									Unit
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>					
+									<form:select path="unit">
+										<option value="${paramForm.unit}" selected>${paramForm.unit}</option>
+										<c:forEach items="${units}" var="unit">																																
+											<option value="${unit.name}">${unit.name}</option>
+										</c:forEach>
+									</form:select>				
+								</td>
 							</tr>
 							<tr>
 								<td></td>
