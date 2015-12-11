@@ -46,6 +46,7 @@
 							<col style="width: 100px">
 							<col style="width: 100px">
 							<col style="width: 100px">
+							<col style="width: 100px">
 
 							<tr height="20">
 							<!-- Name -->
@@ -54,6 +55,8 @@
 							    <th><spring:message code="id"/></th>
 						    <!-- Expressions -->
 							    <th><spring:message code="expressions"/></th>
+						    <!-- Unit -->
+							    <th><spring:message code="unit"/></th>
 							<!-- Clone -->
 							     <th><spring:message code="clone"/></th>
 							<!-- Edit -->
@@ -67,6 +70,7 @@
 								<td>${metric.name}</td>
 						    	<td>${metric.metid}</td>
 						    	<td>${metric.expression}</td>
+						    	<td>${metric.unit.name}</td>
 								<td>
 									<!-- Clone button -->
 									<c:set var="tooltipclone"><spring:message code="tooltip_clone"/></c:set>
