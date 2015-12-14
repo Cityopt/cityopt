@@ -67,8 +67,6 @@
 														<th><spring:message code="select"/></th>
 														<!-- Component -->
 														<th><spring:message code="component"/></th>
-														<!-- ID -->
-														<th><spring:message code="id"/></th>
 													</tr>
 										
 													<c:forEach items="${components}" var="component">
@@ -81,8 +79,7 @@
 															<td><a href="<c:url value='outputvariables.html?selectedcompid=${component.componentid}'/>">Select</a></td>
 														</c:if>
 															<td>${component.name}</td>
-													    	<td>${component.componentid}</td>
-												   	</tr>
+													</tr>
 													</c:forEach>
 												</table>
 											</td>
@@ -92,18 +89,23 @@
 												<table class="tablestyle">
 													<col style="width:250px">
 													<col style="width:100px">
+													<col style="width:50px">
 													<tr>
 														<!-- Output variable -->
 														<th><spring:message code="output_variable"/></th>
-														<!-- Id -->
-														<th><spring:message code="id"/></th>
-														
+														<!-- Unit -->
+														<th><spring:message code="unit"/></th>
+														<th><spring:message code="edit"/></th>
 													</tr>
 								
 													<c:forEach items="${outputVariables}" var="outputVar">
 													<tr>
 														<td>${outputVar.name}</td>
-												    	<td>${outputVar.outvarid}</td>
+												    	<td>${outputVar.unit.name}</td>
+												    	<td><a href="editoutputvariable.html?outputvarid=${outputVar.outvarid}">
+												    		<button type="button"><spring:message code="edit"/></button>
+											    			</a>
+										    			</td>
 													</tr>
 													</c:forEach>
 												</table>

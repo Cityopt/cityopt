@@ -23,6 +23,7 @@ import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParameterDTO;
+import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
@@ -81,6 +82,9 @@ public class ParameterController {
     @Autowired
     InputParamValService inputParamValService;
 
+    @Autowired
+    OutputVariableService outputVarService;
+    
     @Autowired
     ExtParamService extParamService;
 
@@ -369,6 +373,94 @@ public class ParameterController {
         return "projectparameters";
     }
 
+    @RequestMapping(value="editoutputvariable", method=RequestMethod.GET)
+    public String editOutputVariable(Model model, 
+		@RequestParam(value="outputvarid", required=true) String outputvarid) {
+        int nOutputId = Integer.parseInt(outputvarid);
+        OutputVariableDTO outputVar = null;
+        
+        try {
+        	outputVar = outputVarService.findByID(nOutputId);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+        
+        model.addAttribute("outputVar", outputVar);
+        
+        ParamForm paramForm = new ParamForm();
+        paramForm.setName(outputVar.getName());
+        model.addAttribute("paramForm", paramForm);
+
+        List<UnitDTO> units = unitService.findAll();
+        model.addAttribute("units", units);
+        
+        return "editoutputvariable";
+    }
+
+    @RequestMapping(value="editoutputvariable", method=RequestMethod.POST)
+    public String editOutputParameterPost(Map<String, Object> model, 
+		ParamForm inputParamForm,
+        @RequestParam(value="outputvarid", required=false) String outputVarId) {
+        
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+        securityAuthorization.atLeastExpert_expert(project);
+        
+        try {
+            project = projectService.findByID(project.getPrjid());
+        } catch (EntityNotFoundException e1) {
+            e1.printStackTrace();
+        }
+
+        int nOutputVarId = Integer.parseInt(outputVarId);
+        OutputVariableDTO updatedOutputVar = null;
+        
+        try {
+        	updatedOutputVar = outputVarService.findByID(nOutputVarId);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+        
+        String strUnit = inputParamForm.getUnit();
+        UnitDTO unit = null;
+        
+		try {
+			unit = unitService.findByName(strUnit);
+		} catch (EntityNotFoundException e2) {
+			e2.printStackTrace();
+		}
+        
+		updatedOutputVar.setUnit(unit);
+        int componentId = updatedOutputVar.getComponent().getComponentid();
+
+        try {
+        	outputVarService.update(updatedOutputVar);
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+        
+        model.put("selectedcompid", componentId);
+
+        try {
+            model.put("selectedComponent", componentService.findByID(componentId));
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        model.put("project", project);
+        
+        controllerService.getComponentAndExternalParamValues(model, project);        
+        
+        List<OutputVariableDTO> outputVars = componentService.getOutputVariables(componentId);
+        model.put("outputVars", outputVars);
+        
+        return "projectparameters";
+    }
+    
     @RequestMapping(value="createinputparameter", method=RequestMethod.GET)
     public String getCreateInputParameter(Map<String, Object> model,
             @RequestParam(value="selectedcompid", required=true) String strSelectedCompId) {
