@@ -1567,10 +1567,10 @@ INSERT INTO Type (typeID, name) VALUES
  (8, 'List of Integer'),
  (9, 'List of Timestamp');
 
-INSERT INTO AppUser VALUES (1, 'admin', 'admin',true, 0);
-INSERT INTO AppUser VALUES (2, 'expert', 'expert',true, 0);
-INSERT INTO AppUser VALUES (3, 'standard', 'standard',true, 0);
-INSERT INTO AppUser VALUES (4, 'guest', 'guest',true, 0);
+INSERT INTO AppUser VALUES (1, 'admin', '$2a$12$SAfHw9MkoYI2jW.4AROP/uHQmYGYVa1/r8e2PR8zAvlETyzcILJua',true, 0);
+INSERT INTO AppUser VALUES (2, 'expert', '$2a$12$Mq0oyiHNXsvtNsU39Yi..uGxb0s1gEvER1uckh3GGuLL6qSG/6k02',true, 0);
+INSERT INTO AppUser VALUES (3, 'standard', '$2a$12$eFqEajYbcfAy72XrnAqLiuFhUMSyv9hNTIsIBBPWbm.W4yugkT5lu',true, 0);
+INSERT INTO AppUser VALUES (4, 'guest', '$2a$12$Dm930HAZsbmUiBZr0h8P/eIZb7WRSs0Nobt0sAOTRCT9ssItrUFDK',true, 0);
 
 INSERT INTO UserGroup VALUES (1, 'ROLE_Administrator', 0);
 INSERT INTO UserGroup VALUES (2, 'ROLE_Expert', 0);
