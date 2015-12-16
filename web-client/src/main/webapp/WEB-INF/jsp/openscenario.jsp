@@ -1,5 +1,5 @@
 <%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
-<%--@elvariable id="scenario" type="com.cityopt.DTO.ScenarioDTO"--%>
+<%--@elvariable id="scenarioForm" type="com.cityopt.web.ScenarioForm"--%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -64,22 +64,22 @@ margin-left: 5%;
 				    <th><spring:message code="clone"/></th>
 				</tr>
 								
-				<c:forEach items="${scenarios}" var="scenario">
+				<c:forEach items="${scenarioForms}" var="scenarioForm">
 				<tr>
-					<td>${scenario.name}</td>
-			    	<td>${scenario.scenid}</td>
-					<td>${scenario.description}</td>
-					<td>${scenario.status}</td>			
+					<td>${scenarioForm.name}</td>
+			    	<td>${scenarioForm.id}</td>
+					<td>${scenarioForm.description}</td>
+					<td>${scenarioForm.status}</td>			
 					<td>
 						<c:set var="tooltip_open_scenario"><spring:message code="tooltip_open_scenario"/></c:set>
-						<a href="<c:url value='openscenario.html?scenarioid=${scenario.scenid}'/>" title="${tooltip_open_scenario}">
+						<a href="<c:url value='openscenario.html?scenarioid=${scenarioForm.id}'/>" title="${tooltip_open_scenario}">
 							<button align="right" type="button" value="Open"><spring:message code="open"/>
 							</button>
 						</a>
 					</td>
 					<td>
 						<c:set var="tooltip_clone"><spring:message code="tooltip_clone"/></c:set>
-						<a href="<c:url value='clonescenario.html?scenarioid=${scenario.scenid}'/>" title="${tooltip_clone}">
+						<a href="<c:url value='clonescenario.html?scenarioid=${scenarioForm.id}'/>" title="${tooltip_clone}">
 							<button align="right" type="button" value="Clone"><spring:message code="clone"/></button>
 						</a>
 					</td>
