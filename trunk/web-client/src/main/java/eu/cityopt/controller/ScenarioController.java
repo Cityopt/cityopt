@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +96,7 @@ import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.ModelParamForm;
+import eu.cityopt.web.ScenarioForm;
 import eu.cityopt.web.ScenarioParamForm;
 import eu.cityopt.web.UserSession;
 
@@ -148,6 +150,9 @@ public class ScenarioController {
 	@Autowired
 	UnitService unitService;
 	
+    @Autowired
+    ControllerService controllerService;
+
 	@Autowired
 	SimulationService simService;
 
@@ -355,14 +360,6 @@ public class ScenarioController {
 				e.printStackTrace();
 			}
 			
-			String statusMsg = scenario.getStatus();
-
-			if (simService.getRunningSimulations().contains(scenario.getScenid())) {
-				statusMsg = "RUNNING";
-			}
-			
-			model.put("status", statusMsg);
-			
 			model.put("scenario", scenario);
 			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 			model.put("components", components);
@@ -396,7 +393,22 @@ public class ScenarioController {
 		else
 		{
 			Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
-			model.put("scenarios", scenarios);
+			Set<ScenarioForm> scenarioForms = new HashSet<ScenarioForm>();
+			
+			Iterator<ScenarioDTO> iter = scenarios.iterator();
+        	
+        	while (iter.hasNext()) {
+        		ScenarioDTO scenario = (ScenarioDTO) iter.next();
+        		
+        		ScenarioForm scenarioForm = new ScenarioForm();
+        		scenarioForm.setName(scenario.getName());
+        		scenarioForm.setId(scenario.getScenid());
+        		scenarioForm.setDescription(scenario.getDescription());
+        		scenarioForm.setStatus(controllerService.getScenarioStatus(scenario));
+        		scenarioForms.add(scenarioForm);
+        	}
+        	
+			model.put("scenarioForms", scenarioForms);
 		}
 
 		return "openscenario";
@@ -809,10 +821,9 @@ public class ScenarioController {
 				e.printStackTrace();
 			}
 			
-			String statusMsg = scenario.getStatus();
+			String statusMsg = controllerService.getScenarioStatus(scenario);
 
 			if (simService.getRunningSimulations().contains(scenario.getScenid())) {
-				statusMsg = "RUNNING";
 				model.put("disableEdit", true);
 			}
 			else if (statusMsg != null && statusMsg.equals("SUCCESS"))
@@ -1314,7 +1325,7 @@ public class ScenarioController {
 		}
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
-		String statusMsg = scenario.getStatus();
+		String statusMsg = controllerService.getScenarioStatus(scenario);
 
 		if (statusMsg != null && statusMsg.equals("SUCCESS"))
 		{
@@ -1759,12 +1770,8 @@ public class ScenarioController {
 		
 		model.put("scenario", scenario);
 
-		statusMsg = scenario.getStatus();
+		statusMsg = controllerService.getScenarioStatus(scenario);
 
-		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
-			statusMsg = "RUNNING";
-		}
-		
 		model.put("status", statusMsg);
 		model.put("error", errorMsg);
 		

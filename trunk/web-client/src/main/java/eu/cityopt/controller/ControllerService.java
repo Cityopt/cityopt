@@ -18,6 +18,7 @@ import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.ProjectDTO;
+import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentService;
@@ -31,6 +32,7 @@ import eu.cityopt.service.ProjectService;
 import eu.cityopt.service.SimulationModelService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
+import eu.cityopt.sim.service.SimulationService;
 
 
 @Controller
@@ -68,7 +70,10 @@ public class ControllerService {
 		
 	    @Autowired
 	    AppUserService userService;
-	    
+
+	    @Autowired
+	    SimulationService simService;
+
 	    @Autowired
 	    SimulationModelService simModelService;
 	    
@@ -294,17 +299,30 @@ public class ControllerService {
 					e.printStackTrace();
 				}
                 
-				int index = description.indexOf(Character.LINE_SEPARATOR);
-				
-				if (index > 0)
+				if (description != null)
 				{
-					String modelName = description.substring(0, index);
-		            model.put("loadedEnergyModel", modelName);
+					int index = description.indexOf(Character.LINE_SEPARATOR);
+					
+					if (index > 0)
+					{
+						String modelName = description.substring(0, index);
+			            model.put("loadedEnergyModel", modelName);
+					}
 				}
 				
 				model.put("title", "Energy model description");
                 model.put("infotext", description);
             }
+	    }
+	    
+	    public String getScenarioStatus(ScenarioDTO scenario) {
+	    	String statusMsg = scenario.getStatus();
+
+			if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+				statusMsg = "RUNNING";
+			}
+			
+			return statusMsg;
 	    }
 	    
 	    public void clearSession(Map<String, Object> model, HttpServletRequest request)
