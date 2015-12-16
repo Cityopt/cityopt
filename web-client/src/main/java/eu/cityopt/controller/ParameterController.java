@@ -471,9 +471,9 @@ public class ParameterController {
         controllerService.getComponentAndExternalParamValues(model, project);        
         
         List<OutputVariableDTO> outputVars = componentService.getOutputVariables(componentId);
-        model.put("outputVars", outputVars);
+        model.put("outputVariables", outputVars);
         
-        return "projectparameters";
+        return "outputvariables";
     }
     
     @RequestMapping(value="createinputparameter", method=RequestMethod.GET)
