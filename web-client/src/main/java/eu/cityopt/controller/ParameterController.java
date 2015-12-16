@@ -450,14 +450,7 @@ public class ParameterController {
         
 		updatedOutputVar.setUnit(unit);
         int componentId = updatedOutputVar.getComponent().getComponentid();
-
-        OutputVariable outVarModel = modelMapper.map(updatedOutputVar, OutputVariable.class);
-        Type type = typeRepository.findOne(outVarModel.getType().getTypeid());
-        
-        outVarModel.setType(type);
-        outVarModel = outVarRepository.save(outVarModel);          
-        
-        updatedOutputVar = modelMapper.map(outVarModel, OutputVariableDTO.class);
+        outputVarService.save(updatedOutputVar);
 
         /*try {
         	outputVarService.update(updatedOutputVar);

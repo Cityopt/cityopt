@@ -13,18 +13,26 @@ import com.google.common.reflect.TypeToken;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.SimulationResultDTO;
+import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.SimulationResult;
+import eu.cityopt.model.Type;
 import eu.cityopt.repository.OutputVariableRepository;
+import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.OutputVariableService;
+import eu.cityopt.service.TypeService;
 
 @Service("OutputVariableService")
 public class OutputVariableServiceImpl implements OutputVariableService {
 	
 	@Autowired
 	private OutputVariableRepository outputVariableRepository;
+	
+	@Autowired
+	private TypeRepository typeRepository;
+	
 	
 	@Autowired 
 	private ModelMapper modelMapper;
@@ -38,6 +46,9 @@ public class OutputVariableServiceImpl implements OutputVariableService {
 	@Transactional
 	public OutputVariableDTO save(OutputVariableDTO outVar) {
 		OutputVariable outVarModel = modelMapper.map(outVar, OutputVariable.class);
+		
+		Type type = typeRepository.findOne(outVarModel.getType().getTypeid());		
+		outVarModel.setType(type);
 		outVarModel = outputVariableRepository.save(outVarModel);
 		return modelMapper.map(outVarModel, OutputVariableDTO.class);
 	}
