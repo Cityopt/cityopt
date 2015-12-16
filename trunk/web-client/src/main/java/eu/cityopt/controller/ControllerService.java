@@ -317,7 +317,9 @@ public class ControllerService {
 	        model.remove("optresults");
 	        model.remove("usersession");
 	        model.remove("user");
-	        request.getSession().invalidate();
+	        
+	        // This resets the language setting also
+	        //request.getSession().invalidate();
 	    }
 	    
 	}
