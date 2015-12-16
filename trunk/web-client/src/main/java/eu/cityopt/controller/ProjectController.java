@@ -849,11 +849,11 @@ public class ProjectController {
 	                extParamVal.setExtparam(extParam);
 	                extParamVal = extParamValService.save(extParamVal);
 
-	                int defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+	                Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 	                
 	                System.out.println("Default ext param set id " + defaultExtParamValSetId);
                     
-	                if (defaultExtParamValSetId != 0)
+	                if (defaultExtParamValSetId != null)
 	        		{
 	                	try {
 		                    extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);

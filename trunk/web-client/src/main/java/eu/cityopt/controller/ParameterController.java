@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -28,7 +29,11 @@ import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.config.AppMetadata;
+import eu.cityopt.model.OutputVariable;
+import eu.cityopt.model.Type;
+import eu.cityopt.repository.OutputVariableRepository;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentInputParamDTOService;
 import eu.cityopt.service.ComponentService;
@@ -105,7 +110,16 @@ public class ParameterController {
     
     @Autowired
     SecurityAuthorization securityAuthorization;
-          
+
+    @Autowired 
+	private ModelMapper modelMapper;
+	
+    @Autowired 
+	private TypeRepository typeRepository;
+
+    @Autowired 
+	private OutputVariableRepository outVarRepository;
+
     @RequestMapping(value="projectparameters", method=RequestMethod.GET)
     public String getProjectParameters(Map<String, Object> model, 
             @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
@@ -399,7 +413,7 @@ public class ParameterController {
 
     @RequestMapping(value="editoutputvariable", method=RequestMethod.POST)
     public String editOutputParameterPost(Map<String, Object> model, 
-		ParamForm inputParamForm,
+		ParamForm paramForm,
         @RequestParam(value="outputvarid", required=false) String outputVarId) {
         
     	ProjectDTO project = (ProjectDTO) model.get("project");
@@ -425,7 +439,7 @@ public class ParameterController {
             e.printStackTrace();
         }
         
-        String strUnit = inputParamForm.getUnit();
+        String strUnit = paramForm.getUnit();
         UnitDTO unit = null;
         
 		try {
@@ -437,11 +451,19 @@ public class ParameterController {
 		updatedOutputVar.setUnit(unit);
         int componentId = updatedOutputVar.getComponent().getComponentid();
 
-        try {
+        OutputVariable outVarModel = modelMapper.map(updatedOutputVar, OutputVariable.class);
+        Type type = typeRepository.findOne(outVarModel.getType().getTypeid());
+        
+        outVarModel.setType(type);
+        outVarModel = outVarRepository.save(outVarModel);          
+        
+        updatedOutputVar = modelMapper.map(outVarModel, OutputVariableDTO.class);
+
+        /*try {
         	outputVarService.update(updatedOutputVar);
 		} catch (EntityNotFoundException e1) {
 			e1.printStackTrace();
-		}
+		}*/
         
         model.put("selectedcompid", componentId);
 
@@ -572,7 +594,7 @@ public class ParameterController {
         List<ExtParamValDTO> extParamVals = null;
 
         Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-        if (defaultExtParamValSetId != 0)
+        if (defaultExtParamValSetId != null)
         {
             try {
                 ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
@@ -720,7 +742,7 @@ public class ParameterController {
         List<ExtParamValDTO> extParamVals = null;
 
         Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-        if (defaultExtParamValSetId != 0)
+        if (defaultExtParamValSetId != null)
         {
             try {
                 ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
@@ -917,7 +939,7 @@ public class ParameterController {
         List<ExtParamValDTO> extParamVals = null;
 
         Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-        if (defaultExtParamValSetId != 0)
+        if (defaultExtParamValSetId != null)
         {
             try {
                 ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
@@ -1121,7 +1143,7 @@ public class ParameterController {
     public void SetProjectExternalParameterValues(Map<String,Object> model, ProjectDTO project ){
     	 List<ExtParamValDTO> extParamVals = null;
          Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-         if (defaultExtParamValSetId != 0)
+         if (defaultExtParamValSetId != null)
          {
              try {
                  ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
