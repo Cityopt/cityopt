@@ -1465,7 +1465,7 @@ public class ScenarioController {
 		List<ExtParamValDTO> extParamVals = null;
         Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
         
-        if (defaultExtParamValSetId != 0)
+        if (defaultExtParamValSetId != null)
         {
             try {
                 ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
@@ -1658,6 +1658,7 @@ public class ScenarioController {
 		{
 			return "error";
 		}
+		
 		try {
 			project = projectService.findByID(project.getPrjid());
 		} catch (EntityNotFoundException e2) {
