@@ -18,7 +18,11 @@
     function openInfoWindow() {
     	   window.open("createproject_info.html",'Info: Create Project','width=600,height=800');
     }
+    function openSimulationInfoWindow() {
+ 	   window.open("simulationinfo.html",'Simulation info','width=600,height=600');
+	}
 </script>
+
 
 </head>
 <body>
@@ -108,6 +112,12 @@
 								<td>${status} (Refresh by reloading the page)</td>
 							</tr>
 							<tr>
+								<td>Simulation info:</td>
+								<td>
+									<button type="button" style="width: 120px" onclick="openSimulationInfoWindow()">Show simulation info</button>		
+								</td>
+							</tr>
+							<tr>
 								<!-- Remaining simulation time -->
 								<!-- ToD0 Must make any kind loading screen! -->
 								<td><spring:message code="remaining_simulation_time"/>:</td>
@@ -128,7 +138,7 @@
 								<td></td>
 								<!-- Save dates -->
 								<c:set var="tooltip_savedates"><spring:message code="tooltip_savedates"/></c:set>
-								<td><input type="submit" title="${tooltip_savedates}" value="<spring:message code="save_dates"/>" style="width:100px"/></td>
+								<td><input type="submit" title="${tooltip_savedates}" value="<spring:message code="save_dates"/>" style="width:120px"/></td>
 							</tr>
 							</form:form>
 							
