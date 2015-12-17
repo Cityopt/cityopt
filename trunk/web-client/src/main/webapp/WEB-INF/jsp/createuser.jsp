@@ -82,34 +82,23 @@
 								</form:select>
 								</td>								
 							</tr>						
-							<tr class="project">
-								<td><spring:message code="project" />:</td>
-								<td>
-								<c:set var="tooltip_project"><spring:message code="tooltip_assign_project"/></c:set>
-								<form:select path="project" title="${tooltip_project}">																
-								<c:forEach items="${projects}" var="project">
-									<option value="${project.name}">${project.name}</option>
-								</c:forEach>
-								</form:select>
-								</td>
-								<td><a href="createproject.html"><button
-										style="width: 100px" type="button" value="create_project">
-										<spring:message code="create_project" /></button></a>
-								</td>							
-							</tr>
-
 							<tr class="submit" height=50px;>
 								<td></td>
 								<!-- Create submit and Cancel button -->
 								<td align="right"><input style="width: 100px" type="submit"
 									value="<spring:message code="create"/>" /> <td>
 									<a href="usermanagement.html">
-									<button	style="width: 100px" type="button" value="Cancel">
-										<spring:message code="cancel" />
-									</button></a></td>
-														
-	
-							</tr></table></form:form></div></td></tr>						
-						</table>	
+										<button	style="width: 100px" type="button" value="Cancel">
+											<spring:message code="cancel" />
+										</button>
+									</a>
+								</td>
+							</tr>
+						</table>
+					</form:form>
+				</div>	
+			</td>
+		</tr>						
+	</table>	
 </body>
 </html>
