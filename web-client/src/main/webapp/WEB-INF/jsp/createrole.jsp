@@ -53,6 +53,35 @@
 						</select>
 					</td>
 				</tr>
+				<c:forEach items="${userRoles}" var="projectRole">
+								<tr>
+									<td>							    	
+							    		<form:select path="role">
+							    			<option value="${projectRole.usergroup.name}" selected>${projectRole.usergroup.name}</option>
+							    				<c:forEach items="${userGroups}" var="userGroup">
+							    					<option value="${userGroup.usergroupid}">${userGroup.name}</option>							    			
+							    				</c:forEach>
+							    		</form:select>
+							   		</td> 	
+							    								    	
+									<td>
+										<form:select path="project">
+												<option value="${projectRole.project.name}"	selected>${projectRole.project.name}</option>
+										<c:forEach items="${projects}" var="project">
+												<option value="${project.name}">${project.name}</option>
+										</c:forEach>								
+										</form:select>								
+									</td>
+									
+									<td>
+										<c:set var="tooltip_delete"><spring:message code="tooltip_delete"/></c:set>	
+										<a href="<c:url value='removerole.html?userid=${user.userid}&projectid=${projectRole.usergroupprojectid}'/>" title="${tooltip_delete}"
+										 onclick="return confirm('<spring:message code="confirm_project_deletion"/>')">
+											<button align="right" type="button"><spring:message code="remove"/></button>
+										</a>
+									</td>
+							   	</tr>
+							</c:forEach>
 				<tr>
 					<td>
 						<!--Project-->
@@ -70,7 +99,7 @@
 					<td></td>
 					<!-- Create role submit and Cancel -button -->
 					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create_role"/>"/>
-					<a href="edituser.html?userid=${user.userid}"><button style="width:100px" type="button" value="Cancel">
+					<a href="editroles.html?userid=${user.userid}"><button style="width:100px" type="button" value="Cancel">
 					<spring:message code="cancel"/></button></a></td>
 				</tr>
 			</table>
