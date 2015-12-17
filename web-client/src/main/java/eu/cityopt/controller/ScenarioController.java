@@ -1786,4 +1786,22 @@ public class ScenarioController {
 		
 		return "timeserieschart";
 	}	
+	
+    @RequestMapping(value="simulationinfo", method=RequestMethod.GET)
+    public String simInfoPage(Map<String, Object> model)
+    {
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		
+        if (project == null || scenario == null)
+        {
+        	return "error";
+        }
+        
+        model.put("title", "Simulation info for scenario " + scenario.getName());
+		model.put("infotext", scenario.getLog());
+
+        return "simulationinfo";
+    }	
+
 }
