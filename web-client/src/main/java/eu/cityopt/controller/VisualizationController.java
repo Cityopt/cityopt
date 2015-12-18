@@ -698,14 +698,6 @@ public class VisualizationController {
 		}
 		
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
-		int nScenId = scenario.getScenid();
-		
-		String status = scenario.getStatus();
-		
-		if (status == null || status.isEmpty())
-		{
-			return;
-		}
 		
 		Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
 	    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
@@ -786,13 +778,9 @@ public class VisualizationController {
 			try {
 				MetricDTO metric1 = metricService.findByID(metric1Id);
 				MetricDTO metric2 = metricService.findByID(metric2Id);
-				//Set<MetricValDTO> metricVals1 = metricService.getMetricVals(metric1Id);
-				//Set<MetricValDTO> metricVals2 = metricService.getMetricVals(metric2Id);
 				
 				Set<Integer> scenarioIds = userSession.getScenarioIds();
 				Iterator<Integer> scenIter = scenarioIds.iterator();
-				//double[][] data = new double[2][userSession.getScenarioIds().size()];
-				int index = 0;
 				
 				while (scenIter.hasNext())
 				{
@@ -800,30 +788,36 @@ public class VisualizationController {
 					int nScenarioId = (int)scenarioId;
 					ScenarioDTO scenarioTemp = scenarioService.findByID(nScenarioId);
 					
-					// Takes only single values
-					MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
-					MetricValDTO metricVal2 = metricService.getMetricVals(metric2Id, nScenarioId).get(0);
-
-					DefaultXYDataset dataset = new DefaultXYDataset();
-
+					List<MetricValDTO> metricVals1 = metricService.getMetricVals(metric1Id, nScenarioId);
+					List<MetricValDTO> metricVals2 = metricService.getMetricVals(metric2Id, nScenarioId);
+					double value1 = 0;
+					double value2 = 0;
+					
+					if (metricVals1.size() == 0)
+					{
+						value1 = 0;
+					} else {
+						value1 = Double.parseDouble(metricVals1.get(0).getValue());
+					}
+					
+					if (metricVals2.size() == 0)
+					{
+						value2 = 0;
+					} else {
+						value2 = Double.parseDouble(metricVals2.get(0).getValue());
+					}
+					
 					if (userSession.getSummaryChartType() == 1) 
 					{
 						XYSeries series = new XYSeries(scenarioTemp.getName());
-						series.add(Double.parseDouble(metricVal1.getValue()), Double.parseDouble(metricVal2.getValue()));
-						/*double[][] data = new double[2][1];
-						data[0][0] = Double.parseDouble(metricVal1.getValue());
-						data[1][0] = Double.parseDouble(metricVal2.getValue());
-					    dataset.addSeries(scenario.getName(), data);*/
-					    //System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
+						series.add(value1, value2);
 						collection.addSeries(series);						
 					} 
 					else if (userSession.getSummaryChartType() == 2) 
 					{
-						categoryDataset.addValue(Double.parseDouble(metricVal1.getValue()), scenarioTemp.getName(), metric1.getName());
-						categoryDataset.addValue(Double.parseDouble(metricVal2.getValue()), scenarioTemp.getName(), metric2.getName());
-					} 
-					
-					index++;
+						categoryDataset.addValue(value1, scenarioTemp.getName(), metric1.getName());
+						categoryDataset.addValue(value2, scenarioTemp.getName(), metric2.getName());
+					}
 				}				
 			
 				JFreeChart chart = null;
@@ -858,6 +852,59 @@ public class VisualizationController {
 				}
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
+			}
+		}
+		else if (userSession.getSelectedChartMetricIds().size() > 2)
+		{
+			timeSeriesCollection.removeAllSeries();
+			DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
+
+			while (iterator.hasNext()) 
+			{
+				int metricId = iterator.next(); 
+			    
+				try {
+					MetricDTO metric = metricService.findByID(metricId);
+					
+					Set<Integer> scenarioIds = userSession.getScenarioIds();
+					Iterator<Integer> scenIter = scenarioIds.iterator();
+					
+					while (scenIter.hasNext())
+					{
+						Integer scenarioId = (Integer) scenIter.next();
+						int nScenarioId = (int)scenarioId;
+						ScenarioDTO scenarioTemp = scenarioService.findByID(nScenarioId);
+						List<MetricValDTO> metricVals = metricService.getMetricVals(metricId, nScenarioId);
+						double value;
+						
+						if (metricVals.size() == 0)
+						{
+							value = 0;
+						}
+						else
+						{
+							value = Double.parseDouble(metricVals.get(0).getValue());
+						}
+	
+						categoryDataset.addValue(value, scenarioTemp.getName(), metric.getName());
+					}				
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			JFreeChart chart = null;
+			
+			if (userSession.getSummaryChartType() != 2) {
+				// Only bar chart for more than 2 metrics
+				userSession.setSummaryChartType(2);
+			}
+			
+			chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "", "");
+			
+			if (chart != null)
+			{
+				ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
 			}
 		}
 	}
