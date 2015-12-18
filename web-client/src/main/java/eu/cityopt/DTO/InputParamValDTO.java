@@ -16,5 +16,6 @@ public class InputParamValDTO  extends BaseDTO{
 	@Getter @Setter private Date updatedon;
 	@Getter @Setter private Integer createdby;
 	@Getter @Setter private Integer updatedby;
+	@Getter @Setter private TimeSeriesDTO timeseries;
 
 }

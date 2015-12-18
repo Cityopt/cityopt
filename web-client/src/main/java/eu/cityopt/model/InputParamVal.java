@@ -36,6 +36,8 @@ public class InputParamVal extends VersionModel implements java.io.Serializable 
 	private Date updatedon;
 	private Integer createdby;
 	private Integer updatedby;
+	
+	private TimeSeries timeseries;
 
 
 	public InputParamVal() {
@@ -50,13 +52,14 @@ public class InputParamVal extends VersionModel implements java.io.Serializable 
 	}
 
 	public InputParamVal(Integer inputparamvalid, DataReliability datareliability, InputParameter inputparameter,
-			Scenario scenario, String value, Date createdon, Date updatedon,
+			Scenario scenario, TimeSeries tseries,String value, Date createdon, Date updatedon,
 			Integer createdby, Integer updatedby) {
 		this.inputparamvalid = inputparamvalid;
 		this.datareliability = datareliability;
 		this.inputparameter = inputparameter;
 		this.scenario = scenario;
 		this.value = value;
+		this.timeseries = tseries;
 		this.createdon = createdon;
 		this.updatedon = updatedon;
 		this.createdby = createdby;
@@ -119,13 +122,23 @@ public class InputParamVal extends VersionModel implements java.io.Serializable 
 		this.scenario = scenario;
 	}
 
-	@Column(name = "value", nullable = false)
+	@Column(name = "value")
 	public String getValue() {
 		return this.value;
 	}
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.REMOVE)
+	@JoinColumn(name = "tseriesid")
+	public TimeSeries getTimeseries() {
+		return this.timeseries;
+	}
+
+	public void setTimeseries(TimeSeries timeseries) {
+		this.timeseries = timeseries;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
