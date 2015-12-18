@@ -52,7 +52,7 @@
 
 							<tr>
 								<td>
-									<p>To draw a scatter plot or bar charts, please select 1 or more scenarios and 2 metrics.</p>
+									<p>To draw a scatter plot or a bar chart, please select 1 or more scenarios and 2 metrics.</p>
 									<p>To draw a pie chart, please select 1 or more scenario and 1 metric. And select type pie chart.</p>
 								</td>
 							</tr>
@@ -143,7 +143,7 @@
 					<td valign="top">
 						<table>
 							<tr>
-								<td valign="top" style="width: 750px; height: 400px; border-style: solid; border-radius: 1em">
+								<td valign="top" style="width: 750px; height: 400px; border-style: solid; border: 1">
 									<img src="summarychart.png">
 								</td>
 							</tr>

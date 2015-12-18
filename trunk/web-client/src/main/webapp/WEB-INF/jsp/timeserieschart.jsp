@@ -189,7 +189,7 @@
 					<td valign="top">
 						<table>
 							<tr>
-								<td valign="top" style="width: 750px; height: 400px; border-style: solid; border-radius: 1em">
+								<td valign="top" style="width: 750px; height: 400px; border-style: solid; border="1">
 									<img src="timeserieschart.png">
 								</td>
 							</tr>
