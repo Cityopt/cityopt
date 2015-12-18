@@ -40,11 +40,6 @@ DROP SEQUENCE IF EXISTS inputparameter_inputid_seq
 DROP SEQUENCE IF EXISTS inputparamval_inputparamvalid_seq
 ;
 
-DROP SEQUENCE IF EXISTS inputparamval_scendefinitionid_seq
-;
-
-DROP SEQUENCE IF EXISTS simulationresult_scenresid_seq;
-
 DROP SEQUENCE IF EXISTS metric_metid_seq
 ;
 
@@ -275,10 +270,9 @@ CREATE TABLE AppUser
 (
 	userID integer NOT NULL DEFAULT nextval(('appuser_userid_seq'::text)::regclass),
 	name varchar(50)	 NOT NULL,
-	password varchar(60),	
-	enabled boolean		,
-	version integer		
-
+	password varchar(60)	,
+	enabled boolean,
+	version integer
 )
 ;
 
@@ -381,12 +375,13 @@ CREATE TABLE InputParamVal
 	inputParamValID integer NOT NULL DEFAULT nextval(('inputparamval_inputparamvalid_seq'::text)::regclass),
 	scenID integer NOT NULL,
 	inputID integer NOT NULL,
-	value text NOT NULL,
+	value text,
 	createdOn timestamp,
 	updatedOn timestamp,
 	createdBy integer,
 	updatedBy integer,
 	dataRelID integer,
+	tSeriesID integer,
 	version integer
 )
 ;
@@ -945,6 +940,9 @@ ALTER TABLE InputParamVal ADD CONSTRAINT UQ_ScenarioDefinition_scenID UNIQUE (sc
 CREATE INDEX IXFK_InputParamVal_DataReliability ON InputParamVal (dataRelID ASC)
 ;
 
+CREATE INDEX IXFK_InputParamVal_TimeSeries ON InputParamVal (tSeriesID ASC)
+;
+
 CREATE INDEX IXFK_ScenarioDefinition_InputParameter ON InputParamVal (inputID ASC)
 ;
 
@@ -1342,6 +1340,10 @@ ALTER TABLE InputParamVal ADD CONSTRAINT FK_ScenarioDefinition_Scenario
 	FOREIGN KEY (scenID) REFERENCES Scenario (scenID) ON DELETE No Action ON UPDATE No Action
 ;
 
+ALTER TABLE InputParamVal ADD CONSTRAINT FK_InputParamVal_TimeSeries
+	FOREIGN KEY (tSeriesID) REFERENCES TimeSeries (tSeriesID) ON DELETE No Action ON UPDATE No Action
+;
+
 ALTER TABLE Metric ADD CONSTRAINT FK_Metric_Project
 	FOREIGN KEY (prjID) REFERENCES Project (prjID) ON DELETE No Action ON UPDATE No Action
 ;
@@ -1581,4 +1583,3 @@ INSERT INTO USERGROUPPROJECT VALUES (1, 1, null, 1, 0);
 INSERT INTO USERGROUPPROJECT VALUES (2, 2, null, 2, 0);
 INSERT INTO USERGROUPPROJECT VALUES (3, 3, null, 3, 0);
 INSERT INTO USERGROUPPROJECT VALUES (4, 4, null, 4, 0);
-
