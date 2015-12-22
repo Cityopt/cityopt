@@ -30,7 +30,7 @@
 		</td>
 		<td width="30"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:600px;width:1130px;overflow:auto">
+			<div style="overflow:scroll;height:100%;width:1130px;overflow:auto">
 			<table>
 				<col style="width:30px">
 				<col style="width:1100px">	

@@ -20,7 +20,7 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width=30></td>
-		<td>
+		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="createunit.html" modelAttribute="unitForm">
 			

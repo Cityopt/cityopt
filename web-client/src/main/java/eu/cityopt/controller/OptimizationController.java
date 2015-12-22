@@ -220,15 +220,20 @@ public class OptimizationController {
     @Autowired
     ScenarioGenerationService scenarioGenerationService;
 
+    @Autowired
+    SecurityAuthorization securityAuthorization;
+
     @RequestMapping(value="createobjfunction",method=RequestMethod.GET)
     public String getCreateObjFunction(Map<String, Object> model,
-            @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+        @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
         {
             return "error";
         }
+
+        securityAuthorization.atLeastExpert_expert(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -314,6 +319,8 @@ public class OptimizationController {
         } catch (EntityNotFoundException e1) {
             e1.printStackTrace();
         }
+        
+        securityAuthorization.atLeastExpert_expert(project);
         OptimizationSetDTO optSet = null;
 
         if (model.containsKey("optimizationset"))
@@ -405,6 +412,8 @@ public class OptimizationController {
             e.printStackTrace();
         }
 
+        securityAuthorization.atLeastExpert_expert(project);
+        
         OptimizationSetDTO optSet = (OptimizationSetDTO) model.get("optimizationset");
 
         if (optSet == null)
@@ -445,24 +454,22 @@ public class OptimizationController {
         return "editobjfunction";
     }
 
-    // @author Markus Turunen
-    // date: 26.6.2015 -3.7.2015
-    // This method handles Optimizer cloning.
-    // 
-
     @RequestMapping(value="cloneoptimizer", method=RequestMethod.GET)
     public String CloneOptimizer(Map<String, Object> model, @RequestParam(value = "optimizerid") String optimizerid) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
+        securityAuthorization.atLeastExpert_expert(project);
+        
         int noptimizerid = Integer.parseInt(optimizerid);		
         OptimizationSetDTO optimizer = null;
+        
         try {
             optimizer = (OptimizationSetDTO) optSetService.findByID(noptimizerid);
         } catch (EntityNotFoundException e2) {
-            // TODO Auto-generated catch block
             e2.printStackTrace();
         }		
         Set<OpenOptimizationSetDTO> optSets=null;
+       
         try {			
             optSets = projectService.getSearchAndGAOptimizationSets(project.getPrjid());
         } catch (EntityNotFoundException e) {
@@ -471,22 +478,22 @@ public class OptimizationController {
         String name = optimizer.getName();			
         String clonename = name+"(copy)";				
         int i=0;
+        
         while(optSetService.findByName(clonename)!=null){					
             i++;
             clonename=name+"(copy)("+i+")";				
-        }			
+        }
+        
         try {
             //clones
             OptimizationSetDTO cloneoptimisation = copyService.copyOptimizationSet(noptimizerid, clonename, true);
             cloneoptimisation=optSetService.save(cloneoptimisation);					
 
         } catch (EntityNotFoundException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }			
         model.put("openoptimizationsets", optSets);		
         return "openoptimizationset";
-
     }    
 
     @RequestMapping(value="editobjfunction", method=RequestMethod.POST)
@@ -498,6 +505,8 @@ public class OptimizationController {
             return "error";
         }
 
+        securityAuthorization.atLeastExpert_expert(project);
+        
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
@@ -579,14 +588,15 @@ public class OptimizationController {
     }
     @RequestMapping(value="deleteconstraint", method=RequestMethod.GET)
     public String getDeleteConstraint(Map<String, Object> model, @RequestParam(value="constraintid", required=true) String constraintId) {
-        OptConstraintDTO constraint = null;
-        int nConstraintId = Integer.parseInt(constraintId);
+        ProjectDTO project = (ProjectDTO) model.get("project");
 
-        try {
-            constraint = optConstraintService.findByID(nConstraintId);
-        } catch (Exception e1) {
-            e1.printStackTrace();
+        if (project == null)
+        {
+            return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
+        
+        int nConstraintId = Integer.parseInt(constraintId);
 
         OptimizationSetDTO optSet = null;
 
@@ -616,19 +626,13 @@ public class OptimizationController {
         }
         model.put("constraints", optSearchConstraints);
 
-        ProjectDTO project = (ProjectDTO) model.get("project");
-
-        if (project == null)
-        {
-            return "error";
-        }
-
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
-
+        securityAuthorization.atLeastExpert_expert(project);
+        
         model.put("project", project);
 
         List<MetricValDTO> listMetricVals = metricValService.findAll();
@@ -649,7 +653,15 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="createoptimizationset",method=RequestMethod.GET)
-    public String getCreateOptimizationSet(Map<String, Object> model) {
+    public String createOptimizationSet(Map<String, Object> model) {
+
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+        securityAuthorization.atLeastExpert_expert(project);
 
         OpenOptimizationSetDTO openOptSet = new OpenOptimizationSetDTO();
         model.put("openoptimizationset", openOptSet);
@@ -673,7 +685,8 @@ public class OptimizationController {
         {
             return "error";
         }
-
+        securityAuthorization.atLeastExpert_expert(project);
+        
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e) {
@@ -763,6 +776,14 @@ public class OptimizationController {
             @RequestParam(value="optsetid", required=false) String optsetid,
             @RequestParam(value="optsettype", required=false) String optsettype) {
 
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+        securityAuthorization.atLeastStandard_standard(project);
+        
         OptimizationSetDTO optSet = null;
 
         if (model.containsKey("optimizationset"))
@@ -783,13 +804,6 @@ public class OptimizationController {
             e.printStackTrace();
         }
         model.put("constraints", optSearchConstraints);
-
-        ProjectDTO project = (ProjectDTO) model.get("project");
-
-        if (project == null)
-        {
-            return "error";
-        }
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -832,6 +846,8 @@ public class OptimizationController {
 			return;
 		}
 
+		securityAuthorization.atLeastStandard_guest(project);
+         
 		OptimizationSetDTO optSet = (OptimizationSetDTO)model.get("optimizationset");
 
 		if (optSet == null)
@@ -934,7 +950,8 @@ public class OptimizationController {
 		{
 			return;
 		}
-
+		securityAuthorization.atLeastStandard_guest(project);
+       
 		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
 
 		if (scenGen == null)
@@ -1027,21 +1044,24 @@ public class OptimizationController {
 	    }
 	}
     
-    //@author Markus Turunen
     @RequestMapping(value="extparamsets",method=RequestMethod.GET)
     public String getExtParamSets(
         Map<String, Object> model,            
         @RequestParam(value="extparamvalsetid", required=false) String id) {    
    
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		securityAuthorization.atLeastExpert_expert(project);
+       
 		model.put("extparamvalsetid", id);
-		ProjectDTO project = (ProjectDTO) model.get("project");
 		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
 		model.put("extParamValSets", extParamValSets);
 		Integer extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-		
-		// If Time This update should be done Ajax with partial update.
-		// ToD0 Get Data From AjaX to enable this variables:
-		// Currently it's working but it's dummy, url parameter
 		
 		if (id != null) {
 			extParamValSetId = Integer.parseInt(id);
@@ -1062,58 +1082,19 @@ public class OptimizationController {
 		
 		return "extparamsets";       
     }   
-        
-    /*@RequestMapping("?id={number}")
-    public String printIndex( Map<String, Object> model, @PathVariable("id") int number){
-    	ProjectDTO project = (ProjectDTO) model.get("project");
-    	int extParamValSetId = 0;		
-		extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-		extParamValSetId=number;
-		// ToD0 Get Data From AjaX to enable this variables:
-
-		if (extParamValSetId != 0) {
-			List<ExtParamValDTO> extParamVals = null;
-			try {
-				extParamVals = extParamValSetService
-						.getExtParamVals(extParamValSetId);
-			} catch (EntityNotFoundException e) {
-				e.printStackTrace();
-				return "error";
-			}
-			model.put("extParamVals", extParamVals);  	
-		}
-		return "extparamsets";   
-    }*/
-        
-    /* Ajax Testing 
-    @RequestMapping(value="ajax", method=RequestMethod.GET, produces="application/json")
-    @ResponseBody
-    public  String getSessionAjaxID( Map<String, Object> model, 
-    		@RequestParam Integer data,    		
-    		HttpServletRequest request,
-    		HttpServletResponse response){
-    	    	    	    	   	   	
-    	System.out.println("invoked");
-    	ProjectDTO project= initiateProject(model);
-    	int extParamValSetId = 0;
-    	 // ToD0 Get Data From AjaX to enable this variables:    	
-    	//Test Int in Java
-    	System.out.print(selectedcompid);    	
-        extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());        
-     
-        if(extParamValSetId!=0){        
-        List<ExtParamValDTO> extParamVals=null;
-		try {extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
-		} catch (EntityNotFoundException e) {e.printStackTrace(); return "error";}		
-        model.put("extParamVals", extParamVals); 
-        }
-        return "extparamsets";         
-    }   
-    */
     
 	@RequestMapping(value="extparamsets",method=RequestMethod.POST)
     public String setExtParamSets(Map<String, Object> model, @RequestParam(value="extparamvalsetid", required=true) int id) { 
 		
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		securityAuthorization.atLeastExpert_expert(project);
+       
         OptimizationSetDTO optSet = (OptimizationSetDTO)model.get("optimizationset");
 
         try {
@@ -1148,8 +1129,16 @@ public class OptimizationController {
     private String getGAExtParamValSet(Map<String, Object> model,
         @RequestParam(value="extparamvalsetid", required=false) String id) {
    
-		model.put("extparamvalsetid", id);
 		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		securityAuthorization.atLeastExpert_expert(project);
+       
+		model.put("extparamvalsetid", id);
 		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
 		model.put("extParamValSets", extParamValSets);
 	
@@ -1177,6 +1166,15 @@ public class OptimizationController {
 
 	@RequestMapping(value="gaextparamsets",method=RequestMethod.POST)
     public String setGAExtParamSets(Map<String, Object> model, @RequestParam(value="extparamvalsetid", required=true) int id) { 
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+
+		securityAuthorization.atLeastExpert_expert(project);
 
 		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
 
@@ -1225,10 +1223,12 @@ public class OptimizationController {
             try {
                 ProjectDTO project = (ProjectDTO) model.get("project");
 
-                if (project == null)
-                {
-                    return "error";
-                }
+        		if (project == null)
+        		{
+        			return "error";
+        		}
+
+        		securityAuthorization.atLeastExpert_expert(project);
 
                 AppUserDTO user = (AppUserDTO) model.get("user");
                 
@@ -1281,6 +1281,8 @@ public class OptimizationController {
                 {
                     return "error";
                 }
+
+        		securityAuthorization.atLeastExpert_expert(project);
 
                 try {
                     project = projectService.findByID(project.getPrjid());
@@ -1341,6 +1343,8 @@ public class OptimizationController {
         {
             return "error";
         }
+
+		securityAuthorization.atLeastExpert_expert(project);
 
         if (optSet.getObjectivefunction() == null)
         {
@@ -1411,12 +1415,6 @@ public class OptimizationController {
         return "editoptimizationset";
     }
     
-    @PreAuthorize("hasRole('ROLE_Administrator') or ("
-		    +" hasAnyRole('ROLE_Expert','ROLE_Standard') and ("
-		    	+" hasPermission(#model,'ROLE_Administrator') or"
-		    	+" hasPermission(#model,'ROLE_Expert') or"
-		    	+" hasPermission(#model,'ROLE_Standard')" 
-		    	   						+ "))")
     @RequestMapping(value="openoptimizationset",method=RequestMethod.GET)
     public String getOpenOptimizationSet(Map<String, Object> model,
             @RequestParam(value="optsetid", required=false) String optsetid,
@@ -1425,14 +1423,12 @@ public class OptimizationController {
         AppUserDTO user = (AppUserDTO) model.get("user");
         ProjectDTO project = (ProjectDTO) model.get("project");
 
-        // TODO
-        if (user != null && project != null)
-        {
-            //if (hasStandardRights(user.getUserid()))
-            {
+		if (project == null)
+		{
+			return "error";
+		}
 
-            }
-        }
+		securityAuthorization.atLeastStandard_standard(project);
 
         if (optsettype != null)
         {
@@ -1561,7 +1557,16 @@ public class OptimizationController {
             @RequestParam(value="optsetid", required=false) String optsetid,
             @RequestParam(value="optsettype", required=false) String optsettype) {
 
-        if (optsettype != null)
+        ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+
+		securityAuthorization.atLeastExpert_expert(project);
+
+		if (optsettype != null)
         {
             if (optsettype.equals("db"))
             {
@@ -1604,14 +1609,7 @@ public class OptimizationController {
             }
         }
 
-        ProjectDTO project = (ProjectDTO) model.get("project");
-
-        if (project == null)
-        {
-            return "error";
-        }
-
-        try {
+       try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
             e1.printStackTrace();
@@ -1641,6 +1639,8 @@ public class OptimizationController {
         {
             return "error";
         }
+
+		securityAuthorization.atLeastExpert_expert(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -1684,7 +1684,17 @@ public class OptimizationController {
 
     @RequestMapping(value="createconstraint", method=RequestMethod.POST)
     public String getCreateConstraintPost(OptConstraintDTO constraint, Map<String, Object> model) throws EntityNotFoundException {
-        OptimizationSetDTO optSet = null;
+        
+        ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+
+		securityAuthorization.atLeastExpert_expert(project);
+
+		OptimizationSetDTO optSet = null;
 
         if (model.containsKey("optimizationset"))
         {
@@ -1757,6 +1767,8 @@ public class OptimizationController {
             return "error";
         }
 
+		securityAuthorization.atLeastExpert_expert(project);
+
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e) {
@@ -1807,6 +1819,8 @@ public class OptimizationController {
         {
             return "error";
         }
+
+		securityAuthorization.atLeastExpert_expert(project);
 
         if (model.containsKey("optimizationset"))
         {
@@ -1877,6 +1891,8 @@ public class OptimizationController {
         {
             return "error";
         }
+
+		securityAuthorization.atLeastStandard_standard(project);
 
         if (selectedObjFuncId != null && !selectedObjFuncId.isEmpty())
         {
@@ -1961,6 +1977,8 @@ public class OptimizationController {
             return "error";
         }
 
+		securityAuthorization.atLeastStandard_standard(project);
+
         if (selectedConstraintId != null && !selectedConstraintId.isEmpty())
         {
             int nSelectedConstraintId = Integer.parseInt(selectedConstraintId);
@@ -2039,8 +2057,8 @@ public class OptimizationController {
 
     @RequestMapping(value="showresults",method=RequestMethod.GET)
     public String getShowResults(Map<String, Object> model,
-            @RequestParam(value="selectedcompid", required=false) String selectedCompId,
-            @RequestParam(value="scenarioid", required=false) String scenarioId) {
+        @RequestParam(value="selectedcompid", required=false) String selectedCompId,
+        @RequestParam(value="scenarioid", required=false) String scenarioId) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -2048,6 +2066,8 @@ public class OptimizationController {
         {
             return "error";
         }
+
+		securityAuthorization.atLeastGuest_guest(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -2143,7 +2163,16 @@ public class OptimizationController {
             @RequestParam(value="optsettype", required=false) String optsettype,
             @RequestParam(value="action", required=false) String action) {
 
-        if (optsettype != null && action != null)
+        ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+
+		securityAuthorization.atLeastExpert_expert(project);
+
+		if (optsettype != null && action != null)
         {
             if (optsettype.equals("db"))
             {
@@ -2192,13 +2221,6 @@ public class OptimizationController {
             }
         }
 
-        ProjectDTO project = (ProjectDTO) model.get("project");
-
-        if (project == null)
-        {
-            return "error";
-        }
-
         Set<OpenOptimizationSetDTO> optSets = null;
 
         try {
@@ -2217,7 +2239,10 @@ public class OptimizationController {
             @RequestParam(value="selectedcompid", required=false) Integer selectedCompId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
-        ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+        
+		securityAuthorization.atLeastExpert_expert(project);
+
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
         ObjectiveFunctionDTO function = null;
@@ -2238,8 +2263,10 @@ public class OptimizationController {
     }
 
     private String getEditSGObjFunction(
-            ProjectDTO project, ObjectiveFunctionDTO function,
-            ModelMap model, Integer selectedCompId) {
+        ProjectDTO project, ObjectiveFunctionDTO function,
+        ModelMap model, Integer selectedCompId) {
+
+		securityAuthorization.atLeastExpert_expert(project);
         UserSession userSession = getUserSession(model);
 
         model.put("function", function);
@@ -2267,7 +2294,10 @@ public class OptimizationController {
     	
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
-        ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+
+		securityAuthorization.atLeastExpert_expert(project);
+
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
         // TODO validate function expression, name uniqueness
@@ -2307,7 +2337,10 @@ public class OptimizationController {
             ModelMap model, @RequestParam("objid") int objid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
-        ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+
+		securityAuthorization.atLeastExpert_expert(project);
+
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
         try {
@@ -2325,6 +2358,8 @@ public class OptimizationController {
     public String getAddSGObjFunction(ModelMap model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
+
+		securityAuthorization.atLeastExpert_expert(project);
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
@@ -2341,9 +2376,11 @@ public class OptimizationController {
 
     @RequestMapping(value="addsgobjfunction", method=RequestMethod.POST)
     public String postAddSGObjFunction(ModelMap model,
-            @RequestParam("obtfunctionid") int obtfunctionid) {
+        @RequestParam("obtfunctionid") int obtfunctionid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
+
+		securityAuthorization.atLeastExpert_expert(project);
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
@@ -2362,10 +2399,12 @@ public class OptimizationController {
 
     @RequestMapping(value="editsgconstraint", method=RequestMethod.GET)
     public String getEditSGConstraint(ModelMap model,
-            @RequestParam(value="constrid", required=false) Integer constrid,
-            @RequestParam(value="selectedcompid", required=false) Integer selectedCompId) {
+        @RequestParam(value="constrid", required=false) Integer constrid,
+        @RequestParam(value="selectedcompid", required=false) Integer selectedCompId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
+
+		securityAuthorization.atLeastExpert_expert(project);
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
@@ -2387,9 +2426,12 @@ public class OptimizationController {
     }
 
     private String getEditSGConstraint(
-            ProjectDTO project, OptConstraintDTO constraint,
-            ModelMap model, Integer selectedCompId) {
-        UserSession userSession = getUserSession(model);
+        ProjectDTO project, OptConstraintDTO constraint,
+        ModelMap model, Integer selectedCompId) {
+
+		securityAuthorization.atLeastExpert_expert(project);
+
+		UserSession userSession = getUserSession(model);
 
         model.put("constraint", constraint);
 
@@ -2414,6 +2456,8 @@ public class OptimizationController {
             @RequestParam("optconstid") int constrid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
+
+		securityAuthorization.atLeastExpert_expert(project);
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
@@ -2451,6 +2495,8 @@ public class OptimizationController {
             ModelMap model, @RequestParam("constrid") Integer constrid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
+
+		securityAuthorization.atLeastExpert_expert(project);
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
@@ -2469,6 +2515,8 @@ public class OptimizationController {
     public String getAddSGConstraint(ModelMap model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
+
+		securityAuthorization.atLeastExpert_expert(project);
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
@@ -2488,6 +2536,8 @@ public class OptimizationController {
             @RequestParam("constrid") int constrid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
+
+		securityAuthorization.atLeastExpert_expert(project);
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
@@ -2510,6 +2560,8 @@ public class OptimizationController {
             @RequestParam(value="selectedcompid", required=false) Integer selectedCompId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
+
+		securityAuthorization.atLeastExpert_expert(project);
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
@@ -2531,7 +2583,14 @@ public class OptimizationController {
     }
 
     private String getEditSGDecisionVariable(ProjectDTO project,
-            DecisionVariableDTO decVar, ModelMap model, Integer selectedCompId) {
+        DecisionVariableDTO decVar, ModelMap model, Integer selectedCompId) {
+
+		if (project == null)
+		{
+			return "error";
+		}
+
+		securityAuthorization.atLeastExpert_expert(project);
         model.put("decVar", decVar);
         List<TypeDTO> typechoices = typeService.findAll().stream().filter(
                 t -> (t.getName().equalsIgnoreCase("Integer") 
@@ -2543,12 +2602,15 @@ public class OptimizationController {
 
     @RequestMapping(value="editsgdecisionvariable", method=RequestMethod.POST)
     public String postEditSGDecisionVariable(
-            DecisionVariableDTO decVar, ModelMap model,
-            @RequestParam("decisionvarid") int decisionvarid,
-            @RequestParam("typeid") int typeid) {
-        ProjectDTO project = (ProjectDTO) model.get("project");
+        DecisionVariableDTO decVar, ModelMap model,
+        @RequestParam("decisionvarid") int decisionvarid,
+        @RequestParam("typeid") int typeid) {
+
+    	ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
-        ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+
+		securityAuthorization.atLeastExpert_expert(project);
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
         if (StringUtils.isBlank(decVar.getLowerbound())) {
@@ -2583,6 +2645,8 @@ public class OptimizationController {
             ModelMap model, @RequestParam("decisionvarid") Integer decisionvarid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
+
+		securityAuthorization.atLeastExpert_expert(project);
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
@@ -2602,7 +2666,9 @@ public class OptimizationController {
         
         if (project == null) 
         	return "redirect:/openproject.html";
-        
+
+		securityAuthorization.atLeastExpert_expert(project);
+
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) 
@@ -2683,7 +2749,10 @@ public class OptimizationController {
             @RequestParam(value="run", required=false) String run) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
-        ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+
+		securityAuthorization.atLeastExpert_expert(project);
+
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
         if (StringUtils.isBlank(scenGenForm.getName())) {
@@ -2697,13 +2766,12 @@ public class OptimizationController {
             return getGeneticAlgorithm(project, scenGen, model);
         }
 
-        if ( ! StringUtils.isBlank(run)) {
+        if (!StringUtils.isBlank(run)) {
             try {
                 //TODO userid
                 scenarioGenerationService.startOptimisation(scenGen.getScengenid(), null);
             } catch (ConfigurationException | ParseException | ScriptException
-                    | IOException e) {
-                // TODO Auto-generated catch block
+                | IOException e) {
                 e.printStackTrace();
                 return getGeneticAlgorithm(project, scenGen, model);
             }
@@ -2718,6 +2786,13 @@ public class OptimizationController {
    
 		model.put("id", id);
 		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+
+		securityAuthorization.atLeastExpert_expert(project);
 		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
 		model.put("extParamValSets", extParamValSets);
 		Integer extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
@@ -2774,7 +2849,9 @@ public class OptimizationController {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
 
-        try {
+		securityAuthorization.atLeastExpert_expert(project);
+
+		try {
             int extParamValSetId = form.getExtParamValSet().getExtparamvalsetid();
             List<ExtParamValDTO> extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
             Map<Integer, TimeSeriesDTOX> timeSeriesByParamId = new HashMap<>();
@@ -2797,7 +2874,10 @@ public class OptimizationController {
     public String getEditSGAlgoParamVal(ModelMap model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
-        ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+
+		securityAuthorization.atLeastExpert_expert(project);
+
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
         try {
@@ -2823,6 +2903,8 @@ public class OptimizationController {
             AlgoParamValForm form) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
+
+		securityAuthorization.atLeastExpert_expert(project);
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
@@ -2852,6 +2934,8 @@ public class OptimizationController {
     public String getEditSGModelParams(ModelMap model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
+
+		securityAuthorization.atLeastExpert_expert(project);
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
@@ -2906,12 +2990,16 @@ public class OptimizationController {
 
     @RequestMapping(value="editsgmodelparams", method=RequestMethod.POST)
     public String postEditSGModelParams(ModelMap model,
-            ModelParamForm form,
-            @RequestParam(value="newgroup", required=false) String newGroup,
-            @RequestParam(value="cleangroups", required=false) String cleanGroups) {
-        ProjectDTO project = (ProjectDTO) model.get("project");
+        ModelParamForm form,
+        @RequestParam(value="newgroup", required=false) String newGroup,
+        @RequestParam(value="cleangroups", required=false) String cleanGroups) {
+
+    	ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
-        ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+
+		securityAuthorization.atLeastExpert_expert(project);
+
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
         try {

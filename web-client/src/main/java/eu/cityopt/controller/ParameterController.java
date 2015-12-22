@@ -125,11 +125,12 @@ public class ParameterController {
             @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
      	
     	ProjectDTO project = (ProjectDTO) model.get("project");
-		if (controllerService.NullCheck(project)){return "error";}
+		
+    	if (controllerService.NullCheck(project)){return "error";}
+		
+    	securityAuthorization.atLeastGuest_guest(project);
 		model.put("project", project);
 
-		securityAuthorization.atLeastExpert_expert(project);  
-    	
 		controllerService.SetUpSelectedComponent(model, selectedCompId);
         controllerService.getProjectExternalParameterValues(model,project);        
         controllerService.getComponentAndExternalParamValues(model,project);        
@@ -145,9 +146,7 @@ public class ParameterController {
         {
             return "error";
         }        
-        // SECURITY ///  Security authorization check----
         securityAuthorization.atLeastExpert_expert(project);
-        //---////
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -194,7 +193,6 @@ public class ParameterController {
         return "selectextparamset";
     }
         
-    @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert')")
     @RequestMapping(value="createcomponent", method=RequestMethod.GET)
     public String getCreateComponent(Model model){
     	securityAuthorization.atLeastExpert_expert(model);
@@ -237,19 +235,26 @@ public class ParameterController {
         return "projectparameters";
     }
    
-    @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert')")
     @RequestMapping(value="editcomponent", method=RequestMethod.GET)
-    public String getEditComponent(Model model, @RequestParam(value="componentid", required=true) String componentid) {
-    	
+    public String getEditComponent(Map<String, Object> model, @RequestParam(value="componentid", required=true) String componentid) {
+
+        ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+    	securityAuthorization.atLeastStandard_standard(project);
+
     	int nCompId = Integer.parseInt(componentid);
         ComponentDTO component = null;
+
         try {
             component = componentService.findByID(nCompId);
         } catch (EntityNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        model.addAttribute("component", component);
+        model.put("component", component);
 
         return "editcomponent";
     }
@@ -268,7 +273,6 @@ public class ParameterController {
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
 
@@ -277,7 +281,6 @@ public class ParameterController {
         try {
             oldComponent = componentService.findByID(nCompId);
         } catch (EntityNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         oldComponent.setName(component.getName());
@@ -298,8 +301,17 @@ public class ParameterController {
     }
     
     @RequestMapping(value="editinputparameter", method=RequestMethod.GET)
-    public String getEditInputParameter(Model model, @RequestParam(value="inputparamid", required=true) String inputid) {
-        int nInputId = Integer.parseInt(inputid);
+    public String getEditInputParameter(Map<String, Object> model, 
+		@RequestParam(value="inputparamid", required=true) String inputid) {
+        ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+    	securityAuthorization.atLeastStandard_standard(project);
+
+    	int nInputId = Integer.parseInt(inputid);
         InputParameterDTO inputParam = null;
         
         try {
@@ -308,15 +320,15 @@ public class ParameterController {
             e.printStackTrace();
         }
         
-        model.addAttribute("inputParam", inputParam);
+        model.put("inputParam", inputParam);
         
         ParamForm inputParamForm = new ParamForm();
         inputParamForm.setName(inputParam.getName());
         inputParamForm.setValue(inputParam.getDefaultvalue());
-        model.addAttribute("inputParamForm", inputParamForm);
+        model.put("inputParamForm", inputParamForm);
 
         List<UnitDTO> units = unitService.findAll();
-        model.addAttribute("units", units);
+        model.put("units", units);
         
         return "editinputparameter";
     }
@@ -388,7 +400,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="editoutputvariable", method=RequestMethod.GET)
-    public String editOutputVariable(Model model, 
+    public String editOutputVariable(Map<String, Object> model, 
 		@RequestParam(value="outputvarid", required=true) String outputvarid) {
         int nOutputId = Integer.parseInt(outputvarid);
         OutputVariableDTO outputVar = null;
@@ -399,17 +411,62 @@ public class ParameterController {
             e.printStackTrace();
         }
         
-        model.addAttribute("outputVar", outputVar);
+        ProjectDTO project = (ProjectDTO) model.get("project");
+        securityAuthorization.atLeastExpert_expert(project);
+
+        model.put("outputVar", outputVar);
         
         ParamForm paramForm = new ParamForm();
         paramForm.setName(outputVar.getName());
-        model.addAttribute("paramForm", paramForm);
+        model.put("paramForm", paramForm);
 
         List<UnitDTO> units = unitService.findAll();
-        model.addAttribute("units", units);
+        model.put("units", units);
         
         return "editoutputvariable";
     }
+
+	@RequestMapping(value="outputvariables",method=RequestMethod.GET)
+	public String outputVariables(Map<String, Object> model,
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+
+		securityAuthorization.atLeastGuest_guest(project);
+
+		if (selectedCompId != null)
+		{
+			int nSelectedCompId = Integer.parseInt(selectedCompId);
+			
+			ComponentDTO selectedComponent = null;
+			List<OutputVariableDTO> outputVariables=null;
+			try {
+				selectedComponent = componentService.findByID(nSelectedCompId);				
+				outputVariables = componentService.getOutputVariables(nSelectedCompId);
+				
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+
+			//Hibernate.initialize(selectedComponent.getInputparameters());
+			//model.put("inputParams", selectedComponent.getInputparameters());
+			model.put("selectedComponent",  selectedComponent);
+			model.put("selectedcompid", selectedCompId);
+			model.put("outputVariables", outputVariables);
+			
+		}
+
+		model.put("project", project);
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+		
+		return "outputvariables";
+	}
 
     @RequestMapping(value="editoutputvariable", method=RequestMethod.POST)
     public String editOutputParameterPost(Map<String, Object> model, 
@@ -767,7 +824,7 @@ public class ParameterController {
         {
             return "error";
         }
-        securityAuthorization.atLeastExpert_expert(project);
+        securityAuthorization.atLeastStandard_standard(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -800,7 +857,7 @@ public class ParameterController {
         {
             return "error";
         }
-        securityAuthorization.atLeastExpert_expert(project);
+        securityAuthorization.atLeastStandard_standard(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -844,7 +901,7 @@ public class ParameterController {
         {
             return "error";
         }
-        securityAuthorization.atLeastExpert_expert(project);
+        securityAuthorization.atLeastStandard_standard(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -888,7 +945,7 @@ public class ParameterController {
         {
             return "error";
         }
-        securityAuthorization.atLeastExpert_expert(project);
+        securityAuthorization.atLeastStandard_standard(project);
 
         try {
             project = projectService.findByID(project.getPrjid());

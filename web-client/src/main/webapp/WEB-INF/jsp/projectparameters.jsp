@@ -183,7 +183,7 @@ margin-bottom: 10%;
 																				<spring:message code="edit" />
 																			</button>
 																	</a></td>
-																	<td><a href="<c:url value='deleteinputparameter.html?inputparamid=${inputParam.inputid}'/>">
+																	<td><a  onclick="return confirm('Are you sure you want to delete')" href="<c:url value='deleteinputparameter.html?inputparamid=${inputParam.inputid}'/>">
 																			<button align="right" type="button" value="Remove">
 																				<spring:message code="remove" />
 																			</button>
@@ -327,7 +327,8 @@ margin-bottom: 10%;
 																				<td>${extParam.type.name}</td>
 																				<td>${extParam.unit.name}</td>
 		
-																				<td><a href="<c:url value='deleteextparam.html?extparamid=${extParam.extparamid}'/>">
+																				<td><a onclick="return confirm('Are you sure you want to delete')"
+																						href="<c:url value='deleteextparam.html?extparamid=${extParam.extparamid}'/>">
 																						<button align="right" type="button" value="Remove">
 																					 
 																							<spring:message code="remove" />
