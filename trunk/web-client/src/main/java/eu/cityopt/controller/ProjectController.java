@@ -5,96 +5,18 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
-import java.security.Principal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.script.ScriptException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-
-import eu.cityopt.DTO.AppUserDTO;
-import eu.cityopt.DTO.ComponentDTO;
-import eu.cityopt.DTO.ExtParamDTO;
-import eu.cityopt.DTO.ExtParamValDTO;
-import eu.cityopt.DTO.ExtParamValSetDTO;
-import eu.cityopt.DTO.InputParamValDTO;
-import eu.cityopt.DTO.InputParameterDTO;
-import eu.cityopt.DTO.MetricDTO;
-import eu.cityopt.DTO.OptimizationSetDTO;
-import eu.cityopt.DTO.OutputVariableDTO;
-import eu.cityopt.DTO.ProjectDTO;
-import eu.cityopt.DTO.ScenarioDTO;
-import eu.cityopt.DTO.TimeSeriesDTO;
-import eu.cityopt.DTO.TimeSeriesDTOX;
-import eu.cityopt.DTO.TypeDTO;
-import eu.cityopt.DTO.UnitDTO;
-import eu.cityopt.DTO.UserGroupDTO;
-import eu.cityopt.DTO.UserGroupProjectDTO;
-import eu.cityopt.config.AppMetadata;
-//Contains Forms for UI
-import eu.cityopt.forms.ExternParamIDForm;
-import eu.cityopt.sim.eval.Type;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Path;
-import java.security.Principal;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -109,11 +31,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -124,7 +44,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import eu.cityopt.DTO.AppUserDTO;
@@ -132,25 +51,17 @@ import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
-import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
-import eu.cityopt.DTO.OptimizationSetDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.TimeSeriesDTOX;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
-import eu.cityopt.DTO.UserGroupDTO;
-import eu.cityopt.DTO.UserGroupProjectDTO;
 import eu.cityopt.config.AppMetadata;
-//Contains Forms for UI
-import eu.cityopt.forms.ExternParamIDForm;
-import eu.cityopt.model.UserGroupProject;
-import eu.cityopt.opt.io.TimeSeriesData;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AppUserService;
-import eu.cityopt.service.AprosService;
 import eu.cityopt.service.ComponentInputParamDTOService;
 import eu.cityopt.service.ComponentService;
 import eu.cityopt.service.CopyService;
@@ -160,6 +71,7 @@ import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ExtParamService;
 import eu.cityopt.service.ExtParamValService;
 import eu.cityopt.service.ExtParamValSetService;
+import eu.cityopt.service.ImportService;
 import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.MetricService;
@@ -181,17 +93,12 @@ import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.service.UserGroupProjectService;
 import eu.cityopt.service.UserGroupService;
-import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.ParamForm;
-import eu.cityopt.web.RoleForm;
-import eu.cityopt.web.ScenarioParamForm;
 import eu.cityopt.web.UnitForm;
-import eu.cityopt.web.UserManagementForm;
 import eu.cityopt.web.UserSession;
-import eu.cityopt.service.ImportService;
 
 /**
  * @author Olli Stenlund
@@ -323,11 +230,12 @@ public class ProjectController {
     	 	return "403";
     }  
     
-    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="createproject", method=RequestMethod.GET)
     public String getCreateProject(Map<String, Object> model) {
         ProjectDTO newProject = new ProjectDTO();
         model.put("newProject", newProject);
+
+		securityAuthorization.atLeastExpert();
 
         AppUserDTO user = (AppUserDTO) model.get("user");
         
@@ -339,12 +247,13 @@ public class ProjectController {
         return "createproject";
     }
 
-    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value = "createproject", method = RequestMethod.POST)
     public String getCreateProjectPost(Map<String, Object> model,
             @Validated @ModelAttribute("newProject") ProjectDTO projectForm, 
             BindingResult bindingResult,
             HttpServletRequest request) {
+
+		securityAuthorization.atLeastExpert();
 
         if (bindingResult.hasErrors()) {
 
@@ -438,8 +347,6 @@ public class ProjectController {
 			//return "error";
      */
         
-    @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard','ROLE_Guest')")   
-    // This security annotation allow access to every authorized user.
     @RequestMapping(value="openproject", method=RequestMethod.GET)
     public String getStringProjects(Map<String, Object> model)
     {
@@ -473,9 +380,8 @@ public class ProjectController {
         }                
         model.put("projects", projects);
         return "openproject";
-    }	
+    }
    
-    //@PreAuthorize("hasPermission(#prjid,'ROLE_Administrator')")     
     @RequestMapping(value="editproject", method=RequestMethod.GET)
     public String getEditProject(Map<String, Object> model, HttpServletRequest request, 
 		@RequestParam(value="prjid", required=false) String prjid) {
@@ -546,7 +452,7 @@ public class ProjectController {
                 {
                     return "error";
                 }
-                securityAuthorization.atLeastStandard_standard(project);
+                securityAuthorization.atLeastExpert_standard(project);
 
                 try {
                     project = projectService.findByID(project.getPrjid());
@@ -593,13 +499,13 @@ public class ProjectController {
 
         if (!file.isEmpty()) {
             try {
-                ProjectDTO project = (ProjectDTO) model.get("project");
-
+            	ProjectDTO project = (ProjectDTO) model.get("project");
                 if (project == null)
                 {
                     return "error";
                 }
-
+                securityAuthorization.atLeastExpert_standard(project);
+                
                 try {
                     project = projectService.findByID(project.getPrjid());
                 } catch (Exception e1) {
@@ -790,7 +696,7 @@ public class ProjectController {
                 {
                     return "error";
                 }
-                securityAuthorization.atLeastStandard_standard(project);
+                securityAuthorization.atLeastExpert_standard(project);
 
                 try {
                     project = projectService.findByID(project.getPrjid());
@@ -910,7 +816,7 @@ public class ProjectController {
             {
                 return;
             }
-            securityAuthorization.atLeastStandard_standard(project);
+            securityAuthorization.atLeastStandard_guest(project);
 
             try {
                 project = projectService.findByID(project.getPrjid());
@@ -942,32 +848,28 @@ public class ProjectController {
         outputStream.close();
     }
 
-    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="editproject", method=RequestMethod.POST)
-    public String getEditProjectPost(ProjectDTO projectForm, Map<String, Object> model, 
-            @RequestParam(value="action", required=false) String action) {
-        //@RequestParam(value="name", required=false) String name,
-        //@RequestParam(value="file", required=false) MultipartFile file) {
+    public String editProjectPost(ProjectDTO projectForm, Map<String, Object> model, 
+        @RequestParam(value="action", required=false) String action) {
+
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+        securityAuthorization.atLeastStandard_standard(project);
 
         if (projectForm != null && action != null)
         {
             if (action.equals("create"))
             {
-                ProjectDTO project = new ProjectDTO();
                 project.setName(projectForm.getName());
                 project = projectService.save(project,0,0);
                 model.put("project", project);
             }
             else if (action.equals("update"))
             {
-                ProjectDTO project = (ProjectDTO) model.get("project");
-
-                if (project == null)
-                {
-                    return "error";
-                }
-                securityAuthorization.atLeastExpert_admin(project);
-
                 try {
                     //project = projectService.findByID(project.getPrjid());                	
                 	//Fix issue: Bug #10864 //Trim because we handling raw input data method .
@@ -998,10 +900,17 @@ public class ProjectController {
         return "editproject";
     }
 
-    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="closeproject", method=RequestMethod.GET)
     public String getCloseProjects(Map<String, Object> model, HttpServletRequest request)
     {
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+        securityAuthorization.atLeastGuest_guest(project);
+
         model.remove("project");
         model.remove("scenario");
         model.remove("optimizationset");
@@ -1010,29 +919,10 @@ public class ProjectController {
         return "start";
     }	
 
-    /*
-    @RequestMapping(value="logout", method=RequestMethod.GET)
-    public String getLogout(Map<String, Object> model, HttpServletRequest request)
-    {
-        model.remove("project");
-        model.remove("scenario");
-        model.remove("optimizationset");
-        model.remove("scengenerator");
-        model.remove("optresults");
-        model.remove("usersession");
-        model.remove("user");
-        request.getSession().invalidate();
-        return "logout";
-    }	
-     */
-    
-    //@Secured({"ROLE_Administrator","ROLE_Expert"})
-    @PreAuthorize("hasRole('ROLE_Administrator') or"
-    	    	+" isAuthenticated() and ("
-    	    	+" hasPermission(#prjid,'ROLE_Administrator') or"
-    	    	+" hasPermission(#prjid,'ROLE_Expert'))")    
     @RequestMapping(value="deleteproject",method=RequestMethod.GET)
     public String getDeleteProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid){
+    	securityAuthorization.atLeastExpert();
+        
         if (prjid != null)
         {
             ProjectDTO tempProject = null;
@@ -1058,31 +948,29 @@ public class ProjectController {
         return "deleteproject";
     }
 
-    // @author Markus Turunen
-    // date: 25.6.2015
-    // This method handles project cloning.	
-    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="cloneproject", method=RequestMethod.GET)
     public String CloneScenario(Map<String, Object> model, @RequestParam(value = "projectid") String projectid) {
       
     	ProjectDTO project= this.ParseProjectIDtoProjectDTO(model, projectid);	
-    	int nProjectId = Integer.parseInt(projectid);    	
-    	String clonename = project.getName()+"(copy)";
+        securityAuthorization.atLeastAdmin();
+        int nProjectId = Integer.parseInt(projectid);
+
+        String clonename = project.getName()+"(copy)";
         int i=0;
-        while(projectService.findByName(clonename)!=null){
+        while(projectService.findByName(clonename)!=null) {
             i++;
             clonename = project.getName()+"(copy)("+i+")";
         }	
+        
         try {
             ProjectDTO ProjectCloner = copyService.copyProject(nProjectId,clonename);
         } catch (EntityNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
-        }		
+        }
+        
         List<ProjectDTO> projects = projectService.findAll();
         model.put("projects", projects);
         return "openproject";
-        // ;(projectid, clonename, true, false, true, false);
     }
     
     // Get Project from database based on model and projectID
@@ -1100,21 +988,19 @@ public class ProjectController {
     	return project;
     }
    
-    @Secured({"ROLE_Administrator"})
     @RequestMapping(value="units", method=RequestMethod.GET)
-    public String getUnits(Model model){
+    public String getUnits(Model model) {
+    	securityAuthorization.atLeastExpert();
         List<UnitDTO> units = unitService.findAll();
         model.addAttribute("units", units);
         return "units";
     }
 
-    //@Secured({"ROLE_Administrator","ROLE_Expert"})
-    @PreAuthorize("hasRole('ROLE_Administrator') or"
-    	+" isAuthenticated() and ("
-    	+" hasPermission(#prjid,'ROLE_Administrator') or"
-    	+" hasPermission(#prjid,'ROLE_Expert'))")    
     @RequestMapping(value="deleteunit",method=RequestMethod.GET)
     public String getDeleteUnit(Map<String, Object> model, @RequestParam(value="unitid", required=true) String unitid) {
+    	
+    	securityAuthorization.atLeastExpert();
+        
         if (unitid != null)
         {
             UnitDTO unit = null;
@@ -1141,12 +1027,13 @@ public class ProjectController {
         return "units";
     }
 
-    @Secured({"ROLE_Administrator"})
     @RequestMapping(value="createunit", method=RequestMethod.GET)
-    public String getCreateUnit(Model model) {
+    public String getCreateUnit(Map<String, Object> model) {
 
+    	securityAuthorization.atLeastExpert();
+        
         UnitForm unitForm = new UnitForm();
-        model.addAttribute("unitForm", unitForm);
+        model.put("unitForm", unitForm);
 
         List<TypeDTO> types = typeService.findAll();
         List<String> typeStrings = new ArrayList<String>();
@@ -1156,15 +1043,16 @@ public class ProjectController {
             typeStrings.add(types.get(i).getName());
         }
 
-        model.addAttribute("types", typeStrings);
+        model.put("types", typeStrings);
 
         return "createunit";
     }
 
-    @Secured({"ROLE_Administrator"})
     @RequestMapping(value="createunit", method=RequestMethod.POST)
     public String getCreateUnitPost(UnitForm unitForm, Model model) {
-
+    	
+    	securityAuthorization.atLeastExpert();
+        
         if (unitForm != null)
         {
             if (unitForm.getName() != null && unitForm.getType() != null && !unitForm.getName().isEmpty())
@@ -1194,27 +1082,40 @@ public class ProjectController {
         return "units";
     }
 
-    @Secured({"ROLE_Administrator","ROLE_Expert"})
     @RequestMapping(value="paramreliability", method=RequestMethod.GET)
     public String getParamReliability(Model model){
 
+        securityAuthorization.atLeastExpert();
+        
         return "paramreliability";
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard')")
     @RequestMapping(value="importdata", method=RequestMethod.GET)
-    public String getImportData(Model model){
+    public String getImportData(Map<String, Object> model){
+    
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+        if (project == null)
+        {
+            return "error";
+        }
+        securityAuthorization.atLeastExpert_standard(project);
+
         return "importdata";
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard')")
     @RequestMapping(value="exportdata", method=RequestMethod.GET)
-    public String getExportData(Model model){
+    public String getExportData(Map<String, Object> model){
 
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+        if (project == null)
+        {
+            return "error";
+        }
+        securityAuthorization.atLeastStandard_guest(project);
+        
         return "exportdata";
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard')")
     @RequestMapping(value="exportextparamsets", method=RequestMethod.GET)
     public void getExportExtParamSets(Map<String, Object> model, HttpServletRequest request, 
     	HttpServletResponse response) {
@@ -1338,6 +1239,8 @@ public class ProjectController {
             return "error";
         }
 
+        securityAuthorization.atLeastGuest_guest(project);
+        
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
@@ -1360,6 +1263,8 @@ public class ProjectController {
             model.put("selectedComponent",  selectedComponent);
             List<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
             model.put("inputParameters", inputParams);
+            List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+            model.put("outputVars", outputVars);
         }
 
         model.put("project", project);
@@ -1398,7 +1303,7 @@ public class ProjectController {
         {
             return "error";
         }
-        securityAuthorization.atLeastExpert_expert(project);
+        securityAuthorization.atLeastGuest_guest(project);
 
         try {
             project = projectService.findByID(project.getPrjid());
@@ -1409,6 +1314,7 @@ public class ProjectController {
 
         if (action != null && metricid != null)
         {
+            securityAuthorization.atLeastExpert_expert(project);
             int nMetricId = Integer.parseInt(metricid);
 
             if (action.equals("clone")) {
@@ -1474,7 +1380,8 @@ public class ProjectController {
         {
             return "error";
         }
-
+        securityAuthorization.atLeastExpert_expert(project);
+        
         UserSession userSession = (UserSession) model.get("usersession");
 
         if (userSession == null)
@@ -1607,7 +1514,8 @@ public class ProjectController {
         {
             return "error";
         }
-
+        securityAuthorization.atLeastExpert_expert(project);
+        
         UserSession userSession = (UserSession) model.get("usersession");
 
         if (userSession == null)
@@ -1746,185 +1654,16 @@ public class ProjectController {
         return "updatemetric";
     }
    
-    @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard')")
-    @RequestMapping(value="uploaddiagram", method=RequestMethod.GET)
-    public String getUploadDiagram(HttpServletRequest request, Map<String, Object> model){
-        
-    	ProjectDTO project = (ProjectDTO) model.get("project");
-        try {
-            project = projectService.findByID(project.getPrjid());
-        } catch (EntityNotFoundException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
-        /*File file ;
-		int maxFileSize = 5000 * 1024;
-		int maxMemSize = 5000 * 1024;
-		ServletContext context = pageContext.getServletContext();
-		String filePath = context.getInitParameter("file-upload");
-
-		// Verify the content type
-		String contentType = request.getContentType();
-		if ((contentType.indexOf("multipart/form-data") >= 0)) {
-
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-			// maximum size that will be stored in memory
-			factory.setSizeThreshold(maxMemSize);
-			// Location to save data that is larger than maxMemSize.
-			factory.setRepository(new File("c:\\temp"));
-
-			// Create a new file upload handler
-			ServletFileUpload upload = new ServletFileUpload(factory);
-			// maximum file size to be uploaded.
-			upload.setSizeMax( maxFileSize );
-			try{ 
-		         // Parse the request to get file items.
-		         List fileItems = upload.parseRequest(request);
-
-		         // Process the uploaded file items
-		         Iterator i = fileItems.iterator();
-
-		         out.println("<html>");
-		         out.println("<head>");
-		         out.println("<title>JSP File upload</title>");  
-		         out.println("</head>");
-		         out.println("<body>");
-		         while ( i.hasNext () ) 
-		         {
-		            FileItem fi = (FileItem)i.next();
-		            if ( !fi.isFormField () )	
-		            {
-		            // Get the uploaded file parameters
-		            String fieldName = fi.getFieldName();
-		            String fileName = fi.getName();
-		            boolean isInMemory = fi.isInMemory();
-		            long sizeInBytes = fi.getSize();
-		            // Write the file
-		            if( fileName.lastIndexOf("\\") >= 0 ){
-		            file = new File( filePath + 
-		            fileName.substring( fileName.lastIndexOf("\\"))) ;
-		            }else{
-		            file = new File( filePath + 
-		            fileName.substring(fileName.lastIndexOf("\\")+1)) ;
-		            }
-		            fi.write( file ) ;
-		            out.println("Uploaded Filename: " + filePath + 
-		            fileName + "<br>");
-		            }
-		         }
-		         out.println("</body>");
-		         out.println("</html>");
-		      }catch(Exception ex) {
-		         System.out.println(ex);
-		      }
-		   }else{
-		      out.println("<html>");
-		      out.println("<head>");
-		      out.println("<title>Servlet upload</title>");  
-		      out.println("</head>");
-		      out.println("<body>");
-		      out.println("<p>No file uploaded</p>"); 
-		      out.println("</body>");
-		      out.println("</html>");
-		   }*/
-
-        AprosService aprosService = new AprosService();
-        String strFileName = request.getParameter("uploadFile");
-        int maxLevel = 2;//Integer.parseInt(request.getParameter("parameterLevel"));
-        aprosService.readDiagramFile(strFileName, maxLevel);
-        int userId = 0;
-        //java.nio.file.Files.readAllBytes(path);
-        Set<String> simulatorNames = SimulatorManagers.getSimulatorNames();
-        String simulatorName = simulatorNames.iterator().next();
-        //Instant timeOrigin = new Instant();
-        //importExportService.importSimulationModel(project.getPrjid(), userId, formProject.getDescription(), modelData, simulatorName, overrideTimeOrigin);
-
-
-
-        String strTest = "";
-
-        for (int i = 0; i < aprosService.listNewComponents.size(); i++)
-        {
-            ComponentDTO component = aprosService.listNewComponents.get(i);
-            /*ComponentDTO existingComponent = null;
-
-			try {
-				existingComponent = componentService.findByID(component.getComponentid());
-			} catch (EntityNotFoundException e1) {
-				e1.printStackTrace();
-			}
-
-			if (existingComponent != null)
-			{
-				try {
-					componentService.update(component, project.getPrjid());
-				} catch (EntityNotFoundException e) {
-					e.printStackTrace();
-				}
-			}
-			else
-			{*/
-
-            try {
-                componentService.save(component, project.getPrjid());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            //}
-            strTest += component.getName() + " ";
-        }
-
-        for (int i = 0; i < aprosService.listNewInputParams.size(); i++)
-        {
-            InputParameterDTO inputParam = aprosService.listNewInputParams.get(i);
-            //inputParamService.save(inputParam);
-            InputParameterDTO existingInputParam = null;
-
-            /*try {
-				existingInputParam = inputParamService.findByID(inputParam.getInputid());
-			} catch (EntityNotFoundException e1) {
-				e1.printStackTrace();
-			}
-
-			if (existingInputParam != null)
-			{
-				try {
-					inputParamService.supdate(inputParam, inputParam.getComponentID(), 0);
-				} catch (EntityNotFoundException e) {
-					e.printStackTrace();
-				}
-			}
-			else
-			{*/
-            UnitDTO unit = unitService.save(new UnitDTO());
-
-            if (inputParamService.getComponentId(inputParam.getInputid()) != 0)
-            {
-                inputParamService.save(inputParam, inputParamService.getComponentId(inputParam.getInputid()), unit.getUnitid());
-            }
-            else
-            {
-                System.out.println("input param " + inputParam.getName() + " component null");
-            }
-            //}
-
-            strTest += inputParam.getName() + " ";
-        }
-
-        if (project == null)
-        {
-            return "error";
-        }
-
-        return "editproject";
-    }	
-
     @RequestMapping(value="infopage", method=RequestMethod.GET)
     public String getInfoPage(Map<String, Object> model)
     {
     	ProjectDTO project = (ProjectDTO) model.get("project");
+    	if (project == null)
+        {
+            return "error";
+        }
+        securityAuthorization.atLeastGuest_guest(project);
+        
         Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
         
         if (nSimulationModelId == null)

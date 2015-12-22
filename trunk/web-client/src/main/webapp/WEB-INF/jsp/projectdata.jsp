@@ -72,14 +72,11 @@
 												<table class="tablestyle">
 													<col style="width:80px">
 													<col style="width:180px">
-													<col style="width:80px">
 													<tr>
 														<!-- Select -->
 														<th><spring:message code="select"/></th>
 														<!-- Components -->
 														<th><spring:message code="components"/></th>
-														<!-- ID -->
-														<th><spring:message code="id"/></th>
 													</tr>
 													
 													<c:forEach items="${components}" var="component">
@@ -93,7 +90,6 @@
 															<spring:message code="select"/></a></td>
 													</c:if>
 														<td>${component.name}</td>
-												    	<td>${component.componentid}</td>
 												   	</tr>
 													</c:forEach>
 												</table>
@@ -102,18 +98,15 @@
 											<td valign="top">
 												<table class="tablestyle">
 													<col style="width:150px">
-													<col style="width:60px">
 													<col style="width:150px">
 													<tr>
 														<th><spring:message code="input_parameter"/></th>
-														<th><spring:message code="id"/></th>
 														<th><spring:message code="default_value"/></th>
 													</tr>
 													
 													<c:forEach items="${inputParameters}" var="inputParam">
 													<tr>
 														<td>${inputParam.name}</td>
-												    	<td>${inputParam.inputid}</td>
 												    	<td>${inputParam.defaultvalue}</td>
 												   	</tr>
 													</c:forEach>
@@ -182,7 +175,7 @@
 																	</c:otherwise>
 																</c:choose>
 																	<td>
-																		<a href="<c:url value='projectdata.html?extparamvalsetid=${extParamValSet.extparamvalsetid}'/>">
+																		<a href="<c:url value='projectdata.html?selectedextparamvalsetid=${extParamValSet.extparamvalsetid}'/>">
 																			<button align="right" type="button" value="Select">
 																			<spring:message code="select"/></button>
 																		</a>

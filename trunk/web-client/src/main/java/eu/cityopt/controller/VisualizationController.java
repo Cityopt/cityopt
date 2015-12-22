@@ -167,6 +167,9 @@ public class VisualizationController {
 	@Autowired
 	ImportExportService importExportService;
 
+    @Autowired
+    SecurityAuthorization securityAuthorization;
+
 	@RequestMapping(value="timeserieschart", method=RequestMethod.GET)
 	public String getTimeSeriesChart(Map<String, Object> model, 
 		@RequestParam(value="scenarioid", required=false) String scenarioId,
@@ -193,6 +196,8 @@ public class VisualizationController {
 		{
 			return "error";
 		}
+
+		securityAuthorization.atLeastGuest_guest(project);
 		
 		AppUserDTO user = (AppUserDTO) model.get("user");
 
@@ -396,6 +401,7 @@ public class VisualizationController {
 		{
 			return "error";
 		}
+		securityAuthorization.atLeastGuest_guest(project);
 		
 		AppUserDTO user = (AppUserDTO) model.get("user");
 
@@ -561,6 +567,14 @@ public class VisualizationController {
 
 	@RequestMapping("timeserieschart.png")
 	public void renderTimeSeriesChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return;
+		}
+		securityAuthorization.atLeastGuest_guest(project);
+		
 		UserSession userSession = (UserSession) model.get("usersession");
 
 		if (userSession == null)
@@ -690,6 +704,14 @@ public class VisualizationController {
 
 	@RequestMapping("summarychart.png")
 	public void renderSummaryChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return;
+		}
+		securityAuthorization.atLeastGuest_guest(project);
+		
 		UserSession userSession = (UserSession) model.get("usersession");
 
 		if (userSession == null)
@@ -911,7 +933,13 @@ public class VisualizationController {
 
 	@RequestMapping("gachart.png")
 	public void renderGAChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
-		UserSession userSession = (UserSession) model.get("usersession");
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return;
+		}
+		securityAuthorization.atLeastGuest_guest(project);UserSession userSession = (UserSession) model.get("usersession");
 
 		if (userSession == null)
 		{
@@ -1062,6 +1090,13 @@ public class VisualizationController {
 		@RequestParam(value="outputvarid", required=false) String outputvarid,
 		@RequestParam(value="extparamid", required=false) String extparamid) {
 
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+		securityAuthorization.atLeastGuest_guest(project);
 		UserSession userSession = (UserSession) model.get("usersession");
 		
 		if (userSession == null)
@@ -1069,13 +1104,6 @@ public class VisualizationController {
 			userSession = new UserSession();
 		}
 
-		ProjectDTO project = (ProjectDTO) model.get("project");
-		
-		if (project == null)
-		{
-			return "error";
-		}
-		
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
 
@@ -1168,7 +1196,7 @@ public class VisualizationController {
 		{
 			return "error";
 		}
-		
+		securityAuthorization.atLeastGuest_guest(project);
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
 		if (scenario == null)
@@ -1325,7 +1353,8 @@ public class VisualizationController {
 		{
 			return "error";
 		}
-		
+		securityAuthorization.atLeastGuest_guest(project);
+
 		if (action != null)
 		{
 			if (action.equals("removeall"))
@@ -1408,5 +1437,4 @@ public class VisualizationController {
 		
 		return "gachart";
 	}
-
 }

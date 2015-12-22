@@ -21,7 +21,7 @@
 		</td>
 
 		<td width=30></td>
-		<td>
+		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="editcomponent.html?componentid=${component.componentid}" modelAttribute="component">
 			<!--Edit component-->

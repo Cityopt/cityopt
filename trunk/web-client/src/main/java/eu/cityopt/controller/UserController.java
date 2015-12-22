@@ -317,7 +317,6 @@ public class UserController {
     
     @Autowired
     Validator validator;
-
     
     @RequestMapping(method=RequestMethod.GET, value="/accessDenied")
     public String AccessDenied(){
@@ -385,7 +384,7 @@ public class UserController {
     //@author Markus Turunen This is the index page get method
     @RequestMapping(value="index", method=RequestMethod.GET)
     public String getIndex(Map<String, Object> model) {
-    	// We check model because project dosen't exist yet.
+    	// We check model because project doesn't exist yet.
     	securityAuthorization.atLeastGuest_guest(model);  
     	
     	//System.out.println("Index invoked");
@@ -888,63 +887,5 @@ public class UserController {
         //model.addAttribute("users", users);
         this.initializeUserManagement(model);        
         return "usermanagement";
-    }
-
-    public boolean hasAdminRights(int nUserId, int nProjectId) {
-        UserGroupProjectDTO userGroupProject = userGroupProjectService.findByUserAndProject(nUserId, nProjectId);
-
-        if (userGroupProject != null && userGroupProject.getUsergroup().getName().equals("Administrator"))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    public boolean hasExpertRights(int nUserId, int nProjectId) {
-        UserGroupProjectDTO userGroupProject = userGroupProjectService.findByUserAndProject(nUserId, nProjectId);
-
-        if (userGroupProject != null)
-        {
-            if (userGroupProject.getUsergroup().getName().equals("Administrator")
-                    || userGroupProject.getUsergroup().getName().equals("Expert"))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean hasStandardRights(int nUserId, int nProjectId) {
-        UserGroupProjectDTO userGroupProject = userGroupProjectService.findByUserAndProject(nUserId, nProjectId);
-
-        if (userGroupProject != null)
-        {
-            if (userGroupProject.getUsergroup().getName().equals("Administrator")
-                    || userGroupProject.getUsergroup().getName().equals("Expert")
-                    || userGroupProject.getUsergroup().getName().equals("Standard"))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean hasGuestRights(int nUserId, int nProjectId) {
-        UserGroupProjectDTO userGroupProject = userGroupProjectService.findByUserAndProject(nUserId, nProjectId);
-
-        if (userGroupProject != null)
-        {
-            if (userGroupProject.getUsergroup().getName().equals("Administrator")
-                    || userGroupProject.getUsergroup().getName().equals("Expert")
-                    || userGroupProject.getUsergroup().getName().equals("Standard")
-                    || userGroupProject.getUsergroup().getName().equals("Guest"))
-            {
-                return true;
-            }
-        }
-        return false;
     }
 }
