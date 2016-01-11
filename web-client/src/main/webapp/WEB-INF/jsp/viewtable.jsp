@@ -50,81 +50,79 @@
 							<tr>
 								<td>
 									<table width="1100px">
-										<col style="width:350px">
-										<col style="width:25px">
-										<col style="width:350px">
+										<col style="width:725px">
 										<col style="width:25px">
 										<col style="width:350px">
 										<tr>
 											<td>
-												<b><spring:message code="components"/></b>
-											</td>
-											<td></td>
-											<td>
-												<b><spring:message code="output_parameters"/></b>
-											</td>
-											<td></td>
-											<td>Metric values</td>
-										</tr>
-										<tr>						
-											<td valign="top">
-												<table class="tablestyle">
-													<col style="width:100px">
-													<col style="width:200px">
-													<col style="width:50px">
+												<table class="tablegroup">
 													<tr>
-														<!-- Select -->
-														<th><spring:message code="select"/></th>
-														<!-- Component -->
-														<th><spring:message code="component"/></th>
-														<!-- Id -->
-														<th><spring:message code="id"/></th>
+														<td>
+															<b><spring:message code="components"/></b>
+														</td>
+														<td></td>
+														<td>
+															<b><spring:message code="output_parameters"/></b>
+														</td>
 													</tr>
-													<c:forEach items="${components}" var="component">
-													<c:if test="${selectedcompid == component.componentid}">
-														<tr style="background-color: rgb(140, 200, 200)">
-														<td><a href="viewtable.html?selectedcompid=${component.componentid}">Selected</a></td>
-													</c:if>
-													<c:if test="${selectedcompid != component.componentid}">
-														<tr>
-														<td><a href="viewtable.html?selectedcompid=${component.componentid}">Select</a></td>
-													</c:if>
-														<td>${component.name}</td>
-												    	<td>${component.componentid}</td>
-												   	</tr>
-													</c:forEach>
-												</table>
-											</td>
-											<td></td>
-											<td valign="top">
-												<table class="tablestyle">
-													<col style="width:100px">
-													<col style="width:150px">
-													<tr>
-														<!-- Draw -->
-														<th><spring:message code="draw"/></th>
-														<!-- Output variable -->
-														<th><spring:message code="output_variable"/></th>
-													</tr>
-													<c:forEach items="${outputVars}" var="outputVar">
-														<c:choose>
-															<c:when test="${outputVar.outvarid == selectedOutputVar.outvarid}">
-																<tr style="background-color: rgb(140, 200, 200)">
-																<td>Shown (<a href="writetable.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Remove</a>)</td>
-															</c:when>
-															<c:otherwise>
+													<tr>						
+														<td valign="top">
+															<table class="tablestyle">
+																<col style="width:100px">
+																<col style="width:200px">
 																<tr>
-																<td><a href="writetable.html?action=add&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Show</a></td>
-															</c:otherwise>
-														</c:choose>
-													
-														<td>${outputVar.name}</td>
-												   	</tr>
-													</c:forEach>
+																	<!-- Select -->
+																	<th><spring:message code="select"/></th>
+																	<!-- Component -->
+																	<th><spring:message code="component"/></th>
+																</tr>
+																<c:forEach items="${components}" var="component">
+																<c:if test="${selectedcompid == component.componentid}">
+																	<tr style="background-color: rgb(140, 200, 200)">
+																	<td><a href="viewtable.html?selectedcompid=${component.componentid}">Selected</a></td>
+																</c:if>
+																<c:if test="${selectedcompid != component.componentid}">
+																	<tr>
+																	<td><a href="viewtable.html?selectedcompid=${component.componentid}">Select</a></td>
+																</c:if>
+																	<td>${component.name}</td>
+															   	</tr>
+																</c:forEach>
+															</table>
+														</td>
+														<td></td>
+														<td valign="top">
+															<table class="tablestyle">
+																<col style="width:100px">
+																<col style="width:150px">
+																<tr>
+																	<!-- Draw -->
+																	<th><spring:message code="draw"/></th>
+																	<!-- Output variable -->
+																	<th><spring:message code="output_variable"/></th>
+																</tr>
+																<c:forEach items="${outputVars}" var="outputVar">
+																	<c:choose>
+																		<c:when test="${outputVar.outvarid == selectedOutputVar.outvarid}">
+																			<tr style="background-color: rgb(140, 200, 200)">
+																			<td>Shown (<a href="writetable.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Remove</a>)</td>
+																		</c:when>
+																		<c:otherwise>
+																			<tr>
+																			<td><a href="writetable.html?action=add&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Show</a></td>
+																		</c:otherwise>
+																	</c:choose>
+																
+																	<td>${outputVar.name}</td>
+															   	</tr>
+																</c:forEach>
+															</table>
+														</td>
+													</tr>
 												</table>
 											</td>
 											<td></td>
-											<td valign="top">
+											<td valign="top"><b>Metric values</b>
 												<table class="tablestyle" width="250px">
 													<col style="width: 150px">
 													<col style="width: 100px">

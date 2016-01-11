@@ -83,65 +83,72 @@
 							
 							<tr>
 								<td>
-									<!-- Components -->
-									<b><spring:message code="components"/></b>
-								</td>
-							</tr>
-							<tr>
-								<td valign="top">
-									<table class="tablestyle" style="width:300px">
-										<col style="width:60px">
-										<col style="width:240px">
+									<table class="tablegroup">
+								
 										<tr>
-											<!-- Select --><th><spring:message code="select"/></th>
-											<!-- Component--><th><spring:message code="component"/></th>
+											<td>
+												<!-- Components -->
+												<b><spring:message code="components"/></b>
+											</td>
 										</tr>
-										<c:forEach items="${components}" var="component">
-										<c:if test="${selectedcompid == component.componentid}">
-											<tr style="background-color: #D4D4D4">
-											<td><a href="timeserieschart.html?selectedcompid=${component.componentid}">Selected</a></td>
-										</c:if>
-										<c:if test="${selectedcompid != component.componentid}">
-											<tr>
-											<td><a href="timeserieschart.html?selectedcompid=${component.componentid}">Select</a></td>
-										</c:if>
-											<td>${component.name}</td>
-									   	</tr>
-										</c:forEach>
-									</table>
-								</td>
-							</tr>		
-							<tr height="10">
-							</tr>
-							<tr>
-								<td>
-									<b><spring:message code="output_parameters"/></b>
-								</td>
-							</tr>
-							<tr>						
-								<td valign="top">
-									<table class="tablestyle" style="width:300px">
-										<col style="width:100px">
-										<col style="width:200px">
 										<tr>
-											<th><spring:message code="draw"/></th>
-											<th><spring:message code="output_variable"/></th>
-										</tr>
-										<c:forEach items="${outputVars}" var="outputVar">
-											<c:choose>
-												<c:when test="${usersession.hasOutputVar(outputVar.outvarid)}">
-													<tr style="background-color: #D4D4D4">
-													<td>Added (<a href="timeserieschart.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Remove</a>)</td>
-												</c:when>
-												<c:otherwise>
+											<td valign="top">
+												<table class="tablestyle" style="width:300px">
+													<col style="width:60px">
+													<col style="width:240px">
 													<tr>
-													<td><a href="timeserieschart.html?action=add&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Add to chart</a></td>
-												</c:otherwise>
-											</c:choose>
-										
-											<td>${outputVar.name}</td>
-									   	</tr>
-										</c:forEach>
+														<!-- Select --><th><spring:message code="select"/></th>
+														<!-- Component--><th><spring:message code="component"/></th>
+													</tr>
+													<c:forEach items="${components}" var="component">
+													<c:if test="${selectedcompid == component.componentid}">
+														<tr style="background-color: #D4D4D4">
+														<td><a href="timeserieschart.html?selectedcompid=${component.componentid}">Selected</a></td>
+													</c:if>
+													<c:if test="${selectedcompid != component.componentid}">
+														<tr>
+														<td><a href="timeserieschart.html?selectedcompid=${component.componentid}">Select</a></td>
+													</c:if>
+														<td>${component.name}</td>
+												   	</tr>
+													</c:forEach>
+												</table>
+											</td>
+										</tr>		
+										<tr height="10">
+										</tr>
+										<tr>
+											<td>
+												<b><spring:message code="output_parameters"/></b>
+											</td>
+										</tr>
+										<tr>						
+											<td valign="top">
+												<table class="tablestyle" style="width:300px">
+													<col style="width:100px">
+													<col style="width:200px">
+													<tr>
+														<th><spring:message code="draw"/></th>
+														<th><spring:message code="output_variable"/></th>
+													</tr>
+													<c:forEach items="${outputVars}" var="outputVar">
+														<c:choose>
+															<c:when test="${usersession.hasOutputVar(outputVar.outvarid)}">
+																<tr style="background-color: #D4D4D4">
+																<td>Added (<a href="timeserieschart.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Remove</a>)</td>
+															</c:when>
+															<c:otherwise>
+																<tr>
+																<td><a href="timeserieschart.html?action=add&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Add to chart</a></td>
+															</c:otherwise>
+														</c:choose>
+													
+														<td>${outputVar.name}</td>
+												   	</tr>
+													</c:forEach>
+												</table>
+											</td>
+										</tr>
 									</table>
 								</td>
 							</tr>

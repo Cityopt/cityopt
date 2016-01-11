@@ -373,9 +373,9 @@ table.tablegroup{
 	border-style: medium;
 	border-color: black;
 	solid border-width: 2px;
-	padding: 1%;
+	padding: 2%;
 	margin: 0%;
-	outline: #064861 inset thick;
+	outline: #064861 inset;
 }
 
 .frametable td {

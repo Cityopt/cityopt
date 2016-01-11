@@ -33,7 +33,8 @@
 				</tr>
 				<tr>
 					<td>
-						<p>Create an expression for the metric by adding parameters, operators and numbers to it.</p></td>
+						<p>Create an expression for the metric by adding parameters, operators and numbers to it.</p>
+					</td>
 				</tr>
 				<tr>
 					<td>
@@ -41,7 +42,6 @@
 							<tr>
 								<td>
 									<table>
-										<col style="width:30px">
 										<col style="width:250px">
 										<col style="width:20px">
 										<col style="width:250px">
@@ -49,7 +49,6 @@
 										<col style="width:250px">
 			
 										<tr>
-											<td></td>
 											<td valign="top">
 												<table class="tablestyle">
 													<col style="width:60px">
@@ -151,7 +150,7 @@
 							</tr>
 							<tr>
 								<td></td>
-								<td>
+								<td valign="top">
 									<table class="tablestyle">
 										<col style="width:200px">
 										<col style="width:50px">
