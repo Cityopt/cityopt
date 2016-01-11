@@ -618,8 +618,8 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 	}
 
 	@Override
-	public ScenarioGeneratorDTO findByName(String name) {		
-		ScenarioGenerator sg = scenarioGeneratorRepository.findByName(name);
+	public ScenarioGeneratorDTO findByName(String name,int prjid) {		
+		ScenarioGenerator sg = scenarioGeneratorRepository.findByNameAndProject_prjid(name,prjid);
 		if(sg==null)
 			return null;
 		else
@@ -627,8 +627,8 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 	}
 
 	@Override
-	public List<ScenarioGeneratorDTO> findByName(String name, int prjid) {
-		List<ScenarioGenerator> sg = scenarioGeneratorRepository.findByNameAndProject_prjid(name,prjid);
+	public List<ScenarioGeneratorDTO> findByName(String name) {
+		List<ScenarioGenerator> sg = scenarioGeneratorRepository.findByName(name);
 		if(sg==null)
 			return null;
 		else

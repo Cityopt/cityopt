@@ -20,7 +20,7 @@ public interface ScenarioGeneratorRepository extends JpaRepository<ScenarioGener
 	public void updateId(@Param("oldId") Integer oldId,
 			@Param("newId") Integer newId);
 	
-	ScenarioGenerator findByName(String name);
-	List<ScenarioGenerator> findByNameAndProject_prjid(String name, int prjid);
+	List<ScenarioGenerator> findByName(String name);
+	ScenarioGenerator findByNameAndProject_prjid(String name, int prjid);
 }
 
