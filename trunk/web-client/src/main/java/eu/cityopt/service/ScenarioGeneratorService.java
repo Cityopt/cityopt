@@ -18,6 +18,9 @@ public interface ScenarioGeneratorService extends CityOptService<ScenarioGenerat
 			throws EntityNotFoundException;
 
 	ScenarioGeneratorDTO save(ScenarioGeneratorDTO u);
+	
+	ScenarioGeneratorDTO findByName(String name);
+	List<ScenarioGeneratorDTO> findByName(String name,int prjid);
 
 	List<AlgoParamDTO> getAlgoParams(int scenGenId)
 			throws EntityNotFoundException;
