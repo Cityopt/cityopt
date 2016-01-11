@@ -171,7 +171,7 @@ public class VisualizationController {
     SecurityAuthorization securityAuthorization;
 
 	@RequestMapping(value="timeserieschart", method=RequestMethod.GET)
-	public String getTimeSeriesChart(Map<String, Object> model, 
+	public String timeSeriesChart(Map<String, Object> model, 
 		@RequestParam(value="scenarioid", required=false) String scenarioId,
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
 		@RequestParam(value="outputvarid", required=false) String outputvarid,
@@ -377,7 +377,7 @@ public class VisualizationController {
 	}
 
 	@RequestMapping(value="summarychart", method=RequestMethod.GET)
-	public String getSummaryChart(Map<String, Object> model, 
+	public String summaryChart(Map<String, Object> model, 
 		@RequestParam(value="scenarioid", required=false) String scenarioId,
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
 		@RequestParam(value="outputvarid", required=false) String outputvarid,
@@ -939,7 +939,9 @@ public class VisualizationController {
 		{
 			return;
 		}
-		securityAuthorization.atLeastGuest_guest(project);UserSession userSession = (UserSession) model.get("usersession");
+		securityAuthorization.atLeastGuest_guest(project);
+		
+		UserSession userSession = (UserSession) model.get("usersession");
 
 		if (userSession == null)
 		{
@@ -1085,7 +1087,7 @@ public class VisualizationController {
 	}
 
 	@RequestMapping(value="viewtable", method=RequestMethod.GET)
-	public String getViewTable(Map<String, Object> model, 
+	public String viewTable(Map<String, Object> model, 
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
 		@RequestParam(value="outputvarid", required=false) String outputvarid,
 		@RequestParam(value="extparamid", required=false) String extparamid) {
@@ -1177,7 +1179,7 @@ public class VisualizationController {
 	}
 	
 	@RequestMapping(value="writetable", method=RequestMethod.GET)
-	public String getWriteTable(Map<String, Object> model, 
+	public String writeTable(Map<String, Object> model, 
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
 		@RequestParam(value="outputvarid", required=false) String outputvarid,
 		@RequestParam(value="extparamid", required=false) String extparamid) {

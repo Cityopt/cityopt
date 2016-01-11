@@ -224,7 +224,7 @@ public class OptimizationController {
     SecurityAuthorization securityAuthorization;
 
     @RequestMapping(value="createobjfunction",method=RequestMethod.GET)
-    public String getCreateObjFunction(Map<String, Object> model,
+    public String createObjFunction(Map<String, Object> model,
         @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -306,7 +306,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="createobjfunction", method=RequestMethod.POST)
-    public String getCreateObjFunctionPost(ObjectiveFunctionDTO function, HttpServletRequest request, Map<String, Object> model) {
+    public String createObjFunctionPost(ObjectiveFunctionDTO function, HttpServletRequest request, Map<String, Object> model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -397,7 +397,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editobjfunction",method=RequestMethod.GET)
-    public String getEditObjFunction(Map<String, Object> model,
+    public String editObjFunction(Map<String, Object> model,
             @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -455,49 +455,94 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="cloneoptimizer", method=RequestMethod.GET)
-    public String CloneOptimizer(Map<String, Object> model, @RequestParam(value = "optimizerid") String optimizerid) {
+    public String cloneOptimizer(Map<String, Object> model, 
+		@RequestParam(value = "optimizerid") String optimizerid,
+    	@RequestParam(value="optsettype", required=false) String optsettype) {
 
-        ProjectDTO project = (ProjectDTO) model.get("project");
-        securityAuthorization.atLeastExpert_expert(project);
-        
-        int noptimizerid = Integer.parseInt(optimizerid);		
-        OptimizationSetDTO optimizer = null;
-        
-        try {
-            optimizer = (OptimizationSetDTO) optSetService.findByID(noptimizerid);
-        } catch (EntityNotFoundException e2) {
-            e2.printStackTrace();
-        }		
-        Set<OpenOptimizationSetDTO> optSets=null;
-       
-        try {			
-            optSets = projectService.getSearchAndGAOptimizationSets(project.getPrjid());
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }			
-        String name = optimizer.getName();			
-        String clonename = name+"(copy)";				
-        int i=0;
-        
-        while(optSetService.findByName(clonename)!=null){					
-            i++;
-            clonename=name+"(copy)("+i+")";				
-        }
-        
-        try {
-            //clones
-            OptimizationSetDTO cloneoptimisation = copyService.copyOptimizationSet(noptimizerid, clonename, true);
-            cloneoptimisation=optSetService.save(cloneoptimisation);					
+	    ProjectDTO project = (ProjectDTO) model.get("project");
+	
+		if (project == null)
+		{
+			return "error";
+		}
 
-        } catch (EntityNotFoundException e1) {
-            e1.printStackTrace();
-        }			
-        model.put("openoptimizationsets", optSets);		
+		securityAuthorization.atLeastStandard_standard(project);
+
+		if (optsettype != null)
+		{
+	        securityAuthorization.atLeastExpert_expert(project);
+	        OptimizationSetDTO optSet = null;
+	        ScenarioGeneratorDTO gaSet = null;
+	        String name = "";
+	        int noptimizerid = Integer.parseInt(optimizerid);		
+	        
+	        if (optsettype.equals("db"))
+			{
+		        try {
+		            optSet = (OptimizationSetDTO) optSetService.findByID(noptimizerid);
+		        } catch (EntityNotFoundException e2) {
+		            e2.printStackTrace();
+		        }
+		        name = optSet.getName();
+			}
+	        else if (optsettype.equals("ga"))
+	        {
+		        try {
+		            gaSet = (ScenarioGeneratorDTO) scenGenService.findByID(noptimizerid);
+		        } catch (EntityNotFoundException e2) {
+		            e2.printStackTrace();
+		        }
+	        	
+	        	name = gaSet.getName();
+	        }
+        
+	        Set<OpenOptimizationSetDTO> optSets = null;
+	       
+	        try {
+	            optSets = projectService.getSearchAndGAOptimizationSets(project.getPrjid());
+	        } catch (EntityNotFoundException e) {
+	            e.printStackTrace();
+	        }
+	        
+	        String clonename = name+"(copy)";
+	        int i=0;
+	        
+	        while(optSetService.findByName(clonename) != null) {					
+	            i++;
+	            clonename=name+"(copy)("+i+")";				
+	        }
+        
+	        if (optsettype.equals("db"))
+	        {
+	        	try {
+	        		OptimizationSetDTO cloneoptimisation = copyService.copyOptimizationSet(noptimizerid, clonename, true);
+	            	cloneoptimisation=optSetService.save(cloneoptimisation);	
+	            	
+		        } catch (EntityNotFoundException e1) {
+		            e1.printStackTrace();
+		        }
+	        } else if (optsettype.equals("ga")) {
+	        	try {
+	        		ScenarioGeneratorDTO newScenGen = copyService.copyScenarioGenerator(noptimizerid, clonename);
+	        		newScenGen = scenGenService.save(newScenGen);					
+		        } catch (EntityNotFoundException e1) {
+		            e1.printStackTrace();
+		        }
+	        }
+	        	
+	        try {
+				optSets = projectService.getSearchAndGAOptimizationSets(project.getPrjid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+	        model.put("openoptimizationsets", optSets);
+		}
+		
         return "openoptimizationset";
     }    
 
     @RequestMapping(value="editobjfunction", method=RequestMethod.POST)
-    public String getEditObjFunctionPost(ObjectiveFunctionDTO function, HttpServletRequest request, Map<String, Object> model) {
+    public String editObjFunctionPost(ObjectiveFunctionDTO function, HttpServletRequest request, Map<String, Object> model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -587,7 +632,7 @@ public class OptimizationController {
         return "editoptimizationset";
     }
     @RequestMapping(value="deleteconstraint", method=RequestMethod.GET)
-    public String getDeleteConstraint(Map<String, Object> model, @RequestParam(value="constraintid", required=true) String constraintId) {
+    public String deleteConstraint(Map<String, Object> model, @RequestParam(value="constraintid", required=true) String constraintId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -675,7 +720,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="createoptimizationset", method=RequestMethod.POST)
-    public String getCreateOptimizationSetPost(Map<String, Object> model, HttpServletRequest request, OpenOptimizationSetDTO openOptSet) {
+    public String createOptimizationSetPost(Map<String, Object> model, HttpServletRequest request, OpenOptimizationSetDTO openOptSet) {
 
         String type = request.getParameter("type");
         int nType = Integer.parseInt(type);
@@ -772,7 +817,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editoptimizationset",method=RequestMethod.GET)
-    public String getEditOptimizationSet(Map<String, Object> model, 
+    public String editOptimizationSet(Map<String, Object> model, 
             @RequestParam(value="optsetid", required=false) String optsetid,
             @RequestParam(value="optsettype", required=false) String optsettype) {
 
@@ -836,7 +881,7 @@ public class OptimizationController {
     }
     
     @RequestMapping(value = "exportoptimizationset", method = RequestMethod.GET)
-	public void exportScenarios(Map<String, Object> model, HttpServletRequest request, 
+	public void exportOptimizationSet(Map<String, Object> model, HttpServletRequest request, 
 		HttpServletResponse response) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -846,7 +891,7 @@ public class OptimizationController {
 			return;
 		}
 
-		securityAuthorization.atLeastStandard_guest(project);
+		securityAuthorization.atLeastStandard_standard(project);
          
 		OptimizationSetDTO optSet = (OptimizationSetDTO)model.get("optimizationset");
 
@@ -950,7 +995,7 @@ public class OptimizationController {
 		{
 			return;
 		}
-		securityAuthorization.atLeastStandard_guest(project);
+		securityAuthorization.atLeastStandard_standard(project);
        
 		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
 
@@ -1045,7 +1090,7 @@ public class OptimizationController {
 	}
     
     @RequestMapping(value="extparamsets",method=RequestMethod.GET)
-    public String getExtParamSets(
+    public String extParamSets(
         Map<String, Object> model,            
         @RequestParam(value="extparamvalsetid", required=false) String id) {    
    
@@ -1084,7 +1129,7 @@ public class OptimizationController {
     }   
     
 	@RequestMapping(value="extparamsets",method=RequestMethod.POST)
-    public String setExtParamSets(Map<String, Object> model, @RequestParam(value="extparamvalsetid", required=true) int id) { 
+    public String extParamSetsPost(Map<String, Object> model, @RequestParam(value="extparamvalsetid", required=true) int id) { 
 		
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -1126,7 +1171,7 @@ public class OptimizationController {
     }
 
 	@RequestMapping(value="gaextparamsets", method=RequestMethod.GET)
-    private String getGAExtParamValSet(Map<String, Object> model,
+    private String GAExtParamValSet(Map<String, Object> model,
         @RequestParam(value="extparamvalsetid", required=false) String id) {
    
 		ProjectDTO project = (ProjectDTO) model.get("project");
@@ -1165,7 +1210,7 @@ public class OptimizationController {
 	}    		
 
 	@RequestMapping(value="gaextparamsets",method=RequestMethod.POST)
-    public String setGAExtParamSets(Map<String, Object> model, @RequestParam(value="extparamvalsetid", required=true) int id) { 
+    public String GAExtParamSetsPost(Map<String, Object> model, @RequestParam(value="extparamvalsetid", required=true) int id) { 
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -1208,14 +1253,13 @@ public class OptimizationController {
         return "redirect:/geneticalgorithm.html";                   
     }
 
-	// Helper Methods To prevent work Repetition: This method create Project DTO object from the model	
 	public ProjectDTO initiateProject(Map<String, Object> model){
 		ProjectDTO project = (ProjectDTO) model.get("project");
         return project;		
 	}
 	
     @RequestMapping(value = "importoptimizationset", method = RequestMethod.POST)
-    public String uploadCSVFileHandler(Map<String, Object> model, 
+    public String importOptimizationSet(Map<String, Object> model, 
 		@RequestParam("file") MultipartFile file,
 		@RequestParam("fileTimeSeries") MultipartFile fileTimeSeries) {
 
@@ -1317,7 +1361,7 @@ public class OptimizationController {
     }
     
     @RequestMapping(value="databaseoptimization", method=RequestMethod.GET)
-    public String getDatabaseOptimization(Map<String, Object> model) {
+    public String databaseOptimization(Map<String, Object> model) {
 
         OptimizationSetDTO optSet = null;
 
@@ -1416,11 +1460,10 @@ public class OptimizationController {
     }
     
     @RequestMapping(value="openoptimizationset",method=RequestMethod.GET)
-    public String getOpenOptimizationSet(Map<String, Object> model,
+    public String openOptimizationSet(Map<String, Object> model,
             @RequestParam(value="optsetid", required=false) String optsetid,
             @RequestParam(value="optsettype", required=false) String optsettype) {
 
-        AppUserDTO user = (AppUserDTO) model.get("user");
         ProjectDTO project = (ProjectDTO) model.get("project");
 
 		if (project == null)
@@ -1553,7 +1596,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="deleteoptimizationset",method=RequestMethod.GET)
-    public String getDeleteOptimizationSet(Map<String, Object> model,
+    public String deleteOptimizationSet(Map<String, Object> model,
             @RequestParam(value="optsetid", required=false) String optsetid,
             @RequestParam(value="optsettype", required=false) String optsettype) {
 
@@ -1627,7 +1670,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="createconstraint",method=RequestMethod.GET)
-    public String getCreateConstraint(Map<String, Object> model,
+    public String createConstraint(Map<String, Object> model,
             @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
 
         OptConstraintDTO constraint = new OptConstraintDTO();
@@ -1683,7 +1726,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="createconstraint", method=RequestMethod.POST)
-    public String getCreateConstraintPost(OptConstraintDTO constraint, Map<String, Object> model) throws EntityNotFoundException {
+    public String createConstraintPost(OptConstraintDTO constraint, Map<String, Object> model) throws EntityNotFoundException {
         
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1744,7 +1787,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editconstraint",method=RequestMethod.GET)
-    public String getEditConstraint(Map<String, Object> model,
+    public String editConstraint(Map<String, Object> model,
             @RequestParam(value="selectedcompid", required=false) String selectedCompId,
             @RequestParam(value="constraintid", required=false) String constraintId) {
 
@@ -1810,7 +1853,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editconstraint", method=RequestMethod.POST)
-    public String getEditConstraintPost(OptConstraintDTO constraint, Map<String, Object> model) throws EntityNotFoundException {
+    public String editConstraintPost(OptConstraintDTO constraint, Map<String, Object> model) throws EntityNotFoundException {
         OptimizationSetDTO optSet = null;
 
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -1882,7 +1925,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="importobjfunction",method=RequestMethod.GET)
-    public String getImportObjFunction(Map<String, Object> model,
+    public String importObjFunction(Map<String, Object> model,
             @RequestParam(value="objectivefunctionid", required=false) String selectedObjFuncId) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -1967,7 +2010,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="importsearchconstraint",method=RequestMethod.GET)
-    public String getImportSearchConstraint(Map<String, Object> model,
+    public String importSearchConstraint(Map<String, Object> model,
             @RequestParam(value="constraintid", required=false) String selectedConstraintId) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -2056,7 +2099,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="showresults",method=RequestMethod.GET)
-    public String getShowResults(Map<String, Object> model,
+    public String showResults(Map<String, Object> model,
         @RequestParam(value="selectedcompid", required=false) String selectedCompId,
         @RequestParam(value="scenarioid", required=false) String scenarioId) {
 
@@ -2158,7 +2201,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="runmultioptimizationset",method=RequestMethod.GET)
-    public String getRunMultiOptimizationSet(Map<String, Object> model,
+    public String runMultiOptimizationSet(Map<String, Object> model,
             @RequestParam(value="optsetid", required=false) String optsetid,
             @RequestParam(value="optsettype", required=false) String optsettype,
             @RequestParam(value="action", required=false) String action) {
@@ -2234,7 +2277,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editsgobjfunction", method=RequestMethod.GET)
-    public String getEditSGObjFunction(ModelMap model,
+    public String editSGObjFunction(ModelMap model,
             @RequestParam(value="objid", required=false) Integer objid,
             @RequestParam(value="selectedcompid", required=false) Integer selectedCompId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -2287,8 +2330,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editsgobjfunction", method=RequestMethod.POST)
-    public String postEditSGObjFunction(
-            ObjectiveFunctionDTO function, ModelMap model,
+    public String editSGObjFunctionPost (ObjectiveFunctionDTO function, ModelMap model,
             @RequestParam("obtfunctionid") int objid,
             @RequestParam("optsense") String optSense) {
     	
@@ -2333,7 +2375,7 @@ public class OptimizationController {
     	}	
         
     @RequestMapping(value="deletesgobjfunction", method=RequestMethod.POST)
-    public String postDeleteSGObjFunction(
+    public String deleteSGObjFunctionPost (
             ModelMap model, @RequestParam("objid") int objid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
@@ -2355,7 +2397,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="addsgobjfunction", method=RequestMethod.GET)
-    public String getAddSGObjFunction(ModelMap model) {
+    public String addSGObjFunctionPost(ModelMap model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
 
@@ -2375,7 +2417,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="addsgobjfunction", method=RequestMethod.POST)
-    public String postAddSGObjFunction(ModelMap model,
+    public String addSGObjFunctionPost(ModelMap model,
         @RequestParam("obtfunctionid") int obtfunctionid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
@@ -2398,7 +2440,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editsgconstraint", method=RequestMethod.GET)
-    public String getEditSGConstraint(ModelMap model,
+    public String editSGConstraint(ModelMap model,
         @RequestParam(value="constrid", required=false) Integer constrid,
         @RequestParam(value="selectedcompid", required=false) Integer selectedCompId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -2451,7 +2493,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editsgconstraint", method=RequestMethod.POST)
-    public String postEditSGConstraint(
+    public String editSGConstraintPost(
             OptConstraintDTO constraint, ModelMap model,
             @RequestParam("optconstid") int constrid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -2491,7 +2533,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="deletesgconstraint", method=RequestMethod.POST)
-    public String postDeleteSGConstraint(
+    public String deleteSGConstraintPost(
             ModelMap model, @RequestParam("constrid") Integer constrid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
@@ -2512,7 +2554,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="addsgconstraint", method=RequestMethod.GET)
-    public String getAddSGConstraint(ModelMap model) {
+    public String addSGConstraint(ModelMap model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
 
@@ -2532,7 +2574,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="addsgconstraint", method=RequestMethod.POST)
-    public String postAddSGConstraint(ModelMap model,
+    public String addSGConstraintPost(ModelMap model,
             @RequestParam("constrid") int constrid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
@@ -2555,7 +2597,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editsgdecisionvariable", method=RequestMethod.GET)
-    public String getEditSGDecisionVariable(ModelMap model,
+    public String editSGDecisionVariable(ModelMap model,
             @RequestParam(value="decisionvarid", required=false) Integer decisionvarid,
             @RequestParam(value="selectedcompid", required=false) Integer selectedCompId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -2601,7 +2643,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editsgdecisionvariable", method=RequestMethod.POST)
-    public String postEditSGDecisionVariable(
+    public String editSGDecisionVariablePost(
         DecisionVariableDTO decVar, ModelMap model,
         @RequestParam("decisionvarid") int decisionvarid,
         @RequestParam("typeid") int typeid) {
@@ -2641,7 +2683,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="deletesgdecisionvariable", method=RequestMethod.POST)
-    public String postDeleteSGDecisionVariable(
+    public String deleteSGDecisionVariablePost(
             ModelMap model, @RequestParam("decisionvarid") Integer decisionvarid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
@@ -2661,7 +2703,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="geneticalgorithm", method=RequestMethod.GET)
-    public String getGeneticAlgorithm(ModelMap model) {
+    public String geneticAlgorithm(ModelMap model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         
         if (project == null) 
@@ -2743,7 +2785,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="geneticalgorithm", method=RequestMethod.POST)
-    public String postGeneticAlgorithm(ModelMap model,
+    public String geneticAlgorithmPost(ModelMap model,
             @ModelAttribute("scengenerator") ScenarioGeneratorDTO scenGenForm,
             @RequestParam("algorithmid") int algorithmId,
             @RequestParam(value="run", required=false) String run) {
@@ -2781,7 +2823,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editextparamvalset", method=RequestMethod.GET)
-    private String getEditExtParamValSet(Map<String, Object> model,            
+    private String editExtParamValSet(Map<String, Object> model,            
         @RequestParam(value="id", required=false) String id) {    
    
 		model.put("id", id);
@@ -2812,38 +2854,10 @@ public class OptimizationController {
 			model.put("extParamVals", extParamVals);
 		}
 		return "extparamsets";       
-    		
-    		
-            /*@RequestParam("extparamvalsetid") Integer extParamValSetId,
-            @RequestParam("context") String context) {
-        ProjectDTO project = (ProjectDTO) model.get("project");
-        if (project == null) return "redirect:/openproject.html";
-
-        if (extParamValSetId == null) {
-            return "redirect:/" + context;
-        }
-        try {
-            ExtParamValSetForm form = new ExtParamValSetForm();
-            List<ExtParamValDTO> vals = sortBy(epv -> epv.getExtparam().getName(),
-                    extParamValSetService.getExtParamVals(extParamValSetId));
-            form.setExtParamValSet(extParamValSetService.findByID(extParamValSetId));
-            for (ExtParamValDTO val : vals) {
-                int extParamId = val.getExtparam().getExtparamid();
-                form.getValueByParamId().put(extParamId, val.getValue());
-                form.getCommentByParamId().put(extParamId, val.getComment());
-            }
-            model.put("extparamvals", vals);
-            model.put("extparamvalsetform", form);
-            model.put("context", context);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-            return "redirect:/" + context;
-        }
-        return "editextparamvalset";*/
     }
 
     @RequestMapping(value="editextparamvalset", method=RequestMethod.POST)
-    public String postEditExtParamValSet(ModelMap model,
+    public String editExtParamValSetPost(ModelMap model,
             ExtParamValSetForm form,
             @RequestParam("context") String context) {
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -2871,7 +2885,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editsgalgoparamval", method=RequestMethod.GET)
-    public String getEditSGAlgoParamVal(ModelMap model) {
+    public String editSGAlgoParamVal(ModelMap model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
 
@@ -2899,7 +2913,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editsgalgoparamval", method=RequestMethod.POST)
-    public String postEditSGAlgoParamVal(ModelMap model,
+    public String editSGAlgoParamValPost(ModelMap model,
             AlgoParamValForm form) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
@@ -2931,7 +2945,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editsgmodelparams", method=RequestMethod.GET)
-    public String getEditSGModelParams(ModelMap model) {
+    public String editSGModelParams(ModelMap model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
 
@@ -2989,7 +3003,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editsgmodelparams", method=RequestMethod.POST)
-    public String postEditSGModelParams(ModelMap model,
+    public String editSGModelParamsPost(ModelMap model,
         ModelParamForm form,
         @RequestParam(value="newgroup", required=false) String newGroup,
         @RequestParam(value="cleangroups", required=false) String cleanGroups) {
@@ -3058,7 +3072,7 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="selectcomponent", method=RequestMethod.POST)
-    public @ResponseBody String postSelectComponent(ModelMap model,
+    public @ResponseBody String selectComponentPost(ModelMap model,
             @RequestParam("selectedcompid") int selectedCompId) {
 	    UserSession userSession = getUserSession(model);
 	    userSession.setComponentId(selectedCompId);

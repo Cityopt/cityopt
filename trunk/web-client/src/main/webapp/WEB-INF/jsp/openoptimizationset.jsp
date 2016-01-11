@@ -60,7 +60,7 @@
 								</a>
 								</td>
 									<td><a
-											href="<c:url value='cloneoptimizer.html?optimizerid=${openoptimizationset.id}'/>">
+											href="<c:url value='cloneoptimizer.html?optimizerid=${openoptimizationset.id}&optsettype=db'/>">
 												<button align="right" title="${clone_optimizationset}" type="button" value="Clone"><spring:message code="clone"/></button>
 									</a></td>
 
@@ -71,7 +71,7 @@
 								<a href="<c:url value='openoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga'/>">
 									<button align="right" title="${open_optimizationset}"  type="button" value="Open"><spring:message code="open"/></button>
 								</a></td>
-								<td><a	href="<c:url value='cloneoptimizer.html?optimizerid=${openoptimizationset.id}'/>">
+								<td><a	href="<c:url value='cloneoptimizer.html?optimizerid=${openoptimizationset.id}&optsettype=ga'/>">
 												<button align="right" title="${clone_optimizationset}" type="button" value="Clone"><spring:message code="clone"/></button>
 									</a></td>						
 								

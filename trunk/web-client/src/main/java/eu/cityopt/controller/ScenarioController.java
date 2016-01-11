@@ -213,14 +213,8 @@ public class ScenarioController {
     @Autowired
     SecurityAuthorization securityAuthorization;
 
-	@PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert') or ("
-		    +" hasRole('ROLE_Standard') and ("
-		    	+" hasPermission(#model,'ROLE_Administrator') or"
-		    	+" hasPermission(#model,'ROLE_Expert') or"
-		    	+" hasPermission(#model,'ROLE_Standard')" 
-		    	   						+ "))")
 	@RequestMapping(value="createscenario",method=RequestMethod.GET)
-	public String getCreateScenario(Map<String, Object> model) {
+	public String createScenario(Map<String, Object> model) {
 		
 		AppUserDTO user = (AppUserDTO) model.get("user");
 		ProjectDTO project = (ProjectDTO) model.get("project");
@@ -243,7 +237,7 @@ public class ScenarioController {
 	
 	@RequestMapping(value="createscenario", method=RequestMethod.POST)
 	@Transactional
-	public String getCreateScenarioPost(Map<String, Object> model, 
+	public String createScenarioPost(Map<String, Object> model, 
 		@Validated @ModelAttribute ("newScenario") ScenarioDTO formScenario, BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
@@ -333,7 +327,7 @@ public class ScenarioController {
 	}
 	
 	@RequestMapping(value="openscenario",method=RequestMethod.GET)
-	public String getOpenScenario (Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid)
+	public String openScenario (Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid)
 	{
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -411,7 +405,7 @@ public class ScenarioController {
 	}
 	    
 	@RequestMapping(value="showscenarios",method=RequestMethod.GET)
-	public String getShowScenarios (Map<String, Object> model)
+	public String showScenarios (Map<String, Object> model)
 	{
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -429,7 +423,7 @@ public class ScenarioController {
 	}
 	
 	@RequestMapping(value="clonescenario",method=RequestMethod.GET)
-	public String getCloneScenario (Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid)
+	public String cloneScenario (Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid)
 	{
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -491,7 +485,7 @@ public class ScenarioController {
 	}
 	
 	@RequestMapping(value="editscenario", method=RequestMethod.GET)
-	public String getEditScenario (Map<String, Object> model) {
+	public String editScenario (Map<String, Object> model) {
 		if (!model.containsKey("project"))
 		{
 			return "error";
@@ -563,7 +557,7 @@ public class ScenarioController {
 	}
 
 	@RequestMapping(value="editscenario",method=RequestMethod.POST)
-	public String getEditScenarioPost(ScenarioDTO formScenario, Map<String, Object> model, 
+	public String editScenarioPost(ScenarioDTO formScenario, Map<String, Object> model, 
 		@RequestParam(value="action", required=false) String action) {
 
 		if (model.containsKey("project") && formScenario != null)
@@ -624,7 +618,7 @@ public class ScenarioController {
 	}
 	
 	@RequestMapping(value = "importscenarios", method = RequestMethod.POST)
-	public String uploadCSVFileHandler(
+	public String importScenarios(
         Map<String, Object> model,
         @RequestParam("file") MultipartFile file,
         @RequestParam("timeSeriesFile1") MultipartFile timeSeriesMPFile1) {
@@ -936,7 +930,7 @@ public class ScenarioController {
 	}
 	
 	@RequestMapping(value="deletescenario",method=RequestMethod.GET)
-	public String getDeleteScenario(Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid) {
+	public String deleteScenario(Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid) {
 	
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -987,7 +981,7 @@ public class ScenarioController {
 	}
 
 	@RequestMapping(value="scenarioparameters", method=RequestMethod.GET)
-	public String getScenarioParameters(Map<String, Object> model, 
+	public String scenarioParameters(Map<String, Object> model, 
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId){
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1056,7 +1050,7 @@ public class ScenarioController {
 
 	
 	@RequestMapping(value="scenarioParam", method=RequestMethod.POST)
-	public String setScenarioParam(Map<String, Object> model,
+	public String scenarioParamPost(Map<String, Object> model,
 		ScenarioParamForm form,
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
 
@@ -1137,7 +1131,7 @@ public class ScenarioController {
 	}
 	
 	@RequestMapping(value="scenariovariables",method=RequestMethod.GET)
-	public String getScenarioVariables(Map<String, Object> model,
+	public String scenarioVariables(Map<String, Object> model,
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
@@ -1183,7 +1177,7 @@ public class ScenarioController {
 		
 	
 	@RequestMapping(value="editinputparamvalue", method=RequestMethod.GET)
-	public String getEditInputParameterValue(Map<String, Object> model, 
+	public String editInputParameterValue(Map<String, Object> model, 
 		@RequestParam(value="inputparamvalid", required=true) String inputvalid) {
 		int nInputValId = Integer.parseInt(inputvalid);
 		InputParamValDTO inputParamVal = null;
@@ -1208,7 +1202,7 @@ public class ScenarioController {
 	}
 
 	@RequestMapping(value="editinputparamvalue", method=RequestMethod.POST)
-	public String getEditInputParamValPost(InputParamValDTO inputParamVal, Map<String, Object> model,
+	public String editInputParamValPost(InputParamValDTO inputParamVal, Map<String, Object> model,
 		@RequestParam(value="inputparamvalid", required=true) String inputParamValId){
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -1272,7 +1266,7 @@ public class ScenarioController {
 	}
 		
 	@RequestMapping(value="runscenario", method=RequestMethod.GET)
-	public String getRunScenario(Map<String, Object> model)
+	public String runScenario(Map<String, Object> model)
 	{
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
