@@ -616,4 +616,22 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 		}
 		return last;
 	}
+
+	@Override
+	public ScenarioGeneratorDTO findByName(String name) {		
+		ScenarioGenerator sg = scenarioGeneratorRepository.findByName(name);
+		if(sg==null)
+			return null;
+		else
+			return modelMapper.map(sg, ScenarioGeneratorDTO.class);		
+	}
+
+	@Override
+	public List<ScenarioGeneratorDTO> findByName(String name, int prjid) {
+		List<ScenarioGenerator> sg = scenarioGeneratorRepository.findByNameAndProject_prjid(name,prjid);
+		if(sg==null)
+			return null;
+		else
+			return modelMapper.map(sg, new TypeToken<List<ScenarioGeneratorDTO>>() {}.getType());
+	}
 }

@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import eu.cityopt.model.MetricVal;
+import eu.cityopt.model.Project;
 import eu.cityopt.model.ScenarioGenerator;
 
 @Repository
@@ -18,5 +19,8 @@ public interface ScenarioGeneratorRepository extends JpaRepository<ScenarioGener
 			+ " where scengenid = :oldId ")
 	public void updateId(@Param("oldId") Integer oldId,
 			@Param("newId") Integer newId);
+	
+	ScenarioGenerator findByName(String name);
+	List<ScenarioGenerator> findByNameAndProject_prjid(String name, int prjid);
 }
 
