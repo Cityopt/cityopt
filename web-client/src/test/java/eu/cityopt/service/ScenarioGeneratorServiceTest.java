@@ -25,58 +25,71 @@ import eu.cityopt.DTO.ScenarioGeneratorDTO;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:/jpaContext.xml", "classpath:/test-context.xml"})
+@ContextConfiguration(locations = { "classpath:/jpaContext.xml",
+		"classpath:/test-context.xml" })
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-    TransactionalTestExecutionListener.class,
-    DbUnitTestExecutionListener.class })
-@DatabaseSetup({"classpath:/testData/plumbing_scengen.xml"})
+		TransactionalTestExecutionListener.class,
+		DbUnitTestExecutionListener.class })
+@DatabaseSetup({ "classpath:/testData/plumbing_scengen.xml" })
 public class ScenarioGeneratorServiceTest {
 
 	@Autowired
 	ScenarioGeneratorService scenarioGeneratorService;
-	
+
 	@Autowired
 	AlgorithmService algorithmService;
-	
-//	@Test
-//	public void testScenarioGeneratorService() {
-//		ScenarioGeneratorDTO sgDTO = scenarioGeneratorService.findAll().iterator().next();
-//		
-//		assertEquals(8, sgDTO.getAlgoparamvals().size());
-//		for(AlgoParamValDTO apvd : sgDTO.getAlgoparamvals()){
-//			System.out.println("AlgoParam: \n name:" 
-//					+ apvd.getAlgoparam().getName() + "\n val:"
-//					+ apvd.getValue() + "\n descr: "
-//					+ apvd.getAlgoparam().getAlgorithm().getDescription());
-//		}
-//	}
+
+	// @Test
+	// public void testScenarioGeneratorService() {
+	// ScenarioGeneratorDTO sgDTO =
+	// scenarioGeneratorService.findAll().iterator().next();
+	//
+	// assertEquals(8, sgDTO.getAlgoparamvals().size());
+	// for(AlgoParamValDTO apvd : sgDTO.getAlgoparamvals()){
+	// System.out.println("AlgoParam: \n name:"
+	// + apvd.getAlgoparam().getName() + "\n val:"
+	// + apvd.getValue() + "\n descr: "
+	// + apvd.getAlgoparam().getAlgorithm().getDescription());
+	// }
+	// }
 
 	@Test
-	public void testScenarioGeneratorService_getAlgorithm() throws EntityNotFoundException {
-		ScenarioGeneratorDTO sgDTO = scenarioGeneratorService.findAll().iterator().next();
-		
+	public void testScenarioGeneratorService_getAlgorithm()
+			throws EntityNotFoundException {
+		ScenarioGeneratorDTO sgDTO = scenarioGeneratorService.findAll()
+				.iterator().next();
+
 		List<AlgoParamDTO> apDTO = algorithmService.getAlgoParams(2);
-		
+
 		assertEquals(8, apDTO.size());
-		for(AlgoParamDTO apvd : apDTO){
-			System.out.println("AlgoParam: \n name:" 
-					+ apvd.getName() + "\n descr:"
-					+ apvd.getAlgorithm().getDescription());
+		for (AlgoParamDTO apvd : apDTO) {
+			System.out.println("AlgoParam: \n name:" + apvd.getName()
+					+ "\n descr:" + apvd.getAlgorithm().getDescription());
 		}
 	}
-	
+
 	@Test
-	public void testScenarioGeneratorService_findWithoutValues() throws EntityNotFoundException {
-		ScenarioGeneratorDTO sgDTO = scenarioGeneratorService.findAll().iterator().next();
-		
+	public void testScenarioGeneratorService_findWithoutValues()
+			throws EntityNotFoundException {
+		ScenarioGeneratorDTO sgDTO = scenarioGeneratorService.findAll()
+				.iterator().next();
+
 		List<AlgoParamDTO> apDTO = scenarioGeneratorService.getAlgoParams(1);
 
 		assertEquals(3, apDTO.size());
-		for(AlgoParamDTO apvd : apDTO){
-			System.out.println("AlgoParam: \n name:" 
-					+ apvd.getName() + "\n descr:"
-					+ apvd.getAlgorithm().getDescription());
+		for (AlgoParamDTO apvd : apDTO) {
+			System.out.println("AlgoParam: \n name:" + apvd.getName()
+					+ "\n descr:" + apvd.getAlgorithm().getDescription());
 		}
 	}
-	
+
+	@Test
+	public void testScenarioGeneratorService_findByName()
+			throws EntityNotFoundException {
+		ScenarioGeneratorDTO sgDTO = scenarioGeneratorService.findByName(
+				"scengentest", 2);
+		assertNotNull(sgDTO);
+		sgDTO = scenarioGeneratorService.findByName("scengentest", 5);
+		assertNull(sgDTO);
+	}
 }

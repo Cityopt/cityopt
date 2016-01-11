@@ -94,10 +94,10 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 	
 	@Override
 	@Transactional(readOnly = true)
-	public OptimizationSetDTO findByName(String name) {
-		OptimizationSet os = optimizationSetRepository.findByName(name);
+	public List<OptimizationSetDTO> findByName(String name) {
+		List<OptimizationSet> os = optimizationSetRepository.findByName(name);
 		if(os != null)
-			return modelMapper.map(os, OptimizationSetDTO.class);
+			return modelMapper.map(os, new TypeToken<List<OptimizationSetDTO>>() {}.getType());
 		return null;
 	}
 	
@@ -149,6 +149,17 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 		}
 		
 		optSearchConstRepository.delete(optSearchConst);
+	}
+
+	@Override
+	public OptimizationSetDTO findByName(String name, int prjid)  {
+		OptimizationSet os = optimizationSetRepository.findByNameAndProject_prjid(name,prjid);
+		
+		if(os == null) {
+			return null;
+		}
+		
+		return modelMapper.map(os, OptimizationSetDTO.class);
 	}
 	
 }
