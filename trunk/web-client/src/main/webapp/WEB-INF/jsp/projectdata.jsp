@@ -45,7 +45,7 @@
 						<table>
 							<tr>
 								<td>
-									<table width="850">
+									<table class="tablegroup" width="850">
 										<col style="width:250px">
 										<col style="width:50px">
 										<col style="width:250px">
