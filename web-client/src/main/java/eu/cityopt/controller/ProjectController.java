@@ -231,7 +231,7 @@ public class ProjectController {
     }  
     
     @RequestMapping(value="createproject", method=RequestMethod.GET)
-    public String getCreateProject(Map<String, Object> model) {
+    public String createProject(Map<String, Object> model) {
         ProjectDTO newProject = new ProjectDTO();
         model.put("newProject", newProject);
 
@@ -248,7 +248,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "createproject", method = RequestMethod.POST)
-    public String getCreateProjectPost(Map<String, Object> model,
+    public String createProjectPost(Map<String, Object> model,
             @Validated @ModelAttribute("newProject") ProjectDTO projectForm, 
             BindingResult bindingResult,
             HttpServletRequest request) {
@@ -348,7 +348,7 @@ public class ProjectController {
      */
         
     @RequestMapping(value="openproject", method=RequestMethod.GET)
-    public String getStringProjects(Map<String, Object> model)
+    public String openProject(Map<String, Object> model)
     {
     	// Fine if Administrator
     	List<ProjectDTO> projects= new ArrayList<ProjectDTO>();    			
@@ -383,7 +383,7 @@ public class ProjectController {
     }
    
     @RequestMapping(value="editproject", method=RequestMethod.GET)
-    public String getEditProject(Map<String, Object> model, HttpServletRequest request, 
+    public String editProject(Map<String, Object> model, HttpServletRequest request, 
 		@RequestParam(value="prjid", required=false) String prjid) {
        
     	if (prjid != null)
@@ -439,7 +439,7 @@ public class ProjectController {
     }
     
     @RequestMapping(value = "uploadFile", method = RequestMethod.POST)
-    public String uploadFileHandler(Map<String, Object> model,
+    public String importEnergyModel(Map<String, Object> model,
             @RequestParam(value="detailLevel", required=false) String detailLevel,
             @RequestParam("file") MultipartFile file,
             HttpServletRequest request) {
@@ -901,7 +901,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value="closeproject", method=RequestMethod.GET)
-    public String getCloseProjects(Map<String, Object> model, HttpServletRequest request)
+    public String closeProject(Map<String, Object> model, HttpServletRequest request)
     {
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -920,7 +920,7 @@ public class ProjectController {
     }	
 
     @RequestMapping(value="deleteproject",method=RequestMethod.GET)
-    public String getDeleteProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid){
+    public String deleteProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid){
     	securityAuthorization.atLeastExpert();
         
         if (prjid != null)
@@ -949,7 +949,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value="cloneproject", method=RequestMethod.GET)
-    public String CloneScenario(Map<String, Object> model, @RequestParam(value = "projectid") String projectid) {
+    public String cloneProject(Map<String, Object> model, @RequestParam(value = "projectid") String projectid) {
       
     	ProjectDTO project= this.ParseProjectIDtoProjectDTO(model, projectid);	
         securityAuthorization.atLeastAdmin();
@@ -989,7 +989,7 @@ public class ProjectController {
     }
    
     @RequestMapping(value="units", method=RequestMethod.GET)
-    public String getUnits(Model model) {
+    public String units(Model model) {
     	securityAuthorization.atLeastExpert();
         List<UnitDTO> units = unitService.findAll();
         model.addAttribute("units", units);
@@ -997,7 +997,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value="deleteunit",method=RequestMethod.GET)
-    public String getDeleteUnit(Map<String, Object> model, @RequestParam(value="unitid", required=true) String unitid) {
+    public String deleteUnit(Map<String, Object> model, @RequestParam(value="unitid", required=true) String unitid) {
     	
     	securityAuthorization.atLeastExpert();
         
@@ -1028,7 +1028,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value="createunit", method=RequestMethod.GET)
-    public String getCreateUnit(Map<String, Object> model) {
+    public String createUnit(Map<String, Object> model) {
 
     	securityAuthorization.atLeastExpert();
         
@@ -1049,7 +1049,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value="createunit", method=RequestMethod.POST)
-    public String getCreateUnitPost(UnitForm unitForm, Model model) {
+    public String createUnitPost(UnitForm unitForm, Model model) {
     	
     	securityAuthorization.atLeastExpert();
         
@@ -1083,7 +1083,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value="paramreliability", method=RequestMethod.GET)
-    public String getParamReliability(Model model){
+    public String paramReliability(Model model){
 
         securityAuthorization.atLeastExpert();
         
@@ -1091,7 +1091,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value="importdata", method=RequestMethod.GET)
-    public String getImportData(Map<String, Object> model){
+    public String importData(Map<String, Object> model){
     
     	ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null)
@@ -1104,7 +1104,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value="exportdata", method=RequestMethod.GET)
-    public String getExportData(Map<String, Object> model){
+    public String exportData(Map<String, Object> model){
 
     	ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null)
@@ -1117,7 +1117,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value="exportextparamsets", method=RequestMethod.GET)
-    public void getExportExtParamSets(Map<String, Object> model, HttpServletRequest request, 
+    public void exportExtParamSets(Map<String, Object> model, HttpServletRequest request, 
     	HttpServletResponse response) {
         	
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -1229,7 +1229,7 @@ public class ProjectController {
 	}
  
     @RequestMapping(value="projectdata", method=RequestMethod.GET)
-    public String getProjectData(Map<String, Object> model, 
+    public String projectData(Map<String, Object> model, 
             @RequestParam(value="selectedcompid", required=false) String selectedCompId,
             @RequestParam(value="selectedextparamvalsetid", required=false) String selectedExtParamValSetId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -1293,7 +1293,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value="metricdefinition",method=RequestMethod.GET)
-    public String getMetricDefinition(Map<String, Object> model,
+    public String metricDefinition(Map<String, Object> model,
             @RequestParam(value="metricid", required=false) String metricid,
             @RequestParam(value="action", required=false) String action) {
 
@@ -1617,7 +1617,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value="editmetric", method=RequestMethod.GET)
-    public String getEditMetric(Map<String, Object> model, 
+    public String editMetric(Map<String, Object> model, 
         @RequestParam(value="metricid", required=true) String metricid) {
 
         int nMetricId = Integer.parseInt(metricid);
@@ -1655,7 +1655,7 @@ public class ProjectController {
     }
    
     @RequestMapping(value="infopage", method=RequestMethod.GET)
-    public String getInfoPage(Map<String, Object> model)
+    public String infoPage(Map<String, Object> model)
     {
     	ProjectDTO project = (ProjectDTO) model.get("project");
     	if (project == null)
@@ -1683,7 +1683,7 @@ public class ProjectController {
     }	
 
     @RequestMapping(value="error", method=RequestMethod.GET)
-    public String getError(Map<String, Object> model)
+    public String error(Map<String, Object> model)
     {
         return "error";
     }	
