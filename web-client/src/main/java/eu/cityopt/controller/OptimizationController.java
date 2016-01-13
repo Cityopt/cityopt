@@ -411,7 +411,6 @@ public class OptimizationController {
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
-
         securityAuthorization.atLeastExpert_expert(project);
         
         OptimizationSetDTO optSet = (OptimizationSetDTO) model.get("optimizationset");
@@ -452,6 +451,111 @@ public class OptimizationController {
         model.put("function", function);
 
         return "editobjfunction";
+    }
+
+    @RequestMapping(value="editobjfunction", method=RequestMethod.POST)
+    public String editObjFunctionPost(ObjectiveFunctionDTO function, HttpServletRequest request, Map<String, Object> model) {
+        ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+
+        securityAuthorization.atLeastExpert_expert(project);
+        
+        try {
+            project = projectService.findByID(project.getPrjid());
+        } catch (EntityNotFoundException e1) {
+            e1.printStackTrace();
+        }
+        OptimizationSetDTO optSet = null;
+
+        if (model.containsKey("optimizationset"))
+        {
+            optSet = (OptimizationSetDTO) model.get("optimizationset");
+
+            try {
+                optSet = optSetService.findByID(optSet.getOptid());
+            } catch (EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            return "error";
+        }
+
+        if (function != null && function.getExpression() != null)
+        {
+            ObjectiveFunctionDTO oldFunc = optSet.getObjectivefunction();
+
+            oldFunc.setExpression(function.getExpression());
+            oldFunc.setName(function.getName());
+            oldFunc.setProject(project);
+
+            String optSense = request.getParameter("optsense");
+            boolean isMaximize = false;
+
+            if (optSense.equals("1"))
+            {
+                isMaximize = false;
+            }
+            else if (optSense.equals("2"))
+            {
+                isMaximize = true;
+            }
+
+            oldFunc.setIsmaximise(isMaximize);
+
+            try {
+                oldFunc = objFuncService.update(oldFunc);
+            } catch (EntityNotFoundException e1) {
+                e1.printStackTrace();
+            }
+
+            try {
+                optSet = optSetService.findByID(optSet.getOptid());
+            } catch (EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            optSet.setObjectivefunction(oldFunc);
+
+            try {
+                optSet = optSetService.save(optSet);
+            } catch(ObjectOptimisticLockingFailureException e) {
+                model.put("errorMessage", "This optimization set has been updated in the meantime, please reload.");
+            }
+        }
+
+        model.put("optimizationset", optSet);
+
+        List<OptConstraintDTO> optSearchConstraints = null;
+
+        try {
+            optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        model.put("constraints", optSearchConstraints);
+
+        List<MetricValDTO> listMetricVals = metricValService.findAll();
+        List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+
+        for (int i = 0; i < listMetricVals.size(); i++)
+        {
+            MetricValDTO metricVal = listMetricVals.get(i);
+
+            if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+            {
+                listProjectMetricVals.add(metricVal);
+            }
+        }
+        model.put("metricVals", listProjectMetricVals);
+
+        return "editoptimizationset";
     }
 
     @RequestMapping(value="cloneoptimizer", method=RequestMethod.GET)
@@ -536,96 +640,6 @@ public class OptimizationController {
         return "openoptimizationset";
     }    
 
-    @RequestMapping(value="editobjfunction", method=RequestMethod.POST)
-    public String editObjFunctionPost(ObjectiveFunctionDTO function, HttpServletRequest request, Map<String, Object> model) {
-        ProjectDTO project = (ProjectDTO) model.get("project");
-
-        if (project == null)
-        {
-            return "error";
-        }
-
-        securityAuthorization.atLeastExpert_expert(project);
-        
-        try {
-            project = projectService.findByID(project.getPrjid());
-        } catch (EntityNotFoundException e1) {
-            e1.printStackTrace();
-        }
-        OptimizationSetDTO optSet = null;
-
-        if (model.containsKey("optimizationset"))
-        {
-            optSet = (OptimizationSetDTO) model.get("optimizationset");
-
-            try {
-                optSet = optSetService.findByID(optSet.getOptid());
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        else
-        {
-            return "error";
-        }
-
-        if (function != null && function.getExpression() != null)
-        {
-            ObjectiveFunctionDTO oldFunc = optSet.getObjectivefunction();
-
-            oldFunc.setExpression(function.getExpression());
-            oldFunc.setName(function.getName());
-            oldFunc.setProject(project);
-
-            try {
-                oldFunc = objFuncService.update(oldFunc);
-            } catch (EntityNotFoundException e1) {
-                e1.printStackTrace();
-            }
-
-            try {
-                optSet = optSetService.findByID(optSet.getOptid());
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            optSet.setObjectivefunction(oldFunc);
-
-            try {
-                optSet = optSetService.save(optSet);
-            } catch(ObjectOptimisticLockingFailureException e) {
-                model.put("errorMessage", "This optimization set has been updated in the meantime, please reload.");
-            }
-        }
-
-        model.put("optimizationset", optSet);
-
-        List<OptConstraintDTO> optSearchConstraints = null;
-
-        try {
-            optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        model.put("constraints", optSearchConstraints);
-
-        List<MetricValDTO> listMetricVals = metricValService.findAll();
-        List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
-
-        for (int i = 0; i < listMetricVals.size(); i++)
-        {
-            MetricValDTO metricVal = listMetricVals.get(i);
-
-            if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
-            {
-                listProjectMetricVals.add(metricVal);
-            }
-        }
-        model.put("metricVals", listProjectMetricVals);
-
-        return "editoptimizationset";
-    }
     @RequestMapping(value="deleteconstraint", method=RequestMethod.GET)
     public String deleteConstraint(Map<String, Object> model, @RequestParam(value="constraintid", required=true) String constraintId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
