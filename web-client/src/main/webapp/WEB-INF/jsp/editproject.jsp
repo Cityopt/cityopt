@@ -28,7 +28,10 @@
 		<td width=30></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:100%;width:1000px;overflow:auto">
-			<table style="width:900px">
+			<table style="width:1000px">
+				<col style="width:500px">
+				<col style="width:500px">
+			
 				<tr>
 					<td>
 						<h2 class="error">${errorMessage}</h2>
@@ -43,33 +46,33 @@
 				</tr>				
 				
 				<tr>
-					<td>
+					<td valign="top">
 						<table>
 							<form:form method="post" action="editproject.html?action=update" modelAttribute="project">
 							<tr>
 								<!--Project name:-->
 								<c:set var="tooltip_name"><spring:message code="tooltip_edit_project_name"/></c:set>
 								<td><spring:message code="project_name"/>:</td>
-								<td><form:input type="text" path="name" title="${tooltip_name}" style="width:250px"/></td>
+								<td><form:input type="text" path="name" title="${tooltip_name}" style="width:300px"/></td>
 							</tr>
 							<tr>
 							
 								<!-- Location: -->
 								<c:set var="tooltip_location"><spring:message code="tooltip_create_project_location"/></c:set>						
 								<td><spring:message code="location"/>:</td>
-								<td><form:input type="text" path="location" title="${tooltip_location}" style="width:250px"/></td>
+								<td><form:input type="text" path="location" title="${tooltip_location}" style="width:300px"/></td>
 							</tr>
 							<tr>
 								<!-- Design target: -->
 								<c:set var="tooltip_designtarget"><spring:message code="tooltip_edit_project_designtarget"/></c:set>						
 								<td><spring:message code="design_target"/>:</td>
-								<td><form:input type="text" path="designtarget" title="${tooltip_designtarget}" style="width:250px"/></td>
+								<td><form:input type="text" path="designtarget" title="${tooltip_designtarget}" style="width:300px"/></td>
 							</tr>
 							<tr>
 								<!-- Description -->
 								<c:set var="tooltip_description"><spring:message code="tooltip_edit_project_description"/></c:set>						
 								<td><spring:message code="description"/>:</td>
-								<td><form:textarea title="${tooltip_description}" type="text" rows="3" path="description"  style="width:250px"></form:textarea></td>
+								<td><form:textarea title="${tooltip_description}" type="text" rows="3" path="description"  style="width:300px"></form:textarea></td>
 							</tr>
 							<tr>
 								<td></td>								
@@ -78,7 +81,7 @@
 								<td><input type="submit" title="${tooltip_save}" value=<spring:message code="save_project"/> style="width:120px"></td>
 							</tr>
 							</form:form>
-							<tr height=20></tr>	
+							<tr height=30></tr>	
 							<tr>
 								<td>Loaded energy model:</td>
 								<td>${loadedEnergyModel}</td>
@@ -128,46 +131,42 @@
 	        							 </c:choose>
 	       							</td>
 	   							</tr>	
-						</table>
+								<tr height=30></tr>	
+								<tr>
+									<!--Input parameters -->
+									<td><spring:message code="input_and_external_parameters"/></td>
+								
+									<!-- Set -->
+									<c:set var="tooltip_set_input_parameter"><spring:message code="tooltip_edit_project_set_input_parameter"/></c:set>
+									<td><a href="projectparameters.html"><button type="button" title="${tooltip_set_input_parameter}" style="width:120px">
+									<spring:message code="set"/></button></a></td>
+								</tr>
+								<tr>
+									<!-- Output variables-->
+									<td><spring:message code="output_variables"/></td>
+								
+									<!-- Set -->
+									<c:set var="tooltip_outputparameters"><spring:message code="tooltip_edit_project_set_output_parameters"/></c:set>
+									<td>
+										<a href="outputvariables.html"><button type="button" title="${tooltip_outputparameters}" style="width:120px">
+										<spring:message code="set"/></button></a>
+									</td>
+								</tr>
+						</table>	
 					</td>
 					<td align="right">
 						<img style="width:500px" src="overview.png" border="1"/>
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2">
-						<table>
-							<col style="width:150px">
-							<col style="width:150px">
-							<col style="width:600px">
-							<tr>
-								<!--Input parameters -->
-								<td><spring:message code="input_and_external_parameters"/></td>
-								
-								<!-- Set -->
-								<c:set var="tooltip_set_input_parameter"><spring:message code="tooltip_edit_project_set_input_parameter"/></c:set>
-								<td><a href="projectparameters.html"><button type="button" title="${tooltip_set_input_parameter}" style="width:120px">
-								<spring:message code="set"/></button></a></td>
-								
-								<!-- Close project -->
-								<c:set var="tooltip_closeproject"><spring:message code="tooltip_edit_project_close_project"/></c:set>
-								<td align="right"><a href="closeproject.html"><button type="button"  title="${tooltip_closeproject}" style="width:120px"
-								 onclick="return confirm('<spring:message code="confirm_closing_project"/>')">								
-								<spring:message code="close_project"/></button></a></td>
-							</tr>									
-							<tr>
-								<!-- Output variables-->
-								<td><spring:message code="output_variables"/></td>
-								
-								<!-- Set -->
-								<c:set var="tooltip_outputparameters"><spring:message code="tooltip_edit_project_set_output_parameters"/></c:set>
-								<td><a href="outputvariables.html"><button type="button" title="${tooltip_outputparameters}" style="width:120px">
-								<spring:message code="set"/></button></a></td>
-								<td align="right"></td>
-							</tr>
-						</table>
+					<td>
+						<!-- Close project -->
+						<c:set var="tooltip_closeproject"><spring:message code="tooltip_edit_project_close_project"/></c:set>
+						<td align="right"><a href="closeproject.html"><button type="button"  title="${tooltip_closeproject}" style="width:120px"
+						 onclick="return confirm('<spring:message code="confirm_closing_project"/>')">								
+						<spring:message code="close_project"/></button></a>
 					</td>
-				</tr>
+				</tr>									
 			</table>
 			</div>
 		</td>
