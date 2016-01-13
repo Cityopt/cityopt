@@ -31,6 +31,15 @@ public class InfoController {
 	public String ImportDataInfo(){		
 		return "importdata_info";
 	}
-	
+
+	@RequestMapping( value="editproject_info", method=RequestMethod.GET)
+	public String EditProjectInfo(){		
+		return "editproject_info";
+	}
+
+	@RequestMapping( value="projectparameters_info", method=RequestMethod.GET)
+	public String ProjectParametersInfo(){		
+		return "projectparameters_info";
+	}
 
 }

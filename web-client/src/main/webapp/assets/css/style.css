@@ -96,6 +96,25 @@ img.alignright {
 	margin: 4px 0px 5px 10px;
 }
 
+li {
+	margin-top: 1em;
+	margin-bottom: 1em;
+	margin-right: 10%;
+}
+
+ul {
+	margin-top: 1em;
+	margin-bottom: 1em;
+	margin-right: 10%;
+	color: #4D4D4D;
+}
+
+h1.info {
+	margin-left:5%;
+	margin-right:5%;
+	margin-background: #99ddff;
+}
+
 div.info{
 	border-style: medium;
 	border-color: black;
@@ -105,7 +124,7 @@ div.info{
 	margin-top: 5%;
 	margin-right: 5%;
 	margin-bottom: 10%;
-	outline: #064861 inset thick;
+	outline: #064861 inset;
 	font: Blanch;
 	color: #4D4D4D;
 	background-color: #ffffff;

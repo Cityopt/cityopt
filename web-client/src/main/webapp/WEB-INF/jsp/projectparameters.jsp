@@ -21,7 +21,7 @@
 
 <script>
     function openInfoWindow() {
-    	   window.open("createproject_info.html",'Info: Create Project','width=600,height=800');
+    	   window.open("projectparameters_info.html",'Project parameters info','width=600,height=600');
     }
 </script>
 

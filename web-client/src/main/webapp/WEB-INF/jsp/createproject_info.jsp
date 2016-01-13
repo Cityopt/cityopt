@@ -58,7 +58,7 @@ h1{
 
 <div class="yellow"><h1 class="info">CityOpt: Info</h1></div>		
 	<div>	
-	<table class="InfoVisual" style="height: 100%; width: 100%">
+	<table class="InfoVisual">
 	
 	<tr><td><td></tr>	
 	</table>	
@@ -86,7 +86,7 @@ h1{
 			text button obviously is where this information is given.</p>
 	</div>
 
-	<table class="InfoVisual" style="height: 100%; width: 100%">
+	<table class="InfoVisual">
 	
 	<tr><td><td><tr>
 	
