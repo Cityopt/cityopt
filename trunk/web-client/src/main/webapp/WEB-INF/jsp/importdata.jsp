@@ -12,7 +12,7 @@
 
 <script>
     function openInfoWindow() {
-    	   window.open("importdata_info.html",'Info: Create Project','width=600,height=800');
+    	   window.open("importdata_info.html",'Info: Import data','width=500,height=600,scrollbars=yes');
     }
 </script>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />

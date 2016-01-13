@@ -11,9 +11,12 @@
 <title>CityOpt <spring:message code="editproject"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <script>
-    function openInfoWindow() {
-    	   window.open("infopage.html",'Model info','width=600,height=800');
+    function openModelInfoWindow() {
+    	   window.open("infopage.html",'Model info','width=600,height=600,scrollbars=yes');
     }
+    function openInfoWindow() {
+ 	   window.open("editproject_info.html",'Edit project info','width=600,height=600,scrollbars=yes');
+ 	}
 </script>
 </head>
 <body>
@@ -85,7 +88,7 @@
 									<tr>
 										<td></td>
 										<td>
-												<button type="button" onmousedown="openInfoWindow()">
+												<button type="button" onmousedown="openModelInfoWindow()">
 													Show model info		
 												</button> 
 										</td>
