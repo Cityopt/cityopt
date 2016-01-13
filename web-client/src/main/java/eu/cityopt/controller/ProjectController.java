@@ -29,8 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -53,9 +51,13 @@ import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
+import eu.cityopt.DTO.ObjectiveFunctionDTO;
+import eu.cityopt.DTO.ObjectiveFunctionResultDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.ScenarioGeneratorDTO;
+import eu.cityopt.DTO.SimulationModelDTO;
 import eu.cityopt.DTO.TimeSeriesDTOX;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
@@ -1681,6 +1683,36 @@ public class ProjectController {
 
         return "infopage";
     }	
+
+	@RequestMapping("overview.png")
+	public void renderOverviewImage(Map<String, Object> model, OutputStream stream) throws Exception {
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return;
+		}
+		securityAuthorization.atLeastGuest_guest(project);
+		
+		Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
+        
+        if (nSimulationModelId == null)
+        {
+        	return;
+        }
+        
+        SimulationModelDTO simModel = simModelService.findByID(nSimulationModelId);
+        
+        if (simModel != null)
+        {
+        	byte[] imageBlob = simModel.getImageblob();
+         
+        	if (imageBlob != null)
+        	{
+        		stream.write(imageBlob);
+        	}
+        }
+	}
 
     @RequestMapping(value="error", method=RequestMethod.GET)
     public String error(Map<String, Object> model)
