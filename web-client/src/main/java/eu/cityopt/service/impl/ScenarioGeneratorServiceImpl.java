@@ -617,6 +617,7 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 		return last;
 	}
 
+	@Transactional(readOnly=true)
 	@Override
 	public ScenarioGeneratorDTO findByName(String name,int prjid) {		
 		ScenarioGenerator sg = scenarioGeneratorRepository.findByNameAndProject_prjid(name,prjid);
@@ -626,6 +627,7 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 			return modelMapper.map(sg, ScenarioGeneratorDTO.class);		
 	}
 
+	@Transactional(readOnly=true)
 	@Override
 	public List<ScenarioGeneratorDTO> findByName(String name) {
 		List<ScenarioGenerator> sg = scenarioGeneratorRepository.findByName(name);

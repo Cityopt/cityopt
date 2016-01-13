@@ -151,6 +151,7 @@ public class OptimizationSetServiceImpl implements OptimizationSetService {
 		optSearchConstRepository.delete(optSearchConst);
 	}
 
+	@Transactional(readOnly=true)
 	@Override
 	public OptimizationSetDTO findByName(String name, int prjid)  {
 		OptimizationSet os = optimizationSetRepository.findByNameAndProject_prjid(name,prjid);
