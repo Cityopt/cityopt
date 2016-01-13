@@ -150,13 +150,23 @@
 							</tr>
 							<tr>
 								<td></td>
-								<!-- Optimization sense: Maximize/Minimize -->
+								<!-- Optimization sense: Minimize / Maximize -->
 								<td colspan="3"><spring:message code="optimization_sense"/>: 
-									<c:choose>
-										<c:when test="function.ismaximise"><spring:message code="maximize"/></c:when>
-										<c:otherwise><spring:message code="minimize"/></c:otherwise>
-									</c:choose>
+									
+									<select name="optsense" id="optsense" size="1">
+										<c:choose>
+											<c:when test="${function.ismaximise}">
+												<option value="1" ><spring:message code="minimize"/></option>
+												<option value="2" selected><spring:message code="maximize"/></option>
+											</c:when>
+											<c:otherwise>
+												<option value="1" selected><spring:message code="minimize"/></option>
+												<option value="2"><spring:message code="maximize"/></option>
+											</c:otherwise>
+										</c:choose>
+									</select>
 								</td>
+						
 								<td></td>
 							</tr>	
 							<tr>
