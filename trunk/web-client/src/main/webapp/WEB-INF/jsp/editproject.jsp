@@ -27,7 +27,7 @@
 		</td>
 		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:500px;width:1000px;overflow:auto">
+			<div style="overflow:scroll;height:100%;width:1000px;overflow:auto">
 			<table style="width:900px">
 				<tr>
 					<td>
@@ -131,7 +131,7 @@
 						</table>
 					</td>
 					<td align="right">
-						<img src="assets/img/test_map.jpg"/>
+						<img style="width:500px" src="overview.png" border="1"/>
 					</td>
 				</tr>
 				<tr>
