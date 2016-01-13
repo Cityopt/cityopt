@@ -456,7 +456,7 @@ public class OptimizationController {
 
     @RequestMapping(value="cloneoptimizer", method=RequestMethod.GET)
     public String cloneOptimizer(Map<String, Object> model, 
-		@RequestParam(value = "optimizerid") String optimizerid,
+		@RequestParam(value="optimizerid") String optimizerid,
     	@RequestParam(value="optsettype", required=false) String optsettype) {
 
 	    ProjectDTO project = (ProjectDTO) model.get("project");
@@ -466,15 +466,14 @@ public class OptimizationController {
 			return "error";
 		}
 
-		securityAuthorization.atLeastStandard_standard(project);
-
 		if (optsettype != null)
 		{
 	        securityAuthorization.atLeastExpert_expert(project);
 	        OptimizationSetDTO optSet = null;
 	        ScenarioGeneratorDTO gaSet = null;
 	        String name = "";
-	        int noptimizerid = Integer.parseInt(optimizerid);		
+	        int noptimizerid = Integer.parseInt(optimizerid);
+	        Set<OpenOptimizationSetDTO> optSets = null;
 	        
 	        if (optsettype.equals("db"))
 			{
@@ -495,25 +494,17 @@ public class OptimizationController {
 	        	
 	        	name = gaSet.getName();
 	        }
-        
-	        Set<OpenOptimizationSetDTO> optSets = null;
-	       
-	        try {
-	            optSets = projectService.getSearchAndGAOptimizationSets(project.getPrjid());
-	        } catch (EntityNotFoundException e) {
-	            e.printStackTrace();
-	        }
 	        
 	        String clonename = name+"(copy)";
 	        int i=0;
 	        
-	        while(optSetService.findByName(clonename) != null) {					
-	            i++;
-	            clonename=name+"(copy)("+i+")";				
-	        }
-        
 	        if (optsettype.equals("db"))
 	        {
+		        while(optSetService.findByName(clonename, project.getPrjid()) != null) {					
+		            i++;
+		            clonename=name+"(copy)("+i+")";				
+		        }
+	        
 	        	try {
 	        		OptimizationSetDTO cloneoptimisation = copyService.copyOptimizationSet(noptimizerid, clonename, true);
 	            	cloneoptimisation=optSetService.save(cloneoptimisation);	
@@ -522,7 +513,11 @@ public class OptimizationController {
 		            e1.printStackTrace();
 		        }
 	        } else if (optsettype.equals("ga")) {
-	        	try {
+	            while(scenGenService.findByName(clonename, project.getPrjid()) != null) {					
+		            i++;
+		            clonename=name+"(copy)("+i+")";				
+		        }
+	            try {
 	        		ScenarioGeneratorDTO newScenGen = copyService.copyScenarioGenerator(noptimizerid, clonename);
 	        		newScenGen = scenGenService.save(newScenGen);					
 		        } catch (EntityNotFoundException e1) {
@@ -742,6 +737,16 @@ public class OptimizationController {
         {
             if (nType == 1)
             {
+            	if (optSetService.findByName(openOptSet.getName(), project.getPrjid()) != null)
+            	{
+            		OpenOptimizationSetDTO newOpenOptSet = new OpenOptimizationSetDTO();
+            	    newOpenOptSet.setName(openOptSet.getName());
+            	    newOpenOptSet.setOptSetType(openOptSet.getOptSetType());
+            		model.put("openoptimizationset", newOpenOptSet);
+            	    model.put("success",false);
+            		return "createoptimizationset";
+            	}
+            	
                 OptimizationSetDTO optSet = new OptimizationSetDTO();
                 optSet.setName(openOptSet.getName());
                 // Add description?
@@ -784,7 +789,17 @@ public class OptimizationController {
             }
             else if (nType == 2)
             {
-                ScenarioGeneratorDTO scenGen = scenGenService.create(project.getPrjid(), openOptSet.getName());
+            	if (scenGenService.findByName(openOptSet.getName(), project.getPrjid()) != null)
+            	{
+            		OpenOptimizationSetDTO newOpenOptSet = new OpenOptimizationSetDTO();
+            	    newOpenOptSet.setName(openOptSet.getName());
+            	    newOpenOptSet.setOptSetType(openOptSet.getOptSetType());
+            		model.put("openoptimizationset", newOpenOptSet);
+            	    model.put("success",false);
+            		return "createoptimizationset";
+            	}
+            	
+            	ScenarioGeneratorDTO scenGen = scenGenService.create(project.getPrjid(), openOptSet.getName());
 
                 Integer nDefaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 

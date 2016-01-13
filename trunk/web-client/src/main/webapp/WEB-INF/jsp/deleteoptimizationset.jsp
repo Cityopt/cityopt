@@ -18,7 +18,7 @@
 			<td><%@ include file="mainmenu.inc"%></td>
 			<td width="30"></td>
 			<td valign="top">
-			<div style="overflow:scroll;height:400px;width:600px;overflow:auto">
+			<div style="overflow:scroll;height:100%;width:800px;overflow:auto">
 			<form method="get" action="OptimizationController">
 			<h2>Delete optimization set</h2>
 			<table class="tablestyle" width="500" border="1">

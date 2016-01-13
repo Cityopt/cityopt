@@ -27,15 +27,28 @@
 		<table>
 			<col style="width: 400px;">
 			<col style="width: 450px;">
-									
+				
+			<c:choose>
+   				<c:when test="${success!=null && success==true}">
+     			   <h2 class="successful">Optimization set created</h2>
+     			   <c:set var="tooltip_next"><spring:message code="tooltip_next"/></c:set>
+     			   <a href='editoptimizationset.html'><button style="width:100px" class="rewardGreen" type="button" value="Next" title="${tooltip_next}">
+     			   <spring:message code="next"/></button></a>
+     		</c:when>
+           		<c:when test="${success!=null && success==false}">
+           			   <h2 class="error">Name already exists</h2>
+           		</c:when>            	
+       		</c:choose>		
+       							
 			<!--Title Create database optimization set-->
 			<tr>
 			<td colspan="2"><h2><spring:message code="create_optimization_set"/></h2></td>
-			<td align="right"><div class="round-button">
-								<div class="round-button-circle" onclick="openInfoWindow()">
-									<a>?</a>		
-								</div> 
-							</div></td>
+			<td align="right">
+				<div class="round-button">
+					<div class="round-button-circle" onclick="openInfoWindow()">
+						<a>?</a>		
+					</div> 
+				</div></td>
 			</tr>
 			
 			<tr>
