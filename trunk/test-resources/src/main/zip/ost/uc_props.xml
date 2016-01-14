@@ -17,9 +17,9 @@
       <property type="constant" name="A3_Solarth_m2" value="0.0" unit="m2"/>
       <property type="constant" name="COP_HPcool" value="2.0"/>
       <property type="constant" name="A10_Storage_Vol" value="0.0" unit="m3"/>
+      <property type="constant" name="A2_Storage_Vol" value="0.0" unit="m3"/>
       <property type="constant" name="A9_Storage_Vol" value="0.0" unit="m3"/>
       <property type="constant" name="A14_Storage_Vol" value="0.0" unit="m3"/>
-      <property type="constant" name="A2Storage_Vol" value="0.0" unit="m3"/>
       <property type="constant" name="A4_Storage_Vol" value="0.0" unit="m3"/>
       <property type="constant" name="A14_pipe_len" value="7000.0" unit="m"/>
       <property type="constant" name="A4_pipe_len" value="4500.0" unit="m"/>
@@ -114,8 +114,8 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
         </node>
         <node name="274" moduleName="274_15" label="" isUC="True" type="PV2@1">
-          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
           <property type="constant" name="beta" value="0.003"/>
           <property type="constant" name="equation" value="1"/>
@@ -410,8 +410,8 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
         </node>
         <node name="274" moduleName="274_16" label="" isUC="True" type="PV2@1">
-          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
           <property type="constant" name="beta" value="0.003"/>
           <property type="constant" name="equation" value="1"/>
@@ -690,8 +690,8 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
         </node>
         <node name="274" moduleName="274_17" label="" isUC="True" type="PV2@1">
-          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
           <property type="constant" name="beta" value="0.003"/>
           <property type="constant" name="equation" value="1"/>
@@ -1002,8 +1002,8 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
         </node>
         <node name="274" moduleName="274_18" label="" isUC="True" type="PV2@1">
-          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
           <property type="constant" name="beta" value="0.003"/>
           <property type="constant" name="equation" value="1"/>
@@ -1282,8 +1282,8 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
         </node>
         <node name="274" moduleName="274_19" label="" isUC="True" type="PV2@1">
-          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
           <property type="constant" name="beta" value="0.003"/>
           <property type="constant" name="equation" value="1"/>
@@ -1562,8 +1562,8 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
         </node>
         <node name="274" moduleName="274_20" label="" isUC="True" type="PV2@1">
-          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
           <property type="constant" name="beta" value="0.003"/>
           <property type="constant" name="equation" value="1"/>
@@ -1861,8 +1861,8 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
         </node>
         <node name="274" moduleName="274_21" label="" isUC="True" type="PV2@1">
-          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
           <property type="constant" name="beta" value="0.003"/>
           <property type="constant" name="equation" value="1"/>
@@ -2141,8 +2141,8 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
         </node>
         <node name="274" moduleName="274_22" label="" isUC="True" type="PV2@1">
-          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
           <property type="constant" name="beta" value="0.003"/>
           <property type="constant" name="equation" value="1"/>
@@ -2421,8 +2421,8 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
         </node>
         <node name="274" moduleName="274_23" label="" isUC="True" type="PV2@1">
-          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
           <property type="constant" name="beta" value="0.003"/>
           <property type="constant" name="equation" value="1"/>
@@ -2733,8 +2733,8 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
         </node>
         <node name="274" moduleName="274_24" label="" isUC="True" type="PV2@1">
-          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
           <property type="constant" name="beta" value="0.003"/>
           <property type="constant" name="equation" value="1"/>
@@ -3142,8 +3142,8 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
         </node>
         <node name="274" moduleName="274_25" label="" isUC="True" type="PV2@1">
-          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
           <property type="constant" name="beta" value="0.003"/>
           <property type="constant" name="equation" value="1"/>
@@ -3454,8 +3454,8 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
         </node>
         <node name="274" moduleName="274_26" label="" isUC="True" type="PV2@1">
-          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
           <property type="constant" name="beta" value="0.003"/>
           <property type="constant" name="equation" value="1"/>
@@ -3782,8 +3782,8 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
         </node>
         <node name="274" moduleName="274_27" label="" isUC="True" type="PV2@1">
-          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
           <property type="constant" name="beta" value="0.003"/>
           <property type="constant" name="equation" value="1"/>
@@ -3999,7 +3999,7 @@
         </node>
       </node>
       <node name="CHPICE02" moduleName="CHPICE02" label="" isUC="True" type="CHP microGT_Thermal_controlled@1">
-        <property type="expression" name="Minimum_Duty" value="CHP_Th_Power*0,05" unit="kW"/>
+        <property type="expression" name="Minimum_Duty" value="CHP_Th_Power*0.05" unit="kW"/>
         <property type="constant" name="Electrical_Power_Rating" value="100.0" unit="kW"/>
         <property type="expression" name="Thermal_Power_Rating" value="CHP_Th_Power" unit="kW"/>
         <property type="constant" name="Shutdown_Time" value="5.0" unit="min"/>
@@ -4185,8 +4185,8 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
         </node>
         <node name="274" moduleName="274_28" label="" isUC="True" type="PV2@1">
-          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+          <property type="constant" name="n_module" value="0.17"/>
           <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
           <property type="constant" name="beta" value="0.003"/>
           <property type="constant" name="equation" value="1"/>
@@ -4489,8 +4489,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274_12" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
@@ -4769,8 +4769,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274_13" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
@@ -5049,8 +5049,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274_7" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
@@ -5329,8 +5329,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274_8" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
@@ -5609,8 +5609,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274_4" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
@@ -5889,8 +5889,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274_6" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
@@ -6169,8 +6169,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274_10" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
@@ -6449,8 +6449,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274_11" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
@@ -6729,8 +6729,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274_9" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
@@ -7090,8 +7090,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274_2" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
@@ -7370,8 +7370,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
@@ -7650,8 +7650,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274_1" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
@@ -8012,8 +8012,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274_5" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
@@ -8420,8 +8420,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274_3" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
@@ -8782,8 +8782,8 @@
         <property type="expression" name="MULTIPLYER_GAIN" value="KaupunkiPientalo_m2"/>
       </node>
       <node name="274" moduleName="274_14" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A2" value="SolarPV_m2" unit="m2"/>
+        <property type="constant" name="n_module" value="0.17"/>
         <property type="expression" name="A1" value="SolarPV_m2" unit="m2"/>
         <property type="constant" name="beta" value="0.003"/>
         <property type="constant" name="equation" value="1"/>
