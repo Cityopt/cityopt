@@ -112,6 +112,7 @@ import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.AlgoParamValForm;
 import eu.cityopt.web.ExtParamValSetForm;
 import eu.cityopt.web.ModelParamForm;
+import eu.cityopt.web.OptimizationRun;
 import eu.cityopt.web.UserSession;
 
 /**
@@ -223,6 +224,9 @@ public class OptimizationController {
     @Autowired
     SecurityAuthorization securityAuthorization;
 
+    @Autowired
+    ControllerService controllerService;
+    
     @RequestMapping(value="createobjfunction",method=RequestMethod.GET)
     public String createObjFunction(Map<String, Object> model,
         @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
@@ -2229,11 +2233,8 @@ public class OptimizationController {
         return "showresults";
     }
 
-    @RequestMapping(value="runmultioptimizationset",method=RequestMethod.GET)
-    public String runMultiOptimizationSet(Map<String, Object> model,
-            @RequestParam(value="optsetid", required=false) String optsetid,
-            @RequestParam(value="optsettype", required=false) String optsettype,
-            @RequestParam(value="action", required=false) String action) {
+    @RequestMapping(value="garuns", method=RequestMethod.GET)
+    public String runningGeneticOptimizations(Map<String, Object> model) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -2244,67 +2245,31 @@ public class OptimizationController {
 
 		securityAuthorization.atLeastExpert_expert(project);
 
-		if (optsettype != null && action != null)
-        {
-            if (optsettype.equals("db"))
-            {
-                UserSession userSession = (UserSession) model.get("usersession");
+		controllerService.updateGARuns(model);
 
-                if (userSession == null)
-                {
-                    userSession = new UserSession();
-                }
-
-                int nOptSetID = Integer.parseInt(optsetid);
-
-                if (action.equals("add"))
-                {				
-                    userSession.addSelectedOptSetId(nOptSetID);
-                }
-                else if (action.equals("remove"))
-                {
-                    userSession.removeSelectedOptSetId(nOptSetID);
-                }
-
-                model.put("usersession", userSession);
-            }
-            else
-            {
-                UserSession userSession = (UserSession) model.get("usersession");
-
-                if (userSession == null)
-                {
-                    userSession = new UserSession();
-                }
-
-                int nScenGenId = Integer.parseInt(optsetid);
-
-                if (action.equals("add"))
-                {				
-                    userSession.addSelectedScenGenId(nScenGenId);
-                }
-                else if (action.equals("remove"))
-                {
-                    userSession.removeSelectedScenGenId(nScenGenId);
-                }
-
-                model.put("usersession", userSession);
-
-            }
-        }
-
-        Set<OpenOptimizationSetDTO> optSets = null;
-
-        try {
-            optSets = projectService.getSearchAndGAOptimizationSets(project.getPrjid());
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-        model.put("openoptimizationsets", optSets);
-
-        return "runmultioptimizationset";
+		return "garuns";
     }
 
+    @RequestMapping(value="abortgarun", method=RequestMethod.GET)
+    public String abortGARun(Map<String, Object> model,
+    	@RequestParam(value="id", required=true) int id) {
+
+        ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+
+		securityAuthorization.atLeastExpert_expert(project);
+
+		scenarioGenerationService.cancelOptimisation(id);		
+		
+		controllerService.updateGARuns(model);
+
+		return "garuns";
+    }
+		
     @RequestMapping(value="editsgobjfunction", method=RequestMethod.GET)
     public String editSGObjFunction(ModelMap model,
             @RequestParam(value="objid", required=false) Integer objid,

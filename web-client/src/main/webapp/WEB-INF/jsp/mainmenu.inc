@@ -316,9 +316,7 @@
 		<tr>
 			<td></td>
 			<td>
-				<!-- Run multi-optimization set -->
-				<a href="runmultioptimizationset.html">
-				<spring:message code="run_multi_optimization_set"/></a>
+				<a href="garuns.html">Running genetic optimizations</a>
 			</td>
 		</tr>
 	</c:when>
@@ -333,8 +331,7 @@
 		<tr>
 			<td></td>
 			<td>
-				<!-- Run multi-optimization set -->
-				<spring:message code="run_multi_optimization_set"/>
+				Running genetic optimizations
 			</td>
 		</tr>
 	</c:otherwise>

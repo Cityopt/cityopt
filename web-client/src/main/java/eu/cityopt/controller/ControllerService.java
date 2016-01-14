@@ -1,5 +1,7 @@
 package eu.cityopt.controller;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +34,10 @@ import eu.cityopt.service.ProjectService;
 import eu.cityopt.service.SimulationModelService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
+import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.sim.service.ScenarioGenerationService.RunInfo;
+import eu.cityopt.web.OptimizationRun;
 
 
 @Controller
@@ -76,7 +81,10 @@ public class ControllerService {
 
 	    @Autowired
 	    SimulationModelService simModelService;
-	    
+
+	    @Autowired
+	    ScenarioGenerationService scenarioGenerationService;
+
 		// Finds project By model and project id;
 	     
 	    public AppUserDTO FindAuthenticatedUser(Authentication authentication) throws Exception{
@@ -339,6 +347,26 @@ public class ControllerService {
 	        // This resets the language setting also
 	        //request.getSession().invalidate();
 	    }
-	    
+
+	    public void updateGARuns(Map<String, Object> model) {
+		    Map<Integer, RunInfo> mapRuns = scenarioGenerationService.getRunningOptimisations();
+			List<OptimizationRun> listOptRuns = new ArrayList<OptimizationRun>();
+			Iterator iter = mapRuns.entrySet().iterator();
+		    
+			while (iter.hasNext()) {
+		        Map.Entry pair = (Map.Entry) iter.next();
+		        RunInfo runInfo = (RunInfo) pair.getValue();
+		        
+		        OptimizationRun optRun = new OptimizationRun();
+		        optRun.setId((int)pair.getKey());
+		        optRun.setStarted(runInfo.getStarted());
+		        optRun.setDeadline(runInfo.getDeadline());
+		        optRun.setStatus(runInfo.getStatus());
+		        
+		        listOptRuns.add(optRun);
+		    }
+	
+			model.put("optRuns", listOptRuns);
+	    }
 	}
 
