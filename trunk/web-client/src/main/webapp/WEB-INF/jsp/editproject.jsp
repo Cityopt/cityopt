@@ -134,13 +134,14 @@
 								<tr height=30></tr>	
 								<tr>
 									<!--Input parameters -->
-									<td><spring:message code="input_and_external_parameters"/></td>
+									<td><spring:message code="input_parameters"/></td>
 								
 									<!-- Set -->
 									<c:set var="tooltip_set_input_parameter"><spring:message code="tooltip_edit_project_set_input_parameter"/></c:set>
 									<td><a href="projectparameters.html"><button type="button" title="${tooltip_set_input_parameter}" style="width:120px">
 									<spring:message code="set"/></button></a></td>
 								</tr>
+								<tr height=3></tr>	
 								<tr>
 									<!-- Output variables-->
 									<td><spring:message code="output_variables"/></td>
@@ -151,6 +152,13 @@
 										<a href="outputvariables.html"><button type="button" title="${tooltip_outputparameters}" style="width:120px">
 										<spring:message code="set"/></button></a>
 									</td>
+								</tr>
+								<tr height=3></tr>	
+								<tr>
+									<td><spring:message code="external_parameters"/></td>
+								
+									<td><a href="extparams.html"><button type="button" title="" style="width:120px">
+									<spring:message code="set"/></button></a></td>
 								</tr>
 						</table>	
 					</td>

@@ -799,7 +799,7 @@ public class ProjectController {
             }
         } else {
         }
-        return "projectparameters";
+        return "extparams";
     }
 
     @RequestMapping(value = "exportextparam", method = RequestMethod.GET)
