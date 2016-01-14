@@ -123,7 +123,7 @@
 										</tr>
 										<tr>
 											<td align="right">
-												<a href="editproject.html"><button type="button"><spring:message code="close"/></button></a>
+												<a href="editproject.html"><button type="button"><spring:message code="back"/></button></a>
 										    </td>
 										</tr>							      
 									</table>

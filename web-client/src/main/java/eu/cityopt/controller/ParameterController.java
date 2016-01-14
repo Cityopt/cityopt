@@ -132,11 +132,25 @@ public class ParameterController {
 		model.put("project", project);
 
 		controllerService.SetUpSelectedComponent(model, selectedCompId);
-        controllerService.getProjectExternalParameterValues(model,project);        
         controllerService.getComponentAndExternalParamValues(model,project);        
         return "projectparameters";
     }
-        
+
+    @RequestMapping(value="extparams", method=RequestMethod.GET)
+    public String getExtParams(Map<String, Object> model) {
+     	
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+		
+    	if (controllerService.NullCheck(project)) {return "error";}
+		
+    	securityAuthorization.atLeastGuest_guest(project);
+		model.put("project", project);
+
+        controllerService.getProjectExternalParameterValues(model,project);        
+        controllerService.getComponentAndExternalParamValues(model,project);        
+        return "extparams";
+    }
+
     @RequestMapping(value="selectextparamset", method=RequestMethod.GET)
     public String getSelectExtParamSet(Map<String, Object> model, 
             @RequestParam(value="selectedextparamsetid", required=false) String selectedExtParamSetId) {
@@ -183,7 +197,7 @@ public class ParameterController {
             
             controllerService.getComponentAndExternalParamValues(model,project);   
                         
-            return "projectparameters";
+            return "extparams";
         }
 
         List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
@@ -741,25 +755,12 @@ public class ParameterController {
             }
         }
 
-        List<ExtParamValDTO> extParamVals = null;
-        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-        
-        if (defaultExtParamValSetId != null)
-        {
-            try {
-                extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            model.put("extParamVals", extParamVals);
-        }
-
         model.put("project", project);
        
+        controllerService.getProjectExternalParameterValues(model,project);        
         controllerService.getComponentAndExternalParamValues(model, project);
 
-        return "projectparameters";
+        return "extparams";
     }
 
     @RequestMapping(value="deleteextparam", method=RequestMethod.GET)
@@ -812,7 +813,7 @@ public class ParameterController {
 
         controllerService.getComponentAndExternalParamValues(model, project);
         
-        return "projectparameters";
+        return "extparams";
     }
     
     @RequestMapping(value="editextparam", method=RequestMethod.GET)
@@ -1009,7 +1010,7 @@ public class ParameterController {
 
         controllerService.getComponentAndExternalParamValues(model, project);
         
-        return "projectparameters";
+        return "extparams";
     }
 
     @RequestMapping(value="createextparamset", method=RequestMethod.GET)
@@ -1146,7 +1147,7 @@ public class ParameterController {
         
         controllerService.getComponentAndExternalParamValues(model, project);
         
-        return "projectparameters";
+        return "extparams";
     }
     
     ///------- Help Methods-------////	
