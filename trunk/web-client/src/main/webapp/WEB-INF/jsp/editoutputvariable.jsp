@@ -59,7 +59,7 @@
 				<tr>
 					<td></td>
 					<td align="right"><input style="width:100px" type="submit" value="Update"/>
-					<a href="outputvariables.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>"></td>
 				</tr>
 			</table>
 			

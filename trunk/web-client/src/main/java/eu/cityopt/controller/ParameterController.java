@@ -217,19 +217,26 @@ public class ParameterController {
     }
 
     @RequestMapping(value="createcomponent", method=RequestMethod.POST)
-    public String getCreateComponentPost(ComponentDTO componentForm, Map<String, Object> model){
-        ProjectDTO project = (ProjectDTO) model.get("project");
+    public String getCreateComponentPost(ComponentDTO componentForm, Map<String, Object> model,
+    	@RequestParam(value="cancel", required=false) String cancel) {
+    		 
+    	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
         {
             return "error";
         }
+        
+        if (cancel != null)
+        {
+        	return "editproject";
+        }
+        
         securityAuthorization.atLeastExpert_expert(project);
         
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
 
@@ -240,7 +247,6 @@ public class ParameterController {
         try {
             model.put("project", projectService.findByID(project.getPrjid()));
         } catch (EntityNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -350,14 +356,21 @@ public class ParameterController {
     @RequestMapping(value="editinputparameter", method=RequestMethod.POST)
     public String editInputParameterPost(Map<String, Object> model, 
 		ParamForm inputParamForm,
-        @RequestParam(value="inputparamid", required=false) String inputParamId) {
-        
+        @RequestParam(value="inputparamid", required=false) String inputParamId,
+    	@RequestParam(value="cancel", required=false) String cancel) {
+    	        
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
         {
             return "error";
         }
+        
+        if (cancel != null) {
+        	controllerService.getComponentAndExternalParamValues(model, project);
+        	return "projectparameters";
+        }
+        
         securityAuthorization.atLeastExpert_expert(project);
         
         try {
@@ -485,8 +498,9 @@ public class ParameterController {
     @RequestMapping(value="editoutputvariable", method=RequestMethod.POST)
     public String editOutputParameterPost(Map<String, Object> model, 
 		ParamForm paramForm,
-        @RequestParam(value="outputvarid", required=false) String outputVarId) {
-        
+        @RequestParam(value="outputvarid", required=false) String outputVarId,
+    	@RequestParam(value="cancel", required=false) String cancel) {
+            
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -494,6 +508,11 @@ public class ParameterController {
             return "error";
         }
         securityAuthorization.atLeastExpert_expert(project);
+
+        if (cancel != null) {
+            controllerService.getComponentAndExternalParamValues(model, project);        
+        	return "outputvariables";
+        }
         
         try {
             project = projectService.findByID(project.getPrjid());
@@ -588,8 +607,9 @@ public class ParameterController {
 
     @RequestMapping(value="createinputparameter", method=RequestMethod.POST)
     public String getCreateInputParamPost(ParamForm inputParamForm, Map<String, Object> model,
-        @RequestParam(value="selectedcompid", required=true) String strSelectedCompId) {
-        
+        @RequestParam(value="selectedcompid", required=true) String strSelectedCompId,
+    	@RequestParam(required=false, value="cancel") String cancel) {
+                    
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -600,6 +620,12 @@ public class ParameterController {
         controllerService.updateProject(model, project);
         securityAuthorization.atLeastExpert_expert(project);
 
+        if (cancel != null)
+        {
+            controllerService.getComponentAndExternalParamValues(model, project);
+        	return "projectparameters";
+        }
+        
         int nSelectedCompId = Integer.parseInt(strSelectedCompId);
         ComponentDTO component = null;
         try {
@@ -614,6 +640,10 @@ public class ParameterController {
         String strUnit = inputParamForm.getUnit();
         UnitDTO unit = null;
         
+        if (strUnit == null || strUnit.isEmpty()) {
+        	strUnit = "-";
+        }
+        
 		try {
 			unit = unitService.findByName(strUnit);
 		} catch (EntityNotFoundException e2) {
@@ -622,7 +652,8 @@ public class ParameterController {
         
         inputParam.setUnit(unit);
         inputParam.setType(typeService.findByName(eu.cityopt.sim.eval.Type.DOUBLE.name));
-        inputParamService.save(inputParam, component.getComponentid(), unit.getUnitid());
+        
+    	inputParamService.save(inputParam, component.getComponentid(), unit.getUnitid());
 
         controllerService.SetUpSelectedComponent(model, strSelectedCompId);
         controllerService.getProjectExternalParameterValues(model, project);
@@ -705,8 +736,10 @@ public class ParameterController {
     }
 
     @RequestMapping(value="createextparam", method=RequestMethod.POST)
-    public String getCreateExtParamPost(ExtParamDTO extParam, Map<String, Object> model) {
-        ProjectDTO project = (ProjectDTO) model.get("project");
+    public String getCreateExtParamPost(ExtParamDTO extParam, Map<String, Object> model,
+    	@RequestParam(required=false, value="cancel") String cancel) {
+        
+    	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
         {
@@ -714,6 +747,13 @@ public class ParameterController {
         }
         securityAuthorization.atLeastExpert_expert(project);
 
+        if (cancel != null)
+        {
+            controllerService.getProjectExternalParameterValues(model,project);        
+            controllerService.getComponentAndExternalParamValues(model, project);
+        	return "extparams";
+        }
+        
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
@@ -939,7 +979,8 @@ public class ParameterController {
 
     @RequestMapping(value="editextparamvalue", method=RequestMethod.POST)
     public String getEditExtParamValPost(ParamForm paramForm, Map<String, Object> model,
-            @RequestParam(value="extparamvalid", required=true) String extParamValId){
+        @RequestParam(value="extparamvalid", required=true) String extParamValId,
+        @RequestParam(value="cancel", required=false) String cancel){
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -948,6 +989,11 @@ public class ParameterController {
         }
         securityAuthorization.atLeastStandard_standard(project);
 
+        if (cancel != null) {
+            controllerService.getComponentAndExternalParamValues(model, project);
+        	return "extparams";
+        }
+        
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {

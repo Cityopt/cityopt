@@ -90,6 +90,7 @@
 									</table>
 								</td>
 							</tr>
+							</form:form>							
 							<tr height="15"></tr>
 							<tr>
 								<!-- Input parameter & set button -->						
@@ -123,7 +124,6 @@
 								<td><spring:message code="remaining_simulation_time"/>:</td>
 								<td></td>
 							</tr>
-							</form:form>							
 							<form:form method="post" action="setsimulationdate.html">
 							<tr>
 								<!--Dynamic simulation period from-->

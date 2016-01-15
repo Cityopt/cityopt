@@ -84,15 +84,14 @@ margin-left: 30px;
 							</tr>							
 						</table>						
 							<!-- Success // failure message -->
-				 <c:choose>
-          			  <c:when test="${success!=null && success==true}">
-            			   <h2 class="successful"> <spring:message code="projectSuccess"/></h2>
-            			   <c:set var="tooltip_next"><spring:message code="tooltip_next"/></c:set>
-            			   <a href='editproject.html'><button style="width:100px" class="rewardGreen" type="button" value="Next" title="${tooltip_next}">
-            			   <spring:message code="next"/></button></a>
+				<c:choose>
+          			<c:when test="${success!=null && success==true}">
+            			<h2 class="successful"> <spring:message code="projectSuccess"/></h2>
+            			<c:set var="tooltip_next"><spring:message code="tooltip_next"/></c:set>
+            			<input type="submit" name="nextpage" style="width:100px" class="big" value="Next" title="${tooltip_next}">
             		</c:when>
             		<c:when test="${success!=null && success==false}">
-            			   <h2 class="error"> <spring:message code="projectExists" /> </h2>
+            			<h2 class="error"> <spring:message code="projectExists" /> </h2>
             		</c:when>            	
         		</c:choose>						
 				

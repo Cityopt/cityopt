@@ -52,8 +52,10 @@
 				<tr>
 					<td></td>
 					<!-- Create & Cancel -button -->
-					<td align="right"><input title="${tooltip_create}" style="width:100px" type="submit" value="<spring:message code="create"/>"/>
-					<a href="editproject.html"><button title="${tooltip_cansel}" style="width:100px" type="button" value="cancel"><spring:message code="cansel"/></button></a></td>
+					<td align="right">
+						<input title="${tooltip_create}" style="width:100px" type="submit" value="<spring:message code="create"/>"/>
+						<input type="submit" style="width:100px" name="cancel" value="cancel" />
+					</td>
 				</tr>
 			</table>
 			
