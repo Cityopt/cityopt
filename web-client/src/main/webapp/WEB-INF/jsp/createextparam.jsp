@@ -48,8 +48,8 @@
 					<td></td>
 					<!-- Create submit & Cancel button -->
 					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create"/>"/>
-					<a href="projectparameters.html"><button style="width:100px" type="button" value="Cancel">
-					<spring:message code="cancel"/></button></a></td>
+						<input type="submit" value="Cancel" name="cancel">
+					</td>
 				</tr>
 			</table>
 			

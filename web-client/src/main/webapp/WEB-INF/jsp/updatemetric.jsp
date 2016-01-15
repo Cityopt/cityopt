@@ -133,8 +133,7 @@
 								<td align="right">
 									<!-- Ok submit and Cancel -button -->
 									<input type="submit" style="width:100px" value="<spring:message code="ok"/>"></input>
-									<a href="metricdefinition.html"><button style="width:100px" type="button" value="Cancel">
-									<spring:message code="cancel"/></button></a>
+									<input type="submit" value="Cancel" name="cancel">
 								</td>
 								<td></td>
 							</tr>					

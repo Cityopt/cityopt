@@ -101,26 +101,6 @@ margin-right:10%;
 								</td>
 							</tr>
 							<tr height="20"></tr>
-							<tr>
-								<td>
-									<b>Import energy model</b><br>
-								</td>
-							</tr>
-							<form:form method="POST" action="uploadFile.html?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
-	        					<tr>
-	        						<!-- Energy model to upload: -->
-									<td>
-										<spring:message code="energy_model_to_upload"/>:</td>
-									<td><input type="file" name="file"></td>
-								</tr>
-								<tr>	
-	       							<td></td>
-	        						<td>
-	        						<!-- Load File -->
-	        							<input type="submit" value="<spring:message code="load_file"/>">
-	       							</td>
-	   							</tr>	
-   							</form:form>
 							
 							<tr>
 								<td>

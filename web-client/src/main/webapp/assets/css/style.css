@@ -526,7 +526,7 @@ table.tablegroup{
 }
 
 
-button, input[type="button"], input[type="submit"] {
+button {
 	background: #c7e3f5;
     background-image: -webkit-linear-gradient(top, #c7e3f5, #458ee0);
     background-image: -moz-linear-gradient(top, #c7e3f5, #458ee0);
@@ -549,6 +549,20 @@ button, input[type="button"], input[type="submit"] {
 	border-radius: 6px;*/
 }
 
+input[type="button"], input[type="submit"] {
+	background: #c7e3f5;
+    background-image: -webkit-linear-gradient(top, #c7e3f5, #458ee0);
+    background-image: -moz-linear-gradient(top, #c7e3f5, #458ee0);
+    background-image: -ms-linear-gradient(top, #c7e3f5, #458ee0);
+    background-image: -o-linear-gradient(top, #c7e3f5, #458ee0);
+    background-image: linear-gradient(to bottom, #c7e3f5, #458ee0);
+    -webkit-border-radius: 40;
+    -moz-border-radius: 40;
+    border-radius: 40px;
+	font-family: 'blanchcaps', arial;
+	font-size:20px;
+}
+
 button:hover, input[type="button"]:hover, input[type="submit"]:hover {
 	 background: #ebf7ff;
  	 background-image: -webkit-linear-gradient(top, #ebf7ff, #3b9ccc);
@@ -556,9 +570,6 @@ button:hover, input[type="button"]:hover, input[type="submit"]:hover {
   	 background-image: -ms-linear-gradient(top, #ebf7ff, #3b9ccc);
   	 background-image: -o-linear-gradient(top, #ebf7ff, #3b9ccc);
  	 background-image: linear-gradient(to bottom, #ebf7ff, #3b9ccc);
-	
-	
-	
 	/*background-color:#47AFE2;*/
 }
 

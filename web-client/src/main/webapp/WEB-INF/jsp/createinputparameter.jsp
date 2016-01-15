@@ -70,7 +70,7 @@
 					<td></td>
 					<!-- Create & Cancel button -->
 					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create"/>"/>
-					<a href="projectparameters.html"><button style="width:100px" type="button" value="Cancel"><spring:message code="cancel"/></button></a></td>
+					<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>"></td>
 				</tr>
 			</table>
 			</form:form>

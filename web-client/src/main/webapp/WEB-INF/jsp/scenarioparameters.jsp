@@ -164,10 +164,6 @@
 											<input style="width:100px" title="${tooltip_update}"  type="submit" value="Update"/>
 								    	</c:otherwise>
 									</c:choose>
-									<!-- Close -button -->
-									<c:set var="tooltip_close"><spring:message code="tooltip_close"/></c:set>
-									<a href="editscenario.html"><button title="${tooltip_close}" type="button">
-									<spring:message code="close"/></button></a>
 							    </td>
 							</tr>
 						</table>

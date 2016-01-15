@@ -78,7 +78,7 @@
 								<!-- Create external parameter set & back button -->
 								<td align="right">
 									<a href="createextparamset.html"><button type="button"><spring:message code="create_external_parameter_set"/></button></a>
-									<a href="editproject.html"><button type="button"><spring:message code="back"/></button></a>
+									<a href="extparams.html"><button type="button"><spring:message code="back"/></button></a>
 								</td>
 								<td></td>
 								<td></td>

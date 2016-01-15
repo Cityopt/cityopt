@@ -252,16 +252,17 @@ public class ProjectController {
     @RequestMapping(value = "createproject", method = RequestMethod.POST)
     public String createProjectPost(Map<String, Object> model,
             @Validated @ModelAttribute("newProject") ProjectDTO projectForm, 
+    		@RequestParam(value="nextpage", required=false) String nextpage,
             BindingResult bindingResult,
             HttpServletRequest request) {
 
 		securityAuthorization.atLeastExpert();
 
         if (bindingResult.hasErrors()) {
-
             return "createproject";
+        } else if (nextpage != null) {
+        	return "editproject";
         } else {
-
             ProjectDTO project = new ProjectDTO();
             project.setName(projectForm.getName().trim());
             String desc = projectForm.getDescription();
@@ -274,47 +275,18 @@ public class ProjectController {
             project.setLocation(projectForm.getLocation().trim());
             project.setDesigntarget(projectForm.getDesigntarget().trim());
 
-            // Create default ext param val set
-            /*ExtParamValSetDTO extParamValSet = new ExtParamValSetDTO();
-			extParamValSet.setName("default set");
-			extParamValSet = extParamValSetService.save(extParamValSet);			
-			project.setExtparamvalset(extParamValSet);*/
-
             if (projectService.findByName(project.getName()) == null) {
-               
-                /*
-				AppUserDTO user = (AppUserDTO) model.get("user");				
-				UserGroupProjectDTO userGroupProject = new UserGroupProjectDTO();
-				userGroupProject.setAppuser(user);
-				userGroupProject.setProject(project);
-
-				UserGroupDTO userGroup = userGroupService.findByGroupName("Administrator").get(0);
-				userGroupProject.setUsergroup(userGroup);
-				userGroupProject = userGroupProjectService.save(userGroupProject);
-                 */           
-                
-
-                //project = projectService.save(project, 0, 0);      
-                
                 
                 // Set up the project Rights.
                 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 String user= ((UserDetails)principal).getUsername();
                 project = projectManagementService.createProjectWithAdminUser(project, user);
                 
-                /*
-                project = projectService.save(project, 0, 0);			
-                model.put("project", project);
-                model.remove("scenario");
-                model.remove("optimizationset");
-                */
-                
                 controllerService.clearSession(model, request);
                 model.put("project", project);
                 model.put("success",true);              
 
                 return "createproject";
-                //return "editproject";
             } else {
                 model.put("newProject", new ProjectDTO());                        
                 model.put("success",false);                           
@@ -322,33 +294,7 @@ public class ProjectController {
             }
         }
     }
-    
-    /*
-			Locale locale = LocaleContextHolder.getLocale();			
-			// TODO fix
-			//@ author: Markus Turunene 8.7.2015
-			// Language integration for messages.			
-			//I'm calling message from resources can be language implemented:
-			// 3 part message: Project+(current created project)+is succesfully created
 
-			String projectCreation =resource.getMessage("project", new Object[1], locale)
-			+" "+project.getName()+" "+resource.getMessage("succesfully_created", new Object[1], locale);			
-			model.put("successful", projectCreation);
-
-			return "createproject";			
-			//return "editproject";
-			}
-			else{
-				model.put("project", project);				
-				//@ author: Markus Turunene date 8.7.2015 //Calling a locale resource for the error message == Require file resource for working.
-				Locale locale = LocaleContextHolder.getLocale();
-				String Errormessage= resource.getMessage("error_allready_exist", new Object[1], locale);
-				model.put("errorMessage", Errormessage);
-				return "createproject";
-			}	
-			//return "error";
-     */
-        
     @RequestMapping(value="openproject", method=RequestMethod.GET)
     public String openProject(Map<String, Object> model)
     {
@@ -1550,8 +1496,9 @@ public class ProjectController {
     @RequestMapping(value="updatemetric", method=RequestMethod.POST)
     public String updateMetricPost(ParamForm paramForm, Map<String, Object> model,
 		@RequestParam(value="action", required=true) String action,
-		@RequestParam(value="metricid", required=false) String metricId) {
-        
+		@RequestParam(value="metricid", required=false) String metricId,
+    	@RequestParam(value="cancel", required=false) String cancel) {
+            
     	ProjectDTO project = (ProjectDTO) model.get("project");
         try {
             project = projectService.findByID(project.getPrjid());
@@ -1565,6 +1512,12 @@ public class ProjectController {
         }
         securityAuthorization.atLeastExpert_expert(project);
 
+        if (cancel != null) {
+        	Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+            model.put("metrics", metrics);
+            return "metricdefinition";
+        }
+        
         String name = paramForm.getName();
         String expression = paramForm.getValue();
         String unit = paramForm.getUnit();
