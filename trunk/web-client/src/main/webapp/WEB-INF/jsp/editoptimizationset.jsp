@@ -75,7 +75,6 @@
 					<spring:message code="tooltip_delete_externalparameter" />
 				</c:set>		
 						
-				
 				<tr>
 					<td colspan="2" valign="top">
 						<table>
@@ -268,7 +267,7 @@
 										<c:forEach items="${resultScenariosWithValue}" var="scenarioWithValue">
 											<tr>
 												<td>${scenarioWithValue.name}</td>
-												<td>${scenarioWithValue.value}</td>
+												<td><fmt:formatNumber value="${scenarioWithValue.value}" maxFractionDigits="2"/></td>
 												<td><a href="showresults.html?scenarioid=${scenarioWithValue.scenid}"><button type="button">Show</button></a></td>
 										   	</tr>
 										</c:forEach>

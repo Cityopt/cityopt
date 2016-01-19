@@ -29,7 +29,7 @@
 				<tr>
 					<td>
 						<table>
-							<col style="width:100px">
+							<col style="width:200px">
 							<col style="width:200px">
 							<col style="width:100px">
 							<col style="width:300px">
@@ -41,9 +41,8 @@
 								<td><spring:message code="description"/>:</td>
 								<td>${scenario.description}</td>
 							</tr>
-							<tr>
-								<!-- User: -->						
-								<td><spring:message code="user"/>:</td>
+							<tr height="10">
+								<td></td>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -53,7 +52,7 @@
 				</tr>
 				<tr>
 					<td>
-						<table>
+						<table class="tablegroup">
 							<col style="width:250px">
 							<col style="width:30px">
 							<col style="width:250px">
@@ -134,7 +133,14 @@
 									</table>
 								</td>
 							</tr>
-							<tr height="20"></tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table>
+							<tr height="30">
+							</tr>
 							<tr>
 								<!-- Metrics -->
 								<td><b><spring:message code="metrics"/></b></td>
