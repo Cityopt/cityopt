@@ -22,7 +22,7 @@
 
 		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:500px;width:600px;overflow:auto">
+			<div style="overflow:scroll;height:100%;width:600px;overflow:auto">
 			<table>
 				<tr>
 					<td>
