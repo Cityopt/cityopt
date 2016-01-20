@@ -2137,6 +2137,62 @@ public class OptimizationController {
         return "importsearchconstraint";
     }
 
+    @RequestMapping(value="importgaconstraint",method=RequestMethod.GET)
+    public String importGAConstraint(Map<String, Object> model,
+        @RequestParam(value="constraintid", required=false) String selectedConstraintId) {
+
+        ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+
+		securityAuthorization.atLeastStandard_standard(project);
+
+        if (selectedConstraintId != null && !selectedConstraintId.isEmpty())
+        {
+            int nSelectedConstraintId = Integer.parseInt(selectedConstraintId);
+            OptConstraintDTO constraint = null;
+
+            try {
+                constraint = optConstraintService.findByID(nSelectedConstraintId);
+            } catch (EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+
+            try {
+                scenGen = scenGenService.findByID(scenGen.getScengenid());
+            } catch (NumberFormatException | EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            if (scenGen != null && constraint != null)
+            {
+                try {
+                    scenGenService.addOptConstraint(scenGen.getScengenid(), constraint);
+                } catch (EntityNotFoundException e1) {
+                    e1.printStackTrace();
+                }
+
+                try {
+                	scenGen = scenGenService.update(scenGen);
+                } catch (EntityNotFoundException e) {
+                    e.printStackTrace();
+                }
+                model.put("scengenerator", scenGen);
+            }
+            return "redirect:/geneticalgorithm.html";
+        }
+
+        List<OptConstraintDTO> optSearchConstraints = optConstraintService.findAll();
+        model.put("constraints", optSearchConstraints);
+
+        return "importgaconstraint";
+    }
+
     @RequestMapping(value="showresults",method=RequestMethod.GET)
     public String showResults(Map<String, Object> model,
         @RequestParam(value="selectedcompid", required=false) String selectedCompId,
