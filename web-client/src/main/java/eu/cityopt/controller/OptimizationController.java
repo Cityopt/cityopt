@@ -1157,12 +1157,14 @@ public class OptimizationController {
 		}
 		
 		model.put("postpage", "extparamsets.html");
+		model.put("backpage", "editoptimizationset.html");
 		
 		return "extparamsets";       
     }   
     
 	@RequestMapping(value="extparamsets",method=RequestMethod.POST)
-    public String extParamSetsPost(Map<String, Object> model, @RequestParam(value="extparamvalsetid", required=true) int id) { 
+    public String extParamSetsPost(Map<String, Object> model, 
+		@RequestParam(value="extparamvalsetid", required=true) int id) { 
 		
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -1238,6 +1240,7 @@ public class OptimizationController {
 		}
 		
 		model.put("postpage", "gaextparamsets.html");
+		model.put("backpage", "geneticalgorithm.html");
 		
 		return "extparamsets";       
 	}    		
@@ -2272,7 +2275,7 @@ public class OptimizationController {
 		
     @RequestMapping(value="editsgobjfunction", method=RequestMethod.GET)
     public String editSGObjFunction(ModelMap model,
-            @RequestParam(value="objid", required=false) Integer objid,
+            @RequestParam(value="obtfunctionid", required=false) Integer obtfunctionid,
             @RequestParam(value="selectedcompid", required=false) Integer selectedCompId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
@@ -2283,9 +2286,9 @@ public class OptimizationController {
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
         ObjectiveFunctionDTO function = null;
-        if (objid != null) {
+        if (obtfunctionid != null) {
             try {
-                function = (ObjectiveFunctionDTO) objFuncService.findByID(objid);
+                function = (ObjectiveFunctionDTO) objFuncService.findByID(obtfunctionid);
                 if (function.getProject().getPrjid() != project.getPrjid()) {
                     return "error";
                 }
@@ -2296,6 +2299,11 @@ public class OptimizationController {
         } else {
             function = new ObjectiveFunctionDTO();
         }
+        
+        if (obtfunctionid != null) {
+    		model.put("obtfunctionid", obtfunctionid);
+        }
+        
         return getEditSGObjFunction(project, function, model, selectedCompId);
     }
 
@@ -2325,8 +2333,8 @@ public class OptimizationController {
 
     @RequestMapping(value="editsgobjfunction", method=RequestMethod.POST)
     public String editSGObjFunctionPost (ObjectiveFunctionDTO function, ModelMap model,
-            @RequestParam("obtfunctionid") int objid,
-            @RequestParam("optsense") String optSense) {
+        @RequestParam("obtfunctionid") int obtfunctionid,
+        @RequestParam("optsense") String optSense) {
     	
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
@@ -2338,28 +2346,31 @@ public class OptimizationController {
 
         // TODO validate function expression, name uniqueness
         boolean pass=true;        
-        if((objFuncService.existsByName(project.getPrjid(),function.getName()))){        	
+        if(obtfunctionid <= 0 && objFuncService.existsByName(project.getPrjid(),function.getName())){        	
         	pass = false;        
-        }        	
+        }        
+        
         if (pass==true){
 	        if (StringUtils.isBlank(function.getExpression())) {
 	            return getEditSGObjFunction(project, function, model, null);
 	        }
 	        function.setIsmaximise("max".equals(optSense));
 	        function.setProject(project);
-		        try {
-		            if (objid > 0) {
-		                // TODO: clone if referenced from elsewhere
-		                objFuncService.update(function);
-		            } else {
-		                scenGenService.addObjectiveFunction(scenGen.getScengenid(), function);
-		            }
-		        } catch (EntityNotFoundException e) {
-		            e.printStackTrace();
-		            return "error";
-		        }
+		
+	        try {
+		        if (obtfunctionid > 0) {
+	                // TODO: clone if referenced from elsewhere
+	                objFuncService.update(function);
+	            } else {
+	                scenGenService.addObjectiveFunction(scenGen.getScengenid(), function);
+	            }
+	        } catch (EntityNotFoundException e) {
+	            e.printStackTrace();
+	            return "error";
+	        }
 	        return "redirect:/geneticalgorithm.html";
-	        }      
+	    }
+        
         ObjectiveFunctionDTO function2 = new ObjectiveFunctionDTO();
         function2.setName(function.getName());
         function2.setExpression(function.getExpression());
@@ -2391,28 +2402,8 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="addsgobjfunction", method=RequestMethod.GET)
-    public String addSGObjFunctionPost(ModelMap model) {
-        ProjectDTO project = (ProjectDTO) model.get("project");
-        if (project == null) return "redirect:/openproject.html";
-
-		securityAuthorization.atLeastExpert_expert(project);
-        ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
-        if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
-
-        try {
-            model.put("objFuncs", sortBy(ObjectiveFunctionDTO::getName,
-                    projectService.getObjectiveFunctions(project.getPrjid())));
-            // TODO filter out functions that are already in scenGen
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-            return "error";
-        }
-        return "addsgobjfunction";
-    }
-
-    @RequestMapping(value="addsgobjfunction", method=RequestMethod.POST)
     public String addSGObjFunctionPost(ModelMap model,
-        @RequestParam("obtfunctionid") int obtfunctionid) {
+    	@RequestParam(value="obtfunctionid", required=false) String obtfunctionid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
 
@@ -2420,17 +2411,29 @@ public class OptimizationController {
         ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
-        try {
-            ObjectiveFunctionDTO objFunc = objFuncService.findByID(obtfunctionid);
-            if (objFunc.getProject().getPrjid() != project.getPrjid()) {
-                return "error";
-            }
-            scenGenService.addObjectiveFunction(scenGen.getScengenid(), objFunc);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-            return "error";
+        if (obtfunctionid != null) {
+        	 try {
+                 ObjectiveFunctionDTO objFunc = objFuncService.findByID(Integer.parseInt(obtfunctionid));
+                 if (objFunc.getProject().getPrjid() != project.getPrjid()) {
+                     return "error";
+                 }
+                 scenGenService.addObjectiveFunction(scenGen.getScengenid(), objFunc);
+             } catch (EntityNotFoundException e) {
+                 e.printStackTrace();
+                 return "error";
+             }
+        	return "redirect:/geneticalgorithm.html";
+        } else {
+	        try {
+	            model.put("objFuncs", sortBy(ObjectiveFunctionDTO::getName,
+            		projectService.getObjectiveFunctions(project.getPrjid())));
+	            // TODO filter out functions that are already in scenGen
+	        } catch (EntityNotFoundException e) {
+	            e.printStackTrace();
+	            return "error";
+	        }
+	        return "addsgobjfunction";
         }
-        return "redirect:/geneticalgorithm.html";
     }
 
     @RequestMapping(value="editsgconstraint", method=RequestMethod.GET)
@@ -2614,6 +2617,10 @@ public class OptimizationController {
             }
         } else {
             decVar = new DecisionVariableDTO();
+        }
+        
+        if (decisionvarid != null) {
+        	model.put("decisionvarid", decisionvarid.intValue());
         }
         return getEditSGDecisionVariable(project, decVar, model, selectedCompId);
     }

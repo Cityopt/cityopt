@@ -34,7 +34,7 @@
 				<tr>
 					<td>
                         <c:choose>
-                          <c:when test="${optconstid > 0}">
+                          <c:when test="${decisionvarid > 0}">
                             <h2>Edit decision variable</h2>
                           </c:when>
                           <c:otherwise>
@@ -157,7 +157,8 @@
                             <tr height=10></tr>
                             <tr>
                                 <td></td>
-                                <td colspan="3">Type: 
+                                <td>Type:</td>
+                                <td> 
                                     <select name="typeid" id="typeid" size="1">
                                     <c:forEach items="${typechoices}" var="typechoice">
 	                                    <c:choose>
