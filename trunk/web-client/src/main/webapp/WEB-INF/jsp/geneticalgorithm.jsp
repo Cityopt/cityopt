@@ -98,7 +98,7 @@ function deleteDecisionVariable(decisionvarid) {
                             </tr>
                             <tr>
 								<td>Optimization info:</td>
-								<td><font color="red">${error}</font><br>${runinfo}</td>
+								<td><font color="red">${error}</font>${runinfo}</td>
 								<td align="right">
 									<input type="submit" name="run" value="Run algorithm" style="width: 150px">
 								</td>
@@ -255,6 +255,7 @@ function deleteDecisionVariable(decisionvarid) {
 							<tr>
 								<td>
                                     <a href="editsgconstraint.html"><button type="button" style="width: 100px"><spring:message code="create"/></button></a>
+                                    <a href="importgaconstraint.html"><button type="button" style="width: 100px"><spring:message code="import"/></button></a>
 								</td>
 							</tr>
 							<tr height="10"></tr>
