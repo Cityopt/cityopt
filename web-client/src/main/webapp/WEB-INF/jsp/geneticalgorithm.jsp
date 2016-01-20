@@ -97,8 +97,8 @@ function deleteDecisionVariable(decisionvarid) {
 								</td>
                             </tr>
                             <tr>
-								<td>Optimization progress:</td>
-								<td>${runinfo}</td>
+								<td>Optimization info:</td>
+								<td><font color="red">${error}</font><br>${runinfo}</td>
 								<td align="right">
 									<input type="submit" name="run" value="Run algorithm" style="width: 150px">
 								</td>

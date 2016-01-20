@@ -118,7 +118,7 @@
 					<td valign="top">
 						<table>
 							<tr>
-								<td valign="top" style="width: 750px; height: 400px; border-style: solid; border-radius: 1em">
+								<td valign="top" style="width: 750px; height: 400px; border-style: solid">
 									<img src="gachart.png">
 								</td>
 							</tr>

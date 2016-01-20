@@ -955,83 +955,50 @@ public class VisualizationController {
 			return;
 		}
 		
-		if (userSession.getSelectedGAObjFuncIds().size() != 2)
+		if (userSession.getSelectedGAObjFuncIds().size() > 2
+			|| userSession.getSelectedGAObjFuncIds().size() == 0)
 		{
 			return;
 		}
 		
 	    Iterator<Integer> iterator = userSession.getSelectedGAObjFuncIds().iterator();
 		int objFunc1Id = iterator.next();
-		int objFunc2Id = iterator.next();
-
+		
 		ObjectiveFunctionDTO objFunc1 = objFuncService.findByID(objFunc1Id);
-		ObjectiveFunctionDTO objFunc2 = objFuncService.findByID(objFunc2Id);
-
-		// Get metrics time series (max 2 metrics)
+		
 		if (userSession.getSelectedGAObjFuncIds().size() == 1)
 		{
-			// TODO if needed
-			/*timeSeriesCollection.removeAllSeries();
-			XYSeriesCollection collection = new XYSeriesCollection();
+			ArrayList<ObjectiveFunctionResultDTO> listResults1 = (ArrayList<ObjectiveFunctionResultDTO>) objFuncService.findResultsByScenarioGenerator(scenGen.getScengenid(), objFunc1Id);
+			Iterator<ObjectiveFunctionResultDTO> resultIter = listResults1.iterator();
 			DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
-			DefaultPieDataset pieDataset = new DefaultPieDataset();
-
-			int metric1Id = iterator.next(); 
-		    int index = 0;
-		    
-			try {
-				MetricDTO metric1 = metricService.findByID(metric1Id);
-				
-				Set<Integer> scenarioIds = userSession.getScenarioIds();
-				Iterator<Integer> scenIter = scenarioIds.iterator();
-				
-				while (scenIter.hasNext())
-				{
-					Integer scenarioId = (Integer) scenIter.next();
-					int nScenarioId = (int)scenarioId;
-					ScenarioDTO scenarioTemp = scenarioService.findByID(nScenarioId);
-					MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
-					DefaultXYDataset dataset = new DefaultXYDataset();
-
-					if (userSession.getChartType() == 0)
-					{
-						userSession.setChartType(1);
-					}
-					else if (userSession.getChartType() == 2) 
-					{
-						categoryDataset.addValue(Double.parseDouble(metricVal1.getValue()), scenarioTemp.getName(), metric1.getName());
-					} 
-					else if (userSession.getChartType() == 3) 
-					{
-						pieDataset.setValue(scenarioTemp.getName(), Double.parseDouble(metricVal1.getValue()));
-					}
-					
-					index++;
-				}				
 			
-				JFreeChart chart = null;
+			while (resultIter.hasNext())
+			{
+				ObjectiveFunctionResultDTO result = (ObjectiveFunctionResultDTO) resultIter.next();
 				
-				if (userSession.getChartType() == 0) {
-					// No time series type for metrics
-					userSession.setChartType(1);
-				}
-				
-				if (userSession.getChartType() == 2) {
-					chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "", "");
-				} else if (userSession.getChartType() == 3) {
-					chart = PieChartVisualization.createChart(pieDataset, "Pie chart " + metric1.getName(), "", "");
-				}
-				
-				if (chart != null)
+				if (!userSession.hasSelectedGAScenarioId(result.getScenID()))
 				{
-					ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+					continue;
 				}
-			} catch (EntityNotFoundException e) {
-				e.printStackTrace();
-			}*/
+				
+				ScenarioDTO scenarioTemp = scenarioService.findByID(result.getScenID());
+				String value1 = result.getValue();
+				
+				ObjectiveFunctionDTO objFunc = objFuncService.findByID(result.getObtfunctionid());
+				categoryDataset.addValue(Double.parseDouble(value1), scenarioTemp.getName(), objFunc.getName());
+			}
+			
+			JFreeChart chart = BarChartVisualization.createChart(categoryDataset, "Genetic optimization scenario results", "", "");
+			
+			if (chart != null)
+			{
+				ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+			}
 		}
 		else if (userSession.getSelectedGAObjFuncIds().size() == 2)
 		{
+			int objFunc2Id = iterator.next();
+			ObjectiveFunctionDTO objFunc2 = objFuncService.findByID(objFunc2Id);
 			XYSeriesCollection collection = new XYSeriesCollection();
 
 			try {

@@ -283,7 +283,7 @@
 										
 										<tr>
 											<td valign="top">Optimization info:</td>
-											<td>${usersession.getOptResultString()}</td>
+											<td><font color="red">${error}</font><br>${usersession.getOptResultString()}</td>
 										</tr>
 									</table>
 								</td>
