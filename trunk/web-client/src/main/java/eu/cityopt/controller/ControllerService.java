@@ -19,6 +19,7 @@ import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParameterDTO;
+import eu.cityopt.DTO.MetricValDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.UnitDTO;
@@ -30,6 +31,7 @@ import eu.cityopt.service.ExtParamValService;
 import eu.cityopt.service.ExtParamValSetService;
 import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
+import eu.cityopt.service.MetricValService;
 import eu.cityopt.service.ProjectService;
 import eu.cityopt.service.SimulationModelService;
 import eu.cityopt.service.TypeService;
@@ -85,6 +87,9 @@ public class ControllerService {
 	    @Autowired
 	    ScenarioGenerationService scenarioGenerationService;
 
+	    @Autowired
+	    MetricValService metricValService;
+	    
 		// Finds project By model and project id;
 	     
 	    public AppUserDTO FindAuthenticatedUser(Authentication authentication) throws Exception{
@@ -368,6 +373,23 @@ public class ControllerService {
 		    }
 	
 			model.put("optRuns", listOptRuns);
+	    }
+	    
+	    public void getProjectMetricVals(Map<String, Object> model, int projectId) {
+			
+	    	List<MetricValDTO> listMetricVals = metricValService.findAll();
+	    	List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+
+	        for (int i = 0; i < listMetricVals.size(); i++)
+	        {
+	            MetricValDTO metricVal = listMetricVals.get(i);
+	
+	            if (metricVal.getMetric().getProject().getPrjid() == projectId)
+	            {
+	                listProjectMetricVals.add(metricVal);
+	            }
+	        }
+	        model.put("metricVals", listProjectMetricVals);
 	    }
 	}
 

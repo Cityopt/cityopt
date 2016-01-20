@@ -98,8 +98,9 @@
 							
 							</tr>
 							<tr>						
-								<td></td>
-								<td></td>
+								<td>Optimization info:</td>
+								<td><font color="red">${error}</font>${usersession.getOptResultString()}</td>
+								
 								<td></td>
 								<td align="right">
 									<a href="databaseoptimization.html"><button style="width: 120px" title="${tooltip_run}" type="button">
@@ -272,19 +273,6 @@
 												<td><a href="showresults.html?scenarioid=${scenarioWithValue.scenid}"><button type="button">Show</button></a></td>
 										   	</tr>
 										</c:forEach>
-									</table>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<table>
-										<col style="width: 140px;">
-										<col style="width: 300px;">
-										
-										<tr>
-											<td valign="top">Optimization info:</td>
-											<td><font color="red">${error}</font>${usersession.getOptResultString()}</td>
-										</tr>
 									</table>
 								</td>
 							</tr>

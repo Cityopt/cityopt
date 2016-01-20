@@ -1428,7 +1428,9 @@ public class OptimizationController {
 
         if (optSet.getObjectivefunction() == null)
         {
-            return "error";
+        	controllerService.getProjectMetricVals(model, project.getPrjid());
+            model.put("error", "Objective function missing");
+            return "editoptimizationset";
         }
 
         try {
@@ -1481,20 +1483,7 @@ public class OptimizationController {
 
         model.put("usersession", userSession);
 
-        List<MetricValDTO> listMetricVals = metricValService.findAll();
-        List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
-
-        for (int i = 0; i < listMetricVals.size(); i++)
-        {
-            MetricValDTO metricVal = listMetricVals.get(i);
-
-            if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
-            {
-                listProjectMetricVals.add(metricVal);
-            }
-        }
-        model.put("metricVals", listProjectMetricVals);
-
+        controllerService.getProjectMetricVals(model, project.getPrjid());
         return "editoptimizationset";
     }
     
