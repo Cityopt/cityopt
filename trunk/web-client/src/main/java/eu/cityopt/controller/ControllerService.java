@@ -352,11 +352,13 @@ public class ControllerService {
 		    Map<Integer, RunInfo> mapRuns = scenarioGenerationService.getRunningOptimisations();
 			List<OptimizationRun> listOptRuns = new ArrayList<OptimizationRun>();
 			Iterator iter = mapRuns.entrySet().iterator();
+	        System.out.println("updating ga runs");
 		    
 			while (iter.hasNext()) {
 		        Map.Entry pair = (Map.Entry) iter.next();
-		        RunInfo runInfo = (RunInfo) pair.getValue();
-		        
+		        RunInfo runInfo = new RunInfo(); 
+		        runInfo = (RunInfo) pair.getValue();
+
 		        OptimizationRun optRun = new OptimizationRun();
 		        optRun.setId((int)pair.getKey());
 		        optRun.setStarted(runInfo.getStarted());

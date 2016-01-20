@@ -16,19 +16,25 @@
 <c:set var="baseURL" value="${req.scheme}://${req.serverName}:${req.serverPort}${req.contextPath}"/>
 <script language="javascript">
 function deleteObjective(objid) {
-	confirm('<spring:message code="confirm_delete"/>')
-	document.mainform.objid.value = objid
-    document.mainform.action = "${baseURL}/deletesgobjfunction.html"
+	var ret = confirm('<spring:message code="confirm_delete"/>')
+	if (ret) {
+		document.mainform.objid.value = objid
+    	document.mainform.action = "${baseURL}/deletesgobjfunction.html"
+	}
 }
 function deleteConstraint(constrid) {
-	confirm('<spring:message code="confirm_delete_constraint"/>')
-    document.mainform.constrid.value = constrid
-    document.mainform.action = "${baseURL}/deletesgconstraint.html"
+	var ret = confirm('<spring:message code="confirm_delete_constraint"/>')
+	if (ret == true) {
+	    document.mainform.constrid.value = constrid
+    	document.mainform.action = "${baseURL}/deletesgconstraint.html"
+	}
 }
 function deleteDecisionVariable(decisionvarid) {
-	confirm('<spring:message code="confirm_delete"/>')
-	document.mainform.decisionvarid.value = decisionvarid
-    document.mainform.action = "${baseURL}/deletesgdecisionvariable.html"
+	var ret = confirm('<spring:message code="confirm_delete"/>')
+	if (ret == true) {
+		document.mainform.decisionvarid.value = decisionvarid
+    	document.mainform.action = "${baseURL}/deletesgdecisionvariable.html"
+	}
 }
 </script>
 <script language="javascript"><%@ include file="cityopt.js"%></script>
