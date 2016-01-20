@@ -98,9 +98,8 @@
 							
 							</tr>
 							<tr>						
-								<!-- User -->	
-								<td><spring:message code="user"/>:</td>
-								<td><input type="text" title="${tooltip_user}" id="user" style="width:200px"></td>
+								<td></td>
+								<td></td>
 								<td></td>
 								<td align="right">
 									<a href="databaseoptimization.html"><button style="width: 120px" title="${tooltip_run}" type="button">
@@ -166,7 +165,7 @@
 							<tr height="20"></tr>
 							<tr>
 								<!-- Searching constraints -->
-								<td><b><spring:message code="searching_constraints"/>
+								<td><b><spring:message code="constraints"/>
 								</b></td>
 							</tr>
 							<tr>
@@ -235,9 +234,11 @@
 							</tr>
 							<tr>
 								<td>
-									<a href="extparamsets.html"><button  title="${tooltip_add_externalparameter}" type="button"><spring:message code="add"/></button></a>
-									<input type="submit" title="${tooltip_delete_externalparameter}" value="Delete" 
-									onclick="return confirm('<spring:message code="confirm_delete_externalparameter"/>')">
+									<a href="extparamsets.html">
+										<button  title="${tooltip_add_externalparameter}" type="button">
+											<spring:message code="set"/>
+										</button>
+									</a>
 								</td>
 							</tr>
 						</table>

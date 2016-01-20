@@ -40,7 +40,7 @@
                                         <col style="width:200px">
                                         <col style="width:540px">
                                         <tr>
-                                            <th></th>
+                                            <th>Import</th>
                                             <th>Name</th>
                                             <th>Sense</th>
                                             <th>Expression</th>
@@ -48,9 +48,11 @@
                             
                                         <c:forEach items="${objFuncs}" var="objectivefunction">
                                         <tr>
-                                            <form method="post" action="addsgobjfunction.html">
-                                            <input type="hidden" name="obtfunctionid" id="obtfunctionid" value="${objectivefunction.obtfunctionid}">
-                                            <td><input type="submit" value="Add"></td>
+                                            <td>
+                                            	<a href="addsgobjfunction.html?obtfunctionid=${objectivefunction.obtfunctionid}">
+                                            		<button type="button">Import</button>
+                                           		</a>
+                                       		</td>
                                             <td>${objectivefunction.name}</td>
                                             <td>
                                                  <c:choose>
@@ -59,7 +61,6 @@
                                                  </c:choose>
                                             </td>
                                             <td>${objectivefunction.expression}</td>
-                                            </form>
                                         </tr>
                                         </c:forEach>
                                     </table>

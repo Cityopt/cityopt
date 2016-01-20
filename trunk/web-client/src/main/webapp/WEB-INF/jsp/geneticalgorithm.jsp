@@ -16,15 +16,18 @@
 <c:set var="baseURL" value="${req.scheme}://${req.serverName}:${req.serverPort}${req.contextPath}"/>
 <script language="javascript">
 function deleteObjective(objid) {
+	confirm('<spring:message code="confirm_delete"/>')
 	document.mainform.objid.value = objid
     document.mainform.action = "${baseURL}/deletesgobjfunction.html"
 }
 function deleteConstraint(constrid) {
+	confirm('<spring:message code="confirm_delete_constraint"/>')
     document.mainform.constrid.value = constrid
     document.mainform.action = "${baseURL}/deletesgconstraint.html"
 }
 function deleteDecisionVariable(decisionvarid) {
-    document.mainform.decisionvarid.value = decisionvarid
+	confirm('<spring:message code="confirm_delete"/>')
+	document.mainform.decisionvarid.value = decisionvarid
     document.mainform.action = "${baseURL}/deletesgdecisionvariable.html"
 }
 </script>
@@ -48,8 +51,8 @@ function deleteDecisionVariable(decisionvarid) {
             <input type="hidden" name="objid" id="objid" value="0">
             <input type="hidden" name="constrid" id="constrid" value="0">
             <input type="hidden" name="decisionvarid" id="decisionvarid" value="0">
-			<table style="width: 900px">
-				<col style="width: 450px;">
+			<table style="width: 1070px">
+				<col style="width: 620px;">
 				<col style="width: 450px;">
 				<!--Edit genetic algorithm optimization set-->
 				<tr><td colspan="2"><h2><spring:message code="edit_genetic_algorithm_optimization_set"/></h2></td></tr>
@@ -120,15 +123,20 @@ function deleteDecisionVariable(decisionvarid) {
 							</tr>
 							<tr>
 								<td>
-									<table class="tablestyle" style="width: 450px">
+									<table class="tablestyle" style="width: 620px">
+										<col style="width: 100px;">
+										<col style="width: 50px;">
+										<col style="width: 250px;">
+										<col style="width: 80px;">
+										<col style="width: 80px;">
 										<tr>
                                             <th>Name</th>
 											<!--Optimization Sense -->
 											<th><spring:message code="optimization_sense"/></th>
 											<!-- Expression -->
 											<th><spring:message code="expression"/></th>
-											<th></th>
-                                            <th></th>
+											<th>Edit</th>
+                                            <th>Remove</th>
 										</tr>
 										
 										<c:forEach items="${objFuncs}" var="function">
@@ -141,10 +149,10 @@ function deleteDecisionVariable(decisionvarid) {
                                                  </c:choose>
                                             </td>
 											<td>${function.expression}</td>
-                                            <td><a href="editsgobjfunction.html?objid=${function.obtfunctionid}">
+                                            <td><a href="editsgobjfunction.html?obtfunctionid=${function.obtfunctionid}">
                                             <button type="button"><spring:message code="edit"/></button></a></td>
                                             <td><input type="submit" value="Delete" onClick="deleteObjective(${function.obtfunctionid})"></td>
-                                        </tr>
+                                        </tr>	
 										</c:forEach>
 									</table>
 								</td>
@@ -154,7 +162,7 @@ function deleteDecisionVariable(decisionvarid) {
 									<!-- Optimization sense and expression Create,Delete and Import functions-->
 									<a href="editsgobjfunction.html"><button type="button" style="width: 100px">
 									<spring:message code="create"/></button></a>
-									<a href="addsgobjfunction.html"><button type="button" style="width: 100px">Add</button></a>
+									<a href="addsgobjfunction.html"><button type="button" style="width: 100px">Import</button></a>
 								</td>
 							</tr>
 							<tr height="10"></tr>
@@ -164,14 +172,20 @@ function deleteDecisionVariable(decisionvarid) {
 							</tr>
 							<tr>
 								<td>
-									<table class="tablestyle" style="width: 450px">
+									<table class="tablestyle" style="width: 620px">
+										<col style="width: 110px;">
+										<col style="width: 150px;">
+										<col style="width: 100px;">
+										<col style="width: 100px;">
+										<col style="width: 80px;">
+										<col style="width: 80px;">
 										<tr>
                                             <th>Name</th>
 											<th><spring:message code="type"/></th>
 											<th>Lower bound</th>
 											<th>Upper bound</th>
-                                            <th></th>
-                                            <th></th>
+                                            <th>Edit</th>
+                                            <th>Remove</th>
 										</tr>
                                         <c:forEach items="${decVars}" var="decvar">
                                         <tr>
@@ -200,7 +214,13 @@ function deleteDecisionVariable(decisionvarid) {
 							</tr>
 							<tr>
 								<td>
-									<table class="tablestyle" style="width: 450px">
+									<table class="tablestyle" style="width: 620px">
+										<col style="width: 150px;">
+										<col style="width: 160px;">
+										<col style="width: 75px;">
+										<col style="width: 75px;">
+										<col style="width: 80px;">
+										<col style="width: 80px;">
 										<tr>
 											<!-- Name -->
 											<th><spring:message code="name"/></th>
@@ -208,8 +228,8 @@ function deleteDecisionVariable(decisionvarid) {
 											<th><spring:message code="expression"/></th>
 											<th>Lower bound</th>
 											<th>Upper bound</th>
-											<th></th>
-                                            <th></th>
+											<th>Edit</th>
+                                            <th>Remove</th>
 										</tr>
 										
 										<c:forEach items="${constraints}" var="constraint">
@@ -229,7 +249,6 @@ function deleteDecisionVariable(decisionvarid) {
 							<tr>
 								<td>
                                     <a href="editsgconstraint.html"><button type="button" style="width: 100px"><spring:message code="create"/></button></a>
-                                    <a href="addsgconstraint.html"><button type="button" style="width: 100px"><spring:message code="add"/></button></a>
 								</td>
 							</tr>
 							<tr height="10"></tr>

@@ -859,11 +859,8 @@ public class ProjectController {
         }
         securityAuthorization.atLeastGuest_guest(project);
 
-        model.remove("project");
-        model.remove("scenario");
-        model.remove("optimizationset");
-        model.remove("scengenerator");
-        model.remove("optresults");
+        controllerService.clearSession(model, request);
+        
         return "start";
     }	
 

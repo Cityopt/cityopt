@@ -72,9 +72,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 
 					<tr>
 						<td>
-					
-						
-							<form action="extparamsets.html" method="post">							
+							<form action="${postpage}" method="post">							
 								<!-- csrt support (version 4.0) -->
 									<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 								
@@ -172,9 +170,9 @@ var getUrlParameter = function getUrlParameter(sParam) {
 										<!-- Submit button -->
 
 										<!-- Close button -->
-										<td><input name="index" title="${submit_externalparameter}" type="submit" value="<spring:message code="select" />"></td>
+										<td><input name="index" title="${submit_externalparameter}" type="submit" value="<spring:message code="ok" />"></td>
 										<td align="right">
-											<a href="editoptimizationset.html">
+											<a href="${backpage}">
 												<button	type="button" title="${tooltip_close}">
 													<spring:message code="close" />
 												</button>
