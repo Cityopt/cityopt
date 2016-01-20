@@ -66,7 +66,7 @@
                                     </table>
                                 </td>
                             </tr>
-                            <tr height="20"></tr>
+                            <tr height="10"></tr>
                             <tr>
                                 <td align="right"><a href="geneticalgorithm.html"><button type="button">Close</button></a></td>
                             </tr>

@@ -37,14 +37,15 @@
 							    <th>Abort</th>
 							</tr>
 						
-							<c:forEach items="${optSets}" var="optSet">
+							<c:forEach items="${optRuns}" var="optRun">
 							<tr>
-								<td>${optSet.id}</td>
-								<td>${optSet.started}</td>
-								<td>${optSet.deadline}</td>
-								<td>${optSet.status}</td>
+								<td>${optRun.id}</td>
+								<td>${optRun.started}</td>
+								<td>${optRun.deadline}</td>
+								<td>${optRun.status}</td>
 								<td>
-									<a href="abortgarun.html?id=${optSet.id}">
+									<a onclick="return confirm('Are you sure you want to delete')" 
+										href="abortgarun.html?id=${optRun.id}">
 										<button align="right"  type="button" value="Abort">
 										Abort</button>
 									</a>
