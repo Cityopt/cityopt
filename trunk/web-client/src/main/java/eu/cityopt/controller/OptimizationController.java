@@ -1453,10 +1453,13 @@ public class OptimizationController {
             optResults = dbOptService.searchConstEval(project.getPrjid(), optSet.getOptid(), 5);
         } catch (ParseException e) {
             e.printStackTrace();
+            model.put("error", e.getMessage());
         } catch (ScriptException e) {
             e.printStackTrace();
+            model.put("error", e.getMessage());
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
+            model.put("error", e.getMessage());
         }
 
         UserSession userSession = (UserSession) model.get("usersession");
@@ -2751,7 +2754,7 @@ public class OptimizationController {
             if (runInfo != null) {
             	model.put("runinfo", runInfo.toString());
             } else {
-            	model.put("runinfo", "-");
+            	//model.put("runinfo", "-");
             }
             
             List<ComponentDTO> inputComponents = pickInputComponents(modelParams, components);
@@ -2816,6 +2819,7 @@ public class OptimizationController {
             } catch (ConfigurationException | ParseException | ScriptException
                 | IOException e) {
                 e.printStackTrace();
+                model.put("error", e.getMessage());
                 return getGeneticAlgorithm(project, scenGen, model);
             }
         }

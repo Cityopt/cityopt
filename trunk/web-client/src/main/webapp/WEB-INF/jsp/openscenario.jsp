@@ -28,14 +28,12 @@ margin-left: 5%;
 <body>
 <table cellspacing="0px" cellpadding="0px">
 	<tr>
-		<td>
+		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		
-		
 		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:800px;width:800px;overflow:auto">
+			<div style="overflow:scroll;height:100%;width:800px;overflow:auto">
 			
 			<!-- Open scenario -->
 			<h2> <spring:message code="open_scenario"/></h2>
