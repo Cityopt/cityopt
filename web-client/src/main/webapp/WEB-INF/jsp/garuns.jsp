@@ -18,7 +18,7 @@
 		<td width="30"></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:800px;width:800px;overflow:auto">
-			<h2>Running genetic optimizations</h2>
+			<h2><spring:message code="running_genetic_optimizations"/></h2>
 			<table>
 				<tr>
 					<td>

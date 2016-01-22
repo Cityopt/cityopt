@@ -30,6 +30,11 @@
 		<td valign="top">
 			<table>
 				<tr>
+					<td class="error">
+						${error}
+					</td>
+				</tr>
+				<tr>
 					<td>
 						<c:choose>
 						  <c:when test="${optconstid > 0}">

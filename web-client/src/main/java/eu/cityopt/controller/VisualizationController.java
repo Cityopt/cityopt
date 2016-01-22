@@ -10,6 +10,8 @@ import java.util.Set;
 
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.time.Hour;
@@ -992,6 +994,9 @@ public class VisualizationController {
 			
 			if (chart != null)
 			{
+				CategoryPlot categoryPlot = chart.getCategoryPlot();
+				BarRenderer br = (BarRenderer) categoryPlot.getRenderer();
+				br.setMaximumBarWidth(.10); 
 				ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
 			}
 		}

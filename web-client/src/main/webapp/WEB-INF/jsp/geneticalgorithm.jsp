@@ -72,7 +72,7 @@ function deleteDecisionVariable(decisionvarid) {
 								<!-- Name -->
 								<td><spring:message code="name"/>:</td>
 								<td><form:input type="text" path="name" style="width:200px"/></td>
-                                <td align="right"><input type="submit" value="Save" style="width: 150px"></td>
+                                <td align="right"><input type="submit" value="<spring:message code="save"/>" style="width: 150px"></td>
 							</tr>
                             <tr>
                             	<td>
@@ -93,27 +93,27 @@ function deleteDecisionVariable(decisionvarid) {
                                     </select>
                                 </td>
                                 <td align="right">
-                                	<a href="exportoptimizationproblem.html"><button type="button" style="width: 150px">Export optimization problem</button></a>
+                                	<a href="exportoptimizationproblem.html"><button type="button" style="width: 150px"><spring:message code="export_optimization_problem"/></button></a>
 								</td>
                             </tr>
                             <tr>
-								<td>Optimization info:</td>
+								<td><spring:message code="optimization_info"/>:</td>
 								<td><font color="red">${error}</font>${runinfo}</td>
 								<td align="right">
-									<input type="submit" name="run" value="Run algorithm" style="width: 150px">
+									<input type="submit" name="run" value="<spring:message code="run_algorithm"/>" style="width: 150px">
 								</td>
 							</tr>
 							<form:form method="POST" action="importoptimizationproblem.html" enctype="multipart/form-data">
         					<tr>
         						<!-- Import optimization set file CSV -->
-        						<td>Import optimization problem</td>
+        						<td><spring:message code="import_optimization_problem"/></td>
 								<td><input id="file" name="file" type="file"/></td>
-								<td align="right"><a href="gachart.html?resetselections=true"><button type="button" style="width: 150px">Show results</button></a></td>
+								<td align="right"><a href="gachart.html?resetselections=true"><button type="button" style="width: 150px"><spring:message code="show_results"/></button></a></td>
 							</tr>
 							<tr>	
        							<td></td>
         						<td>
-        							<input type="submit" value="Import file">
+        							<input type="submit" value="<spring:message code="import_file"/>">
        							</td>
    							</tr>	
     						</form:form>
@@ -136,13 +136,13 @@ function deleteDecisionVariable(decisionvarid) {
 										<col style="width: 80px;">
 										<col style="width: 80px;">
 										<tr>
-                                            <th>Name</th>
+                                            <th><spring:message code="name"/></th>
 											<!--Optimization Sense -->
 											<th><spring:message code="optimization_sense"/></th>
 											<!-- Expression -->
 											<th><spring:message code="expression"/></th>
-											<th>Edit</th>
-                                            <th>Remove</th>
+											<th><spring:message code="edit"/></th>
+                                            <th><spring:message code="remove"/></th>
 										</tr>
 										
 										<c:forEach items="${objFuncs}" var="function">
@@ -150,14 +150,14 @@ function deleteDecisionVariable(decisionvarid) {
                                             <td>${function.name}</td>
                                             <td>
                                                  <c:choose>
-                                                     <c:when test="${function.ismaximise}">Maximize</c:when>
-                                                     <c:otherwise>Minimize</c:otherwise>
+                                                     <c:when test="${function.ismaximise}"><spring:message code="maximize"/></c:when>
+                                                     <c:otherwise><spring:message code="minimize"/></c:otherwise>
                                                  </c:choose>
                                             </td>
 											<td>${function.expression}</td>
                                             <td><a href="editsgobjfunction.html?obtfunctionid=${function.obtfunctionid}">
                                             <button type="button"><spring:message code="edit"/></button></a></td>
-                                            <td><input type="submit" value="Delete" onClick="deleteObjective(${function.obtfunctionid})"></td>
+                                            <td><input type="submit" value="<spring:message code="remove"/>" onClick="deleteObjective(${function.obtfunctionid})"></td>
                                         </tr>	
 										</c:forEach>
 									</table>
@@ -168,7 +168,7 @@ function deleteDecisionVariable(decisionvarid) {
 									<!-- Optimization sense and expression Create,Delete and Import functions-->
 									<a href="editsgobjfunction.html"><button type="button" style="width: 100px">
 									<spring:message code="create"/></button></a>
-									<a href="addsgobjfunction.html"><button type="button" style="width: 100px">Import</button></a>
+									<a href="addsgobjfunction.html"><button type="button" style="width: 100px"><spring:message code="import"/></button></a>
 								</td>
 							</tr>
 							<tr height="10"></tr>
@@ -186,12 +186,12 @@ function deleteDecisionVariable(decisionvarid) {
 										<col style="width: 80px;">
 										<col style="width: 80px;">
 										<tr>
-                                            <th>Name</th>
+                                            <th><spring:message code="name"/></th>
 											<th><spring:message code="type"/></th>
-											<th>Lower bound</th>
-											<th>Upper bound</th>
-                                            <th>Edit</th>
-                                            <th>Remove</th>
+											<th><spring:message code="lower_bound"/></th>
+											<th><spring:message code="upper_bound"/></th>
+                                            <th><spring:message code="edit"/></th>
+                                            <th><spring:message code="remove"/></th>
 										</tr>
                                         <c:forEach items="${decVars}" var="decvar">
                                         <tr>
@@ -201,7 +201,7 @@ function deleteDecisionVariable(decisionvarid) {
                                             <td align="right">${decvar.upperbound}</td>
                                             <td><a href="editsgdecisionvariable.html?decisionvarid=${decvar.decisionvarid}">
                                             <button type="button"><spring:message code="edit"/></button></a></td>
-                                            <td><input type="submit" value="Delete" onClick="deleteDecisionVariable(${decvar.decisionvarid})"></td>
+                                            <td><input type="submit" value="<spring:message code="remove"/>" onClick="deleteDecisionVariable(${decvar.decisionvarid})"></td>
                                         </tr>
                                         </c:forEach>
 									</table>
@@ -232,10 +232,10 @@ function deleteDecisionVariable(decisionvarid) {
 											<th><spring:message code="name"/></th>
 											<!-- Expression -->
 											<th><spring:message code="expression"/></th>
-											<th>Lower bound</th>
-											<th>Upper bound</th>
-											<th>Edit</th>
-                                            <th>Remove</th>
+											<th><spring:message code="lower_bound"/></th>
+											<th><spring:message code="upper_bound"/></th>
+											<th><spring:message code="edit"/></th>
+                                            <th><spring:message code="remove"/></th>
 										</tr>
 										
 										<c:forEach items="${constraints}" var="constraint">
@@ -246,7 +246,7 @@ function deleteDecisionVariable(decisionvarid) {
                                             <td align="right">${constraint.upperbound}</td>
                                             <td><a href="editsgconstraint.html?constrid=${constraint.optconstid}">
                                             <button type="button"><spring:message code="edit"/></button></a></td>
-                                            <td><input type="submit" value="Delete" onClick="deleteConstraint(${constraint.optconstid})"></td>
+                                            <td><input type="submit" value="<spring:message code="remove"/>" onClick="deleteConstraint(${constraint.optconstid})"></td>
 									   	</tr>
 										</c:forEach>
 									</table>
@@ -260,7 +260,7 @@ function deleteDecisionVariable(decisionvarid) {
 							</tr>
 							<tr height="10"></tr>
 							<tr>
-								<td><b>External parameter set</b></td>
+								<td><b><spring:message code="external_parameter_set"/></b></td>
 							</tr>
 							<tr>
 								<td>
@@ -282,7 +282,7 @@ function deleteDecisionVariable(decisionvarid) {
 							<col style="width: 270px;">
 							
 							<tr>
-								<td><b>Model input parameters</b></td>
+								<td><b><spring:message code="model_input_parameters"/></b></td>
 							</tr>
 							<tr height="10"></tr>
 							<tr><td colspan="2">Component:
@@ -305,9 +305,9 @@ function deleteDecisionVariable(decisionvarid) {
 									<table class="tablestyle" style="width: 450px">
 										<tr>
 											<th><spring:message code="parameter"/></th>
-											<th>Value(s)</th>
+											<th><spring:message code="value"/></th>
                                             <th><spring:message code="unit"/></th>
-											<th>Group</th>
+											<th><spring:message code="group"/></th>
 										</tr>
                                         <c:forEach items="${modelparams}" var="mp">
                                         <tr class="Component${mp.inputparameter.componentComponentid} ModelParameter">

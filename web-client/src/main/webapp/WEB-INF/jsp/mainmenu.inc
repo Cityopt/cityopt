@@ -14,13 +14,13 @@
 	<td>
 		<table cellpadding="0" cellspacing="0">
 			<tr>
-				<td>Version: </td><td>${version}</td>
+				<td><spring:message code="version"/>: </td><td>${version}</td>
 			</tr>
 			<tr>
-				<td>Build date: </td><td>20.11.2015</td>
+				<td><spring:message code="build_date"/>: </td><td>20.11.2015</td>
 			</tr>
 			<tr>
-				<td>User:
+				<td><spring:message code="user"/>:
 				
 				</td><td><%= ((org.springframework.security.core.userdetails.UserDetails)org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername() %>
 				<!--${user.name}-->
@@ -316,7 +316,7 @@
 		<tr>
 			<td></td>
 			<td>
-				<a href="garuns.html">Running genetic optimizations</a>
+				<a href="garuns.html"><spring:message code="running_genetic_optimizations"/></a>
 			</td>
 		</tr>
 	</c:when>
@@ -331,7 +331,7 @@
 		<tr>
 			<td></td>
 			<td>
-				Running genetic optimizations
+				<spring:message code="running_genetic_optimizations"/>
 			</td>
 		</tr>
 	</c:otherwise>
@@ -355,7 +355,7 @@
 		<tr>
 			<td></td>
 			<td>
-				<a href="timeserieschart.html">Time series chart</a>
+				<a href="timeserieschart.html"><spring:message code="time_series_chart"/></a>
 			</td>
 		</tr>
 	</c:when>
@@ -363,7 +363,7 @@
 		<tr>
 			<td></td>
 			<td>
-				Time series chart
+				<spring:message code="time_series_chart"/>
 			</td>
 		</tr>
 	</c:otherwise>
@@ -373,7 +373,7 @@
 		<tr>
 			<td></td>
 			<td>
-				<a href="summarychart.html">Summary chart</a>
+				<a href="summarychart.html"><spring:message code="summary_chart"/></a>
 			</td>
 		</tr>
 	</c:when>
@@ -381,7 +381,7 @@
 		<tr>
 			<td></td>
 			<td>
-				Summary chart
+				<spring:message code="summary_chart"/>
 			</td>
 		</tr>
 	</c:otherwise>
@@ -391,7 +391,7 @@
 		<tr>
 			<td></td>
 			<td>
-				<a href="gachart.html">Genetic optimization chart</a>
+				<a href="gachart.html"><spring:message code="genetic_optimization_chart"/></a>
 			</td>
 		</tr>
 	</c:when>
@@ -399,7 +399,7 @@
 		<tr>
 			<td></td>
 			<td>
-				Genetic optimization chart
+				<spring:message code="genetic_optimization_chart"/>
 			</td>
 		</tr>
 	</c:otherwise>
@@ -410,7 +410,7 @@
 			<td></td>
 			<td>
 				<a href="viewtable.html">
-				Time series table</a>
+				<spring:message code="time_series_table"/></a>
 			</td>
 		</tr>
 	</c:when>
@@ -418,7 +418,7 @@
 		<tr>
 			<td></td>
 			<td>
-				Time series table
+				<spring:message code="time_series_table"/>
 			</td>
 		</tr>
 	</c:otherwise>

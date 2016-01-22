@@ -10,45 +10,21 @@
 <title>CityOpt Delete project</title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
-<style type="text/css">	
-	table.tablestyle{
-		margin-left: 35%;
-		margin-top: 5%;
-		width: 500px;
-		border: 1px;	
-	}
-	
-	td.mainmenu{
-	position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 260px;
-	}
-	
-	h2{
-	margin-left: 35%;
-	margin-top: 5%;
-	}
-	
-</style>
 
 </head>
 
 <body>
 	<table cellspacing="0px" cellpadding="0px">
 		<tr>
-			<td class="mainmenu" ><%@ include file="mainmenu.inc"%></td>
+			<td valign="top"><%@ include file="mainmenu.inc"%></td>
 			<td width="30"></td>
 			<td valign="top">
-				<div
-					style="overflow: scroll; height: 100%; width: 100%; overflow: auto">
+				<div style="overflow: scroll; height: 100%; width: 100%; overflow: auto">
 					<form:form method="post" action="deleteproject.html">
 						<!-- Delete Project -->
 						<h2><spring:message code="delete_project"/></h2>
 						
-						
-						<table class="tablestyle" width="400" border="1">
-
+						<table class="tablestyle" width="400">
 							<tr class="DeleteTables" height="20">
 								<!-- Name -->
 								<th><spring:message code="name"/></th>

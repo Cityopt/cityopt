@@ -38,46 +38,46 @@ margin-left: 5%;
 			<div style="overflow:scroll;height:100%;width:900px;overflow:auto">
 			<h2 class="error">${error}</h2>
 			<h2><spring:message code="openproject"/></h2>
-			<table class="tablestyle" width="600" border="1">
+			<table class="tablestyle" width="600">
 				<col style="width:150px">	
 				<col style="width:50px">	
 				<col style="width:100px">	
 				<col style="width:250px">	
 				<col style="width:50px">	
 				
-			<tr height="20">
-			    <th><spring:message code="name"/></th>
-			    <th>Id</th>
-			    <th><spring:message code="location"/></th>
-			    <th><spring:message code="description"/></th>
-			    <th><spring:message code="open"/></th>
-			    <th><spring:message code="clone"/></th>
-			</tr>
+				<tr height="20">
+				    <th><spring:message code="name"/></th>
+				    <th>Id</th>
+				    <th><spring:message code="location"/></th>
+				    <th><spring:message code="description"/></th>
+				    <th><spring:message code="open"/></th>
+				    <th><spring:message code="clone"/></th>
+				</tr>
 			
-			<c:forEach items="${projects}" var="project">
-			
-				<tr>
-					<td>${project.name}</td>
-			    	<td>${project.prjid}</td>
-					<td>${project.location}</td>			
-					<td>${project.description}</td>			
-					
-					<td>
-						<c:set var="tooltip_open"><spring:message code="tooltip_open_project"/></c:set>
-						<a href="<c:url value='editproject.html?prjid=${project.prjid}'/>" title="${tooltip_open}">
-							<button align="right"  type="button" value="Open"><spring:message code="open"/></button>
-						</a>
-					</td>
-					
-					<td>
-						<c:set var="tooltip_clone"><spring:message code="tooltip_clone_project"/></c:set>
-						<a href="<c:url value='cloneproject.html?projectid=${project.prjid}'/>"title=" ${tooltip_clone}">
-							<button align="right" type="button" value="Clone"><spring:message code="clone"/></button>
-						</a>
-					</td>
-			   	</tr>
-			  
-			</c:forEach>
+				<c:forEach items="${projects}" var="project">
+				
+					<tr>
+						<td>${project.name}</td>
+				    	<td>${project.prjid}</td>
+						<td>${project.location}</td>			
+						<td>${project.description}</td>			
+						
+						<td>
+							<c:set var="tooltip_open"><spring:message code="tooltip_open_project"/></c:set>
+							<a href="<c:url value='editproject.html?prjid=${project.prjid}'/>" title="${tooltip_open}">
+								<button align="right"  type="button" value="Open"><spring:message code="open"/></button>
+							</a>
+						</td>
+						
+						<td>
+							<c:set var="tooltip_clone"><spring:message code="tooltip_clone_project"/></c:set>
+							<a href="<c:url value='cloneproject.html?projectid=${project.prjid}'/>"title=" ${tooltip_clone}">
+								<button align="right" type="button" value="Clone"><spring:message code="clone"/></button>
+							</a>
+						</td>
+				   	</tr>
+				  
+				</c:forEach>
 			</table>
 			</div>
 		</td>

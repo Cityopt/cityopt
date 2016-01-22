@@ -15,26 +15,23 @@
 <body>
 <table cellspacing="0px" cellpadding="0px">
 	<tr>
-		<td>
+		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width="30"></td>
 		<td valign="top">
 			<!--Delete scenario title-->	
-			<div style="overflow:scroll;height:1000px;width:1000px;overflow:auto">
+			<div style="overflow:scroll;height:100%;width:1000px;overflow:auto">
 			<form:form method="post" action="deletescenario.html">			
 			<h2><spring:message code="delete_scenario"/></h2>
 			<table class="tablestyle" width="600" border="1">
 				<col style="width:200px">	
-				<col style="width:50px">
 				<col style="width:300px">
 				<col style="width:50px">
 				
 				<tr height="20">
 					<!-- Name -->
 				    <th><spring:message code="name"/></th>
-				    <!-- ID -->
-				    <th><spring:message code="id"/></th>
 				    <!-- Description -->
 				    <th><spring:message code="description"/></th>
 				    <!-- Delete -->
@@ -44,7 +41,6 @@
 			<c:forEach items="${scenarios}" var="scenario">
 				<tr>
 					<td>${scenario.name}</td>
-					<td>${scenario.scenid}</td>			
 					<td>${scenario.description}</td>
 			    	<td>
 			    		<!-- delete button -->

@@ -104,7 +104,7 @@
 				<tr>
 				<!--Create metric-->
 					<td align="right">
-						<a href="exportmetrics.html"><button type="button">Export metrics</button></a>
+						<a href="exportmetrics.html"><button type="button"><spring:message code="export_metrics"/></button></a>
 			   			<c:set var="tooltipcreatemetric"><spring:message code="tooltip_create_metric"/></c:set>
 			   			<a href="createmetric.html?reset=true"><button title="${tooltipcreatemetric}" type="button">
 			   			<spring:message code="create_metric"/></button></a>

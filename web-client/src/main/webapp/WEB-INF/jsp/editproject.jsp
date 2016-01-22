@@ -83,7 +83,7 @@
 							</form:form>
 							<tr height=30></tr>	
 							<tr>
-								<td>Loaded energy model:</td>
+								<td><spring:message code="loaded_energy_model"/>:</td>
 								<td>${loadedEnergyModel}</td>
 							</tr>
 							<c:choose>
@@ -92,7 +92,7 @@
 										<td></td>
 										<td>
 												<button type="button" onmousedown="openModelInfoWindow()">
-													Show model info		
+													<spring:message code="show_model_info"/>		
 												</button> 
 										</td>
 									</tr>

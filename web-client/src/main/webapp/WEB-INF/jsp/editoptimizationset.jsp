@@ -98,7 +98,7 @@
 							
 							</tr>
 							<tr>						
-								<td>Optimization info:</td>
+								<td><spring:message code="optimization_info"/>:</td>
 								<td><font color="red">${error}</font>${usersession.getOptResultString()}</td>
 								
 								<td></td>
@@ -226,7 +226,7 @@
 							<tr height="20"></tr>
 							<tr>
 								<!-- External parameter value set -->
-								<td><b><spring:message code="external_parameter_value_set"/></b></td>
+								<td><b><spring:message code="external_parameter_set"/></b></td>
 							</tr>
 							<tr>
 								<td>

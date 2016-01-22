@@ -37,19 +37,19 @@
 						<table>
 							<tr>
 								<td>
-									<h2>Time series chart</h2>
+									<h2><spring:message code="time_series_chart"/></h2>
 								</td>
 							</tr>
 							<tr>
 								<td>
 									<!-- Scenario (simulation name) simulation status: (Status)  -->
-									Active scenario: 
+									<spring:message code="active_scenario"/>: 
 								</td>
 								<td>${scenario.name}</td>
 							</tr>
 							<tr>
 								<td>
-									Simulation status: 
+									<spring:message code="simulation_status"/>: 
 								</td>
 								<td>
 									${status}
@@ -64,7 +64,7 @@
 					<td>
 						<table>
 							<tr>
-								<td><p>To draw time series or scatter plot charts, please select 1 or more output or external parameters.</p>
+								<td><p><spring:message code="time_series_chart_instructions"/></p>
 								</td>
 								
 							</tr>

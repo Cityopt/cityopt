@@ -2558,9 +2558,24 @@ public class OptimizationController {
         if ((constraint.getLowerbound() == null && constraint.getUpperbound() == null)
                 || StringUtils.isBlank(constraint.getName())
                 || StringUtils.isBlank(constraint.getExpression())) {
+        	model.put("error", "Please fill all the fields");
             return getEditSGConstraint(project, constraint, model, null);
         }
 
+        OptConstraintDTO testConstraint = null;
+        
+        try {
+        	testConstraint = optConstraintService.findByNameAndProject(constraint.getName(), project.getPrjid());
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+        
+        if (testConstraint != null) {
+        	// Constraint already exists
+        	model.put("error", "Constraint already exists");
+        	return getEditSGConstraint(project, constraint, model, null);
+        }
+        
         constraint.setProject(project);
         try {
             if (constrid > 0) {
