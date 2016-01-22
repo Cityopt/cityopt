@@ -75,6 +75,7 @@ public class OptConstraintServiceImpl implements OptConstraintService {
 		return modelMapper.map(oc, OptConstraintDTO.class);
 	}
 
+	@Transactional
 	@Override
 	public OptConstraintDTO findByNameAndProject(String name, int prjid)
 			throws EntityNotFoundException {
