@@ -35,7 +35,7 @@
 					<td></td>
 					<td height="20">
 						<!-- Scenario parameters -->
-						<h2><spring:message code="scenario_parameters"/></h2>
+						<h2><spring:message code="input_parameters"/></h2>
 					</td>
 				</tr>
 				<c:choose>

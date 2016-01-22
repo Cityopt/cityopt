@@ -37,7 +37,7 @@
 				<tr>
 					<td colspan="2" height="80">
 						<!-- View table -->
-						<h2>Time series table</h2>
+						<h2><spring:message code="time_series_table"/></h2>
 					</td>
 				</tr>
 				<tr>
@@ -122,7 +122,7 @@
 												</table>
 											</td>
 											<td></td>
-											<td valign="top"><b>Metric values</b>
+											<td valign="top"><b><spring:message code="metric_values"/></b>
 												<table class="tablestyle" width="250px">
 													<col style="width: 150px">
 													<col style="width: 100px">
@@ -131,7 +131,7 @@
 													<!-- Name -->
 													    <th><spring:message code="name"/></th>
 													<!-- Value -->
-													     <th>Value</th>
+													     <th><spring:message code="value"/></th>
 													</tr>
 													
 													<c:forEach items="${metricVals}" var="metricVal">

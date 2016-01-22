@@ -166,7 +166,7 @@ margin-bottom: 10%;
 															</tr>
 															<tr height="20"></tr>
 															<tr>
-																<td><b>Project external parameters</b></td>
+																<td><b><spring:message code="project_external_parameters"/></b></td>
 															</tr>
 															<tr>
 																<td>
@@ -219,7 +219,7 @@ margin-bottom: 10%;
 																		<tr>
 																			<td>
 																				<!-- Import external parameter -->					
-																				<b>Import external parameter</b>
+																				<b><spring:message code="import_external_parameter"/></b>
 																			</td>
 																			<td></td>
 																			<td></td>
@@ -228,7 +228,7 @@ margin-bottom: 10%;
 												        					<tr>
 												        						<td>Import external time series file (CSV)</td>
 																				<td><input id="file" name="file" type="file"/></td>
-																				<td align="right"><input type="submit" value="Import file"></td>	
+																				<td align="right"><input type="submit" value="<spring:message code="import_file"/>"></td>	
 																			</tr>
 											    						</form:form>
 											    						<tr height="20"></tr>

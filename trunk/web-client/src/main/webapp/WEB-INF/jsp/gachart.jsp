@@ -28,8 +28,8 @@
 				<col style="width:30px">
 				<col style="width:800px">
 				<tr>
-					<td><h2>Genetic optimization results</h2>
-						<p>To draw a scatter plot, please select 1 or more scenarios and 2 objective functions.</p></td>
+					<td><h2><spring:message code="genetic_optimization_chart"/></h2>
+						<p><spring:message code="genetic_optimization_chart_instructions"/></p></td>
 					<td></td>
 					<td></td>
 				</tr>
@@ -82,7 +82,7 @@
 							<tr>
 								<td>
 									<!-- Objective functions -->
-									<b>Objective functions</b>
+									<b><spring:message code="objective_functions"/></b>
 								</td>
 							</tr>
 							<tr>

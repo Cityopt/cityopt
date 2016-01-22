@@ -126,10 +126,10 @@ margin-right:10%;
     													
     						<form:form method="POST" action="importoptimizationset.html" enctype="multipart/form-data">
 	        					<tr>
-	        						<td><b>Import database optimization set</b></td>
+	        						<td><b><spring:message code="import_database_optimization_set"/></b></td>
 									<!-- Import optimization set file CSV -->
-	        						<td>Database optimization set file (CSV)</td>
-									<td>Time series</td>
+	        						<td><spring:message code="database_optimization_set_file"/> (CSV)</td>
+									<td><spring:message code="time_series"/></td>
 								</tr>
 								<tr>
 	        						<!-- Import external parameter sets (CSV) -->
@@ -140,7 +140,7 @@ margin-right:10%;
 								<tr>	
 	       							<td></td>
 	        						<td>
-	        							<input type="submit" value="Import file">
+	        							<input type="submit" value="<spring:message code="import_files"/>">
 	       							</td>
 	   							</tr>	
     						</form:form>
@@ -148,9 +148,9 @@ margin-right:10%;
 							</tr>
     						<form:form method="POST" action="importoptimizationproblem.html" enctype="multipart/form-data">
 	        					<tr>
-	        						<td><b>Import genetic optimization set</b></td>
-									<td>Genetic optimization set file (CSV)</td>
-									<td>Time series (CSV)</td>
+	        						<td><b><spring:message code="import_genetic_optimization_set"/></b></td>
+									<td><spring:message code="genetic_optimization_file"/> (CSV)</td>
+									<td><spring:message code="time_series"/> (CSV)</td>
 								</tr>
 								<tr>
 	        						<!-- Import external parameter sets (CSV) -->
@@ -162,7 +162,7 @@ margin-right:10%;
 								<tr>	
 	       							<td></td>
 	        						<td>
-	        							<input type="submit" value="Import files">
+	        							<input type="submit" value="<spring:message code="import_files"/>">
 	       							</td>
 	   							</tr>	
     						</form:form>
@@ -201,8 +201,8 @@ margin-right:10%;
 											<!-- Import scenarios -->					
 												<b><spring:message code="import_scenarios"/></b>
 											</td>
-											<td>Scenario file</td>
-											<td>Time series file</td>
+											<td><spring:message code="scenario_file"/></td>
+											<td><spring:message code="time_series_file"/></td>
 										</tr>
 										<form:form method="POST" action="importscenarios.html" enctype="multipart/form-data">
 				        					<tr>
@@ -214,7 +214,7 @@ margin-right:10%;
 				       							<td></td>
 												<td>
 				        							<!-- Import file -->
-				        							<input type="submit" value="Import files">
+				        							<input type="submit" value="<spring:message code="import_files"/>">
 				       							</td>
 				   							</tr>	
 			    						</form:form>

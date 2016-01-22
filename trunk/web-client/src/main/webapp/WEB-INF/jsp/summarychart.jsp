@@ -32,7 +32,7 @@
 				<col style="width:30px">
 				<col style="width:800px">
 				<tr>
-					<td><h2>Summary chart</h2></td>
+					<td><h2><spring:message code="summary_chart"/></h2></td>
 					<td></td>
 					<td></td>
 				</tr>
@@ -52,8 +52,8 @@
 
 							<tr>
 								<td>
-									<p>To draw a scatter plot or a bar chart, please select 1 or more scenarios and 2 metrics.</p>
-									<p>To draw a pie chart, please select 1 or more scenario and 1 metric. And select type pie chart.</p>
+									<p><spring:message code="summary_chart_instructions_1"/></p>
+									<p><spring:message code="summary_chart_instructions_2"/></p>
 								</td>
 							</tr>
 				
@@ -73,7 +73,7 @@
 										<tr height="20">
 											<!-- Select --><th><spring:message code="select"/></th>
 										    <!-- Name --> <th><spring:message code="name"/></th>
-										    <th>Simulation</th>
+										    <th><spring:message code="simulation"/></th>
 										</tr>
 														
 										<c:forEach items="${scenarios}" var="scenario">

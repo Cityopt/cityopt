@@ -75,7 +75,7 @@
 										<tr>
 											<td>
 												<a href="exportsimulationresults.html"><button style="width: 150px" type="button">
-														Export simulation results
+														<spring:message code="export_simulation_results"/>
 													</button></a>
 											</td>
 										</tr>
@@ -110,12 +110,12 @@
 							<tr>
 								<!-- Scenario simulation status -->
 								<td><spring:message code="scenario_simulation_status"/>:</td>
-								<td>${status} (Refresh by reloading the page)</td>
+								<td>${status} (<spring:message code="refresh_by_reloading_page"/>)</td>
 							</tr>
 							<tr>
-								<td>Simulation info:</td>
+								<td><spring:message code="simulation_info"/>:</td>
 								<td>
-									<button type="button" style="width: 120px" onclick="openSimulationInfoWindow()">Show simulation info</button>		
+									<button type="button" style="width: 150px" onclick="openSimulationInfoWindow()"><spring:message code="show_simulation_info"/></button>		
 								</td>
 							</tr>
 							<tr>
@@ -138,7 +138,7 @@
 								<td></td>
 								<!-- Save dates -->
 								<c:set var="tooltip_savedates"><spring:message code="tooltip_savedates"/></c:set>
-								<td><input type="submit" title="${tooltip_savedates}" value="<spring:message code="save_dates"/>" style="width:120px"/></td>
+								<td><input type="submit" title="${tooltip_savedates}" value="<spring:message code="save_dates"/>" style="width:150px"/></td>
 							</tr>
 							</form:form>
 							
