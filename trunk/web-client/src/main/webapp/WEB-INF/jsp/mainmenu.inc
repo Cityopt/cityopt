@@ -17,7 +17,7 @@
 				<td><spring:message code="version"/>: </td><td>${version}</td>
 			</tr>
 			<tr>
-				<td><spring:message code="build_date"/>: </td><td>20.11.2015</td>
+				<td><spring:message code="build_date"/>: </td><td>27.1.2016</td>
 			</tr>
 			<tr>
 				<td><spring:message code="user"/>:

@@ -373,7 +373,7 @@ public class UserController {
     @RequestMapping(value="/loginOK", method=RequestMethod.GET)
     public String loginOK(Map<String, Object> model){
 		// We check model because project dosen't exist yet.
-    		
+		controllerService.clearSession(model, null);
 		AppUserDTO user = new AppUserDTO();
 		user.setName(this.getPrincipal());
 		model.put("user", user);
