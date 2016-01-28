@@ -27,10 +27,10 @@
 		</td>
 		<td width="20"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:100%;width:1130px;overflow:auto">
-			<table width="1100px">
+			<div style="overflow:scroll;height:100%;width:1150px;overflow:auto">
+			<table>
 				<col style="width:300px">
-				<col style="width:30px">
+				<col style="width:50px">
 				<col style="width:800px">
 				<tr>
 					<td>

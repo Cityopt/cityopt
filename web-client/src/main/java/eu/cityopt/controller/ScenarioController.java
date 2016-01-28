@@ -648,7 +648,8 @@ public class ScenarioController {
 	            importExportService.importScenarioData(project.getPrjid(), scenarios, "Imported from " + file.getOriginalFilename(), timeSeries);
 	        } catch (Exception e) {
 	            e.printStackTrace();
-	            return "You failed to upload => " + e.getMessage();
+            	model.put("error", e.getStackTrace().toString());
+                return "error";
 	        }
 	    } else {
 	    }

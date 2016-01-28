@@ -1340,7 +1340,8 @@ public class OptimizationController {
                 System.out.println("Import done");
             } catch (Exception e) {
                 e.printStackTrace();
-                return "You failed to upload => " + e.getMessage();
+            	model.put("error", e.getStackTrace().toString());
+                return "error";
             }
         } else {
         }
@@ -1389,7 +1390,8 @@ public class OptimizationController {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                return "You failed to upload => " + e.getMessage();
+            	model.put("error", e.getStackTrace().toString());
+                return "error";
             }
         } else {
         }
