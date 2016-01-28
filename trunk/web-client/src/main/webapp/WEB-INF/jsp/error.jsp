@@ -24,6 +24,7 @@
 			<h3><spring:message code="error"/></h3>
 			<!-- Please try again later! -->
 			<p><spring:message code="please_try_again"/>!</p>
+			<p>${error}</p>
 		</td>
      </tr>
 </table>

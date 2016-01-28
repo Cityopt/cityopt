@@ -435,7 +435,8 @@ public class ProjectController {
             } catch (Exception e) {
             	model.put("success",false);
             	e.printStackTrace();
-                return "You failed to upload => " + e.getMessage();
+            	model.put("error", e.getStackTrace().toString());
+                return "error";
             }
         } else {
         }
@@ -465,9 +466,9 @@ public class ProjectController {
                 importExportService.importSimulationStructure(project.getPrjid(), structureStream);
                 structureStream.close();
             } catch (Exception e) {
-            	//System.out.println("" + e.getStackTrace().toString());
             	e.printStackTrace();
-                return "You failed to upload => " + e.getStackTrace().toString();
+            	model.put("error", e.getStackTrace().toString());
+                return "error";
             }
         } else {
         }
