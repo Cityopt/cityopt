@@ -32,8 +32,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td><p>Please finish the metric by editing it by hand and by naming it. You can also add functions if needed.</p>
-					<p>Example expression: <i>"integrate(HOUR_HEAT.SP_VALUE, 0, Infinity) / 3600"</i></p></td>
+					<td><p><spring:message code="create_metric_instructions_2"/></p></td>
 				</tr>
 				<tr>
 					<td>

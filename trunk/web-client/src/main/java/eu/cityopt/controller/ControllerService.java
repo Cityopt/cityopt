@@ -19,6 +19,7 @@ import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
+import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricValDTO;
 import eu.cityopt.DTO.ProjectDTO;
@@ -34,6 +35,7 @@ import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.MetricValService;
 import eu.cityopt.service.ProjectService;
+import eu.cityopt.service.ScenarioService;
 import eu.cityopt.service.SimulationModelService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
@@ -52,7 +54,10 @@ public class ControllerService {
 	
 	 	@Autowired
 	    ProjectService projectService; 
-	    
+	
+	 	@Autowired
+	    ScenarioService scenarioService; 
+	
 	    @Autowired
 	    ComponentService componentService;
 	    
@@ -412,6 +417,55 @@ public class ControllerService {
 	    	}
 	    	
 	    	model.put("scenarioForms", scenarioForms);
+	    }
+	    
+	    public void initEditScenario(Map<String, Object> model, int projectId, int scenarioId) {
+	    	ScenarioDTO scenario = null;
+			
+			try {
+				scenario = scenarioService.findByID(scenarioId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			String statusMsg = getScenarioStatus(scenario);
+
+			if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+				model.put("disableEdit", true);
+			}
+			else if (statusMsg != null && statusMsg.equals("SUCCESS"))
+			{
+				model.put("disableEdit", true);
+			}
+			
+			model.put("status", statusMsg);
+			
+			List<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
+			
+			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
+			
+			// Get simulation start and end times
+			while(iter.hasNext())
+			{
+				InputParamValDTO inputParamVal = iter.next();
+				String inputName = inputParamVal.getInputparameter().getName();
+				
+				if (inputName.equals("simulation_start"))
+				{
+					model.put("simStart", inputParamVal.getValue());
+				}
+				else if (inputName.equals("simulation_end"))
+				{
+					model.put("simEnd", inputParamVal.getValue());
+				}
+			}
+
+			model.put("scenario", scenario);
+		
+	    	List<ComponentDTO> components = projectService.getComponents(projectId);
+	    	model.put("components", components);
+		
+	    	model.put("inputParamVals", inputParamVals);
 	    }
 	}
 
