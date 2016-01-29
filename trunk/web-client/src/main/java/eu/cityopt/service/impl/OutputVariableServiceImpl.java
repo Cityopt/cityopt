@@ -47,8 +47,12 @@ public class OutputVariableServiceImpl implements OutputVariableService {
 	public OutputVariableDTO save(OutputVariableDTO outVar) {
 		OutputVariable outVarModel = modelMapper.map(outVar, OutputVariable.class);
 		
-		Type type = typeRepository.findOne(outVarModel.getType().getTypeid());		
-		outVarModel.setType(type);
+		if(outVarModel.getType()!=null)
+		{
+			Type type = typeRepository.findOne(outVarModel.getType().getTypeid());
+			outVarModel.setType(type);
+		}
+		
 		outVarModel = outputVariableRepository.save(outVarModel);
 		return modelMapper.map(outVarModel, OutputVariableDTO.class);
 	}
