@@ -298,12 +298,21 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 
 	@Transactional
-	public ProjectDTO save(ProjectDTO projectDTO, int simulationModelId, int extParamValSetId) {
+	public ProjectDTO save(ProjectDTO projectDTO, Integer simulationModelId, Integer extParamValSetId) {
 		Project result = modelMapper.map(projectDTO, Project.class);
-		SimulationModel sm = simulationModelRepository.findOne(simulationModelId);
-		ExtParamValSet epvs = extParamValSetRepository.findOne(extParamValSetId);
-		result.setSimulationmodel(sm);
-		result.setDefaultextparamvalset(epvs);
+		
+		if(simulationModelId!=null)
+		{
+			SimulationModel sm = simulationModelRepository.findOne(simulationModelId);
+			result.setSimulationmodel(sm);
+		}
+		
+		if(extParamValSetId!=null)
+		{
+			ExtParamValSet epvs = extParamValSetRepository.findOne(extParamValSetId);
+			result.setDefaultextparamvalset(epvs);
+		}
+		
 		result = projectRepository.save(result);
 		projectDTO = modelMapper.map(result, ProjectDTO.class);
 		return projectDTO;
@@ -319,7 +328,7 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 
 	@Transactional
-	public ProjectDTO update(ProjectDTO toUpdate, int simulationModelId, int extParamValSetId) throws EntityNotFoundException {
+	public ProjectDTO update(ProjectDTO toUpdate, Integer simulationModelId, Integer extParamValSetId) throws EntityNotFoundException {
 		
 		if(projectRepository.findOne(toUpdate.getPrjid()) == null) {
 			throw new EntityNotFoundException();
