@@ -33,7 +33,7 @@
 				</tr>
 				<tr>
 					<td>
-						<p>Create an expression for the metric by adding parameters, operators and numbers to it.</p>
+						<p><spring:message code="create_metric_instructions"/></p>
 					</td>
 				</tr>
 				<tr>

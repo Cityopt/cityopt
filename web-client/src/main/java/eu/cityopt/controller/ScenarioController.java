@@ -340,44 +340,7 @@ public class ScenarioController {
 
 		if (scenarioid != null)
 		{
-			ScenarioDTO scenario = null;
-			
-			try {
-				scenario = scenarioService.findByID(Integer.parseInt(scenarioid));
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			} catch (EntityNotFoundException e) {
-				e.printStackTrace();
-			}
-			
-			model.put("scenario", scenario);
-			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-			model.put("components", components);
-			List<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
-			model.put("inputParamVals", inputParamVals);
-		
-			UserSession userSession = (UserSession) model.get("usersession");
-			userSession = new UserSession();
-			model.put("usersession", userSession);
-			
-			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
-			
-			// Get simulation start and end times
-			while(iter.hasNext())
-			{
-				InputParamValDTO inputParamVal = iter.next();
-				String inputName = inputParamVal.getInputparameter().getName();
-				
-				if (inputName.equals("simulation_start"))
-				{
-					model.put("simStart", inputParamVal.getValue());
-				}
-				else if (inputName.equals("simulation_end"))
-				{
-					model.put("simEnd", inputParamVal.getValue());
-				}
-			}
-			
+			controllerService.initEditScenario(model, project.getPrjid(), Integer.parseInt(scenarioid));			
 			return "editscenario";
 		}
 		else
@@ -488,47 +451,7 @@ public class ScenarioController {
 		
 		if (scenario != null && scenario.getScenid() > 0)
 		{
-			try {
-				scenario = scenarioService.findByID(scenario.getScenid());
-			} catch (EntityNotFoundException e) {
-				e.printStackTrace();
-			}
-			
-			String statusMsg = controllerService.getScenarioStatus(scenario);
-
-			if (simService.getRunningSimulations().contains(scenario.getScenid())) {
-				model.put("disableEdit", true);
-			}
-			else if (statusMsg != null && statusMsg.equals("SUCCESS"))
-			{
-				model.put("disableEdit", true);
-			}
-			
-			model.put("status", statusMsg);
-			
-			List<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
-			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
-			
-			while(iter.hasNext())
-			{
-				InputParamValDTO inputParamVal = iter.next();
-				String inputName = inputParamVal.getInputparameter().getName();
-				
-				if (inputName.equals("simulation_start"))
-				{
-					model.put("simStart", inputParamVal.getValue().trim());
-				}
-				else if (inputName.equals("simulation_end"))
-				{
-					model.put("simEnd", inputParamVal.getValue().trim());
-				}
-			}
-			
-			model.put("scenario", scenario);
-			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-			model.put("components", components);
-			model.put("inputParamVals", inputParamVals);
-		
+			controllerService.initEditScenario(model, project.getPrjid(), scenario.getScenid());			
 			return "editscenario";
 		}
 		else
@@ -549,7 +472,6 @@ public class ScenarioController {
 			try {
 				project = projectService.findByID(project.getPrjid());
 			} catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -566,30 +488,7 @@ public class ScenarioController {
 				model.put("errorMessage", "This scenario has been updated in the meantime, please reload.");
 			}
 			
-			List<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
-			Iterator<InputParamValDTO> iter = inputParamVals.iterator();
-			
-			while(iter.hasNext())
-			{
-				InputParamValDTO inputParamVal = iter.next();
-				String inputName = inputParamVal.getInputparameter().getName();
-				
-				if (inputName.equals("simulation_start"))
-				{
-					model.put("simStart", inputParamVal.getValue());
-				}
-				else if (inputName.equals("simulation_end"))
-				{
-					model.put("simEnd", inputParamVal.getValue());
-				}
-			}
-			
-			model.put("scenario", scenario);
-			
-			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-			model.put("components", components);
-			
-			model.put("inputParamVals", inputParamVals);
+			controllerService.initEditScenario(model, project.getPrjid(), scenario.getScenid());			
 		}
 		else
 		{
@@ -862,19 +761,9 @@ public class ScenarioController {
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
-		
-		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 
-		if (scenario == null)
-		{
-			return "error";
-		}
-		
-		try {
-			scenario = scenarioService.findByID(scenario.getScenid());
-		} catch (EntityNotFoundException e) {
-			e.printStackTrace();
-		}
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		controllerService.initEditScenario(model, project.getPrjid(), scenario.getScenid());
 		
 		List<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 		Iterator<InputParamValDTO> iter = inputParamVals.iterator();
@@ -899,16 +788,6 @@ public class ScenarioController {
 				model.put("simEnd", inputParamVal.getValue());
 			}
 		}
-		
-		model.put("scenario", scenario);
-		
-		model.put("simStart", simStart);
-		model.put("simEnd", simEnd);
-		
-		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-		model.put("components", components);
-		
-		model.put("inputParamVals", inputParamVals);
 		
 		return "editscenario";
 	}
@@ -1060,12 +939,6 @@ public class ScenarioController {
             
 			InputParamValDTO inputParameterValue = InputParamMAP.get(entry.getKey());
 			inputParameterValue.setValue(entry.getValue());
-			
-			
-            //inputParamValId = entry.getKey();            
-            //String value = entry.getValue();
-            
-    		//int nInputParamValId = Integer.parseInt(inputParamValId);
     		InputParamValDTO updatedInputParamVal = null;
     		
     		try {
@@ -1075,7 +948,6 @@ public class ScenarioController {
     		}
     		
     		updatedInputParamVal.setValue(entry.getValue().trim());
-    		//updatedInputParamVal.setValue(inputParamVal.getValue());
     		updatedInputParamVal.setScenario(scenario);
     		inputParamValService.save(updatedInputParamVal);            
 		}
@@ -1085,33 +957,11 @@ public class ScenarioController {
 		} catch (EntityNotFoundException e1) {
 			e1.printStackTrace();
 		}
-		
-		
-		ComponentDTO selectedComponent = null;
-		//int nSelectedCompId = 0;
-		
-		if (selectedCompId != null)
-		{
-			nSelectedCompId = Integer.parseInt(selectedCompId);
-			try {
-				selectedComponent = componentService.findByID(nSelectedCompId);
-			} catch (EntityNotFoundException e) {
-				e.printStackTrace();
-			}
-			model.put("selectedcompid", selectedCompId);
-			model.put("selectedComponent",  selectedComponent);
-
-			//List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
-			//List<ComponentInputParamDTO> componentInputParamVals = componentInputParamService.findAllByComponentId(nSelectedCompId);
-			model.put("inputParamVals", inputParamVals);
-		}
-
 		model.put("project", project);
 
-		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-		model.put("components", components);
-				
-		return "scenarioparameters";
+		controllerService.initEditScenario(model, project.getPrjid(), scenario.getScenid());
+		
+		return "editscenario";
 	}
 	
 	@RequestMapping(value="scenariovariables",method=RequestMethod.GET)
