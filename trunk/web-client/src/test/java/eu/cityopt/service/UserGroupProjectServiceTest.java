@@ -78,15 +78,13 @@ public class UserGroupProjectServiceTest {
 	
 	@Test
 	public void findUserDetails() {
-		UserDetails details = userGroupProjectService.findUserDetails("Michael");
+		UserDetails details = userGroupProjectService.findUserDetails("Michael2");
 		
 		assertNotNull(details);
 		assertEquals(details.getAuthorities().size(),2);
 		
 		GrantedAuthority[] grantedAuthorities = (GrantedAuthority[])details.getAuthorities().toArray(new GrantedAuthority[details.getAuthorities().size()]);
-		
-		assertEquals("ROLE_Administrator",grantedAuthorities[0].getAuthority());
-		assertEquals("ROLE_Reader",grantedAuthorities[1].getAuthority());				
+		assertEquals("ROLE_Reader",grantedAuthorities[0].getAuthority());				
 	}
 	
 	@Test
