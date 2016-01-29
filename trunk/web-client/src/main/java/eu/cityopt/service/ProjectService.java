@@ -30,7 +30,7 @@ public interface ProjectService extends CityOptService<ProjectDTO> {
 		name, prjid, description
 	}
 	
-	ProjectDTO save(ProjectDTO projectDTO, int simulationModelId, int extParamValSetId);
+	ProjectDTO save(ProjectDTO projectDTO, Integer simulationModelId, Integer extParamValSetId);
 
 	List<ProjectScenariosDTO> findAllWithScenarios();
 	
@@ -47,7 +47,7 @@ public interface ProjectService extends CityOptService<ProjectDTO> {
 	 * @return
 	 * @throws EntityNotFoundException
 	 */
-	ProjectDTO update(ProjectDTO toUpdate, int simulationModelId, int extParamValSetId) throws EntityNotFoundException;
+	ProjectDTO update(ProjectDTO toUpdate, Integer simulationModelId, Integer extParamValSetId) throws EntityNotFoundException;
 	
 	Integer getSimulationmodelId(int prjid);
 	

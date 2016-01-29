@@ -472,6 +472,7 @@ public class CopyServiceImpl implements CopyService {
 			for(OptimizationSet os : of.getOptimizationsets()){
 				OptimizationSet osC = os.clone();
 				osC.setOptid(0);
+				osC.setProject(copyProject);
 				if(os.getExtparamvalset() != null)
 					osC.setExtparamvalset(copiedEPVSets.get(os.getExtparamvalset().getExtparamvalsetid()));
 				osC.setObjectivefunction(ofC);
@@ -519,6 +520,7 @@ public class CopyServiceImpl implements CopyService {
 			sgC.setScengenobjectivefunctions(null);
 			sgC.setScengenoptconstraints(null);
 			sgC.setScengenresults(null);
+			sgC.setProject(copyProject);
 			sgC = scenarioGeneratorRepository.save(sgC);
 			
 			//copy all scengenresults
