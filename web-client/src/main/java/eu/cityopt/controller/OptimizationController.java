@@ -1224,8 +1224,8 @@ public class OptimizationController {
 	
 		Integer extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 		
-		if (id != null) {
-			extParamValSetId = Integer.parseInt(id);
+		if (id != null && !id.isEmpty()) {
+			extParamValSetId = new Integer(id);
 		}
 		
 		if (extParamValSetId != null) {
