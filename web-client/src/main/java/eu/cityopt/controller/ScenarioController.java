@@ -382,23 +382,7 @@ public class ScenarioController {
 		}
 		else
 		{
-			Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
-			Set<ScenarioForm> scenarioForms = new HashSet<ScenarioForm>();
-			
-			Iterator<ScenarioDTO> iter = scenarios.iterator();
-        	
-        	while (iter.hasNext()) {
-        		ScenarioDTO scenario = (ScenarioDTO) iter.next();
-        		
-        		ScenarioForm scenarioForm = new ScenarioForm();
-        		scenarioForm.setName(scenario.getName());
-        		scenarioForm.setId(scenario.getScenid());
-        		scenarioForm.setDescription(scenario.getDescription());
-        		scenarioForm.setStatus(controllerService.getScenarioStatus(scenario));
-        		scenarioForms.add(scenarioForm);
-        	}
-        	
-			model.put("scenarioForms", scenarioForms);
+			controllerService.initScenarioList(model, project.getPrjid());
 		}
 
 		return "openscenario";
@@ -478,8 +462,7 @@ public class ScenarioController {
 			}
 		}
 			
-		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
-		model.put("scenarios", scenarios);
+		controllerService.initScenarioList(model, project.getPrjid());
 
 		return "openscenario";
 	}

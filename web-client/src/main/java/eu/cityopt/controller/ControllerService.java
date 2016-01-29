@@ -1,6 +1,7 @@
 package eu.cityopt.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.sim.service.ScenarioGenerationService.RunInfo;
 import eu.cityopt.web.OptimizationRun;
+import eu.cityopt.web.ScenarioForm;
 
 
 @Controller
@@ -390,6 +392,26 @@ public class ControllerService {
 	            }
 	        }
 	        model.put("metricVals", listProjectMetricVals);
+	    }
+
+	    public void initScenarioList(Map<String, Object> model, int projectId) {
+			Set<ScenarioDTO> scenarios = projectService.getScenarios(projectId);
+			Set<ScenarioForm> scenarioForms = new HashSet<ScenarioForm>();
+			
+			Iterator<ScenarioDTO> iter = scenarios.iterator();
+	    	
+	    	while (iter.hasNext()) {
+	    		ScenarioDTO scenario = (ScenarioDTO) iter.next();
+	    		
+	    		ScenarioForm scenarioForm = new ScenarioForm();
+	    		scenarioForm.setName(scenario.getName());
+	    		scenarioForm.setId(scenario.getScenid());
+	    		scenarioForm.setDescription(scenario.getDescription());
+	    		scenarioForm.setStatus(getScenarioStatus(scenario));
+	    		scenarioForms.add(scenarioForm);
+	    	}
+	    	
+	    	model.put("scenarioForms", scenarioForms);
 	    }
 	}
 
