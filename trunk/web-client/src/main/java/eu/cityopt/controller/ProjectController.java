@@ -1671,4 +1671,9 @@ public class ProjectController {
         return "error";
     }	
     
+    @RequestMapping(value="settings", method=RequestMethod.GET)
+    public String settings(Map<String, Object> model)
+    {
+        return "settings";
+    }	
 }
