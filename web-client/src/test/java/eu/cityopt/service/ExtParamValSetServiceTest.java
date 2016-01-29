@@ -69,7 +69,7 @@ public class ExtParamValSetServiceTest {
 	@Test
 	public void setExtParamVals() throws EntityNotFoundException {
 		
-		List<ExtParamDTO> epList = extParamService.findByName("Cost");
+		List<ExtParamDTO> epList = extParamService.findByName("Cost_of_the_N_Gas");
 		ExtParamValDTO newEPV = new ExtParamValDTO();
 		newEPV.setExtparam(epList.iterator().next());
 		newEPV.setValue("20.0");
@@ -93,8 +93,8 @@ public class ExtParamValSetServiceTest {
 	@Test
 	public void removeExtParamVals() throws EntityNotFoundException {
 		
-		List<ExtParamDTO> epList = extParamService.findByName("Cost");
-		epList.addAll(extParamService.findByName("Emissions"));
+		List<ExtParamDTO> epList = extParamService.findByName("Cost_of_the_N_Gas");
+		epList.addAll(extParamService.findByName("Emissions_N_Gas"));
 		
 		List<ExtParamValDTO> epv = extParamValSetService.getExtParamVals(1);
 		ExtParamValDTO val = epv.get(2);
