@@ -26,12 +26,7 @@
 				<!--${user.name}-->
 				(<a href="logout.html">logout</a>)</td>
 			</tr>
-			<tr>
-				<td><spring:message code="language"/>:&nbsp;</td>
-				   		<td><a href="?lang=en">en</a> 
-					    <a href="?lang=es">es</a>
-					    <a href="?lang=fi">fi</a></td>
-			</tr>
+			
 		</table>
 	</td>	
 </tr>
@@ -433,8 +428,7 @@
 	<td>
 		<img src="assets/img/icon_users_black.jpg"/>
 	</td>
-	<!-- Users -->
-	<td><b><spring:message code="users"/></b></td>
+	<td><b><spring:message code="users_and_settings"/></b></td>
 </tr>
 <tr>
 	<td></td>
@@ -458,6 +452,13 @@
 		<!--Parameter reliability-->
 		<a href="paramreliability.html">
 		<spring:message code="parameter_reliability"/></a>
+	</td>
+</tr>
+<tr>
+	<td></td>
+	<td>
+		<a href="settings.html">
+		<spring:message code="settings"/></a>
 	</td>
 </tr>
 </table>
