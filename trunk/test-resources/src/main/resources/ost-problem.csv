@@ -65,7 +65,6 @@ obj,,heat,min,,,,,heating
 dv,,a01,Double,,,0,20000,
 dv,,a02,Double,,,0,30000,
 dv,,a03,Double,,,0,20000,
-dv,,a03,Double,,,0,20000,
 dv,,a04,Double,,,0,20000,
 dv,,a05,Double,,,0,30000,
 dv,,a06,Double,,,0,30000,
