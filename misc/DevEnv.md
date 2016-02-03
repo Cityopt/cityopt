@@ -114,8 +114,9 @@ you don't have it already (e.g. from cygwin), then please install gzip from
 TomCat configuration
 --------------------
 
-Server.xml: maxPostSize="100000000" in Connector element
+-Server.xml: maxPostSize="100000000" in Connector element
 
+-Increase max file size in Tomcat 7.0\webapps\manager\WEB-INF\web.xml
 
 Build process
 -------------
