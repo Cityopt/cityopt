@@ -44,6 +44,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationRunner;
@@ -63,9 +64,12 @@ public class AprosRunner implements SimulationRunner {
     final String[] resultFiles;
     final Path setup_scl;
     private boolean isOpen = true;
-    /* Unique SCL names for input parmeters.  Built by makeInputNames.
+    /* Unique SCL names for scalar input parameters.  Built by makeInputNames.
        Maps component |-> parameter |-> name. */
     private Map<String, Map<String, String>> inputNames = new HashMap<>();
+    /* Names of time series input parameters by component.
+       Built by makeInputNames. */
+    private Map<String, Set<String>> tsInputs = new HashMap<>();
     /* A sequence of SCL set commands for input parameters
        not found in uc_structure. */
     private byte[] orphanSets;
@@ -97,12 +101,12 @@ public class AprosRunner implements SimulationRunner {
      *   in ns.  Unknown outputs in the files are ignored.
      * @throws TransformerException if setup.scl cannot be generated,
      *   possibly because of malformed uc_props.
-     * @throws IOException 
+     * @throws ConfigurationException if ns has inputs of unsupported type.
      * @see eu.cityopt.sim.eval.SimulatorManagers#get
      */
     AprosRunner(AprosManager mgr, String profile, Namespace ns,
                 Document uc_props, Path modelDir, String... resultFiles)
-            throws TransformerException, IOException {
+            throws TransformerException, IOException, ConfigurationException {
         manager = mgr;
         this.profile = profile;
         nameSpace = ns;
@@ -285,7 +289,12 @@ public class AprosRunner implements SimulationRunner {
         }
     }
     
-    private void makeInputNames() {
+    /**
+     * Give scalar inputs unique SCL names, store in inputNames.
+     * Pass time series inputs to addTsInput.
+     * @throws ConfigurationException
+     */
+    private void makeInputNames() throws ConfigurationException {
         Set<String> used_names = new HashSet<>();
 
         for (Map.Entry<String, Namespace.Component>
@@ -293,18 +302,41 @@ public class AprosRunner implements SimulationRunner {
             if (ckv.getValue().inputs.isEmpty())
                 continue;
             Map<String, String> names = new HashMap<>();
-            inputNames.put(ckv.getKey(), names);
             for (Map.Entry<String, Type>
                      pkv : ckv.getValue().inputs.entrySet()) {
-                String
-                    name0 = sanitize(ckv.getKey() + "__" + pkv.getKey()),
-                    name = name0;
-                for (int i = 0; used_names.contains(name); ++i) {
-                    name = name0 + "_" + i;
+                if (pkv.getValue().isTimeSeriesType()) {
+                    addTsInput(ckv.getKey(), pkv.getKey(), pkv.getValue());
+                } else {
+                    String
+                        name0 = sanitize(ckv.getKey() + "__" + pkv.getKey()),
+                        name = name0;
+                    for (int i = 0; used_names.contains(name); ++i) {
+                        name = name0 + "_" + i;
+                    }
+                    names.put(pkv.getKey(), name);
+                    used_names.add(name);
                 }
-                names.put(pkv.getKey(), name);
-                used_names.add(name);
             }
+            if (!names.isEmpty()) {
+                inputNames.put(ckv.getKey(), names);
+            }
+        }
+    }
+    
+    /**
+     * Add (comp, var) to tsInputs if typ is a supported time series type.
+     * Only TIMESERIES_STEP is supported by Apros.
+     * @throws ConfigurationException if typ is not supported.
+     */
+    private void addTsInput(String comp, String var, Type typ)
+            throws ConfigurationException {
+        if (typ == Type.TIMESERIES_STEP) {
+            tsInputs.computeIfAbsent(comp, k -> new HashSet<>()).add(var);
+        } else {
+            throw new ConfigurationException(
+                    String.format(
+                            "%s.%s: only TimeSeries/step supported by Apros",
+                            comp, var));
         }
     }
 
