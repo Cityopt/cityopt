@@ -64,6 +64,7 @@ public class AprosModel implements SimulationModel {
     AprosManager manager;
     String profileName;
     TempDir modelDir;
+    String tsInputFile;
     String[] resultFilePatterns;
     final Document uc_props;
     final Defaults defaults = new Defaults();
@@ -168,6 +169,9 @@ public class AprosModel implements SimulationModel {
         for (String key : properties.stringPropertyNames()) {
             String value = properties.getProperty(key);
             switch (key) {
+            case "timeSeriesInputFile":
+                this.tsInputFile = value;
+                break;
             case "resultFiles":
                 this.resultFilePatterns =
                     value.split(Pattern.quote(System.getProperty("path.separator")));
