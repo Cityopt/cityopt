@@ -108,7 +108,7 @@ public class AprosRunnerTest extends AprosTestBase {
         
         return new AprosRunner(
                 mgr, profileName,
-                ns, ucs, modelDir,
+                ns, ucs, null, modelDir,
                 props.getProperty("result_file"));
     }
     

@@ -61,6 +61,7 @@ public class AprosRunner implements SimulationRunner {
     private final IDirectory modelDir;
     private static Templates a62scl = loadXSL();
     private final String profile;
+    final String tsInputFile;
     final String[] resultFiles;
     final Path setup_scl;
     private boolean isOpen = true;
@@ -86,6 +87,10 @@ public class AprosRunner implements SimulationRunner {
      *   (everything else in ns is ignored).
      * @param uc_props the XML document describing the user component structure
      *   of the Apros model.
+     * @param tsInputFile name of an Apros IO_SET file for transferring
+     *   time series inputs.  Must not contain slashes; the file is created in
+     *   the working directory of the simulation server.  May be null if the
+     *   model has no time series inputs.
      * @param modelDir a directory of model-related files that are shipped to
      *   the simulation server.  sequence.scl in this directory contains the
      *   main program (<code>main :: &lt;Proc&gt; ()</code>) and should
@@ -94,7 +99,7 @@ public class AprosRunner implements SimulationRunner {
      *   program should load the model (with <code>loadIC</code>), call
      *   <code>setup :: AprosSequence ()</code> in the imported setup.scl
      *   and simulate.  The main program is also responsible for managing
-     *   Apros <code>IO_SET</code>s for output.
+     *   Apros <code>IO_SET</code>s for tsInputFile and resultFiles.
      * @param resultFiles wildcards for Apros output files.
      *   All matching files are fetched from the simulation server, parsed
      *   as Apros <code>IO_SET</code> data and searched for the outputs
@@ -105,12 +110,14 @@ public class AprosRunner implements SimulationRunner {
      * @see eu.cityopt.sim.eval.SimulatorManagers#get
      */
     AprosRunner(AprosManager mgr, String profile, Namespace ns,
-                Document uc_props, Path modelDir, String... resultFiles)
+                Document uc_props, String tsInputFile, Path modelDir,
+                String... resultFiles)
             throws TransformerException, IOException, ConfigurationException {
         manager = mgr;
         this.profile = profile;
         nameSpace = ns;
         this.modelDir = new LocalDirectory(modelDir);
+        this.tsInputFile = tsInputFile;
         this.resultFiles = resultFiles;
         uc_structure = (Document)uc_props.cloneNode(true);
         sanitizeUCS();
@@ -135,13 +142,14 @@ public class AprosRunner implements SimulationRunner {
         Instant runStart = Instant.now();
         Experiment xpt = manager.createExperiment();
         MemoryDirectory
-            mdir = new MemoryDirectory(modelDir.files(),
+            mdir = new MemoryDirectory(new HashMap<>(modelDir.files()),
                                        new HashMap<>(modelDir.directories())),
             cdir = new MemoryDirectory();
         mdir.addDirectory("cityopt", cdir);
         cdir.addFile("setup.scl", new LocalFile(setup_scl));
         Application launcher = new ProfileApplication(profile, "Launcher.exe");
         String[] args = makeScript(mdir, cdir, input);
+        //TODO makeTsInput(mdir, input);
         FileSelector res_sel = new FileSelector(resultFiles);
         JobConfiguration conf = new JobConfiguration(launcher, args,
                                                      mdir, res_sel);
@@ -208,7 +216,6 @@ public class AprosRunner implements SimulationRunner {
             }            
         }
         cdir.addFile("inputs.scl", new MemoryFile(inp_ba.toByteArray()));
-        //TODO stub
         /* XXX Bug: there needs to be at least one argument.
            Wonkiness in the simulation server or client library.
            No harm if there are more arguments than SCL main takes. */
