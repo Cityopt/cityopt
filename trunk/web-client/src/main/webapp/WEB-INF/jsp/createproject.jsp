@@ -42,12 +42,13 @@ margin-left: 30px;
 			<table class="ProjectCreationForm" style="width:900px" >			
 				<!-- create project -->
 				<tr><td><h2><spring:message code="createproject"/></h2></td>
-				<td align="right"><div class="round-button">
-						<div class="round-button-circle" onclick="openInfoWindow()">
-						<a>?</a>		
-						</div> 
-					</div></td>
-					
+					<td align="right">
+						<div class="round-button">
+							<div class="round-button-circle">
+								<a href="" onclick="openInfoWindow()">?</a>		
+							</div>
+						</div>
+					</td>
 				</tr>
 				<tr valing="top">
 					<td valing="top">

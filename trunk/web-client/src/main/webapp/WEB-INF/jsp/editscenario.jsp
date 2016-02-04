@@ -16,10 +16,10 @@
 
 <script>
     function openInfoWindow() {
-    	   window.open("createproject_info.html",'Info: Create Project','width=600,height=800');
+    	   window.open("editscenario_info.html",'Info: Edit scenario','width=600,height=600,scrollbars=yes');
     }
     function openSimulationInfoWindow() {
- 	   window.open("simulationinfo.html",'Simulation info','width=600,height=600');
+ 	   window.open("simulationinfo.html",'Info: Simulation info','width=800,height=600,scrollbars=yes');
 	}
 </script>
 
@@ -42,11 +42,13 @@
 						<h2><spring:message code="edit_scenario"/></h2>
 					</td>
 					
-				<td align="right"><div class="round-button">
-						<div class="round-button-circle" onclick="openInfoWindow()">
-							<a>?</a>		
-						</div> 
-					</div></td>
+				<td align="right">
+					<div class="round-button">
+						<div class="round-button-circle">
+							<a href="" onclick="openInfoWindow()">?</a>		
+						</div>
+					</div>
+				</td>
 				</tr>
 				
 				<tr>
@@ -104,7 +106,7 @@
 								<td><spring:message code="external_parameters"/>:</td>
 								<c:set var="tooltip_scenario_externalparameters"><spring:message code="tooltip_edit_scenario_externalparameters"/></c:set>
 								<td><a href="scenariovariables.html"><button type="button" title="${tooltip_scenario_externalparameters}" style="width:100px">
-								<spring:message code="set"/></button></a></td>
+								<spring:message code="show"/></button></a></td>
 							</tr>
 							<tr height="15"></tr>
 							<tr>
@@ -118,12 +120,7 @@
 									<button type="button" style="width: 150px" onclick="openSimulationInfoWindow()"><spring:message code="show_simulation_info"/></button>		
 								</td>
 							</tr>
-							<tr>
-								<!-- Remaining simulation time -->
-								<!-- ToD0 Must make any kind loading screen! -->
-								<td><spring:message code="remaining_simulation_time"/>:</td>
-								<td></td>
-							</tr>
+							<tr height="15"></tr>
 							<form:form method="post" action="setsimulationdate.html">
 							<tr>
 								<!--Dynamic simulation period from-->

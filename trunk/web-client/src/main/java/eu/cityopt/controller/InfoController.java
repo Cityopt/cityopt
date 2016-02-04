@@ -37,6 +37,11 @@ public class InfoController {
 		return "editproject_info";
 	}
 
+	@RequestMapping( value="editscenario_info", method=RequestMethod.GET)
+	public String EditScenarioInfo(){		
+		return "editscenario_info";
+	}
+
 	@RequestMapping( value="projectparameters_info", method=RequestMethod.GET)
 	public String ProjectParametersInfo(){		
 		return "projectparameters_info";
