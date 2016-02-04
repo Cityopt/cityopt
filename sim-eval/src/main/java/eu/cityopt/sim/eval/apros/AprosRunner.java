@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
@@ -106,7 +107,6 @@ public class AprosRunner implements SimulationRunner {
      *   in ns.  Unknown outputs in the files are ignored.
      * @throws TransformerException if setup.scl cannot be generated,
      *   possibly because of malformed uc_props.
-     * @throws ConfigurationException if ns has inputs of unsupported type.
      * @see eu.cityopt.sim.eval.SimulatorManagers#get
      */
     AprosRunner(AprosManager mgr, String profile, Namespace ns,
@@ -117,6 +117,12 @@ public class AprosRunner implements SimulationRunner {
         this.profile = profile;
         nameSpace = ns;
         this.modelDir = new LocalDirectory(modelDir);
+        if (tsInputFile != null
+                && Paths.get(tsInputFile).getNameCount() != 1) {
+            throw new ConfigurationException(
+                    "AprosRunner: invalid time series input file \""
+                    + tsInputFile + "\"");
+        }
         this.tsInputFile = tsInputFile;
         this.resultFiles = resultFiles;
         uc_structure = (Document)uc_props.cloneNode(true);
