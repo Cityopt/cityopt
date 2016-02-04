@@ -22,7 +22,7 @@ div.info{
 	margin-top: 5%;
 	margin-right: 5%;
 	margin-bottom: 10%;
-	outline: #064861 inset thick;
+	outline: #064861 inset;
 	font: Blanch;
 	color: #4D4D4D;
 	background-color: #ffffff;
