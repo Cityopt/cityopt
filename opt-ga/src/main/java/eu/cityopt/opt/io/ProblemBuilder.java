@@ -11,6 +11,7 @@ import eu.cityopt.opt.io.JacksonBinder.DecisionVar;
 import eu.cityopt.opt.io.JacksonBinder.ExtParam;
 import eu.cityopt.opt.io.JacksonBinder.Input;
 import eu.cityopt.opt.io.JacksonBinder.Obj;
+import eu.cityopt.opt.io.JacksonBinder.TSRef;
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.DecisionDomain;
 import eu.cityopt.sim.eval.DecisionVariable;
@@ -20,6 +21,7 @@ import eu.cityopt.sim.eval.InputExpression;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.NumericInterval;
 import eu.cityopt.sim.eval.ObjectiveExpression;
+import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
@@ -59,20 +61,22 @@ public class ProblemBuilder extends SimulationStructureBuilder {
     public OptimisationProblem getResult() {
         return (OptimisationProblem)super.getResult();
     }
+    
+    public TimeSeriesI getTS(TSRef item, Type type) {
+        TimeSeriesData.Series sd = tsData.getSeries(item.tsKey());
+        if (sd == null) {
+            throw new IllegalArgumentException(String.format(
+                    "No time series data for %s (kind %s, type %s)",
+                    item.getQName(), item.getKind(), type));
+        }
+        return ns.evaluator.makeTS(type, sd.times, sd.values);
+    }
 
     @Override
     protected void add(ExtParam item) throws ParseException {
         ExternalParameters ext = getResult().inputConst.getExternalParameters();
         if (item.type.isTimeSeriesType()) {
-            Evaluator ev = ns.evaluator;
-            TimeSeriesData.Series sd = tsData.getSeries(item.tsKey());
-            if (sd == null) {
-                throw new IllegalArgumentException(
-                        "No time series data for external parameter "
-                        + item.name);
-            }
-            TimeSeriesI ts = ev.makeTS(item.type, sd.times, sd.values);
-            ext.put(item.name, ts);
+            ext.put(item.name, getTS(item, item.type));
         } else {
             ext.putString(item.name, item.value);
         }
@@ -108,7 +112,12 @@ public class ProblemBuilder extends SimulationStructureBuilder {
                     "Either value or expr must be present"
                             + " on input %s,%s", in.comp, in.name));
         if (in.expr == null) {
-            getResult().inputConst.putString(in.comp, in.name, in.value);
+            SimulationInput ic = getResult().inputConst;
+            if (in.type.isTimeSeriesType()) {
+                ic.put(in.comp, in.name, getTS(in, in.type));
+            } else {
+                ic.putString(in.comp, in.name, in.value);
+            }
         } else {
             getResult().inputExprs.add(new InputExpression(
                     in.comp, in.name, in.expr, ns.evaluator));
