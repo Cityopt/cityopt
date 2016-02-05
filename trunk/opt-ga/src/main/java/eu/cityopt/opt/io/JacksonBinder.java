@@ -58,6 +58,18 @@ public class JacksonBinder {
             return name().toLowerCase();
         }
     }
+    
+    public interface ItemI {
+        /**
+         * Return the qualified name of this item.
+         * Objects of the same kind must have unique qualified names.
+         * @return either name or component.name if applicable.
+         */
+        @JsonIgnore
+        String getQName();
+
+        Kind getKind();
+    }
 
     @JsonTypeInfo(use=Id.NAME, include=As.PROPERTY, property="kind")
     @JsonSubTypes({
@@ -69,29 +81,23 @@ public class JacksonBinder {
         @JsonSubTypes.Type(value=Constr.class, name="con"),
         @JsonSubTypes.Type(value=Obj.class, name="obj")
     })
-    public abstract static class Item {
+    public abstract static class Item implements ItemI {
         public String name;
        
-        /**
-         * Return the qualified name of this item.
-         * Objects of the same kind must have unique qualified names.
-         * @return either name or component.name if applicable.
-         */
         @JsonIgnore
+        @Override
         public String getQName() {
             return name;
         }
-
-        public abstract Kind getKind();
     }
     
     /** For Items that may reference {@link TimeSeriesData} */
-    public interface TSRef {
+    public interface TSRef extends ItemI {
         /** Key to use in {@link TimeSeriesData#getSeriesData} */
         @JsonIgnore
         public String tsKey();
     }
-    
+
     public abstract static class Var extends Item {
         public Type type;
         public String unit;
@@ -130,7 +136,7 @@ public class JacksonBinder {
 
         @Override
         public String tsKey() {
-            return value != null ? value : name;
+            return value != null ? value : getQName();
         }
 
         @Override
@@ -139,11 +145,17 @@ public class JacksonBinder {
         }
     }
     
-    public static class Input extends CompVar {
+    public static class Input extends CompVar implements TSRef {
         public String value;
         @JsonProperty("expression")
         public String expr;
- 
+
+        // Multiple inheritance would have been nice here. 
+        @Override
+        public String tsKey() {
+            return value != null ? value : getQName();
+        }
+
         @Override
         public Kind getKind() {
             return Kind.IN;
@@ -178,7 +190,7 @@ public class JacksonBinder {
 
         @Override
         public String tsKey() {
-            return value != null ? value : name;
+            return value != null ? value : getQName();
         }
 
         @Override
