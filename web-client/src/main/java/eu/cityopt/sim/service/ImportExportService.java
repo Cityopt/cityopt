@@ -1032,7 +1032,18 @@ public class ImportExportService {
                 for (JacksonBinder.Input in : entry.getValue()) {
                     Type type = ns.getInputType(in.comp, in.name);
                     if (type != null) {
-                        inputData.putString(in.comp, in.name, in.value);
+                        if (type.isTimeSeriesType()) {
+                            Series series = tsd.getSeries(in.tsKey());
+                            if (series != null) {
+                                inputData.put(
+                                        in.comp, in.name,
+                                        ns.evaluator.makeTS(
+                                                type, series.getTimes(),
+                                                series.getValues()));
+                            }
+                        } else {
+                            inputData.putString(in.comp, in.name, in.value);
+                        }
                     }
                 }
                 inputs.put(scenName, inputData);
