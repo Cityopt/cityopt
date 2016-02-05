@@ -343,13 +343,15 @@ public class AprosRunner implements SimulationRunner {
      */
     private void addTsInput(String comp, String var, Type typ)
             throws ConfigurationException {
-        if (typ == Type.TIMESERIES_STEP) {
-            tsInputs.computeIfAbsent(comp, k -> new HashSet<>()).add(var);
+        if (tsInputFile == null) {
+            throw new ConfigurationException(String.format(
+                    "%s.%s: no time series input file", comp, var));
+        } else if (typ != Type.TIMESERIES_STEP) {
+            throw new ConfigurationException(String.format(
+                    "%s.%s: only TimeSeries/step supported by Apros",
+                    comp, var));
         } else {
-            throw new ConfigurationException(
-                    String.format(
-                            "%s.%s: only TimeSeries/step supported by Apros",
-                            comp, var));
+            tsInputs.computeIfAbsent(comp, k -> new HashSet<>()).add(var);
         }
     }
 
