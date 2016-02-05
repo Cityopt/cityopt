@@ -444,12 +444,15 @@ public class ImportServiceImpl implements ImportService {
 	 * the project structure needs to exist - if a component, inputparameter, outputvariable, metric 
 	 * or externalparamvalset is not found, an exception will be thrown
 	 * 
+	 * @deprecated Please use {@link eu.cityopt.sim.service.ImportExportService#importScenarioData} instead.
+	 * 
 	 * @param prjid defines the project for the data import
 	 * @param scenarioInput defines (scenario-specific) import file
 	 * @param timeSeriesInput multiple time series files can be used, they are linked according their name
 	 * @throws EntityNotFoundException
 	 */
 	@Transactional
+	@Deprecated
 	public void importScenarioData(int prjid, File scenarioInput, 
 			List<File> timeSeriesInput) throws EntityNotFoundException{
 		
