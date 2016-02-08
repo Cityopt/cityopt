@@ -16,6 +16,8 @@ import com.google.inject.Injector;
 
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Evaluator;
+import eu.cityopt.sim.eval.MergedTimeSeries;
+import eu.cityopt.sim.eval.TimeSeriesData;
 
 public class TimeSeriesExportTest {
     private TimeSeriesData.Series ts1 = new TimeSeriesData.Series();
@@ -38,8 +40,8 @@ public class TimeSeriesExportTest {
         ts1.values = ts1.times;
         ts2.times = new double[] {0, 2};
         ts2.values = new double[] {2, 3};
-        tsd.seriesData.put(names[0], ts1);
-        tsd.seriesData.put(names[1], ts2);
+        tsd.getMap().put(names[0], ts1);
+        tsd.getMap().put(names[1], ts2);
     }
 
     @Test

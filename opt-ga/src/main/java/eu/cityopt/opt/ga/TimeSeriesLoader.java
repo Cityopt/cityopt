@@ -13,10 +13,10 @@ import com.google.inject.Provider;
 import com.google.inject.name.Named;
 
 import eu.cityopt.opt.io.CsvTimeSeriesData;
-import eu.cityopt.opt.io.TimeSeriesData;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.SimulationModel;
+import eu.cityopt.sim.eval.TimeSeriesData;
 
 /**
  * Loads TimeSeriesData from files.

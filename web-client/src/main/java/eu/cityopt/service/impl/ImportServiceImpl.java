@@ -50,7 +50,6 @@ import eu.cityopt.opt.io.JacksonBinder;
 import eu.cityopt.opt.io.JacksonBinderScenario;
 import eu.cityopt.opt.io.JacksonBinderScenario.ScenarioItem;
 import eu.cityopt.opt.io.JacksonCsvModule;
-import eu.cityopt.opt.io.TimeSeriesData;
 import eu.cityopt.repository.ComponentRepository;
 import eu.cityopt.repository.ExtParamRepository;
 import eu.cityopt.repository.ExtParamValRepository;
@@ -72,6 +71,7 @@ import eu.cityopt.repository.UnitRepository;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ImportService;
 import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.eval.util.TimeUtils;
 import eu.cityopt.sim.service.ImportExportService;
 

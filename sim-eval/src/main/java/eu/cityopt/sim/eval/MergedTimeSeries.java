@@ -1,4 +1,4 @@
-package eu.cityopt.opt.io;
+package eu.cityopt.sim.eval;
 
 import java.util.AbstractCollection;
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ extends AbstractCollection<MergedTimeSeries.Entry> {
     }
     
     public MergedTimeSeries(TimeSeriesData data) {
-        this(sorted(data.seriesData.keySet()), data);
+        this(sorted(data.getMap().keySet()), data);
     }
 
     public MergedTimeSeries() {

@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationModel;
+import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.OptimisationProblem;
 

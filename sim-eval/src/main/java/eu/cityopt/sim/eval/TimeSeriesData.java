@@ -1,10 +1,7 @@
-package eu.cityopt.opt.io;
+package eu.cityopt.sim.eval;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import eu.cityopt.sim.eval.EvaluationSetup;
-import eu.cityopt.sim.eval.TimeSeriesI;
 
 /**
  * Access to time series data by time series name.
@@ -14,15 +11,15 @@ import eu.cityopt.sim.eval.TimeSeriesI;
  */
 public class TimeSeriesData {
     public static class Series {
-        double[] times;
-        double[] values;
+        public double[] times;
+        public double[] values;
 
         public Series(double[] times, double[] values) {
             this.times = times;
             this.values = values;
         }
 
-        Series() {}
+        public Series() {}
 
         public double[] getTimes(){
 			return times;
@@ -36,13 +33,7 @@ public class TimeSeriesData {
         this.evaluationSetup = evaluationSetup;
     }
 
-    /**
-     * Reserved key for labeling the time column.
-     * Do not use as a series name. 
-     */
-    static final String TIMESTAMP_KEY = "timestamp";
-
-    Map<String, Series> seriesData = new HashMap<>();
+    private Map<String, Series> seriesData = new HashMap<>();
     private final EvaluationSetup evaluationSetup;
 
     /** Returns the data for the named series, or null if not available. */
