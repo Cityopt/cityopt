@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import eu.cityopt.opt.io.JacksonBinder.Var;
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.DecisionValues;
 import eu.cityopt.sim.eval.DecisionVariable;
@@ -73,6 +74,16 @@ public class ExportBuilder {
         addExtParams(ext.getNamespace(), ext, extSet);
     }
     
+    private String valueStr(Var item, Object val, String scen, String xpvs) {
+        if (item.type.isTimeSeriesType()) {
+            String lbl = makeTSLabel(item.getQName(), scen, xpvs);
+            tsd.put(lbl, (TimeSeriesI)val);
+            return lbl;
+        } else {
+            return item.type.format(val, tsd.getEvaluationSetup());
+        }
+    }
+
     private void addExtParams(
             Namespace ns, ExternalParameters ext, String extSet) {
         EvaluationSetup evs = ext == null ? null : tsd.getEvaluationSetup();
@@ -89,13 +100,7 @@ public class ExportBuilder {
             p.item.name = nt.getKey();
             p.item.type = nt.getValue();
             if (val != null) {
-                if (p.item.type.isTimeSeriesType()) {
-                    String tslabel = makeTSLabel(p.item.name, null, extSet);
-                    tsd.put(tslabel, ext.getTS(p.item.name));
-                    p.item.value = tslabel;
-                } else {
-                    p.item.value = p.item.type.format(val, evs);
-                }
+                p.item.value = valueStr(p.item, val, null, extSet);
             }
             binder.getItems().add(p);
         }
@@ -140,7 +145,6 @@ public class ExportBuilder {
     
     private void addInputs(
             Namespace ns, SimulationInput input, String scenario) {
-        EvaluationSetup evs = input == null ? null : tsd.getEvaluationSetup();
         for (Map.Entry<String, Component> 
                 comp : ns.components.entrySet()) {
             for (Map.Entry<String, Type>
@@ -158,7 +162,7 @@ public class ExportBuilder {
                 in.item.name = nt.getKey();
                 in.item.type = nt.getValue();
                 if (val != null) {
-                    in.item.value = in.item.type.format(val, evs);
+                    in.item.value = valueStr(in.item, val, scenario, null);
                 }
                 binder.getItems().add(in);
             }
