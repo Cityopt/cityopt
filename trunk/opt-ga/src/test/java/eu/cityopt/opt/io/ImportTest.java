@@ -51,7 +51,7 @@ public class ImportTest {
    
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-    
+
     public class TestModule extends AbstractModule {
         Properties props = res.properties;
         Instant t0 = Instant.parse(props.getProperty("time_origin"));
@@ -79,7 +79,7 @@ public class ImportTest {
 
     public class TsTestModule extends TestModule {
         Evaluator evaluator = new Evaluator();
-
+        
         @Override
         protected void configure() {
             super.configure();
@@ -102,7 +102,7 @@ public class ImportTest {
                 Arrays.asList(cases), JacksonBinder.Obj::isMaximize);
         assertArrayEquals(exptd, results.toArray());
     }
-    
+
     public void checkProblem(OptimisationProblem p) {
         assertTrue(p.inputConst.getExternalParameters().isComplete());
         assertFalse(p.inputConst.isComplete());
@@ -112,7 +112,7 @@ public class ImportTest {
         assertEquals(2, p.metrics.size());
         assertEquals(1, p.objectives.size());
     }
-    
+
     @Test
     public void testNameClash() throws Exception {
         TestModule tm = new TestModule();
@@ -143,7 +143,7 @@ public class ImportTest {
     }
 
     @Test
-    public void testReadCSV() throws Exception {
+    public void testReadProblem() throws Exception {
         TsTestModule tm = new TsTestModule();
         JacksonCsvModule jm = new JacksonCsvModule();
         Injector csv_inj = Guice.createInjector(jm, tm);
@@ -188,6 +188,36 @@ public class ImportTest {
         assertEquals(Type.DOUBLE, s.namespace.metrics.get("fuelconsumption"));
     }
     
+    @Test
+    public void readTsVars() throws Exception {
+        TsTestModule tm = new TsTestModule();
+        JacksonCsvModule jm = new JacksonCsvModule();
+        Injector csv_inj = Guice.createInjector(jm, tm);
+        ObjectMapper json = new ObjectMapper();
+        json.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
+        String vars
+            = "[{'kind': 'in', 'component': 'c', 'name': 'i',"
+            + "  'type': 'TimeSeries/linear', 'value': 'dummy'},"
+            + " {'kind': 'ext', 'name': 'x',"
+            + "  'type': 'TimeSeries/step', 'value': 'dummy'}]";
+        JacksonBinder binder = json.readValue(vars, JacksonBinder.class);
+        TimeSeriesData tsd = csv_inj.getInstance(TimeSeriesData.class);
+        Namespace ns = binder.buildWith(
+                csv_inj.getInstance(NamespaceBuilder.class))
+                .getResult();
+        OptimisationProblem p = binder.buildWith(
+                new ProblemBuilder(null, ns, tsd)).getResult();
+        TimeSeriesI
+            tsi = p.inputConst.getTS("c", "i"),
+            tsx = p.getExternalParameters().getTS("x");
+        assertNotNull(tsi);
+        assertEquals(1, tsi.getDegree());
+        assertNotNull(tsx);
+        assertEquals(0, tsx.getDegree());
+        assertArrayEquals(tsi.getTimes(), tsx.getTimes(), 1e-6);
+        assertArrayEquals(tsi.getValues(), tsx.getValues(), 1e-6);
+    }
+
     @Test
     public void readScenarioCSVwoGu() throws Exception {
     	ObjectReader reader = JacksonCsvModule.getScenarioProblemReader(JacksonCsvModule.getCsvMapper());
