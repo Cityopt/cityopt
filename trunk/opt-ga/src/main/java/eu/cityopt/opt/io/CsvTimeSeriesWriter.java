@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SequenceWriter;
 
 import eu.cityopt.sim.eval.EvaluationSetup;
+import eu.cityopt.sim.eval.MergedTimeSeries;
+import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.eval.Type;
 
 /**
@@ -57,7 +59,7 @@ public class CsvTimeSeriesWriter {
             throws IOException {
         MergedTimeSeries merge = new MergedTimeSeries(tsd);
         try (SequenceWriter seq = writer.writeValuesAsArray(ostr)) {
-            writeRow(seq, TimeSeriesData.TIMESTAMP_KEY,
+            writeRow(seq, CsvTimeSeriesData.TIMESTAMP_KEY,
                      merge.getNames().stream());
             Double[] values = new Double[merge.getNames().size()];
             Double time = null;

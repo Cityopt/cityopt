@@ -15,11 +15,11 @@ import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 
 import eu.cityopt.opt.io.JacksonCsvModule;
-import eu.cityopt.opt.io.TimeSeriesData;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.HashSimulationStorage;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationStorage;
+import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.opt.OptimisationProblem;
 
 /**

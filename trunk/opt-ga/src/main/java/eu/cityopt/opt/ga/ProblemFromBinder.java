@@ -14,10 +14,10 @@ import com.google.inject.Provider;
 import eu.cityopt.opt.io.JacksonBinder;
 import eu.cityopt.opt.io.NamespaceBuilder;
 import eu.cityopt.opt.io.ProblemBuilder;
-import eu.cityopt.opt.io.TimeSeriesData;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationModel;
+import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.opt.OptimisationProblem;
 
 /**

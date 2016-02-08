@@ -16,6 +16,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.SimulationStructure;
 

@@ -19,6 +19,7 @@ import com.google.inject.util.Providers;
 import eu.cityopt.opt.ga.ProblemFromBinder;
 import eu.cityopt.opt.ga.TimeSeriesLoader;
 import eu.cityopt.sim.eval.SimulationModel;
+import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.sim.opt.SimulationStructure;
 import eu.cityopt.test.TestResources;
@@ -81,7 +82,7 @@ public class ExportBuilderTest {
         SimulationStructure s = inj.getInstance(SimulationStructure.class);
         ExportBuilder bld = new ExportBuilder(s.getNamespace());
         ExportDirectors.buildStructure(s, bld);
-        assertTrue(bld.getTimeSeriesData().seriesData.isEmpty());
+        assertTrue(bld.getTimeSeriesData().getMap().isEmpty());
         ObjectWriter wtr = inj.getInstance(
                 Key.get(ObjectWriter.class, Names.named("problem")));
         wtr.without(JsonGenerator.Feature.AUTO_CLOSE_TARGET).writeValue(

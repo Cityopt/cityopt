@@ -15,6 +15,7 @@ import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.Symbol;
+import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.eval.Namespace.Component;
 import eu.cityopt.sim.eval.NumberInterval;
 import eu.cityopt.sim.eval.ObjectiveExpression;

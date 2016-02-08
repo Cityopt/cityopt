@@ -7,7 +7,7 @@ import java.util.Map;
 
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.Type;
-import eu.cityopt.opt.io.TimeSeriesData.Series;
+import eu.cityopt.sim.eval.TimeSeriesData.Series;
 
 public interface MaintenanceService {
 	

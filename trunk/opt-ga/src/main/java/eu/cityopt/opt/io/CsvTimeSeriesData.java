@@ -15,6 +15,7 @@ import java.util.stream.IntStream;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectReader;
 import eu.cityopt.sim.eval.EvaluationSetup;
+import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.eval.Type;
 
 /**
@@ -29,6 +30,11 @@ import eu.cityopt.sim.eval.Type;
 //TODO This is just a builder.  The data should be a member, not a superclass. 
 public class CsvTimeSeriesData extends TimeSeriesData {
     private ObjectReader reader;
+    /**
+     * Reserved key for labeling the time column.
+     * Do not use as a series name. 
+     */
+    static final String TIMESTAMP_KEY = "timestamp";
 
     public CsvTimeSeriesData(EvaluationSetup evaluationSetup) {
         this(JacksonCsvModule.getTsReader(
@@ -97,7 +103,7 @@ public class CsvTimeSeriesData extends TimeSeriesData {
                     .mapToDouble(i -> times[i]).toArray();
             sd.values = Arrays.stream(rows)
                     .mapToDouble(i -> col[i]).toArray();
-            seriesData.put(entry.getKey(), sd);
+            getMap().put(entry.getKey(), sd);
         }
     }
 
