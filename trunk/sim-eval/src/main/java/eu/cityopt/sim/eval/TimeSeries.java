@@ -105,12 +105,12 @@ public class TimeSeries implements TimeSeriesI {
 
     @Override
     public double[] getTimes() {
-        return fun.tt;
+        return fun.getTimes();
     }
 
     @Override
     public double[] getValues() {
-        return fun.vv;
+        return fun.getValues();
     }
 
     @Override

@@ -46,9 +46,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import eu.cityopt.sim.eval.ConfigurationException;
+import eu.cityopt.sim.eval.MergedTimeSeries;
 import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.PiecewiseFunction;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationRunner;
+import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.eval.Type;
 
 /**
@@ -155,7 +158,7 @@ public class AprosRunner implements SimulationRunner {
         cdir.addFile("setup.scl", new LocalFile(setup_scl));
         Application launcher = new ProfileApplication(profile, "Launcher.exe");
         String[] args = makeScript(mdir, cdir, input);
-        //TODO makeTsInput(mdir, input);
+        makeTsInput(mdir, input);
         FileSelector res_sel = new FileSelector(resultFiles);
         JobConfiguration conf = new JobConfiguration(launcher, args,
                                                      mdir, res_sel);
@@ -163,6 +166,55 @@ public class AprosRunner implements SimulationRunner {
                 manager.executor, input, xpt, conf, runStart);
         xpt.start();
         return ajob;
+    }
+
+    private void makeTsInput(MemoryDirectory mdir, SimulationInput input) {
+        TimeSeriesData tsd = new TimeSeriesData(nameSpace);
+        double
+            start = (double)input.get(Namespace.CONFIG_COMPONENT,
+                                      Namespace.CONFIG_SIMULATION_START),
+            end = (double)input.get(Namespace.CONFIG_COMPONENT,
+                                    Namespace.CONFIG_SIMULATION_END);
+        for (Map.Entry<String, Set<String>> compEnt : tsInputs.entrySet()) {
+            String comp = compEnt.getKey();
+            for (String name : compEnt.getValue()) {
+                /* Clip series to simulation period.
+                   This keeps the file smaller.  Also, I hear Apros is buggy
+                   and acts funny if an input file begins before the simulation
+                   period. */
+                PiecewiseFunction
+                    pws = input.getTS(comp, name).internalFunction()
+                            .slice(start, end);
+                // Apros notation for the names
+                tsd.put(comp + " " + name, pws.getTimes(), pws.getValues());
+            }
+        }
+        MergedTimeSeries merge = new MergedTimeSeries(tsd);
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try (PrintStream out = new PrintStream(bout)) {
+            out.println(merge.getNames().size() + 1);
+            out.println("SIMULATION TIME");
+            merge.getNames().forEach(out::println);
+            double time = start;
+            double[] values = new double[merge.getNames().size()];
+            for (MergedTimeSeries.Entry ent : merge) {
+                if (time != ent.getTime()) {
+                    writeRow(out, time, values);
+                    time = ent.getTime();
+                }
+                values[ent.getSeries()] = ent.getValue();
+            }
+            writeRow(out, time, values);
+        }
+        mdir.addFile(tsInputFile, new MemoryFile(bout.toByteArray()));
+    }
+    
+    private void writeRow(PrintStream out, double time, double[] values) {
+        out.printf("%G", time);
+        for (double v : values) {
+            out.printf("\t%G", v);
+        }
+        out.println();
     }
 
     @Override
