@@ -80,6 +80,11 @@ public class SimulationInput implements EvaluationContext {
         return bindingLayer.get(componentName, inputName);
     }
 
+    /** Gets the value of a named time series input. */
+    public TimeSeriesI getTS(String component, String param) {
+        return (TimeSeriesI)bindingLayer.get(component, param);
+    }
+
     /** Sets the value of a named input parameter. */
     public Object put(String componentName, String inputName, Object value) {
         return bindingLayer.put(componentName, inputName, value);
