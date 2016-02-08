@@ -19,6 +19,9 @@ public abstract class PiecewiseFunction {
         this.vv = vv;
         this.degree = degree;
     }
+    
+    public double[] getTimes() {return tt;}
+    public double[] getValues() {return vv;}
 
     /**
      * Creates a piecewise function from a sequence of points.
