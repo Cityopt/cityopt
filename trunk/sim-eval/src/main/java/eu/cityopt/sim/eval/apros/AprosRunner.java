@@ -137,10 +137,16 @@ public class AprosRunner implements SimulationRunner {
                 }
                 try (BufferedReader rd = AprosIO.makeReader(
                         modelDir.resolve(tsName))) {
-                    tsInputs.put(tsName,
-                                 AprosIO.parseResultHeader(rd).stream()
+                    List<Pair<String, String>>
+                        inputs = AprosIO.parseResultHeader(rd).stream()
                                          .map(a -> Pair.of(a[0], a[1]))
-                                         .collect(Collectors.toList()));
+                                         .collect(Collectors.toList());
+                    if (inputs.size() != inputs.stream().distinct().count()) {
+                        throw new ConfigurationException(String.format(
+                                "AprosRunner: duplicate inputs in time series"
+                                + " file %s", tsName));
+                    }
+                    tsInputs.put(tsName, inputs);
                 }
             }
         }
@@ -186,54 +192,12 @@ public class AprosRunner implements SimulationRunner {
     }
 
     private void makeTsInput(MemoryDirectory mdir, SimulationInput input) {
-        double
-            start = (Double)input.get(Namespace.CONFIG_COMPONENT,
-                                      Namespace.CONFIG_SIMULATION_START),
-            end = (Double)input.get(Namespace.CONFIG_COMPONENT,
-                                    Namespace.CONFIG_SIMULATION_END);
         for (Map.Entry<String, List<Pair<String, String>>>
                 fkv : tsInputs.entrySet()) {
-            //FIXME Column order must be retained!
-            TimeSeriesData tsd = new TimeSeriesData(nameSpace);
-            for (Pair<String, String> inp : fkv.getValue()) {
-                String comp = inp.getLeft(), name = inp.getRight();
-                /* Clip series to simulation period.
-                   This keeps the file smaller.  Also, I hear Apros is buggy
-                   and acts funny if an input file begins before the simulation
-                   period. */
-                PiecewiseFunction
-                    pws = input.getTS(comp, name).internalFunction()
-                            .slice(start, end);
-                // Apros notation for the names
-                tsd.put(comp + " " + name, pws.getTimes(), pws.getValues());
-            }
-            MergedTimeSeries merge = new MergedTimeSeries(tsd);
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            try (PrintStream out = new PrintStream(bout)) {
-                out.println(merge.getNames().size() + 1);
-                out.println("SIMULATION TIME");
-                merge.getNames().forEach(out::println);
-                double time = start;
-                double[] values = new double[merge.getNames().size()];
-                for (MergedTimeSeries.Entry ent : merge) {
-                    if (time != ent.getTime()) {
-                        writeRow(out, time, values);
-                        time = ent.getTime();
-                    }
-                    values[ent.getSeries()] = ent.getValue();
-                }
-                writeRow(out, time, values);
-            }
+            AprosIO.writeTsInput(bout, fkv.getValue(), input);
             mdir.addFile(fkv.getKey(), new MemoryFile(bout.toByteArray()));
         }
-    }
-    
-    private void writeRow(PrintStream out, double time, double[] values) {
-        out.printf("%G", time);
-        for (double v : values) {
-            out.printf("\t%G", v);
-        }
-        out.println();
     }
 
     @Override

@@ -4,16 +4,24 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.common.primitives.Doubles;
 
+import eu.cityopt.sim.eval.MergedTimeSeries;
 import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.PiecewiseFunction;
+import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationResults;
+import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.eval.Type;
 
 /**
@@ -130,5 +138,61 @@ public class AprosIO {
     public static BufferedReader makeReader(Path path) throws IOException {
         /* Not sure what the right charset is but I'd bet against UTF-8. */
         return Files.newBufferedReader(path, StandardCharsets.US_ASCII);
+    }
+    
+    public static void writeTsInput(
+            OutputStream str, List<Pair<String, String>> columns,
+            SimulationInput input) {
+        //FIXME Column order must be retained!
+        double
+            start = (Double)input.get(Namespace.CONFIG_COMPONENT,
+                                      Namespace.CONFIG_SIMULATION_START),
+            end = (Double)input.get(Namespace.CONFIG_COMPONENT,
+                                    Namespace.CONFIG_SIMULATION_END);
+        TimeSeriesData tsd = new TimeSeriesData(input.getEvaluationSetup());
+        List<String> anames = new ArrayList<>(columns.size());
+        for (Pair<String, String> inp : columns) {
+            String
+                comp = inp.getLeft(), name = inp.getRight(),
+                aname = comp + " " + name;
+            if (tsd.getSeries(aname) != null) {
+                throw new IllegalArgumentException(
+                        "AprosIO.writeTsInput: duplicate column " + aname);
+            }
+            anames.add(aname);
+            /* Clip series to simulation period.
+               This keeps the file smaller.  Also, I hear Apros is buggy
+               and acts funny if an input file begins before the simulation
+               period. */
+            PiecewiseFunction
+                pws = input.getTS(comp, name).internalFunction()
+                        .slice(start, end);
+            tsd.put(aname, pws.getTimes(), pws.getValues());
+        }
+        MergedTimeSeries merge = new MergedTimeSeries(anames, tsd);
+        try (PrintStream out = new PrintStream(str)) {
+            out.println(merge.getNames().size() + 1);
+            out.println("SIMULATION TIME");
+            merge.getNames().forEach(out::println);
+            double time = start;
+            double[] values = new double[merge.getNames().size()];
+            for (MergedTimeSeries.Entry ent : merge) {
+                if (time != ent.getTime()) {
+                    writeRow(out, time, values);
+                    time = ent.getTime();
+                }
+                values[ent.getSeries()] = ent.getValue();
+            }
+            writeRow(out, time, values);
+        }
+    }
+
+    private static void
+    writeRow(PrintStream out, double time, double[] values) {
+        out.printf("%G", time);
+        for (double v : values) {
+            out.printf("\t%G", v);
+        }
+        out.println();
     }
 }
