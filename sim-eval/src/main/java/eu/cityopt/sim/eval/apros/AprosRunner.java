@@ -169,6 +169,8 @@ public class AprosRunner implements SimulationRunner {
     }
 
     private void makeTsInput(MemoryDirectory mdir, SimulationInput input) {
+        if (tsInputFile == null)
+            return;
         TimeSeriesData tsd = new TimeSeriesData(nameSpace);
         double
             start = (double)input.get(Namespace.CONFIG_COMPONENT,
