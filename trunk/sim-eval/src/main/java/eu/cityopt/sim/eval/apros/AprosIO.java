@@ -139,19 +139,34 @@ public class AprosIO {
         /* Not sure what the right charset is but I'd bet against UTF-8. */
         return Files.newBufferedReader(path, StandardCharsets.US_ASCII);
     }
-    
+
+    /**
+     * Write a time series input file.
+     * The file can be read into Apros with IO_SET.  The inputs listed in
+     * vars are written in that order.  It should correspond to DB_NAMES
+     * configuration in the Apros model.  It is assumed that EXT_NAMES is not
+     * used: inputs appear as "COMPONENT NAME" in the file.  Values are
+     * retrieved from input; all the listed variables must be time series.
+     * <p>
+     * The time series are clipped to the simulation period according
+     * to their type.  Beyond that the types have no effect; only the points
+     * are written out and Apros interprets them in its own fashion.
+     *
+     * @param str Stream to write into.  May or may not be closed by us.
+     * @param vars Names of inputs to write
+     * @param input Input data
+     */
     public static void writeTsInput(
-            OutputStream str, List<Pair<String, String>> columns,
+            OutputStream str, List<Pair<String, String>> vars,
             SimulationInput input) {
-        //FIXME Column order must be retained!
         double
             start = (Double)input.get(Namespace.CONFIG_COMPONENT,
                                       Namespace.CONFIG_SIMULATION_START),
             end = (Double)input.get(Namespace.CONFIG_COMPONENT,
                                     Namespace.CONFIG_SIMULATION_END);
         TimeSeriesData tsd = new TimeSeriesData(input.getEvaluationSetup());
-        List<String> anames = new ArrayList<>(columns.size());
-        for (Pair<String, String> inp : columns) {
+        List<String> anames = new ArrayList<>(vars.size());
+        for (Pair<String, String> inp : vars) {
             String
                 comp = inp.getLeft(), name = inp.getRight(),
                 aname = comp + " " + name;
