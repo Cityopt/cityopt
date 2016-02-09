@@ -228,10 +228,9 @@ public class AprosModel implements SimulationModel {
     private void readSampleOutput(Path path) throws IOException,
             FileNotFoundException {
         try (InputStream stream = new FileInputStream(path.toFile());
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(stream))) {
+             BufferedReader in = AprosIO.makeReader(stream)) {
             try {
-                List<String[]> variables = AprosJob.parseResultHeader(in);
+                List<String[]> variables = AprosIO.parseResultHeader(in);
                 if (modelOutputs == null) {
                     modelOutputs = new ArrayList<>();
                 }
