@@ -15,6 +15,7 @@ import java.util.stream.IntStream;
 /**
  * Merge the contents of TimeSeriesData.
  */
+//FIXME Jumps in piecewise linear series.
 public class MergedTimeSeries
 extends AbstractCollection<MergedTimeSeries.Entry> {
     public class Entry {
