@@ -108,10 +108,8 @@ public class AprosRunner implements SimulationRunner {
      *   in modelDir; their headers are read for input names, which must
      *   correspond to time series inputs in ns.  In the working directory
      *   of the simulation server the files are replaced with data from
-     *   SimulationInput.  The points of the time series are clipped to the
-     *   simulation period but are otherwise written out as they are; Apros
-     *   interprets them as it pleases without regard to the time series type.
-     *   May be null or empty if the model has no time series inputs.
+     *   SimulationInput.  May be null or empty if the model has no time series
+     *   inputs.
      * @param resultFiles wildcards for Apros output files.
      *   All matching files are fetched from the simulation server, parsed
      *   as Apros <code>IO_SET</code> data and searched for the outputs
