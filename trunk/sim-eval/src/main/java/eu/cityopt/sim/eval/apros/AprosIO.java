@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,7 +118,17 @@ public class AprosIO {
         return line == null ? null : line.trim().split("[ \t]+");
     }
     
+    /**
+     * Produce a BufferedReader from an InputStream.
+     * Closing the reader appears to close the stream, although this is not
+     * well documented.
+     */
     public static BufferedReader makeReader(InputStream str) {
         return new BufferedReader(new InputStreamReader(str));
+    }
+
+    public static BufferedReader makeReader(Path path) throws IOException {
+        /* Not sure what the right charset is but I'd bet against UTF-8. */
+        return Files.newBufferedReader(path, StandardCharsets.US_ASCII);
     }
 }

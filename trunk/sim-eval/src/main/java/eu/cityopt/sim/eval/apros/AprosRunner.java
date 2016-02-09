@@ -1,5 +1,6 @@
 package eu.cityopt.sim.eval.apros;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,9 +12,11 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.Templates;
@@ -31,6 +34,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.simantics.simulation.scheduling.Experiment;
 import org.simantics.simulation.scheduling.JobConfiguration;
 import org.simantics.simulation.scheduling.applications.Application;
@@ -65,16 +69,15 @@ public class AprosRunner implements SimulationRunner {
     private final IDirectory modelDir;
     private static Templates a62scl = loadXSL();
     private final String profile;
-    final String tsInputFile;
+    // Time series inputs by file
+    private final Map<String, List<Pair<String, String>>>
+        tsInputs = new HashMap<>();
     final String[] resultFiles;
     final Path setup_scl;
     private boolean isOpen = true;
     /* Unique SCL names for scalar input parameters.  Built by makeInputNames.
        Maps component |-> parameter |-> name. */
     private Map<String, Map<String, String>> inputNames = new HashMap<>();
-    /* Names of time series input parameters by component.
-       Built by makeInputNames. */
-    private Map<String, Set<String>> tsInputs = new HashMap<>();
     /* A sequence of SCL set commands for input parameters
        not found in uc_structure. */
     private byte[] orphanSets;
@@ -91,10 +94,6 @@ public class AprosRunner implements SimulationRunner {
      *   (everything else in ns is ignored).
      * @param uc_props the XML document describing the user component structure
      *   of the Apros model.
-     * @param tsInputFile name of an Apros IO_SET file for transferring
-     *   time series inputs.  Must not contain slashes; the file is created in
-     *   the working directory of the simulation server.  May be null if the
-     *   model has no time series inputs.
      * @param modelDir a directory of model-related files that are shipped to
      *   the simulation server.  sequence.scl in this directory contains the
      *   main program (<code>main :: &lt;Proc&gt; ()</code>) and should
@@ -104,6 +103,15 @@ public class AprosRunner implements SimulationRunner {
      *   <code>setup :: AprosSequence ()</code> in the imported setup.scl
      *   and simulate.  The main program is also responsible for managing
      *   Apros <code>IO_SET</code>s for tsInputFile and resultFiles.
+     * @param tsInputFiles names of Apros IO_SET files for transferring
+     *   time series inputs.  Must not contain slashes.  The files must exist
+     *   in modelDir; their headers are read for input names, which must
+     *   correspond to time series inputs in ns.  In the working directory
+     *   of the simulation server the files are replaced with data from
+     *   SimulationInput.  The points of the time series are clipped to the
+     *   simulation period but are otherwise written out as they are; Apros
+     *   interprets them as it pleases without regard to the time series type.
+     *   May be null or empty if the model has no time series inputs.
      * @param resultFiles wildcards for Apros output files.
      *   All matching files are fetched from the simulation server, parsed
      *   as Apros <code>IO_SET</code> data and searched for the outputs
@@ -113,20 +121,29 @@ public class AprosRunner implements SimulationRunner {
      * @see eu.cityopt.sim.eval.SimulatorManagers#get
      */
     AprosRunner(AprosManager mgr, String profile, Namespace ns,
-                Document uc_props, String tsInputFile, Path modelDir,
+                Document uc_props, Path modelDir, String[] tsInputFiles,
                 String... resultFiles)
             throws TransformerException, IOException, ConfigurationException {
         manager = mgr;
         this.profile = profile;
         nameSpace = ns;
         this.modelDir = new LocalDirectory(modelDir);
-        if (tsInputFile != null
-                && Paths.get(tsInputFile).getNameCount() != 1) {
-            throw new ConfigurationException(
-                    "AprosRunner: invalid time series input file \""
-                    + tsInputFile + "\"");
+        if (tsInputFiles != null) {
+            for (String tsName : tsInputFiles) {
+                if (Paths.get(tsName).getNameCount() != 1) {
+                    throw new ConfigurationException(
+                            "AprosRunner: invalid time series input file \""
+                                    + tsName + "\"");
+                }
+                try (BufferedReader rd = AprosIO.makeReader(
+                        modelDir.resolve(tsName))) {
+                    tsInputs.put(tsName,
+                                 AprosIO.parseResultHeader(rd).stream()
+                                         .map(a -> Pair.of(a[0], a[1]))
+                                         .collect(Collectors.toList()));
+                }
+            }
         }
-        this.tsInputFile = tsInputFile;
         this.resultFiles = resultFiles;
         uc_structure = (Document)uc_props.cloneNode(true);
         sanitizeUCS();
@@ -169,17 +186,17 @@ public class AprosRunner implements SimulationRunner {
     }
 
     private void makeTsInput(MemoryDirectory mdir, SimulationInput input) {
-        if (tsInputFile == null)
-            return;
-        TimeSeriesData tsd = new TimeSeriesData(nameSpace);
         double
-            start = (double)input.get(Namespace.CONFIG_COMPONENT,
+            start = (Double)input.get(Namespace.CONFIG_COMPONENT,
                                       Namespace.CONFIG_SIMULATION_START),
-            end = (double)input.get(Namespace.CONFIG_COMPONENT,
+            end = (Double)input.get(Namespace.CONFIG_COMPONENT,
                                     Namespace.CONFIG_SIMULATION_END);
-        for (Map.Entry<String, Set<String>> compEnt : tsInputs.entrySet()) {
-            String comp = compEnt.getKey();
-            for (String name : compEnt.getValue()) {
+        for (Map.Entry<String, List<Pair<String, String>>>
+                fkv : tsInputs.entrySet()) {
+            //FIXME Column order must be retained!
+            TimeSeriesData tsd = new TimeSeriesData(nameSpace);
+            for (Pair<String, String> inp : fkv.getValue()) {
+                String comp = inp.getLeft(), name = inp.getRight();
                 /* Clip series to simulation period.
                    This keeps the file smaller.  Also, I hear Apros is buggy
                    and acts funny if an input file begins before the simulation
@@ -190,25 +207,25 @@ public class AprosRunner implements SimulationRunner {
                 // Apros notation for the names
                 tsd.put(comp + " " + name, pws.getTimes(), pws.getValues());
             }
-        }
-        MergedTimeSeries merge = new MergedTimeSeries(tsd);
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        try (PrintStream out = new PrintStream(bout)) {
-            out.println(merge.getNames().size() + 1);
-            out.println("SIMULATION TIME");
-            merge.getNames().forEach(out::println);
-            double time = start;
-            double[] values = new double[merge.getNames().size()];
-            for (MergedTimeSeries.Entry ent : merge) {
-                if (time != ent.getTime()) {
-                    writeRow(out, time, values);
-                    time = ent.getTime();
+            MergedTimeSeries merge = new MergedTimeSeries(tsd);
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            try (PrintStream out = new PrintStream(bout)) {
+                out.println(merge.getNames().size() + 1);
+                out.println("SIMULATION TIME");
+                merge.getNames().forEach(out::println);
+                double time = start;
+                double[] values = new double[merge.getNames().size()];
+                for (MergedTimeSeries.Entry ent : merge) {
+                    if (time != ent.getTime()) {
+                        writeRow(out, time, values);
+                        time = ent.getTime();
+                    }
+                    values[ent.getSeries()] = ent.getValue();
                 }
-                values[ent.getSeries()] = ent.getValue();
+                writeRow(out, time, values);
             }
-            writeRow(out, time, values);
+            mdir.addFile(fkv.getKey(), new MemoryFile(bout.toByteArray()));
         }
-        mdir.addFile(tsInputFile, new MemoryFile(bout.toByteArray()));
     }
     
     private void writeRow(PrintStream out, double time, double[] values) {
@@ -358,54 +375,52 @@ public class AprosRunner implements SimulationRunner {
     
     /**
      * Give scalar inputs unique SCL names, store in inputNames.
-     * Pass time series inputs to addTsInput.
-     * @throws ConfigurationException
+     * Check that all time series inputs in nameSpace are found
+     * in tsInputs and vice versa.
+     * @throws ConfigurationException on time series input mismatch
      */
     private void makeInputNames() throws ConfigurationException {
         Set<String> used_names = new HashSet<>();
+        Set<Pair<String, String>>
+            unboundTsInputs = tsInputs.values().stream()
+                    .flatMap(List::stream).collect(Collectors.toSet());
 
         for (Map.Entry<String, Namespace.Component>
                  ckv : nameSpace.components.entrySet()) {
             if (ckv.getValue().inputs.isEmpty())
                 continue;
+            String comp = ckv.getKey();
             Map<String, String> names = new HashMap<>();
             for (Map.Entry<String, Type>
                      pkv : ckv.getValue().inputs.entrySet()) {
+                String par = pkv.getKey();
                 if (pkv.getValue().isTimeSeriesType()) {
-                    addTsInput(ckv.getKey(), pkv.getKey(), pkv.getValue());
+                    if (!unboundTsInputs.remove(Pair.of(comp, par))) {
+                        throw new ConfigurationException(String.format(
+                                "%s.%s: not found in time series input files",
+                                comp, par));
+                    }
                 } else {
                     String
-                        name0 = sanitize(ckv.getKey() + "__" + pkv.getKey()),
+                        name0 = sanitize(comp + "__" + par),
                         name = name0;
                     for (int i = 0; used_names.contains(name); ++i) {
                         name = name0 + "_" + i;
                     }
-                    names.put(pkv.getKey(), name);
+                    names.put(par, name);
                     used_names.add(name);
                 }
             }
             if (!names.isEmpty()) {
-                inputNames.put(ckv.getKey(), names);
+                inputNames.put(comp, names);
             }
         }
-    }
-    
-    /**
-     * Add (comp, var) to tsInputs if typ is a supported time series type.
-     * Only TIMESERIES_STEP is supported by Apros.
-     * @throws ConfigurationException if typ is not supported.
-     */
-    private void addTsInput(String comp, String var, Type typ)
-            throws ConfigurationException {
-        if (tsInputFile == null) {
+        if (!unboundTsInputs.isEmpty()) {
             throw new ConfigurationException(String.format(
-                    "%s.%s: no time series input file", comp, var));
-        } else if (typ != Type.TIMESERIES_STEP) {
-            throw new ConfigurationException(String.format(
-                    "%s.%s: only TimeSeries/step supported by Apros",
-                    comp, var));
-        } else {
-            tsInputs.computeIfAbsent(comp, k -> new HashSet<>()).add(var);
+                    "Unknown time series inputs in files: {%s}",
+                    unboundTsInputs.stream()
+                    .map(p -> p.getLeft() + "." + p.getRight())
+                    .collect(Collectors.joining(", "))));
         }
     }
 
