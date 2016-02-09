@@ -132,8 +132,8 @@ public class AprosManager implements SimulatorManager {
         try {
             return new AprosRunner(
                     this, profile, namespace, aprosModel.uc_props,
-                    aprosModel.tsInputFile,
                     aprosModel.modelDir.getPath(),
+                    aprosModel.tsInputFiles,
                     aprosModel.resultFilePatterns);
         } catch (TransformerException e) {
             throw new ConfigurationException(

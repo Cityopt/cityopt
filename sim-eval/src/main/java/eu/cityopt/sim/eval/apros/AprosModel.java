@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -64,7 +63,7 @@ public class AprosModel implements SimulationModel {
     AprosManager manager;
     String profileName;
     TempDir modelDir;
-    String tsInputFile;
+    String[] tsInputFiles;
     String[] resultFilePatterns;
     final Document uc_props;
     final Defaults defaults = new Defaults();
@@ -166,15 +165,15 @@ public class AprosModel implements SimulationModel {
             throws IOException, ConfigurationException {
         Properties properties = new Properties();
         properties.load(inputStream);
+        String psep = Pattern.quote(System.getProperty("path.separator"));
         for (String key : properties.stringPropertyNames()) {
             String value = properties.getProperty(key);
             switch (key) {
-            case "timeSeriesInputFile":
-                this.tsInputFile = value;
+            case "timeSeriesInputFiles":
+                this.tsInputFiles = value.split(psep);
                 break;
             case "resultFiles":
-                this.resultFilePatterns =
-                    value.split(Pattern.quote(System.getProperty("path.separator")));
+                this.resultFilePatterns = value.split(psep);
                 break;
             case "timeOrigin":
                 defaults.timeOrigin = TimeUtils.parseISO8601(value);
