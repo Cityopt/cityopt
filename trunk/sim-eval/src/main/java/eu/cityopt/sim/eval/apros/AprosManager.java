@@ -47,9 +47,9 @@ public class AprosManager implements SimulatorManager {
     private List<Map<String, String>> nodes = ImmutableList.of(
             ImmutableMap.of("type", "local",
                             "cpu", "2"));
-    
-    private boolean nodesConfigured = false; 
-    
+
+    private boolean nodesConfigured = false;
+
     /** Profiles installed on the server. */
     private final Set<String> profiles = new HashSet<>();
 
@@ -97,7 +97,7 @@ public class AprosManager implements SimulatorManager {
             throw new RuntimeException("Simulation server setup failed.", e);
         }
     }
-    
+
     synchronized void installProfile(String profile) {
         if (!profiles.contains(profile)) {
             server.installProfile(profile, new LocalDirectory(
@@ -105,7 +105,7 @@ public class AprosManager implements SimulatorManager {
             profiles.add(profile);
         }
     }
-    
+
     Experiment createExperiment() {
         synchronized (this) {
             if (!nodesConfigured) {

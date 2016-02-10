@@ -86,8 +86,8 @@ public class AprosRunner implements SimulationRunner {
      * Constructor.  This should only be called by
      * {@link AprosManager#makeRunner}, which everyone else should use
      * to create AprosRunners.
-     * 
-     * @param mgr the AprosManager that manages this runner. 
+     *
+     * @param mgr the AprosManager that manages this runner.
      * @param profile names a subdirectory of mgr.profileDir that contains
      *   the Apros profile to use.
      * @param ns a {@link Namespace} defining the inputs and outputs
@@ -215,7 +215,7 @@ public class AprosRunner implements SimulationRunner {
      * in identifiers.  This function just ensures that the name starts with
      * a lower case letter; it does not replace invalid characters in the
      * string.  The mapping is injective: different inputs yield different
-     * outputs. 
+     * outputs.
      * @param name string to convert
      * @return name or some prefix + name
      */
@@ -231,7 +231,7 @@ public class AprosRunner implements SimulationRunner {
     public Map<String, Map<String, String>> getInputNames() {
         return Collections.unmodifiableMap(inputNames);
     }
-    
+
     public static Transformer getTransformer()
             throws TransformerConfigurationException {
         return a62scl.newTransformer();
@@ -252,7 +252,7 @@ public class AprosRunner implements SimulationRunner {
                     inp.printf("%s = %s%n", pkv.getValue(),
                                repr(input.get(ckv.getKey(), pkv.getKey())));
                 }
-            }            
+            }
         }
         cdir.addFile("inputs.scl", new MemoryFile(inp_ba.toByteArray()));
         /* XXX Bug: there needs to be at least one argument.
@@ -260,7 +260,7 @@ public class AprosRunner implements SimulationRunner {
            No harm if there are more arguments than SCL main takes. */
         return new String[] {"sequence.scl", "0"};
     }
-    
+
     /**
      * Return a SCL representation of obj.  Must work with any types
      * usable as input parameters.
@@ -282,7 +282,7 @@ public class AprosRunner implements SimulationRunner {
             throw new RuntimeException("Failed to load XSLT.", e);
         }
     }
-    
+
     /**
      * Sanitize all property names.
      * Also replace original names with sanitized ones in expressions.
@@ -334,7 +334,7 @@ public class AprosRunner implements SimulationRunner {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * Give scalar inputs unique SCL names, store in inputNames.
      * Check that all time series inputs in nameSpace are found
@@ -449,7 +449,7 @@ public class AprosRunner implements SimulationRunner {
                       "  setupUCs;"},
             end = {"  return ()",
                    "}"};
-                
+
         try (PrintStream setup = new PrintStream(setup_scl.toFile())) {
             for (String s: start)
                 setup.println(s);
