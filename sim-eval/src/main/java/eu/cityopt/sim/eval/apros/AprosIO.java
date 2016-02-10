@@ -40,7 +40,7 @@ public class AprosIO {
         if (n_cols < 1) {
             throw new IOException("Bad first line");
         }
-    
+
         // First column is always time.
         line = readAndSplit(in);
         if (line == null) {
@@ -52,7 +52,7 @@ public class AprosIO {
             throw new IOException("Expected SIMULATION TIME, got "
                 + String.join(" ",  line));
         }
-    
+
         List<String[]> variables = new ArrayList<>();
         for (int i = 1; i != n_cols; ++i) {
             line = readAndSplit(in);
@@ -69,7 +69,7 @@ public class AprosIO {
         return variables;
     }
 
-    public static void readResultFile(BufferedReader in, SimulationResults res) 
+    public static void readResultFile(BufferedReader in, SimulationResults res)
             throws IOException {
         Namespace ns = res.getNamespace();
         List<String []> variables = parseResultHeader(in);
@@ -91,7 +91,7 @@ public class AprosIO {
                 types.add(type);
                 vals.add(new ArrayList<>());
             }
-        } 
+        }
         for (int ln = n_cols + 2;
                 (line = readAndSplit(in)) != null;
                 ++ln) {
@@ -113,19 +113,19 @@ public class AprosIO {
         }
         for (int i = 0; i != names.size(); ++i) {
             String[] n = names.get(i);
-            double[] t = Doubles.toArray(times); 
+            double[] t = Doubles.toArray(times);
             res.put(n[0], n[1],
-                    ns.evaluator.makeTS(types.get(i), t, 
+                    ns.evaluator.makeTS(types.get(i), t,
                             Doubles.toArray(vals.get(i))));
         }
     }
 
     private static String[] readAndSplit(BufferedReader rd)
             throws IOException {
-        String line = rd.readLine(); 
+        String line = rd.readLine();
         return line == null ? null : line.trim().split("[ \t]+");
     }
-    
+
     /**
      * Produce a BufferedReader from an InputStream.
      * Closing the reader appears to close the stream, although this is not

@@ -27,7 +27,7 @@ import eu.cityopt.sim.eval.SimulationResults;
 
 /**
  * An Apros simulation run.
- * These are created with {@link AprosRunner#start}. 
+ * These are created with {@link AprosRunner#start}.
  * @author ttekth
  *
  */
@@ -75,7 +75,7 @@ public class AprosJob extends CompletableFuture<SimulationOutput>
             executor.execute(() -> completeJob(st));
         }
     }
-    
+
     public synchronized void completeJob(JobFinished st) {
         try {
             if (isCancelled()) {
