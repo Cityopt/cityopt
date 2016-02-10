@@ -47,4 +47,14 @@ public class InfoController {
 		return "projectparameters_info";
 	}
 
+	@RequestMapping( value="dboptimization_info", method=RequestMethod.GET)
+	public String DBOptimizationInfo(){		
+		return "dboptimization_info";
+	}
+
+	@RequestMapping( value="ga_info", method=RequestMethod.GET)
+	public String GAInfo(){		
+		return "ga_info";
+	}
+
 }

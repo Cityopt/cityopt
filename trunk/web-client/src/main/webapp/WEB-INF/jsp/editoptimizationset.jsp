@@ -14,6 +14,11 @@
 <head>
 <title>CityOpt edit database optimization set</title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+<script>
+    function openInfoWindow() {
+    	   window.open("dboptimization_info.html",'Database optimization info','width=600,height=600,scrollbars=yes');
+    }
+</script>
 </head>
 <body>
 <table cellspacing="0" cellpadding="0">
@@ -26,7 +31,16 @@
 				<col style="width: 400px;">
 				<col style="width: 450px;">
 				<!-- Edit database optimization set title -->
-				<tr><td colspan="2"><h2><spring:message code="edit_database_optimization_set"/></h2></td></tr>
+				<tr>
+					<td colspan="2"><h2><spring:message code="edit_database_optimization_set"/></h2></td>
+					<td align="right">
+						<div class="round-button">
+							<div class="round-button-circle">
+								<a href="" onclick="openInfoWindow()">?</a>		
+							</div>
+						</div>
+					</td>
+				</tr>
 				
 				<!-- Tool tips -->
 				<c:set var="tooltip_name">

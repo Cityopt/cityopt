@@ -19,6 +19,9 @@
 		<td valign="top">
 			<table>
 				<tr>
+					<td><font color="red">${error}</font></td>
+				</tr>
+				<tr>
 					<td>
 						<!-- Search constraints -->
 						<h2>Import genetic constraints</h2>
@@ -27,8 +30,6 @@
 				<tr>
 					<td>
 						<table>
-							<col style="width:300px">
-
 							<tr>
 								<td><b><spring:message code="search_constraints"/></b></td>
 							</tr>
@@ -38,18 +39,25 @@
 										<col style="width:60px">
 										<col style="width:240px">
 										<col style="width:300px">
+										<col style="width:100px">
+										<col style="width:100px">
+										
 										<tr>
 											<!-- Select, Search constraint and Expression -->
 											<th><spring:message code="select"/></th>
 											<th><spring:message code="search_constraints"/></th>
 											<th><spring:message code="expression"/></th>
+											<th><spring:message code="lower_bound"/></th>
+											<th><spring:message code="upper_bound"/></th>
 										</tr>
 							
 										<c:forEach items="${constraints}" var="constraint">
 											<tr>
-												<td><a href="<c:url value='importgaconstraint.html?constraintid=${constraint.optconstid}'/>"><spring:message code="select"/></a></td>
+												<td><a href="<c:url value='importgaconstraint.html?constraintid=${constraint.optconstid}'/>"><button type="button"><spring:message code="select"/></button></a></td>
 												<td>${constraint.name}</td>
 										    	<td>${constraint.expression}</td>
+										    	<td>${constraint.lowerbound}</td>
+										    	<td>${constraint.upperbound}</td>
 										   	</tr>
 											</c:forEach>
 									</table>

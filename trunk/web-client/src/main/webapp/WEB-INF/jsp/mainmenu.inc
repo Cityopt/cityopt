@@ -1,9 +1,12 @@
+<head>
+	<link rel="shortcut icon" href="assets/img/icon_logo_small.gif"> 
+</head>
 <table class="menustyle" height=1000 align="left">
 <col style="width: 60px">
 <col style="width: 150px">
 <tr>
 	<td>
-		<img src="assets/img/icon_logo_small.jpg"/>
+		<img src="assets/img/icon_logo_small.gif"/>
 	</td>
 	<td valign="top">
 		<h1>CITYOPT</h1>
@@ -32,7 +35,7 @@
 </tr>
 <tr>
 	<td>
-		<img src="assets/img/icon_project_black.jpg"/>
+		<img src="assets/img/icon_project_black.gif"/>
 	</td>
 <c:choose>	
 	<c:when test="${not empty project}">
@@ -118,7 +121,7 @@
 </tr>
 <tr>
 	<td>
-		<img src="assets/img/icon_scenario_black.jpg"/>
+		<img src="assets/img/icon_scenario_black.gif"/>
 	</td>
 <c:choose>	
 	<c:when test="${not empty scenario}">
@@ -217,7 +220,7 @@
 </tr>
 <tr>
 	<td>
-		<img src="assets/img/icon_optimization_black.jpg"/>
+		<img src="assets/img/icon_optimization_black.gif"/>
 	</td>
 	<!-- Optimization title -->
 	<td><b><spring:message code="optimization"/></b></td>
@@ -339,7 +342,7 @@
 </tr>
 <tr>
 	<td>
-		<img src="assets/img/icon_Visualization_black.jpg"/>
+		<img src="assets/img/icon_Visualization_black.gif"/>
 	</td>
 	<!--  -->
 	<td><b><spring:message code="visualization"/></b></td>
@@ -426,7 +429,7 @@
 </tr>
 <tr>
 	<td>
-		<img src="assets/img/icon_users_black.jpg"/>
+		<img src="assets/img/icon_users_black.gif"/>
 	</td>
 	<td><b><spring:message code="users_and_settings"/></b></td>
 </tr>
