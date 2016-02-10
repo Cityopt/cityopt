@@ -1,6 +1,9 @@
 <project default="build">
     <target name="build">
         <antcall target="zip-dir">
+            <param name="dir" value="plumbing" />
+        </antcall>
+        <antcall target="zip-dir">
             <param name="dir" value="testmodel" />
         </antcall>
         <antcall target="zip-dir">
