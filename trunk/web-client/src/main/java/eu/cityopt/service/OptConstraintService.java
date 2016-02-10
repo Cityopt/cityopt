@@ -9,6 +9,6 @@ public interface OptConstraintService extends CityOptService<OptConstraintDTO> {
 
 	OptConstraintDTO update(OptConstraintDTO u) throws EntityNotFoundException;
 	
-	OptConstraintDTO findByNameAndProject(String name, int prjid) throws EntityNotFoundException;
+	OptConstraintDTO findByNameAndProject(String name, int prjid);
 
 }
