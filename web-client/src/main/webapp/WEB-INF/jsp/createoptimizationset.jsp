@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <script>
     function openInfoWindow() {
-    	   window.open("createproject_info.html",'Info: Create Project','width=600,height=800');
+    	   window.open("createoptimizationset_info.html",'Create optimization set info','width=600,height=800');
     }
 </script>
 
@@ -42,13 +42,14 @@
        							
 			<!--Title Create database optimization set-->
 			<tr>
-			<td colspan="2"><h2><spring:message code="create_optimization_set"/></h2></td>
-			<td align="right">
-				<div class="round-button">
-					<div class="round-button-circle" onclick="openInfoWindow()">
-						<a>?</a>		
-					</div> 
-				</div></td>
+				<td colspan="2"><h2><spring:message code="create_optimization_set"/></h2></td>
+				<td align="right">
+					<div class="round-button">
+						<div class="round-button-circle">
+							<a href="" onclick="openInfoWindow()">?</a>		
+						</div>
+					</div>
+				</td>
 			</tr>
 			
 			<tr>

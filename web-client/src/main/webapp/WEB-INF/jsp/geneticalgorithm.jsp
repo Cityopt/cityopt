@@ -36,6 +36,11 @@ function deleteDecisionVariable(decisionvarid) {
     	document.mainform.action = "${baseURL}/deletesgdecisionvariable.html"
 	}
 }
+
+function openInfoWindow() {
+	window.open("ga_info.html",'Genetic optimization info','width=600,height=600,scrollbars=yes');
+}
+
 </script>
 <script language="javascript"><%@ include file="cityopt.js"%></script>
 <head>
@@ -61,13 +66,23 @@ function deleteDecisionVariable(decisionvarid) {
 				<col style="width: 620px;">
 				<col style="width: 450px;">
 				<!--Edit genetic algorithm optimization set-->
-				<tr><td colspan="2"><h2><spring:message code="edit_genetic_algorithm_optimization_set"/></h2></td></tr>
+				<tr>
+					<td colspan="2"><h2><spring:message code="edit_genetic_algorithm_optimization_set"/></h2></td>
+					<td align="right">
+						<div class="round-button">
+							<div class="round-button-circle">
+								<a href="" onclick="openInfoWindow()">?</a>		
+							</div>
+						</div>
+					</td>
+				</tr>
 				<tr>
 					<td colspan="2">
 						<table>
 							<col style="width: 150px;">
 							<col style="width: 250px;">
-							<col style="width: 550px;">
+							<col style="width: 650px;">
+	
 							<tr>
 								<!-- Name -->
 								<td><spring:message code="name"/>:</td>
