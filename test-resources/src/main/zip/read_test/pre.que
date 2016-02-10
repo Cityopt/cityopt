@@ -1,0 +1,4 @@
+modi is_in io_file_name c:/a/in.txt
+modi is_out io_file_name c:/a/out.txt
+io open is_in
+io open is_out
