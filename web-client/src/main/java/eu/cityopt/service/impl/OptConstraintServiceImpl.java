@@ -87,5 +87,25 @@ public class OptConstraintServiceImpl implements OptConstraintService {
 
 		return modelMapper.map(oc, OptConstraintDTO.class);
 	}
+
+	@Override
+	public OptConstraintDTO findByNameAndScenGen(String name, int scengenid) {
+		OptConstraint oc = optConstraintRepository.findByNameAndScenGen(name, scengenid);
+		if(oc == null) {
+			return null;
+		}
+
+		return modelMapper.map(oc, OptConstraintDTO.class);
+	}
+
+	@Override
+	public OptConstraintDTO findByNameAndOptSet(String name, int optID) {
+		OptConstraint oc = optConstraintRepository.findByNameAndOptSet(name, optID);
+		if(oc == null) {
+			return null;
+		}
+
+		return modelMapper.map(oc, OptConstraintDTO.class);
+	}
 	
 }
