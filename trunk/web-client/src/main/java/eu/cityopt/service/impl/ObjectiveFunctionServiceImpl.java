@@ -146,5 +146,16 @@ public class ObjectiveFunctionServiceImpl implements ObjectiveFunctionService {
 		return modelMapper.map(results, 
 				new TypeToken<List<ObjectiveFunctionResultDTO>>(){}.getType());
 	}
+
+
+	@Override
+	public ObjectiveFunctionDTO findByNameAndScenGen(int scenGenID, String name) {
+		ObjectiveFunction of = objectiveFunctionRepository.findByNameAndScenGen(scenGenID, name);
+		if(of == null) {
+			return null;
+		}
+
+		return modelMapper.map(of, ObjectiveFunctionDTO.class);
+	}
 	
 }

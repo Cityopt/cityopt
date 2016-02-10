@@ -13,6 +13,9 @@ public interface ObjectiveFunctionService extends CityOptService<ObjectiveFuncti
 	
 	ObjectiveFunctionDTO findByName(int prjID,String name) throws EntityNotFoundException;
 	
+	ObjectiveFunctionDTO findByNameAndScenGen(int scenGenID,String name);
+	
+	
 	Boolean existsByName(int prjID,String name);
 
 	ObjectiveFunctionDTO update(ObjectiveFunctionDTO toUpdate)
