@@ -2566,12 +2566,8 @@ public class OptimizationController {
 
         OptConstraintDTO testConstraint = null;
         
-        try {
-        	testConstraint = optConstraintService.findByNameAndProject(constraint.getName(), project.getPrjid());
-		} catch (EntityNotFoundException e1) {
-			e1.printStackTrace();
-		}
-        
+        testConstraint = optConstraintService.findByNameAndProject(constraint.getName(), project.getPrjid());
+		        
         if (testConstraint != null) {
         	// Constraint already exists
         	model.put("error", "Constraint already exists");
