@@ -68,6 +68,8 @@ public class AprosModel implements SimulationModel {
     final Document uc_props;
     final Defaults defaults = new Defaults();
     List<Pair<String, String>> modelOutputs;
+    final Map<Pair<String, String>, Pair<double[], double[]>>
+        tsInputs = new HashMap<>();
     final Map<String, String> descriptions = new HashMap<>();
     byte[] overviewImageBytes;
 
@@ -134,6 +136,7 @@ public class AprosModel implements SimulationModel {
             throw new ConfigurationException(
                     "No Apros profile specified in " + MODEL_CONFIGURATION_FILENAME);
         }
+        readTsInputs(dir);
         filterSampleOutputs(modelFiles);
         return ucs;
     }
@@ -272,13 +275,15 @@ public class AprosModel implements SimulationModel {
         return overviewImageBytes;
     }
 
+    //FIXME Use the logging framework.  Writers may throw, that would be bad.
     @Override
     public SimulationInput findInputsAndOutputs(
             Namespace newNamespace, Map<String, Map<String, String>> units,
             int detailLevel, Writer warningWriter)
                     throws IOException {
         try {
-            SyntaxChecker syntaxChecker = new SyntaxChecker(newNamespace.evaluator);
+            SyntaxChecker syntaxChecker = new SyntaxChecker(
+                    newNamespace.evaluator);
             SimulationInput defaultValues = findUcInputs(
                     uc_props, detailLevel, syntaxChecker, newNamespace, units,
                     warningWriter);
@@ -291,11 +296,52 @@ public class AprosModel implements SimulationModel {
         }
     }
 
-    private void findTsInputs(SyntaxChecker chk, Namespace ns,
-                              SimulationInput defaults, Writer warn) {
+    private void readTsInputs(Path dir) throws IOException {
         if (tsInputFiles == null)
             return;
-        //TODO stub
+        for (String fname : tsInputFiles) {
+            try (BufferedReader rd = AprosIO.makeReader(
+                    dir.resolve(fname))) {
+                AprosIO.readFile(
+                        rd, null, (name, times, values) -> tsInputs.put(
+                                name, Pair.of(times, values)));
+            }
+        }
+    }
+
+    private void findTsInputs(SyntaxChecker chk, Namespace ns,
+                              SimulationInput defaults, Writer warn)
+                                      throws IOException {
+        final Type DEFAULT_TS = Type.TIMESERIES_LINEAR;
+        for (Map.Entry<Pair<String, String>, Pair<double[], double[]>>
+                ent : tsInputs.entrySet()) {
+            String
+                cn = ent.getKey().getLeft(),
+                vn = ent.getKey().getRight();
+            if (!chk.isValidTopLevelName(cn)
+                    || !chk.isValidAttributeName(vn)) {
+                //FIXME Cope.  What a mess.
+                throw new IllegalArgumentException(String.format(
+                        "Syntax error in ts input name %s.%s",
+                        cn, vn));
+            }
+            Namespace.Component c = ns.getOrNew(cn);
+            Type typ = c.inputs.get(vn);
+            if (typ == null) {
+                typ = DEFAULT_TS;
+                c.inputs.put(vn, typ);
+            } else if (!typ.isTimeSeriesType()) {
+                warn.write(String.format(
+                        "Time series input %s.%s replaces"
+                        + "scalar type %s.%n",
+                        cn, vn, typ));
+                typ = DEFAULT_TS;
+                c.inputs.put(vn, typ);
+            }
+            defaults.put(cn, vn,
+                         ns.evaluator.makeTS(typ, ent.getValue().getLeft(),
+                                             ent.getValue().getRight()));
+        }
     }
 
     void findOutputs(SyntaxChecker syntaxChecker, Namespace newNamespace, Writer warnings)

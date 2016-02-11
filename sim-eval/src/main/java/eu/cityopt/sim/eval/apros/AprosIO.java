@@ -87,7 +87,8 @@ public class AprosIO {
      * out.  The purpose of the filter is to avoid parsing uninteresting
      * columns.  Closing the reader is up to the caller.
      * @param in Input reader
-     * @param filter Return whether a variable is interesting
+     * @param filter Return whether a variable is interesting.  If null
+     *   all variables are interesting
      * @param consumer Called for interesting variables with name, times
      *   and values
      */
@@ -105,7 +106,7 @@ public class AprosIO {
             Pair<String, String> var = contents.get(i - 1);
             System.out.printf("File variable: %s.%s%n",
                               var.getLeft(), var.getRight());
-            if (filter.test(var)) {
+            if (filter == null || filter.test(var)) {
                 names.add(var);
                 cols.add(i);
                 vals.add(new ArrayList<>());
