@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -22,12 +23,18 @@ import eu.cityopt.sim.eval.PiecewiseFunction;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.TimeSeriesData;
-import eu.cityopt.sim.eval.Type;
 
 /**
  * Support for reading and writing Apros IO_SETs.
  */
 public class AprosIO {
+    /**
+     * Return the variables contained in an Apros data file.
+     * The first column is always time and is not included in the return value.
+     * The file position will be left at the beginning of data.
+     * @param in Input reader
+     * @return a list of (module, attribute) pairs.
+     */
     public static List<Pair<String, String>>
     parseResultHeader(BufferedReader in) throws IOException {
         String [] line = readAndSplit(in);
@@ -69,31 +76,38 @@ public class AprosIO {
         return variables;
     }
 
-    public static class AprosData {
-        double[] times;
-        List<double[]> values;
+    @FunctionalInterface
+    public interface TriConsumer<T, U, V> {
+        void accept(T t, U u, V v);
     }
 
-    public static void readResultFile(BufferedReader in, SimulationResults res)
-            throws IOException {
-        Namespace ns = res.getNamespace();
+    /**
+     * Read and process an Apros data file.
+     * The file will be read to the end even if all variables are filtered
+     * out.  The purpose of the filter is to avoid parsing uninteresting
+     * columns.  Closing the reader is up to the caller.
+     * @param in Input reader
+     * @param filter Return whether a variable is interesting
+     * @param consumer Called for interesting variables with name, times
+     *   and values
+     */
+    public static void readFile(
+            BufferedReader in, Predicate<Pair<String, String>> filter,
+            TriConsumer<Pair<String, String>, double[], double[]> consumer)
+                    throws IOException {
         List<Pair<String,String>> contents = parseResultHeader(in);
         int n_cols = contents.size() + 1;
         List<Pair<String, String>> names = new ArrayList<>();
         List<Integer> cols = new ArrayList<>();
-        List<Type> types = new ArrayList<>();
         List<List<Double>> vals = new ArrayList<>();
         List<Double> times = new ArrayList<>();
         for (int i = 1; i != n_cols; ++i) {
             Pair<String, String> var = contents.get(i - 1);
-            System.out.printf("Output: %s.%s%n",
+            System.out.printf("File variable: %s.%s%n",
                               var.getLeft(), var.getRight());
-            Namespace.Component comp = ns.components.get(var.getLeft());
-            Type type = comp != null ? comp.outputs.get(var.getRight()) : null;
-            if (type != null) {
+            if (filter.test(var)) {
                 names.add(var);
                 cols.add(i);
-                types.add(type);
                 vals.add(new ArrayList<>());
             }
         }
@@ -120,10 +134,24 @@ public class AprosIO {
         for (int i = 0; i != names.size(); ++i) {
             Pair<String, String> n = names.get(i);
             double[] t = Doubles.toArray(times);
-            res.put(n.getLeft(), n.getRight(),
-                    ns.evaluator.makeTS(types.get(i), t,
-                            Doubles.toArray(vals.get(i))));
+            consumer.accept(n, t, Doubles.toArray(vals.get(i)));
         }
+    }
+
+    public static void readResultFile(BufferedReader in, SimulationResults res)
+            throws IOException {
+        Namespace ns = res.getNamespace();
+        readFile(in,
+                 op -> {
+                     Namespace.Component c = ns.components.get(op.getLeft());
+                     return c != null && c.outputs.containsKey(op.getRight());
+                 },
+                 (op, t, v) -> res.put(
+                         op.getLeft(), op.getRight(),
+                         ns.evaluator.makeTS(
+                                 ns.components.get(op.getLeft())
+                                   .outputs.get(op.getRight()),
+                                 t, v)));
     }
 
     private static String[] readAndSplit(BufferedReader rd)
