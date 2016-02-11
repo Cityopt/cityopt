@@ -50,12 +50,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import eu.cityopt.sim.eval.ConfigurationException;
-import eu.cityopt.sim.eval.MergedTimeSeries;
 import eu.cityopt.sim.eval.Namespace;
-import eu.cityopt.sim.eval.PiecewiseFunction;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationRunner;
-import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.eval.Type;
 
 /**
@@ -136,9 +133,7 @@ public class AprosRunner implements SimulationRunner {
                 try (BufferedReader rd = AprosIO.makeReader(
                         modelDir.resolve(tsName))) {
                     List<Pair<String, String>>
-                        inputs = AprosIO.parseResultHeader(rd).stream()
-                                         .map(a -> Pair.of(a[0], a[1]))
-                                         .collect(Collectors.toList());
+                        inputs = AprosIO.parseResultHeader(rd);
                     if (inputs.size() != inputs.stream().distinct().count()) {
                         throw new ConfigurationException(String.format(
                                 "AprosRunner: duplicate inputs in time series"
