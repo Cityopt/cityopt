@@ -284,13 +284,16 @@ public class AprosModel implements SimulationModel {
         try {
             SyntaxChecker syntaxChecker = new SyntaxChecker(
                     newNamespace.evaluator);
-            SimulationInput defaultValues = findUcInputs(
-                    uc_props, detailLevel, syntaxChecker, newNamespace, units,
-                    warningWriter);
-            findTsInputs(syntaxChecker, newNamespace,
-                         defaultValues, warningWriter);
+            Map<Pair<String, String>, Object> defaults = new HashMap<>();
+            findUcInputs(uc_props, detailLevel, syntaxChecker, newNamespace,
+                         units, defaults, warningWriter);
+            findTsInputs(syntaxChecker, newNamespace, defaults, warningWriter);
             findOutputs(syntaxChecker, newNamespace, warningWriter);
-            return defaultValues;
+            SimulationInput defaultInput = new SimulationInput(
+                    new ExternalParameters(newNamespace));
+            defaults.forEach(
+                    (k, v) -> defaultInput.put(k.getLeft(), k.getRight(), v));
+            return defaultInput;
         } catch (ScriptException e) {
             throw new RuntimeException(e);
         }
@@ -310,7 +313,8 @@ public class AprosModel implements SimulationModel {
     }
 
     private void findTsInputs(SyntaxChecker chk, Namespace ns,
-                              SimulationInput defaults, Writer warn)
+                              Map<Pair<String, String>, Object> defaults,
+                              Writer warn)
                                       throws IOException {
         final Type DEFAULT_TS = Type.TIMESERIES_LINEAR;
         for (Map.Entry<Pair<String, String>, Pair<double[], double[]>>
@@ -338,7 +342,7 @@ public class AprosModel implements SimulationModel {
                 typ = DEFAULT_TS;
                 c.inputs.put(vn, typ);
             }
-            defaults.put(cn, vn,
+            defaults.put(ent.getKey(),
                          ns.evaluator.makeTS(typ, ent.getValue().getLeft(),
                                              ent.getValue().getRight()));
         }
@@ -395,11 +399,11 @@ public class AprosModel implements SimulationModel {
         }
     }
 
-    private static SimulationInput findUcInputs(
+    private static void findUcInputs(
             Node rootNode, int detailLevel, SyntaxChecker syntaxChecker,
-            Namespace newNamespace, Map<String, Map<String, String>> units, Writer warnings)
+            Namespace newNamespace, Map<String, Map<String, String>> units,
+            Map<Pair<String, String>, Object> defaults, Writer warnings)
                     throws IOException {
-        Map<String, Map<String, Double>> values = new HashMap<>();
         XPathFactory xPathFactory = XPathFactory.newInstance();
         XPath xpath = xPathFactory.newXPath();
         try {
@@ -443,8 +447,9 @@ public class AprosModel implements SimulationModel {
                                     Component component = newNamespace.getOrNew(moduleName);
                                     Type old = component.inputs.putIfAbsent(propName, Type.DOUBLE);
                                     if (old == null) {
-                                        values.computeIfAbsent(moduleName, k -> new HashMap<>())
-                                            .putIfAbsent(propName, value);
+                                        defaults.putIfAbsent(
+                                                Pair.of(moduleName, propName),
+                                                value);
                                         if (propUnit != null && !propUnit.isEmpty()) {
                                         	units.computeIfAbsent(moduleName,  k -> new HashMap<>())
                                         		.putIfAbsent(propName, propUnit);
@@ -493,14 +498,7 @@ public class AprosModel implements SimulationModel {
                     if (!validInputsFound) {
                         warnings.write("No valid input parameters found.\n");
                     }
-                    SimulationInput defaultInput = new SimulationInput(
-                            new ExternalParameters(newNamespace));
-                    for (Map.Entry<String, Map<String, Double>> ce : values.entrySet()) {
-                        for (Map.Entry<String, Double> ie : ce.getValue().entrySet()) {
-                            defaultInput.put(ce.getKey(), ie.getKey(), ie.getValue());
-                        }
-                    }
-                    return defaultInput;
+                    return;
                 }
                 previousModuleCount = moduleNodes.getLength();
                 ++level;
