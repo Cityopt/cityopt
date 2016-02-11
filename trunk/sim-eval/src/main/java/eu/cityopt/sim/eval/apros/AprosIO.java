@@ -28,8 +28,8 @@ import eu.cityopt.sim.eval.Type;
  * Support for reading and writing Apros IO_SETs.
  */
 public class AprosIO {
-    public static List<String[]> parseResultHeader(BufferedReader in)
-            throws IOException {
+    public static List<Pair<String, String>>
+    parseResultHeader(BufferedReader in) throws IOException {
         String [] line = readAndSplit(in);
         int n_cols = 0;
         if (line != null && line.length == 1) {
@@ -53,7 +53,7 @@ public class AprosIO {
                 + String.join(" ",  line));
         }
 
-        List<String[]> variables = new ArrayList<>();
+        List<Pair<String, String>> variables = new ArrayList<>();
         for (int i = 1; i != n_cols; ++i) {
             line = readAndSplit(in);
             if (line == null) {
@@ -64,34 +64,40 @@ public class AprosIO {
                         "Bad header line " + (i + 1) + ": "
                         + line.length + " columns");
             }
-            variables.add(line);
+            variables.add(Pair.of(line[0], line[1]));
         }
         return variables;
+    }
+
+    public static class AprosData {
+        double[] times;
+        List<double[]> values;
     }
 
     public static void readResultFile(BufferedReader in, SimulationResults res)
             throws IOException {
         Namespace ns = res.getNamespace();
-        List<String []> variables = parseResultHeader(in);
-        int n_cols = variables.size() + 1;
-        List<String []> names = new ArrayList<>();
+        List<Pair<String,String>> contents = parseResultHeader(in);
+        int n_cols = contents.size() + 1;
+        List<Pair<String, String>> names = new ArrayList<>();
         List<Integer> cols = new ArrayList<>();
         List<Type> types = new ArrayList<>();
         List<List<Double>> vals = new ArrayList<>();
         List<Double> times = new ArrayList<>();
-        String[] line;
         for (int i = 1; i != n_cols; ++i) {
-            line = variables.get(i - 1);
-            System.out.printf("Output: %s.%s%n", line[0], line[1]);
-            Namespace.Component comp = ns.components.get(line[0]);
-            Type type = comp != null ? comp.outputs.get(line[1]) : null;
+            Pair<String, String> var = contents.get(i - 1);
+            System.out.printf("Output: %s.%s%n",
+                              var.getLeft(), var.getRight());
+            Namespace.Component comp = ns.components.get(var.getLeft());
+            Type type = comp != null ? comp.outputs.get(var.getRight()) : null;
             if (type != null) {
-                names.add(line);
+                names.add(var);
                 cols.add(i);
                 types.add(type);
                 vals.add(new ArrayList<>());
             }
         }
+        String[] line;
         for (int ln = n_cols + 2;
                 (line = readAndSplit(in)) != null;
                 ++ln) {
@@ -112,9 +118,9 @@ public class AprosIO {
             }
         }
         for (int i = 0; i != names.size(); ++i) {
-            String[] n = names.get(i);
+            Pair<String, String> n = names.get(i);
             double[] t = Doubles.toArray(times);
-            res.put(n[0], n[1],
+            res.put(n.getLeft(), n.getRight(),
                     ns.evaluator.makeTS(types.get(i), t,
                             Doubles.toArray(vals.get(i))));
         }

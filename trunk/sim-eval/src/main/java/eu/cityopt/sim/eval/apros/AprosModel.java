@@ -2,7 +2,6 @@ package eu.cityopt.sim.eval.apros;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +34,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -67,7 +67,7 @@ public class AprosModel implements SimulationModel {
     String[] resultFilePatterns;
     final Document uc_props;
     final Defaults defaults = new Defaults();
-    List<String[]> modelOutputs;
+    List<Pair<String, String>> modelOutputs;
     final Map<String, String> descriptions = new HashMap<>();
     byte[] overviewImageBytes;
 
@@ -226,17 +226,15 @@ public class AprosModel implements SimulationModel {
 
     private void readSampleOutput(Path path) throws IOException,
             FileNotFoundException {
-        try (InputStream stream = new FileInputStream(path.toFile());
-             BufferedReader in = AprosIO.makeReader(stream)) {
-            try {
-                List<String[]> variables = AprosIO.parseResultHeader(in);
-                if (modelOutputs == null) {
-                    modelOutputs = new ArrayList<>();
-                }
-                modelOutputs.addAll(variables);
-            } catch (IOException e) {
-                throw new IOException(path.getFileName() + ": " + e.getMessage(), e);
+        try (BufferedReader in = AprosIO.makeReader(path)) {
+            List<Pair<String, String>>
+                variables = AprosIO.parseResultHeader(in);
+            if (modelOutputs == null) {
+                modelOutputs = new ArrayList<>();
             }
+            modelOutputs.addAll(variables);
+        } catch (IOException e) {
+            throw new IOException(path.getFileName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -281,13 +279,23 @@ public class AprosModel implements SimulationModel {
                     throws IOException {
         try {
             SyntaxChecker syntaxChecker = new SyntaxChecker(newNamespace.evaluator);
-            SimulationInput defaultValues = findInputs(
-                    uc_props, detailLevel, syntaxChecker, newNamespace, units, warningWriter);
+            SimulationInput defaultValues = findUcInputs(
+                    uc_props, detailLevel, syntaxChecker, newNamespace, units,
+                    warningWriter);
+            findTsInputs(syntaxChecker, newNamespace,
+                         defaultValues, warningWriter);
             findOutputs(syntaxChecker, newNamespace, warningWriter);
             return defaultValues;
         } catch (ScriptException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void findTsInputs(SyntaxChecker chk, Namespace ns,
+                              SimulationInput defaults, Writer warn) {
+        if (tsInputFiles == null)
+            return;
+        //TODO stub
     }
 
     void findOutputs(SyntaxChecker syntaxChecker, Namespace newNamespace, Writer warnings)
@@ -300,12 +308,13 @@ public class AprosModel implements SimulationModel {
             List<String> invalidComponentNames = new ArrayList<>();
             List<String> invalidOutputNames = new ArrayList<>();
             List<String> duplicateOutputNames = new ArrayList<>();
-            for (String[] variable : modelOutputs) {
-                String componentName = variable[0];
-                String outputName = variable[1];
+            for (Pair<String, String> variable : modelOutputs) {
+                String componentName = variable.getLeft();
+                String outputName = variable.getRight();
                 if (syntaxChecker.isValidTopLevelName(componentName)) {
                     if (syntaxChecker.isValidAttributeName(outputName)) {
-                        Namespace.Component component = newNamespace.getOrNew(variable[0]);
+                        Namespace.Component
+                            component = newNamespace.getOrNew(componentName);
                         Type old = component.outputs.putIfAbsent(
                                 outputName, Type.TIMESERIES_LINEAR);
                         if (old != null) {
@@ -316,7 +325,7 @@ public class AprosModel implements SimulationModel {
                         invalidOutputNames.add(outputName);
                     }
                 } else {
-                    invalidComponentNames.add(componentName); 
+                    invalidComponentNames.add(componentName);
                 }
             }
             if ( ! invalidComponentNames.isEmpty()) {
@@ -340,7 +349,7 @@ public class AprosModel implements SimulationModel {
         }
     }
 
-    private static SimulationInput findInputs(
+    private static SimulationInput findUcInputs(
             Node rootNode, int detailLevel, SyntaxChecker syntaxChecker,
             Namespace newNamespace, Map<String, Map<String, String>> units, Writer warnings)
                     throws IOException {
@@ -354,7 +363,7 @@ public class AprosModel implements SimulationModel {
             while (true) {
                 String moduleExpr =
                         "//node[@moduleName and count(ancestor::node) <= " + level + "]";
-                NodeList moduleNodes = (NodeList) xpath.evaluate( 
+                NodeList moduleNodes = (NodeList) xpath.evaluate(
                         moduleExpr, rootNode, XPathConstants.NODESET);
                 List<String> invalidComponentNames = new ArrayList<>();
                 List<String> invalidInputNames = new ArrayList<>();
@@ -374,7 +383,7 @@ public class AprosModel implements SimulationModel {
                             Node propValueNode = propNode.getAttributes().getNamedItem("value");
                             Node propUnitNode = propNode.getAttributes().getNamedItem("unit");
                             if (propNameNode == null || propValueNode == null) {
-                                throw new IOException("Invalid property in module '" + moduleName 
+                                throw new IOException("Invalid property in module '" + moduleName
                                         + "' in " + USER_COMPONENT_PROPERTIES_FILENAME);
                             }
                             String propName = propNameNode.getNodeValue();
