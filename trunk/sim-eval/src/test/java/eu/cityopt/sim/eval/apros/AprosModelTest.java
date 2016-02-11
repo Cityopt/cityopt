@@ -49,7 +49,7 @@ public class AprosModelTest extends AprosTestBase {
         assertNotNull(ns.components.get(Namespace.CONFIG_COMPONENT));
         assertEquals(1, ns.components.get("C01").inputs.size());
         assertEquals(0, ns.components.get("C01").outputs.size());
-        
+
         assertEquals(2.0, (Double)input.get("C01", "typ"), delta);
     }
 
@@ -73,8 +73,10 @@ public class AprosModelTest extends AprosTestBase {
                 Map<String, String> cunits = units.get(cname);
                 for (Map.Entry<String, Type> ie : ce.getValue().inputs.entrySet()) {
                     String iname = ie.getKey();
-                    String valueText = (cname.equals(Namespace.CONFIG_COMPONENT))
-                            ? "-" : defaultInput.getString(cname, iname);
+                    String valueText
+                        = (cname.equals(Namespace.CONFIG_COMPONENT)
+                           || ie.getValue().isTimeSeriesType())
+                          ? "-" : defaultInput.getString(cname, iname);
                     String unit = (cunits != null) ? cunits.get(iname) : null;
                     System.out.println("  in " + iname + ": " + ie.getValue()
                             + ", default " + valueText + " [" + unit + "]");
