@@ -74,14 +74,6 @@
 							<td align="right"><input type="submit" title="${tooltip_create}" value="Create" style="width: 100px"></td>
 						</tr>
 						<tr>
-						<!-- User -->
-							<c:set var="tooltip_user"><spring:message code="tooltip_create_optimizationset_user"/></c:set>						
-							<td><spring:message code="user"/>:</td>
-							<td><input type="text" title="${tooltip_user}" id="user" style="width:200px"></td>
-							<td></td>
-							<td align="right"></td>
-						</tr>
-						<tr>
 						<!-- Type -->
 							<c:set var="tooltip_type"><spring:message code="tooltip_create_optimizationset_type"/></c:set>
 							<td><spring:message code="type"/>:</td>

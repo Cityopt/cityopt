@@ -191,9 +191,6 @@ public class ProjectController {
     OptimizationSetService optSetService;
 
     @Autowired
-    ObjectiveFunctionService objFuncService;
-
-    @Autowired
     OptConstraintService optConstraintService;
 
     @Autowired

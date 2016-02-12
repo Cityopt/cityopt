@@ -181,8 +181,11 @@ function openInfoWindow() {
 							<tr>
 								<td>
 									<!-- Optimization sense and expression Create,Delete and Import functions-->
-									<a href="editsgobjfunction.html"><button type="button" style="width: 100px">
-									<spring:message code="create"/></button></a>
+									<a href="createobjfunction.html?reset=true&type=ga">
+										<button type="button" style="width: 100px">
+											<spring:message code="create"/>
+										</button>
+									</a>
 									<a href="addsgobjfunction.html"><button type="button" style="width: 100px"><spring:message code="import"/></button></a>
 								</td>
 							</tr>

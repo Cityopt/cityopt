@@ -49,7 +49,7 @@
 							
 										<c:forEach items="${objFuncs}" var="objectivefunction">
 										<tr>
-											<td><a href="<c:url value='importobjfunction.html?objectivefunctionid=${objectivefunction.obtfunctionid}'/>"><spring:message code="select"/></a></td>
+											<td><a href="<c:url value='importobjfunction.html?objectivefunctionid=${objectivefunction.obtfunctionid}'/>"><button type="button"><spring:message code="select"/></button></a></td>
 											<td>${objectivefunction.name}</td>
 									    	<td>${objectivefunction.expression}</td>
 									   	</tr>
