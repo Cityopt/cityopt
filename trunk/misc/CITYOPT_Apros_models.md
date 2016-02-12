@@ -61,6 +61,13 @@ the following properties:
   Any profile specified in the user interface overrides the value in the
   cityopt.properties file.
 
+- timeSeriesInputFiles is a semicolon-separated list of input file
+  names.  It defines the Apros input files (in `IO_SET` format)
+  managed by Cityopt.  The property may be omitted if there are no
+  time series inputs (that should be managed by Cityopt).  Currently
+  all time series input files have to be in the top directory; the
+  listed names may not include directories.
+
 - resultFiles is a semicolon-separated list of output file patterns,
   for example: "resultFiles = *.dat;myfile.out".  It defines which files
   the Apros model outputs, and which are then read back to the CITYOPT
@@ -85,6 +92,16 @@ the following properties:
   Any value given in the user interface overrides the value in the
   cityopt.properties file. 
 
+The listed timeSeriesInputFiles, if any, must be present in the zip
+file.  Input variables and values are imported from the files into
+Cityopt, where they appear as time series defaulting to the imported
+values.  When the model is simulated the listed files are replaced by
+ones written by Cityopt, containing the same variables but possibly
+different values as defined for the scenario.  Time series type
+information is largely disregarded in this process; the files just
+contain lists of points and we have no control over how Apros
+interpolates them.
+  
 Model result files can also be included in the zip file.  They will be used to
 find which model output variables are available, before performing any
 simulations in the CITYOPT tool.  The result files are detected by file name:
