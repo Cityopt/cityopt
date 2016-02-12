@@ -450,9 +450,10 @@ public class AprosModel implements SimulationModel {
                                         defaults.putIfAbsent(
                                                 Pair.of(moduleName, propName),
                                                 value);
-                                        if (propUnit != null && !propUnit.isEmpty()) {
-                                        	units.computeIfAbsent(moduleName,  k -> new HashMap<>())
-                                        		.putIfAbsent(propName, propUnit);
+                                        if (propUnit != null && units != null
+                                                && !propUnit.isEmpty()) {
+                                            units.computeIfAbsent(moduleName,  k -> new HashMap<>())
+                                                 .putIfAbsent(propName, propUnit);
                                         }
                                     } else {
                                         duplicateInputNames.add(moduleName + "." + propName);
