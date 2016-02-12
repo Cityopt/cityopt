@@ -31,8 +31,11 @@ import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.SimulationInput;
+import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
+import eu.cityopt.sim.eval.SimulationRunner;
+import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
@@ -44,7 +47,7 @@ public class AprosRunnerTest extends AprosTestBase {
     public void testGetTransformer() throws Exception {
         assertNotNull(AprosRunner.getTransformer());
     }
-    
+
     private SimulationInput makeInput() throws Exception {
         final String dummy_comp = Namespace.CONFIG_COMPONENT;
         String
@@ -90,7 +93,7 @@ public class AprosRunnerTest extends AprosTestBase {
         }
         return in;
     }
-    
+
     private AprosRunner makeRunner() throws Exception {
         if (ns == null)
             makeInput();
@@ -105,13 +108,13 @@ public class AprosRunnerTest extends AprosTestBase {
             mgr.setNodes((new ObjectMapper()).readValue(
                     nodes, new TypeReference<List<Map<String, String>>>() {}));
         }
-        
+
         return new AprosRunner(
                 mgr, profileName,
                 ns, ucs, modelDir, null,
                 props.getProperty("result_file"));
     }
-    
+
     @Test
     public void testRun() throws Exception {
         SimulationInput in = makeInput();
@@ -167,13 +170,13 @@ public class AprosRunnerTest extends AprosTestBase {
             }
         }
     }
-    
+
     @Test
     public void testSanitize() throws Exception {
         Pattern re = Pattern.compile("^[a-z][a-zA-Z0-9_]*$");
         String[] ids = {"a1b", "A1b", "_", "__", "_A1b", "Z", "z_Z", "zz_Z"};
         Set<String> sids = new HashSet<>();
-        
+
         try (AprosRunner arun = makeRunner()) {
             for (String id : ids) {
                 String sid = arun.sanitize(id);
@@ -184,7 +187,7 @@ public class AprosRunnerTest extends AprosTestBase {
             }
         }
     }
-    
+
     @Test
     public void printSetup() throws Exception {
         try (AprosRunner arun = makeRunner();
@@ -192,6 +195,41 @@ public class AprosRunnerTest extends AprosTestBase {
             System.out.println("---8<--- setup.scl");
             ByteStreams.copy(scl, System.out);
             System.out.println("--->8--- end of setup.scl");
+        }
+    }
+
+    @Test
+    public void testTsInput() throws Exception {
+        /* XXX Bug: closing mgr throws AccessDenied, probably
+         * because someone is keeping a job log file open and Windows is
+         * too stupid to cope.  AprosTestBase should clean up later anyway.
+         * I wish I could find who is keeping these files open though, as it
+         * prevents proper temp dir cleanup.
+         */
+        SimulatorManager mgr = newSimulatorManager();
+        try (SimulationModel
+                 model = readModelResourceProp(mgr, "tsinput_test")) {
+            SimulationInput inp = getModelVars(model, null);
+            Namespace ns = inp.getNamespace();
+            SimulationOutput out;
+            try (SimulationRunner runner = mgr.makeRunner(model, ns)) {
+                double[]
+                    t = {-5, 20, 65},
+                    v = {42, 24, -7};
+                inp.put("SP01", "SP_VALUE",
+                        ns.evaluator.makeTS(Type.TIMESERIES_LINEAR, t, v));
+                out = runner.start(inp).get();
+            }
+            assertTrue(out instanceof SimulationResults);
+            TimeSeriesI outs = ((SimulationResults)out).getTS(
+                    "SP01", "SP_VALUE");
+            double[] t = outs.getTimes(), v = outs.getValues();
+            assertEquals(t.length, v.length);
+            //TODO more asserts.
+            System.out.println("Output:");
+            for (int i = 0; i != t.length; ++i) {
+                System.out.format("(%g, %g)%n", t[i], v[i]);
+            }
         }
     }
 }

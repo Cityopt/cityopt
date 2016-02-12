@@ -68,7 +68,9 @@ public class AprosTestBase {
         return readModelResource(mgr, props.getProperty(propname));
     }
 
-    public SimulationInput getModelVars(SimulationModel model, Map<String, Map<String, String>> units) throws IOException {
+    public SimulationInput getModelVars(
+            SimulationModel model, Map<String, Map<String, String>> units)
+                    throws IOException {
         Namespace ns = new Namespace(new Evaluator(),
                                      model.getDefaults().timeOrigin);
         ns.initConfigComponent();
