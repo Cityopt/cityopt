@@ -2,20 +2,19 @@ package eu.cityopt.sim.eval.apros;
 
 import static org.junit.Assert.*;
 
-import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
 
 import org.junit.Test;
 
-import eu.cityopt.sim.eval.Evaluator;
+import com.fasterxml.jackson.databind.ObjectWriter.GeneratorSettings;
+
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.Namespace.Component;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulatorManager;
+import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
 
 public class AprosModelTest extends AprosTestBase {
@@ -54,20 +53,15 @@ public class AprosModelTest extends AprosTestBase {
     }
 
     private SimulationInput findInputsAndOutputs(String modelResource) throws Exception {
-        try (SimulatorManager manager = new AprosManager(
-                profileDir, Executors.newSingleThreadExecutor(), System.out);
-             InputStream in = getClass().getResourceAsStream(modelResource)) {
-            SimulationModel model = manager.parseModel(profileName, in);
+        try (SimulatorManager manager = newSimulatorManager();
+             SimulationModel
+                 model = readModelResource(manager, modelResource)) {
 
-            Namespace ns = new Namespace(new Evaluator(), model.getDefaults().timeOrigin);
             Map<String, Map<String, String>> units = new HashMap<>();
-            ns.initConfigComponent();
-            StringWriter warnings = new StringWriter();
-            SimulationInput defaultInput = model.findInputsAndOutputs(ns, units, 0, warnings);
-
-            System.out.print(warnings.toString());
+            SimulationInput defaultInput = getModelVars(model, units);
             System.out.println("Structure of " + modelResource + ":");
-            for (Map.Entry<String, Component> ce : ns.components.entrySet()) {
+            for (Map.Entry<String, Component>
+                    ce : defaultInput.getNamespace().components.entrySet()) {
                 String cname = ce.getKey();
                 System.out.println(cname + ": {");
                 Map<String, String> cunits = units.get(cname);
@@ -94,19 +88,29 @@ public class AprosModelTest extends AprosTestBase {
 
     @Test
     public void testDescriptions() throws Exception {
-        SimulationModel model;
-        try (SimulatorManager manager = new AprosManager(
-                profileDir, Executors.newSingleThreadExecutor(), System.out);
-             InputStream in = getClass().getResourceAsStream(props.getProperty("testzip"))) {
-            model = manager.parseModel(profileName, in);
+        try (SimulatorManager manager = newSimulatorManager();
+             SimulationModel
+                 model = readModelResourceProp(manager, "testzip")) {
+            assertEquals("en förenklad modell för programtestning",
+                         model.getDescription("sv"));
+            assertNotNull(model.getDescription("en"));
+            assertNotNull(model.getDescription("fi"));
+            assertNotNull(model.getDescription("de"));
+            assertNull(model.getDescription("et"));
+            assertNotNull(model.getDescription("et,en"));
+            assertNotNull(model.getDescription("*-*"));
+            assertEquals("test project", model.getDescription("*-*;q=0.1,en"));
         }
-        assertEquals("en förenklad modell för programtestning", model.getDescription("sv"));
-        assertNotNull(model.getDescription("en"));
-        assertNotNull(model.getDescription("fi"));
-        assertNotNull(model.getDescription("de"));
-        assertNull(model.getDescription("et"));
-        assertNotNull(model.getDescription("et,en"));
-        assertNotNull(model.getDescription("*-*"));
-        assertEquals("test project", model.getDescription("*-*;q=0.1,en"));
+    }
+
+    @Test
+    public void testTsInputs() throws Exception {
+        try (SimulatorManager mgr = newSimulatorManager();
+             SimulationModel
+                 model = readModelResourceProp(mgr, "tsinput_test")) {
+            SimulationInput defaults = getModelVars(model, null);
+            TimeSeriesI ts = defaults.getTS("SP01", "SP_VALUE");
+            assertEquals(3, ts.getTimes().length);
+        }
     }
 }
