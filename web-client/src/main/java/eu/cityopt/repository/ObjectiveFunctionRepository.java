@@ -16,7 +16,7 @@ public interface ObjectiveFunctionRepository extends JpaRepository<ObjectiveFunc
 	@Query("select o from ObjectiveFunction o where o.project.prjid = :prjID and o.name=:name")
 	public ObjectiveFunction findByName(@Param("prjID") Integer prjID,@Param("name") String name);
 
-	@Query("SELECT objectivefunction.obtfunctionid, objectivefunction.prjid, objectivefunction.typeid, objectivefunction.name, objectivefunction.expression, objectivefunction.ismaximise, objectivefunction.executedat, objectivefunction.version FROM scengenobjectivefunction INNER JOIN objectivefunction ON scengenobjectivefunction.optfunctionid = objectivefunction.obtfunctionid INNER JOIN scenariogenerator ON scengenobjectivefunction.scengenid = scenariogenerator.scengenid WHERE objectivefunction.name = :name AND scenariogenerator.scengenid = :scengenid")
+	@Query(value="SELECT objectivefunction.obtfunctionid, objectivefunction.prjid, objectivefunction.typeid, objectivefunction.name, objectivefunction.expression, objectivefunction.ismaximise, objectivefunction.executedat, objectivefunction.version FROM scengenobjectivefunction INNER JOIN objectivefunction ON scengenobjectivefunction.optfunctionid = objectivefunction.obtfunctionid INNER JOIN scenariogenerator ON scengenobjectivefunction.scengenid = scenariogenerator.scengenid WHERE objectivefunction.name = :name AND scenariogenerator.scengenid = :scengenid",nativeQuery=true)
 	public ObjectiveFunction findByNameAndScenGen(@Param("scengenid") Integer scengenid,@Param("name") String name);
 	
 }
