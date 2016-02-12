@@ -2273,7 +2273,7 @@ public class OptimizationController {
 
             if (optSet != null && constraint != null)
             {
-            	OptConstraintDTO testConstraint = null;//optConstraintService.findByNameAndOptSet(constraint.getName(), optSet.getOptid()); 
+            	OptConstraintDTO testConstraint = optConstraintService.findByNameAndOptSet(constraint.getName(), optSet.getOptid()); 
             	
             	if (testConstraint == null) {
 	                try {
@@ -2364,7 +2364,7 @@ public class OptimizationController {
                 e.printStackTrace();
             }
 
-            OptConstraintDTO testConstraint = null;//optConstraintService.findByNameAndScenGen(constraint.getName(), scenGen.getScengenid());
+            OptConstraintDTO testConstraint = optConstraintService.findByNameAndScenGen(constraint.getName(), scenGen.getScengenid());
             
             if (testConstraint != null) {
             	// Constraint already exists
