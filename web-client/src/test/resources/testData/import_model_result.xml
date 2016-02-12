@@ -12,7 +12,7 @@
   <component name="FUEL_CONSUMPTION"/>
   <component name="CITYOPT"/>
   <inputparameter name="simulation_start" defaultvalue="2015-01-01T00:00:00Z"/>
-  <inputparameter name="simulation_end" defaultvalue="2016-01-01T00:00:00Z"/>
+  <inputparameter name="simulation_end" defaultvalue="2015-01-02T00:00:00Z"/>
   <inputparameter name="Burner_efficiency" defaultvalue="0.7"/>
   <inputparameter name="Heat_storage_tank_height" defaultvalue="15.0"/>
   <inputparameter name="Heat_storage_nominal_charge_or_discharge_capacity" defaultvalue="40.0"/>

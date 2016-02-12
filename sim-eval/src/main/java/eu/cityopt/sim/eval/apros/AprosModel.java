@@ -282,16 +282,36 @@ public class AprosModel implements SimulationModel {
             int detailLevel, Writer warningWriter)
                     throws IOException {
         try {
+            newNamespace.initConfigComponent();
             SyntaxChecker syntaxChecker = new SyntaxChecker(
                     newNamespace.evaluator);
-            Map<Pair<String, String>, Object> defaults = new HashMap<>();
+            Map<Pair<String, String>, Object> defaultValues = new HashMap<>();
             findUcInputs(uc_props, detailLevel, syntaxChecker, newNamespace,
-                         units, defaults, warningWriter);
-            findTsInputs(syntaxChecker, newNamespace, defaults, warningWriter);
+                         units, defaultValues, warningWriter);
+            findTsInputs(syntaxChecker, newNamespace, defaultValues,
+                         warningWriter);
             findOutputs(syntaxChecker, newNamespace, warningWriter);
             SimulationInput defaultInput = new SimulationInput(
                     new ExternalParameters(newNamespace));
-            defaults.forEach(
+            if (defaults.timeOrigin != null) {
+                if (defaults.simulationStart != null) {
+                    defaultInput.put(
+                            Namespace.CONFIG_COMPONENT,
+                            Namespace.CONFIG_SIMULATION_START,
+                            TimeUtils.toSimTime(
+                                    defaults.simulationStart,
+                                    defaults.timeOrigin));
+                }
+                if (defaults.simulationEnd != null) {
+                    defaultInput.put(
+                            Namespace.CONFIG_COMPONENT,
+                            Namespace.CONFIG_SIMULATION_END,
+                            TimeUtils.toSimTime(
+                                    defaults.simulationEnd,
+                                    defaults.timeOrigin));
+                }
+            }
+            defaultValues.forEach(
                     (k, v) -> defaultInput.put(k.getLeft(), k.getRight(), v));
             return defaultInput;
         } catch (ScriptException e) {

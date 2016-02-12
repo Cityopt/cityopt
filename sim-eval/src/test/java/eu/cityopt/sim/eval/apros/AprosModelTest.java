@@ -104,7 +104,7 @@ public class AprosModelTest extends AprosTestBase {
     }
 
     @Test
-    public void testTsInputs() throws Exception {
+    public void testTsInputDefault() throws Exception {
         try (SimulatorManager mgr = newSimulatorManager();
              SimulationModel
                  model = readModelResourceProp(mgr, "tsinput_test")) {

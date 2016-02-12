@@ -60,9 +60,7 @@ public interface SimulationModel extends Closeable {
      * as far as possible.  The results may have to be completed manually.
      *
      * @param newNamespace an empty Namespace to which new components,
-     *   inputs and outputs will be created.  You will probably also need
-     *   to call {@link Namespace#initConfigComponent()} before entering
-     *   here.
+     *   inputs and outputs will be created.
      * @param units either null or an empty Map to which units of inputs
      *   and outputs will be stored insofar they are known.
      * @param detailLevel indicates how much of the available input

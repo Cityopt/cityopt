@@ -33,7 +33,7 @@ public class SimulationInput implements EvaluationContext {
      */
     public SimulationInput(ExternalParameters externalParameters) {
         this.externalParameters = externalParameters;
-        final Namespace namespace = externalParameters.getNamespace(); 
+        final Namespace namespace = externalParameters.getNamespace();
         this.bindingLayer = new BindingLayer(
                 namespace, externalParameters.getBindingLayer(),
                 (String name) -> {
@@ -44,7 +44,7 @@ public class SimulationInput implements EvaluationContext {
 
     /**
      * Constructs a SimulationInput based on optimization decision variables.
-     * 
+     *
      * @param decisions
      *            the values of the decision variables referenced in expressions
      * @param inputExpressions
@@ -106,7 +106,7 @@ public class SimulationInput implements EvaluationContext {
 
     /**
      * Sets the values of input variables by evaluating input expressions.
-     * 
+     *
      * @param decisions
      *            the values of the decision variables referenced in expressions
      * @param inputExpressions
@@ -177,5 +177,11 @@ public class SimulationInput implements EvaluationContext {
     @Override
     public String toString() {
         return bindingLayer.toString();
+    }
+
+    public void putIfAbsent(String compname, String varname, Object value) {
+        if (!contains(compname, varname)) {
+            put(compname, varname, value);
+        }
     }
 }
