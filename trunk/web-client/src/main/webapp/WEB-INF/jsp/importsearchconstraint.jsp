@@ -48,7 +48,7 @@
 							
 										<c:forEach items="${constraints}" var="constraint">
 											<tr>
-												<td><a href="<c:url value='importsearchconstraint.html?constraintid=${constraint.optconstid}'/>"><spring:message code="select"/></a></td>
+												<td><a href="<c:url value='importsearchconstraint.html?constraintid=${constraint.optconstid}'/>"><button type="button"><spring:message code="select"/></button></a></td>
 												<td>${constraint.name}</td>
 										    	<td>${constraint.expression}</td>
 										   	</tr>
