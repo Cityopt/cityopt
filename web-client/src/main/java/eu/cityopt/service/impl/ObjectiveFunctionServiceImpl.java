@@ -147,8 +147,9 @@ public class ObjectiveFunctionServiceImpl implements ObjectiveFunctionService {
 				new TypeToken<List<ObjectiveFunctionResultDTO>>(){}.getType());
 	}
 
-
+	
 	@Override
+	@Transactional
 	public ObjectiveFunctionDTO findByNameAndScenGen(int scenGenID, String name) {
 		ObjectiveFunction of = objectiveFunctionRepository.findByNameAndScenGen(scenGenID, name);
 		if(of == null) {
