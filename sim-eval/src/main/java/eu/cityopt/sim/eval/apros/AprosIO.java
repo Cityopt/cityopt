@@ -182,6 +182,7 @@ public class AprosIO {
      * configuration in the Apros model.  It is assumed that EXT_NAMES is not
      * used: inputs appear as "COMPONENT NAME" in the file.  Values are
      * retrieved from input; all the listed variables must be time series.
+     * Duplicates are not allowed in vars.
      * <p>
      * The time series are clipped to the simulation period according
      * to their type.  Beyond that the types have no effect; only the points
