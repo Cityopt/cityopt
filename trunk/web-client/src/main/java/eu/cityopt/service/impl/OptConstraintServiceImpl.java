@@ -89,6 +89,7 @@ public class OptConstraintServiceImpl implements OptConstraintService {
 	}
 
 	@Override
+	@Transactional
 	public OptConstraintDTO findByNameAndScenGen(String name, int scengenid) {
 		OptConstraint oc = optConstraintRepository.findByNameAndScenGen(name, scengenid);
 		if(oc == null) {
@@ -99,6 +100,7 @@ public class OptConstraintServiceImpl implements OptConstraintService {
 	}
 
 	@Override
+	@Transactional
 	public OptConstraintDTO findByNameAndOptSet(String name, int optID) {
 		OptConstraint oc = optConstraintRepository.findByNameAndOptSet(name, optID);
 		if(oc == null) {
