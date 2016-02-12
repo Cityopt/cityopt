@@ -50,6 +50,7 @@ import eu.cityopt.DTO.AlgoParamValDTO;
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.DecisionVariableDTO;
+import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParamValDTO;
@@ -68,6 +69,7 @@ import eu.cityopt.DTO.ScenarioGeneratorDTO;
 import eu.cityopt.DTO.ScenarioWithObjFuncValueDTO;
 import eu.cityopt.DTO.TimeSeriesDTOX;
 import eu.cityopt.DTO.TypeDTO;
+import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AlgoParamValService;
 import eu.cityopt.service.AlgorithmService;
@@ -112,7 +114,9 @@ import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.AlgoParamValForm;
 import eu.cityopt.web.ExtParamValSetForm;
 import eu.cityopt.web.ModelParamForm;
+import eu.cityopt.web.ObjFuncForm;
 import eu.cityopt.web.OptimizationRun;
+import eu.cityopt.web.ParamForm;
 import eu.cityopt.web.UserSession;
 
 /**
@@ -229,37 +233,43 @@ public class OptimizationController {
     
     @RequestMapping(value="createobjfunction",method=RequestMethod.GET)
     public String createObjFunction(Map<String, Object> model,
-        @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+    	@RequestParam(value="reset", required=false) String reset,
+    	@RequestParam(value="type", required=true) String type,
+        @RequestParam(value="selectedcompid", required=false) String selectedCompId,
+     	@RequestParam(value="inputparamid", required=false) String inputParamId,
+        @RequestParam(value="outputparamid", required=false) String outputParamId,
+     	@RequestParam(value="metricid", required=false) String metricId,
+        @RequestParam(value="extparamid", required=false) String extParamId,
+     	@RequestParam(value="text", required=false) String text) {
+
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
         {
             return "error";
         }
-
         securityAuthorization.atLeastExpert_expert(project);
 
-        try {
-            project = projectService.findByID(project.getPrjid());
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
+        model.put("type", type);
+    
+        if (type.equals("db")) {
+        	model.put("cancelPage", "editoptimizationset.html");
+        } else if (type.equals("ga")) {
+        	model.put("cancelPage", "geneticalgorithm.html");
         }
-
-        OptimizationSetDTO optSet = (OptimizationSetDTO) model.get("optimizationset");
-
-        if (optSet == null)
-        {
-            optSet = new OptimizationSetDTO();
-        }
-
+        
         UserSession userSession = (UserSession) model.get("usersession");
 
         if (userSession == null)
         {
             userSession = new UserSession();
         }
-        model.put("usersession", userSession);
 
+        if (reset != null && reset.equalsIgnoreCase("true"))
+        {
+        	userSession.setExpression("");
+        }
+         
         List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
         model.put("components", components);
 
@@ -270,136 +280,312 @@ public class OptimizationController {
             if (nSelectedCompId > 0)
             {
                 userSession.setComponentId(nSelectedCompId);
-                List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
-                model.put("outputVars", outputVars);
 
                 List<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
                 model.put("inputParameters", inputParams);
+
+                List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+                model.put("outputVars", outputVars);
             }
             model.put("selectedcompid", nSelectedCompId);
         }
 
-        List<ExtParamValDTO> extParamVals = null;
-        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-
-        if (defaultExtParamValSetId != null)
+        if (inputParamId != null && !inputParamId.isEmpty())
         {
-            try {
-                ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
-                model.put("extParamValSet", extParamValSet);
-            } catch (EntityNotFoundException e1) {
-                e1.printStackTrace();
+            int nInputParamId = Integer.parseInt(inputParamId);
+            InputParameterDTO inputParam = null;
+             
+            if (nInputParamId > 0)
+            {
+            	try {
+            		inputParam = inputParamService.findByID(nInputParamId);
+     			} catch (EntityNotFoundException e1) {
+     				e1.printStackTrace();
+     			}
+                 String expression = userSession.getExpression();
+                 expression += inputParam.getQualifiedName();
+                 userSession.setExpression(expression);
             }
-
-            try {
-                extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            model.put("extParamVals", extParamVals);
         }
 
+        if (outputParamId != null && !outputParamId.isEmpty())
+        {
+            int nOutputParamId = Integer.parseInt(outputParamId);
+            OutputVariableDTO outputVar = null;
+             
+            if (nOutputParamId > 0)
+            {
+            	try {
+             		outputVar = outputVarService.findByID(nOutputParamId);
+     			} catch (EntityNotFoundException e1) {
+     				e1.printStackTrace();
+     			}
+                 String expression = userSession.getExpression();
+                 expression += outputVar.getQualifiedName();
+                 userSession.setExpression(expression);
+             }
+         }
+
+         if (metricId != null && !metricId.isEmpty())
+         {
+             int nMetricId = Integer.parseInt(metricId);
+             MetricDTO metric = null;
+             
+             if (nMetricId > 0)
+             {
+             	try {
+             		metric = metricService.findByID(nMetricId);
+     			} catch (EntityNotFoundException e1) {
+     				e1.printStackTrace();
+     			}
+                String expression = userSession.getExpression();
+                expression += metric.getName();
+                userSession.setExpression(expression);
+            }
+        }
+
+        if (extParamId != null && !extParamId.isEmpty())
+        {
+            int nExtParamId = Integer.parseInt(extParamId);
+            ExtParamDTO extParam = null;
+             
+            if (nExtParamId > 0)
+            {
+            	try {
+             		extParam = extParamService.findByID(nExtParamId);
+     			} catch (EntityNotFoundException e1) {
+     				e1.printStackTrace();
+     			}
+                String expression = userSession.getExpression();
+                expression += extParam.getName();
+                userSession.setExpression(expression);
+            }
+        }
+
+        if (text != null) {
+        	if (text.equalsIgnoreCase("plus")) {
+            	userSession.setExpression(userSession.getExpression() + "+");
+         	} else {
+         		userSession.setExpression(userSession.getExpression() + text);
+         	}
+        }
+        
+        model.put("usersession", userSession);
+         
+        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+        model.put("extParams", extParams);
+         
         Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
         model.put("metrics", metrics);
-
-        ObjectiveFunctionDTO function = new ObjectiveFunctionDTO();
-        model.put("function", function);
 
         return "createobjfunction";
     }
 
-    @RequestMapping(value="createobjfunction", method=RequestMethod.POST)
-    public String createObjFunctionPost(ObjectiveFunctionDTO function, HttpServletRequest request, Map<String, Object> model) {
+    @RequestMapping(value="updateobjfunction", method=RequestMethod.GET)
+    public String updateObjFunc(Map<String, Object> model,
+    	@RequestParam(value="type", required=true) String type) 
+    {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
+        
+        UserSession userSession = (UserSession) model.get("usersession");
 
-        try {
+        if (userSession == null)
+        {
+            userSession = new UserSession();
+        }
+
+        model.put("usersession", userSession);
+
+        ObjFuncForm objFuncForm = new ObjFuncForm();
+        objFuncForm.setExpression(userSession.getExpression());
+        model.put("objFuncForm", objFuncForm);
+
+        model.put("type", type);
+        
+        return "updateobjfunction";
+    }
+    
+    @RequestMapping(value="updateobjfunction", method=RequestMethod.POST)
+    public String updateObjFuncPost(ObjFuncForm objFuncForm, 
+		Map<String, Object> model,
+       	@RequestParam(value="cancel", required=false) String cancel,
+    	@RequestParam(value="type", required=true) String type,
+        HttpServletRequest request) 
+    {
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+       
+    	try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
             e1.printStackTrace();
         }
-        
-        securityAuthorization.atLeastExpert_expert(project);
-        OptimizationSetDTO optSet = null;
 
-        if (model.containsKey("optimizationset"))
-        {
-            optSet = (OptimizationSetDTO) model.get("optimizationset");
-
-            try {
-                optSet = optSetService.findByID(optSet.getOptid());
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        else
+        if (project == null)
         {
             return "error";
         }
+        securityAuthorization.atLeastExpert_expert(project);
 
-        String optSense = request.getParameter("optsense");
-        boolean isMaximize = false;
-
-        if (optSense.equals("1"))
-        {
-            isMaximize = false;
-        }
-        else if (optSense.equals("2"))
-        {
-            isMaximize = true;
+        if (cancel != null) {
+        	if (type.equals("db")) {
+        		return "redirect:/editoptimizationset.html";
+        	} else if (type.equals("ga")) {
+        		return "redirect:/geneticalgorithm.html";
+        	}
         }
 
-        if (function != null && function.getExpression() != null)
-        {
-            ObjectiveFunctionDTO newFunc = new ObjectiveFunctionDTO();
-            newFunc.setName(function.getName());
-            newFunc.setExpression(function.getExpression());
-            newFunc.setIsmaximise(isMaximize);
-            newFunc.setProject(project);
-            newFunc = objFuncService.save(newFunc);
-            optSet.setObjectivefunction(newFunc);
+        OptimizationSetDTO optSet = null;
+    	ScenarioGeneratorDTO scenGen = null;
 
-            try {
-                optSet = optSetService.update(optSet);
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
+        if (type.equals("db")) {
+	        if (model.containsKey("optimizationset"))
+		    {
+		        optSet = (OptimizationSetDTO) model.get("optimizationset");
+		
+		        try {
+		            optSet = optSetService.findByID(optSet.getOptid());
+		        } catch (EntityNotFoundException e) {
+		            e.printStackTrace();
+		        }
+		    }
+		    else
+		    {
+		        return "error";
+		    }
+        } else if (type.equals("ga")) {
+		    if (model.containsKey("scengenerator"))
+		    {
+		        scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+		
+		        try {
+		            scenGen = scenGenService.findByID(scenGen.getScengenid());
+		        } catch (EntityNotFoundException e) {
+		            e.printStackTrace();
+		        }
+		    }
+		    else
+		    {
+		        return "error";
+		    }
         }
+        
+        String name = objFuncForm.getName();
+        String expression = objFuncForm.getExpression();
+        
+        if (name != null && expression != null)
+        {
+        	ObjectiveFunctionDTO oldFunc = new ObjectiveFunctionDTO();
+        	
+        	if (type.equals("db")) {
+        		oldFunc = optSet.getObjectivefunction();
+        	}
+        	
+	        oldFunc.setExpression(expression);
+	        oldFunc.setName(name);
+	        oldFunc.setProject(project);
+	
+	        String optSense = request.getParameter("optsense");
+	        boolean isMaximize = false;
+	
+	        if (optSense.equals("1"))
+	        {
+	            isMaximize = false;
+	        }
+	        else if (optSense.equals("2"))
+	        {
+	            isMaximize = true;
+	        }
+	
+	        oldFunc.setIsmaximise(isMaximize);
 
-        model.put("optimizationset", optSet);
-        model.put("successful", "Optimization set succesfully created.");			
+	        if (name == null || name.isEmpty() || expression == null || expression.isEmpty())
+	        {
+	        	model.put("objFuncForm", objFuncForm);
+	        	model.put("error", "Please write a name and an expression!");
+	        	model.put("type", type);
+	        	return "updateobjfunction";
+	        }
 
-        List<OptConstraintDTO> optSearchConstraints = null;
+	        if (objFuncService.existsByName(project.getPrjid(), name))
+	        {
+	        	model.put("objFuncForm", objFuncForm);
+	        	model.put("error", "Objective function with that name already exists!");
+	        	model.put("type", type);
+	        	return "updateobjfunction";
+	        }
 
+	        oldFunc = objFuncService.save(oldFunc);
+
+        	if (type.equals("db")) {
+		        try {
+		            optSet = optSetService.findByID(optSet.getOptid());
+		        } catch (EntityNotFoundException e) {
+		            e.printStackTrace();
+		        }
+		
+		        optSet.setObjectivefunction(oldFunc);
+		
+		        try {
+		            optSet = optSetService.save(optSet);
+		        } catch(ObjectOptimisticLockingFailureException e) {
+		            model.put("errorMessage", "This optimization set has been updated in the meantime, please reload.");
+		        }
+        	} else if (type.equals("ga")) {
+        		try {
+					scenGenService.addObjectiveFunction(scenGen.getScengenid(), oldFunc);
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+        		
+        		scenGen = scenGenService.save(scenGen);
+        		return "redirect:/geneticalgorithm.html";
+        	}
+    	}	
+        
         try {
-            optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
+            project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e) {
-            e.printStackTrace();			
-        }		
-        model.put("constraints", optSearchConstraints);	
-
-        List<MetricValDTO> listMetricVals = metricValService.findAll();
-        List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
-
-        for (int i = 0; i < listMetricVals.size(); i++)
-        {
-            MetricValDTO metricVal = listMetricVals.get(i);
-
-            if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
-            {
-                listProjectMetricVals.add(metricVal);
-            }
+            e.printStackTrace();
         }
-        model.put("metricVals", listProjectMetricVals);
 
-        return "editoptimizationset";
-    }
-
+        model.put("project", project);
+        Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+        model.put("metrics", metrics);
+        model.put("optimizationset", optSet);
+	
+	    List<OptConstraintDTO> optSearchConstraints = null;
+	
+	    try {
+	        optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
+	    } catch (EntityNotFoundException e) {
+	        e.printStackTrace();
+	    }
+	
+	    model.put("constraints", optSearchConstraints);
+	
+	    List<MetricValDTO> listMetricVals = metricValService.findAll();
+	    List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+	
+	    for (int i = 0; i < listMetricVals.size(); i++)
+	    {
+	        MetricValDTO metricVal = listMetricVals.get(i);
+	
+	        if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
+	        {
+	            listProjectMetricVals.add(metricVal);
+	        }
+	    }
+	    model.put("metricVals", listProjectMetricVals);
+	    
+	    return "editoptimizationset";
+	}
+    
     @RequestMapping(value="editobjfunction",method=RequestMethod.GET)
     public String editObjFunction(Map<String, Object> model,
             @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
@@ -2032,8 +2218,13 @@ public class OptimizationController {
 
             return "editoptimizationset";
         }
-        //TODO should use projectService.getObjectiveFunctions
-        List<ObjectiveFunctionDTO> objFuncs = objFuncService.findAll();
+        Set<ObjectiveFunctionDTO> objFuncs = null;
+
+        try {
+			objFuncs = projectService.getObjectiveFunctions(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
         model.put("objFuncs", objFuncs);
 
         return "importobjfunction";
@@ -2082,17 +2273,23 @@ public class OptimizationController {
 
             if (optSet != null && constraint != null)
             {
-                try {
-                    optSetService.addOptConstraint(optSet.getOptid(), constraint);
-                } catch (EntityNotFoundException e1) {
-                    e1.printStackTrace();
-                }
-
-                try {
-                    optSet = optSetService.update(optSet);
-                } catch (EntityNotFoundException e) {
-                    e.printStackTrace();
-                }
+            	OptConstraintDTO testConstraint = null;//optConstraintService.findByNameAndOptSet(constraint.getName(), optSet.getOptid()); 
+            	
+            	if (testConstraint == null) {
+	                try {
+	                    optSetService.addOptConstraint(optSet.getOptid(), constraint);
+	                } catch (EntityNotFoundException e1) {
+	                    e1.printStackTrace();
+	                }
+            	
+	                try {
+	                    optSet = optSetService.update(optSet);
+	                } catch (EntityNotFoundException e) {
+	                    e.printStackTrace();
+	                }
+            	} else {
+            		model.put("error", "Constraint already exists");
+            	}
                 model.put("optimizationset", optSet);
             }
 
@@ -2122,7 +2319,14 @@ public class OptimizationController {
             return "editoptimizationset";
         }
 
-        List<OptConstraintDTO> optSearchConstraints = optConstraintService.findAll();
+        Set<OptConstraintDTO> optSearchConstraints = null;
+
+        try {
+			optSearchConstraints = projectService.getOptConstraints(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+        
         model.put("constraints", optSearchConstraints);
 
         return "importsearchconstraint";
@@ -2160,7 +2364,13 @@ public class OptimizationController {
                 e.printStackTrace();
             }
 
-            if (scenGen != null && constraint != null)
+            OptConstraintDTO testConstraint = null;//optConstraintService.findByNameAndScenGen(constraint.getName(), scenGen.getScengenid());
+            
+            if (testConstraint != null) {
+            	// Constraint already exists
+            	model.put("error", "Constraint already exists");
+            }
+            else if (scenGen != null && constraint != null)
             {
                 try {
                     scenGenService.addOptConstraint(scenGen.getScengenid(), constraint);
@@ -2174,11 +2384,17 @@ public class OptimizationController {
                     e.printStackTrace();
                 }
                 model.put("scengenerator", scenGen);
+                return "redirect:/geneticalgorithm.html";
             }
-            return "redirect:/geneticalgorithm.html";
         }
 
-        List<OptConstraintDTO> optSearchConstraints = optConstraintService.findAll();
+        Set<OptConstraintDTO> optSearchConstraints = null;
+
+        try {
+			optSearchConstraints = projectService.getOptConstraints(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
         model.put("constraints", optSearchConstraints);
 
         return "importgaconstraint";
@@ -2467,7 +2683,14 @@ public class OptimizationController {
                  if (objFunc.getProject().getPrjid() != project.getPrjid()) {
                      return "error";
                  }
-                 scenGenService.addObjectiveFunction(scenGen.getScengenid(), objFunc);
+                 
+                 ObjectiveFunctionDTO testObjFunc = objFuncService.findByNameAndScenGen(scenGen.getScengenid(), objFunc.getName());
+                 
+                 if (testObjFunc == null) {
+                	 scenGenService.addObjectiveFunction(scenGen.getScengenid(), objFunc);
+                 } else {
+                	 model.put("error", "Objective function already exists");
+                 }
              } catch (EntityNotFoundException e) {
                  e.printStackTrace();
                  return "error";
@@ -2564,9 +2787,7 @@ public class OptimizationController {
             return getEditSGConstraint(project, constraint, model, null);
         }
 
-        OptConstraintDTO testConstraint = null;
-        
-        testConstraint = optConstraintService.findByNameAndProject(constraint.getName(), project.getPrjid());
+        OptConstraintDTO testConstraint = optConstraintService.findByNameAndProject(constraint.getName(), project.getPrjid());
 		        
         if (testConstraint != null) {
         	// Constraint already exists

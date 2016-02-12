@@ -167,7 +167,7 @@
 							<tr>
 								<td>
 									<!-- Create -->
-									<a href="createobjfunction.html"><button title="${tooltip_create_objectivefunction}" type="button">
+									<a href="createobjfunction.html?reset=true&type=db"><button title="${tooltip_create_objectivefunction}" type="button">
 									<spring:message code="create"/></button></a>
 									<!-- Edit -->
 									<a href="editobjfunction.html"><button title="${tooltip_edit_objectivefunction}" type="button">
