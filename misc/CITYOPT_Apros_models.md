@@ -84,13 +84,13 @@ the following properties:
   It is in ISO-8601 format, for example:
   "simulationStart = 2014-04-23T04:30:45.123+01:00".
   Any value given in the user interface overrides the value in the
-  cityopt.properties file. 
+  cityopt.properties file.
 
 - simulationEnd indicates the default simulation end time.
   It is in ISO-8601 format, for example:
   "simulationEnd = 2015-04-23T04:30:45.123+01:00".
   Any value given in the user interface overrides the value in the
-  cityopt.properties file. 
+  cityopt.properties file.
 
 The listed timeSeriesInputFiles, if any, must be present in the zip
 file.  Input variables and values are imported from the files into
@@ -101,7 +101,7 @@ different values as defined for the scenario.  Time series type
 information is largely disregarded in this process; the files just
 contain lists of points and we have no control over how Apros
 interpolates them.
-  
+
 Model result files can also be included in the zip file.  They will be used to
 find which model output variables are available, before performing any
 simulations in the CITYOPT tool.  The result files are detected by file name:
