@@ -25,115 +25,12 @@
 		<td valign="top">
 			<table>
 				<tr>
-					<td>
-						<!-- Create constraint -->
-						<h2><spring:message code="create_constraint"/></h2>
-					</td>
+					<td><h2 class="error">${error}</h2></td>
 				</tr>
 				<tr>
 					<td>
-						<table>
-							<col style="width:250px">
-							<col style="width:30px">
-							<col style="width:250px">
-							<col style="width:30px">
-							<col style="width:250px">
-
-							<tr>
-								<!-- Components -->
-								<td><b><spring:message code="components"/></b></td>
-								<td></td>
-								<!-- Input parameters -->
-								<td><b><spring:message code="input_parameters"/></b></td>
-								<td></td>
-								<!-- Output variables -->
-								<td><b><spring:message code="output_variables"/></b></td>
-							</tr>
-							<tr>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:60px">
-										<col style="width:190px">
-										<tr>
-											<!-- Select -->
-											<th><spring:message code="select"/></th>
-											<!-- Component -->
-											<th><spring:message code="component"/></th>
-										</tr>
-							
-										<c:forEach items="${components}" var="component">
-										<tr>
-											<c:if test="${selectedcompid == component.componentid}">
-												<tr style="background-color: #D4D4D4"><td>
-												<spring:message code="selected"/></td>
-											</c:if>
-											<c:if test="${selectedcompid != component.componentid}">
-												<tr>
-												<td><a href="<c:url value='createconstraint.html?selectedcompid=${component.componentid}'/>">
-												<spring:message code="select"/></a></td>
-											</c:if>
-												<td>${component.name}</td>
-									   	</tr>
-										</c:forEach>
-									</table>
-								</td>
-								<td></td>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:250px">
-										<tr>
-											<!-- Input parameter -->
-											<th><spring:message code="input_parameter"/></th>
-										</tr>
-					
-										<c:forEach items="${inputParams}" var="inputParam">
-										<tr>
-											<td>${inputParam.name}</td>
-										</tr>
-										</c:forEach>
-									</table>
-								</td>
-								<td></td>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:250px">
-										<tr>
-											<!-- Output variable -->
-											<th><spring:message code="output_variable"/></th>
-										</tr>
-					
-										<c:forEach items="${outputVars}" var="outputVar">
-										<tr>
-											<td>${outputVar.name}</td>
-										</tr>
-										</c:forEach>
-									</table>
-								</td>
-							</tr>
-							<tr height="20"></tr>
-							<tr>
-								<!-- Metrics -->
-								<td><b><spring:message code="metrics"/></b></td>
-							</tr>
-							<tr>
-								<td>
-									<table class="tablestyle">
-										<col style="width:250px">
-										
-										<tr>
-											<!-- Metric -->
-											<th><spring:message code="metric"/></th>
-										</tr>
-					
-										<c:forEach items="${metrics}" var="metric">
-										<tr>
-											<td>${metric.name}</td>
-									   	</tr>
-										</c:forEach>
-									</table>										
-								</td>
-							</tr>
-						</table>
+						<!-- Create constraint -->
+						<h2><spring:message code="create_constraint"/></h2>
 					</td>
 				</tr>
 				<tr height=20></tr>

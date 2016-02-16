@@ -34,7 +34,7 @@
 			
 				<tr>
 					<td>
-						<h2 class="error">${errorMessage}</h2>
+						<h2 class="error">${error}</h2>
 						<!-- EditProject -->
 						<h2><spring:message code="editproject"/></h2>
 					</td>

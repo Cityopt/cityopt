@@ -836,7 +836,7 @@ public class ProjectController {
                     project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()), nDefaultExtSetId);
                     controllerService.getEnergyModelInfo(model, project.getPrjid());
                 } catch(ObjectOptimisticLockingFailureException e) {
-                    model.put("errorMessage", "This project has been updated in the meantime, please reload.");
+                    model.put("error", "This project has been updated in the meantime, please reload.");
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
@@ -881,7 +881,7 @@ public class ProjectController {
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
             } catch(ObjectOptimisticLockingFailureException e) {
-                model.put("errorMessage", "This project has been updated in the meantime, please reload.");
+                model.put("error", "This project has been updated in the meantime, please reload.");
             }
         }
 
@@ -960,7 +960,7 @@ public class ProjectController {
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
             } catch(ObjectOptimisticLockingFailureException e) {
-                model.put("errorMessage", "This project has been updated in the meantime, please reload.");
+                model.put("error", "This project has been updated in the meantime, please reload.");
             }
         }
 
