@@ -277,7 +277,7 @@ public class ScenarioController {
 				model.put("scenario",  scenario);
 			} else {
 				model.put("newScenario", formScenario);
-				model.put("errorMessage", "This Scenario already exists, please create another name.");
+				model.put("error", "This Scenario already exists, please create another name.");
 				return "createscenario";				
 			}			
 				
@@ -307,19 +307,19 @@ public class ScenarioController {
 					return "createscenario";				
 				} else {
 					model.put("newScenario", formScenario);				
-					model.put("errorMessage", "Project lack simulation definition, please define them.");
+					model.put("error", "Project lack simulation definition, please define them.");
 					return "createscenario";
 				}			
 			}else{	
 				model.put("newScenario", formScenario);				
-				model.put("errorMessage", "Project lack input parameter values can't create a scenario,  please define them.");
+				model.put("error", "Project lack input parameter values can't create a scenario,  please define them.");
 				return "createscenario";
 			}
 		}
 		else
 			{
 			model.put("newScenario", formScenario);				
-			model.put("errorMessage", "There's no project selected please select one.");
+			model.put("error", "There's no project selected please select one.");
 			return "createscenario";
 			//project null
 			//return "error";
@@ -421,7 +421,7 @@ public class ScenarioController {
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			} catch(ObjectOptimisticLockingFailureException e){
-				model.put("errorMessage", "This scenario has been updated in the meantime, please reload.");
+				model.put("error", "This scenario has been updated in the meantime, please reload.");
 			}
 		}
 			
@@ -485,7 +485,7 @@ public class ScenarioController {
 			try {
 				scenario = scenarioService.save(scenario, project.getPrjid());
 			} catch(ObjectOptimisticLockingFailureException e) {
-				model.put("errorMessage", "This scenario has been updated in the meantime, please reload.");
+				model.put("error", "This scenario has been updated in the meantime, please reload.");
 			}
 			
 			controllerService.initEditScenario(model, project.getPrjid(), scenario.getScenid());			
@@ -832,7 +832,7 @@ public class ScenarioController {
 				} catch (EntityNotFoundException e) {
 					e.printStackTrace();
 				} catch(ObjectOptimisticLockingFailureException e) {
-					model.put("errorMessage", "This scenario has been updated in the meantime, please reload.");
+					model.put("error", "This scenario has been updated in the meantime, please reload.");
 				}
 			}
 		}

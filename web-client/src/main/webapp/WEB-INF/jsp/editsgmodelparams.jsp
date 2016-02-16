@@ -47,7 +47,7 @@
                 </td>
               </tr>
               <tr>
-                <td><div class="error">${errorMessage}</div></td>
+                <td><div class="error">${error}</div></td>
               </tr>
               <tr>
                 <td>

@@ -26,7 +26,7 @@
 		<td valign="top"><%@ include file="mainmenu.inc"%></td>
 		<td width="30"></td>
 		<td valign="top">
-			<h2 class="error">${errorMessage}</h2>
+			<h2 class="error">${error}</h2>
 			<table>
 				<col style="width: 400px;">
 				<col style="width: 450px;">
@@ -113,7 +113,7 @@
 							</tr>
 							<tr>						
 								<td><spring:message code="optimization_info"/>:</td>
-								<td><font color="red">${error}</font>${usersession.getOptResultString()}</td>
+								<td>${usersession.getOptResultString()}</td>
 								
 								<td></td>
 								<td align="right">

@@ -19,6 +19,9 @@
         <td width="30"></td>
         <td valign="top">
             <table>
+            	<tr>
+            		<td><h2 class="error">${error}</h2></td>
+           		</tr>
                 <tr>
                     <td>
                         <h2>Add objective function</h2>

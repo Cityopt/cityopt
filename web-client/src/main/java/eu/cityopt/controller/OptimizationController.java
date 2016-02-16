@@ -534,7 +534,7 @@ public class OptimizationController {
 		        try {
 		            optSet = optSetService.save(optSet);
 		        } catch(ObjectOptimisticLockingFailureException e) {
-		            model.put("errorMessage", "This optimization set has been updated in the meantime, please reload.");
+		            model.put("error", "This optimization set has been updated in the meantime, please reload.");
 		        }
         	} else if (type.equals("ga")) {
         		try {
@@ -715,7 +715,7 @@ public class OptimizationController {
             try {
                 optSet = optSetService.save(optSet);
             } catch(ObjectOptimisticLockingFailureException e) {
-                model.put("errorMessage", "This optimization set has been updated in the meantime, please reload.");
+                model.put("error", "This optimization set has been updated in the meantime, please reload.");
             }
         }
 
@@ -1381,10 +1381,10 @@ public class OptimizationController {
             optSet = optSetService.update(optSet);
             model.put("optimizationset", optSet);                                            
         } catch (EntityNotFoundException e) {
-            model.put("errorMessage", "Entity not found.");
+            model.put("error", "Entity not found.");
             e.printStackTrace();
         } catch(ObjectOptimisticLockingFailureException e) {
-            model.put("errorMessage", "Concurrent modification detected.");
+            model.put("error", "Concurrent modification detected.");
             e.printStackTrace();
         }
 
@@ -1463,10 +1463,10 @@ public class OptimizationController {
             scenGen = scenGenService.update(scenGen);
             model.put("scengenerator", scenGen);                                            
         } catch (EntityNotFoundException e) {
-            model.put("errorMessage", "Entity not found.");
+            model.put("error", "Entity not found.");
             e.printStackTrace();
         } catch(ObjectOptimisticLockingFailureException e) {
-            model.put("errorMessage", "Concurrent modification detected.");
+            model.put("error", "Concurrent modification detected.");
             e.printStackTrace();
         }
 
@@ -1838,7 +1838,7 @@ public class OptimizationController {
                     } catch (NumberFormatException | EntityNotFoundException e) {
                         e.printStackTrace();
                     } catch(ObjectOptimisticLockingFailureException e){
-                        model.put("errorMessage", "This optimization set has been updated in the meantime, please reload.");
+                        model.put("error", "This optimization set has been updated in the meantime, please reload.");
                     }
 
                 }
@@ -1858,7 +1858,7 @@ public class OptimizationController {
                     } catch (EntityNotFoundException e) {
                         e.printStackTrace();
                     } catch(ObjectOptimisticLockingFailureException e){
-                        model.put("errorMessage", "This optimization set has been updated in the meantime, please reload.");
+                        model.put("error", "This optimization set has been updated in the meantime, please reload.");
                     }
                 }
                 else
@@ -1916,28 +1916,6 @@ public class OptimizationController {
 
         model.put("usersession", userSession);
 
-        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-        model.put("components", components);
-
-        if (selectedCompId != null && !selectedCompId.isEmpty())
-        {
-            int nSelectedCompId = Integer.parseInt(selectedCompId);
-
-            if (nSelectedCompId > 0)
-            {
-                userSession.setComponentId(nSelectedCompId);
-                List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
-                model.put("outputVars", outputVars);
-
-                List<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
-                model.put("inputParams", inputParams);
-            }
-            model.put("selectedcompid", nSelectedCompId);
-        }
-
-        Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-        model.put("metrics", metrics);
-
         return "createconstraint";
     }
 
@@ -1972,6 +1950,15 @@ public class OptimizationController {
             return "error";
         }
 
+        OptConstraintDTO testConstraint = optConstraintService.findByNameAndOptSet(constraint.getName(), optSet.getOptid());
+        		
+        if (testConstraint != null)
+        {
+        	model.put("error",  "Constraint already exists!");
+        	model.put("constraint", constraint);
+        	return "createconstraint";
+        }
+        
         if (constraint != null && constraint.getExpression() != null)
         {
             OptConstraintDTO newOptConstraint = new OptConstraintDTO();
@@ -1986,8 +1973,6 @@ public class OptimizationController {
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
             }
-
-            //optSet = optSetService.update(optSet);
         }
 
         List<OptConstraintDTO> optSearchConstraints = null;
@@ -2689,7 +2674,17 @@ public class OptimizationController {
                  if (testObjFunc == null) {
                 	 scenGenService.addObjectiveFunction(scenGen.getScengenid(), objFunc);
                  } else {
-                	 model.put("error", "Objective function already exists");
+                	 model.put("error", "Objective function already exists!");
+         	        
+                	 try {
+        	            model.put("objFuncs", sortBy(ObjectiveFunctionDTO::getName,
+                    		projectService.getObjectiveFunctions(project.getPrjid())));
+        	            // TODO filter out functions that are already in scenGen
+        	        } catch (EntityNotFoundException e) {
+        	            e.printStackTrace();
+        	            return "error";
+        	        }
+         	        return "addsgobjfunction";
                  }
              } catch (EntityNotFoundException e) {
                  e.printStackTrace();
@@ -3333,7 +3328,7 @@ public class OptimizationController {
                 // Decision variable changes are saved here because their content
                 // is not preserved in the form command object.
                 scenGenService.updateDecisionVariables(scenGen.getScengenid(), grouping);
-                model.put("errorMessage", errors);
+                model.put("error", errors);
             	return getEditSGModelParams(project, scenGen, model, form, grouping);
             } else {
             	scenGenService.setModelParameterGrouping(scenGen.getScengenid(), grouping);

@@ -62,7 +62,7 @@
 							</tr>
 						</table>
 						<!-- error message if error -->
-						<element><h2 class="error"></element>${errorMessage}</h2><element>
+						<element><h2 class="error"></element>${error}</h2><element>
 						<!-- Information message if scenario is created -->
 						<element><element><h2 class="successful"></element></element>${successful}</h2><element>				
 					<c:choose>

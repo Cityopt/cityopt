@@ -33,7 +33,7 @@
 		</td>
 		<td style="width: 30px"></td>
 		<td valign="top">
-			<h2 class="error">${errorMessage}</h2>
+			<h2 class="error">${error}</h2>
 			<div style="overflow:scroll;height:100%;width:1100px;overflow:auto">
 			<table>
 				<tr>
