@@ -291,10 +291,10 @@ public class Scenario extends VersionModel implements java.io.Serializable {
 		this.optsetscenarioses = optsetscenarioses;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario")
-	public Set<ScenGenResult> getScengenresults() {
-		return this.scengenresults;
-	}
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade={CascadeType.REMOVE})
+    public Set<ScenGenResult> getScengenresults() {
+          return this.scengenresults;
+    }
 
 	public void setScengenresults(Set<ScenGenResult> scengenresults) {
 		this.scengenresults = scengenresults;
