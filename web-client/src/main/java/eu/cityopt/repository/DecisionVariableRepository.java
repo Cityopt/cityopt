@@ -11,7 +11,7 @@ import eu.cityopt.model.OptConstraint;
 @Repository
 public interface DecisionVariableRepository extends JpaRepository<DecisionVariable, Integer> {
 	
-	@Query(value="SELECT decisionvariable.decisionvarid, decisionvariable.scengenid, decisionvariable.name, decisionvariable.lowerbound, decisionvariable.upperbound, decisionvariable.typeid, decisionvariable.inputid, decisionvariable.version, scenariogenerator.scengenid FROM scenariogenerator INNER JOIN decisionvariable ON decisionvariable.scengenid = scenariogenerator.scengenid WHERE scenariogenerator.scengenid = :scengen AND scenariogenerator.scengenid = :scengen AND decisionvariable.name = :name",nativeQuery=true)
+	@Query(value="SELECT decisionvariable.decisionvarid, decisionvariable.scengenid, decisionvariable.name, decisionvariable.lowerbound, decisionvariable.upperbound, decisionvariable.typeid, decisionvariable.inputid, decisionvariable.version, scenariogenerator.scengenid FROM scenariogenerator INNER JOIN decisionvariable ON decisionvariable.scengenid = scenariogenerator.scengenid WHERE scenariogenerator.scengenid = :scengenid AND scenariogenerator.scengenid = :scengenid AND decisionvariable.name = :name",nativeQuery=true)
 	DecisionVariable findByNameAndScenGen(@Param("name") String name, @Param("scengenid") int scengenid);
 
 }
