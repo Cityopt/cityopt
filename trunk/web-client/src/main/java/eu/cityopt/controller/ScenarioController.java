@@ -3,11 +3,13 @@ package eu.cityopt.controller;
 import java.awt.Desktop.Action;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -220,15 +222,6 @@ public class ScenarioController {
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
 		securityAuthorization.atLeastExpert_standard(project);
-
-		// TODO
-		if (user != null && project != null)
-		{
-			//if (hasStandardRights(user.getUserid()))
-			{
-			
-			}
-		}
 		
 		ScenarioDTO scenario = new ScenarioDTO();
 		model.put("newScenario", scenario);
@@ -1179,8 +1172,32 @@ public class ScenarioController {
 		securityAuthorization.atLeastGuest_guest(project);
 
         model.put("title", "Simulation info for scenario " + scenario.getName());
-		model.put("infotext", scenario.getLog());
-
+		
+        BufferedReader bufReader = new BufferedReader(new StringReader(scenario.getLog()));
+        String line = null;
+        StringBuilder result = new StringBuilder();
+        
+        try {
+			while( (line = bufReader.readLine()) != null )
+			{
+				if (line.length() > 140)
+				{
+					result.append(line.substring(0, 140));
+					result.append(System.getProperty("line.separator"));
+					result.append(line.substring(140, Math.min(280, line.length() - 1)));
+				}
+				else
+				{
+					result.append(line);
+				}
+				result.append(System.getProperty("line.separator"));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        model.put("infotext", result.toString());
+        
         return "simulationinfo";
     }	
 

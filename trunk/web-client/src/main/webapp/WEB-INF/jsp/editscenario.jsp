@@ -19,7 +19,7 @@
     	   window.open("editscenario_info.html",'Info: Edit scenario','width=600,height=600,scrollbars=yes');
     }
     function openSimulationInfoWindow() {
- 	   window.open("simulationinfo.html",'Info: Simulation info','width=800,height=600,scrollbars=yes');
+ 	   window.open("simulationinfo.html",'Info: Simulation info','width=1400,height=600,scrollbars=yes');
 	}
 </script>
 

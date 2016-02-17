@@ -17,11 +17,11 @@ div.info{
 	border-style: medium;
 	border-color: black;
 	solid border-width: 10px;
-	padding: 4%;
-	margin-left: 10%;
-	margin-top: 5%;
-	margin-right: 5%;
-	margin-bottom: 10%;
+	padding: 2%;
+	margin-left: 2%;
+	margin-top: 2%;
+	margin-right: 2%;
+	margin-bottom: 2%;
 	outline: #064861 inset;
 	font: Blanch;
 	color: #4D4D4D;
@@ -29,15 +29,15 @@ div.info{
 }
 
 h2 {	
-	margin: 5%;
+	margin: 3%;
 }
 
 p {
 	display: block;
 	margin-top: 1em;
 	margin-bottom: 1em;
-	margin-left: 10%;
-	margin-right: 10%;
+	margin-left: 3%;
+	margin-right: 3%;
 	color: #4D4D4D;
 	font-size: 100%;
 }
@@ -88,7 +88,7 @@ div.yellow {
 </head>
 <body class="Info">	
 
-
+	
 	<div class="yellow"><h1 class="info">CityOpt simulation info</h1></div>
 	<div>
 		<table class="InfoVisual" style="height: 100%; width: 100%">
@@ -100,7 +100,7 @@ div.yellow {
 	<h2>${title}</h2>
 		
 	<div class="info">
-		${infotext}
+		<pre>${infotext}</pre>
 	</div>
 
 	<table class="InfoVisual" style="height: 100%; width: 100%">
@@ -108,5 +108,6 @@ div.yellow {
 	<tr><td><td><tr>
 	
 	</table>
+	
 </body>
 </html>
