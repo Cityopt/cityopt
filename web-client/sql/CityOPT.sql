@@ -1345,7 +1345,7 @@ ALTER TABLE InputParamVal ADD CONSTRAINT FK_InputParamVal_TimeSeries
 	FOREIGN KEY (tSeriesID) REFERENCES TimeSeries (tSeriesID) ON DELETE No Action ON UPDATE No Action
 ;
 
-ALTER TABLE InputParam ADD CONSTRAINT FK_InputParam_TimeSeries
+ALTER TABLE InputParameter ADD CONSTRAINT FK_InputParam_TimeSeries
 	FOREIGN KEY (tSeriesID) REFERENCES TimeSeries (tSeriesID) ON DELETE No Action ON UPDATE No Action
 ;
 
