@@ -3,6 +3,9 @@ package eu.cityopt.sim.eval;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import javax.script.Bindings;
 
 import org.python.core.Py;
 import org.python.core.PyException;
@@ -439,5 +442,23 @@ public class TimeSeries implements TimeSeriesI {
 
     public TimeSeries __abs__() {
         return new TimeSeries(fun.abs());
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(getTimes()) ^ Arrays.hashCode(getValues());
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof TimeSeries)) {
+            return false;
+        } else if (other == this) {
+            return true;
+        } else {
+            TimeSeries otherTS = (TimeSeries) other;
+            return Arrays.equals(getTimes(),  otherTS.getTimes())
+                    && Arrays.equals(getValues(), otherTS.getValues());
+        }
     }
 }
