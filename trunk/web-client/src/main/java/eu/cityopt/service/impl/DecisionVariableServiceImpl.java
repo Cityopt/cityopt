@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.DecisionVariableDTO;
+import eu.cityopt.DTO.OptConstraintDTO;
 import eu.cityopt.model.DecisionVariable;
 import eu.cityopt.repository.DecisionVariableRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
@@ -82,6 +83,17 @@ public class DecisionVariableServiceImpl implements DecisionVariableService {
 			throw new EntityNotFoundException();
 		}
 		
+		return modelMapper.map(decVar, DecisionVariableDTO.class);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public DecisionVariableDTO findByNameAndScenGen(String name, int scengenid) {
+		DecisionVariable decVar = decisionVariableRepository.findByNameAndScenGen(name, scengenid);
+		if(decVar == null) {
+			return null;
+		}
+
 		return modelMapper.map(decVar, DecisionVariableDTO.class);
 	}
 	
