@@ -1,6 +1,7 @@
 package eu.cityopt.service;
 
 import eu.cityopt.DTO.DecisionVariableDTO;
+import eu.cityopt.DTO.OptConstraintDTO;
 
 public interface DecisionVariableService extends CityOptService<DecisionVariableDTO>{
 
@@ -8,5 +9,7 @@ public interface DecisionVariableService extends CityOptService<DecisionVariable
 
 	DecisionVariableDTO update(DecisionVariableDTO toUpdate)
 			throws EntityNotFoundException;
+	
+	DecisionVariableDTO findByNameAndScenGen(String name, int scengenid);
 
 }
