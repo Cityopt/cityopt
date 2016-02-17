@@ -2943,7 +2943,7 @@ public class OptimizationController {
             return getEditSGDecisionVariable(project, decVar, model, null);
         }
         
-        if (decisionVarService.findByNameAndScenGen(decVar.getName(), scenGen.getScengenid()) != null) {
+        if (decisionvarid <= 0 && decisionVarService.findByNameAndScenGen(decVar.getName(), scenGen.getScengenid()) != null) {
         	// Decision variable already exists
         	model.put("error", "Decision variable already exists!");
         	return getEditSGDecisionVariable(project, decVar, model, null);
