@@ -422,10 +422,17 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     public SimulationInput loadSimulationInput(Scenario scenario, ExternalParameters simExternals) 
             throws ParseException {
         SimulationInput simInput = new SimulationInput(simExternals);
+        Namespace namespace = simInput.getNamespace();
         for (InputParamVal mValue : scenario.getInputparamvals()) {
             InputParameter mInput = mValue.getInputparameter();
             String componentName = mInput.getComponent().getName();
-            simInput.putString(componentName, mInput.getName(), mValue.getValue());
+            Type simType = namespace.getInputType(componentName, mInput.getName());
+            if (simType != null && simType.isTimeSeriesType()) {
+                Object simTS = loadTimeSeries(mValue.getTimeseries(), simType, namespace);
+                simInput.put(componentName, mInput.getName(), simTS);
+            } else {
+                simInput.putString(componentName, mInput.getName(), mValue.getValue());
+            }
         }
         simInput.setScenarioId(scenario.getScenid());
         return simInput;
@@ -435,11 +442,22 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     public SimulationInput loadDefaultInput(Project project, ExternalParameters simExternals)
             throws ParseException {
         SimulationInput simInput = new SimulationInput(simExternals);
+        Namespace namespace = simInput.getNamespace();
         for (Component component : project.getComponents()) {
             for (InputParameter inputParameter : component.getInputparameters()) {
-                if (inputParameter.getDefaultvalue() != null) {
-                    simInput.putString(component.getName(), inputParameter.getName(),
-                            inputParameter.getDefaultvalue());
+                String inputName = inputParameter.getName();
+                Type simType = namespace.getInputType(component.getName(), inputName);
+                if (simType != null && simType.isTimeSeriesType()) {
+                    if (inputParameter.getTimeseries() != null) {
+                        Object simTS = loadTimeSeries(inputParameter.getTimeseries(), 
+                                simType, namespace);
+                        simInput.put(component.getName(), inputName, simTS);
+                    }
+                } else {
+                    if (inputParameter.getDefaultvalue() != null) {
+                        simInput.putString(component.getName(), inputName,
+                                inputParameter.getDefaultvalue());
+                    }
                 }
             }
         }

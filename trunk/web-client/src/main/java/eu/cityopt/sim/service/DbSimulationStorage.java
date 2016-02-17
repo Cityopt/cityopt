@@ -339,6 +339,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         scenario.setProject(project);
         scenario = scenarioRepository.save(scenario);
         project.getScenarios().add(scenario);
+        List<Runnable> idUpdates = new ArrayList<Runnable>();
 
         Namespace namespace = simInput.getNamespace();
         for (Component component : project.getComponents()) {
@@ -352,8 +353,17 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                         InputParamVal inputParamVal = new InputParamVal();
                         inputParamVal.setCreatedby(userId);
                         inputParamVal.setCreatedon(now);
-                        inputParamVal.setValue(simInput.getString(componentName, inputName));
-
+                        if (simType.isTimeSeriesType()) {
+                            TimeSeriesI simTS = simInput.getTS(componentName, inputName);
+                            eu.cityopt.model.Type type = typeRepository.findByNameLike(simType.name);
+                            if (simTS != null) {
+                                TimeSeries timeSeries = simulationService.saveTimeSeries(
+                                        simTS, type, namespace.timeOrigin, idUpdates);
+                                inputParamVal.setTimeseries(timeSeries);
+                            }
+                        } else {
+                            inputParamVal.setValue(simInput.getString(componentName, inputName));
+                        }
                         inputParamVal.setInputparameter(inputParameter);
                         inputParameter.getInputparamvals().add(inputParamVal);
 
@@ -361,6 +371,10 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                         scenario.getInputparamvals().add(inputParamVal);
                     }
                 }
+            }
+            timeSeriesValRepository.flush();
+            for (Runnable update : idUpdates) {
+                update.run();
             }
         }
         inputParamValRepository.save(scenario.getInputparamvals());
