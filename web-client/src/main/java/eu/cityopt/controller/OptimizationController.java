@@ -2942,6 +2942,13 @@ public class OptimizationController {
         if (StringUtils.isBlank(decVar.getName())) {
             return getEditSGDecisionVariable(project, decVar, model, null);
         }
+        
+        if (decisionVarService.findByNameAndScenGen(decVar.getName(), scenGen.getScengenid()) != null) {
+        	// Decision variable already exists
+        	model.put("error", "Decision variable already exists!");
+        	return getEditSGDecisionVariable(project, decVar, model, null);
+        }
+        
         // TODO validate that the bounds are ordered, allowing for expression bounds
         try {
             decVar.setType(typeService.findByID(typeid));
