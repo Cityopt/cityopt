@@ -1546,6 +1546,10 @@ ADD CONSTRAINT "uq_name_prjid" UNIQUE ("prjid", "name");
 ALTER TABLE optimizationset
 ADD CONSTRAINT "uq_optname_prjid" UNIQUE ("prjid", "name");
 
+ALTER TABLE scenariometrics
+ADD CONSTRAINT "uq_scen_extval" UNIQUE ("scenid", "extparamvalsetid");
+
+
 INSERT INTO Algorithm (algorithmId, description) VALUES
  (1, 'grid search'),
  (2, 'genetic algorithm');
