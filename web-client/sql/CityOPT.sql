@@ -366,6 +366,7 @@ CREATE TABLE InputParameter
 	defaultValue text,
 	typeID integer,
 	unitID integer,
+	tSeriesID integer,
 	version integer
 )
 ;
@@ -1341,6 +1342,10 @@ ALTER TABLE InputParamVal ADD CONSTRAINT FK_ScenarioDefinition_Scenario
 ;
 
 ALTER TABLE InputParamVal ADD CONSTRAINT FK_InputParamVal_TimeSeries
+	FOREIGN KEY (tSeriesID) REFERENCES TimeSeries (tSeriesID) ON DELETE No Action ON UPDATE No Action
+;
+
+ALTER TABLE InputParam ADD CONSTRAINT FK_InputParam_TimeSeries
 	FOREIGN KEY (tSeriesID) REFERENCES TimeSeries (tSeriesID) ON DELETE No Action ON UPDATE No Action
 ;
 

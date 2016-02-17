@@ -35,6 +35,8 @@ public class InputParameter extends VersionModel implements java.io.Serializable
 	private Set<ModelParameter> modelparameters = new HashSet<ModelParameter>(0);
 	private Set<InputParamVal> inputparamvals = new HashSet<InputParamVal>(0);
 
+	private TimeSeries timeseries;
+	
 	public InputParameter() {
 	}
 
@@ -45,7 +47,7 @@ public class InputParameter extends VersionModel implements java.io.Serializable
 	public InputParameter(int inputid, Type type, Component component,
 			Unit unit, String name, String alias, String defaultvalue,
 			Set<ModelParameter> modelparameters,
-			Set<InputParamVal> inputparamvals) {
+			Set<InputParamVal> inputparamvals,TimeSeries tseries) {
 		this.inputid = inputid;
 		this.type = type;
 		this.unit = unit;
@@ -55,6 +57,7 @@ public class InputParameter extends VersionModel implements java.io.Serializable
 		this.defaultvalue = defaultvalue;
 		this.modelparameters = modelparameters;
 		this.inputparamvals = inputparamvals;
+		this.timeseries=tseries;
 	}
 	
 	public InputParameter clone() {
@@ -68,6 +71,7 @@ public class InputParameter extends VersionModel implements java.io.Serializable
 		c.defaultvalue = this.defaultvalue;
 		c.modelparameters = this.modelparameters;
 		c.inputparamvals = this.inputparamvals;
+		c.timeseries=timeseries;
 		return c;
 	}
 
@@ -156,6 +160,16 @@ public class InputParameter extends VersionModel implements java.io.Serializable
 
 	public void setInputparamvals(Set<InputParamVal> inputparamvals) {
 		this.inputparamvals = inputparamvals;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tseriesid")
+	public TimeSeries getTimeseries() {
+		return this.timeseries;
+	}
+
+	public void setTimeseries(TimeSeries timeseries) {
+		this.timeseries = timeseries;
 	}
 
 }
