@@ -5,6 +5,7 @@ package eu.cityopt.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -136,24 +137,24 @@ public class ScenGenResult extends VersionModel implements java.io.Serializable 
 		this.objectivefunctionresults = objectivefunctionresults;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scengenresult")
-	public Set<DecisionVariableResult> getDecisionvariableresults() {
-		return this.decisionvariableresults;
-	}
-
 	public void setDecisionvariableresults(
 			Set<DecisionVariableResult> decisionvariableresults) {
 		this.decisionvariableresults = decisionvariableresults;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scengenresult")
-	public Set<OptConstraintResult> getOptconstraintresults() {
-		return this.optconstraintresults;
 	}
 
 	public void setOptconstraintresults(
 			Set<OptConstraintResult> optconstraintresults) {
 		this.optconstraintresults = optconstraintresults;
 	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scengenresult",cascade=CascadeType.REMOVE)
+    public Set<DecisionVariableResult> getDecisionvariableresults() {
+          return this.decisionvariableresults;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "scengenresult",cascade=CascadeType.REMOVE)
+    public Set<OptConstraintResult> getOptconstraintresults() {
+          return this.optconstraintresults;
+    }
 
 }
