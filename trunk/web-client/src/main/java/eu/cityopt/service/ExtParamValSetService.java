@@ -24,46 +24,87 @@ public interface ExtParamValSetService extends CityOptService<ExtParamValSetDTO>
 	public void cleanupExtParamValSets();
 
     /**
-     * Updates a single ExtParamVal in a set, cloning the set first if the
-     * set is used in historical scenario data (ScenarioMetrics).
+     * Updates a single ExtParamVal in a set.  Removes any old metric values
+     * (i.e. ScenarioMetrics) referencing the set.
      * @param extParamValSetId identifies the set
      * @param extParamVal the new value data for an external parameter.
      *   Must contain ExtParamDTO with correct id.
      *   Leave the string value null when using a time series value.
      * @param timeSeries the time series data to be saved, in case the external
      *   parameter is set to a time series.  Leave this null when using a 
-     *   plain string value inside ExtParamValDTO. 
+     *   plain string value inside ExtParamValDTO.
+     * @throws EntityNotFoundException
+     * @return ExtParamValSetDTO the updated set (may be a new clone) 
+     */
+    public default ExtParamValSetDTO updateExtParamValInSet(int extParamValSetId,
+            ExtParamValDTO extParamVal, TimeSeriesDTOX timeSeries)
+                    throws EntityNotFoundException {
+        return updateExtParamValInSet(extParamValSetId, extParamVal, timeSeries, false);
+    }
+
+    /**
+     * Updates a single ExtParamVal in a set.  Removes any old metric values
+     * (i.e. ScenarioMetrics) referencing the set - or can optionally clone the set
+     * instead, so that the old metric values remain in the database.
+     * @see #updateExtParamValInSet(int, ExtParamValDTO, TimeSeriesDTOX, boolean)
+     */
+    public ExtParamValSetDTO updateExtParamValInSet(int extParamValSetId,
+            ExtParamValDTO extParamVal, TimeSeriesDTOX timeSeries,
+            boolean cloneToKeepOldMetrics) throws EntityNotFoundException;
+
+    /**
+     * Updates a single ExtParamVal in all sets of a project.  Removes any old
+     * metric values (i.e. ScenarioMetrics) referencing the set.
+     * @param extParamValSetId identifies the set
+     * @param extParamVal the new value data for an external parameter.
+     *   Must contain ExtParamDTO with correct id.
+     *   Leave the string value null when using a time series value.
+     * @param timeSeries the time series data to be saved, in case the external
+     *   parameter is set to a time series.  Leave this null when using a 
+     *   plain string value inside ExtParamValDTO.
      * @throws EntityNotFoundException 
      */
-    public void updateExtParamValInSetOrClone(int extParamValSetId,
+    public default void updateExtParamValInProject(int extParamValSetId,
             ExtParamValDTO extParamVal, TimeSeriesDTOX timeSeries)
-                    throws EntityNotFoundException;
+                    throws EntityNotFoundException {
+        updateExtParamValInProject(extParamValSetId, extParamVal, timeSeries, false);
+    }
 
-	/**
-	 * Updates all the values in a set, cloning it first if the set is used in
-	 * historical scenario data (ScenarioMetrics).
-	 * @param extParamValSet contains the id of the set, and its new name.
-	 * @param extParamVals list of /all/ external parameter values to be included
-	 *   in the set.  For time series valued parameters, the value is left null.
-	 * @param timeSeriesByParamId map from extParamId to time series data.
-	 *   Must contain a TimeSeriesDTOX for every external parameter whose value
-	 *   should be a time series.  Will be saved in the database.
-	 */
-	public ExtParamValSetDTO updateOrClone(
-			ExtParamValSetDTO extParamValSet, List<ExtParamValDTO> extParamVals,
-			Map<Integer, TimeSeriesDTOX> timeSeriesByParamId) throws EntityNotFoundException;
+    /**
+     * Updates a single ExtParamVal in all sets of a project.  Removes any old
+     * metric values (i.e. ScenarioMetrics) referencing the set - or can optionally
+     * clone the sets instead, so that the old metric values remain in the database.
+     * @see #updateExtParamValInProject(int, ExtParamValDTO, TimeSeriesDTOX)
+     */
+    public void updateExtParamValInProject(int extParamValSetId,
+            ExtParamValDTO extParamVal, TimeSeriesDTOX timeSeries,
+            boolean cloneToKeepOldMetrics) throws EntityNotFoundException;
 
-	/**
-	 * Updates values in all sets of a project.  Sets that are used in historical
-	 * scenario data (ScenarioMetrics) are cloned first.
-     * @param projectId contains the id of the project
+    /**
+     * Replaces all the values in a set in one go.  Removes any old metric values
+     * (i.e. ScenarioMetrics) referencing the set.
+     * @param extParamValSet contains the id of the set, and its new name.
      * @param extParamVals list of /all/ external parameter values to be included
-     *   in the set.  For time series valued parameters, the value is left null.
+     *   in the set.  For time series valued parameters, the value must be null.
      * @param timeSeriesByParamId map from extParamId to time series data.
      *   Must contain a TimeSeriesDTOX for every external parameter whose value
      *   should be a time series.  Will be saved in the database.
-	 */
-    void updateOrCloneAllSets(int projectId, List<ExtParamValDTO> extParamVals,
-            Map<Integer, TimeSeriesDTOX> timeSeriesByParamId)
-            throws EntityNotFoundException;
+     */
+    public default ExtParamValSetDTO update(
+            ExtParamValSetDTO extParamValSet, List<ExtParamValDTO> extParamVals,
+            Map<Integer, TimeSeriesDTOX> timeSeriesByParamId) 
+                    throws EntityNotFoundException {
+        return update(extParamValSet, extParamVals, timeSeriesByParamId, false);
+    }
+
+    /**
+     * Replaces all the values in a set in one go.  Removes any old metric values
+     * (i.e. ScenarioMetrics) referencing the set - or can optionally clone the set
+     * instead, so that the old metric values remain in the database.
+     * @see #update(ExtParamValSetDTO, List, Map)
+     */
+    public ExtParamValSetDTO update(
+            ExtParamValSetDTO extParamValSet, List<ExtParamValDTO> extParamVals,
+            Map<Integer, TimeSeriesDTOX> timeSeriesByParamId,
+            boolean cloneToKeepOldMetrics) throws EntityNotFoundException;
 }
