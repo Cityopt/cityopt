@@ -52,4 +52,18 @@ public interface ExtParamValSetService extends CityOptService<ExtParamValSetDTO>
 	public ExtParamValSetDTO updateOrClone(
 			ExtParamValSetDTO extParamValSet, List<ExtParamValDTO> extParamVals,
 			Map<Integer, TimeSeriesDTOX> timeSeriesByParamId) throws EntityNotFoundException;
+
+	/**
+	 * Updates values in all sets of a project.  Sets that are used in historical
+	 * scenario data (ScenarioMetrics) are cloned first.
+     * @param projectId contains the id of the project
+     * @param extParamVals list of /all/ external parameter values to be included
+     *   in the set.  For time series valued parameters, the value is left null.
+     * @param timeSeriesByParamId map from extParamId to time series data.
+     *   Must contain a TimeSeriesDTOX for every external parameter whose value
+     *   should be a time series.  Will be saved in the database.
+	 */
+    void updateOrCloneAllSets(int projectId, List<ExtParamValDTO> extParamVals,
+            Map<Integer, TimeSeriesDTOX> timeSeriesByParamId)
+            throws EntityNotFoundException;
 }

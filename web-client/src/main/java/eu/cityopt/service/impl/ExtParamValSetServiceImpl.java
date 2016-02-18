@@ -178,6 +178,15 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
     }
 
     @Override
+    @Transactional
+    public void updateOrCloneAllSets(int projectId, List<ExtParamValDTO> extParamVals,
+            Map<Integer, TimeSeriesDTOX> timeSeriesByParamId) throws EntityNotFoundException {
+        for (ExtParamValSet epvs : extParamValSetRepository.findByProject(projectId)) {
+            updateOrClone(epvs, null, extParamVals, timeSeriesByParamId);
+        }
+    }
+
+    @Override
 	@Transactional
 	public ExtParamValSetDTO updateOrClone(
 			ExtParamValSetDTO extParamValSetDTO, List<ExtParamValDTO> extParamVals,
@@ -186,8 +195,17 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
 		if (epvs == null) {
 			throw new EntityNotFoundException();
 		}
+		epvs = updateOrClone(epvs, extParamValSetDTO.getName(), extParamVals, timeSeriesByParamId);
+        return modelMapper.map(epvs, ExtParamValSetDTO.class);
+	}
+
+    private ExtParamValSet updateOrClone(
+            ExtParamValSet epvs, String setName, List<ExtParamValDTO> extParamVals,
+            Map<Integer, TimeSeriesDTOX> timeSeriesByParamId) throws EntityNotFoundException {
 		epvs = cloneSetIfReferenced(epvs);
-		epvs.setName(extParamValSetDTO.getName());
+		if (setName != null) {
+		    epvs.setName(setName);
+		}
 
 		Map<Integer, ExtParamValDTO> newValuesById = new HashMap<>();
 		for (ExtParamValDTO epvDTO : extParamVals) {
@@ -213,9 +231,7 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
 			int extParamId = epvDTO.getExtparam().getExtparamid();
 			saveExtParamValInSet(epvs, epvDTO, timeSeriesByParamId.get(extParamId));
 		}
-		extParamValSetRepository.save(epvs);
-
-		return extParamValSetDTO;
+		return extParamValSetRepository.save(epvs);
 	}
 
     private ExtParamValSet cloneSetIfReferenced(ExtParamValSet epvs) {
