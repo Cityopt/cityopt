@@ -24,6 +24,7 @@ import eu.cityopt.repository.ExtParamRepository;
 import eu.cityopt.repository.ExtParamValRepository;
 import eu.cityopt.repository.ExtParamValSetCompRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
+import eu.cityopt.repository.ScenarioMetricsRepository;
 import eu.cityopt.repository.TimeSeriesRepository;
 import eu.cityopt.service.CopyService;
 import eu.cityopt.service.EntityNotFoundException;
@@ -46,7 +47,10 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
 	@Autowired
 	private ExtParamRepository extParamRepository;
 	
-	@Autowired
+    @Autowired
+    private ScenarioMetricsRepository scenarioMetricsRepository;
+
+    @Autowired
 	private CopyService copyService;
 
 	@Autowired
@@ -147,15 +151,21 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
 
     @Override
     @Transactional
-    public void updateExtParamValInSetOrClone(
-            int extParamValSetId, ExtParamValDTO epvDTO, TimeSeriesDTOX tsDTO)
-                    throws EntityNotFoundException {
+    public ExtParamValSetDTO updateExtParamValInSet(
+            int extParamValSetId, ExtParamValDTO epvDTO, TimeSeriesDTOX tsDTO,
+            boolean cloneToKeepOldMetrics) throws EntityNotFoundException {
         ExtParamValSet epvs = extParamValSetRepository.findOne(extParamValSetId);
         if (epvs == null) {
             throw new EntityNotFoundException();
         }
-        epvs = cloneSetIfReferenced(epvs);
+        epvs = handleSetReferences(epvs, cloneToKeepOldMetrics);
+        epvs = updateExtParamValInSet(epvs, epvDTO, tsDTO);
+        return modelMapper.map(epvs, ExtParamValSetDTO.class);
+    }
 
+    private ExtParamValSet updateExtParamValInSet(
+            ExtParamValSet epvs, ExtParamValDTO epvDTO, TimeSeriesDTOX tsDTO)
+                    throws EntityNotFoundException {
         // Find matching value to alter
         int extParamId = epvDTO.getExtparam().getExtparamid();
         boolean found = false;
@@ -174,38 +184,33 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
             // Add new value
             saveExtParamValInSet(epvs, epvDTO, tsDTO);
         }
-        extParamValSetRepository.save(epvs);
+        return extParamValSetRepository.save(epvs);
     }
 
     @Override
     @Transactional
-    public void updateOrCloneAllSets(int projectId, List<ExtParamValDTO> extParamVals,
-            Map<Integer, TimeSeriesDTOX> timeSeriesByParamId) throws EntityNotFoundException {
+    public void updateExtParamValInProject(int projectId,
+            ExtParamValDTO epvDTO, TimeSeriesDTOX tsDTO,
+            boolean cloneToKeepOldMetrics) throws EntityNotFoundException {
         for (ExtParamValSet epvs : extParamValSetRepository.findByProject(projectId)) {
-            updateOrClone(epvs, null, extParamVals, timeSeriesByParamId);
+            epvs = handleSetReferences(epvs, cloneToKeepOldMetrics);
+            updateExtParamValInSet(epvs, epvDTO, tsDTO);
         }
     }
 
     @Override
-	@Transactional
-	public ExtParamValSetDTO updateOrClone(
-			ExtParamValSetDTO extParamValSetDTO, List<ExtParamValDTO> extParamVals,
-			Map<Integer, TimeSeriesDTOX> timeSeriesByParamId) throws EntityNotFoundException {
+    @Transactional
+    public ExtParamValSetDTO update(
+            ExtParamValSetDTO extParamValSetDTO,
+            List<ExtParamValDTO> extParamVals,
+            Map<Integer, TimeSeriesDTOX> timeSeriesByParamId,
+            boolean cloneToKeepOldMetrics) throws EntityNotFoundException {
 		ExtParamValSet epvs = extParamValSetRepository.findOne(extParamValSetDTO.getExtparamvalsetid());
 		if (epvs == null) {
 			throw new EntityNotFoundException();
 		}
-		epvs = updateOrClone(epvs, extParamValSetDTO.getName(), extParamVals, timeSeriesByParamId);
-        return modelMapper.map(epvs, ExtParamValSetDTO.class);
-	}
-
-    private ExtParamValSet updateOrClone(
-            ExtParamValSet epvs, String setName, List<ExtParamValDTO> extParamVals,
-            Map<Integer, TimeSeriesDTOX> timeSeriesByParamId) throws EntityNotFoundException {
-		epvs = cloneSetIfReferenced(epvs);
-		if (setName != null) {
-		    epvs.setName(setName);
-		}
+        epvs = handleSetReferences(epvs, cloneToKeepOldMetrics);
+		epvs.setName(extParamValSetDTO.getName());
 
 		Map<Integer, ExtParamValDTO> newValuesById = new HashMap<>();
 		for (ExtParamValDTO epvDTO : extParamVals) {
@@ -231,19 +236,24 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
 			int extParamId = epvDTO.getExtparam().getExtparamid();
 			saveExtParamValInSet(epvs, epvDTO, timeSeriesByParamId.get(extParamId));
 		}
-		return extParamValSetRepository.save(epvs);
+		epvs = extParamValSetRepository.save(epvs);
+        return modelMapper.map(epvs, ExtParamValSetDTO.class);
 	}
 
-    private ExtParamValSet cloneSetIfReferenced(ExtParamValSet epvs) {
+    private ExtParamValSet handleSetReferences(ExtParamValSet epvs, boolean cloneToKeepOldMetrics) {
         if ( ! epvs.getScenariometricses().isEmpty()) {
-            // Let ScenarioMetrics point to the existing ExtParamValSet in the database,
-            // but change the name of the old ExtParamValSet, and make a copy for modification.
-            String oldName = epvs.getName();
-            epvs.setName(oldName + "(" + epvs.getExtparamvalsetid() + ")");
-            epvs = extParamValSetRepository.save(epvs);
-            extParamValSetRepository.flush();
-
-            epvs = copyService.copyExtParamValSet(epvs, oldName);
+            if (cloneToKeepOldMetrics) {
+                // Let ScenarioMetrics point to the existing ExtParamValSet in the database,
+                // but change the name of the old ExtParamValSet, and make a copy for modification.
+                String oldName = epvs.getName();
+                epvs.setName(oldName + "(" + epvs.getExtparamvalsetid() + ")");
+                epvs = extParamValSetRepository.save(epvs);
+                extParamValSetRepository.flush();
+    
+                epvs = copyService.copyExtParamValSet(epvs, oldName);
+            } else {
+                scenarioMetricsRepository.delete(epvs.getScenariometricses());
+            }
         }
         return epvs;
     }
@@ -263,6 +273,7 @@ public class ExtParamValSetServiceImpl implements ExtParamValSetService{
         ExtParamValSetComp epvsc = new ExtParamValSetComp();
         epvsc.setExtparamval(epv);
         epvsc.setExtparamvalset(epvs);
+        epvs.getExtparamvalsetcomps().add(epvsc);
         extParamValSetCompRepository.save(epvsc);
     }
 

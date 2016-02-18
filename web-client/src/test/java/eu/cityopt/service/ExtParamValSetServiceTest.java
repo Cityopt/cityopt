@@ -108,13 +108,13 @@ public class ExtParamValSetServiceTest {
 	}
 
 	@Test
-	public void updateValueInSetOrClone() throws EntityNotFoundException {
+	public void updateValueInSet() throws EntityNotFoundException {
         List<ExtParamDTO> epList = extParamService.findByName("Cost_of_the_N_Gas");
         ExtParamValDTO newEPV = new ExtParamValDTO();
         newEPV.setExtparam(epList.iterator().next());
         newEPV.setValue("20.0");
 
-        extParamValSetService.updateExtParamValInSetOrClone(1, newEPV, null);
+        extParamValSetService.updateExtParamValInSet(1, newEPV, null);
 
         List<ExtParamValDTO> epv = extParamValSetService.getExtParamVals(1);   
         assertEquals(3, epv.size());
@@ -131,7 +131,7 @@ public class ExtParamValSetServiceTest {
 	}
 
     @Test
-    public void updateTimeSeriesInSetOrClone() throws EntityNotFoundException {
+    public void updateTimeSeriesInSet() throws EntityNotFoundException {
         List<ExtParamDTO> epList = extParamService.findByName("Cost_of_the_N_Gas");
         ExtParamValDTO newEPV = new ExtParamValDTO();
         newEPV.setExtparam(epList.iterator().next());
@@ -142,7 +142,7 @@ public class ExtParamValSetServiceTest {
                 });
         tsDTO.setValues(new double[] { 10.0, 100.0 });
 
-        extParamValSetService.updateExtParamValInSetOrClone(1, newEPV, tsDTO);
+        extParamValSetService.updateExtParamValInSet(1, newEPV, tsDTO);
 
         List<ExtParamValDTO> epv = extParamValSetService.getExtParamVals(1);   
         assertEquals(3, epv.size());
@@ -158,6 +158,39 @@ public class ExtParamValSetServiceTest {
         }
     }
     
+    @Test
+    public void updateValueInProject() throws EntityNotFoundException {
+        ExtParamDTO epDTO = extParamService.findByName("Cost_of_the_N_Gas").iterator().next();
+        ExtParamValDTO newEPV20 = new ExtParamValDTO();
+        newEPV20.setExtparam(epDTO);
+        newEPV20.setValue("20.0");
+        extParamValSetService.updateExtParamValInSet(2, newEPV20, null);
+
+        ExtParamValDTO newEPV10 = new ExtParamValDTO();
+        newEPV10.setExtparam(epDTO);
+        newEPV10.setValue("10.0");
+        extParamValSetService.updateExtParamValInProject(1, newEPV10, null);
+
+        List<ExtParamValDTO> epv = extParamValSetService.getExtParamVals(1);
+        assertEquals(3, epv.size());
+        
+        String [] epArr = new String [] { "Specific_Heat_Water", "Cost_of_the_N_Gas", "Emissions_N_Gas"};
+        List<String> epListRes = Arrays.asList(epArr);
+        
+        for(ExtParamValDTO epvDTO : epv){
+            assertTrue( epListRes.contains(epvDTO.getExtparam().getName()) );
+            if (epvDTO.getExtparam().getName().equals("Cost_of_the_N_Gas")) {
+                assertEquals("10.0", epvDTO.getValue());
+            }
+        }
+
+        epv = extParamValSetService.getExtParamVals(2);
+        assertEquals(1, epv.size());
+        ExtParamValDTO epvDTO = epv.get(0);
+        assertEquals("Cost_of_the_N_Gas", epvDTO.getExtparam().getName());
+        assertEquals("10.0", epvDTO.getValue());
+    }
+
     @Test
     public void addExtParam()
     {
