@@ -459,4 +459,23 @@ public abstract class PiecewiseFunction {
         sb.append(" }");
         return sb.toString();
     }
+
+    @Override
+    public int hashCode() {
+        return degree ^ Arrays.hashCode(getTimes()) ^ Arrays.hashCode(getValues());
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof PiecewiseFunction)) {
+            return false;
+        } else if (other == this) {
+            return true;
+        } else {
+            PiecewiseFunction otherFun = (PiecewiseFunction) other;
+            return degree == otherFun.degree
+                    && Arrays.equals(getTimes(),  otherFun.getTimes())
+                    && Arrays.equals(getValues(), otherFun.getValues());
+        }
+    }
 }

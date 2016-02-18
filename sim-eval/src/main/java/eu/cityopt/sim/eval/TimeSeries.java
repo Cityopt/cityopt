@@ -446,7 +446,7 @@ public class TimeSeries implements TimeSeriesI {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(getTimes()) ^ Arrays.hashCode(getValues());
+        return fun.hashCode();
     }
 
     @Override
@@ -457,8 +457,7 @@ public class TimeSeries implements TimeSeriesI {
             return true;
         } else {
             TimeSeries otherTS = (TimeSeries) other;
-            return Arrays.equals(getTimes(),  otherTS.getTimes())
-                    && Arrays.equals(getValues(), otherTS.getValues());
+            return fun.equals(otherTS.internalFunction());
         }
     }
 }
