@@ -143,6 +143,9 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         }
         Scenario scenario = scenarioRepository.findOne(scenId);
         Project project = scenario.getProject();
+        if (project.getSimulationmodel() == null) {
+            throw new ConfigurationException("Project has no simulation model");
+        }
         Namespace namespace = makeProjectNamespace(project);
 
         ExternalParameters externals = loadExternalParametersFromSet(
@@ -307,6 +310,9 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     /** Loads the simulation model from a project. */
     public SimulationModel loadSimulationModel(Project project)
             throws ConfigurationException, IOException {
+        if (project.getSimulationmodel() == null) {
+            throw new ConfigurationException("Project has no simulation model");
+        }
         String simulatorName = project.getSimulationmodel().getSimulator();
         SimulatorManager manager = SimulatorManagers.get(simulatorName);
         byte[] modelZipBytes = project.getSimulationmodel().getModelblob();
