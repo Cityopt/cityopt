@@ -16,16 +16,19 @@ public class ProjectDTO extends BaseDTO{
 
 		@Getter @Setter private int prjid;
 //		@Getter @Setter private ExtParamValSetDTO defaultextparamvalset;
-	    @Size(min=1,max=50)
+	    
+		@Size(min=5, max=50, message="At least 5 characters")	
 		@Getter @Setter private String name;
-	    @NotEmpty
-	    @Getter @Setter private String location;
+	    
+		@Getter @Setter private String location;
+		
 		@Getter @Setter private String projectCreator;
-		@Size(min=5,message="At least 5 characters")
+		
 		@Getter @Setter private String description;
-//		@Getter @Setter private SimulationModelDTO simulationmodel;
-		@NotEmpty
+
+		//		@Getter @Setter private SimulationModelDTO simulationmodel;
 		@Getter @Setter private String designtarget;
+		
 		@Getter @Setter private Date timehorizon;
 		@Getter @Setter private Date createdon;
 		@Getter @Setter private Date updatedon;

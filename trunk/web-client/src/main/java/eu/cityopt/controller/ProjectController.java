@@ -248,15 +248,22 @@ public class ProjectController {
 
     @RequestMapping(value = "createproject", method = RequestMethod.POST)
     public String createProjectPost(Map<String, Object> model,
-            @Validated @ModelAttribute("newProject") ProjectDTO projectForm, 
+    		@Validated @ModelAttribute ("newProject") ProjectDTO projectForm, 
+    		BindingResult bindingResult,
     		@RequestParam(value="nextpage", required=false) String nextpage,
-            BindingResult bindingResult,
             HttpServletRequest request) {
 
 		securityAuthorization.atLeastExpert();
 
         if (bindingResult.hasErrors()) {
-            return "createproject";
+        	ProjectDTO project = new ProjectDTO();
+        	project.setName(projectForm.getName());
+        	project.setDescription(projectForm.getDescription());
+        	project.setLocation(projectForm.getLocation());
+        	project.setDesigntarget(projectForm.getDesigntarget());
+            model.put("newProject", project);
+            model.put("error", "Please write project name!");
+        	return "createproject";
         } else if (nextpage != null) {
         	return "editproject";
         } else {
@@ -280,6 +287,7 @@ public class ProjectController {
                 project = projectManagementService.createProjectWithAdminUser(project, user);
                 
                 controllerService.clearSession(model, request);
+                model.put("newProject", project);
                 model.put("project", project);
                 model.put("success",true);              
 
@@ -385,7 +393,6 @@ public class ProjectController {
     
     @RequestMapping(value = "uploadFile", method = RequestMethod.POST)
     public String importEnergyModel(Map<String, Object> model,
-            @RequestParam(value="detailLevel", required=false) String detailLevel,
             @RequestParam("file") MultipartFile file,
             HttpServletRequest request) {
 
@@ -411,11 +418,10 @@ public class ProjectController {
                 String simulatorName = null;
                 Instant timeOrigin = null;
 
-                List<Locale.LanguageRange> languageList = Locale.LanguageRange.parse(
-                        RequestContextUtils.getLocale(request).getLanguage() + ",en");
+                List<Locale.LanguageRange> languageList = 
+            		Locale.LanguageRange.parse(RequestContextUtils.getLocale(request).getLanguage() + ",en");
                 importExportService.importSimulationModel(project.getPrjid(), 0, languageList, bytes, simulatorName, timeOrigin);
                 importExportService.importModelInputsAndOutputs(project.getPrjid(), 0);
-                System.out.println("Model imported");
                 
                 Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
                 

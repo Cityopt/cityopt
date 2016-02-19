@@ -17,30 +17,20 @@
     }
 </script>
 
-<style type="text/css">
-table.tablestyle{
-margin: 5%;
-}
-
-table.ProjectCreationForm{
-margin-left: 30px;
-}
-
-
-</style> 
 </head>
 <body>
 <%@ include file="mainmenu.inc"%>
- 
-  
+   
 <form:form method="post" action="createproject.html" modelAttribute="newProject">
 
 <table>
 	<tr>
 		<td width=20></td>
-		<td>
-			<table class="ProjectCreationForm" style="width:900px" >			
-				<!-- create project -->
+		<td valign="top">
+			<table style="width:900px" >			
+			<tr>
+				<td><h2 class="error">${error}</h2></td>
+			</tr>
 				<tr><td><h2><spring:message code="createproject"/></h2></td>
 					<td align="right">
 						<div class="round-button">
@@ -50,32 +40,31 @@ margin-left: 30px;
 						</div>
 					</td>
 				</tr>
-				<tr valing="top">
-					<td valing="top">
-						<table >
+				<tr>
+					<td valign="top">
+						<table>
 							<tr class="project_name">								
-								<td><label for="projectname">*<spring:message code="project_name"/>:</label></td>
+								<td><label for="projectname"><spring:message code="project_name"/>*:</label></td>
 								<c:set var="tooltip_name"><spring:message code="tooltip_create_project_name"/></c:set>
-								<td><form:input type="text" path="name" title="${tooltip_name}"/></td>
+								<td><form:input type="text" path="name" title="${tooltip_name}" style="width:200px"/></td>
 								<td><form:errors path="name" cssClass="error"/></td>																					
 							</tr>
 							<tr class="project_location">
-								<td><label for="location">*<spring:message code="location"/>:</label></td>
+								<td><label for="location"><spring:message code="location"/>:</label></td>
 								<c:set var="tooltip_location"><spring:message code="tooltip_create_project_location"/></c:set>
-								<td><form:input type="text" path="location" title="${tooltip_location}"/></td>
-								<td><form:errors path="location" cssClass="error"/></td>
+								<td><form:input type="text" path="location" title="${tooltip_location}" style="width:200px"/></td>
 							</tr>
 							<tr class="project_design_target">												
-								<td><label for="designtarget">*<spring:message code="design_target"/>:</label></td>
+								<td><label for="designtarget"><spring:message code="design_target"/>:</label></td>
 								<c:set var="tooltip_desingtarget"><spring:message code="tooltip_design_target"/></c:set>
-								<td><form:input type="text" path="designtarget" title="${tooltip_desingtarget}"/></td>
-								<td><form:errors path="designtarget" cssClass="error"/></td>
+								<td><form:input type="text" path="designtarget" title="${tooltip_desingtarget}" style="width:200px"/></td>
 							</tr>
 							<tr class="project_description">					
-								<td><label for="description">*<spring:message code="description"/>:</label></td>
+								<td><label for="description"><spring:message code="description"/>:</label></td>
 								<c:set var="tooltip_description"><spring:message code="tooltip_description"/></c:set>
-								<td><form:textarea type="text" rows="3" path="description" title="${tooltip_desingtarget}"></form:textarea></td>
-							    <td><form:errors path="description" cssClass="error"/></td>
+								<td>
+									<form:textarea type="text" rows="3" path="description" title="${tooltip_desingtarget}" style="width:200px"/>
+								</td>
 							</tr>					
 							<tr class="create_project" height=10px>						
 							<td align="right">							
@@ -96,31 +85,6 @@ margin-left: 30px;
             		</c:when>            	
         		</c:choose>						
 				
-					</td><td align="right"><img src="assets/img/test_map.jpg"/></td>				
-				
-				<tr>
-					<td colspan="2">
-						<table>
-							<col style="width:150px">
-							<col style="width:150px">
-							<col style="width:500px">
-							<tr>
-								<td></td>															
-								<!--Upload diagram-->
-								<!-- 
-								<td colspan="2" align="Right"><input type="button" id="uploadDiagram" 
-								value=<spring:message code="upload_diagram"/> style="width:100px"/></td>
-								</tr>
-								 -->				
-								<!-- Create project -->
-								<!-- 
-								<c:set var="tooltip_create_project"><spring:message code="tooltip_create_project"/></c:set>
-								<td align="right"><input type="submit" title="${tooltip_create_project}" value="<spring:message code="createproject"/>" style="width:120px"></td>
-								-->
-							</tr>
-						</table>
-					</td>
-				</tr>
 			</table>
 		</td>
 	</tr>

@@ -231,7 +231,8 @@ public class ScenarioController {
 	@RequestMapping(value="createscenario", method=RequestMethod.POST)
 	@Transactional
 	public String createScenarioPost(Map<String, Object> model, 
-		@Validated @ModelAttribute ("newScenario") ScenarioDTO formScenario, BindingResult bindingResult) {
+		@Validated @ModelAttribute ("newScenario") ScenarioDTO formScenario, 
+		BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
             return "createscenario";
@@ -276,14 +277,14 @@ public class ScenarioController {
 				
 				
 			//Bugfix #10543 author: Markus Turunen Check if energy models exist
-			if(scenarioService.getInputParamVals(scenario.getScenid()) != null){
+			if (scenarioService.getInputParamVals(scenario.getScenid()) != null){
 				List<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 				model.put("inputParamVals", inputParamVals);
 	//			Iterator<InputParamValDTO> iter = inputParamVals.iterator();			
 				InputParamValDTO simStart = inputParamValService.findByNameAndScenario("simulation_start", scenario.getScenid());
 				InputParamValDTO simEnd = inputParamValService.findByNameAndScenario("simulation_end", scenario.getScenid());			
 				
-				if(simStart != null && simEnd != null){				
+				if (simStart != null && simEnd != null){				
 					model.put("simStart", simStart.getValue());
 					model.put("simEnd", simEnd.getValue());//						
 					
@@ -303,20 +304,18 @@ public class ScenarioController {
 					model.put("error", "Project lack simulation definition, please define them.");
 					return "createscenario";
 				}			
-			}else{	
+			} else {	
 				model.put("newScenario", formScenario);				
 				model.put("error", "Project lack input parameter values can't create a scenario,  please define them.");
 				return "createscenario";
 			}
 		}
 		else
-			{
+		{
 			model.put("newScenario", formScenario);				
 			model.put("error", "There's no project selected please select one.");
 			return "createscenario";
-			//project null
-			//return "error";
-			}		
+		}		
 	}
 	
 	@RequestMapping(value="openscenario",method=RequestMethod.GET)

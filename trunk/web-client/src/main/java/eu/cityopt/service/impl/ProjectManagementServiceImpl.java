@@ -38,7 +38,7 @@ public class ProjectManagementServiceImpl implements ProjectManagementService {
 	public ProjectDTO createProjectWithAdminUser(ProjectDTO NewProject, String user) {
 			
 		try {
-			ProjectDTO createdProject=projectService.save(NewProject,0,0);
+			ProjectDTO createdProject = projectService.save(NewProject, 0, 0);
 			// Test: caused a overlapping project. and transaction failed.
 						
 			List<UserGroupDTO> userGroups = userGroupService.findByGroupName("ROLE_Administrator");

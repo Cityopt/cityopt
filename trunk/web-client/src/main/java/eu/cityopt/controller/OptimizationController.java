@@ -941,6 +941,14 @@ public class OptimizationController {
         {
             if (nType == 1)
             {
+            	if (openOptSet.getName() == null || openOptSet.getName().isEmpty()) 
+            	{
+            		OpenOptimizationSetDTO newOpenOptSet = new OpenOptimizationSetDTO();
+            		model.put("openoptimizationset", newOpenOptSet);
+            		model.put("error", "Please write optimization set name!");
+            		return "createoptimizationset";
+            	}
+            	
             	if (optSetService.findByName(openOptSet.getName(), project.getPrjid()) != null)
             	{
             		OpenOptimizationSetDTO newOpenOptSet = new OpenOptimizationSetDTO();

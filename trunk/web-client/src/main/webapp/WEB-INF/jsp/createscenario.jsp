@@ -29,7 +29,7 @@
 					<td>
 						<table>
 							<tr class="scenario_name">															
-								<td>*<spring:message code="scenario_name"/>:</td>
+								<td><spring:message code="scenario_name"/>*:</td>
 								<c:set var="tooltip_name"><spring:message code="tooltip_create_scenario_name"/></c:set>
 								<td><form:input type="text" path="name"  title="${tooltip_name}" style="width: 200px"/></td>
 								<td><form:errors path="name" cssClass="error"/></td>
@@ -65,12 +65,11 @@
 						<element><h2 class="error"></element>${error}</h2><element>
 						<!-- Information message if scenario is created -->
 						<element><element><h2 class="successful"></element></element>${successful}</h2><element>				
-					<c:choose>
-						 <c:when test="${success!=null && success==true}">
+						
+						<c:if test="${success!=null && success==true}">
 						<a href="editscenario.html"><button style="width:100px" type="button" value="Next">
             			   <spring:message code="next"/></button></a>
-            			</c:when>
-            		</c:choose>	
+            			</c:if>
 					</td>
 				</tr>
 			</table>

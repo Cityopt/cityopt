@@ -23,7 +23,7 @@
 		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="createcomponent.html" modelAttribute="component">
-			<!-- Create component -->
+			<h2 class="error">${error}</h2>
 			<h2><spring:message code="create_component"/></h2>
 
 
