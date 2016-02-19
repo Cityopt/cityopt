@@ -208,7 +208,7 @@ public class ParameterController {
     }
         
     @RequestMapping(value="createcomponent", method=RequestMethod.GET)
-    public String getCreateComponent(Model model){
+    public String getCreateComponent(Model model) {
     	securityAuthorization.atLeastExpert_expert(model);
         ComponentDTO newComponent = new ComponentDTO();
         model.addAttribute("component", newComponent);
@@ -240,6 +240,15 @@ public class ParameterController {
             e1.printStackTrace();
         }
 
+        String name = componentForm.getName();
+        
+        if (name == null || name.isEmpty()) {
+        	ComponentDTO newComponent = new ComponentDTO();
+            model.put("component", newComponent);
+            model.put("error", "Please write component name!");
+        	return "createcomponent";
+        }
+        
         ComponentDTO component = new ComponentDTO();
         component.setName(componentForm.getName().trim());
         componentService.save(component, project.getPrjid());
@@ -627,6 +636,24 @@ public class ParameterController {
         }
         
         int nSelectedCompId = Integer.parseInt(strSelectedCompId);
+        String strUnit = inputParamForm.getUnit();
+
+        if (inputParamForm.getName() == null || inputParamForm.getName().isEmpty() 
+    		|| strUnit == null || strUnit.isEmpty())
+        {
+            InputParameterDTO newInputParameter = new InputParameterDTO();
+            model.put("inputParam", newInputParameter);
+            
+            inputParamForm = new ParamForm();
+            model.put("inputParamForm", inputParamForm);
+            model.put("selectedcompid", nSelectedCompId);
+
+            List<UnitDTO> units = unitService.findAll();
+            model.put("units", units);
+            model.put("error", "Please write input parameter name and select unit!");
+        	return "createinputparameter";
+        }
+        
         ComponentDTO component = null;
         try {
             component = componentService.findByID(nSelectedCompId);
@@ -637,7 +664,6 @@ public class ParameterController {
         InputParameterDTO inputParam = new InputParameterDTO();
         inputParam.setName(inputParamForm.getName());
         inputParam.setDefaultvalue(inputParamForm.getValue());
-        String strUnit = inputParamForm.getUnit();
         UnitDTO unit = null;
         
         if (strUnit == null || strUnit.isEmpty()) {

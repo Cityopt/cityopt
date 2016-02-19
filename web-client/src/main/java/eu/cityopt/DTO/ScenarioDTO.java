@@ -13,8 +13,10 @@ public class ScenarioDTO extends BaseDTO {
 	@Getter @Setter private int scenid;
 	@Getter @Setter private ProjectDTO project;
 	@Getter @Setter private ScenarioGeneratorSimpleDTO scenariogenerator;
+	
 	@Size(min=5, message="At least 5 characters")	
 	@Getter @Setter private String name;
+	
 	@Getter @Setter private String description;
 	@Getter @Setter private Date createdon;
 	@Getter @Setter private Date updatedon;

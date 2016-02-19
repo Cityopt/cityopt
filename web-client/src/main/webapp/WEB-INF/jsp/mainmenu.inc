@@ -20,7 +20,7 @@
 				<td><spring:message code="version"/>: </td><td>${version}</td>
 			</tr>
 			<tr>
-				<td><spring:message code="build_date"/>: </td><td>27.1.2016</td>
+				<td><spring:message code="build_date"/>: </td><td>18.2.2016</td>
 			</tr>
 			<tr>
 				<td><spring:message code="user"/>:
@@ -82,18 +82,36 @@
 		<a href="deleteproject.html"><spring:message code="deleteproject"/></a>
 	</td>
 </tr>
-<tr>
-	<td></td>
-	<td>
-		<a href="importdata.html"><spring:message code="importdata"/></a>
-	</td>
-</tr>
-<tr>
-	<td></td>
-	<td>
-		<a href="exportdata.html"><spring:message code="exportdata"/></a>
-	</td>
-</tr>
+<c:choose>	
+	<c:when test="${not empty project}">
+		<tr>
+			<td></td>
+			<td>
+				<a href="importdata.html"><spring:message code="importdata"/></a>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<a href="exportdata.html"><spring:message code="exportdata"/></a>
+			</td>
+		</tr>
+	</c:when>
+	<c:otherwise>
+		<tr>
+			<td></td>
+			<td>
+				<spring:message code="importdata"/>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<spring:message code="exportdata"/>
+			</td>
+		</tr>
+	</c:otherwise>
+</c:choose>
 <c:choose>	
 	<c:when test="${not empty project}">
 	<tr>

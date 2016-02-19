@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <script>
     function openInfoWindow() {
-    	   window.open("createoptimizationset_info.html",'Create optimization set info','width=600,height=800');
+   		window.open("createoptimizationset_info.html",'Create optimization set info','width=600,height=800');
     }
 </script>
 
@@ -27,7 +27,7 @@
 		<table>
 			<col style="width: 400px;">
 			<col style="width: 450px;">
-				
+			<h2 class="error">${error}</h2>
 			<c:choose>
    				<c:when test="${success!=null && success==true}">
      			   <h2 class="successful">Optimization set created</h2>
@@ -63,7 +63,7 @@
 						<tr>
 							<!-- Name -->
 							<c:set var="tooltip_name"><spring:message code="tooltip_create_optimizationset_name"/></c:set>
-							<td><spring:message code="name"/>:</td>
+							<td><spring:message code="name"/>*:</td>
 							<td><form:input type="text" id="name" title="${tooltip_name}" path="name" style="width:200px"/></td>
 							<!-- Description -->
 							<c:set var="tooltip_description"><spring:message code="tooltip_create_optimizationset_description"/></c:set>
