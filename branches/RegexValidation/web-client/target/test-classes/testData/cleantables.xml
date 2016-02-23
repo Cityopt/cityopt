@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <!-- The tables are listed in such an order that the data could be inserted
+       without breaking foreign key constraints. -->
+  <!-- 
+  <Type/>
+  <Unit/>
+  <DataReliability/>
+  <Algorithm/>
+  <AlgoParam/>
+   -->
+  <AppUser/>
+  <UserGroup/>
+  <SimulationModel/>
+  <ExtParamValSet/>
+  <Project/>
+  <UserGroupProject/>
+  <Component/>
+  <InputParameter/>
+  <TimeSeries/>
+  <TimeSeriesVal/>
+  <OutputVariable/>
+  <ExtParam/>
+  <Metric/>
+  <ExtParamVal/>
+  <ExtParamValSetComp/>
+  <ObjectiveFunction/>
+  <OptConstraint/>
+  <ScenarioGenerator/>
+  <AlgoParamVal/>
+  <ModelParameter/>
+  <DecisionVariable/>
+  <ScenGenObjectiveFunction/>
+  <ScenGenOptConstraint/>
+  <Scenario/>
+  <InputParamVal/>
+  <SimulationResult/>
+  <ScenarioMetrics/>
+  <MetricVal/>
+  <ScenGenResult/>
+  <DecisionVariableResult/>
+  <ObjectiveFunctionResult/>
+  <OptConstraintResult/>
+  <OptimizationSet/>
+  <OptSearchConst/>
+  <OptSetScenarios/>
+</dataset>

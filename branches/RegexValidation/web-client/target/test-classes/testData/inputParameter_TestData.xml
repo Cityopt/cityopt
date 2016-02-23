@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dataset>
+
+<simulationmodel modelid="1" description="test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="1970-01-01 00:00:00" version="1" />
+
+<project prjid="1" name="Project 1" location="Vienna" modelid="1" version="1" />
+
+<scenario scenid="1" name="test" description="this is a test" createdon="2014-12-02" updatedon="2014-12-01" prjid="1" version="1" />
+
+<type typeid="1" name="myType" version="1" />
+
+<unit unitid="1" name="myUnit" version="1" />
+
+<component componentID="1" name="myComponent" prjid="1" version="1" />
+<component componentID="2" name="Gas_Boiler" prjid="1" version="1" />
+
+<outputvariable outvarid="1" componentid="2" unitid="1" name="Heating_Power" version="1" />
+
+<inputparameter inputid="1" name="InputParameter 1" unitid="1" componentID="1" version="1" regexValid="[5]?[0-9][0-9]"/>
+<inputparameter inputid="2" name="InputParameter 2" unitid="1" componentID="1" version="1" regexValid="[5]?[0-9][0-9]"/>
+
+<inputparamval scenid="1" inputid="1" createdon="2014-12-02" value="my value" version="1" />
+<inputparamval scenid="1" inputid="2" createdon="2014-12-02" value="10" version="1" />
+
+
+</dataset>
