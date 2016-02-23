@@ -115,6 +115,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -316,7 +317,7 @@ public class UserController {
     ControllerService controllerService;
     
     @Autowired
-    Validator validator;
+    OptionalValidatorFactoryBean validator;
     
     @RequestMapping(method=RequestMethod.GET, value="/accessDenied")
     public String AccessDenied(){

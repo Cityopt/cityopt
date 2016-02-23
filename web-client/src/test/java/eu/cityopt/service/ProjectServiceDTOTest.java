@@ -150,7 +150,10 @@ public class ProjectServiceDTOTest {
 		item.setName("new project name");
 		item.setDescription("new project description");
 		
-		projectService.update(item, projectService.getSimulationmodelId(item.getPrjid()), projectService.getDefaultExtParamSetId(item.getPrjid()));
+		Integer simulationModel = projectService.getSimulationmodelId(item.getPrjid());
+		Integer defaultExtParamSetId = projectService.getDefaultExtParamSetId(item.getPrjid());
+		
+		projectService.update(item, simulationModel, defaultExtParamSetId);
 		ProjectDTO item2 = projectService.findByID(1);
 		assertNotNull(item2);
 		assertEquals("new project name", item2.getName());
@@ -288,7 +291,6 @@ public class ProjectServiceDTOTest {
 		byte[] tmpModelarr = getFileBytes(tmpModel);
 		
 		SimulationModelDTO model = new SimulationModelDTO();
-//		model.setModelblob(tmpModelarr);
 		model.setSimulator("APROS");
 		model.setDescription("My second model");				
 		model = simulationModelService.save(model);
@@ -314,6 +316,12 @@ public class ProjectServiceDTOTest {
 		SimulationModelDTO model = simulationModelService.findByID(modelId);
 		Assert.notNull(model);
 		
+//		byte[] tmpModelarr = model.getModelblob();	
+//		String content = new String(tmpModelarr, StandardCharsets.UTF_8);
+//		assertEquals("this is a test file for dbunit blob data.",content);
+//		assertEquals(model.getDescription(),"model with Base64");
+//		assertEquals(model.getSimulator(),"APROS");
+
 //		byte[] tmpModelarr = model.getModelblob();	
 //		String content = new String(tmpModelarr, StandardCharsets.UTF_8);
 //		assertEquals("this is a test file for dbunit blob data.",content);

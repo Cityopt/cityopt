@@ -32,6 +32,7 @@ public class InputParameter extends VersionModel implements java.io.Serializable
 	private String name;
 	private String alias;
 	private String defaultvalue;
+	private String regexValid;
 	private Set<ModelParameter> modelparameters = new HashSet<ModelParameter>(0);
 	private Set<InputParamVal> inputparamvals = new HashSet<InputParamVal>(0);
 
@@ -45,7 +46,7 @@ public class InputParameter extends VersionModel implements java.io.Serializable
 	}
 
 	public InputParameter(int inputid, Type type, Component component,
-			Unit unit, String name, String alias, String defaultvalue,
+			Unit unit, String name, String alias, String defaultvalue,String regexValidator,
 			Set<ModelParameter> modelparameters,
 			Set<InputParamVal> inputparamvals,TimeSeries tseries) {
 		this.inputid = inputid;
@@ -55,6 +56,7 @@ public class InputParameter extends VersionModel implements java.io.Serializable
 		this.name = name;
 		this.alias = alias;
 		this.defaultvalue = defaultvalue;
+		this.regexValid=regexValidator;
 		this.modelparameters = modelparameters;
 		this.inputparamvals = inputparamvals;
 		this.timeseries=tseries;
@@ -69,6 +71,7 @@ public class InputParameter extends VersionModel implements java.io.Serializable
 		c.name = this.name;
 		c.alias = this.alias;
 		c.defaultvalue = this.defaultvalue;
+		c.regexValid=this.regexValid;
 		c.modelparameters = this.modelparameters;
 		c.inputparamvals = this.inputparamvals;
 		c.timeseries=timeseries;
@@ -142,6 +145,15 @@ public class InputParameter extends VersionModel implements java.io.Serializable
 
 	public void setDefaultvalue(String defaultvalue) {
 		this.defaultvalue = defaultvalue;
+	}
+	
+	@Column(name = "regexValid")
+	public String getRegexValid() {
+		return regexValid;
+	}
+
+	public void setRegexValid(String regexValid) {
+		this.regexValid = regexValid;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inputparameter", cascade={CascadeType.REMOVE})

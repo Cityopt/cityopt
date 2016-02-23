@@ -48,6 +48,7 @@ public class ExtParamValSetServiceTest {
 	@Autowired
 	private ExtParamService extParamService;
 	
+	
 	@Autowired
 	private ProjectService projectService;
 	
@@ -200,8 +201,6 @@ public class ExtParamValSetServiceTest {
     	Integer extParamValSetID = projectService.getDefaultExtParamSetId(1);
     	
     	assertNull(extParamValSetID);
-    	
-    	extParamService.save(extParam, 1);    	
     	
     	extParamValSetID = projectService.getDefaultExtParamSetId(1);
     	

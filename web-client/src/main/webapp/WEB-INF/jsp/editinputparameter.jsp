@@ -26,7 +26,8 @@
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="editinputparameter.html?inputparamid=${inputParam.inputid}" modelAttribute="inputParamForm">
 			<h2>Edit input parameter</h2>
-
+			<h2 class="error">${error}</h2>
+			
 			<table align="center">
 				<col style="width:150px">
 				<col style="width:80px">
@@ -71,6 +72,7 @@
 						<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>"></td>
 					</td>
 				</tr>
+				
 			</table>
 			
 			</form:form>

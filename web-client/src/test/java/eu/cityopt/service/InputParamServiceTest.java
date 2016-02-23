@@ -24,6 +24,9 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
+import eu.cityopt.DTO.OutputVariableDTO;
+import eu.cityopt.DTO.TimeSeriesDTO;
+import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
 
 @Transactional
@@ -41,6 +44,17 @@ public class InputParamServiceTest {
 	@Autowired
 	InputParamValService inputParamValService;
 	
+	@Autowired
+	OutputVariableService outputVariableService;
+	
+	@Autowired
+	TypeService typeService;
+	
+	@Autowired
+	UnitService unitService;
+	
+	//Type		
+	
 	@Before
 	public void setUp() throws Exception {
 	}
@@ -49,6 +63,7 @@ public class InputParamServiceTest {
 	public void findById() throws EntityNotFoundException {
 		InputParameterDTO iparam = inputParamService.findByID(1);
 		UnitDTO u = iparam.getUnit();
+		TimeSeriesDTO timeseries = iparam.getTimeseries();
 		
 //		int uid = iparam.getUnitID();
 //		int cid = iparam.getComponentID();
@@ -74,6 +89,19 @@ public class InputParamServiceTest {
 		List<InputParameterDTO> iparam = inputParamService.findByName("parameter");
 		assertNotNull(iparam);
 		assertTrue(iparam.size() == 2);
+	}
+	
+	@Test
+	public void updateType() throws EntityNotFoundException {
+		OutputVariableDTO outputVariable = outputVariableService.findByID(1);				
+		
+		TypeDTO type = typeService.findByID(1);
+		UnitDTO unit = unitService.findByID(1);
+		
+		//outputVariable.setType(type);
+		outputVariable.setUnit(unit);
+		outputVariableService.update(outputVariable);
+		
 	}
 	
 	@Test

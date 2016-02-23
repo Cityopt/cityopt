@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -66,6 +67,7 @@ import eu.cityopt.service.UserGroupProjectService;
 import eu.cityopt.service.UserGroupService;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.validators.InputParameterValidator;
 import eu.cityopt.web.ParamForm;
 
 
@@ -361,12 +363,15 @@ public class ParameterController {
         
         return "editinputparameter";
     }
+    
+    @Autowired
+    InputParameterValidator validator;
 
     @RequestMapping(value="editinputparameter", method=RequestMethod.POST)
     public String editInputParameterPost(Map<String, Object> model, 
 		ParamForm inputParamForm,
         @RequestParam(value="inputparamid", required=false) String inputParamId,
-    	@RequestParam(value="cancel", required=false) String cancel) {
+    	@RequestParam(value="cancel", required=false) String cancel, BindingResult result) throws EntityNotFoundException {
     	        
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -411,6 +416,29 @@ public class ParameterController {
         updatedInputParam.setUnit(unit);
         int componentId = updatedInputParam.getComponentComponentid();//inputParamService.getComponentId(updatedInputParam.getInputid());
 
+        //Validation code
+        validator.validate(updatedInputParam, result);
+         
+        //Check validation errors
+        if (result.hasErrors()) {
+        	
+        	InputParameterDTO inputParam = inputParamService.findByID(nInputParamId);
+        	
+        	model.put("inputParam", inputParam);
+            
+            inputParamForm = new ParamForm();
+            inputParamForm.setName(inputParam.getName());
+            inputParamForm.setValue(inputParam.getDefaultvalue());
+            model.put("inputParamForm", inputParamForm);
+
+            List<UnitDTO> units = unitService.findAll();
+            model.put("units", units);
+        	
+        	model.put("error",result.getGlobalError().getCode());        	             
+             
+            return "editinputparameter";
+        }        
+        
         try {
 			inputParamService.update(updatedInputParam, componentId, unit.getUnitid());
 		} catch (EntityNotFoundException e1) {

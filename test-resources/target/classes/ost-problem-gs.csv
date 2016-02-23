@@ -1,0 +1,19 @@
+kind,component,name,type,value,lower,upper,expression
+in,CITYOPT,simulation_end,Timestamp,2015-02-01T00:00:00Z,,,
+in,CITYOPT,simulation_start,Timestamp,2015-01-01T00:00:00Z,,,
+in,OSTERSUNDOM_BIG_1,Central_storage_h,Double,80,,,"[80,200][g1]"
+in,OSTERSUNDOM_BIG_1,A1_Storage_h,Double,10,,,"[10,50][g2]"
+in,OSTERSUNDOM_BIG_1,A1_Solarth_m2,Double,0,,,"[0,10000][g2]"
+in,OSTERSUNDOM_BIG_1,A2Storage_h,Double,15,,,"[15,50][g2]"
+in,OSTERSUNDOM_BIG_1,A2_Solarth_m2,Double,0,,,"[0,30000][g2]"
+out,HOUR_HEAT,SP_VALUE,TimeSeries/linear,,,,
+out,HOUR_NET_COOL,SP_VALUE,TimeSeries/linear,,,,
+out,HOUR_NET_ELEC,SP_VALUE,TimeSeries/linear,,,,
+met,,heating,Double,,,,"integrate(HOUR_HEAT.SP_VALUE, 0, Infinity) / 3600"
+met,,cooling,Double,,,,"integrate(HOUR_NET_COOL.SP_VALUE, 0, Infinity) / 3600"
+met,,electric,Double,,,,"integrate(HOUR_NET_ELEC.SP_VALUE, 0, Infinity) / 3600"
+obj,,heat,min,,,,heating
+obj,,cool,min,,,,cooling
+obj,,el,min,,,,electric
+dv,,g1,Integer,,0,1,
+dv,,g2,Integer,,0,1,
