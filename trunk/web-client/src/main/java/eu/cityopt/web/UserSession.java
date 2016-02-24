@@ -28,13 +28,49 @@ public class UserSession {
 	private String nMultiVariableId;
 	private String nSelectedInputId;
 	private String strExpression;
+	private String strActiveProject;
+	private String strActiveScenario;
+	private String strActiveOptSet;
+	private String strActiveScenGen;
 	
+	public String getActiveOptSet() {
+		return strActiveOptSet;
+	}
+
+	public void setActiveOptSet(String strActiveOptSet) {
+		this.strActiveOptSet = strActiveOptSet;
+	}
+
+	public String getActiveScenGen() {
+		return strActiveScenGen;
+	}
+
+	public void setActiveScenGen(String strActiveScenGen) {
+		this.strActiveScenGen = strActiveScenGen;
+	}
+
 	public String getExpression() {
 		return strExpression;
 	}
 
 	public void setExpression(String strExpression) {
 		this.strExpression = strExpression;
+	}
+
+	public String getActiveProject() {
+		return strActiveProject;
+	}
+
+	public void setActiveProject(String strProject) {
+		this.strActiveProject = strProject;
+	}
+
+	public String getActiveScenario() {
+		return strActiveScenario;
+	}
+
+	public void setActiveScenario(String strScenario) {
+		this.strActiveScenario = strScenario;
 	}
 
 	public UserSession() {

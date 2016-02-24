@@ -248,11 +248,11 @@ public class ProjectController {
 
     @RequestMapping(value = "createproject", method = RequestMethod.POST)
     public String createProjectPost(Map<String, Object> model,
-    		@Validated @ModelAttribute ("newProject") ProjectDTO projectForm, 
-    		BindingResult bindingResult,
-    		@RequestParam(value="nextpage", required=false) String nextpage,
-            HttpServletRequest request) {
-
+		@Validated @ModelAttribute ("newProject") ProjectDTO projectForm, 
+		BindingResult bindingResult,
+		@RequestParam(value="nextpage", required=false) String nextpage,
+        HttpServletRequest request) 
+    {
 		securityAuthorization.atLeastExpert();
 
         if (bindingResult.hasErrors()) {
@@ -265,6 +265,15 @@ public class ProjectController {
             model.put("error", "Please write project name!");
         	return "createproject";
         } else if (nextpage != null) {
+        	ProjectDTO project = (ProjectDTO) model.get("project");
+        	
+        	if (project == null)
+        	{
+        		return "error";
+        	}
+        	
+        	model.put("project", project);
+        	model.put("success", null);
         	return "editproject";
         } else {
             ProjectDTO project = new ProjectDTO();
@@ -280,21 +289,33 @@ public class ProjectController {
             project.setDesigntarget(projectForm.getDesigntarget().trim());
 
             if (projectService.findByName(project.getName()) == null) {
+            	controllerService.clearSession(model, request);
                 
                 // Set up the project Rights.
                 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 String user= ((UserDetails)principal).getUsername();
                 project = projectManagementService.createProjectWithAdminUser(project, user);
                 
-                controllerService.clearSession(model, request);
                 model.put("newProject", project);
                 model.put("project", project);
-                model.put("success",true);              
-
+                
+                UserSession session = (UserSession) model.get("usersession");
+                
+                if (session == null)
+                {
+                	session = new UserSession();
+                }
+            	session.setActiveProject(project.getName());
+            	session.setActiveScenario(null);
+            	session.setActiveOptSet(null);
+            	session.setActiveScenGen(null);
+            	model.put("usersession", session);
+            	model.put("success", true);
+                
                 return "createproject";
             } else {
-                model.put("newProject", new ProjectDTO());                        
-                model.put("success",false);                           
+                model.put("newProject", new ProjectDTO());
+                model.put("success",false);
                 return "createproject";
             }
         }
@@ -307,30 +328,29 @@ public class ProjectController {
     	List<ProjectDTO> projects= new ArrayList<ProjectDTO>();    			
     	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if ( principal != null && principal instanceof UserDetails) {
+        if (principal != null && principal instanceof UserDetails) {
             Collection<? extends GrantedAuthority> authorites = ((UserDetails)principal).getAuthorities();
            
-            
-            for(int i=0;authorites.size()>i;i++){
+            for (int i = 0; authorites.size() > i; i++) {
             	GrantedAuthority accessProvided = (GrantedAuthority) authorites.toArray()[i];
             	if (accessProvided.getAuthority().equals("ROLE_Administrator")){
             		projects = projectService.findAll();               
-            	}     	
+            	}
             }
-            if(projects.size()==0){
+            
+            if (projects.size() == 0) {
             	 String username= ((UserDetails)principal).getUsername();
             	 int userID;
 				try {
 					userID = userService.findByName(username).getUserid();
 					projects = userGroupProjectService.findProjectsByUser(userID);
 				} catch (EntityNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}            	 
-            }            
+				}
+            }
         } else {
         	//
-        }                
+        }
         model.put("projects", projects);
         return "openproject";
     }
@@ -345,7 +365,6 @@ public class ProjectController {
     		
     		securityAuthorization.atLeastGuest_guest(prjid);
     		
-            AppUserDTO user = (AppUserDTO) model.get("user");
             int nProjectId = Integer.parseInt(prjid);
             ProjectDTO project = null;
 
@@ -358,9 +377,22 @@ public class ProjectController {
                 e.printStackTrace();
             }
             
-            controllerService.getEnergyModelInfo(model, project.getPrjid());
-
             controllerService.clearSession(model, request);
+            UserSession session = (UserSession) model.get("usersession");
+            
+            if (session == null)
+            {
+            	session = new UserSession();
+            }
+        	
+            session.setActiveProject(project.getName());
+        	session.setActiveScenario(null);
+        	session.setActiveOptSet(null);
+        	session.setActiveScenGen(null);
+        	model.put("usersession", session);
+
+        	controllerService.getEnergyModelInfo(model, project.getPrjid());
+
             model.put("project", project);
         }
         else if (model.containsKey("project"))
@@ -391,6 +423,56 @@ public class ProjectController {
         return "editproject";
     }
     
+    @RequestMapping(value="editproject", method=RequestMethod.POST)
+    public String editProjectPost(ProjectDTO projectForm, Map<String, Object> model, 
+        @RequestParam(value="action", required=false) String action) {
+
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
+        }
+        securityAuthorization.atLeastStandard_standard(project);
+
+        if (projectForm != null && action != null)
+        {
+            if (action.equals("create"))
+            {
+                project.setName(projectForm.getName());
+                project = projectService.save(project, 0, 0);
+                model.put("project", project);
+            }
+            else if (action.equals("update"))
+            {
+                try {
+                    project = projectService.findByID(project.getPrjid());                	
+                    project.setName(projectForm.getName().trim());
+                    project.setDescription(projectForm.getDescription().trim());
+                    project.setLocation(projectForm.getLocation().trim());
+                    project.setDesigntarget(projectForm.getDesigntarget().trim());
+
+                    Integer defaultExtSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+                    int nDefaultExtSetId = 0;
+                    
+                    if (defaultExtSetId != null)
+                    {
+                    	nDefaultExtSetId = defaultExtSetId;
+                    }
+                    
+                    project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()), nDefaultExtSetId);
+                    controllerService.getEnergyModelInfo(model, project.getPrjid());
+                } catch(ObjectOptimisticLockingFailureException e) {
+                    model.put("error", "This project has been updated in the meantime, please reload.");
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+                model.put("project", project);
+            }
+        }
+        return "editproject";
+    }
+
     @RequestMapping(value = "uploadFile", method = RequestMethod.POST)
     public String importEnergyModel(Map<String, Object> model,
             @RequestParam("file") MultipartFile file,
@@ -800,58 +882,7 @@ public class ProjectController {
         outputStream.close();
     }
 
-    @RequestMapping(value="editproject", method=RequestMethod.POST)
-    public String editProjectPost(ProjectDTO projectForm, Map<String, Object> model, 
-        @RequestParam(value="action", required=false) String action) {
-
-    	ProjectDTO project = (ProjectDTO) model.get("project");
-
-        if (project == null)
-        {
-            return "error";
-        }
-        securityAuthorization.atLeastStandard_standard(project);
-
-        if (projectForm != null && action != null)
-        {
-            if (action.equals("create"))
-            {
-                project.setName(projectForm.getName());
-                project = projectService.save(project,0,0);
-                model.put("project", project);
-            }
-            else if (action.equals("update"))
-            {
-                try {
-                    //project = projectService.findByID(project.getPrjid());                	
-                	//Fix issue: Bug #10864 //Trim because we handling raw input data method .
-                	//trim() - method deletes spaces end and start.
-                    project.setName(projectForm.getName().trim());
-                    project.setDescription(projectForm.getDescription().trim());
-                    project.setLocation(projectForm.getLocation().trim());
-                    project.setDesigntarget(projectForm.getDesigntarget().trim());
-
-                    Integer defaultExtSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-                    int nDefaultExtSetId = 0;
-                    
-                    if (defaultExtSetId != null)
-                    {
-                    	nDefaultExtSetId = defaultExtSetId;
-                    }
-                    
-                    project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()), nDefaultExtSetId);
-                    controllerService.getEnergyModelInfo(model, project.getPrjid());
-                } catch(ObjectOptimisticLockingFailureException e) {
-                    model.put("error", "This project has been updated in the meantime, please reload.");
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-                model.put("project", project);
-            }
-        }
-        return "editproject";
-    }
-
+    
     @RequestMapping(value="closeproject", method=RequestMethod.GET)
     public String closeProject(Map<String, Object> model, HttpServletRequest request)
     {

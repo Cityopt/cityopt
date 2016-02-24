@@ -482,7 +482,7 @@ public class OptimizationController {
         {
         	ObjectiveFunctionDTO oldFunc = new ObjectiveFunctionDTO();
         	
-        	if (type.equals("db")) {
+        	if (type.equals("db") && optSet.getObjectivefunction() != null) {
         		oldFunc = optSet.getObjectivefunction();
         	}
         	
@@ -559,30 +559,8 @@ public class OptimizationController {
         model.put("metrics", metrics);
         model.put("optimizationset", optSet);
 	
-	    List<OptConstraintDTO> optSearchConstraints = null;
-	
-	    try {
-	        optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
-	    } catch (EntityNotFoundException e) {
-	        e.printStackTrace();
-	    }
-	
-	    model.put("constraints", optSearchConstraints);
-	
-	    List<MetricValDTO> listMetricVals = metricValService.findAll();
-	    List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
-	
-	    for (int i = 0; i < listMetricVals.size(); i++)
-	    {
-	        MetricValDTO metricVal = listMetricVals.get(i);
-	
-	        if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
-	        {
-	            listProjectMetricVals.add(metricVal);
-	        }
-	    }
-	    model.put("metricVals", listProjectMetricVals);
-	    
+        controllerService.initEditOptSet(model, project.getPrjid(), optSet.getOptid());
+        
 	    return "editoptimizationset";
 	}
     
@@ -618,24 +596,7 @@ public class OptimizationController {
         }
         model.put("usersession", userSession);
 
-        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-        model.put("components", components);
-
-        if (selectedCompId != null && !selectedCompId.isEmpty())
-        {
-            int nSelectedCompId = Integer.parseInt(selectedCompId);
-
-            if (nSelectedCompId > 0)
-            {
-                userSession.setComponentId(nSelectedCompId);
-                List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
-                model.put("outputVars", outputVars);
-            }
-            model.put("selectedcompid", nSelectedCompId);
-        }
-
-        Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-        model.put("metrics", metrics);
+        controllerService.initEditObjFunc(model, project.getPrjid(), selectedCompId, userSession);
 
         ObjectiveFunctionDTO function = optSet.getObjectivefunction();
         model.put("function", function);
@@ -676,8 +637,21 @@ public class OptimizationController {
             return "error";
         }
 
-        if (function != null && function.getExpression() != null)
+        if (function != null && function.getExpression() != null && function.getName() != null)
         {
+        	String name = function.getName();
+        	String expression = function.getExpression();
+        	
+        	if (name.isEmpty() || expression.isEmpty())
+        	{
+        		model.put("error", "Please write name and expression!");
+                controllerService.initEditObjFunc(model, project.getPrjid(), null, null);
+                function = optSet.getObjectivefunction();
+                model.put("function", function);
+
+                return "editobjfunction";
+        	}
+        	
             ObjectiveFunctionDTO oldFunc = optSet.getObjectivefunction();
 
             oldFunc.setExpression(function.getExpression());
@@ -721,30 +695,8 @@ public class OptimizationController {
 
         model.put("optimizationset", optSet);
 
-        List<OptConstraintDTO> optSearchConstraints = null;
-
-        try {
-            optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        model.put("constraints", optSearchConstraints);
-
-        List<MetricValDTO> listMetricVals = metricValService.findAll();
-        List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
-
-        for (int i = 0; i < listMetricVals.size(); i++)
-        {
-            MetricValDTO metricVal = listMetricVals.get(i);
-
-            if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
-            {
-                listProjectMetricVals.add(metricVal);
-            }
-        }
-        model.put("metricVals", listProjectMetricVals);
-
+        controllerService.initEditOptSet(model, project.getPrjid(), optSet.getOptid());
+        
         return "editoptimizationset";
     }
 
@@ -861,15 +813,6 @@ public class OptimizationController {
             e.printStackTrace();
         }
 
-        List<OptConstraintDTO> optSearchConstraints = null;
-
-        try {
-            optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-        model.put("constraints", optSearchConstraints);
-
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e) {
@@ -878,21 +821,8 @@ public class OptimizationController {
         securityAuthorization.atLeastExpert_expert(project);
         
         model.put("project", project);
-
-        List<MetricValDTO> listMetricVals = metricValService.findAll();
-        List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
-
-        for (int i = 0; i < listMetricVals.size(); i++)
-        {
-            MetricValDTO metricVal = listMetricVals.get(i);
-
-            if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
-            {
-                listProjectMetricVals.add(metricVal);
-            }
-        }
-        model.put("metricVals", listProjectMetricVals);
-
+        controllerService.initEditOptSet(model, project.getPrjid(), optSet.getOptid());
+       
         return "editoptimizationset";
     }
 
@@ -939,16 +869,16 @@ public class OptimizationController {
 
         if (openOptSet != null)
         {
-            if (nType == 1)
+        	if (openOptSet.getName() == null || openOptSet.getName().isEmpty()) 
+        	{
+        		OpenOptimizationSetDTO newOpenOptSet = new OpenOptimizationSetDTO();
+        		model.put("openoptimizationset", newOpenOptSet);
+        		model.put("error", "Please write optimization set name!");
+        		return "createoptimizationset";
+        	}
+
+        	if (nType == 1)
             {
-            	if (openOptSet.getName() == null || openOptSet.getName().isEmpty()) 
-            	{
-            		OpenOptimizationSetDTO newOpenOptSet = new OpenOptimizationSetDTO();
-            		model.put("openoptimizationset", newOpenOptSet);
-            		model.put("error", "Please write optimization set name!");
-            		return "createoptimizationset";
-            	}
-            	
             	if (optSetService.findByName(openOptSet.getName(), project.getPrjid()) != null)
             	{
             		OpenOptimizationSetDTO newOpenOptSet = new OpenOptimizationSetDTO();
@@ -961,10 +891,8 @@ public class OptimizationController {
             	
                 OptimizationSetDTO optSet = new OptimizationSetDTO();
                 optSet.setName(openOptSet.getName());
-                // Add description?
+                //optSet.setDescription(openOptSet.getDescription());
                 optSet.setProject(project);
-
-                //TODO clone project's defaultExtParamValSet?
 
                 Integer nDefaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 
@@ -981,22 +909,14 @@ public class OptimizationController {
                 }
                 
                 optSet = optSetService.save(optSet);
+        
+                UserSession session = (UserSession) model.get("usersession");
+                session.setActiveOptSet(optSet.getName());
+                model.put("usersession", session);
                 model.put("optimizationset", optSet);
 
-                List<MetricValDTO> listMetricVals = metricValService.findAll();
-                List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
-
-                for (int i = 0; i < listMetricVals.size(); i++)
-                {
-                    MetricValDTO metricVal = listMetricVals.get(i);
-
-                    if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
-                    {
-                        listProjectMetricVals.add(metricVal);
-                    }
-                }
-                model.put("metricVals", listProjectMetricVals);
-
+                controllerService.initEditOptSet(model, project.getPrjid(), optSet.getOptid());
+                
                 return "editoptimizationset";
             }
             else if (nType == 2)
@@ -1028,6 +948,10 @@ public class OptimizationController {
                 }
                 
                 scenGen = scenGenService.save(scenGen);
+
+                UserSession session = (UserSession) model.get("usersession");
+                session.setActiveScenGen(scenGen.getName());
+                model.put("usersession", session);
                 model.put("scengenerator", scenGen);
 
                 return "redirect:/geneticalgorithm.html";
@@ -1045,9 +969,9 @@ public class OptimizationController {
 
     @RequestMapping(value="editoptimizationset",method=RequestMethod.GET)
     public String editOptimizationSet(Map<String, Object> model, 
-            @RequestParam(value="optsetid", required=false) String optsetid,
-            @RequestParam(value="optsettype", required=false) String optsettype) {
-
+        @RequestParam(value="optsetid", required=false) String optsetid,
+        @RequestParam(value="optsettype", required=false) String optsettype) 
+    {
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -1068,41 +992,53 @@ public class OptimizationController {
             return "error";
         }
 
-        List<OptConstraintDTO> optSearchConstraints = null;
+        controllerService.initEditOptSet(model, project.getPrjid(), optSet.getOptid());
 
-        try {
-            optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
+        return "editoptimizationset";
+    }
+    
+    @RequestMapping(value="editoptimizationset",method=RequestMethod.POST)
+    public String editOptimizationSetPost(OptimizationSetDTO optSet, Map<String, Object> model) 
+    {
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+
+        if (project == null)
+        {
+            return "error";
         }
-        model.put("constraints", optSearchConstraints);
+        securityAuthorization.atLeastStandard_standard(project);
 
+        if (optSet.getName() == null || optSet.getName().isEmpty())
+        {
+        	model.put("error", "Please write optimization set name!");
+            controllerService.initEditOptSet(model, project.getPrjid(), optSet.getOptid());
+            return "editoptimizationset";
+        }
+        
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
 
-        SearchOptimizationResults optResults = (SearchOptimizationResults) model.get("optresults");
+        OptimizationSetDTO oldOptSet = null;
 
-        if (optResults != null)
+        if (model.containsKey("optimizationset"))
         {
-            List<ScenarioWithObjFuncValueDTO> resultScenariosWithValue = (List<ScenarioWithObjFuncValueDTO>) optResults.resultScenarios;
-            model.put("resultScenariosWithValue", resultScenariosWithValue);
+            oldOptSet = (OptimizationSetDTO) model.get("optimizationset");
+        }
+        else
+        {
+            return "error";
         }
 
-        List<MetricValDTO> listMetricVals = metricValService.findAll();
-        List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+        oldOptSet.setName(optSet.getName());
+        //oldOptSet.setDescription(optSet.getDescription());
+        
+        oldOptSet = optSetService.save(oldOptSet);
+        model.put("optimizationset", oldOptSet);
 
-        for (int i = 0; i < listMetricVals.size(); i++)
-        {
-            MetricValDTO metricVal = listMetricVals.get(i);
-            if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
-            {
-                listProjectMetricVals.add(metricVal);
-            }
-        }
-        model.put("metricVals", listProjectMetricVals);
+        controllerService.initEditOptSet(model, project.getPrjid(), oldOptSet.getOptid());
 
         return "editoptimizationset";
     }
@@ -1330,35 +1266,14 @@ public class OptimizationController {
 
 		securityAuthorization.atLeastExpert_expert(project);
        
-		model.put("extparamvalsetid", id);
-		List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
-		model.put("extParamValSets", extParamValSets);
-		Integer extParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-		
-		if (id != null) {
-			extParamValSetId = Integer.parseInt(id);
-		}
-		
-		if (extParamValSetId != null) {
-			List<ExtParamValDTO> extParamVals = null;
-			try {
-				extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
-			} catch (EntityNotFoundException e) {
-				e.printStackTrace();
-				return "error";
-			}
-			model.put("extParamVals", extParamVals);
-		}
-		
-		model.put("postpage", "extparamsets.html");
-		model.put("backpage", "editoptimizationset.html");
-		
+		controllerService.initExtParamSets(model, id, project.getPrjid());
+			
 		return "extparamsets";       
     }   
     
 	@RequestMapping(value="extparamsets",method=RequestMethod.POST)
     public String extParamSetsPost(Map<String, Object> model, 
-		@RequestParam(value="extparamvalsetid", required=true) int id) { 
+		@RequestParam(value="extparamvalsetid", required=false) String strId) {
 		
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -1382,9 +1297,15 @@ public class OptimizationController {
             // Invalid state
             return "error";
         }
+
+        if (strId == null)
+        {
+    		controllerService.initExtParamSets(model, null, project.getPrjid());
+    		return "extparamsets";
+        }
         
         try {
-            ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(id);
+            ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(Integer.parseInt(strId));
             optSet.setExtparamvalset(extParamValSet);
             optSet = optSetService.update(optSet);
             model.put("optimizationset", optSet);                                            
@@ -1636,15 +1557,6 @@ public class OptimizationController {
         }
         model.put("project", project);
 
-        List<OptConstraintDTO> optSearchConstraints = null;
-
-        try {
-            optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-        model.put("constraints", optSearchConstraints);
-
         SearchOptimizationResults optResults = null;
 
         try {
@@ -1659,27 +1571,10 @@ public class OptimizationController {
             e.printStackTrace();
             model.put("error", e.getMessage());
         }
-
-        UserSession userSession = (UserSession) model.get("usersession");
-
-        if (userSession == null)
-        {
-            userSession = new UserSession();
-        }
-
-        if (optResults != null)
-        {
-            List<ScenarioWithObjFuncValueDTO> resultScenariosWithValue = (List<ScenarioWithObjFuncValueDTO>) optResults.resultScenarios;
-            model.put("resultScenariosWithValue", resultScenariosWithValue);
-            model.put("optresults", optResults);
-
-            EvaluationResults evResults = optResults.getEvaluationResult();
-            userSession.setOptResultString(evResults.toString());
-        }
-
-        model.put("usersession", userSession);
-
-        controllerService.getProjectMetricVals(model, project.getPrjid());
+        model.put("optresults", optResults);
+        
+        controllerService.initEditOptSet(model, project.getPrjid(), optSet.getOptid());
+        
         return "editoptimizationset";
     }
     
@@ -1713,6 +1608,10 @@ public class OptimizationController {
                         e.printStackTrace();
                     }
                     model.put("optimizationset", optSet);
+                    
+                    UserSession session = (UserSession) model.get("usersession");
+                    session.setActiveOptSet(optSet.getName());
+                    model.put("usersession", session);
                 }
                 else if (model.containsKey("optimizationset"))
                 {
@@ -1724,6 +1623,9 @@ public class OptimizationController {
                         e.printStackTrace();
                     }
 
+                    UserSession session = (UserSession) model.get("usersession");
+                    session.setActiveOptSet(optSet.getName());
+                    model.put("usersession", session);
                     model.put("optimizationset", optSet);
                 }
                 else
@@ -1783,6 +1685,9 @@ public class OptimizationController {
                         e.printStackTrace();
                     }
 
+                    UserSession session = (UserSession) model.get("usersession");
+                    session.setActiveScenGen(scenGen.getName());
+                    model.put("usersession", session);
                     model.put("scengenerator", scenGen);
                 }
                 else
@@ -1967,8 +1872,15 @@ public class OptimizationController {
         	return "createconstraint";
         }
         
-        if (constraint != null && constraint.getExpression() != null)
+        if (constraint != null && constraint.getExpression() != null && constraint.getName() != null)
         {
+        	if (constraint.getName().isEmpty() || constraint.getExpression().isEmpty())
+        	{
+        		model.put("error", "Please write name and expression!");
+        		model.put("constraint", constraint);
+            	return "createconstraint";
+        	}
+        	
             OptConstraintDTO newOptConstraint = new OptConstraintDTO();
             newOptConstraint.setName(constraint.getName());
             newOptConstraint.setExpression(constraint.getExpression());
@@ -2091,9 +2003,16 @@ public class OptimizationController {
             return "error";
         }
 
-        if (constraint != null && constraint.getExpression() != null)
+        if (constraint != null && constraint.getExpression() != null && constraint.getName() != null)
         {
-            String lowerbound = constraint.getLowerbound();
+        	if (constraint.getName().isEmpty() || constraint.getExpression().isEmpty())
+        	{
+        		model.put("error", "Please write name and expression!");
+        		model.put("constraint", constraint);
+            	return "editconstraint";
+        	}
+        	
+        	String lowerbound = constraint.getLowerbound();
             String upperbound = constraint.getUpperbound();
             String name = constraint.getName();
             String expression = constraint.getExpression();
@@ -2107,29 +2026,8 @@ public class OptimizationController {
             optConstraintService.update(constraint);
         }
 
-        List<OptConstraintDTO> optSearchConstraints = null;
-
-        try {
-            optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-        model.put("constraints", optSearchConstraints);
-
-        List<MetricValDTO> listMetricVals = metricValService.findAll();
-        List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
-
-        for (int i = 0; i < listMetricVals.size(); i++)
-        {
-            MetricValDTO metricVal = listMetricVals.get(i);
-
-            if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
-            {
-                listProjectMetricVals.add(metricVal);
-            }
-        }
-        model.put("metricVals", listProjectMetricVals);
-
+        controllerService.initEditOptSet(model, project.getPrjid(), optSet.getOptid());
+        
         return "editoptimizationset";
     }
 
@@ -2186,29 +2084,7 @@ public class OptimizationController {
                 model.put("optimizationset", optSet);
             }
 
-            List<OptConstraintDTO> optSearchConstraints = null;
-
-            try {
-                optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
-            model.put("constraints", optSearchConstraints);
-
-            List<MetricValDTO> listMetricVals = metricValService.findAll();
-            List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
-
-            for (int i = 0; i < listMetricVals.size(); i++)
-            {
-                MetricValDTO metricVal = listMetricVals.get(i);
-
-                if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
-                {
-                    listProjectMetricVals.add(metricVal);
-                }
-            }
-            model.put("metricVals", listProjectMetricVals);
-
+            controllerService.initEditOptSet(model, project.getPrjid(), optSet.getOptid());
             return "editoptimizationset";
         }
         Set<ObjectiveFunctionDTO> objFuncs = null;
@@ -2286,29 +2162,7 @@ public class OptimizationController {
                 model.put("optimizationset", optSet);
             }
 
-            List<OptConstraintDTO> optSearchConstraints = null;
-
-            try {
-                optSearchConstraints = optSetService.getOptConstraints(optSet.getOptid());
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
-            model.put("constraints", optSearchConstraints);
-
-            List<MetricValDTO> listMetricVals = metricValService.findAll();
-            List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
-
-            for (int i = 0; i < listMetricVals.size(); i++)
-            {
-                MetricValDTO metricVal = listMetricVals.get(i);
-
-                if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
-                {
-                    listProjectMetricVals.add(metricVal);
-                }
-            }
-            model.put("metricVals", listProjectMetricVals);
-
+            controllerService.initEditOptSet(model, project.getPrjid(), optSet.getOptid());
             return "editoptimizationset";
         }
 

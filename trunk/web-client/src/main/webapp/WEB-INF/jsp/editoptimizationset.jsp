@@ -106,20 +106,31 @@
 								<td><spring:message code="description"/>:</td>
 								<td rowspan="2"><textarea id="description" title="${tooltip_description}" rows="2" style="width: 300px"></textarea></td>
 								<td align="right">
-									<a href="exportoptimizationset.html"><button type="button" style="width: 120px">
-									<spring:message code="export_optimization_set"/></button></a>
+									<input type="submit" value="<spring:message code="save"/>" style="width: 120px"/>
 								</td>
-							
 							</tr>
 							<tr>						
 								<td><spring:message code="optimization_info"/>:</td>
 								<td>${usersession.getOptResultString()}</td>
-								
+								<td></td>
+								<td align="right">
+									<a href="exportoptimizationset.html">
+										<button type="button" style="width: 120px">
+											<spring:message code="export_optimization_set"/>
+										</button>
+									</a>
+									
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
 								<td></td>
 								<td align="right">
 									<a href="databaseoptimization.html"><button style="width: 120px" title="${tooltip_run}" type="button">
-									<!-- Run search -->
-									<spring:message code="run_search"/></button></a>
+										<!-- Run search -->
+										<spring:message code="run_search"/></button></a>
 								</td>
 							</tr>
 							</form:form>

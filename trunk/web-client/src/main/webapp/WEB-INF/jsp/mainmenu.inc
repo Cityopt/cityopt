@@ -20,7 +20,7 @@
 				<td><spring:message code="version"/>: </td><td>${version}</td>
 			</tr>
 			<tr>
-				<td><spring:message code="build_date"/>: </td><td>18.2.2016</td>
+				<td><spring:message code="build_date"/>: </td><td>22.2.2016</td>
 			</tr>
 			<tr>
 				<td><spring:message code="user"/>:
@@ -38,8 +38,8 @@
 		<img src="assets/img/icon_project_black.gif"/>
 	</td>
 <c:choose>	
-	<c:when test="${not empty project}">
-		<td><b><spring:message code="project"/></b> (${project.name})</td>
+	<c:when test="${usersession.getActiveProject() != null}">
+		<td><b><spring:message code="project"/></b> (${usersession.getActiveProject()})</td>
 	</c:when>
 	<c:otherwise>
 		<td><b><spring:message code="project"/></b></td>
@@ -142,8 +142,8 @@
 		<img src="assets/img/icon_scenario_black.gif"/>
 	</td>
 <c:choose>	
-	<c:when test="${not empty scenario}">
-		<td><b>Scenario</b> (${scenario.name})</td>
+	<c:when test="${usersession.getActiveScenario() != null}">
+		<td><b>Scenario</b> (${usersession.getActiveScenario()})</td>
 	</c:when>
 	<c:otherwise>
 		<td><b>Scenario</b></td>
@@ -170,7 +170,7 @@
 			</td></tr>
 
 			<c:choose>	
-				<c:when test="${not empty scenario}">
+				<c:when test="${usersession.getActiveScenario() != null}">
 					<tr>
 						<td></td>
 						<td>
@@ -279,43 +279,30 @@
 </c:choose>
 
 <c:choose>
-	<c:when test="${not empty optimizationset}">
+	<c:when test="${usersession.getActiveOptSet() != null}">
 		<tr>
 			<td></td>
 			<td>
 				<a href="editoptimizationset.html">
-				<spring:message code="edit_DB_optimization_set"/></a>
+				<spring:message code="edit"/> ${usersession.getActiveOptSet()}</a>
 			</td>
 		</tr>
 	</c:when>
 	<c:otherwise>
-		<tr>
-			<td></td>
-			<td>
-				<!-- Edit DB optimization set -->
-				<spring:message code="edit_DB_optimization_set"/>
-			</td>
-		</tr>
 	</c:otherwise>
 </c:choose>
 
 <c:choose>
-	<c:when test="${not empty scengenerator}">
+	<c:when test="${usersession.getActiveScenGen() != null}">
 		<tr>
 			<td></td>
 			<td>
 				<a href="geneticalgorithm.html">
-				<spring:message code="edit_GA_optimization_set"/></a>
+				<spring:message code="edit"/> ${usersession.getActiveScenGen()}</a>
 			</td>
 		</tr>
 	</c:when>
 	<c:otherwise>
-		<tr>
-			<td></td>
-			<td>
-				<spring:message code="edit_GA_optimization_set"/>
-			</td>
-		</tr>
 	</c:otherwise>
 </c:choose>
 
