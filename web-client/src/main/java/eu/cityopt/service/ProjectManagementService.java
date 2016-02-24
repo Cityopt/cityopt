@@ -4,6 +4,6 @@ import eu.cityopt.DTO.ProjectDTO;
 
 public interface ProjectManagementService {
 
-	public ProjectDTO createProjectWithAdminUser(ProjectDTO NewProject, String user);	
 	
+	public ProjectDTO createProjectWithAdminUser(ProjectDTO NewProject, String user);	
 }

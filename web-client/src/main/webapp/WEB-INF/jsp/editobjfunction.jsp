@@ -22,6 +22,11 @@
 			<table>
 				<tr>
 					<td>
+						<h2 class="error">${error}</h2>
+					</td>
+				</tr>
+				<tr>
+					<td>
 						<!--Edit objective function-->
 						<h2><spring:message code="edit_objective_function"/></h2>
 					</td>

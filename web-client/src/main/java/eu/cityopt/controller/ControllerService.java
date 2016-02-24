@@ -21,9 +21,14 @@ import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
+import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.MetricValDTO;
+import eu.cityopt.DTO.ObjectiveFunctionDTO;
+import eu.cityopt.DTO.OptConstraintDTO;
+import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.ScenarioWithObjFuncValueDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentService;
@@ -34,16 +39,20 @@ import eu.cityopt.service.ExtParamValSetService;
 import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.MetricValService;
+import eu.cityopt.service.OptimizationSetService;
 import eu.cityopt.service.ProjectService;
 import eu.cityopt.service.ScenarioService;
+import eu.cityopt.service.SearchOptimizationResults;
 import eu.cityopt.service.SimulationModelService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
 import eu.cityopt.sim.service.ScenarioGenerationService.RunInfo;
 import eu.cityopt.web.OptimizationRun;
 import eu.cityopt.web.ScenarioForm;
+import eu.cityopt.web.UserSession;
 
 
 @Controller
@@ -54,6 +63,9 @@ public class ControllerService {
 	
 	 	@Autowired
 	    ProjectService projectService; 
+	 	
+	 	@Autowired
+	 	OptimizationSetService optSetService;
 	
 	 	@Autowired
 	    ScenarioService scenarioService; 
@@ -207,15 +219,15 @@ public class ControllerService {
 	    }    	
 	    	
 	    // Find External Parameter Value Set by it's id.
-	    public List<ExtParamValDTO> FindExtParamVals(int nSelectedExtParamSetId){
-	    	
-	    List<ExtParamValDTO> extParamVals = null;
-        try {
-            extParamVals = extParamValSetService.getExtParamVals(nSelectedExtParamSetId);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-        return extParamVals;
+	    public List<ExtParamValDTO> FindExtParamVals(int nSelectedExtParamSetId)
+	    {
+		    List<ExtParamValDTO> extParamVals = null;
+	        try {
+	            extParamVals = extParamValSetService.getExtParamVals(nSelectedExtParamSetId);
+	        } catch (EntityNotFoundException e) {
+	            e.printStackTrace();
+	        }
+	        return extParamVals;
 	    }
 	    
 	    // finds External Parameter Value set DTO by it's raw String id.	    
@@ -355,9 +367,13 @@ public class ControllerService {
 	        model.remove("optresults");
 	        model.remove("usersession");
 	        model.remove("user");
-	        
-	        // This resets the language setting also
-	        //request.getSession().invalidate();
+	        	        
+	        // This resets the language setting also and causes problems when updating project info
+	        if (request != null && request.getSession() != null)
+	        {
+	        	//request.getSession().invalidate();
+	        	//request.getSession(true);
+	        }
 	    }
 
 	    public void updateGARuns(Map<String, Object> model) {
@@ -428,6 +444,10 @@ public class ControllerService {
 				e.printStackTrace();
 			}
 			
+			UserSession session = (UserSession) model.get("usersession");
+			session.setActiveScenario(scenario.getName());
+			model.put("usersession", session);
+			
 			String statusMsg = getScenarioStatus(scenario);
 
 			if (simService.getRunningSimulations().contains(scenario.getScenid())) {
@@ -467,5 +487,98 @@ public class ControllerService {
 		
 	    	model.put("inputParamVals", inputParamVals);
 	    }
+	    
+	    public void initEditOptSet(Map<String, Object> model, int projectId, int optSetId) 
+	    {
+		    List<OptConstraintDTO> optSearchConstraints = null;
+	
+	        try {
+	            optSearchConstraints = optSetService.getOptConstraints(optSetId);
+	        } catch (EntityNotFoundException e) {
+	            e.printStackTrace();
+	        }
+	        model.put("constraints", optSearchConstraints);
+	
+	        SearchOptimizationResults optResults = (SearchOptimizationResults) model.get("optresults");
+	        UserSession userSession = (UserSession) model.get("usersession");
+	        
+	        if (userSession == null) {
+	        	userSession = new UserSession();
+	        }
+	        
+	        if (optResults != null)
+	        {
+	            List<ScenarioWithObjFuncValueDTO> resultScenariosWithValue = (List<ScenarioWithObjFuncValueDTO>) optResults.resultScenarios;
+	            model.put("resultScenariosWithValue", resultScenariosWithValue);
+	            model.put("optresults", optResults);
+	            
+	            EvaluationResults evResults = optResults.getEvaluationResult();
+	            userSession.setOptResultString(evResults.toString());
+	            model.put("usersession", userSession);
+            }
+	        
+	        List<MetricValDTO> listMetricVals = metricValService.findAll();
+	        List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+	
+	        for (int i = 0; i < listMetricVals.size(); i++)
+	        {
+	            MetricValDTO metricVal = listMetricVals.get(i);
+	            if (metricVal.getMetric().getProject().getPrjid() == projectId)
+	            {
+	                listProjectMetricVals.add(metricVal);
+	            }
+	        }
+	        model.put("metricVals", listProjectMetricVals);
+	    }
+	    
+	    public void initEditObjFunc(Map<String, Object> model, int projectId, String selectedCompId, UserSession userSession) 
+	    {
+	    	List<ComponentDTO> components = projectService.getComponents(projectId);
+	        model.put("components", components);
+	
+	        if (selectedCompId != null && !selectedCompId.isEmpty())
+	        {
+	            int nSelectedCompId = Integer.parseInt(selectedCompId);
+	
+	            if (nSelectedCompId > 0)
+	            {
+	            	if (userSession != null)
+	            	{
+	            		userSession.setComponentId(nSelectedCompId);
+	            	}
+	                List<OutputVariableDTO> outputVars = componentService.getOutputVariables(nSelectedCompId);
+	                model.put("outputVars", outputVars);
+	            }
+	            model.put("selectedcompid", nSelectedCompId);
+	        }
+	
+	        Set<MetricDTO> metrics = projectService.getMetrics(projectId);
+	        model.put("metrics", metrics);
+	    }	
+	    
+	    public void initExtParamSets(Map<String, Object> model, String strExtParamSetId, int projectId) 
+	    {
+	    	List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(projectId);
+			model.put("extParamValSets", extParamValSets);
+			Integer extParamValSetId = projectService.getDefaultExtParamSetId(projectId);
+			
+			if (strExtParamSetId != null) {
+				model.put("extparamvalsetid", strExtParamSetId);
+				extParamValSetId = Integer.parseInt(strExtParamSetId);
+			}
+			
+			if (extParamValSetId != null) {
+				List<ExtParamValDTO> extParamVals = null;
+				try {
+					extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+				model.put("extParamVals", extParamVals);
+			}
+			
+			model.put("postpage", "extparamsets.html");
+			model.put("backpage", "editoptimizationset.html");
+		}
 	}
 
