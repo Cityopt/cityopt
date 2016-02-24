@@ -12,14 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.InputParamValDTO;
-import eu.cityopt.DTO.InputParameterDTO;
-import eu.cityopt.model.Component;
+import eu.cityopt.DTO.TimeSeriesDTOX;
 import eu.cityopt.model.InputParamVal;
-import eu.cityopt.model.InputParameter;
-import eu.cityopt.model.Unit;
 import eu.cityopt.repository.InputParamValRepository;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.InputParamValService;
+import eu.cityopt.service.TimeSeriesService;
 
 @Service("InputParamValService")
 public class InputParamValServiceImpl implements InputParamValService {
@@ -30,7 +28,10 @@ public class InputParamValServiceImpl implements InputParamValService {
 	
 	@Autowired
 	private InputParamValRepository inputParamValRepository;
-	
+
+	@Autowired
+	private TimeSeriesService timeSeriesService;
+
 	@Override
 	@Transactional(readOnly = true)
 	public List<InputParamValDTO> findAll() {
@@ -40,8 +41,10 @@ public class InputParamValServiceImpl implements InputParamValService {
 
 	@Override
 	@Transactional
-	public InputParamValDTO save(InputParamValDTO u) {
+	public InputParamValDTO save(InputParamValDTO u, TimeSeriesDTOX timeSeriesData) {
 		InputParamVal paramVal = modelMapper.map(u, InputParamVal.class);
+		paramVal.setTimeseries((timeSeriesData == null) ? null
+				: timeSeriesService.save(timeSeriesData));
 		paramVal = inputParamValRepository.save(paramVal);
 		return modelMapper.map(paramVal, InputParamValDTO.class);		
 	}
@@ -59,13 +62,13 @@ public class InputParamValServiceImpl implements InputParamValService {
 	
 	@Override
 	@Transactional
-	public InputParamValDTO update(InputParamValDTO toUpdate) throws EntityNotFoundException {
-		
+	public InputParamValDTO update(InputParamValDTO toUpdate, TimeSeriesDTOX timeSeriesData)
+			throws EntityNotFoundException {
 		if(inputParamValRepository.findOne(toUpdate.getInputparamvalid()) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		return save(toUpdate);
+		return save(toUpdate, timeSeriesData);
 	}
 	
 	@Override
