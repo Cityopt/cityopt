@@ -12,6 +12,7 @@ import com.google.common.reflect.TypeToken;
 
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
+import eu.cityopt.DTO.TimeSeriesDTOX;
 import eu.cityopt.model.Component;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.InputParameter;
@@ -24,6 +25,7 @@ import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.repository.UnitRepository;
 import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.InputParameterService;
+import eu.cityopt.service.TimeSeriesService;
 
 @Service("InputParameterService")
 public class InputParameterServiceImpl implements InputParameterService {
@@ -45,6 +47,9 @@ public class InputParameterServiceImpl implements InputParameterService {
 	@Autowired
 	private ComponentRepository componentRepository;
 	
+    @Autowired
+    private TimeSeriesService timeSeriesService;
+
 	@Transactional(readOnly = true)
 	@Override
 	public List<InputParameterDTO> findAll() {
@@ -63,7 +68,8 @@ public class InputParameterServiceImpl implements InputParameterService {
 
 	@Transactional
 	@Override
-	public InputParameterDTO save(InputParameterDTO u, int componentId, int unitId) {
+	public InputParameterDTO save(InputParameterDTO u, int componentId, int unitId,
+			TimeSeriesDTOX defaultTimeSeries) {
 		InputParameter param = modelMapper.map(u, InputParameter.class);
 		Component com = componentRepository.getOne(componentId);
 		Unit unit = unitRepository.getOne(unitId);
@@ -72,7 +78,9 @@ public class InputParameterServiceImpl implements InputParameterService {
 		param.setComponent(com);
 		param.setUnit(unit);
 		param.setType(type);
-				
+		param.setTimeseries((defaultTimeSeries == null) ? null
+				: timeSeriesService.save(defaultTimeSeries));
+
 		param = inputParameterRepository.save(param);
 		return modelMapper.map(param, InputParameterDTO.class);
 	}
@@ -90,13 +98,14 @@ public class InputParameterServiceImpl implements InputParameterService {
 	
 	@Transactional
 	@Override
-	public InputParameterDTO update(InputParameterDTO toUpdate, int componentId, int unitId) throws EntityNotFoundException {
+	public InputParameterDTO update(InputParameterDTO toUpdate, int componentId, int unitId,
+			TimeSeriesDTOX defaultTimeSeries) throws EntityNotFoundException {
 		
 		if(inputParameterRepository.findOne(toUpdate.getInputid()) == null) {
 			throw new EntityNotFoundException();
 		}
 		
-		return save(toUpdate, componentId, unitId);
+		return save(toUpdate, componentId, unitId, defaultTimeSeries);
 	}
 	
 	@Transactional(readOnly = true)

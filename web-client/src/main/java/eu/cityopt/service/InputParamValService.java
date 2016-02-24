@@ -5,13 +5,20 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 
 import eu.cityopt.DTO.InputParamValDTO;
-import eu.cityopt.DTO.InputParameterDTO;
+import eu.cityopt.DTO.TimeSeriesDTOX;
 
 public interface InputParamValService extends CityOptService<InputParamValDTO> {
 
-	public InputParamValDTO save(InputParamValDTO u);		
+	public default InputParamValDTO save(InputParamValDTO u) {
+	    return save(u, null);
+	}
+    InputParamValDTO save(InputParamValDTO u, TimeSeriesDTOX timeSeriesData);       
 
-	public InputParamValDTO update(InputParamValDTO toUpdate)  throws EntityNotFoundException;
+    public default InputParamValDTO update(InputParamValDTO toUpdate) throws EntityNotFoundException {
+        return update(toUpdate, null);
+    }
+    InputParamValDTO update(InputParamValDTO toUpdate, TimeSeriesDTOX timeSeriesData)
+	        throws EntityNotFoundException;
 	
 	InputParamValDTO findByInputAndScenario(int inParamID, int scenID);
 	

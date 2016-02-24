@@ -2,6 +2,8 @@ package eu.cityopt.service;
 
 import static org.junit.Assert.*;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -21,9 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import eu.cityopt.DTO.ComponentDTO;
+import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.TimeSeriesDTOX;
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
+import eu.cityopt.DTO.TimeSeriesValDTO;
 import eu.cityopt.DTO.UnitDTO;
 
 @Transactional
@@ -41,6 +45,12 @@ public class InputParamServiceTest {
 	@Autowired
 	InputParamValService inputParamValService;
 	
+	@Autowired
+	ScenarioService scenarioService;
+
+	@Autowired
+	TimeSeriesValService timeSeriesValService;
+
 	@Before
 	public void setUp() throws Exception {
 	}
@@ -87,4 +97,31 @@ public class InputParamServiceTest {
 		
 	}
 
+	@Test
+	public void updateTimeSeries() throws EntityNotFoundException {
+		InputParameterDTO inputParam = inputParamService.findByID(1);
+		ScenarioDTO scenario = scenarioService.findByID(1);
+
+		TimeSeriesDTOX tsd = new TimeSeriesDTOX();
+		tsd.setTimes(new Date[] {
+				Date.from(Instant.parse("2016-01-01T00:00:00Z")),
+				Date.from(Instant.parse("2016-01-02T01:00:00Z")),
+				Date.from(Instant.parse("2016-01-03T02:00:00Z")) });
+		tsd.setValues(new double[] { 4, 5, 6 });
+
+		InputParamValDTO iv = inputParamValService.findByInputAndScenario(
+				inputParam.getInputid(), scenario.getScenid());
+		inputParamValService.update(iv, tsd);
+
+		InputParamValDTO nv = inputParamValService.findByInputAndScenario(
+				inputParam.getInputid(), scenario.getScenid());
+		assertNotNull(nv.getTimeseries());
+
+		List<TimeSeriesValDTO> tsv = timeSeriesValService.findByTimeSeriesIdOrderedByTime(nv.getTimeseries().getTseriesid());
+		assertEquals(3, tsv.size());
+		for (int i = 0; i < tsv.size(); ++i) {
+			assertEquals(tsd.getTimes()[i], tsv.get(i).getTime());
+			assertEquals(tsd.getValues()[i], Double.parseDouble(tsv.get(i).getValue()), 1e-12);
+		}
+	}
 }
