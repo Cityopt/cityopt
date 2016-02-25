@@ -52,11 +52,23 @@ public class SyntaxCheckerService {
     /**
      * Provides a SyntaxChecker instance for checking expressions and
      * identifiers in the given project.
+     * @see #getSyntaxChecker(int, int) for checking constraints and
+     *   input expressions of a ScenarioGenerator
      */
     @Transactional
     public SyntaxChecker getSyntaxChecker(int projectId) {
         Project project = projectRepository.findOne(projectId);
         Namespace namespace = simulationService.makeProjectNamespace(project);
+        return new SyntaxChecker(simulationService.getEvaluator(), namespace, true);
+    }
+
+    /**
+     * Provides a SyntaxChecker instance for checking expressions and
+     * in the context of a ScenarioGenerator.
+     */
+    @Transactional
+    public SyntaxChecker getSyntaxChecker(int projectId, int scenGenId) {
+        Namespace namespace = simulationService.makeProjectNamespace(projectId, scenGenId);
         return new SyntaxChecker(simulationService.getEvaluator(), namespace, true);
     }
 
