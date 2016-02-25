@@ -1706,8 +1706,13 @@ public class ProjectController {
     }	
     
     @RequestMapping(value="settings", method=RequestMethod.GET)
-    public String settings(Map<String, Object> model)
+    public String settings(Map<String, Object> model, HttpServletRequest request,
+		@RequestParam(value="lang", required=false) String language)
     {
+    	//String language = request.getLocale().getLanguage();
+    	if (language != null && !language.isEmpty()) {
+    		controllerService.changeLanguage(model, language);
+    	}
         return "settings";
     }	
 }

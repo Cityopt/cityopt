@@ -385,7 +385,9 @@ public class UserController {
 		String language = request.getLocale().getLanguage();
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
         localeResolver.setLocale(request, response, StringUtils.parseLocaleString(language));
-        
+
+        controllerService.changeLanguage(model, language);
+
     	return  "start";
 	}
     

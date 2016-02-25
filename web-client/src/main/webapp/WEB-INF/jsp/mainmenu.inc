@@ -17,19 +17,24 @@
 	<td>
 		<table cellpadding="0" cellspacing="0">
 			<tr>
-				<td><spring:message code="version"/>: </td><td>${version}</td>
+				<td><spring:message code="version"/>:&nbsp;</td><td>${version}</td>
 			</tr>
 			<tr>
-				<td><spring:message code="build_date"/>: </td><td>22.2.2016</td>
+				<td><spring:message code="build_date"/>:&nbsp;</td><td>22.2.2016</td>
 			</tr>
 			<tr>
-				<td><spring:message code="user"/>:
+				<td><spring:message code="user"/>:&nbsp;
 				
 				</td><td><%= ((org.springframework.security.core.userdetails.UserDetails)org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername() %>
 				<!--${user.name}-->
 				(<a href="logout.html">logout</a>)</td>
 			</tr>
-			
+			<tr>
+				<td><spring:message code="language"/>:&nbsp;</td>
+		   		<td>
+			   		${usersession.getLanguage()}&nbsp;(<a href="settings.html"><spring:message code="change"/></a>) 
+			    </td>
+			</tr>
 		</table>
 	</td>	
 </tr>
