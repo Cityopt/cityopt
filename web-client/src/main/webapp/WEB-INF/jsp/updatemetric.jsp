@@ -27,6 +27,11 @@
 			<table>
 				<tr>
 					<td>
+						<h2 class="error">${error}</h2>
+					</td>
+				</tr>
+				<tr>
+					<td>
 						<!-- Create metric -->
 						<h2><spring:message code="create_metric"/> step 2</h2>
 					</td>

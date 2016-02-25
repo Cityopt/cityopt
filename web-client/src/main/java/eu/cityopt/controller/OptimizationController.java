@@ -104,6 +104,7 @@ import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.SyntaxChecker;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
@@ -111,6 +112,7 @@ import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
 import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.ScenarioGenerationService.RunInfo;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.sim.service.SyntaxCheckerService;
 import eu.cityopt.web.AlgoParamValForm;
 import eu.cityopt.web.ExtParamValSetForm;
 import eu.cityopt.web.ModelParamForm;
@@ -230,6 +232,9 @@ public class OptimizationController {
 
     @Autowired
     ControllerService controllerService;
+
+    @Autowired
+	SyntaxCheckerService syntaxCheckerService;
     
     @RequestMapping(value="createobjfunction",method=RequestMethod.GET)
     public String createObjFunction(Map<String, Object> model,
@@ -520,6 +525,16 @@ public class OptimizationController {
 	        	return "updateobjfunction";
 	        }
 
+	        SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
+        	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkMetricExpression(expression);
+        	
+        	if (error != null) {
+        	    model.put("error", error.message);
+        	    model.put("objFuncForm", objFuncForm);
+	        	model.put("type", type);
+	        	return "updateobjfunction";
+        	}
+        	
 	        oldFunc = objFuncService.save(oldFunc);
 
         	if (type.equals("db")) {
@@ -566,8 +581,9 @@ public class OptimizationController {
     
     @RequestMapping(value="editobjfunction",method=RequestMethod.GET)
     public String editObjFunction(Map<String, Object> model,
-            @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
-        ProjectDTO project = (ProjectDTO) model.get("project");
+        @RequestParam(value="selectedcompid", required=false) String selectedCompId) 
+    {
+    	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
         {
@@ -652,6 +668,18 @@ public class OptimizationController {
                 return "editobjfunction";
         	}
         	
+        	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
+         	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkMetricExpression(expression);
+         	
+         	if (error != null) {
+         	    model.put("error", error.message);
+         	    controllerService.initEditObjFunc(model, project.getPrjid(), null, null);
+ 	        	function = optSet.getObjectivefunction();
+ 	        	model.put("function", function);
+
+ 	        	return "editobjfunction";
+         	}
+         	
             ObjectiveFunctionDTO oldFunc = optSet.getObjectivefunction();
 
             oldFunc.setExpression(function.getExpression());
@@ -1881,6 +1909,16 @@ public class OptimizationController {
             	return "createconstraint";
         	}
         	
+        	String expression = constraint.getExpression();
+        	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
+         	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkMetricExpression(expression);
+         	
+         	if (error != null) {
+         	    model.put("error", error.message);
+         	    model.put("constraint", constraint);
+         	    return "createconstraint";
+         	}
+         	
             OptConstraintDTO newOptConstraint = new OptConstraintDTO();
             newOptConstraint.setName(constraint.getName());
             newOptConstraint.setExpression(constraint.getExpression());
@@ -2012,11 +2050,20 @@ public class OptimizationController {
             	return "editconstraint";
         	}
         	
+        	String expression = constraint.getExpression();
+        	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
+         	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkMetricExpression(expression);
+         	
+         	if (error != null) {
+         	    model.put("error", error.message);
+         	    model.put("constraint", constraint);
+         	    return "editconstraint";
+         	}
+
         	String lowerbound = constraint.getLowerbound();
             String upperbound = constraint.getUpperbound();
             String name = constraint.getName();
-            String expression = constraint.getExpression();
-
+            
             constraint = optConstraintService.findByID(constraint.getOptconstid());
             constraint.setLowerbound(lowerbound);
             constraint.setUpperbound(upperbound);
@@ -2568,7 +2615,7 @@ public class OptimizationController {
 
     @RequestMapping(value="editsgconstraint", method=RequestMethod.GET)
     public String editSGConstraint(ModelMap model,
-        @RequestParam(value="constrid", required=false) Integer constrid,
+        @RequestParam(value="optconstid", required=false) Integer constrid,
         @RequestParam(value="selectedcompid", required=false) Integer selectedCompId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
@@ -2579,6 +2626,8 @@ public class OptimizationController {
 
         OptConstraintDTO constraint = null;
         if (constrid != null) {
+        	model.put("optconstid", constrid.toString());
+        	
             try {
                 constraint = (OptConstraintDTO) optConstraintService.findByID(constrid);
                 if (constraint.getProject().getPrjid() != project.getPrjid()) {
@@ -2646,12 +2695,21 @@ public class OptimizationController {
 
         OptConstraintDTO testConstraint = optConstraintService.findByNameAndProject(constraint.getName(), project.getPrjid());
 		        
-        if (testConstraint != null) {
+        if (constrid <= 0 && testConstraint != null) {
         	// Constraint already exists
         	model.put("error", "Constraint already exists");
         	return getEditSGConstraint(project, constraint, model, null);
         }
         
+        String expression = constraint.getExpression();
+    	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
+     	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkMetricExpression(expression);
+     	
+     	if (error != null) {
+     	    model.put("error", error.message);
+     		return getEditSGConstraint(project, constraint, model, null);
+        }
+     	
         constraint.setProject(project);
         try {
             if (constrid > 0) {

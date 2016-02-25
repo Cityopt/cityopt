@@ -60,7 +60,7 @@ function openInfoWindow() {
 			<form:input type="hidden" path="version"/>
 			<form:input type="hidden" path="scengenid"/>
             <input type="hidden" name="objid" id="objid" value="0">
-            <input type="hidden" name="constrid" id="constrid" value="0">
+            <input type="hidden" name="optconstid" id="optconstid" value="0">
             <input type="hidden" name="decisionvarid" id="decisionvarid" value="0">
 			<table style="width: 1070px">
 				<col style="width: 620px;">
@@ -262,7 +262,7 @@ function openInfoWindow() {
 											<td>${constraint.expression}</td>
 											<td align="right">${constraint.lowerbound}</td>
                                             <td align="right">${constraint.upperbound}</td>
-                                            <td><a href="editsgconstraint.html?constrid=${constraint.optconstid}">
+                                            <td><a href="editsgconstraint.html?optconstid=${constraint.optconstid}">
                                             <button type="button"><spring:message code="edit"/></button></a></td>
                                             <td><input type="submit" value="<spring:message code="remove"/>" onClick="deleteConstraint(${constraint.optconstid})"></td>
 									   	</tr>

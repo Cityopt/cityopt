@@ -51,6 +51,7 @@ import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
 import eu.cityopt.sim.service.ScenarioGenerationService.RunInfo;
 import eu.cityopt.web.OptimizationRun;
+import eu.cityopt.web.ParamForm;
 import eu.cityopt.web.ScenarioForm;
 import eu.cityopt.web.UserSession;
 
@@ -580,6 +581,35 @@ public class ControllerService {
 			model.put("postpage", "extparamsets.html");
 			model.put("backpage", "editoptimizationset.html");
 		}
+	    
+	    public void initUpdateMetric(Map<String, Object> model, int projectId) 
+	    {	    
+		    UserSession userSession = (UserSession) model.get("usersession");
+	
+	        if (userSession == null)
+	        {
+	            userSession = new UserSession();
+	        }
+	
+	        model.put("usersession", userSession);
+	
+	        MetricDTO metric = new MetricDTO();
+	        metric.setExpression(userSession.getExpression());
+	        
+	        ParamForm paramForm = new ParamForm();
+	        paramForm.setName(metric.getName());
+	        paramForm.setValue(metric.getExpression());
+	        
+	        if (metric.getUnit() != null) {
+	        	paramForm.setUnit(metric.getUnit().getName());
+	        }
+	        
+	        model.put("paramForm", paramForm);
+	        model.put("action", "create");
+	
+	        List<UnitDTO> units = unitService.findAll();
+	        model.put("units", units);
+	    }
 	    
 	    public void changeLanguage(Map<String, Object> model, String language)
 	    {

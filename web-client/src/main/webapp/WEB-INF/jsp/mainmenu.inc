@@ -30,9 +30,9 @@
 				(<a href="logout.html">logout</a>)</td>
 			</tr>
 			<tr>
-				<td><spring:message code="language"/>:&nbsp;</td>
+				<td>Language:&nbsp;</td>
 		   		<td>
-			   		${usersession.getLanguage()}&nbsp;(<a href="settings.html"><spring:message code="change"/></a>) 
+			   		${usersession.getLanguage()}&nbsp;(<a href="settings.html">Change</a>) 
 			    </td>
 			</tr>
 		</table>
