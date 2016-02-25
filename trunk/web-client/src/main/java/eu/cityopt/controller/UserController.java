@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -26,6 +27,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.script.ScriptException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -49,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.cityopt.DTO.AppUserDTO;
@@ -113,6 +116,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -122,6 +126,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
@@ -197,7 +202,7 @@ import eu.cityopt.service.ImportService;
  * versions of the software, under the terms of the license, without concern for royalties.
  * 
  * @author Olli Stenlund
- * This class contributes to Usemanagement of the CityOpt system.
+ * This class contributes to user management of the CityOpt system.
  * 
  */
 
@@ -324,16 +329,15 @@ public class UserController {
     	return "403";
     }
     
-    
     //@author Markus Display the log-in page.
     // This is the method where Security is redirecting the user for login.
     @RequestMapping(method=RequestMethod.GET, value="/login")
-    public String displayLoginPage(Map<String, Object> model){    		 		   		 
+    public String displayLoginPage(Map<String, Object> model) {    		 		   		 
     	AppUserDTO user = new AppUserDTO();
     	model.put("user", user);
     	return "login";		 
 	}
-    
+
     //@author Markus Get the Authenticated user information. 
     private String getPrincipal(){
         String userName = null;
@@ -355,8 +359,8 @@ public class UserController {
 		
         Authentication aut = SecurityContextHolder.getContext().getAuthentication();
         if (aut != null) {
-                    SecurityContextLogoutHandler ctxLogOut = new SecurityContextLogoutHandler();
-                    ctxLogOut.logout(request, response, aut);
+            SecurityContextLogoutHandler ctxLogOut = new SecurityContextLogoutHandler();
+            ctxLogOut.logout(request, response, aut);
         }               
                         
         return "redirect:/login.html?logout";
@@ -371,23 +375,26 @@ public class UserController {
     //@author Markus Turunen When user is Authenticated into system the system redirect user to welcome screen.
     @PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard','ROLE_Guest')") 
     @RequestMapping(value="/loginOK", method=RequestMethod.GET)
-    public String loginOK(Map<String, Object> model){
-		// We check model because project dosen't exist yet.
+    public String loginOK(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) {
+		// We check model because project doesn't exist yet.
 		controllerService.clearSession(model, null);
 		AppUserDTO user = new AppUserDTO();
 		user.setName(this.getPrincipal());
 		model.put("user", user);
-
-		return  "start";
+    	
+		String language = request.getLocale().getLanguage();
+        LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
+        localeResolver.setLocale(request, response, StringUtils.parseLocaleString(language));
+        
+    	return  "start";
 	}
     
     //@author Markus Turunen This is the index page get method
     @RequestMapping(value="index", method=RequestMethod.GET)
-    public String getIndex(Map<String, Object> model) {
+    public String getIndex(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) {
     	// We check model because project doesn't exist yet.
     	securityAuthorization.atLeastGuest_guest(model);  
     	
-    	//System.out.println("Index invoked");
         AppUserDTO user = new AppUserDTO();
         model.put("user", user);
 
@@ -399,7 +406,7 @@ public class UserController {
 
     	securityAuthorization.atLeastAdmin();
         AppUserDTO user = (AppUserDTO) model.get("user");      
-        if (user != null){
+        if (user != null) {
         	initializeUserManagement(model);                
             return "usermanagement";
         }        
