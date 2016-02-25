@@ -32,7 +32,16 @@ public class UserSession {
 	private String strActiveScenario;
 	private String strActiveOptSet;
 	private String strActiveScenGen;
+	private String strLanguage;
 	
+	public String getLanguage() {
+		return strLanguage;
+	}
+
+	public void setLanguage(String strLanguage) {
+		this.strLanguage = strLanguage;
+	}
+
 	public String getActiveOptSet() {
 		return strActiveOptSet;
 	}

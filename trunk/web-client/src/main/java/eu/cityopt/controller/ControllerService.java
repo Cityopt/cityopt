@@ -580,5 +580,17 @@ public class ControllerService {
 			model.put("postpage", "extparamsets.html");
 			model.put("backpage", "editoptimizationset.html");
 		}
+	    
+	    public void changeLanguage(Map<String, Object> model, String language)
+	    {
+	    	UserSession session = (UserSession) model.get("usersession");
+	    	if (session == null)
+	    	{
+	    		session = new UserSession();
+	    	}
+	    	session.setLanguage(language);
+	    	model.put("usersession", session);
+
+	    }
 	}
 
