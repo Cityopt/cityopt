@@ -95,9 +95,12 @@ import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.service.UserGroupProjectService;
 import eu.cityopt.service.UserGroupService;
+import eu.cityopt.sim.eval.MetricExpression;
+import eu.cityopt.sim.eval.SyntaxChecker;
 import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.sim.service.SyntaxCheckerService;
 import eu.cityopt.web.ParamForm;
 import eu.cityopt.web.UnitForm;
 import eu.cityopt.web.UserSession;
@@ -222,6 +225,9 @@ public class ProjectController {
     
     @Autowired
     SecurityAuthorization securityAuthorization;
+
+    @Autowired
+    SyntaxCheckerService syntaxCheckerService;
     
     // Page where user is redirected if authorization fails.    
     @RequestMapping(value = "/403", method = RequestMethod.GET)
@@ -1488,7 +1494,7 @@ public class ProjectController {
     @RequestMapping(value="updatemetric", method=RequestMethod.GET)
     public String updateMetric(Map<String, Object> model) {
 
-        ProjectDTO project = (ProjectDTO) model.get("project");
+    	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
         {
@@ -1496,32 +1502,8 @@ public class ProjectController {
         }
         securityAuthorization.atLeastExpert_expert(project);
         
-        UserSession userSession = (UserSession) model.get("usersession");
-
-        if (userSession == null)
-        {
-            userSession = new UserSession();
-        }
-
-        model.put("usersession", userSession);
-
-        MetricDTO metric = new MetricDTO();
-        metric.setExpression(userSession.getExpression());
-        
-        ParamForm paramForm = new ParamForm();
-        paramForm.setName(metric.getName());
-        paramForm.setValue(metric.getExpression());
-        
-        if (metric.getUnit() != null) {
-        	paramForm.setUnit(metric.getUnit().getName());
-        }
-        
-        model.put("paramForm", paramForm);
-        model.put("action", "create");
-
-        List<UnitDTO> units = unitService.findAll();
-        model.put("units", units);
-        
+        controllerService.initUpdateMetric(model,  project.getPrjid());
+       
         return "updatemetric";
     }
 
@@ -1556,6 +1538,15 @@ public class ProjectController {
         
         if (name != null && expression != null)
         {
+        	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
+        	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkMetricExpression(expression);
+        	
+        	if (error != null) {
+        	    model.put("error", error.message);
+        	    controllerService.initUpdateMetric(model, project.getPrjid());
+        	    return "updatemetric";
+        	}
+
         	MetricDTO newMetric = new MetricDTO();
 	        newMetric.setName(name.trim());
 	        newMetric.setExpression(expression.trim());
