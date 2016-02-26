@@ -7,14 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<c:choose>
-  <c:when test="${obtfunctionid > 0}">
     <title>CityOpt edit GA objective function</title>
-  </c:when>
-  <c:otherwise>
-    <title>CityOpt create GA objective function</title>
-  </c:otherwise>
-</c:choose>  
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -31,14 +24,12 @@
 			<table>
 				<tr>
 					<td>
-                        <c:choose>
-                          <c:when test="${obtfunctionid > 0}">
-                            <h2>Edit GA objective function</h2>
-                          </c:when>
-                          <c:otherwise>
-                            <h2>Create GA objective function</h2>
-                          </c:otherwise>
-                        </c:choose>  
+						<h2 class="error">${error}</h2>
+					</td>
+				</tr>
+				<tr>
+					<td>
+                        <h2>Edit GA objective function</h2>
 					</td>
 				</tr>
 				<tr>
@@ -159,11 +150,6 @@
 								<td colspan="3"><form:input style="width:520px" type="text" path="name"/></td>
 								<td></td>
 							</tr>
-							 <c:choose>
-          			  			<c:when test="${error!=null && error==true}">
-          			  				<h2 class="error"> <spring:message code="error_element_uniqueness" /> </h2>
-          			  			</c:when>
-          			  		</c:choose>									
 							<tr>
 								<td></td>
 								<td>Expression</td>

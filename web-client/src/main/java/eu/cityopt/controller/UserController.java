@@ -355,7 +355,7 @@ public class UserController {
     @RequestMapping(value="/logout",  method=RequestMethod.GET)
     public String logoutPage(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) {
     		    		
-		controllerService.clearSession(model, request);       
+		controllerService.clearSession(model, request, true);       
 		
         Authentication aut = SecurityContextHolder.getContext().getAuthentication();
         if (aut != null) {
@@ -377,7 +377,7 @@ public class UserController {
     @RequestMapping(value="/loginOK", method=RequestMethod.GET)
     public String loginOK(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) {
 		// We check model because project doesn't exist yet.
-		controllerService.clearSession(model, null);
+		controllerService.clearSession(model, null, true);
 		AppUserDTO user = new AppUserDTO();
 		user.setName(this.getPrincipal());
 		model.put("user", user);

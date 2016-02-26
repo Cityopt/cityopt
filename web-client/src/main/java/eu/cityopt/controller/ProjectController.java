@@ -295,7 +295,7 @@ public class ProjectController {
             project.setDesigntarget(projectForm.getDesigntarget().trim());
 
             if (projectService.findByName(project.getName()) == null) {
-            	controllerService.clearSession(model, request);
+            	controllerService.clearSession(model, request, true);
                 
                 // Set up the project Rights.
                 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -383,7 +383,7 @@ public class ProjectController {
                 e.printStackTrace();
             }
             
-            controllerService.clearSession(model, request);
+            controllerService.clearSession(model, request, true);
             UserSession session = (UserSession) model.get("usersession");
             
             if (session == null)
@@ -900,7 +900,7 @@ public class ProjectController {
         }
         securityAuthorization.atLeastGuest_guest(project);
 
-        controllerService.clearSession(model, request);
+        controllerService.clearSession(model, request, true);
         
         return "start";
     }	

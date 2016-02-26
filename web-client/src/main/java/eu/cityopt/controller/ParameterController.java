@@ -64,8 +64,10 @@ import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.service.UserGroupProjectService;
 import eu.cityopt.service.UserGroupService;
+import eu.cityopt.sim.eval.SyntaxChecker;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.sim.service.SyntaxCheckerService;
 import eu.cityopt.web.ParamForm;
 
 
@@ -119,6 +121,9 @@ public class ParameterController {
 
     @Autowired 
 	private OutputVariableRepository outVarRepository;
+
+    @Autowired
+	SyntaxCheckerService syntaxCheckerService;
 
     @RequestMapping(value="projectparameters", method=RequestMethod.GET)
     public String getProjectParameters(Map<String, Object> model, 
@@ -249,7 +254,18 @@ public class ParameterController {
         	return "createcomponent";
         }
         
-        ComponentDTO component = new ComponentDTO();
+    	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
+     	boolean isValid = checker.isValidTopLevelName(name);
+
+     	if (!isValid)
+     	{
+     		ComponentDTO newComponent = new ComponentDTO();
+            model.put("component", newComponent);
+            model.put("error", "Please write another component name!");
+        	return "createcomponent";
+        }
+     	
+     	ComponentDTO component = new ComponentDTO();
         component.setName(componentForm.getName().trim());
         componentService.save(component, project.getPrjid());
 
@@ -779,7 +795,26 @@ public class ParameterController {
             controllerService.getComponentAndExternalParamValues(model, project);
         	return "extparams";
         }
+
+        String name = extParam.getName().trim();
         
+        if (name.isEmpty())
+        {
+            model.put("error", "Please write parameter name!");
+            model.put("extParam", new ExtParamDTO());
+            return "createextparam";
+        }
+        
+        SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
+     	boolean isValid = checker.isValidTopLevelName(name);
+
+     	if (!isValid)
+     	{
+            model.put("error", "Please write another component name!");
+            model.put("extParam", new ExtParamDTO());
+            return "createextparam";
+        }
+     	
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
@@ -787,7 +822,7 @@ public class ParameterController {
         }
 
         ExtParamDTO newExtParam = new ExtParamDTO();
-        newExtParam.setName(extParam.getName().trim());
+        newExtParam.setName(name);
         newExtParam.setProject(project);
     	
         TypeDTO typeDTO = new TypeDTO();
