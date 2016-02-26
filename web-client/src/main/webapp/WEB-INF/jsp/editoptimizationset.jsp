@@ -104,7 +104,7 @@
 								<td><form:input type="text" title="${tooltip_name}" path="name" style="width:200px"/></td>
 								<!-- Description -->
 								<td><spring:message code="description"/>:</td>
-								<td rowspan="2"><textarea id="description" title="${tooltip_description}" rows="2" style="width: 300px"></textarea></td>
+								<td rowspan="2"><form:textarea id="description" title="${tooltip_description}" rows="2" style="width: 300px" path="description"></form:textarea></td>
 								<td align="right">
 									<input type="submit" value="<spring:message code="save"/>" style="width: 120px"/>
 								</td>

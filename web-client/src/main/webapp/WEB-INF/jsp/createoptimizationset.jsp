@@ -68,7 +68,7 @@
 							<!-- Description -->
 							<c:set var="tooltip_description"><spring:message code="tooltip_create_optimizationset_description"/></c:set>
 							<td><spring:message code="description"/>:</td>
-							<td rowspan="2"><textarea id="description" title="${tooltip_description}" rows="2" style="width: 300px"></textarea></td>
+							<td rowspan="2"><form:textarea id="description" title="${tooltip_description}" rows="2" style="width: 300px" path="description"></form:textarea></td>
 							<!-- Create -->
 							<c:set var="tooltip_create"><spring:message code="tooltip_create_optimizationset"/></c:set>
 							<td align="right"><input type="submit" title="${tooltip_create}" value="Create" style="width: 100px"></td>
