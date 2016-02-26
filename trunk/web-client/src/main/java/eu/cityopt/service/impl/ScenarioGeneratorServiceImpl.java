@@ -153,18 +153,7 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 	@Transactional
 	@Override
 	public ScenarioGeneratorDTO update(int scenGenId, String name, Integer algorithmId) throws EntityNotFoundException {
-		ScenarioGenerator sg =  scenarioGeneratorRepository.findOne(scenGenId);
-		if (sg == null) {
-			throw new EntityNotFoundException();
-		}
-		if (name != null) {
-			sg.setName(name);
-		}
-		if (algorithmId != null) {
-			sg.setAlgorithm(algorithmRepository.findOne(algorithmId));
-		}
-		sg = scenarioGeneratorRepository.save(sg);
-		return modelMapper.map(sg, ScenarioGeneratorDTO.class);
+		return update(scenGenId,name,null,algorithmId);
 	}
 
 	@Transactional(readOnly=true)
@@ -635,5 +624,29 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 			return null;
 		else
 			return modelMapper.map(sg, new TypeToken<List<ScenarioGeneratorDTO>>() {}.getType());
+	}
+
+	@Override
+	public ScenarioGeneratorDTO update(int scenGenId, String name,
+			String description, Integer algorithmId)
+			throws EntityNotFoundException {
+		ScenarioGenerator sg =  scenarioGeneratorRepository.findOne(scenGenId);
+		if (sg == null) {
+			throw new EntityNotFoundException();
+		}
+		if (name != null) {
+			sg.setName(name);
+		}
+		
+		if(description!=null)
+		{
+			sg.setDescription(description);
+		}
+		
+		if (algorithmId != null) {
+			sg.setAlgorithm(algorithmRepository.findOne(algorithmId));
+		}
+		sg = scenarioGeneratorRepository.save(sg);
+		return modelMapper.map(sg, ScenarioGeneratorDTO.class);
 	}
 }
