@@ -479,6 +479,7 @@ CREATE TABLE OptimizationSet
 	scenID integer,
 	extParamValSetID integer,
 	name varchar(50)	,
+	description text,
 	version integer
 )
 ;
@@ -561,6 +562,7 @@ CREATE TABLE ScenarioGenerator
 	status varchar(50)	,
 	log text,
 	name varchar(50)	,
+	description text,
 	version integer
 )
 ;

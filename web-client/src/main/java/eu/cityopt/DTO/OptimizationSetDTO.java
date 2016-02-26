@@ -23,5 +23,6 @@ public class OptimizationSetDTO extends BaseDTO {
 	@Getter @Setter private Integer createdby;
 	@Getter @Setter private Integer updatedby;
 	@Getter @Setter private String name;
+	@Getter @Setter private String description;
 	@Getter @Setter private Date optstart;
 }
