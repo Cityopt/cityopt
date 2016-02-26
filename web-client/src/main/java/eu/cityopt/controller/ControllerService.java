@@ -377,7 +377,7 @@ public class ControllerService {
 	        model.remove("usersession");
 	        model.remove("user");
 
-	        if (!language.isEmpty())
+	        if (language != null && !language.isEmpty())
 	        {
 	        	UserSession session = new UserSession();
 	        	session.setLanguage(language);

@@ -2843,7 +2843,8 @@ public class OptimizationController {
             decVar.setUpperbound(null);
         }
         if (StringUtils.isBlank(decVar.getName())) {
-            return getEditSGDecisionVariable(project, decVar, model, null);
+        	model.put("error", "Please write decision variable name!");
+        	return getEditSGDecisionVariable(project, decVar, model, null);
         }
         
         if (decisionvarid <= 0 && decisionVarService.findByNameAndScenGen(decVar.getName(), scenGen.getScengenid()) != null) {
@@ -2852,6 +2853,15 @@ public class OptimizationController {
         	return getEditSGDecisionVariable(project, decVar, model, null);
         }
         
+        SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid(), scenGen.getScengenid());
+     	boolean isValid = checker.isValidTopLevelName(decVar.getName());
+
+     	if (!isValid)
+     	{
+            model.put("error", "Please write another decision variable name!");
+        	return getEditSGDecisionVariable(project, decVar, model, null);
+        }
+     	
         // TODO validate that the bounds are ordered, allowing for expression bounds
         try {
             decVar.setType(typeService.findByID(typeid));
