@@ -526,7 +526,7 @@ public class OptimizationController {
 	        }
 
 	        SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
-        	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkMetricExpression(expression);
+        	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkObjectiveExpression(expression);
         	
         	if (error != null) {
         	    model.put("error", error.message);
@@ -669,7 +669,7 @@ public class OptimizationController {
         	}
         	
         	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
-         	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkMetricExpression(expression);
+         	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkObjectiveExpression(expression);
          	
          	if (error != null) {
          	    model.put("error", error.message);
@@ -1911,7 +1911,7 @@ public class OptimizationController {
         	
         	String expression = constraint.getExpression();
         	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
-         	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkMetricExpression(expression);
+         	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkConstraintExpression(expression);
          	
          	if (error != null) {
          	    model.put("error", error.message);
@@ -2052,7 +2052,7 @@ public class OptimizationController {
         	
         	String expression = constraint.getExpression();
         	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
-         	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkMetricExpression(expression);
+         	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkConstraintExpression(expression);
          	
          	if (error != null) {
          	    model.put("error", error.message);
@@ -2476,68 +2476,48 @@ public class OptimizationController {
 
         model.put("function", function);
 
-        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-        model.put("components", components);
-
-        if (selectedCompId != null && selectedCompId > 0) {
-            userSession.setComponentId(selectedCompId);
-            model.put("selectedcompid", selectedCompId);
-            model.put("outputVars", componentService.getOutputVariables(selectedCompId));
-            model.put("inputParams", componentService.getInputParameters(selectedCompId));
-        }
-        model.put("metrics", projectService.getMetrics(project.getPrjid()));
-        model.put("extParams", projectService.getExtParams(project.getPrjid()));
-
         return "editsgobjfunction";
     }
 
     @RequestMapping(value="editsgobjfunction", method=RequestMethod.POST)
     public String editSGObjFunctionPost (ObjectiveFunctionDTO function, ModelMap model,
-        @RequestParam("obtfunctionid") int obtfunctionid,
+        @RequestParam(value="obtfunctionid", required=true) String obtfunctionid,
         @RequestParam("optsense") String optSense) {
     	
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
 
+        int nObjFuncId = Integer.parseInt(obtfunctionid);
+        
 		securityAuthorization.atLeastExpert_expert(project);
 
 		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
-        // TODO validate function expression, name uniqueness
-        boolean pass=true;        
-        if(obtfunctionid <= 0 && objFuncService.existsByName(project.getPrjid(),function.getName())){        	
-        	pass = false;        
-        }        
+        SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid(), scenGen.getScengenid());
+      	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkObjectiveExpression(function.getExpression());
+      	
+      	if (error != null) {
+      	    model.put("error", error.message);
+            model.put("function", function);
+            return "editsgobjfunction";       
+      	}
+      	
+        if (StringUtils.isBlank(function.getExpression())) {
+            return getEditSGObjFunction(project, function, model, null);
+        }
+        function.setIsmaximise("max".equals(optSense));
+        function.setProject(project);
+        function.setObtfunctionid(nObjFuncId);
         
-        if (pass==true){
-	        if (StringUtils.isBlank(function.getExpression())) {
-	            return getEditSGObjFunction(project, function, model, null);
-	        }
-	        function.setIsmaximise("max".equals(optSense));
-	        function.setProject(project);
-		
-	        try {
-		        if (obtfunctionid > 0) {
-	                // TODO: clone if referenced from elsewhere
-	                objFuncService.update(function);
-	            } else {
-	                scenGenService.addObjectiveFunction(scenGen.getScengenid(), function);
-	            }
-	        } catch (EntityNotFoundException e) {
-	            e.printStackTrace();
-	            return "error";
-	        }
-	        return "redirect:/geneticalgorithm.html";
-	    }
-        
-        ObjectiveFunctionDTO function2 = new ObjectiveFunctionDTO();
-        function2.setName(function.getName());
-        function2.setExpression(function.getExpression());
-        model.put("function", function2);
-        model.put("error",true);
-        return "editsgobjfunction";       
-    	}	
+        try {
+            objFuncService.update(function);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            return "error";
+        }
+        return "redirect:/geneticalgorithm.html";
+   	}	
         
     @RequestMapping(value="deletesgobjfunction", method=RequestMethod.POST)
     public String deleteSGObjFunctionPost (
@@ -2702,8 +2682,8 @@ public class OptimizationController {
         }
         
         String expression = constraint.getExpression();
-    	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
-     	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkMetricExpression(expression);
+    	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid(), scenGen.getScengenid());
+     	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkConstraintExpression(expression);
      	
      	if (error != null) {
      	    model.put("error", error.message);

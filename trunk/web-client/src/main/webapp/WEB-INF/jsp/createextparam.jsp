@@ -23,7 +23,7 @@
 		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="createextparam.html" modelAttribute="extParam">
-			
+			<h2 class="error">${error}</h2>			
 			<!-- Create external parameter -->
 			<h2><spring:message code="create_external_parameter"/></h2>
 

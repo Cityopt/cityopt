@@ -358,8 +358,16 @@ public class ControllerService {
 			return statusMsg;
 	    }
 	    
-	    public void clearSession(Map<String, Object> model, HttpServletRequest request)
+	    public void clearSession(Map<String, Object> model, HttpServletRequest request, boolean bKeepLanguage)
 	    {
+	    	String language = "";
+	    	
+	    	if (bKeepLanguage && model.get("usersession") != null)
+	    	{
+	    		UserSession session = (UserSession) model.get("usersession");
+	    		language = session.getLanguage();
+	    	}
+	    	
 	    	// Clear all except version
 	        model.remove("project");
 	        model.remove("scenario");
@@ -368,7 +376,14 @@ public class ControllerService {
 	        model.remove("optresults");
 	        model.remove("usersession");
 	        model.remove("user");
-	        	        
+
+	        if (!language.isEmpty())
+	        {
+	        	UserSession session = new UserSession();
+	        	session.setLanguage(language);
+	        	model.put("usersession", session);
+	        }
+	        
 	        // This resets the language setting also and causes problems when updating project info
 	        if (request != null && request.getSession() != null)
 	        {
