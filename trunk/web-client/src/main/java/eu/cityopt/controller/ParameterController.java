@@ -670,6 +670,24 @@ public class ParameterController {
         	return "createinputparameter";
         }
         
+        SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
+     	boolean isValid = checker.isValidAttributeName(inputParamForm.getName());
+
+     	if (!isValid)
+     	{
+            model.put("error", "Please write another input parameter name!");
+            InputParameterDTO newInputParameter = new InputParameterDTO();
+            model.put("inputParam", newInputParameter);
+            
+            inputParamForm = new ParamForm();
+            model.put("inputParamForm", inputParamForm);
+            model.put("selectedcompid", nSelectedCompId);
+
+            List<UnitDTO> units = unitService.findAll();
+            model.put("units", units);
+            return "createinputparameter";
+        }
+
         ComponentDTO component = null;
         try {
             component = componentService.findByID(nSelectedCompId);
@@ -1165,34 +1183,6 @@ public class ParameterController {
 
         extParamValSet = extParamValSetService.save(extParamValSet);
 
-        //Namespace namespace = simService.makeProjectNamespace(project.getPrjid());
-        /*ExternalParameters contExtParams = null;
-
-		try {
-			contExtParams = simService.loadExternalParameters(project.getPrjid(), project.getExtparamvalset().getExtparamvalsetid());
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		while (iter.hasNext())
-		{
-			ExtParamValDTO extParamVal = new ExtParamValDTO();
-			ExtParamDTO extParam = iter.next();
-			String defaultValue = (String) contExtParams.get(extParam.getName());
-			extParamVal.setValue(defaultValue);
-			extParamVals.add(extParamVal);
-		}
-
-		extParamValSet = extParamValSetService.save(extParamValSet);
-
-		try {
-			extParamValSetService.addExtParamVals(extParamValSet.getExtparamvalsetid(), extParamVals);
-		} catch (EntityNotFoundException e1) {
-			e1.printStackTrace();
-		}*/
-
-        //		project.setDefaultextparamvalset(extParamValSet);
-
         Integer intSimModelId = projectService.getSimulationmodelId(project.getPrjid());
         int nSimModelId = 0;
         
@@ -1257,8 +1247,6 @@ public class ParameterController {
         return "extparams";
     }
     
-    ///------- Help Methods-------////	
-	// Finds project By model and project id;
     public ProjectDTO GetProject(Map<String,Object> model){    	
     	ProjectDTO project =(ProjectDTO) model.get("project");       
     	try {
