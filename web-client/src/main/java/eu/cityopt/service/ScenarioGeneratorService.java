@@ -115,6 +115,9 @@ public interface ScenarioGeneratorService extends CityOptService<ScenarioGenerat
 
 	ScenarioGeneratorDTO update(int scenGenId, String name, Integer algorithmId)
 			throws EntityNotFoundException;
+	
+	ScenarioGeneratorDTO update(int scenGenId, String name,String description, Integer algorithmId)
+			throws EntityNotFoundException;
 
 	/** Converts ScenarioGeneratorDTO to ScenarioGeneratorSimpleDTO. */
     public static ScenarioGeneratorSimpleDTO convertDTO(
