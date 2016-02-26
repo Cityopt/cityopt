@@ -911,6 +911,7 @@ public class OptimizationController {
             	{
             		OpenOptimizationSetDTO newOpenOptSet = new OpenOptimizationSetDTO();
             	    newOpenOptSet.setName(openOptSet.getName());
+            	    newOpenOptSet.setDescription(openOptSet.getDescription());
             	    newOpenOptSet.setOptSetType(openOptSet.getOptSetType());
             		model.put("openoptimizationset", newOpenOptSet);
             	    model.put("success",false);
@@ -919,7 +920,7 @@ public class OptimizationController {
             	
                 OptimizationSetDTO optSet = new OptimizationSetDTO();
                 optSet.setName(openOptSet.getName());
-                //optSet.setDescription(openOptSet.getDescription());
+                optSet.setDescription(openOptSet.getDescription());
                 optSet.setProject(project);
 
                 Integer nDefaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
@@ -953,6 +954,7 @@ public class OptimizationController {
             	{
             		OpenOptimizationSetDTO newOpenOptSet = new OpenOptimizationSetDTO();
             	    newOpenOptSet.setName(openOptSet.getName());
+            	    newOpenOptSet.setDescription(openOptSet.getDescription());
             	    newOpenOptSet.setOptSetType(openOptSet.getOptSetType());
             		model.put("openoptimizationset", newOpenOptSet);
             	    model.put("success",false);
@@ -960,7 +962,8 @@ public class OptimizationController {
             	}
             	
             	ScenarioGeneratorDTO scenGen = scenGenService.create(project.getPrjid(), openOptSet.getName());
-
+            	scenGen.setDescription(openOptSet.getDescription());
+                
                 Integer nDefaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 
                 if (nDefaultExtParamValSetId != null)
@@ -1061,7 +1064,7 @@ public class OptimizationController {
         }
 
         oldOptSet.setName(optSet.getName());
-        //oldOptSet.setDescription(optSet.getDescription());
+        oldOptSet.setDescription(optSet.getDescription());
         
         oldOptSet = optSetService.save(oldOptSet);
         model.put("optimizationset", oldOptSet);
@@ -2986,7 +2989,7 @@ public class OptimizationController {
             return getGeneticAlgorithm(project, scenGen, model);
         }
         try {
-            scenGen = scenGenService.update(scenGen.getScengenid(), scenGenForm.getName(), algorithmId);
+            scenGen = scenGenService.update(scenGen.getScengenid(), scenGenForm.getName(), scenGenForm.getDescription(), algorithmId);
             model.put("scengenerator", scenGen);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();

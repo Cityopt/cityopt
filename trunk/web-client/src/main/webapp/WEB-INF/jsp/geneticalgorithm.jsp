@@ -80,14 +80,18 @@ function openInfoWindow() {
 					<td colspan="2">
 						<table>
 							<col style="width: 150px;">
+							<col style="width: 220px;">
+							<col style="width: 80px;">
+							<col style="width: 350px;">
 							<col style="width: 250px;">
-							<col style="width: 650px;">
 	
 							<tr>
 								<!-- Name -->
 								<td><spring:message code="name"/>:</td>
 								<td><form:input type="text" path="name" style="width:200px"/></td>
-                                <td align="right"><input type="submit" value="<spring:message code="save"/>" style="width: 150px"></td>
+								<td><spring:message code="description"/>:</td>
+								<td rowspan="2"><form:textarea id="description" title="${tooltip_description}" rows="2" style="width: 300px" path="description"></form:textarea></td>
+								<td align="right"><input type="submit" value="<spring:message code="save"/>" style="width: 150px"></td>
 							</tr>
                             <tr>
                             	<td>
@@ -107,6 +111,7 @@ function openInfoWindow() {
                                         </c:forEach>
                                     </select>
                                 </td>
+                                <td></td>
                                 <td align="right">
                                 	<a href="exportoptimizationproblem.html"><button type="button" style="width: 150px"><spring:message code="export_optimization_problem"/></button></a>
 								</td>
@@ -114,7 +119,9 @@ function openInfoWindow() {
                             <tr>
 								<td><spring:message code="optimization_info"/>:</td>
 								<td><font color="red">${error}</font>${runinfo}</td>
-								<td align="right">
+                                <td></td>
+                                <td></td>
+                                <td align="right">
 									<input type="submit" name="run" value="<spring:message code="run_algorithm"/>" style="width: 150px">
 								</td>
 							</tr>
@@ -122,7 +129,9 @@ function openInfoWindow() {
         					<tr>
         						<!-- Import optimization set file CSV -->
         						<td><spring:message code="import_optimization_problem"/></td>
-								<td><input id="file" name="file" type="file"/></td>
+ 								<td><input id="file" name="file" type="file"/></td>
+                                <td></td>
+                                <td></td>
 								<td align="right"><a href="gachart.html?resetselections=true"><button type="button" style="width: 150px"><spring:message code="show_results"/></button></a></td>
 							</tr>
 							<tr>	
@@ -130,6 +139,8 @@ function openInfoWindow() {
         						<td>
         							<input type="submit" value="<spring:message code="import_file"/>">
        							</td>
+                                <td></td>
+                                <td></td>
    							</tr>	
     						</form:form>
 						</table>
