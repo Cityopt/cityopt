@@ -37,6 +37,7 @@ public class ScenarioGenerator extends VersionModel implements java.io.Serializa
 	private String status;
 	private String log;
 	private String name;
+	private String description;
 	private Set<DecisionVariable> decisionvariables = new HashSet<DecisionVariable>(
 			0);
 	private Set<ModelParameter> modelparameters = new HashSet<ModelParameter>(0);
@@ -57,7 +58,7 @@ public class ScenarioGenerator extends VersionModel implements java.io.Serializa
 
 	public ScenarioGenerator(int scengenid, Algorithm algorithm,
 			ExtParamValSet extparamvalset, Project project, String status,
-			String log, String name, Set<DecisionVariable> decisionvariables,
+			String log, String name,String description, Set<DecisionVariable> decisionvariables,
 			Set<ModelParameter> modelparameters,
 			Set<ScenGenResult> scengenresults,
 			Set<ScenGenOptConstraint> scengenoptconstraints,
@@ -70,6 +71,7 @@ public class ScenarioGenerator extends VersionModel implements java.io.Serializa
 		this.status = status;
 		this.log = log;
 		this.name = name;
+		this.description=description;
 		this.decisionvariables = decisionvariables;
 		this.modelparameters = modelparameters;
 		this.scengenresults = scengenresults;
@@ -88,6 +90,7 @@ public class ScenarioGenerator extends VersionModel implements java.io.Serializa
 		c.status = this.status;
 		c.log = this.log;
 		c.name = this.name;
+		c.description=this.description;
 		c.decisionvariables = this.decisionvariables;
 		c.modelparameters = this.modelparameters;
 		c.scengenoptconstraints = this.scengenoptconstraints;
@@ -228,6 +231,15 @@ public class ScenarioGenerator extends VersionModel implements java.io.Serializa
 	public void setScengenobjectivefunctions(
 			Set<ScenGenObjectiveFunction> scengenobjectivefunctions) {
 		this.scengenobjectivefunctions = scengenobjectivefunctions;
+	}
+	
+	@Column(name = "description")
+	public String getDescription() {
+		return this.description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

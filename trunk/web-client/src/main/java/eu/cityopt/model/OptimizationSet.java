@@ -41,6 +41,7 @@ public class OptimizationSet extends VersionModel implements java.io.Serializabl
 	private Integer updatedby;
 	private Date optstart;
 	private String name;
+	private String description;
 	private Set<OptSetScenarios> optsetscenarioses = new HashSet<OptSetScenarios>(
 			0);
 	private Set<OptSearchConst> optsearchconsts = new HashSet<OptSearchConst>(0);
@@ -56,7 +57,7 @@ public class OptimizationSet extends VersionModel implements java.io.Serializabl
 	public OptimizationSet(int optid, ExtParamValSet extparamvalset,
 			ObjectiveFunction objectivefunction, Project project, Scenario scenario,
 			Integer prjid, Date createdon, Date updatedon, Integer createdby,
-			Integer updatedby, Date optstart, String name,
+			Integer updatedby, Date optstart, String name,String description,
 			Set<OptSetScenarios> optsetscenarioses,
 			Set<OptSearchConst> optsearchconsts) {
 		this.optid = optid;
@@ -69,6 +70,7 @@ public class OptimizationSet extends VersionModel implements java.io.Serializabl
 		this.createdby = createdby;
 		this.updatedby = updatedby;
 		this.name = name;
+		this.description=description;
 		this.optstart = optstart;
 		this.optsetscenarioses = optsetscenarioses;
 		this.optsearchconsts = optsearchconsts;
@@ -89,6 +91,7 @@ public class OptimizationSet extends VersionModel implements java.io.Serializabl
 		c.optstart = this.optstart;
 		c.optsetscenarioses = this.optsetscenarioses;
 		c.optsearchconsts = this.optsearchconsts;
+		c.description=this.description;
 		return c;
 	}
 
@@ -216,6 +219,15 @@ public class OptimizationSet extends VersionModel implements java.io.Serializabl
 
 	public void setOptsearchconsts(Set<OptSearchConst> optsearchconsts) {
 		this.optsearchconsts = optsearchconsts;
+	}
+	
+	@Column(name = "description")
+	public String getDescription() {
+		return this.description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }
