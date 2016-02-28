@@ -626,6 +626,7 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 			return modelMapper.map(sg, new TypeToken<List<ScenarioGeneratorDTO>>() {}.getType());
 	}
 
+	@Transactional
 	@Override
 	public ScenarioGeneratorDTO update(int scenGenId, String name,
 			String description, Integer algorithmId)
