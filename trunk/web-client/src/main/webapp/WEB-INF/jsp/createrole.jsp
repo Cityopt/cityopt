@@ -32,7 +32,7 @@
 				<tr>
 					<td>
 						<!-- User -->
-						<spring:message code="user"/>
+						<spring:message code="user"/>*
 					</td>
 					<td>
 						${user.name}
@@ -41,7 +41,7 @@
 				<tr>
 					<td>
 						<!-- Role -->
-						<spring:message code="role"/>
+						<spring:message code="role"/>*
 					</td>
 					<td>
 						<!-- Roletypes: Guest, Standard, Expert, Administrator -->

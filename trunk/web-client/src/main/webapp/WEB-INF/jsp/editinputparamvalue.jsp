@@ -33,7 +33,7 @@
 				<tr>
 					<td>
 						<!-- Name -->
-						<spring:message code="name"/>						
+						<spring:message code="name"/>*						
 					</td>
 					<td>
 						${inputParamVal.inputparameter.name}

@@ -41,106 +41,11 @@
 							<col style="width:250px">
 							<col style="width:80px">
 
-							<!--
-							<tr>
-								<td></td>
-								<td>
-									Components
-								</td>
-								<td></td>
-								<td>
-									Output variables
-								</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td></td>
-								<td>
-									<table class="tablestyle">
-										<col style="width:60px">
-										<col style="width:190px">
-										<tr>
-											<th>Select</th>
-											<th>Component</th>
-										</tr>
-							
-										<c:forEach items="${components}" var="component">
-										<tr>
-											<c:if test="${selectedcompid == component.componentid}">
-												<tr style="background-color: #D4D4D4"><td>Selected</td>
-											</c:if>
-											<c:if test="${selectedcompid != component.componentid}">
-												<tr>
-												<td><a href="<c:url value='editsgobjfunction.html?objid=${function.obtfunctionid}&selectedcompid=${component.componentid}'/>">Select</a></td>
-											</c:if>
-												<td>${component.name}</td>
-									   	</tr>
-										</c:forEach>
-									</table>
-								</td>
-								<td></td>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:250px">
-										<tr>
-											<th>Output variable</th>
-										</tr>
-					
-										<c:forEach items="${outputVars}" var="outputVar">
-										<tr>
-											<td>${outputVar.name}</td>
-										</tr>
-										</c:forEach>
-									</table>
-								</td>
-								<td></td>
-							</tr>
 							<tr height="20">
 							</tr>
 							<tr>
 								<td></td>
-								<td>
-									Metrics
-								</td>
-								<td></td>
-								<td>Decision variables</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td></td>
-								<td>
-									<table class="tablestyle">
-										<col style="width:250px">
-										
-										<c:forEach items="${metrics}" var="metric">
-										<tr>
-											<td>${metric.name}</td>
-									   	</tr>
-										</c:forEach>
-									</table>										
-								</td>
-								<td></td>
-								<td>
-									<table class="tablestyle">
-										<col style="width:100px">
-										<col style="width:250px">
-										
-										<c:forEach items="${decisionVars}" var="decisionVar">
-										<tr>
-											<td>${decisionVar.name}</td>
-											<td>${decisionVar.expression}</td>
-									   	</tr>
-										</c:forEach>
-									</table>										
-								</td>
-								<td></td>
-							</tr>
-							 -->
-							<tr height="20">
-							</tr>
-							<tr>
-								<td></td>
-								<td>Name</td>
+								<td>Name*</td>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -152,7 +57,7 @@
 							</tr>
 							<tr>
 								<td></td>
-								<td>Expression</td>
+								<td>Expression*</td>
 								<td></td>
 								<td></td>
 								<td></td>

@@ -35,7 +35,7 @@
 							<col style="width:150px">
 							<tr>
 								<td>
-									Name
+									Name*
 								</td>
 								<td>
 									<form:input style="width:150px" type="text" path="name"/>

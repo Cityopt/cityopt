@@ -46,103 +46,6 @@
                         </c:choose>  
 					</td>
 				</tr>
-				<!--
-				<tr>
-					<td>
-						<table>
-							<col style="width:250px">
-							<col style="width:30px">
-							<col style="width:250px">
-							<col style="width:30px">
-							<col style="width:250px">
-
-							<tr>
-								<td><b>Components</b></td>
-								<td></td>
-								<td><b>Input parameters</b></td>
-								<td></td>
-								<td><b>Output variables</b></td>
-							</tr>
-							<tr>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:60px">
-										<col style="width:190px">
-										<tr>
-											<th>Select</th>
-											<th>Component</th>
-										</tr>
-							
-										<c:forEach items="${components}" var="component">
-										<tr>
-											<c:if test="${selectedcompid == component.componentid}">
-												<tr style="background-color: #D4D4D4"><td>Selected</td>
-											</c:if>
-											<c:if test="${selectedcompid != component.componentid}">
-												<tr>
-												<td><a href="<c:url value='createdecisionvariable.html?selectedcompid=${component.componentid}'/>">Select</a></td>
-											</c:if>
-												<td>${component.name}</td>
-									   	</tr>
-										</c:forEach>
-									</table>
-								</td>
-								<td></td>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:250px">
-										<tr>
-											<th>Input parameter</th>
-										</tr>
-					
-										<c:forEach items="${inputParams}" var="inputParam">
-										<tr>
-											<td>${inputParam.name}</td>
-										</tr>
-										</c:forEach>
-									</table>
-								</td>
-								<td></td>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:250px">
-										<tr>
-											<th>Output variable</th>
-										</tr>
-					
-										<c:forEach items="${outputVars}" var="outputVar">
-										<tr>
-											<td>${outputVar.name}</td>
-										</tr>
-										</c:forEach>
-									</table>
-								</td>
-							</tr>
-							<tr height="20"></tr>
-							<tr>
-								<td><b>Metrics</b></td>
-							</tr>
-							<tr>
-								<td>
-									<table class="tablestyle">
-										<col style="width:250px">
-										
-										<tr>
-											<th>Metric</th>
-										</tr>
-					
-										<c:forEach items="${metrics}" var="metric">
-										<tr>
-											<td>${metric.name}</td>
-									   	</tr>
-										</c:forEach>
-									</table>										
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				-->
 				<tr height=20></tr>
 				<tr>
 					<td>
@@ -153,14 +56,14 @@
 							<col style="width:240px">
 							<tr>
 								<td></td>
-								<td>Name</td>
+								<td>Name*</td>
 								<td><form:input style="width:400px" type="text" path="name"/></td>
 								<td></td>
 							</tr>
                             <tr height=10></tr>
                             <tr>
                                 <td></td>
-                                <td>Type:</td>
+                                <td>Type*:</td>
                                 <td> 
                                     <select name="typeid" id="typeid" size="1">
                                     <c:forEach items="${typechoices}" var="typechoice">
@@ -180,14 +83,14 @@
 							<tr height=10></tr>
 							<tr>
 								<td></td>
-								<td>Lower bound</td>
+								<td>Lower bound*</td>
 								<td><form:input style="width:400px" type="text" path="lowerbound"/></td>
 								<td></td>
 							</tr>
 							<tr height=10></tr>
 							<tr>
 								<td></td>
-								<td>Upper bound</td>
+								<td>Upper bound*</td>
 								<td><form:input style="width:400px" type="text" path="upperbound"/></td>
 								<td></td>
 							</tr>

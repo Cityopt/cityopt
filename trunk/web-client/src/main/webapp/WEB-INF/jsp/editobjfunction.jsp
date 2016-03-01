@@ -130,7 +130,7 @@
 							<tr>
 								<td></td>
 								<!-- Name -->
-								<td><spring:message code="name"/></td>
+								<td><spring:message code="name"/>*</td>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -143,7 +143,7 @@
 							<tr>
 								<td></td>
 								<!-- Expression -->
-								<td><spring:message code="expression"/></td>
+								<td><spring:message code="expression"/>*</td>
 								<td></td>
 								<td></td>
 								<td></td>

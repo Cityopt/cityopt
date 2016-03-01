@@ -56,28 +56,28 @@
                             <col style="width:240px">
                             <tr>
                                 <td></td>
-                                <td>Name</td>
+                                <td>Name*</td>
                                 <td><form:input style="width:400px" type="text" path="name"/></td>
                                 <td></td>
                             </tr>
                             <tr height=10></tr>
                             <tr>
                                 <td></td>
-                                <td>Lower bound</td>
+                                <td>Lower bound*</td>
                                 <td><form:input style="width:400px" type="text" path="lowerbound"/></td>
                                 <td></td>
                             </tr>
                             <tr height=10></tr>
                             <tr>
                                 <td></td>
-                                <td>Expression</td>
+                                <td>Expression*</td>
                                 <td><form:input style="width:400px" type="text" path="expression"/></td>
                                 <td></td>
                             </tr>
                             <tr height=10></tr>
                             <tr>
                                 <td></td>
-                                <td>Upper bound</td>
+                                <td>Upper bound*</td>
                                 <td><form:input style="width:400px" type="text" path="upperbound"/></td>
                                 <td></td>
                             </tr>
