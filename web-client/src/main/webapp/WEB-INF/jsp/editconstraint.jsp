@@ -147,7 +147,7 @@
 							<tr>
 								<td></td>
 								<!-- Name -->
-								<td><spring:message code="name"/></td>
+								<td><spring:message code="name"/>*</td>
 								<td><form:input style="width:400px" type="text" path="name"/></td>
 								<td></td>
 							</tr>
@@ -155,7 +155,7 @@
 							<tr>
 								<td></td>
 								<!--Lower bound-->
-								<td><spring:message code="lower_bound"/></td>
+								<td><spring:message code="lower_bound"/>*</td>
 								<td><form:input style="width:400px" type="text" path="lowerbound"/></td>
 								<td></td>
 							</tr>
@@ -163,7 +163,7 @@
 							<tr>
 								<td></td>
 								<!--Expression-->
-								<td><spring:message code="expression"/></td>
+								<td><spring:message code="expression"/>*</td>
 								<td><form:input style="width:400px" type="text" path="expression"/></td>
 								<td></td>
 							</tr>
@@ -171,7 +171,7 @@
 							<tr>
 								<td></td>
 								<!--Upper bound-->
-								<td><spring:message code="upper_bound"/></td>
+								<td><spring:message code="upper_bound"/>*</td>
 								<td><form:input style="width:400px" type="text" path="upperbound"/></td>
 								<td></td>
 							</tr>

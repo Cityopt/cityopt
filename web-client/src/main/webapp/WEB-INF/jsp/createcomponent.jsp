@@ -39,7 +39,7 @@
 				<tr>
 					<td>
 						<!-- Name -->
-						<spring:message code="name"/>
+						<spring:message code="name"/>*
 					</td>
 					<td>						
 						<form:input style="width:300px" title="${tooltip_name}" type="text" path="name"/>

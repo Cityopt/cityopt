@@ -100,7 +100,7 @@
 							<form:form method="post" action="editoptimizationset.html" modelAttribute="optimizationset">
 							<tr>
 								<!-- Name -->								
-								<td><spring:message code="name"/>:</td>
+								<td><spring:message code="name"/>*:</td>
 								<td><form:input type="text" title="${tooltip_name}" path="name" style="width:200px"/></td>
 								<!-- Description -->
 								<td><spring:message code="description"/>:</td>

@@ -44,7 +44,7 @@
 							</tr>
 							<tr>
 								<td>
-									<spring:message code="password"/>:
+									<spring:message code="password"/>*:
 								</td>
 								<td>
 									<form:input style="width:300px" title="${tooltip_edit}" type="text" path="password"/>

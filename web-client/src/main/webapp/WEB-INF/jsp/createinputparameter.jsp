@@ -34,7 +34,7 @@
 				<tr>
 					<td>
 						<!-- Name -->
-						<spring:message code="name"/>
+						<spring:message code="name"/>*
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="name"/>

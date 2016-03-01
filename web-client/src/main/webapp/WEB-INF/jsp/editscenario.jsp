@@ -58,7 +58,7 @@
 							<tr>
 								<!-- Scenario name -->
 								<c:set var="tooltip_name"><spring:message code="tooltip_edit_scenario_name"/></c:set>
-								<td><spring:message code="scenario_name"/>:</td>
+								<td><spring:message code="scenario_name"/>*:</td>
 								<td><form:input type="text" path="name" title="${tooltip_name}" style="width:200px"/></td>
 								
 								<!-- Update Scenario -->

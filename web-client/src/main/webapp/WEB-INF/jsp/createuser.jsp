@@ -72,7 +72,7 @@
 							</tr>
 							
 							<tr class="role">							
-								<td><spring:message code="role" />:</td>
+								<td><spring:message code="role" />*:</td>
 								<td>
 								<c:set var="tooltip_role"><spring:message code="tooltip_role"/></c:set>	
 								<form:select path="role" title="${tooltip_role}" >
