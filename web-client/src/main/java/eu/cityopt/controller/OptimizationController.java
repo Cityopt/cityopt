@@ -855,8 +855,8 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="createoptimizationset",method=RequestMethod.GET)
-    public String createOptimizationSet(Map<String, Object> model) {
-
+    public String createOptimizationSet(Map<String, Object> model) 
+    {
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -864,6 +864,12 @@ public class OptimizationController {
             return "error";
         }
         securityAuthorization.atLeastExpert_expert(project);
+
+        if (projectService.getSimulationmodelId(project.getPrjid()) == null)
+        {
+        	model.put("error", "Please import energy model first!");
+        	return "error";
+        }
 
         OpenOptimizationSetDTO openOptSet = new OpenOptimizationSetDTO();
         model.put("openoptimizationset", openOptSet);
@@ -2919,6 +2925,15 @@ public class OptimizationController {
 
     private String getGeneticAlgorithm(ProjectDTO project, ScenarioGeneratorDTO scenGen, Map<String, Object> model) {
         model.put("scengenerator", scenGen);
+        
+        RunInfo runInfo = scenarioGenerationService.getRunningOptimisations().get(scenGen.getScengenid());
+        
+        if (runInfo != null) {
+        	model.put("runinfo", runInfo.toString());
+        }
+        
+        boolean locked = runInfo != null ? !runInfo.toString().isEmpty() : false;
+        model.put("locked", locked);
         UserSession userSession = getUserSession(model);
         
         try {
@@ -2943,14 +2958,6 @@ public class OptimizationController {
             model.put("algorithms", algorithmService.findAll());
             model.put("algoparamvals", scenGenService.getOrCreateAlgoParamVals(scenGen.getScengenid()));
 
-            RunInfo runInfo = scenarioGenerationService.getRunningOptimisations().get(scenGen.getScengenid());
-            
-            if (runInfo != null) {
-            	model.put("runinfo", runInfo.toString());
-            } else {
-            	//model.put("runinfo", "-");
-            }
-            
             List<ComponentDTO> inputComponents = pickInputComponents(modelParams, components);
             model.put("inputcomponents", inputComponents);
             if (userSession.getComponentId() == 0 && !inputComponents.isEmpty()) {
