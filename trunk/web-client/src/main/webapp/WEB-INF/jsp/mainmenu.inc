@@ -256,14 +256,16 @@
 				<!-- Create optimization with a link -->
 				<a href="createoptimizationset.html">
 				<spring:message code="create_optimization_set"/></a>
-			</td></tr>
+			</td>
+		</tr>
 		<tr>
 			<td></td>
 			<td>
 				<!-- Open optimization with a link -->
 				<a href="openoptimizationset.html">
 				<spring:message code="open_optimization_set"/></a>
-			</td></tr>
+			</td>
+		</tr>
 	</c:when>
 	<c:otherwise>	
 		<tr>

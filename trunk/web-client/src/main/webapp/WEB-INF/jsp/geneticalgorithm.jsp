@@ -91,7 +91,16 @@ function openInfoWindow() {
 								<td><form:input type="text" path="name" style="width:200px"/></td>
 								<td><spring:message code="description"/>:</td>
 								<td rowspan="2"><form:textarea id="description" title="${tooltip_description}" rows="2" style="width: 300px" path="description"></form:textarea></td>
-								<td align="right"><input type="submit" value="<spring:message code="save"/>" style="width: 150px"></td>
+								<td align="right">
+									<c:choose>
+    	                               	<c:when test="${locked}">
+                                            <input type="submit" value="<spring:message code="save"/>" style="width: 150px" disabled="disabled">
+                                   	   	</c:when>
+                                       	<c:otherwise>
+                                            <input type="submit" value="<spring:message code="save"/>" style="width: 150px">
+                                   	   	</c:otherwise>
+                                   	</c:choose>
+                               	</td>
 							</tr>
                             <tr>
                             	<td>
@@ -118,18 +127,35 @@ function openInfoWindow() {
                             </tr>
                             <tr>
 								<td><spring:message code="optimization_info"/>:</td>
-								<td><font color="red">${error}</font>${runinfo}</td>
+								<td><font color="red">${error}</font>${runinfo}
+									<c:choose>
+    	                               	<c:when test="${locked}">
+                                            (Optimization has been started and the parameters cannot be edited for this problem.)
+                                   	   	</c:when>
+                                       	<c:otherwise>
+                                   	   	</c:otherwise>
+                                   	</c:choose>
+                               	</td>
                                 <td></td>
                                 <td></td>
                                 <td align="right">
-									<input type="submit" name="run" value="<spring:message code="run_algorithm"/>" style="width: 150px">
+									<c:choose>
+    	                               	<c:when test="${locked}">
+                                            <input type="submit" name="run" value="<spring:message code="run_algorithm"/>" style="width: 150px" disabled="disabled">
+                                   	   	</c:when>
+                                       	<c:otherwise>
+                                            <input type="submit" name="run" value="<spring:message code="run_algorithm"/>" style="width: 150px">
+                                   	   	</c:otherwise>
+                                   	</c:choose>
 								</td>
 							</tr>
 							<form:form method="POST" action="importoptimizationproblem.html" enctype="multipart/form-data">
         					<tr>
         						<!-- Import optimization set file CSV -->
         						<td><spring:message code="import_optimization_problem"/></td>
- 								<td><input id="file" name="file" type="file"/></td>
+ 								<td>
+									<input id="file" name="file" type="file"/>
+                   				</td>
                                 <td></td>
                                 <td></td>
 								<td align="right"><a href="gachart.html?resetselections=true"><button type="button" style="width: 150px"><spring:message code="show_results"/></button></a></td>
@@ -137,7 +163,14 @@ function openInfoWindow() {
 							<tr>	
        							<td></td>
         						<td>
-        							<input type="submit" value="<spring:message code="import_file"/>">
+        							<c:choose>
+    	                               	<c:when test="${locked}">
+                                			<input type="submit" value="<spring:message code="import_file"/>" disabled="disabled">
+                                	   	</c:when>
+                                       	<c:otherwise>
+                                			<input type="submit" value="<spring:message code="import_file"/>">
+                                   	   	</c:otherwise>
+                                   	</c:choose>
        							</td>
                                 <td></td>
                                 <td></td>
@@ -182,8 +215,26 @@ function openInfoWindow() {
                                             </td>
 											<td>${function.expression}</td>
                                             <td><a href="editsgobjfunction.html?obtfunctionid=${function.obtfunctionid}">
-                                            <button type="button"><spring:message code="edit"/></button></a></td>
-                                            <td><input type="submit" value="<spring:message code="remove"/>" onClick="deleteObjective(${function.obtfunctionid})"></td>
+                                            	<c:choose>
+	                                            	<c:when test="${locked}">
+		                                            	<button type="button" disabled="disabled">
+	                                            	</c:when>
+	                                            	<c:otherwise>
+		                                            	<button type="button">
+	                                            	</c:otherwise>
+                                            	</c:choose>
+                                            	<spring:message code="edit"/></button></a>
+                                           	</td>
+                                            <td>
+	                                            <c:choose>
+	                                            	<c:when test="${locked}">
+		                                            	<input type="submit" value="<spring:message code="remove" />" onClick="deleteObjective(${function.obtfunctionid})" disabled="disabled">
+	                                            	</c:when>
+	                                            	<c:otherwise>
+		                                            	<input type="submit" value="<spring:message code="remove" />" onClick="deleteObjective(${function.obtfunctionid})">
+	                                            	</c:otherwise>
+	                                           	</c:choose>
+                                           	</td>
                                         </tr>	
 										</c:forEach>
 									</table>
@@ -193,11 +244,29 @@ function openInfoWindow() {
 								<td>
 									<!-- Optimization sense and expression Create,Delete and Import functions-->
 									<a href="createobjfunction.html?reset=true&type=ga">
-										<button type="button" style="width: 100px">
-											<spring:message code="create"/>
+										<c:choose>
+                                           	<c:when test="${locked}">
+                                            	<button type="button" style="width: 100px" disabled="disabled">
+                                           	</c:when>
+                                           	<c:otherwise>
+                                            	<button type="button" style="width: 100px">
+                                           	</c:otherwise>
+                                       	</c:choose>
+                                          	
+                                        	<spring:message code="create"/>
 										</button>
 									</a>
-									<a href="addsgobjfunction.html"><button type="button" style="width: 100px"><spring:message code="import"/></button></a>
+									<a href="addsgobjfunction.html">
+									<c:choose>
+                                       	<c:when test="${locked}">
+                                    	    <button type="button" style="width: 100px" disabled="disabled">
+                                   	   	</c:when>
+                                       	<c:otherwise>
+                                        	<button type="button" style="width: 100px">
+                                       	</c:otherwise>
+                                   	</c:choose>
+                                   	
+                                       	<spring:message code="import"/></button></a>
 								</td>
 							</tr>
 							<tr height="10"></tr>
@@ -229,8 +298,26 @@ function openInfoWindow() {
                                             <td align="right">${decvar.lowerbound}</td>
                                             <td align="right">${decvar.upperbound}</td>
                                             <td><a href="editsgdecisionvariable.html?decisionvarid=${decvar.decisionvarid}">
-                                            <button type="button"><spring:message code="edit"/></button></a></td>
-                                            <td><input type="submit" value="<spring:message code="remove"/>" onClick="deleteDecisionVariable(${decvar.decisionvarid})"></td>
+                                            <c:choose>
+		                                       	<c:when test="${locked}">
+		                                    	    <button type="button" disabled="disabled">
+		                                   	   	</c:when>
+		                                       	<c:otherwise>
+		                                        	<button type="button">
+		                                       	</c:otherwise>
+		                                   	</c:choose>
+                                            
+                                            <spring:message code="edit"/></button></a></td>
+                                            <td>
+                                            <c:choose>
+		                                       	<c:when test="${locked}">
+		                                    	    <input type="submit" disabled="disabled" value="<spring:message code="remove"/>" onClick="deleteDecisionVariable(${decvar.decisionvarid})">
+		                                   	   	</c:when>
+		                                       	<c:otherwise>
+		                                        	<input type="submit" value="<spring:message code="remove"/>" onClick="deleteDecisionVariable(${decvar.decisionvarid})">
+		                                       	</c:otherwise>
+		                                   	</c:choose>
+		                                   	</td>
                                         </tr>
                                         </c:forEach>
 									</table>
@@ -238,7 +325,15 @@ function openInfoWindow() {
 							</tr>
                             <tr>
                                 <td>
-                                    <a href="editsgdecisionvariable.html"><button type="button" style="width: 100px">
+                                    <a href="editsgdecisionvariable.html">
+	                                    <c:choose>
+	                                       	<c:when test="${locked}">
+				                                <button type="button" style="width: 100px" disabled="disabled">
+                                      	   	</c:when>
+	                                       	<c:otherwise>
+				                                <button type="button" style="width: 100px">
+	                                       	</c:otherwise>
+	                                   	</c:choose>
                                     <spring:message code="create"/></button></a>
                                 </td>
                             </tr>
@@ -274,8 +369,26 @@ function openInfoWindow() {
 											<td align="right">${constraint.lowerbound}</td>
                                             <td align="right">${constraint.upperbound}</td>
                                             <td><a href="editsgconstraint.html?optconstid=${constraint.optconstid}">
-                                            <button type="button"><spring:message code="edit"/></button></a></td>
-                                            <td><input type="submit" value="<spring:message code="remove"/>" onClick="deleteConstraint(${constraint.optconstid})"></td>
+	                                            <c:choose>
+			                                       	<c:when test="${locked}">
+			                                            <button type="button" disabled="disabled">
+		                                      	   	</c:when>
+			                                       	<c:otherwise>
+						                                <button type="button">
+			                                       	</c:otherwise>
+			                                   	</c:choose>
+                                            	<spring:message code="edit"/></button></a>
+                                           	</td>
+                                            <td>
+                                           	    <c:choose>
+			                                       	<c:when test="${locked}">
+			                                            <input type="submit" value="<spring:message code="remove"/>" onClick="deleteConstraint(${constraint.optconstid})" disabled="disabled">
+		                                      	   	</c:when>
+			                                       	<c:otherwise>
+			                                            <input type="submit" value="<spring:message code="remove"/>" onClick="deleteConstraint(${constraint.optconstid})">
+			                                       	</c:otherwise>
+			                                   	</c:choose>
+                                           	</td>
 									   	</tr>
 										</c:forEach>
 									</table>
@@ -283,8 +396,29 @@ function openInfoWindow() {
 							</tr>
 							<tr>
 								<td>
-                                    <a href="editsgconstraint.html"><button type="button" style="width: 100px"><spring:message code="create"/></button></a>
-                                    <a href="importgaconstraint.html"><button type="button" style="width: 100px"><spring:message code="import"/></button></a>
+                               	    <a href="editsgconstraint.html">
+                               	    <c:choose>
+                                       	<c:when test="${locked}">
+                                            <button type="button" style="width: 100px" disabled="disabled">
+                                     	   	</c:when>
+                                       	<c:otherwise>
+                                            <button type="button" style="width: 100px">
+                                       	</c:otherwise>
+                                   	</c:choose>
+					
+                                    <spring:message code="create"/></button></a>
+                                    <a href="importgaconstraint.html">
+                                    
+                    				<c:choose>
+                                       	<c:when test="${locked}">
+                                            <button type="button" style="width: 100px" disabled="disabled">
+                                     	   	</c:when>
+                                       	<c:otherwise>
+                                            <button type="button" style="width: 100px">
+                                       	</c:otherwise>
+                                   	</c:choose>
+					                
+                                    <spring:message code="import"/></button></a>
 								</td>
 							</tr>
 							<tr height="10"></tr>
@@ -299,8 +433,18 @@ function openInfoWindow() {
 	
 							<tr>
 								<td>
-                                 <a href="gaextparamsets.html?extparamvalsetid=${extparamvalsetid}&context=geneticalgorithm.html">
-                                 <button type="button" style="width: 100px"><spring:message code="select"/></button></a>
+	                                 <a href="gaextparamsets.html?extparamvalsetid=${extparamvalsetid}&context=geneticalgorithm.html">
+	                                 
+	                                 <c:choose>
+	                                   	<c:when test="${locked}">
+	                                        <button type="button" style="width: 100px" disabled="disabled">
+	                               	   	</c:when>
+	                                   	<c:otherwise>
+	                                        <button type="button" style="width: 100px">
+	                                   	</c:otherwise>
+	                               	</c:choose>
+                                   	
+                                   	<spring:message code="select"/></button></a>
 								</td>
 							</tr>
 						</table>
@@ -368,7 +512,17 @@ function openInfoWindow() {
 							</tr>
 							<tr>
                                 <td colspan="2"><a href="editsgmodelparams.html">
-                                <button type="button" style="width:100px"><spring:message code="edit"/></button></a></td>
+                                
+                                	<c:choose>
+                                       	<c:when test="${locked}">
+                                            <button type="button" style="width: 100px" disabled="disabled">
+                                       	</c:when>
+                                       	<c:otherwise>
+                                            <button type="button" style="width: 100px">
+                                       	</c:otherwise>
+                                   	</c:choose>
+                                  	<spring:message code="edit"/></button></a>
+                               	</td>
                             </tr>
 							<tr height="10"></tr>
 							<tr>
@@ -407,7 +561,15 @@ function openInfoWindow() {
 							<tr>
 							 <td colspan="2">
 							     <a href="editsgalgoparamval.html">
-							     <button type="button" style="width: 100px"><spring:message code="edit"/></button></a>
+							     <c:choose>
+                                   	<c:when test="${locked}">
+                                        <button type="button" style="width: 100px" disabled="disabled">
+                               	   	</c:when>
+                                   	<c:otherwise>
+                                        <button type="button" style="width: 100px">
+                                   	</c:otherwise>
+                               	</c:choose>
+                               	<spring:message code="edit"/></button></a>
 							 </td>
 							</tr>
 						</table>
