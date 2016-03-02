@@ -2924,7 +2924,14 @@ public class OptimizationController {
     }
 
     private String getGeneticAlgorithm(ProjectDTO project, ScenarioGeneratorDTO scenGen, Map<String, Object> model) {
-        model.put("scengenerator", scenGen);
+        
+    	try {
+			scenGen = scenGenService.findByID(scenGen.getScengenid());
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
+    	
+    	model.put("scengenerator", scenGen);
         
         RunInfo runInfo = scenarioGenerationService.getRunningOptimisations().get(scenGen.getScengenid());
         
@@ -2932,7 +2939,15 @@ public class OptimizationController {
         	model.put("runinfo", runInfo.toString());
         }
         
-        boolean locked = runInfo != null ? !runInfo.toString().isEmpty() : false;
+        String status = scenGen.getStatus();
+        boolean locked = false;
+        
+        if ((runInfo != null && !runInfo.toString().isEmpty())
+    		|| (status != null && !status.isEmpty()))
+        {
+        	locked = true;
+        }
+        
         model.put("locked", locked);
         UserSession userSession = getUserSession(model);
         
