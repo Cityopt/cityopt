@@ -155,7 +155,7 @@ public class ScenarioServiceTest {
 				inputParamVal.setInputparameter(inputParam);
 				inputParamVal.setValue(inputParam.getDefaultvalue());
 				inputParamVal.setScenario(scenario);
-				inputParamVal = inputParamValService.save(inputParamVal);
+				inputParamVal = inputParamValService.save(inputParamVal, null);
 			}
 		}
 		

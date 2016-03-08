@@ -89,7 +89,7 @@ public class AprosService {
             	if (parentComponent != null)
             	{
             		try {
-						inputparameterService.update(inputParam, parentComponent.getComponentid(), inputParam.getUnit().getUnitid());
+						inputparameterService.update(inputParam, parentComponent.getComponentid(), inputParam.getUnit().getUnitid(), null);
 					} catch (EntityNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

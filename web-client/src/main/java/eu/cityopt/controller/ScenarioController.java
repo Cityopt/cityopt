@@ -1,6 +1,5 @@
 package eu.cityopt.controller;
 
-import java.awt.Desktop.Action;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -14,7 +13,6 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -23,18 +21,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.script.ScriptException;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
-import org.apache.commons.lang.StringUtils;
-import org.python.google.common.io.Files;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -45,20 +38,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import eu.cityopt.DTO.AlgorithmDTO;
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
-import eu.cityopt.DTO.DecisionVariableDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParamValDTO;
-import eu.cityopt.DTO.InputParameterDTO;
-import eu.cityopt.DTO.ModelParameterDTO;
-import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
-import eu.cityopt.DTO.ScenarioGeneratorDTO;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AlgorithmService;
 import eu.cityopt.service.AppUserService;
@@ -71,12 +58,10 @@ import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ExtParamService;
 import eu.cityopt.service.ExtParamValService;
 import eu.cityopt.service.ExtParamValSetService;
-import eu.cityopt.service.ImportService;
 import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.MetricService;
 import eu.cityopt.service.MetricValService;
-import eu.cityopt.service.ModelParameterGrouping;
 import eu.cityopt.service.ModelParameterService;
 import eu.cityopt.service.ObjectiveFunctionService;
 import eu.cityopt.service.OptConstraintService;
@@ -97,8 +82,6 @@ import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
-import eu.cityopt.web.ModelParamForm;
-import eu.cityopt.web.ScenarioForm;
 import eu.cityopt.web.ScenarioParamForm;
 import eu.cityopt.web.UserSession;
 
@@ -754,14 +737,14 @@ public class ScenarioController {
 			if (inputName.equals("simulation_start"))
 			{
 				inputParamVal.setValue(simStart);
-				inputParamVal = inputParamValService.save(inputParamVal);
+				inputParamVal = inputParamValService.save(inputParamVal, null);
 				
 				model.put("simStart", inputParamVal.getValue());
 			}
 			else if (inputName.equals("simulation_end"))
 			{
 				inputParamVal.setValue(simEnd);
-				inputParamVal = inputParamValService.save(inputParamVal);
+				inputParamVal = inputParamValService.save(inputParamVal, null);
 
 				model.put("simEnd", inputParamVal.getValue());
 			}
@@ -927,7 +910,7 @@ public class ScenarioController {
     		
     		updatedInputParamVal.setValue(entry.getValue().trim());
     		updatedInputParamVal.setScenario(scenario);
-    		inputParamValService.save(updatedInputParamVal);            
+    		inputParamValService.save(updatedInputParamVal, null);            
 		}
 		
 		try {
@@ -1054,7 +1037,7 @@ public class ScenarioController {
 		
 		updatedInputParamVal.setValue(inputParamVal.getValue());
 		updatedInputParamVal.setScenario(scenario);
-		inputParamValService.save(updatedInputParamVal);
+		inputParamValService.save(updatedInputParamVal, null);
 				
 		int componentID =  inputParamService.getComponentId(updatedInputParamVal.getInputparameter().getInputid());
 		model.put("selectedcompid", componentID);

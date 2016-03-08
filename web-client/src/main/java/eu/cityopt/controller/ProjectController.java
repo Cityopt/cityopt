@@ -811,7 +811,7 @@ public class ProjectController {
 	                
 	                if (extParamValSet != null)
 	                {
-		                extParamValSetService.updateExtParamValInSet(extParamValSet.getExtparamvalsetid(), extParamVal, ts);
+		                extParamValSetService.updateExtParamValInSet(extParamValSet.getExtparamvalsetid(), extParamVal, ts, false);
 	                }	                
 	                extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
 	                model.put("extParamValSet", extParamValSet);

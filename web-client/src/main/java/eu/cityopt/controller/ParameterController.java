@@ -428,7 +428,7 @@ public class ParameterController {
         int componentId = updatedInputParam.getComponentComponentid();//inputParamService.getComponentId(updatedInputParam.getInputid());
 
         try {
-			inputParamService.update(updatedInputParam, componentId, unit.getUnitid());
+			inputParamService.update(updatedInputParam, componentId, unit.getUnitid(), null);
 		} catch (EntityNotFoundException e1) {
 			e1.printStackTrace();
 		}
@@ -713,7 +713,7 @@ public class ParameterController {
         inputParam.setUnit(unit);
         inputParam.setType(typeService.findByName(eu.cityopt.sim.eval.Type.DOUBLE.name));
         
-    	inputParamService.save(inputParam, component.getComponentid(), unit.getUnitid());
+    	inputParamService.save(inputParam, component.getComponentid(), unit.getUnitid(), null);
 
         controllerService.SetUpSelectedComponent(model, strSelectedCompId);
         controllerService.getProjectExternalParameterValues(model, project);
