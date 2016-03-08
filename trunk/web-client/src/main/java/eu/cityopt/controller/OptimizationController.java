@@ -3097,7 +3097,7 @@ public class OptimizationController {
                 epv.setValue(form.getValueByParamId().get(extParamId));
                 epv.setComment(form.getCommentByParamId().get(extParamId));
             }
-            extParamValSetService.update(form.getExtParamValSet(), extParamVals, timeSeriesByParamId);
+            extParamValSetService.update(form.getExtParamValSet(), extParamVals, timeSeriesByParamId, false);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }

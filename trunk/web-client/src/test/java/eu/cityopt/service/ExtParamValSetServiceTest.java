@@ -1,6 +1,9 @@
 package eu.cityopt.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -12,7 +15,6 @@ import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -26,7 +28,6 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
-import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.TimeSeriesDTOX;
 import eu.cityopt.repository.ExtParamRepository;
 
@@ -114,7 +115,7 @@ public class ExtParamValSetServiceTest {
         newEPV.setExtparam(epList.iterator().next());
         newEPV.setValue("20.0");
 
-        extParamValSetService.updateExtParamValInSet(1, newEPV, null);
+        extParamValSetService.updateExtParamValInSet(1, newEPV, null, false);
 
         List<ExtParamValDTO> epv = extParamValSetService.getExtParamVals(1);   
         assertEquals(3, epv.size());
@@ -142,7 +143,7 @@ public class ExtParamValSetServiceTest {
                 });
         tsDTO.setValues(new double[] { 10.0, 100.0 });
 
-        extParamValSetService.updateExtParamValInSet(1, newEPV, tsDTO);
+        extParamValSetService.updateExtParamValInSet(1, newEPV, tsDTO, false);
 
         List<ExtParamValDTO> epv = extParamValSetService.getExtParamVals(1);   
         assertEquals(3, epv.size());
@@ -164,12 +165,12 @@ public class ExtParamValSetServiceTest {
         ExtParamValDTO newEPV20 = new ExtParamValDTO();
         newEPV20.setExtparam(epDTO);
         newEPV20.setValue("20.0");
-        extParamValSetService.updateExtParamValInSet(2, newEPV20, null);
+        extParamValSetService.updateExtParamValInSet(2, newEPV20, null, false);
 
         ExtParamValDTO newEPV10 = new ExtParamValDTO();
         newEPV10.setExtparam(epDTO);
         newEPV10.setValue("10.0");
-        extParamValSetService.updateExtParamValInProject(1, newEPV10, null);
+        extParamValSetService.updateExtParamValInProject(1, newEPV10, null, false);
 
         List<ExtParamValDTO> epv = extParamValSetService.getExtParamVals(1);
         assertEquals(3, epv.size());

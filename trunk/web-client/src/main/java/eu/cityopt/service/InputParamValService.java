@@ -9,16 +9,9 @@ import eu.cityopt.DTO.TimeSeriesDTOX;
 
 public interface InputParamValService extends CityOptService<InputParamValDTO> {
 
-	public default InputParamValDTO save(InputParamValDTO u) {
-	    return save(u, null);
-	}
     InputParamValDTO save(InputParamValDTO u, TimeSeriesDTOX timeSeriesData);       
 
-    public default InputParamValDTO update(InputParamValDTO toUpdate) throws EntityNotFoundException {
-        return update(toUpdate, null);
-    }
-    InputParamValDTO update(InputParamValDTO toUpdate, TimeSeriesDTOX timeSeriesData)
-	        throws EntityNotFoundException;
+    InputParamValDTO update(InputParamValDTO toUpdate, TimeSeriesDTOX timeSeriesData) throws EntityNotFoundException;
 	
 	InputParamValDTO findByInputAndScenario(int inParamID, int scenID);
 	
