@@ -68,11 +68,11 @@ public class InputParameterServiceImpl implements InputParameterService {
 
 	@Transactional
 	@Override
-	public InputParameterDTO save(InputParameterDTO u, int componentId, int unitId,
+	public InputParameterDTO save(InputParameterDTO u, int componentId, Integer unitId,
 			TimeSeriesDTOX defaultTimeSeries) {
 		InputParameter param = modelMapper.map(u, InputParameter.class);
 		Component com = componentRepository.getOne(componentId);
-		Unit unit = unitRepository.getOne(unitId);
+		Unit unit = (unitId != null) ? unitRepository.getOne(unitId) : null;
 		Type type = typeRepository.getOne(u.getType().getTypeid());
 		
 		param.setComponent(com);
