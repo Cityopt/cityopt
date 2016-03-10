@@ -11,7 +11,7 @@ public interface InputParameterService extends CityOptService<InputParameterDTO>
 
 //	List<InputParameterDTO> findAll();
 
-    InputParameterDTO save(InputParameterDTO u, int componentId, int unitId, TimeSeriesDTOX defaultTimeSeries);
+    InputParameterDTO save(InputParameterDTO u, int componentId, Integer unitId, TimeSeriesDTOX defaultTimeSeries);
 
 //	void delete(int id) throws EntityNotFoundException;
 
