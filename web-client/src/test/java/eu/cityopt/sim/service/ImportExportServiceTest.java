@@ -146,7 +146,7 @@ public class ImportExportServiceTest extends SimulationTestBase {
         assertNotNull(ts);
         ExtParamValDTO xpv = new ExtParamValDTO();
         xpv.setExtparam(xp);
-        extParamValSetService.updateExtParamValInSet(xpvset, xpv, ts);
+        extParamValSetService.updateExtParamValInSet(xpvset, xpv, ts, false);
 
         ExtParamValSet epvs = extParamValSetRepository.findOne(xpvset);
         assertEquals(3, epvs.getExtparamvalsetcomps().size());
