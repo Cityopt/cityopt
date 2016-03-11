@@ -3,6 +3,7 @@ package eu.cityopt.controller;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -433,7 +434,7 @@ public class ControllerService {
 
 	    public void initScenarioList(Map<String, Object> model, int projectId) {
 			Set<ScenarioDTO> scenarios = projectService.getScenarios(projectId);
-			Set<ScenarioForm> scenarioForms = new HashSet<ScenarioForm>();
+			Set<ScenarioForm> scenarioForms = new LinkedHashSet<ScenarioForm>();
 			
 			Iterator<ScenarioDTO> iter = scenarios.iterator();
 	    	
