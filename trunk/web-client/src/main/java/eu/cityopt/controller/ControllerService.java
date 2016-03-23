@@ -52,6 +52,7 @@ import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
 import eu.cityopt.sim.service.ScenarioGenerationService.RunInfo;
 import eu.cityopt.web.OptimizationRun;
+import eu.cityopt.web.Pair;
 import eu.cityopt.web.ParamForm;
 import eu.cityopt.web.ScenarioForm;
 import eu.cityopt.web.UserSession;
@@ -432,6 +433,31 @@ public class ControllerService {
 	        model.put("metricVals", listProjectMetricVals);
 	    }
 
+	    public void getDefaultExtParamVals(Map<String, Object> model, int projectId)
+	    {
+	        List<ExtParamValDTO> extParamVals = null;
+	
+	        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(projectId);
+	        
+	        if (defaultExtParamValSetId != null)
+	        {
+	            try {
+	                ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
+	                model.put("extParamValSet", extParamValSet);
+	            } catch (EntityNotFoundException e1) {
+	                e1.printStackTrace();
+	            }
+	
+	            try {
+	                extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
+	            } catch (EntityNotFoundException e) {
+	                e.printStackTrace();
+	            }
+	
+	            model.put("extParamVals", extParamVals);
+	        }
+		}
+	    
 	    public void initScenarioList(Map<String, Object> model, int projectId) {
 			Set<ScenarioDTO> scenarios = projectService.getScenarios(projectId);
 			Set<ScenarioForm> scenarioForms = new LinkedHashSet<ScenarioForm>();
@@ -637,6 +663,85 @@ public class ControllerService {
 	    	session.setLanguage(language);
 	    	model.put("usersession", session);
 
+	    }
+	    
+	    public UnitDTO getDefaultUnit()
+	    {
+        	UnitDTO unit = new UnitDTO();
+        	
+        	try {
+				unit = unitService.findByName(" ");
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+        	
+        	return unit;
+	    }
+	    
+	    public void getFunctions(Map<String, Object> model)
+	    {
+	    	ArrayList<Pair> functions = new ArrayList<Pair>();
+	    	
+	    	functions.add(new Pair("abs(int)", "Absolute value"));
+	    	functions.add(new Pair("abs(float)", "Absolute value"));
+	    	functions.add(new Pair("acos(float)", "Arc cosine in radians. Fails for arguments outside [-1, 1]."));
+	    	functions.add(new Pair("all(iterable)", "Whether all elements of the iterable are true"));
+	    	functions.add(new Pair("asin(float)", "Arc sine in radians.  Fails for arguments outside [-1, 1]."));
+	    	functions.add(new Pair("atan(float)", "Arc tangent in radians"));
+	    	functions.add(new Pair("atan2(float, float)", "Arc tangent in radians for given (y, x) coordinates"));
+	    	functions.add(new Pair("bool(any)", "Boolean constructor: True for nonzero argument"));
+	    	functions.add(new Pair("ceil(float)", "Ceiling function"));
+	    	functions.add(new Pair("cos(float)", "Cosine"));
+	    	functions.add(new Pair("cosh(float)", "Hyperbolic cosine"));
+	    	functions.add(new Pair("datetime(int, int, int, …)", "datetime constructor from given year, month, day, hour, minutes, seconds. Omitted hours, minutes or seconds are interpreted as 0. Example: datetime(2014,3,31, 23,59,59)"));
+	    	functions.add(new Pair("dict(…)", "Dictionary constructor"));
+	    	functions.add(new Pair("enumerate(iterable)", "Pairs indices 0, 1, … with iterable elements. Returns a sequence of tuples (index, element)."));
+	    	functions.add(new Pair("exp(float)", "Exponential function, equivalent to e**x"));
+	    	functions.add(new Pair("float(any)", "Float constructor from numerical or string argument."));
+	    	functions.add(new Pair("floor(float)", "Floor function"));
+	    	functions.add(new Pair("hypot(float, float)", "Hypotenuse of right triangle, equals sqrt(x**2 + y**2)"));
+	    	functions.add(new Pair("int(any)", "Integer constructor from numerical or string argument"));
+	    	functions.add(new Pair("integrate(TimeSeries, float, float, float)", "Integration of time series over an interval"));
+	    	functions.add(new Pair("len(iterable)", "Length of a sequence"));
+	    	functions.add(new Pair("list(iterable)", "List constructor"));
+	    	functions.add(new Pair("log(float)", "Natural logarithm"));
+	    	functions.add(new Pair("log(float, float)", "Logarithm in the base given by the second argument"));
+	    	functions.add(new Pair("map(function, iterable)", "Mapping of a sequence through a function"));
+	    	functions.add(new Pair("max(TimeSeries)", "Maximum of a time series over its domain"));
+	    	functions.add(new Pair("max(iterable)", "Maximum element of a sequence"));
+	    	functions.add(new Pair("max(number, …)", "Maximum of the given arguments"));
+	    	functions.add(new Pair("mean(TimeSeries)", "Mean value of time series over its domain"));
+	    	functions.add(new Pair("mean(iterable)", "Mean value of a sequence"));
+	    	functions.add(new Pair("min(TimeSeries)", "Minimum value of a time series over its domain"));
+	    	functions.add(new Pair("min(iterable)", "Minimum element of a sequence"));
+	    	functions.add(new Pair("min(number, …)", "Minimum of the given arguments"));
+	    	functions.add(new Pair("pow(number, number)", "Power function.  Equivalent to x**y"));
+	    	functions.add(new Pair("range(int)", "List from 0 up to argument–1"));
+	    	functions.add(new Pair("reduce(function, iterable, any)", "Iterates a two-argument function over a sequence. Example: reduce(f, [1,2,3], -1) returns f(f(f(-1, 1), 2), 3). Example: reduce(f, [1,2,3]) returns f(f(1, 2), 3)."));
+	    	functions.add(new Pair("reversed(iterable)", "Returns a sequence in reverse order"));
+	    	functions.add(new Pair("round(float)", "Rounds a number to the closest integer"));
+	    	functions.add(new Pair("round(float, int)", "Rounds a number to the given number of decimal places after the decimal point"));
+	    	functions.add(new Pair("set(iterable)", "Set constructor"));
+	    	functions.add(new Pair("sin(float)", "Sine"));
+	    	functions.add(new Pair("sinh(float)", "Hyperbolic sine"));
+	    	functions.add(new Pair("sorted(iterable)", "Returns a sequence in sorted order"));
+	    	functions.add(new Pair("sqrt(float)", "Square root.  Fails for negative arguments"));
+	    	functions.add(new Pair("stdev(TimeSeries)", "Standard deviation of a time series"));
+	    	functions.add(new Pair("stdev(iterable)", "Sample standard deviation of a sequence"));
+	    	functions.add(new Pair("str(any)", "String constructor"));
+	    	functions.add(new Pair("sum(iterable)", "Sum of sequence elements"));
+	    	functions.add(new Pair("tan(float)", "Tangent"));
+	    	functions.add(new Pair("tanh(float)", "Hyperbolic tangent"));
+	    	functions.add(new Pair("timedelta(float, float)", "timedelta constructor from number of days, and optionally seconds."));
+	    	functions.add(new Pair("todatetime(float)", "Converts a simulation time value into a datetime object.  Inverse of tosimtime(datetime)."));
+	    	functions.add(new Pair("tosimtime(datetime)", "Converts datetime object to a simulation time  value.  Inverse of todatetime(float)."));
+	    	functions.add(new Pair("tosimtime(str)", "Converts ISO-8601 formatted string such as “2015-06-19T21:30:00” to a simulation time  value. "));
+	    	functions.add(new Pair("tuple(any, …)", "Tuple constructor"));
+	    	functions.add(new Pair("var(TimeSeries)", "Variance of a time series"));
+	    	functions.add(new Pair("var(iterable)", "Sample variance of a sequence"));
+	    	functions.add(new Pair("xrange(int)", "Sequence from 0 up to argument – 1."));
+	    	functions.add(new Pair("zip(iterable, …)", "Combines given iterables into one iterable of tuples. Example: zip([1,2,3], [9,8,7]) returns [(1,9), (2,8), (3,7)]"));
+	    	model.put("functions", functions);
 	    }
 	}
 

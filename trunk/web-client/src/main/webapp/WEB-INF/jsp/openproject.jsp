@@ -37,7 +37,7 @@ margin-left: 5%;
 		<td valign="top">
 			<div style="overflow:scroll;height:100%;width:900px;overflow:auto">
 			<h2 class="error">${error}</h2>
-			<h2><spring:message code="openproject"/></h2>
+			<h1><spring:message code="openproject"/></h1>
 			<table class="tablestyle" width="600">
 				<col style="width:150px">	
 				<col style="width:50px">	

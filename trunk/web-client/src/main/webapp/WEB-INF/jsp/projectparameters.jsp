@@ -66,6 +66,9 @@ margin-bottom: 10%;
 						<col style="width: 5%">
 						<col style="width: 90%">
 						<col style="width: 5%">
+						<tr>
+							<td colspan="2"><h2 class="error">${error}</h2></td>
+						</tr>
 						<tr class="project_parameters">
 							<td colspan="2" height="80">
 								<h2>
@@ -160,11 +163,13 @@ margin-bottom: 10%;
 															<col style="width: 150px">
 															<col style="width: 60px">
 															<col style="width: 60px">
+															<col style="width: 60px">
 															<tr>
 																<!-- Input parameter -->
 																<th><spring:message code="input_parameter" /></th>
 																<!-- Default value -->
 																<th><spring:message code="default_value" /></th>
+																<th><spring:message code="type" /></th>
 																<!-- Units -->
 																<th><spring:message code="units" /></th>
 																<!-- Edit -->
@@ -177,6 +182,14 @@ margin-bottom: 10%;
 																<tr>
 																	<td>${inputParam.name}</td>
 																	<td>${inputParam.defaultvalue}</td>
+																	<c:choose>
+																		<c:when test="${inputParam.getType().getTypeid() >= 5}">
+																			<td>Time series</td>																		
+																		</c:when>
+																		<c:otherwise>
+																			<td><spring:message code="value"></spring:message></td>
+																		</c:otherwise>
+																	</c:choose>
 																	<td>${inputParam.unit.name}</td>
 																	<td><a href="<c:url value='editinputparameter.html?inputparamid=${inputParam.inputid}'/>">
 																			<button align="right" type="button" value="Edit">

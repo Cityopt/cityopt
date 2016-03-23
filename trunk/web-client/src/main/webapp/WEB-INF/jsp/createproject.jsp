@@ -31,7 +31,7 @@
 			<tr>
 				<td><h2 class="error">${error}</h2></td>
 			</tr>
-				<tr><td><h2><spring:message code="createproject"/></h2></td>
+				<tr><td><h1><spring:message code="createproject"/></h1></td>
 					<td align="right">
 						<div class="round-button">
 							<div class="round-button-circle">

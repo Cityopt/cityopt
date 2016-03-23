@@ -44,24 +44,29 @@
 							<tr height="20">
 								<td></td>
 								<!-- Functions -->
-								<td><spring:message code="functions"/></td>
+								<td><b><spring:message code="functions"/></b></td>
 							</tr>
 							<tr>
 								<td></td>
 								<td>
+									<div style="overflow:scroll;height:250px;width:500px;overflow:auto">
 									<table class="tablestyle">
 										<col style="width:150px">
-										<col style="width:250px">
+										<col style="width:350px">
 										<tr>
 											<th><spring:message code="function"/></th>
 											<th><spring:message code="description"/></th>
 										</tr>
-										<tr>
-											<td>Integrate</td>
-											<td></td>
-									   	</tr>
 										
-									</table>										
+										<c:forEach items="${functions}" var="function">
+											<tr>
+												<td>${function.first}</td>
+												<td>${function.second}</td>
+										   	</tr>
+										</c:forEach>
+										
+									</table>								
+									</div>												
 								</td>
 								<td></td>
 								<td>

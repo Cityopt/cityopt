@@ -36,7 +36,7 @@
 					<td>
 						<h2 class="error">${error}</h2>
 						<!-- EditProject -->
-						<h2><spring:message code="editproject"/></h2>
+						<h1><spring:message code="editproject"/></h1>
 					</td>
 					<td align="right">
 						<div class="round-button">

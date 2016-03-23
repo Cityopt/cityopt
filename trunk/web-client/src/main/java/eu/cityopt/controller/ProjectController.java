@@ -49,6 +49,7 @@ import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
+import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
@@ -602,7 +603,6 @@ public class ProjectController {
         try {
             importExportService.exportSimulationStructure(project.getPrjid(), outputStream);
         } catch (EntityNotFoundException | ScriptException e) {
-            //FIXME This is not the right way to handle exceptions.
             e.printStackTrace();
         }
 
@@ -888,6 +888,7 @@ public class ProjectController {
         outputStream.close();
     }
 
+    
     
     @RequestMapping(value="closeproject", method=RequestMethod.GET)
     public String closeProject(Map<String, Object> model, HttpServletRequest request)
@@ -1503,7 +1504,7 @@ public class ProjectController {
         securityAuthorization.atLeastExpert_expert(project);
         
         controllerService.initUpdateMetric(model,  project.getPrjid());
-       
+        controllerService.getFunctions(model);
         return "updatemetric";
     }
 
@@ -1552,11 +1553,14 @@ public class ProjectController {
 	        newMetric.setExpression(expression.trim());
 	        newMetric.setProject (project);
 	        
-	        try {
-				newMetric.setUnit(unitService.findByName(unit));
-			} catch (EntityNotFoundException e2) {
-				e2.printStackTrace();
-			}
+	        if (unit != null && !unit.isEmpty())
+	        {
+		        try {
+					newMetric.setUnit(unitService.findByName(unit));
+				} catch (EntityNotFoundException e2) {
+					e2.printStackTrace();
+				}
+	        }
 	        
 	        if (action.equals("create")) {
 	        	newMetric = metricService.save(newMetric);
