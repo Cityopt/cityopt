@@ -1,11 +1,15 @@
 package eu.cityopt.controller;
 
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jfree.data.time.Minute;
+import org.jfree.data.time.TimeSeries;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -18,14 +22,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import eu.cityopt.DTO.ComponentDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
+import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
+import eu.cityopt.DTO.TimeSeriesDTO;
+import eu.cityopt.DTO.TimeSeriesDTOX;
+import eu.cityopt.DTO.TimeSeriesValDTO;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.config.AppMetadata;
@@ -124,6 +133,12 @@ public class ParameterController {
 
     @Autowired
 	SyntaxCheckerService syntaxCheckerService;
+
+    @Autowired
+    ImportExportService importExportService;
+
+	@Autowired
+	TimeSeriesValService timeSeriesValService;
 
     @RequestMapping(value="projectparameters", method=RequestMethod.GET)
     public String getProjectParameters(Map<String, Object> model, 
@@ -372,6 +387,48 @@ public class ParameterController {
         inputParamForm.setValue(inputParam.getDefaultvalue());
         model.put("inputParamForm", inputParamForm);
 
+		TimeSeriesDTO timeSeriesDTO = inputParam.getTimeseries();
+		
+		if (timeSeriesDTO != null)
+		{
+			List<TimeSeriesValDTO> timeSeriesVals = null;
+			
+			try {
+				timeSeriesVals = timeSeriesValService.findByTimeSeriesIdOrderedByTime(timeSeriesDTO.getTseriesid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			Iterator<TimeSeriesValDTO> timeSeriesIter = timeSeriesVals.iterator();
+			List<String> values = new ArrayList<String>();
+			List<String> times = new ArrayList<String>();
+			
+			while(timeSeriesIter.hasNext()) {
+				TimeSeriesValDTO timeSeriesVal = timeSeriesIter.next();
+				times.add(timeSeriesVal.getTime().toString());
+				values.add(timeSeriesVal.getValue().toString());
+			}
+			System.out.println("Times: " + times.toString());
+			System.out.println("Values: " + values.toString());
+			
+			if (times.size() > 100)
+			{
+				times = times.subList(0, 100);
+			}
+
+			if (values.size() > 100)
+			{
+				values = values.subList(0, 100);
+			}
+
+			model.put("times", times);
+			model.put("values", values);
+		}
+		else
+		{
+			System.out.println("Time series empty");
+		}
+
         List<UnitDTO> units = unitService.findAll();
         model.put("units", units);
         
@@ -415,6 +472,9 @@ public class ParameterController {
         
         updatedInputParam.setName(inputParamForm.getName());
         updatedInputParam.setDefaultvalue(inputParamForm.getValue());
+        TypeDTO type = typeService.findByName(eu.cityopt.sim.eval.Type.DOUBLE.name);
+        updatedInputParam.setType(type);
+        
         String strUnit = inputParamForm.getUnit();
         UnitDTO unit = null;
         
@@ -451,6 +511,97 @@ public class ParameterController {
         return "projectparameters";
     }
 
+    @RequestMapping(value = "importinputtimeseries", method = RequestMethod.POST)
+    public String importInputTimeSeries(Map<String, Object> model, 
+		@RequestParam("file") MultipartFile file, 
+    	@RequestParam(value="inputid", required=true) String inputId)
+    {
+    	System.out.println("Starting importing input time series");
+
+        if (!file.isEmpty()) {
+            try {
+                ProjectDTO project = (ProjectDTO) model.get("project");
+
+                if (project == null)
+                {
+                    return "error";
+                }
+                securityAuthorization.atLeastExpert_standard(project);
+
+                try {
+                    project = projectService.findByID(project.getPrjid());
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+                model.put("project", project);
+
+                int nInputId = Integer.parseInt(inputId);
+                InputParameterDTO inputParam = inputParamService.findByID(nInputId);
+                
+                InputStream stream = file.getInputStream();
+                System.out.println("Starting import time series");
+                
+                Map<String, TimeSeriesDTOX> tsData = importExportService.readTimeSeriesCsv(project.getPrjid(), stream);
+                Set<String> keys = tsData.keySet();
+                Iterator<String> iter = keys.iterator();
+                
+                // Take only the first one
+                String inputParamName = iter.next();
+            	System.out.println("param name: " + inputParamName);
+                TimeSeriesDTOX ts = tsData.get(inputParamName);
+            	System.out.println("param values length: " + ts.getValues().length);
+            	System.out.println("param times length: " + ts.getTimes().length);
+                
+                TypeDTO type = typeService.findByName(eu.cityopt.sim.eval.Type.TIMESERIES_STEP.name);
+                inputParam.setType(type);
+                
+                UnitDTO unit = inputParam.getUnit();
+
+                if (unit == null)
+                {
+                	unit = controllerService.getDefaultUnit();
+                }
+
+                List<InputParameterDTO> testInputs = inputParamService.findByName(inputParamName);
+                System.out.println("test inputs size " + testInputs.size() + " name: " + inputParamName);
+                
+                if (testInputs.size() > 0
+                	&& inputParam.getName().equals(inputParamName))
+                {
+                	// Update
+                	inputParam = inputParamService.update(inputParam, inputParam.getComponentComponentid(), unit.getUnitid(), ts);
+                } 
+                else if (testInputs.size() == 0)
+                {
+                    inputParam.setName(inputParamName);
+                	inputParam = inputParamService.save(inputParam, inputParam.getComponentComponentid(), unit.getUnitid(), ts);
+                }
+                else
+                {
+                	String error = "Imported input parameter already exists, please edit the existing parameter!";
+                	model.put("error", error);
+                }
+
+                /*InputParamValDTO inputParamVal = new InputParamValDTO();
+                inputParamVal.setInputparam(inputParam);
+                inputParamVal = inputParamValService.save(inputParamVal);*/
+                
+                stream.close();
+                System.out.println("Finished importing input time series");
+
+                List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+	            model.put("components", components);
+	            Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
+	            model.put("extParams", extParams);
+
+            } catch (Exception e) {
+            	e.printStackTrace();
+            }
+        } else {
+        }
+        return "projectparameters";
+    }
+    
     @RequestMapping(value="editoutputvariable", method=RequestMethod.GET)
     public String editOutputVariable(Map<String, Object> model, 
 		@RequestParam(value="outputvarid", required=true) String outputvarid) {
@@ -745,28 +896,7 @@ public class ParameterController {
 		} catch (NumberFormatException | EntityNotFoundException e) {
 			e.printStackTrace();
 		}
-        
-        List<ExtParamValDTO> extParamVals = null;
-
-        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-        if (defaultExtParamValSetId != null)
-        {
-            try {
-                ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
-                model.put("extParamValSet", extParamValSet);
-            } catch (EntityNotFoundException e1) {
-                e1.printStackTrace();
-            }
-
-            try {
-                extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            model.put("extParamVals", extParamVals);
-        }
-
+        controllerService.getDefaultExtParamVals(model, project.getPrjid());
         controllerService.getComponentAndExternalParamValues(model, project);
         
         return "projectparameters";
@@ -909,27 +1039,7 @@ public class ParameterController {
         ExtParamDTO extParam = new ExtParamDTO();
         model.put("extParam", extParam);
 
-        List<ExtParamValDTO> extParamVals = null;
-
-        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-        if (defaultExtParamValSetId != null)
-        {
-            try {
-                ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
-                model.put("extParamValSet", extParamValSet);
-            } catch (EntityNotFoundException e1) {
-                e1.printStackTrace();
-            }
-
-            try {
-                extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            model.put("extParamVals", extParamVals);
-        }
-
+        controllerService.getDefaultExtParamVals(model, project.getPrjid());
         controllerService.getComponentAndExternalParamValues(model, project);
         
         return "extparams";
@@ -1089,7 +1199,9 @@ public class ParameterController {
         }
 
         updatedExtParamVal.setValue(paramForm.getValue());
-        extParamValService.save(updatedExtParamVal);
+
+        // Commented because done later other way
+        //extParamValService.save(updatedExtParamVal);
 
         ExtParamDTO extParam = updatedExtParamVal.getExtparam();
         try {
@@ -1099,40 +1211,32 @@ public class ParameterController {
 		}
         
         String strUnit = paramForm.getUnit();
-        UnitDTO unit = null;
         
-		try {
-			unit = unitService.findByName(strUnit);
-		} catch (EntityNotFoundException e2) {
-			e2.printStackTrace();
-		}
+        if (strUnit != null && !strUnit.isEmpty())
+        {
+	        UnitDTO unit = null;
+	        
+			try {
+				unit = unitService.findByName(strUnit);
+			} catch (EntityNotFoundException e2) {
+				e2.printStackTrace();
+			}
+	        
+			extParam.setUnit(unit);
+			extParamService.save(extParam, project.getPrjid());
+        }
         
-		extParam.setUnit(unit);
-		extParamService.save(extParam, project.getPrjid());
+		int nDefaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 
+		try {
+			extParamValSetService.updateExtParamValInSet(nDefaultExtParamValSetId, updatedExtParamVal, null, false);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
         model.put("project", project);
 
-        List<ExtParamValDTO> extParamVals = null;
-
-        Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-        if (defaultExtParamValSetId != null)
-        {
-            try {
-                ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
-                model.put("extParamValSet", extParamValSet);
-            } catch (EntityNotFoundException e1) {
-                e1.printStackTrace();
-            }
-
-            try {
-                extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            model.put("extParamVals", extParamVals);
-        }
-
+        controllerService.getDefaultExtParamVals(model, project.getPrjid());
         controllerService.getComponentAndExternalParamValues(model, project);
         
         return "extparams";
@@ -1284,35 +1388,4 @@ public class ParameterController {
              model.put("inputParameters", inputParams);
          }
     }
-    
-    // SetProjectxternalParameterValues
-    public void SetProjectExternalParameterValues(Map<String,Object> model, ProjectDTO project ){
-    	 List<ExtParamValDTO> extParamVals = null;
-         Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-         if (defaultExtParamValSetId != null)
-         {
-             try {
-                 ExtParamValSetDTO extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
-                 model.put("extParamValSet", extParamValSet);
-             } catch (EntityNotFoundException e1) {
-                 e1.printStackTrace();
-             }
-
-             try {
-                 extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
-             } catch (EntityNotFoundException e) {
-                 e.printStackTrace();
-             }
-
-             model.put("extParamVals", extParamVals);
-         }
-    }
-   
-    
-    public void SetComponentAndExternalParamValues(Map<String,Object> model, ProjectDTO project ){
-    List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-        model.put("components", components);
-        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
-        model.put("extParams", extParams);
-    }    
 }

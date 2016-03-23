@@ -412,6 +412,7 @@ public class OptimizationController {
         model.put("objFuncForm", objFuncForm);
 
         model.put("type", type);
+        controllerService.getFunctions(model);
         
         return "updateobjfunction";
     }
@@ -793,6 +794,7 @@ public class OptimizationController {
 		        }
 	            try {
 	        		ScenarioGeneratorDTO newScenGen = copyService.copyScenarioGenerator(noptimizerid, clonename);
+	        		newScenGen.setStatus("");
 	        		newScenGen = scenGenService.save(newScenGen);					
 		        } catch (EntityNotFoundException e1) {
 		            e1.printStackTrace();
@@ -2934,9 +2936,10 @@ public class OptimizationController {
     	model.put("scengenerator", scenGen);
         
         RunInfo runInfo = scenarioGenerationService.getRunningOptimisations().get(scenGen.getScengenid());
+        String strInfo = "";
         
         if (runInfo != null) {
-        	model.put("runinfo", runInfo.toString());
+        	strInfo += runInfo.toString();
         }
         
         String status = scenGen.getStatus();
@@ -2945,9 +2948,11 @@ public class OptimizationController {
         if ((runInfo != null && !runInfo.toString().isEmpty())
     		|| (status != null && !status.isEmpty()))
         {
+        	strInfo += " status: " + status; 
         	locked = true;
         }
         
+    	model.put("runinfo", strInfo);
         model.put("locked", locked);
         UserSession userSession = getUserSession(model);
         

@@ -22,7 +22,7 @@
 			<table>
 				<tr>
 					<td class="title_create_scenario">						
-						<h2><spring:message code="create_scenario"/></h2>																								
+						<h1><spring:message code="create_scenario"/></h1>
 					</td>
 				</tr>
 				<tr>

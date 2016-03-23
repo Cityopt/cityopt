@@ -36,7 +36,7 @@ margin-left: 5%;
 			<div style="overflow:scroll;height:100%;width:800px;overflow:auto">
 			
 			<!-- Open scenario -->
-			<h2> <spring:message code="open_scenario"/></h2>
+			<h1> <spring:message code="open_scenario"/></h1>
 		
 			
 			<table class="tablestyle" width="600" border="1">
