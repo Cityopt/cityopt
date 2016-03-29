@@ -13,7 +13,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt summary chart</title>
+<title>CityOpt <spring:message code="summary_chart" /></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -32,7 +32,7 @@
 				<col style="width:30px">
 				<col style="width:800px">
 				<tr>
-					<td><h2><spring:message code="summary_chart"/></h2></td>
+					<td><h1><spring:message code="summary_chart"/></h1></td>
 					<td></td>
 					<td></td>
 				</tr>
@@ -43,7 +43,7 @@
 							<c:choose>
 								<c:when test="${error != null && !error.isEmpty()}">
 									<tr>
-										<td><i>Error in simulation: ${error}</i></td>
+										<td><i><spring:message code="error_in_simulation" />: ${error}</i></td>
 									</tr>
 								</c:when>
 								<c:otherwise>
@@ -124,11 +124,11 @@
 										<c:choose>
 											<c:when test="${usersession.hasMetric(metric.metid)}">
 												<tr style="background-color: #D4D4D4">
-												<td>Added (<a href="summarychart.html?action=remove&metricid=${metric.metid}">Remove</a>)</td>
+												<td><spring:message code="added" /> (<a href="summarychart.html?action=remove&metricid=${metric.metid}"><spring:message code="remove" /></a>)</td>
 											</c:when>
 											<c:otherwise>
 												<tr>
-												<td><a href="summarychart.html?action=add&metricid=${metric.metid}">Add to chart</a></td>
+												<td><a href="summarychart.html?action=add&metricid=${metric.metid}"><spring:message code="add_to_chart" /></a></td>
 											</c:otherwise>
 										</c:choose>
 										<td>${metric.name}</td>

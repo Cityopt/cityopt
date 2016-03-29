@@ -17,7 +17,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt time series table</title>
+<title>CityOpt <spring:message code="time_series_table"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -37,7 +37,7 @@
 				<tr>
 					<td colspan="2" height="80">
 						<!-- View table -->
-						<h2><spring:message code="time_series_table"/></h2>
+						<h1><spring:message code="time_series_table"/></h1>
 					</td>
 				</tr>
 				<tr>
@@ -79,11 +79,11 @@
 																<c:forEach items="${components}" var="component">
 																<c:if test="${selectedcompid == component.componentid}">
 																	<tr style="background-color: rgb(140, 200, 200)">
-																	<td><a href="viewtable.html?selectedcompid=${component.componentid}">Selected</a></td>
+																	<td><a href="viewtable.html?selectedcompid=${component.componentid}"><spring:message code="selected"/></a></td>
 																</c:if>
 																<c:if test="${selectedcompid != component.componentid}">
 																	<tr>
-																	<td><a href="viewtable.html?selectedcompid=${component.componentid}">Select</a></td>
+																	<td><a href="viewtable.html?selectedcompid=${component.componentid}"><spring:message code="select"/></a></td>
 																</c:if>
 																	<td>${component.name}</td>
 															   	</tr>
@@ -105,11 +105,11 @@
 																	<c:choose>
 																		<c:when test="${outputVar.outvarid == selectedOutputVar.outvarid}">
 																			<tr style="background-color: rgb(140, 200, 200)">
-																			<td>Shown (<a href="writetable.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Remove</a>)</td>
+																			<td>Shown (<a href="writetable.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}"><spring:message code="remove"/></a>)</td>
 																		</c:when>
 																		<c:otherwise>
 																			<tr>
-																			<td><a href="writetable.html?action=add&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Show</a></td>
+																			<td><a href="writetable.html?action=add&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}"><spring:message code="show"/></a></td>
 																		</c:otherwise>
 																	</c:choose>
 																
@@ -196,7 +196,6 @@
 													<tr>
 														<td></td>
 														<td align="right">
-															<!-- <a href="writetable.html"><button type="button">View table</button></a>-->
 														</td>
 													</tr>
 												</table>

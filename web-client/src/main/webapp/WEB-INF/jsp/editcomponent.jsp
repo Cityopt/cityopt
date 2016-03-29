@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt edit component</title>
+<title>CityOpt <spring:message code="edit_component"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -25,7 +25,7 @@
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="editcomponent.html?componentid=${component.componentid}" modelAttribute="component">
 			<!--Edit component-->
-			<h2><spring:message code="edit_component"/></h2>
+			<h1><spring:message code="edit_component"/></h1>
 
 			<!-- Tooltips -->
 			<c:set var="tooltip_edit"><spring:message code="tooltip_edit_name"/></c:set>

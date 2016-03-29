@@ -12,7 +12,7 @@
 <script language="javascript"><%@ include file="cityopt.js"%></script>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Cityopt edit grid search optimization set</title>
+<title>Cityopt <spring:message code="grid_search"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body onLoad="showComponent('ModelParameter', ${usersession.componentId})">
@@ -33,7 +33,7 @@
 				<col style="width: 450px;">
 				<col style="width: 450px;">
 				<!--Edit genetic algorithm optimization set-->
-				<tr><td colspan="2"><h2><spring:message code="edit_genetic_algorithm_optimization_set"/></h2></td></tr>
+				<tr><td colspan="2"><h1><spring:message code="grid_search"/></h1></td></tr>
 				<tr>
 					<td colspan="2">
 						<table>
@@ -65,11 +65,11 @@
                                     </select>
                                 </td>
                                 <td align="right">
-                                	<a href="exportoptimizationproblem.html"><button type="button" style="width: 150px">Export optimization problem</button></a>
+                                	<a href="exportoptimizationproblem.html"><button type="button" style="width: 150px"><spring:message code="export_optimization_problem"/></button></a>
 								</td>
                             </tr>
                             <tr>
-								<td>Grid search progress:</td>
+								<td><spring:message code="grid_search_progress"/>:</td>
 								<td>${runinfo}</td>
 								<td align="right">
 									<input type="submit" name="run" value="Run algorithm" style="width: 150px">
@@ -78,7 +78,7 @@
 							<form:form method="POST" action="importoptimizationproblem.html" enctype="multipart/form-data">
         					<tr>
         						<!-- Import optimization set file CSV -->
-        						<td>Import optimization problem</td>
+        						<td><spring:message code="import_optimization_problem"/></td>
 								<td><input id="file" name="file" type="file"/></td>
 								<td align="right"></td>
 							</tr>
@@ -99,10 +99,10 @@
 							<col style="width: 270px;">
 							
 							<tr>
-								<td><b>Model input parameters</b></td>
+								<td><b><spring:message code="model_input_parameters"/></b></td>
 							</tr>
 							<tr height="10"></tr>
-							<tr><td colspan="2">Component:
+							<tr><td colspan="2"><spring:message code="component"/>:
 						      <select name="selectedcompid" onChange="selectComponent('ModelParameter',this.value)">
 							   <c:forEach items="${inputcomponents}" var="component">
 							     <c:choose>

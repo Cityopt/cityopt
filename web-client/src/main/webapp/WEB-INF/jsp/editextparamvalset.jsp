@@ -6,7 +6,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt edit external parameter value set</title>
+<title>CityOpt <spring:message code="edit_external_parameter_set"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -24,12 +24,12 @@
           <table style="width: 450px">
                <tr>
 	               <td>
-	                  <h2>Edit external parameter values</h2>
+	                  <h1><spring:message code="edit_external_parameter_set"/></h1>
 	               </td>
                </tr>
               <tr>
 	              <td>
-	                External parameter value set: ${extparamvalset.name}
+	                <spring:message code="external_parameter_set"/>: ${extparamvalset.name}
 	              </td>
               </tr>
               <tr height="10"></tr>
@@ -40,9 +40,9 @@
                       <col align="right">
                       <col align="right">
 	                  <tr>
-	                      <th>Parameter</th>
-                          <th>Value</th>
-	                      <th>Comment</th>
+	                      <th><spring:message code="parameter"/></th>
+                          <th><spring:message code="value"/></th>
+	                      <th><spring:message code="comment"/></th>
 	                  </tr>
 	
 	                  <c:forEach items="${extparamvals}" var="epv">
@@ -63,7 +63,7 @@
               <tr>
                   <td align="right">
                     <input type="submit" value="Ok">
-                    <a href="${context}"><button type="button" style="width: 100px">Cancel</button></a>
+                    <a href="${context}"><button type="button" style="width: 100px"><spring:message code="cancel"/></button></a>
                   </td>
               </tr>   
 			</table>

@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt create external parameter</title>
+<title>CityOpt <spring:message code="create_external_parameter"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -25,7 +25,7 @@
 			<form:form method="post" action="createextparam.html" modelAttribute="extParam">
 			<h2 class="error">${error}</h2>			
 			<!-- Create external parameter -->
-			<h2><spring:message code="create_external_parameter"/></h2>
+			<h1><spring:message code="create_external_parameter"/></h1>
 
 			<table align="center">
 				<col style="width:150px">

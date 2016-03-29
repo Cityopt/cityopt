@@ -8,7 +8,7 @@ pageEncoding="UTF-8"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Virtual City Login</title>
+<title><spring:message code="virtual_city_login"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 

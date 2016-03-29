@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt create metric</title>
+<title>CityOpt <spring:message code="update_metric"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
@@ -115,7 +115,7 @@
 							<tr>
 								<td></td>
 								<td>					
-									Unit
+									<spring:message code="unit"/>
 								</td>
 							</tr>
 							<tr>

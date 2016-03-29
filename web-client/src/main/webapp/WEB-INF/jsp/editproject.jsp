@@ -8,14 +8,14 @@
 <html>
 <head>
 <!-- CityOpt edit project -->
-<title>CityOpt <spring:message code="editproject"/></title>
+<title>CityOpt <spring:message code="edit_project"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <script>
     function openModelInfoWindow() {
-    	   window.open("infopage.html",'Model info','width=600,height=600,scrollbars=yes');
+    	   window.open("infopage.html",'<spring:message code="model_info"/>','width=600,height=600,scrollbars=yes');
     }
     function openInfoWindow() {
- 	   window.open("editproject_info.html",'Edit project info','width=600,height=600,scrollbars=yes');
+ 	   window.open("editproject_info.html",'<spring:message code="edit_project_info"/>','width=600,height=600,scrollbars=yes');
  	}
 </script>
 </head>

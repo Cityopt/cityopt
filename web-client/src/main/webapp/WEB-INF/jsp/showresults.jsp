@@ -8,7 +8,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt show optimization results</title>
+<title>CityOpt <spring:message code="optimization_results" /></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -23,7 +23,7 @@
 				<tr>
 					<td>
 						<!-- Optimization results -->
-						<h2><spring:message code="optimization_results"/></h2>
+						<h1><spring:message code="optimization_results"/></h1>
 					</td>
 				</tr>
 				<tr>

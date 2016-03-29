@@ -14,8 +14,6 @@
 <head>
 
 <!-- JQuery script: For Radio button for in-Page events -->
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
 var getUrlParameter = function getUrlParameter(sParam) {
     var sPageURL = decodeURIComponent(window.location.search.substring(1)),
@@ -33,7 +31,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 };
 
 </script>
-<title>CityOpt external parameter sets</title>
+<title>CityOpt <spring:message code="external_parameter_sets" /></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -46,9 +44,9 @@ var getUrlParameter = function getUrlParameter(sParam) {
 					<tr>
 						<td>
 							<!--External parameter sets  -->
-							<h2>
+							<h1>
 								<spring:message code="external_parameter_sets" />
-							</h2>
+							</h1>
 							<p id="JQTest"></p>
 						</td>
 					</tr>

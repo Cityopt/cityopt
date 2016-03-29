@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt edit user</title>
+<title>CityOpt <spring:message code="edit_user"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -24,7 +24,7 @@
 		<td valign="top">
 			<div style="overflow:scroll;height:800px;width:800px;overflow:auto">
 			<!--Edit user  -->
-			<h2><spring:message code="edit_user"/></h2>
+			<h1><spring:message code="edit_user"/></h1>
 
 			<table>
 				<tr>

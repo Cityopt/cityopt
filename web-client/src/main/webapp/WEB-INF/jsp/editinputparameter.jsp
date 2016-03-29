@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt edit input parameter</title>
+<title>CityOpt <spring:message code="edit_input_parameter"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -24,7 +24,7 @@
 		<td width=30></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:800px;width:600px;overflow:auto">
-			<h1>Edit input parameter</h1>
+			<h1><spring:message code="edit_input_parameter"/></h1>
 
 			<table align="center">
 				<col style="width:150px">
@@ -36,7 +36,7 @@
 				<form:form method="post" action="editinputparameter.html?inputparamid=${inputParam.inputid}" modelAttribute="inputParamForm">
 				<tr>
 					<td>
-						Name
+						<spring:message code="name"/>
 					</td>
 					<td>
 						${inputParam.name}
@@ -48,7 +48,7 @@
 							<td>
 								<spring:message code="type"/>
 							</td>
-							<td>Time series</td>																		
+							<td><spring:message code="time_series"/></td>																		
 						</tr>
 						<tr>
 							<td colspan="2">
@@ -78,7 +78,7 @@
 					</tr>
 					<tr>
 						<td>
-							Default value
+							<spring:message code="default_value"/>
 						</td>
 						<td>
 							${inputParam.defaultvalue}
@@ -88,7 +88,7 @@
 				</c:choose>
 				<tr>
 					<td>					
-						Unit
+						<spring:message code="unit"/>
 					</td>
 					<td>					
 						${inputParam.unit.name}
@@ -101,12 +101,12 @@
 				</tr>
 				<tr>
 					<td>
-						<h2>Save as value</h2>
+						<h2><spring:message code="save_as_value"/></h2>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						Name*
+						<spring:message code="name"/>*
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="name"/>
@@ -114,7 +114,7 @@
 				</tr>
 				<tr>
 					<td>
-						Default value
+						<spring:message code="default_value"/>
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="value"/>
@@ -122,7 +122,7 @@
 				</tr>			
 				<tr>
 					<td>					
-						Unit
+						<spring:message code="unit"/>
 					</td>
 					<td>					
 						<form:select path="unit">
@@ -141,7 +141,7 @@
 				<tr>
 					<td></td>
 					<td align="right">
-						<input style="width:100px" type="submit" value="Save as value"/>
+						<input style="width:100px" type="submit" value="<spring:message code="save_as_value"/>"/>
 						<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>">
 					</td>
 				</tr>
@@ -151,19 +151,19 @@
 				</tr>
 				<tr>
 					<td colspan="2">
-						<h2>Import and save as time series</h2>
+						<h1><spring:message code="import_and_save_as_time_series"/></h1>
 					</td>
 				</tr>
 				</form:form>
 				<form:form method="POST" action="importinputtimeseries.html?inputid=${inputParam.inputid}" enctype="multipart/form-data">
 				<tr>
-					<td>Import input parameter times series</td>
+					<td><spring:message code="import_time_series"/></td>
 					<td><input id="file" name="file" type="file"/></td>
 				</tr>
 				<tr>	
   					<td></td>
    					<td align="right">
-   						<input type="submit" value="Import and save as time series">
+   						<input type="submit" value="<spring:message code="import_and_save_as_time_series"/>">
 						<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>">
   					</td>
 				</tr>	

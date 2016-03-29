@@ -15,13 +15,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Project parameters</title>
+<title>CityOpt <spring:message code="external_parameters" /></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
 <script>
     function openInfoWindow() {
-    	   window.open("projectparameters_info.html",'Project parameters info','width=600,height=600');
+    	   window.open("extparams_info.html",'<spring:message code="external_parameters" /> info','width=600,height=600');
     }
 </script>
 
@@ -68,9 +68,9 @@ margin-bottom: 10%;
 						<col style="width: 5%">
 						<tr class="project_parameters">
 							<td colspan="2" height="40">
-								<h2>
+								<h1>
 									<spring:message code="external_parameters" />
-								</h2>
+								</h1>
 							</td>
 							<td>
 								<div class="round-button">
@@ -226,7 +226,7 @@ margin-bottom: 10%;
 																		</tr>
 																		<form:form method="POST" action="importextparam.html" enctype="multipart/form-data">
 												        					<tr>
-												        						<td>Import external time series file (CSV)</td>
+												        						<td><spring:message code="import_external_time_series" /> (CSV)</td>
 																				<td><input id="file" name="file" type="file"/></td>
 																				<td align="right"><input type="submit" value="<spring:message code="import_file"/>"></td>	
 																			</tr>

@@ -8,11 +8,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt import data</title>
+<title>CityOpt <spring:message code="import_data"/></title>
 
 <script>
     function openInfoWindow() {
-    	   window.open("importdata_info.html",'Info: Import data','width=500,height=600,scrollbars=yes');
+    	   window.open("importdata_info.html",'<spring:message code="import_data"/> info','width=500,height=600,scrollbars=yes');
     }
 </script>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
@@ -41,7 +41,7 @@ margin-right:10%;
 				<tr>
 					<td>
 						<!-- Import data -->
-						<h2><spring:message code="import_data"/></h2>
+						<h1><spring:message code="import_data"/></h1>
 					</td>
 						<!-- Info Button -->
 																				
@@ -88,7 +88,7 @@ margin-right:10%;
 							</tr>
 							<tr>
 								<!-- Design target: -->						
-								<td><spring:message code="design_target"/>t:</td>
+								<td><spring:message code="design_target"/>:</td>
 								<td></td>
 							</tr>
 							<tr>

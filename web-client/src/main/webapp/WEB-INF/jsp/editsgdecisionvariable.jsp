@@ -11,10 +11,10 @@
 <head>
 <c:choose>
   <c:when test="${decisionvarid > 0}">
-    <title>CityOpt edit decision variable</title>
+    <title>CityOpt <spring:message code="edit_decision_variable"/></title>
   </c:when>
   <c:otherwise>
-    <title>CityOpt create decision variable</title>
+    <title>CityOpt <spring:message code="create_decision_variable"/></title>
   </c:otherwise>
 </c:choose>  
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
@@ -38,10 +38,10 @@
 					<td>
                         <c:choose>
                           <c:when test="${decisionvarid > 0}">
-                            <h2>Edit decision variable</h2>
+                            <h1><spring:message code="edit_decision_variable"/></h1>
                           </c:when>
                           <c:otherwise>
-                            <h2>Create decision variable</h2>
+                            <h1><spring:message code="create_decision_variable"/></h1>
                           </c:otherwise>
                         </c:choose>  
 					</td>
@@ -56,14 +56,14 @@
 							<col style="width:240px">
 							<tr>
 								<td></td>
-								<td>Name*</td>
+								<td><spring:message code="name"/>*</td>
 								<td><form:input style="width:400px" type="text" path="name"/></td>
 								<td></td>
 							</tr>
                             <tr height=10></tr>
                             <tr>
                                 <td></td>
-                                <td>Type*:</td>
+                                <td><spring:message code="type"/>*:</td>
                                 <td> 
                                     <select name="typeid" id="typeid" size="1">
                                     <c:forEach items="${typechoices}" var="typechoice">
@@ -83,14 +83,14 @@
 							<tr height=10></tr>
 							<tr>
 								<td></td>
-								<td>Lower bound*</td>
+								<td><spring:message code="lower_bound"/>*</td>
 								<td><form:input style="width:400px" type="text" path="lowerbound"/></td>
 								<td></td>
 							</tr>
 							<tr height=10></tr>
 							<tr>
 								<td></td>
-								<td>Upper bound*</td>
+								<td><spring:message code="upper_bound"/>*</td>
 								<td><form:input style="width:400px" type="text" path="upperbound"/></td>
 								<td></td>
 							</tr>
@@ -99,7 +99,7 @@
 								<td></td>
 								<td></td>
 								<td align=right><input type="submit" value="Ok"/>
-								<a href="geneticalgorithm.html"><button type="button">Cancel</button></a></td>
+								<a href="geneticalgorithm.html"><button type="button"><spring:message code="cancel"/></button></a></td>
 							</tr>					
 						</table>
 					</td>

@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt create metric</title>
+<title>CityOpt <spring:message code="create_metric"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
@@ -28,7 +28,7 @@
 				<tr>
 					<td>
 						<!-- Create metric -->
-						<h2><spring:message code="create_metric"/> step 1</h2>
+						<h1><spring:message code="create_metric"/> step 1</h1>
 					</td>
 				</tr>
 				<tr>
@@ -89,7 +89,7 @@
 														<th><spring:message code="input_parameter"/></th>
 														<th><spring:message code="default_value"/></th>
 														<th><spring:message code="unit"/></th>
-														<th>Add</th>
+														<th><spring:message code="add"/></th>
 													</tr>
 													
 													<c:forEach items="${inputParameters}" var="inputParam">
@@ -110,7 +110,7 @@
 													<tr>
 														<!--Output variable-->
 														<th><spring:message code="output_variable"/></th>
-														<th>Add</th>
+														<th><spring:message code="add"/></th>
 													</tr>
 								
 													<c:forEach items="${outputVars}" var="outputVar">
@@ -146,7 +146,7 @@
 									<!-- External parameters -->
 								<td><spring:message code="external_parameters"/></td>
 								<td></td>
-								<td>Numbers and operators</td>
+								<td><spring:message code="numbers_and_operators"/></td>
 							</tr>
 							<tr>
 								<td></td>
@@ -164,7 +164,7 @@
 										<c:forEach items="${metrics}" var="metric">
 										<tr>
 											<td>${metric.name}</td>
-											<td><a href="createmetric.html?metricid=${metric.metid}"><button type="button">Add</button></a></td>
+											<td><a href="createmetric.html?metricid=${metric.metid}"><button type="button"><spring:message code="add"/></button></a></td>
 									   	</tr>
 										</c:forEach>
 									</table>										
@@ -178,13 +178,13 @@
 										<tr height="20">
 											<!-- Name -->
 										    <th><spring:message code="name"/></th>
-										    <th>Add</th>
+										    <th><spring:message code="add"/></th>
 										</tr>
 										
 										<c:forEach items="${extParams}" var="extParam">
 										<tr>
 											<td>${extParam.name}</td>
-											<td><a href="createmetric.html?extparamid=${extParam.extparamid}"><button type="button">Add</button></a></td>
+											<td><a href="createmetric.html?extparamid=${extParam.extparamid}"><button type="button"><spring:message code="add"/></button></a></td>
 									    </tr>
 										</c:forEach>
 									</table>
@@ -250,7 +250,7 @@
 								<td></td>
 								<td></td>
 								<td align="right">
-									<a href="updatemetric.html"><button type="button" style="width:100px">Next</button></a>
+									<a href="updatemetric.html"><button type="button" style="width:100px"><spring:message code="next"/></button></a>
 									<a href="metricdefinition.html"><button style="width:100px" type="button" value="Cancel">
 									<spring:message code="cancel"/></button></a>
 								</td>

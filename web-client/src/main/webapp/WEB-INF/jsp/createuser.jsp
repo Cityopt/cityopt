@@ -15,7 +15,7 @@
 
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt create user</title>
+<title>CityOpt <spring:message code="create_user"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -31,9 +31,9 @@
 						<!-- csrt support (version 4.0) -->
 						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 
-						<h2>
+						<h1>
 							<spring:message code="account_creation" />
-						</h2>
+						</h1>
 
 						<table align="center">
 							<tr>

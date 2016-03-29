@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt show scenarios</title>
+<title>CityOpt <spring:message code="show_scenarios" /></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -27,7 +27,7 @@
 				<tr>
 					<td>
 						<!-- Show scenarios -->
-						<h2><spring:message code="show_scenarios"/></h2>
+						<h1><spring:message code="show_scenarios"/></h1>
 						<table class="tablestyle" width="600" border="1">
 							<col style="width:200px">	
 							<col style="width:250px">

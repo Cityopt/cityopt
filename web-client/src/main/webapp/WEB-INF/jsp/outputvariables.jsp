@@ -12,7 +12,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Output variables</title>
+<title>CityOpt <spring:message code="output_variables"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -34,7 +34,7 @@
 					<td></td>
 					<td colspan="2" height="80">
 						<!-- Output variables -->
-						<h2><spring:message code="output_variables"/></h2>
+						<h1><spring:message code="output_variables"/></h1>
 					</td>
 					<td></td>
 				</tr>
@@ -76,7 +76,7 @@
 														</c:if>
 														<c:if test="${selectedcompid != component.componentid}">
 															<tr>
-															<td><a href="<c:url value='outputvariables.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+															<td><a href="<c:url value='outputvariables.html?selectedcompid=${component.componentid}'/>"><spring:message code="select"/></a></td>
 														</c:if>
 															<td>${component.name}</td>
 													</tr>

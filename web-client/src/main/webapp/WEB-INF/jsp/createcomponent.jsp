@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt create component</title>
+<title>CityOpt <spring:message code="create_component"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -24,7 +24,7 @@
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="createcomponent.html" modelAttribute="component">
 			<h2 class="error">${error}</h2>
-			<h2><spring:message code="create_component"/></h2>
+			<h1><spring:message code="create_component"/></h1>
 
 
 			<!-- Tool tips -->

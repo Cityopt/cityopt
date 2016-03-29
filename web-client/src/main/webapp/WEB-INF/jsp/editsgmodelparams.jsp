@@ -7,7 +7,7 @@
 <html>
 <script language="javascript"><%@ include file="cityopt.js"%></script>
 <head>
-<title>CityOpt edit GA model input parameters</title>
+<title>CityOpt <spring:message code="edit_input_parameters"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body onLoad="showComponent('ModelParameter',${usersession.componentId})">
@@ -22,16 +22,16 @@
           <table style="width: 450px">
                <tr>
 	               <td>
-	                  <h2>Edit GA model input parameters</h2>
+	                  <h1><spring:message code="edit_input_parameters"/></h1>
 	               </td>
                </tr>
               <tr>
 	              <td>
-	                GA optimization set: ${scengenerator.name}
+	                <spring:message code="genetic_optimization_set"/>: ${scengenerator.name}
 	              </td>
               </tr>
               <tr height="10"></tr>
-              <tr><td colspan="2">Component:
+              <tr><td colspan="2"><spring:message code="component"/>:
                 <select name="selectedcompid" onChange="selectComponent('ModelParameter',this.value)">
                  <c:forEach items="${inputcomponents}" var="component">
                    <c:choose>
@@ -53,10 +53,10 @@
                 <td>
 	              <table class="tablestyle" style="width: 450px">
                      <tr>
-                         <th>Parameter</th>
-                         <th>Value(s)</th>
-                         <th>Unit</th>
-                         <th>Group</th>
+                         <th><spring:message code="parameter"/></th>
+                         <th><spring:message code="value"/></th>
+                         <th><spring:message code="unit"/></th>
+                         <th><spring:message code="group"/></th>
                      </tr>
                      <c:forEach items="${modelparams}" var="mp">
                      <tr class="Component${mp.inputparameter.componentComponentid} ModelParameter">
@@ -88,16 +88,16 @@
               <tr>
                   <td align="right">
                     <input type="submit" value="Ok">
-                    <a href="geneticalgorithm.html"><button type="button" style="width: 100px">Cancel</button></a>
+                    <a href="geneticalgorithm.html"><button type="button" style="width: 100px"><spring:message code="cancel"/></button></a>
                   </td>
               </tr>
               <tr>
-              	<td><b>Groups</b></td>
+              	<td><b><spring:message code="groups"/></b></td>
            	  </tr>   
               <tr>
               	<td>
               	  <table class="tablestyle" style="width: 200px">
-              	  	<th>Group name</th>
+              	  	<th><spring:message code="group_name"/></th>
 					 <c:forEach items="${groups}" var="group">
                        <tr>
                        	 <td>${group}</td>
@@ -108,8 +108,8 @@
               </tr>        			
               <tr>
                   <td>
-                  	<input type="submit" name="newgroup" value="New Group">
-                  	<input type="submit" name="cleangroups" value="Delete Empty Groups">
+                  	<input type="submit" name="newgroup" value="<spring:message code="new_group"/>">
+                  	<input type="submit" name="cleangroups" value="<spring:message code="delete_empty_groups"/>">
                   </td>
               </tr>   
 			</table>

@@ -8,12 +8,12 @@
 <html>
 <head>
 
-<title>CityOpt create project</title>
+<title>CityOpt <spring:message code="create_project"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
 <script>
     function openInfoWindow() {
-    	   window.open("createproject_info.html",'Info: Create Project','width=600,height=600,scrollbars=yes');
+    	   window.open("createproject_info.html",'<spring:message code="create_project_info"/>','width=600,height=600,scrollbars=yes');
     }
 </script>
 

@@ -11,12 +11,10 @@
 <body class="Info">	
 
 
-<div class="yellow"><h1 class="info">Edit scenario info</h1></div>
+<div class="yellow"><h1 class="info"><spring:message code="create_optimization_set_info_title"/></h1></div>
 	
 	<div class="info">
-		<p> In this page you can edit basic scenario information like name. Also the simulation start and end dates can be set. 
-			The list below shows all the components and input values of the scenario. For setting 
-			input parameters and viewing output variables there are buttons on the page.</p>
+		<p><spring:message code="create_optimization_set_info"/></p>
 	</div>
 </body>
 </html>

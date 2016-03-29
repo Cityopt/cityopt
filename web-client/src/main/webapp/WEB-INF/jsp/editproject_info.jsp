@@ -4,19 +4,17 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Import data info</title>
+<title><spring:message code="edit_project_info"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
 </head>
 <body class="Info">	
 
 
-<div class="yellow"><h1 class="info">Edit project info</h1></div>
+<div class="yellow"><h1 class="info"><spring:message code="edit_project_info"/></h1></div>
 	
 	<div class="info">
-		<p> In this page you can edit project basic information: name, location, target and description. 
-			An energy model (ZIP file) can also be uploaded and model info can be viewed. For setting 
-			input, output and external parameters there are buttons on the page.</p>
+		<p><spring:message code="edit_project_info_text"/></p>
 	</div>
 </body>
 </html>

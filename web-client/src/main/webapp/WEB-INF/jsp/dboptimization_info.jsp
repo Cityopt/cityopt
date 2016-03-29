@@ -4,18 +4,17 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Cityopt database optimization info</title>
+<title>Cityopt <spring:message code="database_optimization_info"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
 </head>
 <body class="Info">	
 
 
-<div class="yellow"><h1 class="info">Database optimization info</h1></div>
+<div class="yellow"><h1 class="info"><spring:message code="database_optimization_info"/></h1></div>
 	
 	<div class="info">
-		<p> Database optimization tries to find the best scenario that optimizes the given objective function.
-			In this page you can set the objective function, add constraints and select external parameter set.</p>
+		<p><spring:message code="database_optimization_info_text"/></p>
 	</div>
 </body>
 </html>

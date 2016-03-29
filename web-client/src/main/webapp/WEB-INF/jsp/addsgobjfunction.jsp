@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt add objective function</title>
+<title>CityOpt <spring:message code="add_objective_function"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -24,7 +24,7 @@
            		</tr>
                 <tr>
                     <td>
-                        <h2>Add objective function</h2>
+                        <h1><spring:message code="add_objective_function"/></h1>
                     </td>
                 </tr>
                 <tr>
@@ -33,7 +33,7 @@
                             <col style="width:960px">
 
                             <tr>
-                                <td><b>Objective functions</b></td>
+                                <td><b><spring:message code="objective_functions"/></b></td>
                             </tr>
                             <tr>
                                 <td valign="top">
@@ -43,10 +43,10 @@
                                         <col style="width:200px">
                                         <col style="width:540px">
                                         <tr>
-                                            <th>Import</th>
-                                            <th>Name</th>
-                                            <th>Sense</th>
-                                            <th>Expression</th>
+                                            <th><spring:message code="import"/></th>
+                                            <th><spring:message code="name"/></th>
+                                            <th><spring:message code="sense"/></th>
+                                            <th><spring:message code="expression"/></th>
                                         </tr>
                             
                                         <c:forEach items="${objFuncs}" var="objectivefunction">

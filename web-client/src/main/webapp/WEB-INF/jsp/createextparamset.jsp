@@ -10,7 +10,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt create external parameter set</title>
+<title>CityOpt <spring:message code="create_external_param_set"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -23,7 +23,7 @@
 		</td>
 		<td width=30></td>
 		<td valign="top">
-			<h2>Create external parameter set</h2>
+			<h1><spring:message code="create_external_param_set"/></h1>
 			<div style="overflow:scroll;height:500px;width:900px;overflow:auto">
 			<form:form method="post" action="createextparamset.html" modelAttribute="extParamValSet">
 			
@@ -35,7 +35,7 @@
 							<col style="width:150px">
 							<tr>
 								<td>
-									Name*
+									<spring:message code="name"/>*
 								</td>
 								<td>
 									<form:input style="width:150px" type="text" path="name"/>
@@ -50,7 +50,7 @@
 				</tr>
 				<tr>
 					<td>
-						<b>External parameters</b>
+						<b><spring:message code="external_parameters"/></b>
 					</td>
 				</tr>
 				<tr>
@@ -60,9 +60,8 @@
 							<col style="width:100px">
 							<!--<col style="width:50px">-->
 							<tr height="20">
-							    <th>Name</th>
-							    <th>Value</th>
-							    <!-- <th>Edit</th>-->
+							    <th><spring:message code="name"/></th>
+							    <th><spring:message code="value"/></th>
 							</tr>
 							
 							<c:forEach items="${extParamVals}" var="extParamVal">

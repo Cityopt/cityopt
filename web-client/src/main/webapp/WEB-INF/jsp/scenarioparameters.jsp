@@ -14,7 +14,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Scenario parameters</title>
+<title>CityOpt <spring:message code="input_parameters" /></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -35,14 +35,14 @@
 					<td></td>
 					<td height="20">
 						<!-- Scenario parameters -->
-						<h2><spring:message code="input_parameters"/></h2>
+						<h1><spring:message code="input_parameters"/></h1>
 					</td>
 				</tr>
 				<c:choose>
 		    		<c:when test="${disableEdit}">
 		    			<tr>
 							<td></td>
-							<td><p>Please note that the scenario has been simulated and it cannot be edited.</p></td>
+							<td><p><spring:message code="scenario_simulated_info"/></p></td>
 						</tr>
 		    		</c:when>
 		    		<c:otherwise>
@@ -134,17 +134,7 @@
 											    	</c:otherwise>
 										    	</c:choose>
 									    	</td>
-									    <td>${inputParamVal.inputparameter.unit.name}</td>
-									    	
-									    	
-									    	<!--  Ex-Edit button.
-											<td>
-												<a href="<c:url value='editinputparamvalue.html?inputparamvalid=${inputParamVal.inputparamvalid}'/>">
-													<button align="right" title="${tooltip_edit_inputparameter}" type="button" value="Edit">
-													<spring:message code="edit"/></button>
-												</a>
-											</td>
-											-->
+									    	<td>${inputParamVal.inputparameter.unit.name}</td>
 									   	</tr>
 										</c:forEach>
 										<c:set var="tooltip_update"><spring:message code="tooltip_update"/></c:set>										
