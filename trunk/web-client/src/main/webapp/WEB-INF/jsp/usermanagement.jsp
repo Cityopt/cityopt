@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt User management</title>
+<title>CityOpt <spring:message code="usermanagement"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
 
@@ -101,9 +101,9 @@
 							<table>
 								<tr>
 									<!-- Users -->
-									<td><h2>
+									<td><h1>
 											<spring:message code="usermanagement" />
-										</h2>
+										</h1>
 									</td>
 								</tr>
 								<tr>

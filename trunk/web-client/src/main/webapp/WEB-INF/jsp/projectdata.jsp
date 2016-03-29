@@ -15,7 +15,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Project data</title>
+<title>CityOpt <spring:message code="project_data"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -35,7 +35,7 @@
 				<tr>
 					<td colspan="2" height="80">
 						<!-- Project data -->
-						<h2><spring:message code="project_data"/></h2>
+						<h1><spring:message code="project_data"/></h1>
 					</td>
 				</tr>
 				<tr>

@@ -38,14 +38,14 @@ function deleteDecisionVariable(decisionvarid) {
 }
 
 function openInfoWindow() {
-	window.open("ga_info.html",'Genetic optimization info','width=600,height=600,scrollbars=yes');
+	window.open("ga_info.html",'<spring:message code="genetic_optimization"/> info','width=600,height=600,scrollbars=yes');
 }
 
 </script>
 <script language="javascript"><%@ include file="cityopt.js"%></script>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Cityopt edit genetic algorithm optimization set</title>
+<title>Cityopt <spring:message code="genetic_optimization"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body onLoad="showComponent('ModelParameter', ${usersession.componentId})">
@@ -67,7 +67,7 @@ function openInfoWindow() {
 				<col style="width: 450px;">
 				<!--Edit genetic algorithm optimization set-->
 				<tr>
-					<td colspan="2"><h2><spring:message code="edit_genetic_algorithm_optimization_set"/></h2></td>
+					<td colspan="2"><h1><spring:message code="edit_genetic_algorithm_optimization_set"/></h1></td>
 					<td align="right">
 						<div class="round-button">
 							<div class="round-button-circle">
@@ -130,7 +130,7 @@ function openInfoWindow() {
 								<td><font color="red">${error}</font>${runinfo}
 									<c:choose>
     	                               	<c:when test="${locked}">
-                                            (Optimization has been started and the parameters cannot be edited for this problem.)
+                                            (<spring:message code="optimization_started_parameters_locked"/>)
                                    	   	</c:when>
                                        	<c:otherwise>
                                    	   	</c:otherwise>

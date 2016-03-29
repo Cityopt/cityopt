@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt create objective function</title>
+<title>CityOpt <spring:message code="update_obj_func"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -25,7 +25,7 @@
 				</tr>
 				<tr>
 					<td>
-						<h2><spring:message code="create_obj_func"/> step 2</h2>
+						<h1><spring:message code="update_obj_func"/> step 2</h1>
 					</td>
 				</tr>
 				<tr>

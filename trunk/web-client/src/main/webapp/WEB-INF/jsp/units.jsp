@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Open project</title>
+<title>CityOpt <spring:message code="units"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -26,8 +26,7 @@
 			<table>
 				<tr>
 					<td>
-						<!-- Units -->			
-						<h2><spring:message code="units"/></h2>
+						<h1><spring:message code="units"/></h1>
 					</td>
 				</tr>
 				<tr>

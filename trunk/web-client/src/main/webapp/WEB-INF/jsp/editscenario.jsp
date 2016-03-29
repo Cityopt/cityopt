@@ -11,15 +11,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt edit scenario</title>
+<title>CityOpt <spring:message code="edit_scenario"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
 <script>
     function openInfoWindow() {
-    	   window.open("editscenario_info.html",'Info: Edit scenario','width=600,height=600,scrollbars=yes');
+    	   window.open("editscenario_info.html",'<spring:message code="edit_scenario_info"/>','width=600,height=600,scrollbars=yes');
     }
     function openSimulationInfoWindow() {
- 	   window.open("simulationinfo.html",'Info: Simulation info','width=1400,height=600,scrollbars=yes');
+ 	   window.open("simulationinfo.html",'<spring:message code="simulation_info"/>','width=1400,height=600,scrollbars=yes');
 	}
 </script>
 
@@ -39,7 +39,7 @@
 				<tr>
 					<td>
 					<!-- Edit Scenario -->
-						<h2><spring:message code="edit_scenario"/></h2>
+						<h1><spring:message code="edit_scenario"/></h1>
 					</td>
 					
 				<td align="right">

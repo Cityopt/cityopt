@@ -11,7 +11,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt create optimization constraint</title>
+<title>CityOpt <spring:message code="create_constraint"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -30,7 +30,7 @@
 				<tr>
 					<td>
 						<!-- Create constraint -->
-						<h2><spring:message code="create_constraint"/></h2>
+						<h1><spring:message code="create_constraint"/></h1>
 					</td>
 				</tr>
 				<tr height=20></tr>

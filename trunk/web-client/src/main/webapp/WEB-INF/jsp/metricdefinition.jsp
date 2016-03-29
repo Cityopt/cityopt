@@ -9,12 +9,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Project metrics</title>
+<title>CityOpt <spring:message code="metrics"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <script>
     function openInfoWindow() {
-    	   window.open("metric_info.html",'Metric info','width=600,height=800');
+    	   window.open("metric_info.html",'<spring:message code="metrics"/> info','width=600,height=800');
     }
 </script>
 </head>
@@ -29,7 +29,7 @@
 			<table>
 				<tr>
 				<!-- Project metrics -->
-					<td><h2><spring:message code="project_metrics"/></h2></td>
+					<td><h1><spring:message code="project_metrics"/></h1></td>
 					
 					<td align="right">
 						<div class="round-button">

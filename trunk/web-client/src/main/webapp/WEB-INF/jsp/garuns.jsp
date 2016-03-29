@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt running genetic optimizations</title>
+<title>CityOpt <spring:message code="running_genetic_optimizations"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -18,7 +18,7 @@
 		<td width="30"></td>
 		<td valign="top">
 			<div style="overflow:scroll;height:800px;width:800px;overflow:auto">
-			<h2><spring:message code="running_genetic_optimizations"/></h2>
+			<h1><spring:message code="running_genetic_optimizations"/></h1>
 			<table>
 				<tr>
 					<td>
@@ -31,10 +31,10 @@
 						
 							<tr height="20">
 							    <th><spring:message code="id"/></th>
-								<th>Started</th>
-							    <th>Deadline</th>
-							    <th>Status</th>
-							    <th>Abort</th>
+								<th><spring:message code="started"/></th>
+							    <th><spring:message code="deadline"/></th>
+							    <th><spring:message code="status"/></th>
+							    <th><spring:message code="abort"/></th>
 							</tr>
 						
 							<c:forEach items="${optRuns}" var="optRun">
@@ -44,7 +44,7 @@
 								<td>${optRun.deadline}</td>
 								<td>${optRun.status}</td>
 								<td>
-									<a onclick="return confirm('Are you sure you want to delete')" 
+									<a onclick="return confirm('<spring:message code="confirm_delete"/>')" 
 										href="abortgarun.html?id=${optRun.id}">
 										<button align="right"  type="button" value="Abort">
 										Abort</button>

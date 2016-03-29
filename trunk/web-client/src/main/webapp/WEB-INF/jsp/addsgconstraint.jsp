@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt add constraint</title>
+<title>CityOpt <spring:message code="add_constraint"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -21,7 +21,7 @@
             <table>
                 <tr>
                     <td>
-                        <h2>Add constraint</h2>
+                        <h1><spring:message code="add_constraint"/></h1>
                     </td>
                 </tr>
                 <tr>
@@ -30,7 +30,7 @@
                             <col style="width:960px">
 
                             <tr>
-                                <td><b>Constraints</b></td>
+                                <td><b><spring:message code="constraints"/></b></td>
                             </tr>
                             <tr>
                                 <td valign="top">
@@ -42,10 +42,10 @@
                                         <col style="width:120px">
                                         <tr>
                                             <th></th>
-                                            <th>Constraint</th>
-                                            <th>Expression</th>
-                                            <th>Lower bound</th>
-                                            <th>Upper bound</th>
+                                            <th><spring:message code="constraint"/></th>
+                                            <th><spring:message code="expression"/></th>
+                                            <th><spring:message code="lower_bound"/></th>
+                                            <th><spring:message code="upper_bound"/></th>
                                         </tr>
                             
                                         <c:forEach items="${constraints}" var="constraint">
@@ -65,7 +65,7 @@
                             </tr>
                             <tr height="20"></tr>
                             <tr>
-                                <td align="right"><a href="geneticalgorithm.html"><button type="button">Close</button></a></td>
+                                <td align="right"><a href="geneticalgorithm.html"><button type="button"><spring:message code="close"/></button></a></td>
                             </tr>
                         </table>
                     </td>

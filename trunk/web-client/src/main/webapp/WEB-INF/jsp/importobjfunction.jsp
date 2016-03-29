@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt import objective function</title>
+<title>CityOpt <spring:message code="import_obj_func"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -21,8 +21,7 @@
 			<table>
 				<tr>
 					<td>
-						<!--Import objective function-->
-						<h2><spring:message code="import_objective_function"/></h2>
+						<h1><spring:message code="import_objective_function"/></h1>
 					</td>
 				</tr>
 				<tr>
@@ -31,7 +30,6 @@
 							<col style="width:700px">
 
 							<tr>
-								<!-- Objective functions -->
 								<td><b><spring:message code="objective_functions"/></b></td>
 							</tr>
 							<tr>

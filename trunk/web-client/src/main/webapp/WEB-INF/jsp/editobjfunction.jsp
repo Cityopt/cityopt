@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt edit objective function</title>
+<title>CityOpt <spring:message code="edit_obj_func"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -28,7 +28,7 @@
 				<tr>
 					<td>
 						<!--Edit objective function-->
-						<h2><spring:message code="edit_objective_function"/></h2>
+						<h1><spring:message code="edit_objective_function"/></h1>
 					</td>
 				</tr>
 				<tr>
@@ -68,7 +68,7 @@
 											</c:if>
 											<c:if test="${selectedcompid != component.componentid}">
 												<tr>
-												<td><a href="<c:url value='editobjfunction.html?selectedcompid=${component.componentid}'/>">Select</a></td>
+												<td><a href="<c:url value='editobjfunction.html?selectedcompid=${component.componentid}'/>"><spring:message code="select"/></a></td>
 											</c:if>
 												<td>${component.name}</td>
 									   	</tr>

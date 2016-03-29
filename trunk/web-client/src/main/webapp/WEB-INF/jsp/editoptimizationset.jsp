@@ -12,11 +12,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt edit database optimization set</title>
+<title>CityOpt <spring:message code="edit_database_optimization_set"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <script>
     function openInfoWindow() {
-    	   window.open("dboptimization_info.html",'Database optimization info','width=600,height=600,scrollbars=yes');
+    	   window.open("dboptimization_info.html",'<spring:message code="database_optimization_info"/>','width=600,height=600,scrollbars=yes');
     }
 </script>
 </head>
@@ -32,7 +32,7 @@
 				<col style="width: 450px;">
 				<!-- Edit database optimization set title -->
 				<tr>
-					<td colspan="2"><h2><spring:message code="edit_database_optimization_set"/></h2></td>
+					<td colspan="2"><h1><spring:message code="edit_database_optimization_set"/></h1></td>
 					<td align="right">
 						<div class="round-button">
 							<div class="round-button-circle">
@@ -295,7 +295,7 @@
 											<tr>
 												<td>${scenarioWithValue.name}</td>
 												<td><fmt:formatNumber value="${scenarioWithValue.value}" maxFractionDigits="2"/></td>
-												<td><a href="showresults.html?scenarioid=${scenarioWithValue.scenid}"><button type="button">Show</button></a></td>
+												<td><a href="showresults.html?scenarioid=${scenarioWithValue.scenid}"><button type="button"><spring:message code="show"/></button></a></td>
 										   	</tr>
 										</c:forEach>
 									</table>

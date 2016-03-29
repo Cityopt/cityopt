@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt settings</title>
+<title>CityOpt <spring:message code="settings" /></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -25,7 +25,7 @@
 			<table>
 				<tr>
 					<td>
-						<h2><spring:message code="settings"/></h2>
+						<h1><spring:message code="settings"/></h1>
 					</td>
 				</tr>
 				<tr>

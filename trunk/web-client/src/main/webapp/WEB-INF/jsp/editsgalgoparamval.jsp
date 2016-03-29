@@ -6,7 +6,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt edit algorithm parameter values</title>
+<title>CityOpt <spring:message code="edit_algorithm_parameter_values"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -21,12 +21,12 @@
           <table style="width: 450px">
                <tr>
 	               <td>
-	                  <h2>Edit algorithm parameter values</h2>
+	                  <h1><spring:message code="edit_algorithm_parameter_values"/></h1>
 	               </td>
                </tr>
               <tr>
 	              <td>
-	                Algorithm: ${scengenerator.algorithm.description}
+	                <spring:message code="algorithm"/>: ${scengenerator.algorithm.description}
 	              </td>
               </tr>
               <tr height="10"></tr>
@@ -37,9 +37,9 @@
                       <col align="right">
                       <col align="right">
 	                  <tr>
-	                      <th>Parameter</th>
-	                      <th>Value</th>
-	                      <th>Default value</th>
+	                      <th><spring:message code="parameter"/></th>
+	                      <th><spring:message code="value"/></th>
+	                      <th><spring:message code="default_value"/></th>
 	                  </tr>
 	
 	                  <c:forEach items="${algoparamvals}" var="apv">
@@ -58,7 +58,7 @@
               <tr>
                   <td align="right">
                     <input type="submit" value="Ok"></input>
-                    <a href="geneticalgorithm.html"><button type="button">Cancel</button></a>
+                    <a href="geneticalgorithm.html"><button type="button"><spring:message code="cancel"/></button></a>
                   </td>
               </tr>   
 			</table>

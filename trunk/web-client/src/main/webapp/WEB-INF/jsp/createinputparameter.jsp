@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt create input parameter</title>
+<title>CityOpt <spring:message code="create_input_parameter"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -25,7 +25,7 @@
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="createinputparameter.html?selectedcompid=${selectedcompid}" modelAttribute="inputParamForm">
 			<h2 class="error">${error}</h2>
-			<h2><spring:message code="create_input_parameter"/></h2>
+			<h1><spring:message code="create_input_parameter"/></h1>
 
 			<table align="center">
 				<col style="width:150px">
@@ -51,7 +51,7 @@
 				</tr>
 				<tr>
 					<td>					
-						Unit
+						<spring:message code="unit"/>
 					</td>
 					<td>					
 						<form:select path="unit">

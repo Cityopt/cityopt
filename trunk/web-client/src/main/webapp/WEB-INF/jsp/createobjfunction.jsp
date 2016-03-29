@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt create objective function</title>
+<title>CityOpt <spring:message code="create_obj_func"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -21,7 +21,7 @@
 			<table>
 				<tr>
 					<td>
-						<h2><spring:message code="create_obj_func"/> step 1</h2>
+						<h1><spring:message code="create_obj_func"/> step 1</h1>
 					</td>
 				</tr>
 				<tr>
@@ -82,7 +82,7 @@
 														<th><spring:message code="input_parameter"/></th>
 														<th><spring:message code="default_value"/></th>
 														<th><spring:message code="unit"/></th>
-														<th>Add</th>
+														<th><spring:message code="add"/></th>
 													</tr>
 													
 													<c:forEach items="${inputParameters}" var="inputParam">
@@ -90,7 +90,7 @@
 														<td>${inputParam.name}</td>
 												    	<td>${inputParam.defaultvalue}</td>
 												    	<td>${inputParam.unit.name}</td>
-												   		<td><a href="createobjfunction.html?type=${type}&inputparamid=${inputParam.inputid}"><button type="button">Add</button></a></td>
+												   		<td><a href="createobjfunction.html?type=${type}&inputparamid=${inputParam.inputid}"><button type="button"><spring:message code="add"/></button></a></td>
 												    </tr>
 													</c:forEach>
 												</table>
@@ -103,13 +103,13 @@
 													<tr>
 														<!--Output variable-->
 														<th><spring:message code="output_variable"/></th>
-														<th>Add</th>
+														<th><spring:message code="add"/></th>
 													</tr>
 								
 													<c:forEach items="${outputVars}" var="outputVar">
 													<tr>
 														<td>${outputVar.name}</td>
-														<td><a href="createobjfunction.html?type=${type}&outputparamid=${outputVar.outvarid}"><button type="button">Add</button></a></td>
+														<td><a href="createobjfunction.html?type=${type}&outputparamid=${outputVar.outvarid}"><button type="button"><spring:message code="add"/></button></a></td>
 												    </tr>
 													</c:forEach>
 												</table>
@@ -139,7 +139,7 @@
 									<!-- External parameters -->
 								<td><spring:message code="external_parameters"/></td>
 								<td></td>
-								<td>Numbers and operators</td>
+								<td><spring:message code="numbers_and_operators"/></td>
 							</tr>
 							<tr>
 								<td></td>
@@ -157,7 +157,7 @@
 										<c:forEach items="${metrics}" var="metric">
 										<tr>
 											<td>${metric.name}</td>
-											<td><a href="createobjfunction.html?type=${type}&metricid=${metric.metid}"><button type="button">Add</button></a></td>
+											<td><a href="createobjfunction.html?type=${type}&metricid=${metric.metid}"><button type="button"><spring:message code="add"/></button></a></td>
 									   	</tr>
 										</c:forEach>
 									</table>										
@@ -171,13 +171,15 @@
 										<tr height="20">
 											<!-- Name -->
 										    <th><spring:message code="name"/></th>
-										    <th>Add</th>
+										    <th><spring:message code="add"/></th>
 										</tr>
 										
 										<c:forEach items="${extParams}" var="extParam">
 										<tr>
 											<td>${extParam.name}</td>
-											<td><a href="createobjfunction.html?type=${type}&extparamid=${extParam.extparamid}"><button type="button">Add</button></a></td>
+											<td><a href="createobjfunction.html?type=${type}&extparamid=${extParam.extparamid}">
+												<button type="button"><spring:message code="add"/></button>
+												</a></td>
 									    </tr>
 										</c:forEach>
 									</table>
@@ -243,7 +245,7 @@
 								<td></td>
 								<td></td>
 								<td align="right">
-									<a href="updateobjfunction.html?type=${type}"><button type="button" style="width:100px">Next</button></a>
+									<a href="updateobjfunction.html?type=${type}"><button type="button" style="width:100px"><spring:message code="next"/></button></a>
 									<a href="${cancelPage}"><button style="width:100px" type="button" value="Cancel">
 									<spring:message code="cancel"/></button></a>
 								</td>

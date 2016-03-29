@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt GA chart</title>
+<title>CityOpt <spring:message code="genetic_optimization_chart"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -28,7 +28,7 @@
 				<col style="width:30px">
 				<col style="width:800px">
 				<tr>
-					<td><h2><spring:message code="genetic_optimization_chart"/></h2>
+					<td><h1><spring:message code="genetic_optimization_chart"/></h1>
 						<p><spring:message code="genetic_optimization_chart_instructions"/></p></td>
 					<td></td>
 					<td></td>
@@ -98,11 +98,11 @@
 											<c:choose>
 												<c:when test="${usersession.hasSelectedGAObjFuncId(objFunc.obtfunctionid)}">
 													<tr style="background-color: #D4D4D4">
-													<td>Selected (<a href="gachart.html?action=remove&objfuncid=${objFunc.obtfunctionid}">Remove</a>)</td>
+													<td>Selected (<a href="gachart.html?action=remove&objfuncid=${objFunc.obtfunctionid}"><spring:message code="remove"/></a>)</td>
 												</c:when>
 												<c:otherwise>
 													<tr>
-														<td><a href="gachart.html?action=add&objfuncid=${objFunc.obtfunctionid}">Select</a></td>
+														<td><a href="gachart.html?action=add&objfuncid=${objFunc.obtfunctionid}"><spring:message code="select"/></a></td>
 												</c:otherwise>
 											</c:choose>
 											

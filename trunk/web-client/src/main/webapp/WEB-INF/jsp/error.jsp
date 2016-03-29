@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt error page</title>
+<title>CityOpt <spring:message code="error"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -20,7 +20,7 @@
 		</td>
 		<td width=30></td>
 		<td valign="top">
-			<h1><spring:message code="error"/></h3>
+			<h1><spring:message code="error"/></h1>
 			<p><spring:message code="please_try_again"/>!</p>
 			<p>${error}</p>
 		</td>

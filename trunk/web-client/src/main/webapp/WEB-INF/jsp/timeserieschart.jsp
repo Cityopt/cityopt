@@ -14,7 +14,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt time series chart</title>
+<title>CityOpt <spring:message code="time_series_chart"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -37,7 +37,7 @@
 						<table>
 							<tr>
 								<td>
-									<h2><spring:message code="time_series_chart"/></h2>
+									<h1><spring:message code="time_series_chart"/></h1>
 								</td>
 							</tr>
 							<tr>
@@ -71,7 +71,7 @@
 							<c:choose>
 								<c:when test="${error != null && !error.isEmpty()}">
 									<tr>
-										<td><i>Error in simulation: ${error}</i></td>
+										<td><i><spring:message code="error_in_simulation"/>: ${error}</i></td>
 									</tr>
 								</c:when>
 								<c:otherwise>
@@ -103,11 +103,11 @@
 													<c:forEach items="${components}" var="component">
 													<c:if test="${selectedcompid == component.componentid}">
 														<tr style="background-color: #D4D4D4">
-														<td><a href="timeserieschart.html?selectedcompid=${component.componentid}">Selected</a></td>
+														<td><a href="timeserieschart.html?selectedcompid=${component.componentid}"><spring:message code="selected"/></a></td>
 													</c:if>
 													<c:if test="${selectedcompid != component.componentid}">
 														<tr>
-														<td><a href="timeserieschart.html?selectedcompid=${component.componentid}">Select</a></td>
+														<td><a href="timeserieschart.html?selectedcompid=${component.componentid}"><spring:message code="select"/></a></td>
 													</c:if>
 														<td>${component.name}</td>
 												   	</tr>
@@ -135,11 +135,11 @@
 														<c:choose>
 															<c:when test="${usersession.hasOutputVar(outputVar.outvarid)}">
 																<tr style="background-color: #D4D4D4">
-																<td>Added (<a href="timeserieschart.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Remove</a>)</td>
+																<td>Added (<a href="timeserieschart.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}"><spring:message code="remove"/></a>)</td>
 															</c:when>
 															<c:otherwise>
 																<tr>
-																<td><a href="timeserieschart.html?action=add&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">Add to chart</a></td>
+																<td><a href="timeserieschart.html?action=add&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}"><spring:message code="add_to_chart"/></a></td>
 															</c:otherwise>
 														</c:choose>
 													
@@ -176,11 +176,11 @@
 											<c:choose>
 												<c:when test="${usersession.hasExtParam(extParamVal.extparamvalid)}">
 													<tr style="background-color: #D4D4D4">
-													<td>Added (<a href="timeserieschart.html?action=remove&extparamid=${extParamVal.extparamvalid}">Remove</a>)</td>
+													<td><spring:message code="added"/> (<a href="timeserieschart.html?action=remove&extparamid=${extParamVal.extparamvalid}"><spring:message code="remove"/></a>)</td>
 												</c:when>
 												<c:otherwise>
 													<tr>
-													<td><a href="timeserieschart.html?action=add&extparamid=${extParamVal.extparamvalid}">Add to chart</a></td>
+													<td><a href="timeserieschart.html?action=add&extparamid=${extParamVal.extparamvalid}"><spring:message code="add_to_chart"/></a></td>
 												</c:otherwise>
 											</c:choose>
 											

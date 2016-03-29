@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt edit input parameter value</title>
+<title>CityOpt <spring:message code="edit_input_parameter_value"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -24,7 +24,7 @@
 		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="editinputparamvalue.html?inputparamvalid=${inputParamVal.inputparamvalid}" modelAttribute="inputParamVal">
-			<h2>Edit input parameter value</h2>
+			<h1><spring:message code="edit_input_parameter_value"/></h1>
 
 			<table align="center">
 				<col style="width:150px">
@@ -59,7 +59,7 @@
 					<c:set var="tooltip_update"><spring:message code="tooltip_update"/></c:set>
 					<c:set var="tooltip_cansel"><spring:message code="tooltip_cansel"/></c:set>
 					<td align="right"><input style="width:100px" title="${tooltip_update}"  type="submit" value="Update"/>
-					<a href="scenarioparameters.html"><button style="width:100px"  title="${tooltip_cansel}" type="button" value="Cancel">Cancel</button></a></td>
+					<a href="scenarioparameters.html"><button style="width:100px"  title="${tooltip_cansel}" type="button" value="Cancel"><spring:message code="cancel"/></button></a></td>
 				</tr>
 			</table>
 			

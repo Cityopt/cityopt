@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt edit external parameter</title>
+<title>CityOpt <spring:message code="edit_external_parameter"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -24,7 +24,7 @@
 		<td>
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="editextparam.html?extparamid=${extParam.extparamid}" modelAttribute="paramForm">
-			<h2>Edit external parameter</h2>
+			<h1><spring:message code="edit_external_parameter"/></h1>
 
 			<table align="center">
 				<col style="width:150px">
@@ -32,7 +32,7 @@
 				<col style="width:80px">
 				<tr>
 					<td>
-						Name*
+						<spring:message code="name"/>*
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="name"/>
@@ -40,7 +40,7 @@
 				</tr>
 				<tr>
 					<td>
-						Default value
+						<spring:message code="default_value"/>
 					</td>
 					<td>
 						<form:input style="width:300px" type="text" path="value"/>
@@ -66,7 +66,7 @@
 				<tr>
 					<td></td>
 					<td align="right"><input style="width:100px" type="submit" value="Update"/>
-					<a href="editproject.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<a href="editproject.html"><button style="width:100px" type="button" value="Cancel"><spring:message code="cancel"/></button></a></td>
 				</tr>
 			</table>
 			

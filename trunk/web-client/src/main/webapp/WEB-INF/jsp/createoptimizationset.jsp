@@ -6,11 +6,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt Database optimization</title>
+<title>CityOpt <spring:message code="create_optimization_set"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <script>
     function openInfoWindow() {
-   		window.open("createoptimizationset_info.html",'Create optimization set info','width=600,height=800');
+   		window.open("createoptimizationset_info.html",'<spring:message code="create_optimization_set_info_title"/>','width=600,height=800');
     }
 </script>
 
@@ -30,19 +30,19 @@
 			<h2 class="error">${error}</h2>
 			<c:choose>
    				<c:when test="${success!=null && success==true}">
-     			   <h2 class="successful">Optimization set created</h2>
+     			   <h2 class="successful"><spring:message code="optimization_set_created"/></h2>
      			   <c:set var="tooltip_next"><spring:message code="tooltip_next"/></c:set>
      			   <a href='editoptimizationset.html'><button style="width:100px" class="rewardGreen" type="button" value="Next" title="${tooltip_next}">
      			   <spring:message code="next"/></button></a>
      		</c:when>
            		<c:when test="${success!=null && success==false}">
-           			   <h2 class="error">Name already exists</h2>
+           			   <h2 class="error"><spring:message code="name_already_exists"/></h2>
            		</c:when>            	
        		</c:choose>		
        							
 			<!--Title Create database optimization set-->
 			<tr>
-				<td colspan="2"><h2><spring:message code="create_optimization_set"/></h2></td>
+				<td colspan="2"><h1><spring:message code="create_optimization_set"/></h1></td>
 				<td align="right">
 					<div class="round-button">
 						<div class="round-button-circle">

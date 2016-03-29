@@ -15,13 +15,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Project parameters</title>
+<title>CityOpt <spring:message code="project_parameters" /></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
 <script>
     function openInfoWindow() {
-    	   window.open("projectparameters_info.html",'Project parameters info','width=600,height=600');
+    	   window.open("projectparameters_info.html",'<spring:message code="project_parameters" /> info','width=600,height=600');
     }
 </script>
 
@@ -71,9 +71,9 @@ margin-bottom: 10%;
 						</tr>
 						<tr class="project_parameters">
 							<td colspan="2" height="80">
-								<h2>
+								<h1>
 									<spring:message code="project_parameters" />
-								</h2>
+								</h1>
 							</td>
 							<td>
 								<div class="round-button">

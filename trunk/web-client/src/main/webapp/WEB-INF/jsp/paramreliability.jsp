@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Open project</title>
+<title>CityOpt Parameter reliability</title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -26,7 +26,7 @@
 				<tr>
 					<td>
 						<!-- Input parameters Reliability -->
-						<h2><spring:message code="input_parameters_reliability"/></h2>
+						<h1><spring:message code="input_parameters_reliability"/></h1>
 					</td>
 				</tr>
 				<tr>

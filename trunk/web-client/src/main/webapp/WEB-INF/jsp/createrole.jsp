@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt create user</title>
+<title>CityOpt <spring:message code="create_user"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -24,7 +24,7 @@
 		<td valign="top">
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" modelAttribute="user">
-			<h2>Create role</h2>
+			<h1><spring:message code="create_role"/></h1>
 
 			<table align="center">
 				<col style="width:100px">

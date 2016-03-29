@@ -7,10 +7,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Open optimization set</title>
+<title>CityOpt <spring:message code="open_optimization_set"/></title>
 <script>
     function openInfoWindow() {
-    	   window.open("createproject_info.html",'Info: Create Project','width=600,height=800');
+    	   window.open("createproject_info.html",'<spring:message code="open_optimization_set"/> info','width=600,height=800');
     }
 </script>
 
@@ -66,7 +66,7 @@
 
 							</c:when>
 							<c:otherwise>
-								<td>Genetic algorithm</td>
+								<td><spring:message code="genetic_algorithm"/></td>
 								<td>
 								<a href="<c:url value='openoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga'/>">
 									<button align="right" title="${open_optimizationset}"  type="button" value="Open"><spring:message code="open"/></button>

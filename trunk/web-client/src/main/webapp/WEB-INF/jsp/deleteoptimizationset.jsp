@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Delete optimization set</title>
+<title>CityOpt <spring:message code="delete_optimization_set"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -20,7 +20,7 @@
 			<td valign="top">
 			<div style="overflow:scroll;height:100%;width:800px;overflow:auto">
 			<form method="get" action="OptimizationController">
-			<h2>Delete optimization set</h2>
+			<h1><spring:message code="delete_optimization_set"/></h1>
 			<table class="tablestyle" width="500" border="1">
 				<col style="width: 250px">
 				<col style="width: 150px">
@@ -42,16 +42,16 @@
 					<td>${openoptimizationset.name}</td>
 						<c:choose>
 							<c:when test="${openoptimizationset.isDatabaseSearch()}">
-								<td>Database search</td>
+								<td><spring:message code="database_optimization"/></td>
 								<td>
 									<a href="<c:url value='deleteoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=db'/>"
 									onclick="return confirm('<spring:message code="confirm_optimizationset_deletion"/>')">
-									<button align="right" title="${delete_optimizationset}" type="button" value="Delete">Delete</button>
+									<button align="right" title="${delete_optimizationset}" type="button" value="Delete"><spring:message code="delete"/></button>
 								</a>
 								</td>
 							</c:when>
 							<c:otherwise>
-								<td>Genetic algorithm</td>
+								<td><spring:message code="genetic_algorithm"/></td>
 								<td>
 								<!-- Delete -->
 								<a href="<c:url value='deleteoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga'/>">

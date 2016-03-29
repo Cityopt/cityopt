@@ -4,19 +4,17 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Cityopt edit scenario info</title>
+<title>Cityopt <spring:message code="edit_scenario_info"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
 </head>
 <body class="Info">	
 
 
-<div class="yellow"><h1 class="info">Edit scenario info</h1></div>
+<div class="yellow"><h1 class="info"><spring:message code="edit_scenario_info"/></h1></div>
 	
 	<div class="info">
-		<p> In this page you can edit basic scenario information like name. Also the simulation start and end dates can be set. 
-			The list below shows all the components and input values of the scenario. For setting 
-			input parameters and viewing output variables there are buttons on the page.</p>
+		<p><spring:message code="edit_scenario_info_text"/></p>
 	</div>
 </body>
 </html>

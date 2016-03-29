@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt import search constraints</title>
+<title>CityOpt <spring:message code="import_search_constraints"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -22,7 +22,7 @@
 				<tr>
 					<td>
 						<!-- Search constraints -->
-						<h2><spring:message code="search_constraints"/></h2>
+						<h1><spring:message code="search_constraints"/></h1>
 					</td>
 				</tr>
 				<tr>

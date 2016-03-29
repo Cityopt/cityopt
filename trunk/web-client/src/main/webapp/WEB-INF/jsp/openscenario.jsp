@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Open scenario</title>
+<title>CityOpt <spring:message code="open_scenario"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <style type="text/css">
@@ -36,7 +36,7 @@ margin-left: 5%;
 			<div style="overflow:scroll;height:100%;width:800px;overflow:auto">
 			
 			<!-- Open scenario -->
-			<h1> <spring:message code="open_scenario"/></h1>
+			<h1><spring:message code="open_scenario"/></h1>
 		
 			
 			<table class="tablestyle" width="600" border="1">

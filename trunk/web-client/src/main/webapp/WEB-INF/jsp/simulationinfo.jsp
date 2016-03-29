@@ -7,7 +7,7 @@ pageEncoding="UTF-8"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title><spring:message code="simulation_info" /></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
 
@@ -89,7 +89,7 @@ div.yellow {
 <body class="Info">	
 
 	
-	<div class="yellow"><h1 class="info">CityOpt simulation info</h1></div>
+	<div class="yellow"><h1 class="info">CityOpt <spring:message code="simulation_info" /></h1></div>
 	<div>
 		<table class="InfoVisual" style="height: 100%; width: 100%">
 		

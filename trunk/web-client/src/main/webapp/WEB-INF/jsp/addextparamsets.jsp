@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt add external parameter sets</title>
+<title>CityOpt <spring:message code="add_external_param_set"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -21,7 +21,7 @@
 		<td width=30></td>
 		<td>
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<h2>Create external parameter sets</h2>
+			<h1><spring:message code="create_external_param_set"/></h1>
 
 			<table align="center">
 				<col style="width:30px">
@@ -31,11 +31,11 @@
 				<tr>
 					<td></td>
 					<td>
-						External parameter sets
+						<spring:message code="external_param_sets"/>
 					</td>
 					<td></td>
 					<td>
-						Variables
+						<spring:message code="variables"/>
 					</td>
 				</tr>
 				<tr>
@@ -70,8 +70,8 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td align="right"><a href="addextparamsets.html"><button type="button">Accept</button></a>
-					<a href="editoptimizationset.html"><button style="width:100px" type="button" value="Cancel">Cancel</button></a></td>
+					<td align="right"><a href="addextparamsets.html"><button type="button"><spring:message code="accept"/></button></a>
+					<a href="editoptimizationset.html"><button style="width:100px" type="button" value="Cancel"><spring:message code="cancel"/></button></a></td>
 				</tr>
 			</table>
 			</div>

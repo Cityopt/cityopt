@@ -25,7 +25,7 @@
 			<form:form method="post" action="createunit.html" modelAttribute="unitForm">
 			
 			<!-- Create unit -->
-			<h2><spring:message code="create_unit"/></h2>
+			<h1><spring:message code="create_unit"/></h1>
 
 			<table align="center">
 				<col style="width:150px">

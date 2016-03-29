@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt edit external parameter value</title>
+<title>CityOpt <spring:message code="edit_external_parameter_value"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -25,7 +25,7 @@
 			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}" modelAttribute="paramForm">
 			<!--Edit external parameter value-->
-			<h2><spring:message code="edit_external_parameter_value"/></h2>
+			<h1><spring:message code="edit_external_parameter_value"/></h1>
 
 			<table align="center">
 				<col style="width:150px">
@@ -51,7 +51,7 @@
 				</tr>
 				<tr>
 					<td>					
-						Unit
+						<spring:message code="unit"/>
 					</td>
 					<td>					
 						<form:select path="unit">

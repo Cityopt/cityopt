@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt edit output variable</title>
+<title>CityOpt <spring:message code="edit_output_variable"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -25,14 +25,14 @@
 		<td valign="top">
 			<div style="overflow:scroll;height:1000px;width:1000px;overflow:auto">
 			<form:form method="post" action="editoutputvariable.html?outputvarid=${outputVar.outvarid}" modelAttribute="paramForm">
-			<h2>Edit output variable</h2>
+			<h1><spring:message code="edit_output_variable"/></h1>
 		
 			<table>
 				<col style="width:100px">
 				<col style="width:250px">
 				<tr>
 					<td>
-						Name
+						<spring:message code="name"/>
 					</td>
 					<td>
 						${outputVar.name}
@@ -40,7 +40,7 @@
 				</tr>
 				<tr>
 					<td>					
-						Unit
+						<spring:message code="unit"/>
 					</td>
 					<td>					
 						<form:select path="unit">

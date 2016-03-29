@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CityOpt Output variables</title>
+<title>CityOpt <spring:message code="output_variables" /></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
@@ -30,7 +30,7 @@
 				<tr>
 					<td>
 						<!-- External parameters -->
-						<h2><spring:message code="external_parameters"/></h2>
+						<h1><spring:message code="external_parameters"/></h1>
 					</td>
 				</tr>
 				<tr class="external_parameter_sets">

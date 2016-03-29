@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <title>CityOpt edit GA objective function</title>
+    <title>CityOpt <spring:message code="edit_obj_func"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
@@ -29,7 +29,7 @@
 				</tr>
 				<tr>
 					<td>
-                        <h2>Edit GA objective function</h2>
+                        <h1><spring:message code="edit_obj_func"/></h1>
 					</td>
 				</tr>
 				<tr>
@@ -45,7 +45,7 @@
 							</tr>
 							<tr>
 								<td></td>
-								<td>Name*</td>
+								<td><spring:message code="name"/>*</td>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -57,7 +57,7 @@
 							</tr>
 							<tr>
 								<td></td>
-								<td>Expression*</td>
+								<td><spring:message code="expression"/>*</td>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -69,16 +69,16 @@
 							</tr>
                             <tr>
                                 <td></td>
-                                <td colspan="3">Optimization sense: 
+                                <td colspan="3"><spring:message code="optimization_sense"/>: 
                                     <select name="optsense" id="optsense" size="1">
                                     <c:choose>
                                         <c:when test="${function.ismaximise}">
-	                                       <option value="min">Minimize</option>
-	                                       <option value="max" selected>Maximize</option>
+	                                       <option value="min"><spring:message code="minimize"/></option>
+	                                       <option value="max" selected><spring:message code="maximize"/></option>
                                         </c:when>
                                         <c:otherwise>
-                                           <option value="min" selected>Minimize</option>
-                                           <option value="max">Maximize</option>
+                                           <option value="min" selected><spring:message code="minimize"/></option>
+                                           <option value="max"><spring:message code="maximize"/></option>
                                         </c:otherwise>
                                     </c:choose>
                                     </select>
@@ -90,7 +90,7 @@
 								<td></td>
 								<td></td>
 								<td align="right"><input type="submit" value="Ok"></input>
-								<a href="geneticalgorithm.html"><button type="button">Cancel</button></a></td>
+								<a href="geneticalgorithm.html"><button type="button"><spring:message code="cancel"/></button></a></td>
 								<td></td>
 							</tr>					
 						</table>
