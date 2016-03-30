@@ -758,8 +758,8 @@ public class ScenarioController {
 	
 	@RequestMapping(value="deletescenario",method=RequestMethod.GET)
 	public String deleteScenario(Map<String, Object> model, 
-		@RequestParam(value="scenarioid", required=false,
-		HttpServletRequest request) String scenarioid) {
+		@RequestParam(value="scenarioid", required=false) String scenarioid,
+		HttpServletRequest request) {
 	
 		ProjectDTO project = (ProjectDTO) model.get("project");
 

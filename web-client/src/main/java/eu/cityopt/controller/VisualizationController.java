@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
@@ -172,6 +174,9 @@ public class VisualizationController {
     @Autowired
     SecurityAuthorization securityAuthorization;
 
+    @Autowired
+    ControllerService controllerService;
+    
 	@RequestMapping(value="timeserieschart", method=RequestMethod.GET)
 	public String timeSeriesChart(Map<String, Object> model, 
 		@RequestParam(value="scenarioid", required=false) String scenarioId,
@@ -201,17 +206,6 @@ public class VisualizationController {
 
 		securityAuthorization.atLeastGuest_guest(project);
 		
-		AppUserDTO user = (AppUserDTO) model.get("user");
-
-		// TODO
-		if (user != null && project != null)
-		{
-			//if (hasStandardRights(user.getUserid()))
-			{
-			
-			}
-		}
-
 		try {
 			scenario = scenarioService.findByID(scenario.getScenid());
 		} catch (EntityNotFoundException e1) {
@@ -568,7 +562,8 @@ public class VisualizationController {
 	}
 
 	@RequestMapping("timeserieschart.png")
-	public void renderTimeSeriesChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
+	public void renderTimeSeriesChart(Map<String, Object> model, String variation, OutputStream stream,
+		HttpServletRequest request) throws Exception {
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
 		if (project == null)
@@ -691,9 +686,9 @@ public class VisualizationController {
 			}
 			
 			if (userSession.getTimeSeriesChartType() == 0) {
-				chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", "Date", "Value");
+				chart = TimeSeriesVisualization.createChart(timeSeriesCollection, controllerService.getMessage("time_series", request), controllerService.getMessage("date", request), controllerService.getMessage("value", request));
 			} else if (userSession.getTimeSeriesChartType() == 1) {
-				chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", "Date", "Value", true);
+				chart = ScatterPlotVisualization.createChart(timeSeriesCollection, controllerService.getMessage("scatter_plot", request), controllerService.getMessage("date", request), controllerService.getMessage("value", request), true);
 			} 
 			
 			ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
@@ -705,7 +700,8 @@ public class VisualizationController {
 	}
 
 	@RequestMapping("summarychart.png")
-	public void renderSummaryChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
+	public void renderSummaryChart(Map<String, Object> model, String variation, OutputStream stream,
+		HttpServletRequest request) throws Exception {
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
 		if (project == null)
@@ -777,9 +773,9 @@ public class VisualizationController {
 				}
 				
 				if (userSession.getSummaryChartType() == 2) {
-					chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "", "");
+					chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("bar_chart", request), "", "");
 				} else if (userSession.getSummaryChartType() == 3) {
-					chart = PieChartVisualization.createChart(pieDataset, "Pie chart " + metric1.getName(), "", "");
+					chart = PieChartVisualization.createChart(pieDataset, controllerService.getMessage("pie_chart", request) + " " + metric1.getName(), "", "");
 				}
 				
 				if (chart != null)
@@ -865,9 +861,9 @@ public class VisualizationController {
 						unit2 = "(" + metric2.getUnit().getName() + ")";
 					}
 
-					chart = ScatterPlotVisualization.createChart(collection, "Scatter plot", metric1.getName() + " " + unit1, metric2.getName() + " " + unit2, false);
+					chart = ScatterPlotVisualization.createChart(collection, controllerService.getMessage("scatter_plot", request), metric1.getName() + " " + unit1, metric2.getName() + " " + unit2, false);
 				} else if (userSession.getSummaryChartType() == 2) {
-					chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "", "");
+					chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("bar_chart", request), "", "");
 				}
 				
 				if (chart != null)
@@ -924,7 +920,7 @@ public class VisualizationController {
 				userSession.setSummaryChartType(2);
 			}
 			
-			chart = BarChartVisualization.createChart(categoryDataset, "Bar chart", "", "");
+			chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("bar_chart", request), "", "");
 			
 			if (chart != null)
 			{
@@ -934,7 +930,8 @@ public class VisualizationController {
 	}
 
 	@RequestMapping("gachart.png")
-	public void renderGAChart(Map<String, Object> model, String variation, OutputStream stream) throws Exception {
+	public void renderGAChart(Map<String, Object> model, String variation, OutputStream stream,
+		HttpServletRequest request) throws Exception {
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
 		if (project == null)
@@ -990,7 +987,7 @@ public class VisualizationController {
 				categoryDataset.addValue(Double.parseDouble(value1), scenarioTemp.getName(), objFunc.getName());
 			}
 			
-			JFreeChart chart = BarChartVisualization.createChart(categoryDataset, "Genetic optimization scenario results", "", "");
+			JFreeChart chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("genetic_optimization_scenario_results", request), "", "");
 			
 			if (chart != null)
 			{
@@ -1044,7 +1041,7 @@ public class VisualizationController {
 					collection.addSeries(series);						
 				}				
 			
-				JFreeChart chart = ScatterPlotVisualization.createChart(collection, "Genetic optimization results", objFunc1.getName(), objFunc2.getName(), false);
+				JFreeChart chart = ScatterPlotVisualization.createChart(collection, controllerService.getMessage("genetic_optimization_scenario_results", request), objFunc1.getName(), objFunc2.getName(), false);
 				
 				if (chart != null)
 				{
