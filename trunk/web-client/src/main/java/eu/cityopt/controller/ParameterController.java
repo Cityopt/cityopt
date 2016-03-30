@@ -238,7 +238,8 @@ public class ParameterController {
 
     @RequestMapping(value="createcomponent", method=RequestMethod.POST)
     public String getCreateComponentPost(ComponentDTO componentForm, Map<String, Object> model,
-    	@RequestParam(value="cancel", required=false) String cancel) {
+    	@RequestParam(value="cancel", required=false) String cancel,
+    	HttpServletRequest request) {
     		 
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -265,7 +266,7 @@ public class ParameterController {
         if (name == null || name.isEmpty()) {
         	ComponentDTO newComponent = new ComponentDTO();
             model.put("component", newComponent);
-            model.put("error", "Please write component name!");
+            model.put("error", controllerService.getMessage("write_component_name", request));
         	return "createcomponent";
         }
         
@@ -276,7 +277,7 @@ public class ParameterController {
      	{
      		ComponentDTO newComponent = new ComponentDTO();
             model.put("component", newComponent);
-            model.put("error", "Please write another component name!");
+            model.put("error", controllerService.getMessage("write_another_component_name", request));
         	return "createcomponent";
         }
      	
@@ -514,7 +515,8 @@ public class ParameterController {
     @RequestMapping(value = "importinputtimeseries", method = RequestMethod.POST)
     public String importInputTimeSeries(Map<String, Object> model, 
 		@RequestParam("file") MultipartFile file, 
-    	@RequestParam(value="inputid", required=true) String inputId)
+    	@RequestParam(value="inputid", required=true) String inputId,
+    	HttpServletRequest request)
     {
     	System.out.println("Starting importing input time series");
 
@@ -578,7 +580,7 @@ public class ParameterController {
                 }
                 else
                 {
-                	String error = "Imported input parameter already exists, please edit the existing parameter!";
+                	String error = controllerService.getMessage("imported_input_parameter_exists", request);
                 	model.put("error", error);
                 }
 
@@ -784,8 +786,9 @@ public class ParameterController {
     @RequestMapping(value="createinputparameter", method=RequestMethod.POST)
     public String getCreateInputParamPost(ParamForm inputParamForm, Map<String, Object> model,
         @RequestParam(value="selectedcompid", required=true) String strSelectedCompId,
-    	@RequestParam(required=false, value="cancel") String cancel) {
-                    
+    	@RequestParam(required=false, value="cancel") String cancel,
+    	HttpServletRequest request) 
+    {
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -817,7 +820,7 @@ public class ParameterController {
 
             List<UnitDTO> units = unitService.findAll();
             model.put("units", units);
-            model.put("error", "Please write input parameter name and select unit!");
+            model.put("error", controllerService.getMessage("write_input_parameter_and_select_unit", request));
         	return "createinputparameter";
         }
         
@@ -826,7 +829,7 @@ public class ParameterController {
 
      	if (!isValid)
      	{
-            model.put("error", "Please write another input parameter name!");
+            model.put("error", controllerService.getMessage("write_another_input_parameter_name", request));
             InputParameterDTO newInputParameter = new InputParameterDTO();
             model.put("inputParam", newInputParameter);
             
@@ -927,7 +930,8 @@ public class ParameterController {
 
     @RequestMapping(value="createextparam", method=RequestMethod.POST)
     public String getCreateExtParamPost(ExtParamDTO extParam, Map<String, Object> model,
-    	@RequestParam(required=false, value="cancel") String cancel) {
+    	@RequestParam(required=false, value="cancel") String cancel,
+    	HttpServletRequest request) {
         
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -948,7 +952,7 @@ public class ParameterController {
         
         if (name.isEmpty())
         {
-            model.put("error", "Please write parameter name!");
+            model.put("error", controllerService.getMessage("write_parameter_name", request));
             model.put("extParam", new ExtParamDTO());
             return "createextparam";
         }

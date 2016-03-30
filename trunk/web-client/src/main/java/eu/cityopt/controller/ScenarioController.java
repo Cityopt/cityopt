@@ -215,7 +215,8 @@ public class ScenarioController {
 	@Transactional
 	public String createScenarioPost(Map<String, Object> model, 
 		@Validated @ModelAttribute ("newScenario") ScenarioDTO formScenario, 
-		BindingResult bindingResult) {
+		BindingResult bindingResult,
+		HttpServletRequest request) {
 
 		if (bindingResult.hasErrors()) {
             return "createscenario";
@@ -250,11 +251,11 @@ public class ScenarioController {
 					e.printStackTrace();
 				}
 				model.put("components", components);
-				model.put("successful", "Scenario succesfully created.");
+				model.put("successful", controllerService.getMessage("scenario_created", request));
 				model.put("scenario",  scenario);
 			} else {
 				model.put("newScenario", formScenario);
-				model.put("error", "This Scenario already exists, please create another name.");
+				model.put("error", controllerService.getMessage("scenario_exists_write_another_name", request));
 				return "createscenario";				
 			}			
 				
@@ -274,7 +275,7 @@ public class ScenarioController {
 			}
 			
 			model.put("usersession", userSession);
-			model.put("successful", "Scenario succesfully created");
+			model.put("successful", controllerService.getMessage("scenario_created", request));
 			model.put("newScenario", scenario);
 			model.put("success",true);
 			return "createscenario";				
@@ -282,7 +283,7 @@ public class ScenarioController {
 		else
 		{
 			model.put("newScenario", formScenario);				
-			model.put("error", "There's no project selected please select one.");
+			model.put("error", controllerService.getMessage("no_project_selected_select_one", request));
 			return "createscenario";
 		}		
 	}
@@ -331,7 +332,8 @@ public class ScenarioController {
 	}
 	
 	@RequestMapping(value="clonescenario",method=RequestMethod.GET)
-	public String cloneScenario (Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid)
+	public String cloneScenario (Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid,
+		HttpServletRequest request)
 	{
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -382,7 +384,7 @@ public class ScenarioController {
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			} catch(ObjectOptimisticLockingFailureException e){
-				model.put("error", "This scenario has been updated in the meantime, please reload.");
+				model.put("error", controllerService.getMessage("scenario_updated_reload", request));
 			}
 		}
 			
@@ -425,7 +427,8 @@ public class ScenarioController {
 
 	@RequestMapping(value="editscenario",method=RequestMethod.POST)
 	public String editScenarioPost(ScenarioDTO formScenario, Map<String, Object> model, 
-		@RequestParam(value="action", required=false) String action) {
+		@RequestParam(value="action", required=false) String action,
+		HttpServletRequest request) {
 
 		if (model.containsKey("project") && formScenario != null)
 		{
@@ -446,7 +449,7 @@ public class ScenarioController {
 			try {
 				scenario = scenarioService.save(scenario, project.getPrjid());
 			} catch(ObjectOptimisticLockingFailureException e) {
-				model.put("error", "This scenario has been updated in the meantime, please reload.");
+				model.put("error", controllerService.getMessage("scenario_updated_reload", request));
 			}
 			
 			controllerService.initEditScenario(model, project.getPrjid(), scenario.getScenid());			
@@ -754,7 +757,9 @@ public class ScenarioController {
 	}
 	
 	@RequestMapping(value="deletescenario",method=RequestMethod.GET)
-	public String deleteScenario(Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid) {
+	public String deleteScenario(Map<String, Object> model, 
+		@RequestParam(value="scenarioid", required=false,
+		HttpServletRequest request) String scenarioid) {
 	
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -793,7 +798,7 @@ public class ScenarioController {
 				} catch (EntityNotFoundException e) {
 					e.printStackTrace();
 				} catch(ObjectOptimisticLockingFailureException e) {
-					model.put("error", "This scenario has been updated in the meantime, please reload.");
+					model.put("error", controllerService.getMessage("scenario_updated_reload", request));
 				}
 			}
 		}
@@ -1127,7 +1132,8 @@ public class ScenarioController {
 	}	
 	
     @RequestMapping(value="simulationinfo", method=RequestMethod.GET)
-    public String simInfoPage(Map<String, Object> model)
+    public String simInfoPage(Map<String, Object> model,
+		HttpServletRequest request)
     {
     	ProjectDTO project = (ProjectDTO) model.get("project");
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
@@ -1139,7 +1145,7 @@ public class ScenarioController {
 
 		securityAuthorization.atLeastGuest_guest(project);
 
-        model.put("title", "Simulation info for scenario " + scenario.getName());
+        model.put("title", controllerService.getMessage("simulation_info_for_scenario", request) + " " + scenario.getName());
 		
         BufferedReader bufReader = new BufferedReader(new StringReader(scenario.getLog()));
         String line = null;
