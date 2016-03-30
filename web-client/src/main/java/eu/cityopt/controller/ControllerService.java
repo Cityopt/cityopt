@@ -5,13 +5,18 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -111,9 +116,15 @@ public class ControllerService {
 
 	    @Autowired
 	    MetricValService metricValService;
-	    
-		// Finds project By model and project id;
-	     
+	 
+	    @Autowired  
+	    private MessageSource messageSource;
+
+	    public String getMessage(String code, HttpServletRequest request) {
+	    	Locale locale = RequestContextUtils.getLocale(request);
+	        return messageSource.getMessage(code, null, locale);
+	    }
+
 	    public AppUserDTO FindAuthenticatedUser(Authentication authentication) throws Exception{
 			
 			String authenticatedUserName = authentication.getName();			

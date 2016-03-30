@@ -269,7 +269,7 @@ public class ProjectController {
         	project.setLocation(projectForm.getLocation());
         	project.setDesigntarget(projectForm.getDesigntarget());
             model.put("newProject", project);
-            model.put("error", "Please write project name!");
+            model.put("error", controllerService.getMessage("write_project_name", request));
         	return "createproject";
         } else if (nextpage != null) {
         	ProjectDTO project = (ProjectDTO) model.get("project");
@@ -432,7 +432,8 @@ public class ProjectController {
     
     @RequestMapping(value="editproject", method=RequestMethod.POST)
     public String editProjectPost(ProjectDTO projectForm, Map<String, Object> model, 
-        @RequestParam(value="action", required=false) String action) {
+        @RequestParam(value="action", required=false) String action,
+        HttpServletRequest request) {
 
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -470,7 +471,7 @@ public class ProjectController {
                     project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()), nDefaultExtSetId);
                     controllerService.getEnergyModelInfo(model, project.getPrjid());
                 } catch(ObjectOptimisticLockingFailureException e) {
-                    model.put("error", "This project has been updated in the meantime, please reload.");
+                    model.put("error", controllerService.getMessage("project_updated", request));
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
@@ -907,7 +908,8 @@ public class ProjectController {
     }	
 
     @RequestMapping(value="deleteproject",method=RequestMethod.GET)
-    public String deleteProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid){
+    public String deleteProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid,
+		HttpServletRequest request){
     	securityAuthorization.atLeastExpert();
         
         if (prjid != null)
@@ -925,7 +927,7 @@ public class ProjectController {
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
             } catch(ObjectOptimisticLockingFailureException e) {
-                model.put("error", "This project has been updated in the meantime, please reload.");
+                model.put("error", controllerService.getMessage("project_updated", request));
             }
         }
 
@@ -984,7 +986,8 @@ public class ProjectController {
     }
 
     @RequestMapping(value="deleteunit",method=RequestMethod.GET)
-    public String deleteUnit(Map<String, Object> model, @RequestParam(value="unitid", required=true) String unitid) {
+    public String deleteUnit(Map<String, Object> model, @RequestParam(value="unitid", required=true) String unitid,
+		HttpServletRequest request) {
     	
     	securityAuthorization.atLeastExpert();
         
@@ -1004,7 +1007,7 @@ public class ProjectController {
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
             } catch(ObjectOptimisticLockingFailureException e) {
-                model.put("error", "This project has been updated in the meantime, please reload.");
+                model.put("error", controllerService.getMessage("project_updated", request));
             }
         }
 
@@ -1591,6 +1594,8 @@ public class ProjectController {
             e.printStackTrace();
         }
 
+        // TODO: update metrics 
+        
         model.put("project", project);
         Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
         model.put("metrics", metrics);

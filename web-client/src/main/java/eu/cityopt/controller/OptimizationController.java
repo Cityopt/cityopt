@@ -513,7 +513,7 @@ public class OptimizationController {
 	        if (name == null || name.isEmpty() || expression == null || expression.isEmpty())
 	        {
 	        	model.put("objFuncForm", objFuncForm);
-	        	model.put("error", "Please write a name and an expression!");
+	        	model.put("error", controllerService.getMessage("write_name_and_expression", request));
 	        	model.put("type", type);
 	        	return "updateobjfunction";
 	        }
@@ -521,7 +521,7 @@ public class OptimizationController {
 	        if (objFuncService.existsByName(project.getPrjid(), name))
 	        {
 	        	model.put("objFuncForm", objFuncForm);
-	        	model.put("error", "Objective function with that name already exists!");
+	        	model.put("error", controllerService.getMessage("objective_function_exists", request));
 	        	model.put("type", type);
 	        	return "updateobjfunction";
 	        }
@@ -550,7 +550,7 @@ public class OptimizationController {
 		        try {
 		            optSet = optSetService.save(optSet);
 		        } catch(ObjectOptimisticLockingFailureException e) {
-		            model.put("error", "This optimization set has been updated in the meantime, please reload.");
+		            model.put("error", controllerService.getMessage("optimization_set_updated", request));
 		        }
         	} else if (type.equals("ga")) {
         		try {
@@ -661,7 +661,7 @@ public class OptimizationController {
         	
         	if (name.isEmpty() || expression.isEmpty())
         	{
-        		model.put("error", "Please write name and expression!");
+        		model.put("error", controllerService.getMessage("write_name_and_expression", request));
                 controllerService.initEditObjFunc(model, project.getPrjid(), null, null);
                 function = optSet.getObjectivefunction();
                 model.put("function", function);
@@ -718,7 +718,7 @@ public class OptimizationController {
             try {
                 optSet = optSetService.save(optSet);
             } catch(ObjectOptimisticLockingFailureException e) {
-                model.put("error", "This optimization set has been updated in the meantime, please reload.");
+                model.put("error", controllerService.getMessage("optimization_set_updated", request));
             }
         }
 
@@ -1037,7 +1037,8 @@ public class OptimizationController {
     }
     
     @RequestMapping(value="editoptimizationset",method=RequestMethod.POST)
-    public String editOptimizationSetPost(OptimizationSetDTO optSet, Map<String, Object> model) 
+    public String editOptimizationSetPost(OptimizationSetDTO optSet, Map<String, Object> model,
+		HttpServletRequest request) 
     {
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1049,7 +1050,7 @@ public class OptimizationController {
 
         if (optSet.getName() == null || optSet.getName().isEmpty())
         {
-        	model.put("error", "Please write optimization set name!");
+        	model.put("error", controllerService.getMessage("write_optimization_set_name", request));
             controllerService.initEditOptSet(model, project.getPrjid(), optSet.getOptid());
             return "editoptimizationset";
         }
@@ -1260,8 +1261,7 @@ public class OptimizationController {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					System.out.println("Could find file "
-							+ file.getAbsolutePath());
+					System.out.println("Could not find file " + file.getAbsolutePath());
 					continue;
 				} catch (IOException e)	{
 					e.printStackTrace();
@@ -1765,8 +1765,9 @@ public class OptimizationController {
 
     @RequestMapping(value="deleteoptimizationset",method=RequestMethod.GET)
     public String deleteOptimizationSet(Map<String, Object> model,
-            @RequestParam(value="optsetid", required=false) String optsetid,
-            @RequestParam(value="optsettype", required=false) String optsettype) {
+        @RequestParam(value="optsetid", required=false) String optsetid,
+        @RequestParam(value="optsettype", required=false) String optsettype,
+        HttpServletRequest request) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1790,9 +1791,8 @@ public class OptimizationController {
                     } catch (NumberFormatException | EntityNotFoundException e) {
                         e.printStackTrace();
                     } catch(ObjectOptimisticLockingFailureException e){
-                        model.put("error", "This optimization set has been updated in the meantime, please reload.");
+                        model.put("error", controllerService.getMessage("optimization_set_updated", request));
                     }
-
                 }
                 else
                 {
@@ -1810,7 +1810,7 @@ public class OptimizationController {
                     } catch (EntityNotFoundException e) {
                         e.printStackTrace();
                     } catch(ObjectOptimisticLockingFailureException e){
-                        model.put("error", "This optimization set has been updated in the meantime, please reload.");
+                        model.put("error", controllerService.getMessage("optimization_set_updated", request));
                     }
                 }
                 else
@@ -1872,7 +1872,8 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="createconstraint", method=RequestMethod.POST)
-    public String createConstraintPost(OptConstraintDTO constraint, Map<String, Object> model) throws EntityNotFoundException {
+    public String createConstraintPost(OptConstraintDTO constraint, Map<String, Object> model,
+		HttpServletRequest request) throws EntityNotFoundException {
         
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1906,7 +1907,7 @@ public class OptimizationController {
         		
         if (testConstraint != null)
         {
-        	model.put("error",  "Constraint already exists!");
+        	model.put("error", controllerService.getMessage("optimization_set_updated", request));
         	model.put("constraint", constraint);
         	return "createconstraint";
         }
@@ -1915,7 +1916,7 @@ public class OptimizationController {
         {
         	if (constraint.getName().isEmpty() || constraint.getExpression().isEmpty())
         	{
-        		model.put("error", "Please write name and expression!");
+        		model.put("error", controllerService.getMessage("write_name_and_expression", request));
         		model.put("constraint", constraint);
             	return "createconstraint";
         	}
@@ -2023,7 +2024,8 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="editconstraint", method=RequestMethod.POST)
-    public String editConstraintPost(OptConstraintDTO constraint, Map<String, Object> model) throws EntityNotFoundException {
+    public String editConstraintPost(OptConstraintDTO constraint, Map<String, Object> model,
+		HttpServletRequest request) throws EntityNotFoundException {
         OptimizationSetDTO optSet = null;
 
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -2056,7 +2058,7 @@ public class OptimizationController {
         {
         	if (constraint.getName().isEmpty() || constraint.getExpression().isEmpty())
         	{
-        		model.put("error", "Please write name and expression!");
+        		model.put("error", controllerService.getMessage("write_name_and_expression", request));
         		model.put("constraint", constraint);
             	return "editconstraint";
         	}
@@ -2159,7 +2161,8 @@ public class OptimizationController {
 
     @RequestMapping(value="importsearchconstraint",method=RequestMethod.GET)
     public String importSearchConstraint(Map<String, Object> model,
-            @RequestParam(value="constraintid", required=false) String selectedConstraintId) {
+        @RequestParam(value="constraintid", required=false) String selectedConstraintId,
+        HttpServletRequest request) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -2215,7 +2218,7 @@ public class OptimizationController {
 	                    e.printStackTrace();
 	                }
             	} else {
-            		model.put("error", "Constraint already exists");
+            		model.put("error", controllerService.getMessage("constraint_exists", request));
             	}
                 model.put("optimizationset", optSet);
             }
@@ -2239,7 +2242,8 @@ public class OptimizationController {
 
     @RequestMapping(value="importgaconstraint",method=RequestMethod.GET)
     public String importGAConstraint(Map<String, Object> model,
-        @RequestParam(value="constraintid", required=false) String selectedConstraintId) {
+        @RequestParam(value="constraintid", required=false) String selectedConstraintId,
+        HttpServletRequest request) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -2273,7 +2277,7 @@ public class OptimizationController {
             
             if (testConstraint != null) {
             	// Constraint already exists
-            	model.put("error", "Constraint already exists");
+            	model.put("error", controllerService.getMessage("constraint_exists", request));
             }
             else if (scenGen != null && constraint != null)
             {
@@ -2483,8 +2487,6 @@ public class OptimizationController {
         ModelMap model, Integer selectedCompId) {
 
 		securityAuthorization.atLeastExpert_expert(project);
-        UserSession userSession = getUserSession(model);
-
         model.put("function", function);
 
         return "editsgobjfunction";
@@ -2554,7 +2556,8 @@ public class OptimizationController {
 
     @RequestMapping(value="addsgobjfunction", method=RequestMethod.GET)
     public String addSGObjFunctionPost(ModelMap model,
-    	@RequestParam(value="obtfunctionid", required=false) String obtfunctionid) {
+    	@RequestParam(value="obtfunctionid", required=false) String obtfunctionid,
+    	HttpServletRequest request) {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
 
@@ -2574,7 +2577,7 @@ public class OptimizationController {
                  if (testObjFunc == null) {
                 	 scenGenService.addObjectiveFunction(scenGen.getScengenid(), objFunc);
                  } else {
-                	 model.put("error", "Objective function already exists!");
+                	 model.put("error", controllerService.getMessage("objective_function_exists", request));
          	        
                 	 try {
         	            model.put("objFuncs", sortBy(ObjectiveFunctionDTO::getName,
@@ -2661,8 +2664,10 @@ public class OptimizationController {
 
     @RequestMapping(value="editsgconstraint", method=RequestMethod.POST)
     public String editSGConstraintPost(
-            OptConstraintDTO constraint, ModelMap model,
-            @RequestParam("optconstid") int constrid) {
+        OptConstraintDTO constraint, ModelMap model,
+        @RequestParam("optconstid") int constrid,
+        HttpServletRequest request) 
+    {
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
 
@@ -2680,7 +2685,7 @@ public class OptimizationController {
         if ((constraint.getLowerbound() == null && constraint.getUpperbound() == null)
                 || StringUtils.isBlank(constraint.getName())
                 || StringUtils.isBlank(constraint.getExpression())) {
-        	model.put("error", "Please fill all the fields");
+        	model.put("error", controllerService.getMessage("fill_all_fields", request));
             return getEditSGConstraint(project, constraint, model, null);
         }
 
@@ -2688,7 +2693,7 @@ public class OptimizationController {
 		        
         if (constrid <= 0 && testConstraint != null) {
         	// Constraint already exists
-        	model.put("error", "Constraint already exists");
+        	model.put("error", controllerService.getMessage("constraint_exists", request));
         	return getEditSGConstraint(project, constraint, model, null);
         }
         
@@ -2835,7 +2840,8 @@ public class OptimizationController {
     public String editSGDecisionVariablePost(
         DecisionVariableDTO decVar, ModelMap model,
         @RequestParam("decisionvarid") int decisionvarid,
-        @RequestParam("typeid") int typeid) {
+        @RequestParam("typeid") int typeid,
+        HttpServletRequest request) {
 
     	ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
@@ -2851,13 +2857,13 @@ public class OptimizationController {
             decVar.setUpperbound(null);
         }
         if (StringUtils.isBlank(decVar.getName())) {
-        	model.put("error", "Please write decision variable name!");
+        	model.put("error", controllerService.getMessage("write_decision_variable_name", request));
         	return getEditSGDecisionVariable(project, decVar, model, null);
         }
         
         if (decisionvarid <= 0 && decisionVarService.findByNameAndScenGen(decVar.getName(), scenGen.getScengenid()) != null) {
         	// Decision variable already exists
-        	model.put("error", "Decision variable already exists!");
+        	model.put("error", controllerService.getMessage("decision_variable_exists", request));
         	return getEditSGDecisionVariable(project, decVar, model, null);
         }
         
@@ -2866,7 +2872,7 @@ public class OptimizationController {
 
      	if (!isValid)
      	{
-            model.put("error", "Please write another decision variable name!");
+            model.put("error", controllerService.getMessage("write_another_decision_variable_name", request));
         	return getEditSGDecisionVariable(project, decVar, model, null);
         }
      	
