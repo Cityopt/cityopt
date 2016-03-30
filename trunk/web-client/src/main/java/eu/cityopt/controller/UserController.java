@@ -851,15 +851,15 @@ public class UserController {
         String errorMsg = "";
 
         if (user == null) {
-            errorMsg = "User null";
+            errorMsg = controllerService.getMessage("add_user", request);
         }
 
         if (userGroup == null) {
-            errorMsg += "User group null";
+            errorMsg += controllerService.getMessage("add_user_group", request);
         }
 
         if (project == null) {
-            errorMsg = "Project null";
+            errorMsg = controllerService.getMessage("add_project", request);
         }
 
         model.put("errorMsg", errorMsg);
