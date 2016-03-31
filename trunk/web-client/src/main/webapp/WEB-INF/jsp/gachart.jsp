@@ -34,7 +34,7 @@
 					<td></td>
 				</tr>
 				<tr>
-					<td>
+					<td valign="top">
 						<table>
 							<tr>
 								<td>
