@@ -150,8 +150,9 @@
 							<tr>
 								<td>
 									<table width="100%">
+										<col style="width:180px">	
 										<tr>
-											<td align="right">
+											<td valign="top">
 												<table>
 													<tr>
 														<td>
@@ -159,6 +160,10 @@
 											 				<b><spring:message code="select_chart_type"/></b>
 										 				</td>
 									 				</tr>
+								 				</table>
+							 				</td>
+							 				<td valign="top">
+							 					<table>
 									 				<tr>
 							 							<td>
 							 							<c:choose>
