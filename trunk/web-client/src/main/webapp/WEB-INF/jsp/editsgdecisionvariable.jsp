@@ -63,7 +63,7 @@
                             <tr height=10></tr>
                             <tr>
                                 <td></td>
-                                <td><spring:message code="type"/>*:</td>
+                                <td><spring:message code="type"/>:</td>
                                 <td> 
                                     <select name="typeid" id="typeid" size="1">
                                     <c:forEach items="${typechoices}" var="typechoice">
