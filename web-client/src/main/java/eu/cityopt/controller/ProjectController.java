@@ -1548,6 +1548,7 @@ public class ProjectController {
         	if (error != null) {
         	    model.put("error", error.message);
         	    controllerService.initUpdateMetric(model, project.getPrjid());
+        	    controllerService.getFunctions(model);
         	    return "updatemetric";
         	}
 

@@ -47,14 +47,14 @@
 							<col style="width: 300px">
 							
 							<tr class="username">								
-								<td><label for="projectname">*<spring:message code="username" />:</label></td>
+								<td><label for="projectname"><spring:message code="username" />*:</label></td>
 								<c:set var="tooltip_name"><spring:message code="tooltip_create_user_name"/></c:set>									
 								<td><form:input style="width:300px" type="text" path="name" title="${tooltip_name}"/></td>
 								<td><form:errors path="name" cssClass="error"/></td>								
 							</tr>
 							
 							<tr class="password">							
-								<td><label for="location">*<spring:message code="password" />:</label></td>
+								<td><label for="location"><spring:message code="password" />*:</label></td>
 								<c:set var="tooltip_password"><spring:message code="tooltip_create_user_password"/></c:set>								
 								<td><form:input style="width:300px" type="text"	path="password" title="${tooltip_password}" /></td>
 								<td><form:errors path="password" cssClass="error"/></td>
@@ -72,7 +72,7 @@
 							</tr>
 							
 							<tr class="role">							
-								<td><spring:message code="role" />*:</td>
+								<td><spring:message code="role" />:</td>
 								<td>
 								<c:set var="tooltip_role"><spring:message code="tooltip_role"/></c:set>	
 								<form:select path="role" title="${tooltip_role}" >

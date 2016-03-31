@@ -857,7 +857,8 @@ public class OptimizationController {
     }
 
     @RequestMapping(value="createoptimizationset",method=RequestMethod.GET)
-    public String createOptimizationSet(Map<String, Object> model) 
+    public String createOptimizationSet(Map<String, Object> model,
+		HttpServletRequest request) 
     {
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -869,7 +870,7 @@ public class OptimizationController {
 
         if (projectService.getSimulationmodelId(project.getPrjid()) == null)
         {
-        	model.put("error", "Please import energy model first!");
+        	model.put("error", controllerService.getMessage("import_energy_model_first", request));
         	return "error";
         }
 
@@ -909,7 +910,7 @@ public class OptimizationController {
         	{
         		OpenOptimizationSetDTO newOpenOptSet = new OpenOptimizationSetDTO();
         		model.put("openoptimizationset", newOpenOptSet);
-        		model.put("error", "Please write optimization set name!");
+        		model.put("error", controllerService.getMessage("write_optimization_set_name", request));
         		return "createoptimizationset";
         	}
 
@@ -1312,7 +1313,8 @@ public class OptimizationController {
     
 	@RequestMapping(value="extparamsets",method=RequestMethod.POST)
     public String extParamSetsPost(Map<String, Object> model, 
-		@RequestParam(value="extparamvalsetid", required=false) String strId) {
+		@RequestParam(value="extparamvalsetid", required=false) String strId,
+		HttpServletRequest request) {
 		
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -1352,7 +1354,7 @@ public class OptimizationController {
             model.put("error", "Entity not found.");
             e.printStackTrace();
         } catch(ObjectOptimisticLockingFailureException e) {
-            model.put("error", "Concurrent modification detected.");
+            model.put("error", controllerService.getMessage("concurrent_modification_detected", request));
             e.printStackTrace();
         }
 
@@ -1400,7 +1402,9 @@ public class OptimizationController {
 	}    		
 
 	@RequestMapping(value="gaextparamsets",method=RequestMethod.POST)
-    public String GAExtParamSetsPost(Map<String, Object> model, @RequestParam(value="extparamvalsetid", required=true) int id) { 
+    public String GAExtParamSetsPost(Map<String, Object> model, 
+		@RequestParam(value="extparamvalsetid", required=true) int id,
+		HttpServletRequest request) { 
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -1434,7 +1438,7 @@ public class OptimizationController {
             model.put("error", "Entity not found.");
             e.printStackTrace();
         } catch(ObjectOptimisticLockingFailureException e) {
-            model.put("error", "Concurrent modification detected.");
+            model.put("error", controllerService.getMessage("concurrent_modification_detected", request));
             e.printStackTrace();
         }
 
@@ -1553,7 +1557,8 @@ public class OptimizationController {
     }
     
     @RequestMapping(value="databaseoptimization", method=RequestMethod.GET)
-    public String databaseOptimization(Map<String, Object> model) {
+    public String databaseOptimization(Map<String, Object> model,
+		HttpServletRequest request) {
 
         OptimizationSetDTO optSet = null;
 
@@ -1585,7 +1590,7 @@ public class OptimizationController {
         if (optSet.getObjectivefunction() == null)
         {
         	controllerService.getProjectMetricVals(model, project.getPrjid());
-            model.put("error", "Objective function missing");
+            model.put("error", controllerService.getMessage("obj_func_missing", request));
             return "editoptimizationset";
         }
 
