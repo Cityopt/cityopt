@@ -68,24 +68,24 @@
 													<tr>						
 														<td valign="top">
 															<table class="tablestyle">
-																<col style="width:100px">
-																<col style="width:200px">
+																<col style="width:80px">
+																<col style="width:220px">
 																<tr>
-																	<!-- Select -->
 																	<th><spring:message code="select"/></th>
-																	<!-- Component -->
 																	<th><spring:message code="component"/></th>
 																</tr>
 																<c:forEach items="${components}" var="component">
 																<c:if test="${selectedcompid == component.componentid}">
-																	<tr style="background-color: rgb(140, 200, 200)">
-																	<td><a href="viewtable.html?selectedcompid=${component.componentid}"><spring:message code="selected"/></a></td>
+																	<tr style="background-color: #D4D4D4">
+																		<td><a href="viewtable.html?selectedcompid=${component.componentid}"><b><spring:message code="selected"/></b></a></td>
+																		<td><b>${component.name}</b></td>
 																</c:if>
 																<c:if test="${selectedcompid != component.componentid}">
 																	<tr>
-																	<td><a href="viewtable.html?selectedcompid=${component.componentid}"><spring:message code="select"/></a></td>
+																		<td><a href="viewtable.html?selectedcompid=${component.componentid}">
+																			<button type="button"><spring:message code="select"/></button></a></td>
+																		<td>${component.name}</td>
 																</c:if>
-																	<td>${component.name}</td>
 															   	</tr>
 																</c:forEach>
 															</table>
@@ -105,15 +105,18 @@
 																	<c:choose>
 																		<c:when test="${outputVar.outvarid == selectedOutputVar.outvarid}">
 																			<tr style="background-color: rgb(140, 200, 200)">
-																			<td>Shown (<a href="writetable.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}"><spring:message code="remove"/></a>)</td>
+																				<td><b><spring:message code="shown"/></b> (<a href="writetable.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">
+																					<button type="button"><spring:message code="remove"/></button></a>)
+																				</td>
+																				<td><b>${outputVar.name}</b></td>
 																		</c:when>
 																		<c:otherwise>
 																			<tr>
-																			<td><a href="writetable.html?action=add&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}"><spring:message code="show"/></a></td>
+																				<td><a href="writetable.html?action=add&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">
+																					<button type="button"><spring:message code="show"/></button></a></td>
+																				<td>${outputVar.name}</td>
 																		</c:otherwise>
 																	</c:choose>
-																
-																	<td>${outputVar.name}</td>
 															   	</tr>
 																</c:forEach>
 															</table>

@@ -63,16 +63,22 @@
 													<c:forEach items="${components}" var="component">
 													<tr>
 														<c:if test="${selectedcompid == component.componentid}">
-															<tr style="background-color: #D4D4D4"><td>
-															<spring:message code="selected"/></td>
+															<tr style="background-color: #D4D4D4">
+																<td>
+																	<b><spring:message code="selected"/></b>
+																</td>
+															<td><b>${component.name}</b></td>
 														</c:if>
 														<c:if test="${selectedcompid != component.componentid}">
 															<tr>
 															<c:set var="tooltip_selector"><spring:message code="tooltip_select"/></c:set>
-															<td><a href="<c:url value='createmetric.html?selectedcompid=${component.componentid}'/>" title="${tooltip_selector}">
-															<spring:message code="select"/></a></td>
-														</c:if>
+															<td>
+																<a href="<c:url value='createmetric.html?selectedcompid=${component.componentid}'/>" title="${tooltip_selector}">
+																	<button type="button"><spring:message code="select"/></button>
+																</a>
+															</td>
 															<td>${component.name}</td>
+														</c:if>
 												   	</tr>
 													</c:forEach>
 												</table>

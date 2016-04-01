@@ -97,19 +97,24 @@
 													<col style="width:60px">
 													<col style="width:240px">
 													<tr>
-														<!-- Select --><th><spring:message code="select"/></th>
-														<!-- Component--><th><spring:message code="component"/></th>
+														<th><spring:message code="select"/></th>
+														<th><spring:message code="component"/></th>
 													</tr>
 													<c:forEach items="${components}" var="component">
 													<c:if test="${selectedcompid == component.componentid}">
 														<tr style="background-color: #D4D4D4">
-														<td><a href="timeserieschart.html?selectedcompid=${component.componentid}"><spring:message code="selected"/></a></td>
+															<td><a href="timeserieschart.html?selectedcompid=${component.componentid}"><b><spring:message code="selected"/></b></a></td>
+															<td><b>${component.name}</b></td>
 													</c:if>
 													<c:if test="${selectedcompid != component.componentid}">
 														<tr>
-														<td><a href="timeserieschart.html?selectedcompid=${component.componentid}"><spring:message code="select"/></a></td>
+															<td>
+																<a href="timeserieschart.html?selectedcompid=${component.componentid}">
+																	<button type="button"><spring:message code="select"/></button>
+																</a>
+															</td>
+															<td>${component.name}</td>
 													</c:if>
-														<td>${component.name}</td>
 												   	</tr>
 													</c:forEach>
 												</table>
@@ -125,8 +130,8 @@
 										<tr>						
 											<td valign="top">
 												<table class="tablestyle" style="width:300px">
-													<col style="width:100px">
-													<col style="width:200px">
+													<col style="width:130px">
+													<col style="width:170px">
 													<tr>
 														<th><spring:message code="draw"/></th>
 														<th><spring:message code="output_variable"/></th>
@@ -135,16 +140,20 @@
 														<c:choose>
 															<c:when test="${usersession.hasOutputVar(outputVar.outvarid)}">
 																<tr style="background-color: #D4D4D4">
-																<td>Added (<a href="timeserieschart.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}"><spring:message code="remove"/></a>)</td>
-															</c:when>
+																	<td><b><spring:message code="added"/></b> (<a href="timeserieschart.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">
+																		<button type="button"><spring:message code="remove"/></button>
+																		</a>)
+																	</td>
+																	<td><b>${outputVar.name}</b></td>
+												   			</c:when>
 															<c:otherwise>
 																<tr>
-																<td><a href="timeserieschart.html?action=add&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}"><spring:message code="add_to_chart"/></a></td>
-															</c:otherwise>
+																	<td><a href="timeserieschart.html?action=add&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}"><button type="button"><spring:message code="add_to_chart"/></button></a></td>
+																	<td>${outputVar.name}</td>
+												   			</c:otherwise>
 														</c:choose>
 													
-														<td>${outputVar.name}</td>
-												   	</tr>
+													</tr>
 													</c:forEach>
 												</table>
 											</td>
@@ -176,15 +185,18 @@
 											<c:choose>
 												<c:when test="${usersession.hasExtParam(extParamVal.extparamvalid)}">
 													<tr style="background-color: #D4D4D4">
-													<td><spring:message code="added"/> (<a href="timeserieschart.html?action=remove&extparamid=${extParamVal.extparamvalid}"><spring:message code="remove"/></a>)</td>
+														<td><b><spring:message code="added"/></b> (<a href="timeserieschart.html?action=remove&extparamid=${extParamVal.extparamvalid}">
+															<button type="button"><spring:message code="remove"/></button></a>)
+														</td>
+														<td><b>${extParamVal.extparam.name}</b></td>
 												</c:when>
 												<c:otherwise>
 													<tr>
-													<td><a href="timeserieschart.html?action=add&extparamid=${extParamVal.extparamvalid}"><spring:message code="add_to_chart"/></a></td>
+														<td><a href="timeserieschart.html?action=add&extparamid=${extParamVal.extparamvalid}">
+															<button type="button"><spring:message code="add_to_chart"/></button></a></td>
+														<td>${extParamVal.extparam.name}</td>
 												</c:otherwise>
 											</c:choose>
-											
-											<td>${extParamVal.extparam.name}</td>
 									   	</tr>
 										</c:forEach>
 									</table>
