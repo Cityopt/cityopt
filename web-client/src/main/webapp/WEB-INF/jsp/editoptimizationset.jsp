@@ -27,6 +27,7 @@
 		<td width="30"></td>
 		<td valign="top">
 			<h2 class="error">${error}</h2>
+			<p class="info">${info}</p>
 			<table>
 				<col style="width: 400px;">
 				<col style="width: 450px;">

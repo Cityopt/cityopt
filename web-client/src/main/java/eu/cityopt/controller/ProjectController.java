@@ -1515,7 +1515,8 @@ public class ProjectController {
     public String updateMetricPost(ParamForm paramForm, Map<String, Object> model,
 		@RequestParam(value="action", required=true) String action,
 		@RequestParam(value="metricid", required=false) String metricId,
-    	@RequestParam(value="cancel", required=false) String cancel) {
+    	@RequestParam(value="cancel", required=false) String cancel,
+    	HttpServletRequest request) {
             
     	ProjectDTO project = (ProjectDTO) model.get("project");
         try {
@@ -1601,6 +1602,11 @@ public class ProjectController {
         Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
         model.put("metrics", metrics);
 
+        if (action.equals("create")) {
+        	model.put("info", controllerService.getMessage("metric_created", request));
+        } else if (action.equals("edit")) {
+        	model.put("info", controllerService.getMessage("metric_updated", request));
+        }
         return "metricdefinition";
     }
 

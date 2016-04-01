@@ -25,6 +25,7 @@
 		<td><%@ include file="mainmenu.inc"%></td>
 		<td width="50"></td>
 		<td valign="top">
+			<p class="info">${info}</p>
 			<div style="overflow:scroll;height:100%;width:1000px;overflow:auto">
 			<table>
 				<tr>

@@ -265,8 +265,11 @@ public class ScenarioController {
 			InputParamValDTO simStart = inputParamValService.findByNameAndScenario("simulation_start", scenario.getScenid());
 			InputParamValDTO simEnd = inputParamValService.findByNameAndScenario("simulation_end", scenario.getScenid());			
 			
-			model.put("simStart", simStart.getValue());
-			model.put("simEnd", simEnd.getValue());//						
+			if (simStart != null && simEnd != null)
+			{
+				model.put("simStart", simStart.getValue());
+				model.put("simEnd", simEnd.getValue());
+			}
 			
 			UserSession userSession = (UserSession) model.get("usersession");
 			
