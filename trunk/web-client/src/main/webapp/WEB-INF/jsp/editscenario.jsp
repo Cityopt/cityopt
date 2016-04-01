@@ -34,7 +34,7 @@
 		<td style="width: 30px"></td>
 		<td valign="top">
 			<h2 class="error">${error}</h2>
-			<div style="overflow:scroll;height:100%;width:1100px;overflow:auto">
+			<div style="overflow:scroll;height:100%;width:1000px;overflow:auto">
 			<table>
 				<tr>
 					<td>
@@ -59,7 +59,7 @@
 								<!-- Scenario name -->
 								<c:set var="tooltip_name"><spring:message code="tooltip_edit_scenario_name"/></c:set>
 								<td><spring:message code="scenario_name"/>*:</td>
-								<td><form:input type="text" path="name" title="${tooltip_name}" style="width:200px"/></td>
+								<td><form:input type="text" path="name" title="${tooltip_name}" style="width:300px"/></td>
 								
 								<!-- Update Scenario -->
 								<c:set var="tooltip_update_scenario"><spring:message code="tooltip_update_scenario"/></c:set>
@@ -69,7 +69,7 @@
 								<!-- Description -->						
 								<td><spring:message code="description"/>:</td>
 								<c:set var="tooltip_description"><spring:message code="tooltip_edit_scenario_description"/></c:set>
-								<td><form:textarea type="text" rows="3" title="${tooltip_description}" path="description" style="width:200px"/></td>
+								<td><form:textarea type="text" rows="3" title="${tooltip_description}" path="description" style="width:300px"/></td>
 								
 								<!-- Export simulation results file (CSV) -->
 								<td valign="top">
@@ -126,10 +126,10 @@
 								<!--Dynamic simulation period from-->
 								<c:set var="tooltip_simulation_start"><spring:message code="tooltip_dynamicsimulation_start"/></c:set>
 								<c:set var="tooltip_simulation_end"><spring:message code="tooltip_dynamicsimulation_end"/></c:set>
-								<td><spring:message code="dynamic_simulation_period_from"/></td>
-								<td><input name="simstart" title="${tooltip_simulation_start}" type="text" style="width:180px" value="${simStart}"/>
+								<td><spring:message code="simulation_period_from"/></td>
+								<td><input name="simstart" title="${tooltip_simulation_start}" type="text" style="width:170px" value="${simStart}"/>
 								<spring:message code="to"/>
-								<input name="simend" title="${tooltip_simulation_end}" type="text" style="width:180px" value="${simEnd}" /></td>
+								<input name="simend" title="${tooltip_simulation_end}" type="text" style="width:170px" value="${simEnd}" /></td>
 							</tr>
 							<tr>
 								<td></td>
@@ -150,24 +150,20 @@
 								<td valign="top">
 									<table class="tablestyle" border="1">
 										<col style="width:150px">
-										<col style="width:50px">
 										<tr>
-											<!-- Component & Id -->
 											<th><spring:message code="component"/></th>
-											<th><spring:message code="id"/></th>
 										</tr>
 
 										<c:forEach items="${components}" var="component">
 										<tr>
 											<td>${component.name}</td>
-									    	<td>${component.componentid}</td>
 									   	</tr>
 										</c:forEach>
 									</table>
 								</td>
 								<td valign="top">
 									<table class="tablestyle" border="1">
-										<col style="width:150px">
+										<col style="width:200px">
 										<col style="width:50px">
 										<col style="width:50px">
 										

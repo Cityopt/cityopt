@@ -131,20 +131,20 @@ margin-bottom: 10%;
 
 															<c:forEach items="${components}" var="component">
 																<c:choose>
-																	<c:when
-																		test="${selectedcompid == component.componentid}">
-																		<tr style="background-color: #D4D4D4"
-																			title="${tooltip_selected}">
-																			<td><spring:message code="selected" /></td>
+																	<c:when test="${selectedcompid == component.componentid}">
+																		<tr style="background-color: #D4D4D4" title="${tooltip_selected}">
+																			<td><b><spring:message code="selected" /></b></td>
+																			<td><b>${component.name}</b></td>
 																	</c:when>
 																	<c:otherwise>
 																		<tr>
-																			<td><a href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}'/>"
-																				title="${tooltip_select}"> <spring:message
-																						code="select" /></a></td>
+																			<td><a href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}'/>" title="${tooltip_select}">
+																					<button type="button"><spring:message code="select" /></button>
+																				</a>
+																			</td>
+																			<td>${component.name}</td>
 																	</c:otherwise>
 																</c:choose>
-																<td>${component.name}</td>
 																<td><a href="<c:url value='editcomponent.html?componentid=${component.componentid}'/>">
 																		<button align="right"
 																			title="${tooltip_projectparameters}" type="button"

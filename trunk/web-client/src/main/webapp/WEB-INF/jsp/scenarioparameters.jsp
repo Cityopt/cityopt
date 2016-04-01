@@ -85,15 +85,18 @@
 										
 										<c:forEach items="${components}" var="component">
 										<c:if test="${selectedComponent.componentid == component.componentid}">
-											<tr title="${tooltip_selected}" style="background-color: #D4D4D4"><td>
-											<spring:message code="selected"/></td>
+											<tr title="${tooltip_selected}" style="background-color: #D4D4D4">
+												<td><b><spring:message code="selected"/></b></td>
+												<td><b>${component.name}</b></td>
 										</c:if>
 										<c:if test="${selectedComponent.componentid != component.componentid}">
 											<tr>
-											<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>" title="${tooltip_select}">
-											<spring:message code="select"/></a></td>
+												<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>" title="${tooltip_select}">
+														<button type="button"><spring:message code="select"/></button>
+													</a>
+												</td>
+												<td>${component.name}</td>
 										</c:if>
-											<td>${component.name}</td>
 									   	</tr>
 										</c:forEach>
 									</table>

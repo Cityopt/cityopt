@@ -72,13 +72,17 @@
 													<c:forEach items="${components}" var="component">
 													<tr>
 														<c:if test="${selectedcompid == component.componentid}">
-															<tr style="background-color: #D4D4D4"><td>Selected</td>
+															<tr style="background-color: #D4D4D4"><td><b><spring:message code="selected"/></b></td>
+																<td><b>${component.name}</b></td>
 														</c:if>
 														<c:if test="${selectedcompid != component.componentid}">
 															<tr>
-															<td><a href="<c:url value='outputvariables.html?selectedcompid=${component.componentid}'/>"><spring:message code="select"/></a></td>
+																<td><a href="<c:url value='outputvariables.html?selectedcompid=${component.componentid}'/>">
+																		<button type="button"><spring:message code="select"/></button>
+																	</a>
+																</td>
+																<td>${component.name}</td>
 														</c:if>
-															<td>${component.name}</td>
 													</tr>
 													</c:forEach>
 												</table>
