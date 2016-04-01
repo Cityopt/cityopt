@@ -954,6 +954,7 @@ public class OptimizationController {
                 model.put("optimizationset", optSet);
 
                 controllerService.initEditOptSet(model, project.getPrjid(), optSet.getOptid());
+                model.put("info", controllerService.getMessage("optimization_set_created", request));
                 
                 return "editoptimizationset";
             }
@@ -993,7 +994,8 @@ public class OptimizationController {
                 session.setActiveScenGen(scenGen.getName());
                 model.put("usersession", session);
                 model.put("scengenerator", scenGen);
-
+                model.put("info", controllerService.getMessage("optimization_set_created", request));
+                
                 return "redirect:/geneticalgorithm.html";
             }
             else

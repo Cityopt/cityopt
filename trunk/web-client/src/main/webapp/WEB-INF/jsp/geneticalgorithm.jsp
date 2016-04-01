@@ -62,6 +62,7 @@ function openInfoWindow() {
             <input type="hidden" name="objid" id="objid" value="0">
             <input type="hidden" name="optconstid" id="optconstid" value="0">
             <input type="hidden" name="decisionvarid" id="decisionvarid" value="0">
+			<p class="info">${info}</p>
 			<table style="width: 1070px">
 				<col style="width: 620px;">
 				<col style="width: 450px;">
