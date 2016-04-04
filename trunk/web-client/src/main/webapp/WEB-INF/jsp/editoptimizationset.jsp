@@ -120,7 +120,6 @@
 											<spring:message code="export_optimization_set"/>
 										</button>
 									</a>
-									
 								</td>
 							</tr>
 							<tr>
@@ -182,8 +181,11 @@
 									<a href="createobjfunction.html?reset=true&type=db"><button title="${tooltip_create_objectivefunction}" type="button">
 									<spring:message code="create"/></button></a>
 									<!-- Edit -->
-									<a href="editobjfunction.html"><button title="${tooltip_edit_objectivefunction}" type="button">
-									<spring:message code="edit"/></button></a>
+									<c:if test="${optimizationset.objectivefunction != null}">
+										<a href="editobjfunction.html"><button title="${tooltip_edit_objectivefunction}" type="button">
+											<spring:message code="edit"/></button>
+										</a>
+									</c:if>
 									<!-- Import -->
 									<a href="importobjfunction.html"><button title="${tooltip_import_objectivefunction}" type="button">
 									<spring:message code="import"/></button></a>

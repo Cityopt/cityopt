@@ -14,7 +14,7 @@
 <form:form method="post" action="editobjfunction.html" modelAttribute="function">
 <table cellspacing="0" cellpadding="0">
 	<tr>
-		<td>
+		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width="30"></td>
@@ -68,7 +68,11 @@
 											</c:if>
 											<c:if test="${selectedcompid != component.componentid}">
 												<tr>
-												<td><a href="<c:url value='editobjfunction.html?selectedcompid=${component.componentid}'/>"><spring:message code="select"/></a></td>
+												<td>
+													<a href="<c:url value='editobjfunction.html?selectedcompid=${component.componentid}'/>">
+														<button type="button"><spring:message code="select"/></button>
+													</a>
+												</td>
 											</c:if>
 												<td>${component.name}</td>
 									   	</tr>

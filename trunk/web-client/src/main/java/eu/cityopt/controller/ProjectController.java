@@ -1489,9 +1489,6 @@ public class ProjectController {
         Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
         model.put("extParams", extParams);
         
-        Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
-        model.put("metrics", metrics);
-
         return "createmetric";
     }
 
@@ -1541,7 +1538,7 @@ public class ProjectController {
         String expression = paramForm.getValue();
         String unit = paramForm.getUnit();
         
-        if (name != null && expression != null)
+        if (name != null && !name.isEmpty() && expression != null && !expression.isEmpty())
         {
         	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
         	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkMetricExpression(expression);
@@ -1569,6 +1566,7 @@ public class ProjectController {
 	        
 	        if (action.equals("create")) {
 	        	newMetric = metricService.save(newMetric);
+	        	model.put("info", controllerService.getMessage("metric_created", request));
 	        } else if (action.equals("edit")) {
 	        	int nMetricId = Integer.parseInt(metricId);
 	        	MetricDTO metric = null;
@@ -1587,8 +1585,16 @@ public class ProjectController {
 				} catch (EntityNotFoundException e) {
 					e.printStackTrace();
 				}
+	        	model.put("info", controllerService.getMessage("metric_updated", request));
 	        }
-        }
+        } 
+        else
+        {
+            model.put("error", controllerService.getMessage("write_name_and_expression", request));
+    	    controllerService.initUpdateMetric(model, project.getPrjid());
+    	    controllerService.getFunctions(model);
+    	    return "updatemetric";
+    	}
         
         try {
             project = projectService.findByID(project.getPrjid());
@@ -1602,11 +1608,6 @@ public class ProjectController {
         Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
         model.put("metrics", metrics);
 
-        if (action.equals("create")) {
-        	model.put("info", controllerService.getMessage("metric_created", request));
-        } else if (action.equals("edit")) {
-        	model.put("info", controllerService.getMessage("metric_updated", request));
-        }
         return "metricdefinition";
     }
 
