@@ -141,8 +141,8 @@
 				<tr>
 					<td></td>
 					<td align="right">
-						<input style="width:100px" type="submit" value="<spring:message code="save_as_value"/>"/>
-						<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>">
+						<input style="width:120px" type="submit" value="<spring:message code="save_as_value"/>"/>
+						<input style="width:120px" type="submit" id="cancel" name="cancel" value="<spring:message code="cancel"/>">
 					</td>
 				</tr>
 				<tr height="10">
@@ -164,7 +164,7 @@
   					<td></td>
    					<td align="right">
    						<input type="submit" value="<spring:message code="import_and_save_as_time_series"/>">
-						<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>">
+						<input style="width:100px" type="submit" id ="cancel" name="cancel" value="<spring:message code="cancel"/>">
   					</td>
 				</tr>	
 				</form:form>

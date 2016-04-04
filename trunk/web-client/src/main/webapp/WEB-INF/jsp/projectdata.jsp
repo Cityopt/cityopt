@@ -28,7 +28,7 @@
 		</td>
 		<td width="30"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:1000px;width:1100px;overflow:auto">
+			<div style="overflow:scroll;height:auto;width:1100px;overflow:auto">
 			<table>
 				<col style="width:30px">
 				<col style="width:750px">	
@@ -86,8 +86,11 @@
 													</c:if>
 													<c:if test="${selectedcompid != component.componentid}">
 														<tr>
-															<td><a href="<c:url value='projectdata.html?selectedcompid=${component.componentid}'/>">
-															<spring:message code="select"/></a></td>
+															<td>
+																<a href="<c:url value='projectdata.html?selectedcompid=${component.componentid}'/>">
+																	<button type="button"><spring:message code="select"/></button>
+																</a>
+															</td>
 													</c:if>
 														<td>${component.name}</td>
 												   	</tr>
@@ -110,26 +113,21 @@
 												    	<td>${inputParam.defaultvalue}</td>
 												   	</tr>
 													</c:forEach>
-													
 												</table>
 											</td>
 											<td></td>
 											<td valign="top">
 												<table class="tablestyle">
 													<col style="width:150px">
-													<col style="width:60px">
 													<tr>
 														<th><spring:message code="output_parameter"/></th>
-														<th><spring:message code="id"/></th>
 													</tr>
 													
 													<c:forEach items="${outputVars}" var="outputVar">
 													<tr>
 														<td>${outputVar.name}</td>
-												    	<td>${outputVar.outvarid}</td>
 												   	</tr>
 													</c:forEach>
-													
 												</table>
 											</td>
 										</tr>

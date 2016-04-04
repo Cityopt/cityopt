@@ -1644,7 +1644,8 @@ public class ProjectController {
 
         List<UnitDTO> units = unitService.findAll();
         model.put("units", units);
-
+        controllerService.getFunctions(model);
+        
         return "updatemetric";
     }
    

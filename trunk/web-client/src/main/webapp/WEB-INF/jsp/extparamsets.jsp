@@ -98,8 +98,6 @@ var getUrlParameter = function getUrlParameter(sParam) {
 										<td></td>
 										<td valign="top">
 											<table class="tablestyle">
-
-
 											</table>
 										</td>
 									</tr>
@@ -123,18 +121,18 @@ var getUrlParameter = function getUrlParameter(sParam) {
 													<tr class="tablestyle" align="left" valign="top">
 														<c:choose>
 															<c:when test="${extParamValSet.extparamvalsetid == extparamvalsetid}">
-																<input type="hidden" name=extparamvalsetid
-																	value="${extParamValSet.extparamvalsetid}" />
-																<tr title="${selected_externalparameter}"
-																	style="background-color: #D4D4D4">
+																<input type="hidden" name=extparamvalsetid value="${extParamValSet.extparamvalsetid}" />
+																<tr title="${selected_externalparameter}" style="background-color: #D4D4D4">
 																	<td><spring:message code="selected" /></td>
 															</c:when>
 															<c:otherwise>
 																<tr>
-																	<td><a href="<c:url value='${postpage}?extparamvalsetid=${extParamValSet.extparamvalsetid}'/>"
-																		title="${select_externalparameter}"> <!--<input type="button" name="id" th:field="*{id}" value="${extParamValSet.extparamvalsetid}">-->
-																			<spring:message code="select" />
-																	</a></td>
+																	<td>
+																		<a href="<c:url value='${postpage}?extparamvalsetid=${extParamValSet.extparamvalsetid}'/>"
+																			title="${select_externalparameter}">
+																			<button type="button"><spring:message code="select" /></button>
+																		</a>
+																	</td>
 															</c:otherwise>
 														</c:choose>
 														<td>${extParamValSet.name}</td>

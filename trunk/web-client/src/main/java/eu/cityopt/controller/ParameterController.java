@@ -518,14 +518,13 @@ public class ParameterController {
     public String importInputTimeSeries(Map<String, Object> model, 
 		@RequestParam("file") MultipartFile file, 
     	@RequestParam(value="inputid", required=true) String inputId,
+    	@RequestParam(value="cancel", required=false) String cancel,
     	HttpServletRequest request)
     {
-    	System.out.println("Starting importing input time series");
+    	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (!file.isEmpty()) {
             try {
-                ProjectDTO project = (ProjectDTO) model.get("project");
-
                 if (project == null)
                 {
                     return "error";
@@ -539,6 +538,12 @@ public class ParameterController {
                 }
                 model.put("project", project);
 
+                if (cancel != null)
+            	{
+                	controllerService.getComponentAndExternalParamValues(model, project);
+                	return "projectparameters";
+            	}
+            	
                 int nInputId = Integer.parseInt(inputId);
                 InputParameterDTO inputParam = inputParamService.findByID(nInputId);
                 
@@ -603,6 +608,8 @@ public class ParameterController {
             }
         } else {
         }
+    	
+        controllerService.getComponentAndExternalParamValues(model, project);
         return "projectparameters";
     }
     
