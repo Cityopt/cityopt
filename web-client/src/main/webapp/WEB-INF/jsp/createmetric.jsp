@@ -144,37 +144,12 @@
 							</tr>	
 							<tr>
 								<td></td>
-								<td>
-									<!--Metrics-->
-									<spring:message code="metrics"/>
-								</td>
-								<td></td>
-									<!-- External parameters -->
+								<!-- External parameters -->
 								<td><spring:message code="external_parameters"/></td>
 								<td></td>
 								<td><spring:message code="numbers_and_operators"/></td>
 							</tr>
 							<tr>
-								<td></td>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:200px">
-										<col style="width:50px">
-										
-										<tr height="20">
-											<!-- Name -->
-										    <th><spring:message code="name"/></th>
-										    <th><spring:message code="add"/></th>
-										</tr>
-									
-										<c:forEach items="${metrics}" var="metric">
-										<tr>
-											<td>${metric.name}</td>
-											<td><a href="createmetric.html?metricid=${metric.metid}"><button type="button"><spring:message code="add"/></button></a></td>
-									   	</tr>
-										</c:forEach>
-									</table>										
-								</td>
 								<td></td>
 								<td valign="top">
 									<table class="tablestyle" width="250">
