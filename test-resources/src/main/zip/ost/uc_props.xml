@@ -52,10 +52,10 @@
         <property type="expression" name="SB_VALUE" value="State_of_CHP"/>
       </node>
       <node name="MU111" moduleName="MU111" label="" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_BIAS" value="DH_supply_Temp"/>
+        <property type="expression" name="MULTIPLYER_BIAS" value="Fuel_LHV"/>
       </node>
       <node name="MU109" moduleName="MU109" label="" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_BIAS" value="DH_supply_Temp"/>
+        <property type="expression" name="MULTIPLYER_BIAS" value="T_supply"/>
       </node>
     </node>
     <node name="CENTRAL_STORAGE" moduleName="CENTRAL_STORAGE" label="" isUC="True" type="Thermal Storage +DH connection@1">
