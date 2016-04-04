@@ -117,7 +117,9 @@
 							<tr>
 								<td><spring:message code="simulation_info"/>:</td>
 								<td>
-									<button type="button" style="width: 150px" onclick="openSimulationInfoWindow()"><spring:message code="show_simulation_info"/></button>		
+									<c:if test="${scenario != null && scenario.getLog() != null}">
+										<button type="button" style="width: 150px" onclick="openSimulationInfoWindow()"><spring:message code="show_simulation_info"/></button>
+									</c:if>		
 								</td>
 							</tr>
 							<tr height="15"></tr>

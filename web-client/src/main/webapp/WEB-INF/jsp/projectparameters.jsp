@@ -95,13 +95,11 @@ margin-bottom: 10%;
 												<col style="width: 400px">
 												<tr>
 													<td>
-														<!-- Components --> <b><spring:message
-																code="components" /></b>
+														<b><spring:message code="components" /></b>
 													</td>
 													<td></td>
 													<td>
-														<!-- Input parameters --> <b><spring:message
-																code="input_parameters" /></b>
+														<b><spring:message code="input_parameters" /></b>
 													</td>
 												</tr>
 												<tr>
