@@ -1604,7 +1604,8 @@ public class OptimizationController {
         model.put("project", project);
 
         SearchOptimizationResults optResults = null;
-
+        System.out.println("Starting database optimization");
+        
         try {
             optResults = dbOptService.searchConstEval(project.getPrjid(), optSet.getOptid(), 5);
         } catch (ParseException e) {
