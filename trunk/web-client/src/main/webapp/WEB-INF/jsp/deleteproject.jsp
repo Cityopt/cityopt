@@ -21,7 +21,9 @@
 			<td valign="top">
 				<div style="overflow: scroll; height: 100%; width: 100%; overflow: auto">
 					<form:form method="post" action="deleteproject.html">
-						<!-- Delete Project -->
+						<h2 class="error">
+							${error}
+						</h2>
 						<h1><spring:message code="delete_project"/></h1>
 						
 						<table class="tablestyle" width="400">
