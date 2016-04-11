@@ -782,26 +782,28 @@ public class ScenarioController {
 	
 			if (scenario != null && scenario.getScenid() == nDeleteScenarioId)
 			{
-				// Active scenario is to be deleted
-				model.remove("scenario");
+				// Active scenario can't be deleted
+				model.put("error", controllerService.getMessage("cant_delete_active_scenario", request));
 			}
-				
-			try {
-				tempScenario = scenarioService.findByID(nDeleteScenarioId);
-			} catch (NumberFormatException e1) {
-				e1.printStackTrace();
-			} catch (EntityNotFoundException e1) {
-				e1.printStackTrace();
-			}
-			
-			if (tempScenario != null)
+			else
 			{
 				try {
-					scenarioService.delete(tempScenario.getScenid());
-				} catch (EntityNotFoundException e) {
-					e.printStackTrace();
-				} catch(ObjectOptimisticLockingFailureException e) {
-					model.put("error", controllerService.getMessage("scenario_updated_reload", request));
+					tempScenario = scenarioService.findByID(nDeleteScenarioId);
+				} catch (NumberFormatException e1) {
+					e1.printStackTrace();
+				} catch (EntityNotFoundException e1) {
+					e1.printStackTrace();
+				}
+				
+				if (tempScenario != null)
+				{
+					try {
+						scenarioService.delete(tempScenario.getScenid());
+					} catch (EntityNotFoundException e) {
+						e.printStackTrace();
+					} catch(ObjectOptimisticLockingFailureException e) {
+						model.put("error", controllerService.getMessage("scenario_updated_reload", request));
+					}
 				}
 			}
 		}

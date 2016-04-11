@@ -23,6 +23,9 @@
 			<!--Delete scenario title-->	
 			<div style="overflow:scroll;height:100%;width:1000px;overflow:auto">
 			<form:form method="post" action="deletescenario.html">			
+			<h2 class="error">
+				${error}
+			</h2>
 			<h1><spring:message code="delete_scenario"/></h1>
 			<table class="tablestyle" width="600" border="1">
 				<col style="width:200px">	
