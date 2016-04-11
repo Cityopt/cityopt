@@ -888,8 +888,6 @@ public class ProjectController {
 
         outputStream.close();
     }
-
-    
     
     @RequestMapping(value="closeproject", method=RequestMethod.GET)
     public String closeProject(Map<String, Object> model, HttpServletRequest request)
@@ -912,22 +910,32 @@ public class ProjectController {
 		HttpServletRequest request){
     	securityAuthorization.atLeastExpert();
         
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+
         if (prjid != null)
         {
-            ProjectDTO tempProject = null;
-
-            try {
-                tempProject = projectService.findByID(Integer.parseInt(prjid));
-            } catch (Exception e1) {
-                e1.printStackTrace();
+        	ProjectDTO tempProject = null;
+            int nProjectToBeDeletedId = Integer.parseInt(prjid);
+            
+            if (project != null && project.getPrjid() == nProjectToBeDeletedId)
+            {
+            	model.put("error", controllerService.getMessage("cant_delete_active_project", request));
             }
-
-            try {
-                projectService.delete(tempProject.getPrjid());
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            } catch(ObjectOptimisticLockingFailureException e) {
-                model.put("error", controllerService.getMessage("project_updated", request));
+            else
+            {
+	            try {
+	                tempProject = projectService.findByID(nProjectToBeDeletedId);
+	            } catch (Exception e1) {
+	                e1.printStackTrace();
+	            }
+	
+	            try {
+	                projectService.delete(tempProject.getPrjid());
+	            } catch (EntityNotFoundException e) {
+	                e.printStackTrace();
+	            } catch(ObjectOptimisticLockingFailureException e) {
+	                model.put("error", controllerService.getMessage("project_updated", request));
+	            }
             }
         }
 
