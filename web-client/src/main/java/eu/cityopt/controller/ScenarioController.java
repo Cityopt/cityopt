@@ -1069,7 +1069,7 @@ public class ScenarioController {
 	}
 		
 	@RequestMapping(value="runscenario", method=RequestMethod.GET)
-	public String runScenario(Map<String, Object> model)
+	public String runScenario(Map<String, Object> model, HttpServletRequest request)
 	{
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1092,20 +1092,27 @@ public class ScenarioController {
 		
 		if (scenario != null && scenario.getScenid() > 0)
 		{
-			try {
-				simService.startSimulation(scenario.getScenid());
-			} catch (ParseException e) {
-				e.printStackTrace();
-				errorMsg = e.getMessage();
-			} catch (IOException e) {
-				e.printStackTrace();
-				errorMsg = e.getMessage();
-			} catch (ConfigurationException e) {
-				e.printStackTrace();
-				errorMsg = e.getMessage();
-			} catch (ScriptException e) {
-				e.printStackTrace();
-				errorMsg = e.getMessage();
+			if (projectService.getSimulationmodelId(project.getPrjid()) == null)
+			{
+				errorMsg = controllerService.getMessage("upload_simulation_model_first", request);
+			}
+			else
+			{
+				try {
+					simService.startSimulation(scenario.getScenid());
+				} catch (ParseException e) {
+					e.printStackTrace();
+					errorMsg = e.getMessage();
+				} catch (IOException e) {
+					e.printStackTrace();
+					errorMsg = e.getMessage();
+				} catch (ConfigurationException e) {
+					e.printStackTrace();
+					errorMsg = e.getMessage();
+				} catch (ScriptException e) {
+					e.printStackTrace();
+					errorMsg = e.getMessage();
+				}
 			}
 		}
 
