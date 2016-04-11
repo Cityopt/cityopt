@@ -20,6 +20,7 @@
 			<td valign="top">
 			<div style="overflow:scroll;height:100%;width:800px;overflow:auto">
 			<form method="get" action="OptimizationController">
+			<h2 class="error">${error}</h2>
 			<h1><spring:message code="delete_optimization_set"/></h1>
 			<table class="tablestyle" width="500" border="1">
 				<col style="width: 250px">
@@ -54,7 +55,8 @@
 								<td><spring:message code="genetic_algorithm"/></td>
 								<td>
 								<!-- Delete -->
-								<a href="<c:url value='deleteoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga'/>">
+								<a href="<c:url value='deleteoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga'/>"
+									onclick="return confirm('<spring:message code="confirm_optimizationset_deletion"/>')">
 									<button align="right" title="${delete_optimizationset}"  type="button" value="Delete">
 									<spring:message code="delete"/></button>
 								</a>

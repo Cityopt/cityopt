@@ -1792,14 +1792,28 @@ public class OptimizationController {
             {
                 if (optsetid != null)
                 {
-                    int nOptSetId = Integer.parseInt(optsetid);
+                	OptimizationSetDTO optSet = null;
 
-                    try {
-                        optSetService.delete(nOptSetId);
-                    } catch (NumberFormatException | EntityNotFoundException e) {
-                        e.printStackTrace();
-                    } catch(ObjectOptimisticLockingFailureException e){
-                        model.put("error", controllerService.getMessage("optimization_set_updated", request));
+                    if (model.containsKey("optimizationset"))
+                    {
+                        optSet = (OptimizationSetDTO) model.get("optimizationset");
+                        model.put("optimizationset", optSet);
+                    }
+                    int nOptSetId = Integer.parseInt(optsetid);
+                     
+                    if (optSet != null && optSet.getOptid() == nOptSetId)
+                    {
+                    	model.put("error", controllerService.getMessage("cant_delete_active_opt_set", request));
+                    }
+                    else
+                    {
+	                    try {
+	                        optSetService.delete(nOptSetId);
+	                    } catch (NumberFormatException | EntityNotFoundException e) {
+	                        e.printStackTrace();
+	                    } catch(ObjectOptimisticLockingFailureException e){
+	                        model.put("error", controllerService.getMessage("optimization_set_updated", request));
+	                    }
                     }
                 }
                 else
@@ -1811,14 +1825,28 @@ public class OptimizationController {
             {
                 if (optsetid != null)
                 {
-                    int nOptSetId = Integer.parseInt(optsetid);
+                    ScenarioGeneratorDTO scenGen = null;
 
-                    try {
-                        scenGenService.delete(nOptSetId);
-                    } catch (EntityNotFoundException e) {
-                        e.printStackTrace();
-                    } catch(ObjectOptimisticLockingFailureException e){
-                        model.put("error", controllerService.getMessage("optimization_set_updated", request));
+                    if (model.containsKey("scengenerator"))
+                    {
+                        scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+                        model.put("scengenerator", scenGen);
+                    }
+                    int nOptSetId = Integer.parseInt(optsetid);
+                     
+                    if (scenGen != null && scenGen.getScengenid() == nOptSetId)
+                    {
+                    	model.put("error", controllerService.getMessage("cant_delete_active_scen_gen", request));
+                    }
+                    else
+                    {
+	                    try {
+	                        scenGenService.delete(nOptSetId);
+	                    } catch (EntityNotFoundException e) {
+	                        e.printStackTrace();
+	                    } catch(ObjectOptimisticLockingFailureException e){
+	                        model.put("error", controllerService.getMessage("optimization_set_updated", request));
+	                    }
                     }
                 }
                 else
