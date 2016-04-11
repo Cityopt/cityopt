@@ -971,7 +971,7 @@ public class ParameterController {
 
      	if (!isValid)
      	{
-            model.put("error", "Please write another component name!");
+            model.put("error", controllerService.getMessage("write_another_parameter_name", request));
             model.put("extParam", new ExtParamDTO());
             return "createextparam";
         }
@@ -985,7 +985,7 @@ public class ParameterController {
         ExtParamDTO newExtParam = new ExtParamDTO();
         newExtParam.setName(name);
         newExtParam.setProject(project);
-    	
+        
         TypeDTO typeDTO = new TypeDTO();
 		typeDTO = typeService.findByName(eu.cityopt.sim.eval.Type.DOUBLE.name);
     	
@@ -1004,7 +1004,7 @@ public class ParameterController {
             ExtParamValSetDTO extParamValSet = extParamSets.get(i);
 
             ExtParamValDTO extParamVal = new ExtParamValDTO();
-            extParamVal.setValue("");
+            extParamVal.setValue("0");
             extParamVal.setExtparam(newExtParam);
 
             HashSet<ExtParamValDTO> setExtVals = new HashSet<ExtParamValDTO>();
@@ -1283,7 +1283,7 @@ public class ParameterController {
 
             ExtParamValDTO extParamVal = new ExtParamValDTO();
             extParamVal.setExtparam(extParam);
-            extParamVal.setValue("");
+            extParamVal.setValue("0");
             extParamVal = extParamValService.save(extParamVal);
 
             extParamVals.add(extParamVal);
