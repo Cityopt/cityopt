@@ -1451,13 +1451,14 @@ public class OptimizationController {
 
 	public ProjectDTO initiateProject(Map<String, Object> model){
 		ProjectDTO project = (ProjectDTO) model.get("project");
-        return project;		
+        return project;
 	}
 	
     @RequestMapping(value = "importoptimizationset", method = RequestMethod.POST)
     public String importOptimizationSet(Map<String, Object> model, 
 		@RequestParam("file") MultipartFile file,
-		@RequestParam("fileTimeSeries") MultipartFile fileTimeSeries) {
+		@RequestParam("fileTimeSeries") MultipartFile fileTimeSeries,
+		HttpServletRequest request) {
 
         if (!file.isEmpty()) {
             try {
@@ -1497,11 +1498,11 @@ public class OptimizationController {
                             "optimization set", optset, ts);
                 }
 
-                System.out.println("Import done");
+                model.put("info", controllerService.getMessage("file_imported", request));
             } catch (Exception e) {
                 e.printStackTrace();
-            	model.put("error", e.getStackTrace().toString());
-                return "error";
+            	model.put("error", e.getMessage());
+                return "importdata";
             }
         } else {
         }
