@@ -40,7 +40,8 @@ margin-right:10%;
 				<col style="width:700px">					
 				<tr>
 					<td>
-						<!-- Import data -->
+						<p class="error">${error}</p>
+						<p class="info">${info}</p>
 						<h1><spring:message code="import_data"/></h1>
 					</td>
 						<!-- Info Button -->

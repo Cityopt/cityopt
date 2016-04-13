@@ -467,10 +467,10 @@ public class ScenarioController {
 	}
 	
 	@RequestMapping(value = "importscenarios", method = RequestMethod.POST)
-	public String importScenarios(
-        Map<String, Object> model,
+	public String importScenarios(Map<String, Object> model,
         @RequestParam("file") MultipartFile file,
-        @RequestParam("timeSeriesFile1") MultipartFile timeSeriesMPFile1) {
+        @RequestParam("timeSeriesFile1") MultipartFile timeSeriesMPFile1,
+        HttpServletRequest request) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -495,7 +495,8 @@ public class ScenarioController {
 	            model.put("project", project);
 
 	            importExportService.importScenarioData(project.getPrjid(), scenarios, "Imported from " + file.getOriginalFilename(), timeSeries);
-	        } catch (Exception e) {
+	            model.put("info", controllerService.getMessage("file_imported", request));
+            } catch (Exception e) {
 	            e.printStackTrace();
             	model.put("error", e.getStackTrace().toString());
                 return "error";

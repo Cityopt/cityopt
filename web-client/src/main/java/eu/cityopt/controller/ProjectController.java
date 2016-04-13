@@ -537,7 +537,8 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "importstructurefile", method = RequestMethod.POST)
-    public String importStructureFile(Map<String, Object> model, @RequestParam("file") MultipartFile file) {
+    public String importStructureFile(Map<String, Object> model, @RequestParam("file") MultipartFile file,
+		HttpServletRequest request) {
 
         if (!file.isEmpty()) {
             try {
@@ -558,6 +559,7 @@ public class ProjectController {
                 InputStream structureStream = file.getInputStream();
                 importExportService.importSimulationStructure(project.getPrjid(), structureStream);
                 structureStream.close();
+                model.put("info", controllerService.getMessage("file_imported", request));
             } catch (Exception e) {
             	e.printStackTrace();
             	model.put("error", e.getStackTrace().toString());
@@ -727,7 +729,8 @@ public class ProjectController {
 	}
     
     @RequestMapping(value = "importextparam", method = RequestMethod.POST)
-    public String importExtParamFile(Map<String, Object> model, @RequestParam("file") MultipartFile file) {
+    public String importExtParamFile(Map<String, Object> model, @RequestParam("file") MultipartFile file,
+		HttpServletRequest request) {
 
         if (!file.isEmpty()) {
             try {
@@ -827,7 +830,8 @@ public class ProjectController {
                 
                 stream.close();
                 System.out.println("Finished importing time series");
-
+                model.put("info", controllerService.getMessage("file_imported", request));
+                
                 List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 	            model.put("components", components);
 	            Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
