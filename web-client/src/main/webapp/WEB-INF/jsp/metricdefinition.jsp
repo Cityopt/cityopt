@@ -23,39 +23,42 @@
 <table cellspacing="0" cellpadding="0">
 	<tr>	
 		<td><%@ include file="mainmenu.inc"%></td>
-		<td width="50"></td>
 		<td valign="top">
-			<p class="info">${info}</p>
-			<div style="overflow:scroll;height:100%;width:1000px;overflow:auto">
-			<table>
-				<tr>
-				<!-- Project metrics -->
-					<td><h1><spring:message code="project_metrics"/></h1></td>
-					
-					<td align="right">
-						<div class="round-button">
-							<div class="round-button-circle">
-								<a href="" onclick="openInfoWindow()">?</a>		
-							</div>
-						</div>
+			<div style="overflow:scroll;height:100%;width:820px;overflow:auto">
+			<table class="maintable">
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td colspan="2">
+						<table width="100%">
+							<tr>
+								<td class="spacecolumn"></td>
+								<td><spring:message code="project_metrics"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
+				<tr height="20"></tr>
 				<tr>
-					<td>
-						<table class="tablestyle" width="800px">
-							<col style="width: 150px">
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<table class="tablestyle" width="700px">
 							<col style="width: 100px">
-							<col style="width: 250px">
-							<col style="width: 100px">
-							<col style="width: 100px">
-							<col style="width: 100px">
-							<col style="width: 100px">
+							<col style="width: 240px">
+							<col style="width: 90px">
+							<col style="width: 90px">
+							<col style="width: 90px">
+							<col style="width: 90px">
 
 							<tr height="20">
 							<!-- Name -->
 							    <th><spring:message code="name"/></th>
-							<!-- Id -->
-							    <th><spring:message code="id"/></th>
 						    <!-- Expressions -->
 							    <th><spring:message code="expressions"/></th>
 						    <!-- Unit -->
@@ -71,7 +74,6 @@
 							<c:forEach items="${metrics}" var="metric">
 							<tr>
 								<td>${metric.name}</td>
-						    	<td>${metric.metid}</td>
 						    	<td>${metric.expression}</td>
 						    	<td>${metric.unit.name}</td>
 								<td>
@@ -105,8 +107,8 @@
 					</td>
 				</tr>
 				<tr>
-				<!--Create metric-->
-					<td align="right">
+					<td></td>
+					<td align="right" valign="top">
 						<a href="exportmetrics.html"><button type="button"><spring:message code="export_metrics"/></button></a>
 			   			<c:set var="tooltipcreatemetric"><spring:message code="tooltip_create_metric"/></c:set>
 			   			<a href="createmetric.html?reset=true"><button title="${tooltipcreatemetric}" type="button">

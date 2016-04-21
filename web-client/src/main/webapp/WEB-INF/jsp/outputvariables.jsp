@@ -23,95 +23,110 @@
 		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="30"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:100%;width:1100px;overflow:auto">
-			<table>
-				<col style="width:40px">
-				<col style="width:30px">
-				<col style="width:850px">	
-				<tr>
-					<td></td>
-					<td colspan="2" height="80">
-						<!-- Output variables -->
-						<h1><spring:message code="output_variables"/></h1>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
+					<td>
+						<table width="100%">
+							<tr>
+								<td><spring:message code="output_variables"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
-					<td></td>
 				</tr>
 				<tr>
-					<td></td>
-					<td></td>
-					<td>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
 						<table>
 							<tr>
 								<td>
-									<table width="550">
-										<col style="width:150px">
-										<col style="width:50px">
-										<col style="width:350px">
+									<table class="tablegroup">
 										<tr>
-											<!-- Components -->
-											<td><b><spring:message code="components"/></b></td>
-											<td></td>
-											<!-- Output variables -->
-											<td><b><spring:message code="output_variables"/></b></td>
-										</tr>
-										<tr>						
 											<td>
-												<table class="tablestyle">
-													<col style="width:60px">
+												<table width="550">
 													<col style="width:150px">
-													<col style="width:60px">
-													<tr>
-														<!-- Select -->
-														<th><spring:message code="select"/></th>
-														<!-- Component -->
-														<th><spring:message code="component"/></th>
-													</tr>
-										
-													<c:forEach items="${components}" var="component">
-													<tr>
-														<c:if test="${selectedcompid == component.componentid}">
-															<tr style="background-color: #D4D4D4"><td><b><spring:message code="selected"/></b></td>
-																<td><b>${component.name}</b></td>
-														</c:if>
-														<c:if test="${selectedcompid != component.componentid}">
-															<tr>
-																<td><a href="<c:url value='outputvariables.html?selectedcompid=${component.componentid}'/>">
-																		<button type="button"><spring:message code="select"/></button>
-																	</a>
-																</td>
-																<td>${component.name}</td>
-														</c:if>
-													</tr>
-													</c:forEach>
-												</table>
-											</td>
-											<td>
-											</td>
-											<td valign="top">
-												<table class="tablestyle">
-													<col style="width:250px">
-													<col style="width:100px">
 													<col style="width:50px">
+													<col style="width:350px">
 													<tr>
-														<!-- Output variable -->
-														<th><spring:message code="output_variable"/></th>
-														<!-- Unit -->
-														<th><spring:message code="unit"/></th>
-														<th><spring:message code="edit"/></th>
+														<!-- Components -->
+														<td><b><spring:message code="components"/></b></td>
+														<td></td>
+														<!-- Output variables -->
+														<td><b><spring:message code="output_variables"/></b></td>
 													</tr>
-								
-													<c:forEach items="${outputVariables}" var="outputVar">
-													<tr>
-														<td>${outputVar.name}</td>
-												    	<td>${outputVar.unit.name}</td>
-												    	<td><a href="editoutputvariable.html?outputvarid=${outputVar.outvarid}">
-												    		<button type="button"><spring:message code="edit"/></button>
-											    			</a>
-										    			</td>
+													<tr>						
+														<td>
+															<table class="tablestyle">
+																<col style="width:60px">
+																<col style="width:150px">
+																<col style="width:60px">
+																<tr>
+																	<!-- Select -->
+																	<th><spring:message code="select"/></th>
+																	<!-- Component -->
+																	<th><spring:message code="component"/></th>
+																</tr>
+													
+																<c:forEach items="${components}" var="component">
+																<tr>
+																	<c:if test="${selectedcompid == component.componentid}">
+																		<tr style="background-color: #D4D4D4"><td><b><spring:message code="selected"/></b></td>
+																			<td><b>${component.name}</b></td>
+																	</c:if>
+																	<c:if test="${selectedcompid != component.componentid}">
+																		<tr>
+																			<td><a href="<c:url value='outputvariables.html?selectedcompid=${component.componentid}'/>">
+																					<button type="button"><spring:message code="select"/></button>
+																				</a>
+																			</td>
+																			<td>${component.name}</td>
+																	</c:if>
+																</tr>
+																</c:forEach>
+															</table>
+														</td>
+														<td>
+														</td>
+														<td valign="top">
+															<table class="tablestyle">
+																<col style="width:250px">
+																<col style="width:100px">
+																<col style="width:50px">
+																<tr>
+																	<!-- Output variable -->
+																	<th><spring:message code="output_variable"/></th>
+																	<!-- Unit -->
+																	<th><spring:message code="unit"/></th>
+																	<th><spring:message code="edit"/></th>
+																</tr>
+											
+																<c:forEach items="${outputVariables}" var="outputVar">
+																<tr>
+																	<td>${outputVar.name}</td>
+															    	<td>${outputVar.unit.name}</td>
+															    	<td><a href="editoutputvariable.html?outputvarid=${outputVar.outvarid}">
+															    		<button type="button"><spring:message code="edit"/></button>
+														    			</a>
+													    			</td>
+																</tr>
+																</c:forEach>
+															</table>
+														</td>
 													</tr>
-													</c:forEach>
 												</table>
 											</td>
 										</tr>
@@ -135,7 +150,7 @@
 							</tr>
 						</table>
 					</td>
-				</tr>	
+				</tr>
 			</table>
 			</div>
 		</td>

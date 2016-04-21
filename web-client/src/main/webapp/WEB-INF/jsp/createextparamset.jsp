@@ -21,75 +21,95 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width=30></td>
 		<td valign="top">
-			<h1><spring:message code="create_external_param_set"/></h1>
-			<div style="overflow:scroll;height:500px;width:900px;overflow:auto">
-			<form:form method="post" action="createextparamset.html" modelAttribute="extParamValSet">
-			
-			<table>
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
+						<table width="100%">
+							<tr>
+								<td><spring:message code="create_external_param_set"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<form:form method="post" action="createextparamset.html" modelAttribute="extParamValSet">
 						<table>
-							<col style="width:150px">
-							<col style="width:150px">
 							<tr>
 								<td>
-									<spring:message code="name"/>*
-								</td>
-								<td>
-									<form:input style="width:150px" type="text" path="name"/>
+									<table>
+										<col style="width:150px">
+										<col style="width:150px">
+										<tr>
+											<td>
+												<spring:message code="name"/>*
+											</td>
+											<td>
+												<form:input style="width:150px" type="text" path="name"/>
+											</td>
+										</tr>
+										<tr height="10">
+											<td>
+											</td>
+										</tr>
+									</table>
 								</td>
 							</tr>
-							<tr height="10">
+							<tr>
 								<td>
+									<b><spring:message code="external_parameters"/></b>
 								</td>
 							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><spring:message code="external_parameters"/></b>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<table class="tablestyle" width="400px">
-							<col style="width:250px">
-							<col style="width:100px">
-							<!--<col style="width:50px">-->
+							<tr>
+								<td>
+									<table class="tablestyle" width="400px">
+										<col style="width:250px">
+										<col style="width:100px">
+										<tr height="20">
+										    <th><spring:message code="name"/></th>
+										    <th><spring:message code="value"/></th>
+										</tr>
+										
+										<c:forEach items="${extParamVals}" var="extParamVal">
+										<tr>
+											<td>${extParamVal.extparam.name}</td>
+									    	<td>${extParamVal.value}</td>
+									   	</tr>
+										</c:forEach>
+									</table>
+								</td>
+							</tr>
 							<tr height="20">
-							    <th><spring:message code="name"/></th>
-							    <th><spring:message code="value"/></th>
+								<td>
+								</td>
 							</tr>
-							
-							<c:forEach items="${extParamVals}" var="extParamVal">
 							<tr>
-								<td>${extParamVal.extparam.name}</td>
-						    	<td>${extParamVal.value}</td>
-						    	<!-- <td>
-									<a href="<c:url value='editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}'/>">
-										<button align="right" type="button" value="Edit">Edit</button>
-									</a>
-								</td>-->
-						   	</tr>
-							</c:forEach>
+								<td align="right">
+									<input type="submit" value="Save">
+									<!-- <a href="projectparameters.html"><button type="button">Cancel</button></a>-->
+								</td>
+							</tr>
 						</table>
-					</td>
-				</tr>
-				<tr height="20">
-					<td>
-					</td>
-				</tr>
-				<tr>
-					<td align="right">
-						<input type="submit" value="Save">
-						<!-- <a href="projectparameters.html"><button type="button">Cancel</button></a>-->
+						</form:form>
 					</td>
 				</tr>
 			</table>
-			</form:form>
 			</div>
 		</td>
      </tr>

@@ -20,138 +20,138 @@
 		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:100%;width:1000px;overflow:auto">
-			<form:form method="post" action="updatemetric.html?action=${action}&metricid=${metricid}" modelAttribute="paramForm">
-			<table>
-				<tr>
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<h2 class="error">${error}</h2>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<!-- Create metric -->
-						<h1><spring:message code="create_metric"/> step 2</h1>
-					</td>
-				</tr>
-				<tr>
-					<td><p><spring:message code="create_metric_instructions_2"/></p></td>
-				</tr>
-				<tr>
-					<td>
-						<table>
-							<col style="width:30px">
-							<col style="width:250px">
-							<col style="width:20px">
-							<col style="width:250px">
-							<col style="width:20px">
-							<col style="width:250px">
-
-							<tr height="20">
-								<td></td>
-								<!-- Functions -->
-								<td><b><spring:message code="functions"/></b></td>
-							</tr>
+						<table width="100%">
 							<tr>
-								<td></td>
-								<td>
-									<div style="overflow:scroll;height:250px;width:500px;overflow:auto">
-									<table class="tablestyle">
-										<col style="width:150px">
-										<col style="width:350px">
-										<tr>
-											<th><spring:message code="function"/></th>
-											<th><spring:message code="description"/></th>
-										</tr>
-										
-										<c:forEach items="${functions}" var="function">
-											<tr>
-												<td>${function.first}</td>
-												<td>${function.second}</td>
-										   	</tr>
-										</c:forEach>
-										
-									</table>								
-									</div>		
-								</td>
-								<td></td>
-								<td>
-									
-								</td>
-								<td></td>
-							</tr>
-							<tr height="20"></tr>
-							<tr height="20"></tr>
-							<tr>
-								<td></td>
-								<!-- Name -->
-								<td><spring:message code="name"/>*</td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>					
-							<tr>
-								<td></td>
-								<c:set var="nametooltip"><spring:message code="tooltip_createmetric_name"/></c:set>
-								<td colspan="3"><form:input style="width:100%" title="${nametooltip}" type="text" path="name"/></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td></td>
-								<!-- Expression -->
-								<td><spring:message code="expression"/>*</td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>					
-							<tr>
-								<td></td>
-								<c:set var="expressiontip"><spring:message code="tooltip_expression"/></c:set>
-								<td colspan="3"><form:input style="width:100%" title="${expressiontip}" type="text" path="value"/></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td></td>
-								<td>					
-									<spring:message code="unit"/>
+								<td><spring:message code="create_metric"/> step 2</td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
 								</td>
 							</tr>
-							<tr>
-								<td></td>
-								<td>					
-									<form:select path="unit">
-										<option value="${paramForm.unit}" selected>${paramForm.unit}</option>
-										<c:forEach items="${units}" var="unit">																																
-											<option value="${unit.name}">${unit.name}</option>
-										</c:forEach>
-									</form:select>				
-								</td>
-							</tr>
-							<tr>
-								<td></td>
-								<td colspan="3"> 
-								</td>
-								<td></td>
-							</tr>					
-							<tr>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td align="right">
-									<!-- Ok submit and Cancel -button -->
-									<input type="submit" style="width:100px" value="<spring:message code="ok"/>"></input>
-									<input type="submit" value="Cancel" name="cancel">
-								</td>
-								<td></td>
-							</tr>					
 						</table>
 					</td>
 				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<form:form method="post" action="updatemetric.html?action=${action}&metricid=${metricid}" modelAttribute="paramForm">
+						<table>
+							<tr>
+								<td class="error">${error}
+								</td>
+							</tr>
+							<tr>
+								<td class="regular"><spring:message code="create_metric_instructions_2"/></td>
+							</tr>
+							<tr height="10"></tr>
+							<tr>
+								<td>
+									<table>
+										<col style="width:250px">
+										<col style="width:100px">
+										<col style="width:100px">
+			
+										<tr height="20">
+											<!-- Functions -->
+											<td><b><spring:message code="functions"/></b></td>
+										</tr>
+										<tr>
+											<td>
+												<div style="overflow:scroll;height:250px;width:500px;overflow:auto">
+												<table class="tablestyle">
+													<col style="width:150px">
+													<col style="width:350px">
+													<tr>
+														<th><spring:message code="function"/></th>
+														<th><spring:message code="description"/></th>
+													</tr>
+													
+													<c:forEach items="${functions}" var="function">
+														<tr>
+															<td>${function.first}</td>
+															<td>${function.second}</td>
+													   	</tr>
+													</c:forEach>
+													
+												</table>								
+												</div>		
+											</td>
+											<td></td>
+											<td>
+												
+											</td>
+											<td></td>
+										</tr>
+										<tr height="20"></tr>
+										<tr>
+											<!-- Name -->
+											<td class="infosmall"><spring:message code="name"/>*</td>
+											<td></td>
+											<td></td>
+											<td></td>
+										</tr>					
+										<tr>
+											<c:set var="nametooltip"><spring:message code="tooltip_createmetric_name"/></c:set>
+											<td colspan="3"><form:input style="width:100%" title="${nametooltip}" type="text" path="name"/></td>
+											<td></td>
+										</tr>
+										<tr height="10"></tr>
+										<tr>
+											<!-- Expression -->
+											<td class="infosmall"><spring:message code="expression"/>*</td>
+											<td></td>
+											<td></td>
+											<td></td>
+										</tr>					
+										<tr>
+											<c:set var="expressiontip"><spring:message code="tooltip_expression"/></c:set>
+											<td colspan="3"><form:input style="width:100%" title="${expressiontip}" type="text" path="value"/></td>
+											<td></td>
+										</tr>
+										<tr height="10"></tr>
+										<tr>
+											<td class="infosmall">					
+												<spring:message code="unit"/>
+											</td>
+										</tr>
+										<tr>
+											<td>					
+												<form:select path="unit">
+													<option value="${paramForm.unit}" selected>${paramForm.unit}</option>
+													<c:forEach items="${units}" var="unit">																																
+														<option value="${unit.name}">${unit.name}</option>
+													</c:forEach>
+												</form:select>				
+											</td>
+										</tr>
+										<tr>
+											<td></td>
+											<td align="right">
+												<!-- Ok submit and Cancel -button -->
+												<input type="submit" style="width:100px" value="<spring:message code="ok"/>"></input>
+											</td>
+											<td>
+												<input type="submit" value="Cancel" name="cancel" style="width: 100px">
+											</td>
+											<td></td>
+										</tr>					
+									</table>
+								</td>
+							</tr>
+						</table>
+						</form:form>
+					</td>
+				</tr>
 			</table>
-		</form:form>
-		</div>
 		</td>
      </tr>
 </table>

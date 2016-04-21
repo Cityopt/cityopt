@@ -19,41 +19,68 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="createextparam.html" modelAttribute="extParam">
-			<h2 class="error">${error}</h2>			
-			<!-- Create external parameter -->
-			<h1><spring:message code="create_external_parameter"/></h1>
-
-			<table align="center">
-				<col style="width:150px">
-				<col style="width:80px">
-				<col style="width:80px">
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-					<!-- Name -->
-					<spring:message code="name"/>*
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="name"/>
-					</td>
-				</tr>
-				<tr height="10">
-					<td>
+						<table width="100%">
+							<tr>
+								<td><spring:message code="create_external_parameter"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 				<tr>
-					<td></td>
-					<!-- Create submit & Cancel button -->
-					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create"/>"/>
-						<input type="submit" value="Cancel" name="cancel">
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
+						<form:form method="post" action="createextparam.html" modelAttribute="extParam">
+						
+						<table align="center">
+							<col style="width:150px">
+							<col style="width:80px">
+							<col style="width:80px">
+							<tr>
+								<td>
+								<!-- Name -->
+								<spring:message code="name"/>*
+								</td>
+								<td>
+									<form:input style="width:300px" type="text" path="name"/>
+								</td>
+							</tr>
+							<tr height="10">
+								<td>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<!-- Create submit & Cancel button -->
+								<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create"/>"/>
+									<input type="submit" value="Cancel" name="cancel">
+								</td>
+							</tr>
+						</table>
+						
+						</form:form>
+						</div>
 					</td>
 				</tr>
 			</table>
-			
-			</form:form>
 			</div>
 		</td>
      </tr>
