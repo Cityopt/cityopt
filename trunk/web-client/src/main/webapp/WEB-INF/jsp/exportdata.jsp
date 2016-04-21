@@ -23,90 +23,100 @@
 		<tr>
 			<td valign="top"><%@ include file="mainmenu.inc"%>
 			</td>
-
-			<td width=30></td>
 			<td valign="top">
-			
-				<div style="overflow: scroll; height: 800px; width: 1100px; overflow: auto">
-					<table style="width:100%">
-						<col  style="width: 70%">
-						<col  style="width: 20%">
-						<col  style="width: 100%">
-						
-						<tr>
-							<td><h1><spring:message code="export_data" /></h1></td>
-							
-						<td align="right" style="margin-right:5%"><div class="round-button">
-							<div class="round-button-circle" onclick="openInfoWindow()">
-								<a>?</a>		
-							</div> 
-						</div></td>
-						
-						</tr>
-						
-						<tr>
-							<td valign="top">
-								<table>
-									<tr>
-										<!-- Project name: -->
-										<td><b><spring:message code="project_name" /></b>:
-											${project.name}</td>
-										<td><c:if test="project != null">
-										${project.name}
-									</c:if></td>
-									</tr>
-									<tr>
-										<!-- Location: -->
-										<td><b><spring:message code="location" /></b>:
-											${project.location}</td>
-										<td><c:if test="project != null">
-										${project.location}
-									</c:if></td>
-									</tr>
-									<tr>
-										<!-- Design target: -->
-										<td><b><spring:message code="design_target" /></b>:
-											${project.description}</td>
-										<td></td>
-									</tr>
-									<tr>
-										<!-- Description: -->
-										<td><b><spring:message code="description" /></b>:
-											${project.description}</td>
-										<td><c:if test="project != null">
-										${project.description}
-									</c:if></td>
-									</tr>
-									<tr height="20"></tr>
-									<tr>
-										<!-- Export project file (CSV) -->
-										<td><spring:message code="export_project_file_CSV" /></td>
-										<td><a href="exportstructurefile.html"><button>
-													<spring:message code="export" />
-												</button></a></td>
-
-									</tr>
-									<tr>
-										<!-- Export scenario file CSV -->
-										<td><spring:message code="export_scenario_file_CSV" /></td>
-										<td>
-											<!-- Export -button --> <a href="exportscenarios.html"><button>
-													<spring:message code="export" />
-												</button></a>
-										</td>
-
-									</tr>
-									<tr>
-										<td><spring:message
-												code="export_external_parameter_sets_file_CSV" /></td>
-										<td><a href="exportextparamsets.html"><button>
-													<spring:message code="export" />
-												</button></a></td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
+				<div style="overflow:scroll;height:100%;width:820px;overflow:auto">
+				<table class="maintable">
+					<col style="width:410px">
+					<col style="width:410px">
+					<%@ include file="toprow.inc"%>
+					<tr class="titlerow">
+						<td colspan="2">
+							<table width="100%">
+								<tr>
+									<td class="spacecolumn"></td>
+									<td><spring:message code="export_data"/></td>
+									<td align="left" width="40">
+										<div class="round-button">
+											<div class="round-button-circle">
+												<a href="" onclick="openInfoWindow()">?</a>
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td valign="top">
+							<table style="width:100%">
+								<tr height="20"></tr>
+								<tr>
+									<td class="spacecolumn"></td>
+									<td valign="top">
+										<table>
+											<tr>
+												<!-- Project name: -->
+												<td><b><spring:message code="project_name" /></b>:
+													${project.name}</td>
+												<td><c:if test="project != null">
+												${project.name}
+											</c:if></td>
+											</tr>
+											<tr>
+												<!-- Location: -->
+												<td><b><spring:message code="location" /></b>:
+													${project.location}</td>
+												<td><c:if test="project != null">
+												${project.location}
+											</c:if></td>
+											</tr>
+											<tr>
+												<!-- Design target: -->
+												<td><b><spring:message code="design_target" /></b>:
+													${project.description}</td>
+												<td></td>
+											</tr>
+											<tr>
+												<!-- Description: -->
+												<td><b><spring:message code="description" /></b>:
+													${project.description}</td>
+												<td><c:if test="project != null">
+												${project.description}
+											</c:if></td>
+											</tr>
+											<tr height="20"></tr>
+											<tr>
+												<!-- Export project file (CSV) -->
+												<td><spring:message code="export_project_file_CSV" /></td>
+												<td><a href="exportstructurefile.html"><button>
+															<spring:message code="export" />
+														</button></a></td>
+		
+											</tr>
+											<tr>
+												<!-- Export scenario file CSV -->
+												<td><spring:message code="export_scenario_file_CSV" /></td>
+												<td>
+													<!-- Export -button --> <a href="exportscenarios.html"><button>
+															<spring:message code="export" />
+														</button></a>
+												</td>
+		
+											</tr>
+											<tr>
+												<td><spring:message
+														code="export_external_parameter_sets_file_CSV" /></td>
+												<td><a href="exportextparamsets.html"><button>
+															<spring:message code="export" />
+														</button></a></td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
 				</div>
 			</td>
 		</tr>

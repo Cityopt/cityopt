@@ -19,62 +19,87 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-
-		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}" modelAttribute="paramForm">
-			<!--Edit external parameter value-->
-			<h1><spring:message code="edit_external_parameter_value"/></h1>
-
-			<table align="center">
-				<col style="width:150px">
-				<col style="width:80px">
-				<col style="width:80px">
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<!-- Name -->
-						<spring:message code="name"/>
-					</td>
-					<td>
-						${paramForm.name}
+						<table width="100%">
+							<tr>
+								<td><spring:message code="edit_external_parameter_value"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<!-- Value -->
-						<spring:message code="value"/>
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="value"/>
-					</td>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
 				</tr>
 				<tr>
-					<td>					
-						<spring:message code="unit"/>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<form:form method="post" action="editextparamvalue.html?extparamvalid=${extParamVal.extparamvalid}" modelAttribute="paramForm">
+			
+						<table align="left">
+							<col style="width:150px">
+							<col style="width:80px">
+							<col style="width:80px">
+							<tr>
+								<td>
+									<!-- Name -->
+									<spring:message code="name"/>
+								</td>
+								<td>
+									${paramForm.name}
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<!-- Value -->
+									<spring:message code="value"/>
+								</td>
+								<td>
+									<form:input style="width:300px" type="text" path="value"/>
+								</td>
+							</tr>
+							<tr>
+								<td>					
+									<spring:message code="unit"/>
+								</td>
+								<td>					
+									<form:select path="unit">
+										<option value="${paramForm.unit}" selected>${paramForm.unit}</option>
+										<c:forEach items="${units}" var="unit">																																
+											<option value="${unit.name}">${unit.name}</option>
+										</c:forEach>
+									</form:select>				
+								</td>
+							</tr>
+							<tr height="10">
+								<td>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<!-- Update and Cancel -buttons -->
+								<td align="right"><input style="width:100px" type="submit" value="<spring:message code="update"/>"/>
+								<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>"></td>
+							</tr>
+						</table>
+						
+						</form:form>
 					</td>
-					<td>					
-						<form:select path="unit">
-							<option value="${paramForm.unit}" selected>${paramForm.unit}</option>
-							<c:forEach items="${units}" var="unit">																																
-								<option value="${unit.name}">${unit.name}</option>
-							</c:forEach>
-						</form:select>				
-					</td>
-				</tr>
-				<tr height="10">
-					<td>
-					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<!-- Update and Cancel -buttons -->
-					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="update"/>"/>
-					<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>"></td>
 				</tr>
 			</table>
-			
-			</form:form>
 			</div>
 		</td>
      </tr>

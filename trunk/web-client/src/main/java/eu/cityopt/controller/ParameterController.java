@@ -324,7 +324,9 @@ public class ParameterController {
 
     @RequestMapping(value="editcomponent", method=RequestMethod.POST)
     public String getEditComponentPost(ComponentDTO component, Map<String, Object> model,
-            @RequestParam(value="componentid", required=true) String componentid) {
+        @RequestParam(value="componentid", required=true) String componentid,
+        HttpServletRequest request) 
+    {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -332,6 +334,13 @@ public class ParameterController {
             return "error";
         }
         securityAuthorization.atLeastExpert_expert(project);
+        
+        if (component.getName().isEmpty())
+        {
+        	model.put("error", controllerService.getMessage("write_name", request));
+        	model.put("component", component);
+        	return "editcomponent";
+        }
         
         try {
             project = projectService.findByID(project.getPrjid());
@@ -355,7 +364,6 @@ public class ParameterController {
         try {
             model.put("project", projectService.findByID(project.getPrjid()));
         } catch (EntityNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         controllerService.getComponentAndExternalParamValues(model, project);        

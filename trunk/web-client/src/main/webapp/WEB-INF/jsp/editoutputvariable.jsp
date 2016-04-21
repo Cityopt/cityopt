@@ -17,53 +17,78 @@
 <body>
 <table cellspacing="0px" cellpadding="0px">
 	<tr>
-		<td>
+		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-
-		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:1000px;width:1000px;overflow:auto">
-			<form:form method="post" action="editoutputvariable.html?outputvarid=${outputVar.outvarid}" modelAttribute="paramForm">
-			<h1><spring:message code="edit_output_variable"/></h1>
-		
-			<table>
-				<col style="width:100px">
-				<col style="width:250px">
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<spring:message code="name"/>
-					</td>
-					<td>
-						${outputVar.name}
+						<table width="100%">
+							<tr>
+								<td><spring:message code="edit_output_variable"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 				<tr>
-					<td>					
-						<spring:message code="unit"/>
-					</td>
-					<td>					
-						<form:select path="unit">
-							<option value="${outputVar.unit.name}" selected>${outputVar.unit.name}</option>
-							<c:forEach items="${units}" var="unit">																																
-								<option value="${unit.name}">${unit.name}</option>
-							</c:forEach>
-						</form:select>				
-					</td>
-				</tr>
-				
-				<tr height="10">
-					<td>
-					</td>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
 				</tr>
 				<tr>
-					<td></td>
-					<td align="right"><input style="width:100px" type="submit" value="Update"/>
-					<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>"></td>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<form:form method="post" action="editoutputvariable.html?outputvarid=${outputVar.outvarid}" modelAttribute="paramForm">
+						
+						<table>
+							<col style="width:100px">
+							<col style="width:250px">
+							<tr>
+								<td>
+									<spring:message code="name"/>
+								</td>
+								<td>
+									${outputVar.name}
+								</td>
+							</tr>
+							<tr>
+								<td>					
+									<spring:message code="unit"/>
+								</td>
+								<td>					
+									<form:select path="unit">
+										<option value="${outputVar.unit.name}" selected>${outputVar.unit.name}</option>
+										<c:forEach items="${units}" var="unit">																																
+											<option value="${unit.name}">${unit.name}</option>
+										</c:forEach>
+									</form:select>				
+								</td>
+							</tr>
+							
+							<tr height="10">
+								<td>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td align="right"><input style="width:100px" type="submit" value="Update"/>
+								<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>"></td>
+							</tr>
+						</table>
+						</form:form>
+					</td>
 				</tr>
 			</table>
-			
-			</form:form>
 			</div>
 		</td>
      </tr>

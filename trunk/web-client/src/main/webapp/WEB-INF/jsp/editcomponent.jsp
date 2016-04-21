@@ -19,46 +19,71 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-
-		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="editcomponent.html?componentid=${component.componentid}" modelAttribute="component">
-			<!--Edit component-->
-			<h1><spring:message code="edit_component"/></h1>
-
-			<!-- Tooltips -->
-			<c:set var="tooltip_edit"><spring:message code="tooltip_edit_name"/></c:set>
-			<c:set var="tooltip_update"><spring:message code="tooltip_update"/></c:set>
-			<c:set var="tooltip_cansel"><spring:message code="tooltip_cansel"/></c:set>
-
-			<table align="center">
-				<col style="width:150px">
-				<col style="width:80px">
-				<col style="width:80px">
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-					<!--Name-->
-					<spring:message code="name"/>*
-					</td>
-					<td>
-						<form:input style="width:300px" title="${tooltip_edit}" type="text" path="name"/>
-					</td>
-				</tr>
-				<tr height="10">
-					<td>
+						<table width="100%">
+							<tr>
+								<td><spring:message code="edit_component"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 				<tr>
-					<td></td>
-					<!-- Update submit and Cancel -button -->
-					<td align="right"><input title="${tooltip_update}" style="width:100px" type="submit" value="<spring:message code="update"/>"/>
-					<a href="projectparameters.html"><button title="${tooltip_cansel}" style="width:100px" type="button" value="Cancel">
-					<spring:message code="cancel"/></button></a></td>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
+						<form:form method="post" action="editcomponent.html?componentid=${component.componentid}" modelAttribute="component">
+			
+						<!-- Tooltips -->
+						<c:set var="tooltip_edit"><spring:message code="tooltip_edit_name"/></c:set>
+						<c:set var="tooltip_update"><spring:message code="tooltip_update"/></c:set>
+						<c:set var="tooltip_cansel"><spring:message code="tooltip_cansel"/></c:set>
+			
+						<table align="left">
+							<col style="width:300px">
+							<tr>
+								<td class="infosmall">
+									<spring:message code="name"/>*
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<form:input style="width:300px" title="${tooltip_edit}" type="text" path="name"/>
+								</td>
+							</tr>
+							<tr height="10">
+								<td>
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									<input title="${tooltip_update}" style="width:100px" type="submit" value="<spring:message code="update"/>"/>
+									<a href="projectparameters.html"><button title="${tooltip_cansel}" style="width:100px" type="button" value="Cancel">
+									<spring:message code="cancel"/></button></a>
+								</td>
+							</tr>
+						</table>
+						</form:form>
+						</div>
+					</td>
 				</tr>
 			</table>
-			
-			</form:form>
 			</div>
 		</td>
      </tr>

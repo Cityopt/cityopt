@@ -19,47 +19,72 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" action="createcomponent.html" modelAttribute="component">
-			<h2 class="error">${error}</h2>
-			<h1><spring:message code="create_component"/></h1>
-
-
-			<!-- Tool tips -->
-			<c:set var="tooltip_name"><spring:message code="tooltip_name"/></c:set>
-			<c:set var="tooltip_create"><spring:message code="tooltip_create"/></c:set>
-			<c:set var="tooltip_cansel"><spring:message code="tooltip_cansel"/></c:set>
-
-			<table align="center">
-				<col style="width:150px">
-				<col style="width:80px">
-				<col style="width:80px">
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<!-- Name -->
-						<spring:message code="name"/>*
-					</td>
-					<td>						
-						<form:input style="width:300px" title="${tooltip_name}" type="text" path="name"/>
-					</td>
-				</tr>
-				<tr height="10">
-					<td>
+						<table width="100%">
+							<tr>
+								<td><spring:message code="create_component"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 				<tr>
-					<td></td>
-					<!-- Create & Cancel -button -->
-					<td align="right">
-						<input title="${tooltip_create}" style="width:100px" type="submit" value="<spring:message code="create"/>"/>
-						<input type="submit" style="width:100px" name="cancel" value="cancel" />
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
+						<form:form method="post" action="createcomponent.html" modelAttribute="component">
+					
+						<!-- Tool tips -->
+						<c:set var="tooltip_name"><spring:message code="tooltip_name"/></c:set>
+						<c:set var="tooltip_create"><spring:message code="tooltip_create"/></c:set>
+						<c:set var="tooltip_cansel"><spring:message code="tooltip_cansel"/></c:set>
+			
+						<table align="center">
+							<col style="width:150px">
+							<col style="width:80px">
+							<col style="width:80px">
+							<tr>
+								<td class="infosmall">
+									<spring:message code="name"/>*
+								</td>
+							</tr>
+							<tr>
+								<td>						
+									<form:input style="width:300px" title="${tooltip_name}" type="text" path="name"/>
+								</td>
+							</tr>
+							<tr height="10">
+								<td>
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									<input title="${tooltip_create}" style="width:100px" type="submit" value="<spring:message code="create"/>"/>
+									<input type="submit" style="width:100px" name="cancel" value="cancel" />
+								</td>
+							</tr>
+						</table>
+						</form:form>
+						</div>
 					</td>
 				</tr>
 			</table>
-			
-			</form:form>
 			</div>
 		</td>
      </tr>
