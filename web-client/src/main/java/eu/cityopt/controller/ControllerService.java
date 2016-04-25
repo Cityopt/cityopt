@@ -564,6 +564,12 @@ public class ControllerService {
 	        {
 	            List<ScenarioWithObjFuncValueDTO> resultScenariosWithValue = (List<ScenarioWithObjFuncValueDTO>) optResults.resultScenarios;
 	            model.put("resultScenariosWithValue", resultScenariosWithValue);
+	            
+	            if (resultScenariosWithValue.size() > 0)
+	            {
+	            	model.put("bestScenarioWithValue", resultScenariosWithValue.get(0));
+	            }
+	            
 	            model.put("optresults", optResults);
 	            
 	            EvaluationResults evResults = optResults.getEvaluationResult();

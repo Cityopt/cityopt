@@ -17,62 +17,83 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="30"></td>
 		<td valign="top">
-			<table>
-				<tr>
-					<td class="title_create_scenario">						
-						<h1><spring:message code="create_scenario"/></h1>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
+					<td>
+						<table width="100%">
+							<tr>
+								<td><spring:message code="create_scenario"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 				<tr>
-					<td>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
 						<table>
-							<tr class="scenario_name">															
-								<td><spring:message code="scenario_name"/>*:</td>
-								<c:set var="tooltip_name"><spring:message code="tooltip_create_scenario_name"/></c:set>
-								<td><form:input type="text" path="name"  title="${tooltip_name}" style="width: 200px"/></td>
-								<td><form:errors path="name" cssClass="error"/></td>
-								<td></td>
-								<td></td>
-							</tr>
-							<tr>						
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>
-							
-							<tr class="description">
-								<!-- Description -->						
-								<td><spring:message code="description"/>:</td>
-								<c:set var="tooltip_description"><spring:message code="tooltip_create_scenario_description"/></c:set>
-								<td><form:textarea type="text" rows="3" title="${tooltip_description}" path="description" style="width: 200px"></form:textarea></td>
-								<td></td>
-								<td></td>
-							</tr>
-							<tr height="10"></tr>
-							<tr>						
-								<td></td>
-								<!-- Create scenario button -->
-								<c:set var="tooltip_create_scenario"><spring:message code="tooltip_create_scenario"/></c:set>
-								<td align="right"><input type="submit" title="${tooltip_create_scenario}" value="<spring:message code="create_scenario"/>" style="width:120px"></td>
-								<td></td>
-								<td></td>
+							<tr>
+								<td>
+									<table>
+										<tr class="infosmall">															
+											<td><spring:message code="scenario_name"/>*</td>
+										</tr>
+										<tr>
+											<c:set var="tooltip_name"><spring:message code="tooltip_create_scenario_name"/></c:set>
+											<td><form:input type="text" path="name"  title="${tooltip_name}" style="width: 300px"/></td>
+											<td><form:errors path="name" cssClass="error"/></td>
+											<td></td>
+											<td></td>
+										</tr>
+										<tr class="spacerow"></tr>
+										<tr class="infosmall">
+											<!-- Description -->						
+											<td><spring:message code="description"/></td>
+										</tr>
+										<tr>
+											<c:set var="tooltip_description"><spring:message code="tooltip_create_scenario_description"/></c:set>
+											<td><form:textarea type="text" rows="3" title="${tooltip_description}" path="description" style="width: 300px"></form:textarea></td>
+											<td></td>
+											<td></td>
+										</tr>
+										<tr class="spacerow"></tr>
+										<tr>						
+											<c:set var="tooltip_create_scenario"><spring:message code="tooltip_create_scenario"/></c:set>
+											<td align="right"><input type="submit" title="${tooltip_create_scenario}" value="<spring:message code="create_scenario"/>" style="width:120px"></td>
+											<td></td>
+											<td></td>
+										</tr>
+									</table>
+									<!-- error message if error -->
+									<element><h2 class="error"></element>${error}</h2><element>
+									<!-- Information message if scenario is created -->
+									<element><element><h2 class="successful"></element></element>${successful}</h2><element>				
+									
+									<c:if test="${success!=null && success==true}">
+									<a href="editscenario.html"><button style="width:100px" type="button" value="Next">
+			            			   <spring:message code="next"/></button></a>
+			            			</c:if>
+								</td>
 							</tr>
 						</table>
-						<!-- error message if error -->
-						<element><h2 class="error"></element>${error}</h2><element>
-						<!-- Information message if scenario is created -->
-						<element><element><h2 class="successful"></element></element>${successful}</h2><element>				
-						
-						<c:if test="${success!=null && success==true}">
-						<a href="editscenario.html"><button style="width:100px" type="button" value="Next">
-            			   <spring:message code="next"/></button></a>
-            			</c:if>
 					</td>
 				</tr>
 			</table>
+			</div>
 		</td>
 	</tr>
 </table>

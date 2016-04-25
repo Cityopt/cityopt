@@ -8,11 +8,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<!-- JavaSript for 2 form submissions. -->
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
-</script>
-
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>CityOpt <spring:message code="create_user"/></title>
@@ -21,47 +16,67 @@
 </head>
 
 <body>
-	<table cellspacing="0px" cellpadding="0px">
-		<tr>
-			<td><%@ include file="mainmenu.inc"%></td>
-			<td width=30></td>
-			<td valign="top">
-				<div style="overflow: scroll; height: 800px; width: 800px; overflow: auto">
-					<form:form modelAttribute="UserForm" method="post">
+<table cellspacing="0px" cellpadding="0px">
+	<tr>
+		<td><%@ include file="mainmenu.inc"%></td>
+		<td valign="top">
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
+					<td>
+						<table width="100%">
+							<tr>
+								<td>
+                           			<spring:message code="account_creation"/>
+								</td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="info">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<form:form modelAttribute="UserForm" method="post">
 						<!-- csrt support (version 4.0) -->
 						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 
-						<h1>
-							<spring:message code="account_creation" />
-						</h1>
-
-						<table align="center">
-							<tr>
-								<td>
-									<h2>
-										<spring:message code="create_user" />
-									</h2>
-								<td>
-							</tr>
+						<table align="left">
 							<col style="width: 150px">
 							<col style="width: 300px">
 							
 							<tr class="username">								
-								<td><label for="projectname"><spring:message code="username" />*:</label></td>
+								<td class="infosmall"><label for="projectname"><spring:message code="username" />*:</label></td>
 								<c:set var="tooltip_name"><spring:message code="tooltip_create_user_name"/></c:set>									
 								<td><form:input style="width:300px" type="text" path="name" title="${tooltip_name}"/></td>
 								<td><form:errors path="name" cssClass="error"/></td>								
 							</tr>
 							
 							<tr class="password">							
-								<td><label for="location"><spring:message code="password" />*:</label></td>
+								<td class="infosmall"><label for="location"><spring:message code="password" />*:</label></td>
 								<c:set var="tooltip_password"><spring:message code="tooltip_create_user_password"/></c:set>								
 								<td><form:input style="width:300px" type="text"	path="password" title="${tooltip_password}" /></td>
 								<td><form:errors path="password" cssClass="error"/></td>
 							</tr>
 							
 							<tr class="enabled">	
-								<td><spring:message code="activate" />
+								<td class="infosmall"><spring:message code="activate" />
 								<c:set var="tooltip_enabled"><spring:message code="tooltip_enable_user"/></c:set>
 								<td><form:radiobutton path="enabled" value="true" checked="checked" title="${tooltip_enabled}" /> 
 								<spring:message code="yes" /> 
@@ -71,8 +86,8 @@
 								<td>
 							</tr>
 							
-							<tr class="role">							
-								<td><spring:message code="role" />:</td>
+							<tr>							
+								<td class="infosmall"><spring:message code="role" />:</td>
 								<td>
 								<c:set var="tooltip_role"><spring:message code="tooltip_role"/></c:set>	
 								<form:select path="role" title="${tooltip_role}" >
@@ -95,10 +110,13 @@
 								</td>
 							</tr>
 						</table>
-					</form:form>
-				</div>	
-			</td>
-		</tr>						
-	</table>	
+						</form:form>
+					</td>
+				</tr>
+			</table>
+			</div>	
+		</td>
+	</tr>						
+</table>	
 </body>
 </html>

@@ -392,24 +392,22 @@ public class VisualizationController {
 		model.put("usersession", userSession);
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
-		if (project == null)
+		if (project == null || scenario == null)
 		{
 			return "error";
 		}
 		securityAuthorization.atLeastGuest_guest(project);
 		
-		AppUserDTO user = (AppUserDTO) model.get("user");
-
-		// TODO
-		if (user != null && project != null)
-		{
-			//if (hasStandardRights(user.getUserid()))
-			{
-			
-			}
+		String status = scenario.getStatus();
+		
+		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+			status = "RUNNING";
 		}
 		
+		model.put("status", status);
+	
 		if (charttype != null)
 		{
 			userSession.setSummaryChartType(Integer.parseInt(charttype));

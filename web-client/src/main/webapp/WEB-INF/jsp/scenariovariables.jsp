@@ -20,68 +20,90 @@
 		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="30"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:100%;width:1100px;overflow:auto">
-			<table>
-				<col style="width:40px">
-				<col style="width:30px">
-				<col style="width:850px">	
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 820px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<!-- External parameters -->
-						<h1><spring:message code="external_parameters"/></h1>
-					</td>
-				</tr>
-				<tr class="external_parameter_sets">
-					<td><b><spring:message code="selected_external_parameter_set" />:</b>
-						${extParamValSet.name} <br>
-					</td>
-				</tr>
-				<tr>
-					<td>
-					<table class="tablestyle" width="750">
-						<col style="width: 200px">
-						<col style="width: 200px">
-						<col style="width: 100px">
-						<col style="width: 100px">
-						<col style="width: 100px">
-						<tr height="20">
-							<!-- Name -->
-							<th><spring:message code="name" /></th>
-							<!-- Comment -->
-							<th><spring:message code="comment" /></th>
-							<!-- Type -->
-							<th><spring:message code="type" /></th>
-							<!-- Unit -->
-							<th><spring:message code="unit" /></th>
-							<!-- Value -->
-							<th><spring:message code="value" /></th>
-						</tr>
-
-						<c:forEach items="${extParamVals}" var="extParamVal">
-							<tr>
-								<td>${extParamVal.extparam.name}</td>
-								<td>${extParamVal.comment}</td>
-								<td>${extParamVal.extparam.getType().getName()}</td>
-								<td>${extParamVal.extparam.unit.name}</td>
-								<td>${extParamVal.value}</td>
-							</tr>
-						</c:forEach>
-					</table>
 						<table width="100%">
-						
-							<tr height="30">
-								<td></td>
+							<tr>
+								<td><spring:message code="external_parameters"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<table>
+							<col style="width:40px">
+							<col style="width:30px">
+							<col style="width:850px">	
+							<tr class="external_parameter_sets">
+								<td><b><spring:message code="selected_external_parameter_set" />:</b>
+									${extParamValSet.name} <br>
+								</td>
 							</tr>
 							<tr>
-								<!-- Close -button -->
-								<td align="right">
-									<a href="editscenario.html"><button type="button">
-									<spring:message code="close"/></button></a>
-							    </td>
-							</tr>							      
-						</table>					
+								<td>
+								<table class="tablestyle" width="750">
+									<col style="width: 200px">
+									<col style="width: 200px">
+									<col style="width: 100px">
+									<col style="width: 100px">
+									<col style="width: 100px">
+									<tr height="20">
+										<!-- Name -->
+										<th><spring:message code="name" /></th>
+										<!-- Comment -->
+										<th><spring:message code="comment" /></th>
+										<!-- Type -->
+										<th><spring:message code="type" /></th>
+										<!-- Unit -->
+										<th><spring:message code="unit" /></th>
+										<!-- Value -->
+										<th><spring:message code="value" /></th>
+									</tr>
+			
+									<c:forEach items="${extParamVals}" var="extParamVal">
+										<tr>
+											<td>${extParamVal.extparam.name}</td>
+											<td>${extParamVal.comment}</td>
+											<td>${extParamVal.extparam.getType().getName()}</td>
+											<td>${extParamVal.extparam.unit.name}</td>
+											<td>${extParamVal.value}</td>
+										</tr>
+									</c:forEach>
+								</table>
+									<table width="100%">
+									
+										<tr height="10">
+											<td></td>
+										</tr>
+										<tr>
+											<!-- Close -button -->
+											<td align="right">
+												<a href="editscenario.html"><button type="button">
+												<spring:message code="close"/></button></a>
+										    </td>
+										</tr>							      
+									</table>					
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 			</table>

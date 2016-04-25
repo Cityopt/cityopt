@@ -47,7 +47,7 @@
 						</table>
 					</td>
 				</tr>
-				<tr height="20">
+				<tr>
 					<td class="error">${error}</td>
 				</tr>				
 				<tr height="400px">

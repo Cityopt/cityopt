@@ -12,17 +12,6 @@
 <title>CityOpt <spring:message code="open_scenario"/></title>
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
-<style type="text/css">
-table.tablestyle{
-margin: 5%;
-}
-
-h2{
-margin-left: 5%;
-}
-
-</style>
-
 </head>
 
 <body>
@@ -31,58 +20,79 @@ margin-left: 5%;
 		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:100%;width:800px;overflow:auto">
-			
-			<!-- Open scenario -->
-			<h1><spring:message code="open_scenario"/></h1>
-		
-			
-			<table class="tablestyle" width="600" border="1">
-				<col style="width:200px">	
-				<col style="width:50px">
-				<col style="width:250px">
-				<col style="width:50px">
-				<col style="width:50px">
-				<col style="width:50px">
-																									
-				<tr height="20">
-					<!--Name-->
-				    <th><spring:message code="name"/></th>
-				    <!-- Id -->				    
-				    <th><spring:message code="id"/></th>
-				    <!--Description-->
-				    <th><spring:message code="description"/></th>
-				    <!--Status-->    
-				    <th><spring:message code="status"/></th>				    
-				    <!--Open-->    
-				    <th><spring:message code="open"/></th>
-				    <!-- Clone-->				
-				    <th><spring:message code="clone"/></th>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
+					<td>
+						<table width="100%">
+							<tr>
+								<td><spring:message code="open_scenario"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
 				</tr>
-								
-				<c:forEach items="${scenarioForms}" var="scenarioForm">
 				<tr>
-					<td>${scenarioForm.name}</td>
-			    	<td>${scenarioForm.id}</td>
-					<td>${scenarioForm.description}</td>
-					<td>${scenarioForm.status}</td>			
-					<td>
-						<c:set var="tooltip_open_scenario"><spring:message code="tooltip_open_scenario"/></c:set>
-						<a href="<c:url value='openscenario.html?scenarioid=${scenarioForm.id}'/>" title="${tooltip_open_scenario}">
-							<button align="right" type="button" value="Open"><spring:message code="open"/>
-							</button>
-						</a>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<table class="tablestyle" width="750">
+							<col style="width:200px">	
+							<col style="width:400px">
+							<col style="width:50px">
+							<col style="width:50px">
+							<col style="width:50px">
+																												
+							<tr height="20">
+								<!--Name-->
+							    <th><spring:message code="name"/></th>
+							    <!--Description-->
+							    <th><spring:message code="description"/></th>
+							    <!--Status-->    
+							    <th><spring:message code="status"/></th>				    
+							    <!--Open-->    
+							    <th><spring:message code="open"/></th>
+							    <!-- Clone-->				
+							    <th><spring:message code="clone"/></th>
+							</tr>
+											
+							<c:forEach items="${scenarioForms}" var="scenarioForm">
+							<tr>
+								<td>${scenarioForm.name}</td>
+						    	<td>${scenarioForm.description}</td>
+								<td>${scenarioForm.status}</td>			
+								<td>
+									<c:set var="tooltip_open_scenario"><spring:message code="tooltip_open_scenario"/></c:set>
+									<a href="<c:url value='openscenario.html?scenarioid=${scenarioForm.id}'/>" title="${tooltip_open_scenario}">
+										<button align="right" type="button" value="Open"><spring:message code="open"/>
+										</button>
+									</a>
+								</td>
+								<td>
+									<c:set var="tooltip_clone"><spring:message code="tooltip_clone"/></c:set>
+									<a href="<c:url value='clonescenario.html?scenarioid=${scenarioForm.id}'/>" title="${tooltip_clone}">
+										<button align="right" type="button" value="Clone"><spring:message code="clone"/></button>
+									</a>
+								</td>
+						   	</tr>
+							</c:forEach>				
+						</table>
 					</td>
-					<td>
-						<c:set var="tooltip_clone"><spring:message code="tooltip_clone"/></c:set>
-						<a href="<c:url value='clonescenario.html?scenarioid=${scenarioForm.id}'/>" title="${tooltip_clone}">
-							<button align="right" type="button" value="Clone"><spring:message code="clone"/></button>
-						</a>
-					</td>
-			   	</tr>
-				</c:forEach>				
+				</tr>
+				<tr class="spacerowbig">
+				</tr>
 			</table>
 			</div>
 		</td>

@@ -445,6 +445,14 @@ public class ProjectController {
 
         if (projectForm != null && action != null)
         {
+        	if (projectForm.getName().isEmpty())
+        	{
+                controllerService.getEnergyModelInfo(model, project.getPrjid());
+                model.put("project", project);
+                model.put("error", controllerService.getMessage("write_project_name", request));
+        		return "editproject";
+        	}
+        	
             if (action.equals("create"))
             {
                 project.setName(projectForm.getName());

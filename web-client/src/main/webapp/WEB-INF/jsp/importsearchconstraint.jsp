@@ -16,55 +16,83 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="30"></td>
 		<td valign="top">
-			<table>
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<!-- Search constraints -->
-						<h1><spring:message code="search_constraints"/></h1>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<table>
-							<col style="width:300px">
-
+						<table width="100%">
 							<tr>
-								<td><b><spring:message code="search_constraints"/></b></td>
-							</tr>
-							<tr>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:60px">
-										<col style="width:240px">
-										<col style="width:300px">
-										<tr>
-											<!-- Select, Search constraint and Expression -->
-											<th><spring:message code="select"/></th>
-											<th><spring:message code="search_constraints"/></th>
-											<th><spring:message code="expression"/></th>
-										</tr>
-							
-										<c:forEach items="${constraints}" var="constraint">
-											<tr>
-												<td><a href="<c:url value='importsearchconstraint.html?constraintid=${constraint.optconstid}'/>"><button type="button"><spring:message code="select"/></button></a></td>
-												<td>${constraint.name}</td>
-										    	<td>${constraint.expression}</td>
-										   	</tr>
-											</c:forEach>
-									</table>
+								<td><spring:message code="import_constraint"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
 								</td>
-							</tr>
-							<tr height="20"></tr>
-							<tr>
-								<td align="right"><a href="editoptimizationset.html"><button type="button"><spring:message code="close"/></button></a></td>
 							</tr>
 						</table>
 					</td>
 				</tr>
-				<tr height=20></tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="info">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<table>
+							<tr>
+								<td>
+									<table>
+										<col style="width:300px">
+			
+										<tr>
+											<td class="infosmall"><spring:message code="search_constraints"/></td>
+										</tr>
+										<tr>
+											<td valign="top">
+												<table class="tablestyle">
+													<col style="width:60px">
+													<col style="width:240px">
+													<col style="width:300px">
+													<tr>
+														<!-- Select, Search constraint and Expression -->
+														<th><spring:message code="select"/></th>
+														<th><spring:message code="search_constraints"/></th>
+														<th><spring:message code="expression"/></th>
+													</tr>
+										
+													<c:forEach items="${constraints}" var="constraint">
+														<tr>
+															<td><a href="<c:url value='importsearchconstraint.html?constraintid=${constraint.optconstid}'/>"><button type="button"><spring:message code="select"/></button></a></td>
+															<td>${constraint.name}</td>
+													    	<td>${constraint.expression}</td>
+													   	</tr>
+														</c:forEach>
+												</table>
+											</td>
+										</tr>
+										<tr height="20"></tr>
+										<tr>
+											<td align="right"><a href="editoptimizationset.html"><button type="button"><spring:message code="close"/></button></a></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr height=20></tr>
+						</table>
+					</td>
+				</tr>
 			</table>
+			</div>
 		</td>
 	</tr>
 </table>

@@ -20,85 +20,116 @@
 		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:auto;width:800px;overflow:auto">
-			<!--Edit user  -->
-			<h1><spring:message code="edit_user_roles"/></h1>
-
-			<table>
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<table align="left">
-							<col style="width:80px">
-							<col style="width:250px">
-						
+						<table width="100%">
 							<tr>
 								<td>
-									<!--Name-->
-									<spring:message code="name"/>:
+                           			<spring:message code="edit_user_roles"/>
 								</td>
-								<td>
-									${user.name}
-								</td>
-							</tr>
-							<tr height="10">
-								<td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
 								</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<!-- User roles -->
-						<b>User roles</b>
-					</td>
-					<td>
-						
-					</td>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
 				</tr>
 				<tr>
-					<td>
-						<table class="tablestyle" width="400">
-							<col style="width:150px">	
-							<col style="width:150px">	
-							<col style="width:50px">	
-							
-							<tr height="20">
-								<!-- Role, Project & Remove -->
-							    <th><spring:message code="user_role"/></th>
-							    <th><spring:message code="project"/></th>
-							    <th><spring:message code="remove"/></th>
-							</tr>
-							
-							<c:forEach items="${userRoles}" var="userRole">
-								<tr>
-									<td>							    	
-							    		${userRole.usergroup.name}
-							   		</td> 	
-							    								    	
-									<td>
-										${userRole.project.name}					
-									</td>
+					<td class="spacecolumn"></td>
+					<td class="info">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<table>
+							<tr>
+								<td>
+									<table align="left">
+										<col style="width:80px">
+										<col style="width:250px">
 									
-									<td>
-										<c:set var="tooltip_delete"><spring:message code="tooltip_delete"/></c:set>	
-										<a href="<c:url value='removerole.html?userid=${user.userid}&ugpid=${userRole.usergroupprojectid}'/>" title="${tooltip_delete}"
-										 onclick="return confirm('Are you sure you want to remove this role?')">
-											<button align="right" type="button"><spring:message code="remove"/></button>
-										</a>
-									</td>
-							   	</tr>
-							</c:forEach>
-						
+										<tr>
+											<td>
+												<!--Name-->
+												<spring:message code="name"/>:
+											</td>
+											<td>
+												${user.name}
+											</td>
+										</tr>
+										<tr height="10">
+											<td>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td class="infosmall">
+									<!-- User roles -->
+									<spring:message code="user_roles"/>
+								</td>
+								<td>
+									
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<table class="tablestyle" width="400">
+										<col style="width:150px">	
+										<col style="width:150px">	
+										<col style="width:50px">	
+										
+										<tr height="20">
+											<!-- Role, Project & Remove -->
+										    <th><spring:message code="user_role"/></th>
+										    <th><spring:message code="project"/></th>
+										    <th><spring:message code="remove"/></th>
+										</tr>
+										
+										<c:forEach items="${userRoles}" var="userRole">
+											<tr>
+												<td>							    	
+										    		${userRole.usergroup.name}
+										   		</td> 	
+										    								    	
+												<td>
+													${userRole.project.name}					
+												</td>
+												
+												<td>
+													<c:set var="tooltip_delete"><spring:message code="tooltip_delete"/></c:set>	
+													<a href="<c:url value='removerole.html?userid=${user.userid}&ugpid=${userRole.usergroupprojectid}'/>" title="${tooltip_delete}"
+													 onclick="return confirm('Are you sure you want to remove this role?')">
+														<button align="right" type="button"><spring:message code="remove"/></button>
+													</a>
+												</td>
+										   	</tr>
+										</c:forEach>
+									
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<!-- Create role and back -buttons -->
+								<td align="right"><a href="createrole.html?userid=${user.userid}"><button style="width:100px" type="button" value="Create"><spring:message code="create_role"/></button></a>
+								<a href="usermanagement.html"><button style="width:100px" type="button" value="Back"><spring:message code="back"/></button></a></td>
+							</tr>
 						</table>
 					</td>
-				</tr>
-				<tr>
-					<!-- Create role and back -buttons -->
-					<td align="right"><a href="createrole.html?userid=${user.userid}"><button style="width:100px" type="button" value="Create"><spring:message code="create_role"/></button></a>
-					<a href="usermanagement.html"><button style="width:100px" type="button" value="Back"><spring:message code="back"/></button></a></td>
 				</tr>
 			</table>
 			</div>

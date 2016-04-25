@@ -21,70 +21,92 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="30"></td>
 		<td valign="top">
-			<table>
-				<tr>
-					<td><h2 class="error">${error}</h2></td>
-				</tr>
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<!-- Create constraint -->
-						<h1><spring:message code="create_constraint"/></h1>
+						<table width="100%">
+							<tr>
+								<td><spring:message code="create_constraint"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
-				<tr height=20></tr>
 				<tr>
-					<td>
-						<table>						
-							<col style="width:30px">
-							<col style="width:150px">
-							<col style="width:400px">
-							<col style="width:240px">
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="info">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<table>
 							<tr>
-								<td></td>
-								<!-- Name -->
-								<td><spring:message code="name"/>*</td>
-								<td><form:input style="width:400px" type="text" path="name"/></td>
-								<td></td>
+								<td>
+									<table>						
+										<col style="width:600px">
+										<col style="width:240px">
+										<tr>
+											<td class="infosmall"><spring:message code="name"/>*</td>
+										</tr>
+										<tr>
+											<td><form:input style="width:400px" type="text" path="name"/></td>
+											<td></td>
+										</tr>
+										<tr height=10></tr>
+										<tr>
+											<!-- Lower bound -->
+											<td class="infosmall"><spring:message code="lower_bound"/>*</td>
+										</tr>
+										<tr>
+											<td><form:input style="width:400px" type="text" path="lowerbound"/></td>
+											<td></td>
+										</tr>
+										<tr height=10></tr>
+										<tr>
+											<!-- Expression -->
+											<td class="infosmall"><spring:message code="expression"/>*</td>
+										</tr>
+										<tr>
+											<td><form:input style="width:400px" type="text" path="expression"/></td>
+											<td></td>
+										</tr>
+										<tr height=10></tr>
+										<tr>
+											<td class="infosmall"><spring:message code="upper_bound"/>*</td>
+										</tr>
+										<tr>
+											<td><form:input style="width:400px" type="text" path="upperbound"/></td>
+											<td></td>
+										</tr>
+										<tr>
+											<td></td>
+											<!-- Ok and Cansel submit -buttons -->
+											<td align=left><input type="submit" value="<spring:message code="ok"/>"/>
+											<a href="editoptimizationset.html"><button type="button">
+											<spring:message code="cancel"/></button></a></td>
+										</tr>					
+									</table>
+								</td>
 							</tr>
-							<tr height=10></tr>
-							<tr>
-								<td></td>
-								<!-- Lower bound -->
-								<td><spring:message code="lower_bound"/>*</td>
-								<td><form:input style="width:400px" type="text" path="lowerbound"/></td>
-								<td></td>
-							</tr>
-							<tr height=10></tr>
-							<tr>
-								<td></td>
-								<!-- Expression -->
-								<td><spring:message code="expression"/>*</td>
-								<td><form:input style="width:400px" type="text" path="expression"/></td>
-								<td></td>
-							</tr>
-							<tr height=10></tr>
-							<tr>
-								<td></td>
-								<!-- Upper bound -->
-								<td><spring:message code="upper_bound"/>*</td>
-								<td><form:input style="width:400px" type="text" path="upperbound"/></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td></td>
-								<td></td>
-								<td></td>
-								<!-- Ok and Cansel submit -buttons -->
-								<td align=right><input type="submit" value="<spring:message code="ok"/>"/>
-								<a href="editoptimizationset.html"><button type="button">
-								<spring:message code="cancel"/></button></a></td>
-							</tr>					
 						</table>
 					</td>
 				</tr>
 			</table>
+			</div>
 		</td>
 	</tr>
 </table>

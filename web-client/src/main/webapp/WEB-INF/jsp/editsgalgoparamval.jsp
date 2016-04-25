@@ -16,52 +16,77 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="30"></td>
 		<td valign="top">
-          <table style="width: 450px">
-               <tr>
-	               <td>
-	                  <h1><spring:message code="edit_algorithm_parameter_values"/></h1>
-	               </td>
-               </tr>
-              <tr>
-	              <td>
-	                <spring:message code="algorithm"/>: ${scengenerator.algorithm.description}
-	              </td>
-              </tr>
-              <tr height="10"></tr>
-              <tr>
-                <td>
-	              <table class="tablestyle" style="width: 450px">
-                      <col>
-                      <col align="right">
-                      <col align="right">
-	                  <tr>
-	                      <th><spring:message code="parameter"/></th>
-	                      <th><spring:message code="value"/></th>
-	                      <th><spring:message code="default_value"/></th>
-	                  </tr>
-	
-	                  <c:forEach items="${algoparamvals}" var="apv">
-	                  <tr>
-	                      <td>${apv.algoparam.name}</td>
-	                      <td>
-                             <form:input align="right" style="width:200px" type="text" path="valueByParamId[${apv.algoparam.aparamsid}]"/>
-	                      </td>
-	                      <td align="right">${apv.algoparam.defaultvalue}</td>
-	                  </tr>
-	                  </c:forEach>
-	              </table>
-                </td>
-              </tr>
-              <tr height="10"></tr>
-              <tr>
-                  <td align="right">
-                    <input type="submit" value="Ok"></input>
-                    <a href="geneticalgorithm.html"><button type="button"><spring:message code="cancel"/></button></a>
-                  </td>
-              </tr>   
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
+					<td>
+						<table width="100%">
+							<tr>
+								<td>
+                           			<spring:message code="edit_algorithm_parameter_values"/>
+								</td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="info">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+			          <table style="width: 450px">
+			               <tr>
+			               		<td>
+				              		<table class="tablestyle" style="width: 450px">
+			                      		<col>
+			                      		<col align="right">
+			                      		<col align="right">
+				                  		<tr>
+				                      		<th><spring:message code="parameter"/></th>
+				                      		<th><spring:message code="value"/></th>
+				                      		<th><spring:message code="default_value"/></th>
+				                  		</tr>
+				
+						          		<c:forEach items="${algoparamvals}" var="apv">
+				                  			<tr>
+				                      			<td>${apv.algoparam.name}</td>
+				                      			<td>
+			                             			<form:input align="right" style="width:200px" type="text" path="valueByParamId[${apv.algoparam.aparamsid}]"/>
+				                      			</td>
+				                      			<td align="right">${apv.algoparam.defaultvalue}</td>
+				                  			</tr>
+				                  		</c:forEach>
+				              		</table>
+			                	</td>
+			              </tr>
+			              <tr height="10"></tr>
+			              <tr>
+			                  <td align="right">
+			                    <input type="submit" value="Ok"></input>
+			                    <a href="geneticalgorithm.html"><button type="button"><spring:message code="cancel"/></button></a>
+			                  </td>
+			              </tr>   
+						</table>
+					</td>
+				</tr>
 			</table>
+			</div>
 		</td>
 	</tr>
 </table>
