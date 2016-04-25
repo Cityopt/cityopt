@@ -20,40 +20,69 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<form:form method="post" modelAttribute="user">
-			<h1><spring:message code="create_role"/></h1>
-
-			<table align="center">
-				<col style="width:100px">
-				<col style="width:300px">
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<!-- User -->
-						<spring:message code="user"/>
-					</td>
-					<td>
-						${user.name}
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<!-- Role -->
-						<spring:message code="role"/>
-					</td>
-					<td>
-						<!-- Roletypes: Guest, Standard, Expert, Administrator -->
-						<select name="roleType" id="roleType" size="1">
-							<option value="Guest" selected><spring:message code="guest"/></option>
-							<option value="Standard"><spring:message code="standard"/></option>
-							<option value="Expert"><spring:message code="expert"/></option>
-							<option value="Administrator"><spring:message code="administrator"/></option>
-						</select>
+						<table width="100%">
+							<tr>
+								<td>
+                           			<spring:message code="create_role"/>
+								</td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
-				<c:forEach items="${userRoles}" var="projectRole">
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="info">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<form:form method="post" modelAttribute="user">
+						<table align="center">
+							<col style="width:100px">
+							<col style="width:300px">
+							<tr>
+								<td>
+									<!-- User -->
+									<spring:message code="user"/>
+								</td>
+								<td>
+									${user.name}
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<!-- Role -->
+									<spring:message code="role"/>
+								</td>
+								<td>
+									<!-- Roletypes: Guest, Standard, Expert, Administrator -->
+									<select name="roleType" id="roleType" size="1">
+										<option value="Guest" selected><spring:message code="guest"/></option>
+										<option value="Standard"><spring:message code="standard"/></option>
+										<option value="Expert"><spring:message code="expert"/></option>
+										<option value="Administrator"><spring:message code="administrator"/></option>
+									</select>
+								</td>
+							</tr>
+							<c:forEach items="${userRoles}" var="projectRole">
 								<tr>
 									<td>							    	
 							    		<form:select path="role">
@@ -82,29 +111,32 @@
 									</td>
 							   	</tr>
 							</c:forEach>
-				<tr>
-					<td>
-						<!--Project-->
-						<spring:message code="project"/>
+							<tr>
+								<td>
+									<!--Project-->
+									<spring:message code="project"/>
+								</td>
+								<td>
+									<select name="roleProjectId" id="roleProjectId" size="1">
+										<c:forEach items="${projects}" var="project">
+											<option value="${project.prjid}">${project.name}</option>
+										</c:forEach>	
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<!-- Create role submit and Cancel -button -->
+								<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create_role"/>"/>
+								<a href="editroles.html?userid=${user.userid}"><button style="width:100px" type="button" value="Cancel">
+								<spring:message code="cancel"/></button></a></td>
+							</tr>
+						</table>
+						
+						</form:form>
 					</td>
-					<td>
-						<select name="roleProjectId" id="roleProjectId" size="1">
-							<c:forEach items="${projects}" var="project">
-								<option value="${project.prjid}">${project.name}</option>
-							</c:forEach>	
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<!-- Create role submit and Cancel -button -->
-					<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create_role"/>"/>
-					<a href="editroles.html?userid=${user.userid}"><button style="width:100px" type="button" value="Cancel">
-					<spring:message code="cancel"/></button></a></td>
 				</tr>
 			</table>
-			
-			</form:form>
 			</div>
 		</td>
      </tr>

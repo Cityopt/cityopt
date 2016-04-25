@@ -38,149 +38,153 @@ var getUrlParameter = function getUrlParameter(sParam) {
 	<table cellspacing="0" cellpadding="0">
 		<tr>
 			<td><%@ include file="mainmenu.inc"%></td>
-			<td width="30"></td>
 			<td valign="top">
-				<table>
-					<tr>
+				<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+				<table class="maintable">			
+					<%@ include file="toprow.inc"%>
+					<tr class="titlerow">
+						<td class="spacecolumn"></td>
 						<td>
-							<!--External parameter sets  -->
-							<h1>
-								<spring:message code="external_parameter_sets" />
-							</h1>
-							<p id="JQTest"></p>
-						</td>
-					</tr>
-
-					<!-- Tool tips -->
-					<c:set var="select_externalparameter">
-						<spring:message code="tooltip_select_externalparameterset" />
-					</c:set>
-					<c:set var="selected_externalparameter">
-						<spring:message code="tooltip_selected_externalparameterset" />
-					</c:set>
-					<c:set var="submit_externalparameter">
-						<spring:message code="tooltip_submit_externalparameterset" />
-					</c:set>
-					<c:set var="tooltip_close">
-						<spring:message code="tooltip_close" />
-					</c:set>
-					<c:set var="tooltip_create_objectivefunction">
-						<spring:message code="tooltip_editoptimizationset_create_objectivefunction" />
-					</c:set>
-
-					<tr>
-						<td>
-							<form action="${postpage}" method="post">							
-								<!-- csrt support (version 4.0) -->
-									<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-								
-								<table>
-									<col style="width: 255px">
-									<col style="width: 30px">
-									<col style="width: 255px">
-
-									<tr>
-										<!--External parameter sets  -->
-										<th><b><spring:message code="external_parameter_sets" /></b></th>
-										<th></th>
-										<!-- External parameters -->
-										<th><b><spring:message code="external_parameters" /></b></th>
-									</tr>
-
-									<tr>
-										<td valign="top">
-											<table class="tablestyle">
-												<col style="width: 70px">
-												<col style="width: 200px">
-
-											</table>
-										</td>
-										<td></td>
-										<td valign="top">
-											<table class="tablestyle">
-											</table>
-										</td>
-									</tr>
-									<!-- Create Data Entries -->
-									<tr class="tablestyle">
-										<td style="border-style: hidden" valign="top" align="left"
-											border="none" cellspacing="0" cellpadding="0">
-											<table style="width: 250px" cellspacing="0" cellpadding="0"
-												border="1">
-												<col style="width: 60px">
-												<col style="width: 200px">
-												<tr>
-													<!-- Select -->
-													<th><spring:message code="select" /></th>
-													<!--External parameter set  -->
-													<th><spring:message code="external_parameter_set" /></th>
-												</tr>
-												<!-- ForEachElement: Select element // External parameterset -->
-												<!-- Example:<tr><td>Select</td><td>Dataentry</td></tr> -->
-												<c:forEach items="${extParamValSets}" var="extParamValSet">
-													<tr class="tablestyle" align="left" valign="top">
-														<c:choose>
-															<c:when test="${extParamValSet.extparamvalsetid == extparamvalsetid}">
-																<input type="hidden" name=extparamvalsetid value="${extParamValSet.extparamvalsetid}" />
-																<tr title="${selected_externalparameter}" style="background-color: #D4D4D4">
-																	<td><spring:message code="selected" /></td>
-															</c:when>
-															<c:otherwise>
-																<tr>
-																	<td>
-																		<a href="<c:url value='${postpage}?extparamvalsetid=${extParamValSet.extparamvalsetid}'/>"
-																			title="${select_externalparameter}">
-																			<button type="button"><spring:message code="select" /></button>
-																		</a>
-																	</td>
-															</c:otherwise>
-														</c:choose>
-														<td>${extParamValSet.name}</td>
-													</tr>
-												</c:forEach>
-											</table>
-										<td style="border-style: hidden"></td>
-										<td style="border-style: hidden" valign="top">
-											<table id="externalParameters" cellspacing="0"
-												style="width: 255px" border="1" align="left">
-												<!-- For each element get the External parameter Parameter -->
-												<tr>
-													<!--External parameter-->
-													<th width="125"><spring:message code="name" /></th>
-													<th width="135"><spring:message code="value" /></th>
-												</tr>
-												<c:forEach items="${extParamVals}" var="extParamVal">
-													<tr data-extparam-id="${extParamVal.extparam.extparamid}">
-														<td>${extParamVal.extparam.name}</td>
-														<td>${extParamVal.value}</td>
-													</tr>
-												</c:forEach>
-												</tr>
-											</table>
-										</td>
-									<tr>
+							<table width="100%">
+								<tr>
+									<td><spring:message code="external_parameter_sets"/></td>
+									<td align="left" width="40">
+										<div class="round-button">
+											<div class="round-button-circle">
+												<a href="" onclick="openInfoWindow()">?</a>
+											</div>
 										</div>
-										<td></td>
-										<td></td>
-										<td></td>
-										<!-- Submit button -->
-
-										<!-- Close button -->
-										<td><input name="index" title="${submit_externalparameter}" type="submit" value="<spring:message code="ok" />"></td>
-										<td align="right">
-											<a href="${backpage}">
-												<button	type="button" title="${tooltip_close}">
-													<spring:message code="close" />
-												</button>
-											</a>
-										</td>
-									</tr>
-								</table>
-							</form>
+									</td>
+								</tr>
+							</table>
 						</td>
 					</tr>
-					<tr height=20></tr>
+					<tr>
+						<td class="spacecolumn"></td>
+						<td class="error">${error}</td>
+					</tr>
+					<tr>
+						<td class="spacecolumn"></td>
+						<td class="info">${info}</td>
+					</tr>
+					<tr>
+						<td class="spacecolumn"></td>
+						<td valign="top">
+							<table>
+								<c:set var="select_externalparameter">
+									<spring:message code="tooltip_select_externalparameterset" />
+								</c:set>
+								<c:set var="selected_externalparameter">
+									<spring:message code="tooltip_selected_externalparameterset" />
+								</c:set>
+								<c:set var="submit_externalparameter">
+									<spring:message code="tooltip_submit_externalparameterset" />
+								</c:set>
+								<c:set var="tooltip_close">
+									<spring:message code="tooltip_close" />
+								</c:set>
+								<c:set var="tooltip_create_objectivefunction">
+									<spring:message code="tooltip_editoptimizationset_create_objectivefunction" />
+								</c:set>
+			
+								<tr>
+									<td>
+										<form action="${postpage}" method="post">							
+											<!-- csrt support (version 4.0) -->
+											<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+											
+											<table>
+												<col style="width: 255px">
+												<col style="width: 30px">
+												<col style="width: 255px">
+			
+												<tr>
+													<td class="infosmall"><spring:message code="external_parameter_sets" /></td>
+													<td></td>
+													<td class="infosmall"><spring:message code="external_parameters" /></td>
+												</tr>
+			
+												<!-- Create Data Entries -->
+												<tr>
+													<td>
+														<table class="tablestyle" style="width: 250px" cellspacing="0" cellpadding="0">
+															<col style="width: 60px">
+															<col style="width: 200px">
+															<tr>
+																<!-- Select -->
+																<th><spring:message code="select" /></th>
+																<!--External parameter set  -->
+																<th><spring:message code="external_parameter_set" /></th>
+															</tr>
+															<!-- ForEachElement: Select element // External parameterset -->
+															<!-- Example:<tr><td>Select</td><td>Dataentry</td></tr> -->
+															<c:forEach items="${extParamValSets}" var="extParamValSet">
+																<tr class="tablestyle" align="left" valign="top">
+																	<c:choose>
+																		<c:when test="${extParamValSet.extparamvalsetid == extparamvalsetid}">
+																			<input type="hidden" name=extparamvalsetid value="${extParamValSet.extparamvalsetid}" />
+																			<tr title="${selected_externalparameter}" style="background-color: #D4D4D4">
+																				<td><spring:message code="selected" /></td>
+																		</c:when>
+																		<c:otherwise>
+																			<tr>
+																				<td>
+																					<a href="<c:url value='${postpage}?extparamvalsetid=${extParamValSet.extparamvalsetid}'/>"
+																						title="${select_externalparameter}">
+																						<button type="button"><spring:message code="select" /></button>
+																					</a>
+																				</td>
+																		</c:otherwise>
+																	</c:choose>
+																	<td>${extParamValSet.name}</td>
+																</tr>
+															</c:forEach>
+														</table>
+													<td style="border-style: hidden"></td>
+													<td style="border-style: hidden" valign="top">
+														<table class="tablestyle" id="externalParameters" style="width: 255px" align="left">
+															<!-- For each element get the External parameter Parameter -->
+															<tr>
+																<!--External parameter-->
+																<th width="125"><spring:message code="name" /></th>
+																<th width="135"><spring:message code="value" /></th>
+															</tr>
+															<c:forEach items="${extParamVals}" var="extParamVal">
+																<tr data-extparam-id="${extParamVal.extparam.extparamid}">
+																	<td>${extParamVal.extparam.name}</td>
+																	<td>${extParamVal.value}</td>
+																</tr>
+															</c:forEach>
+															</tr>
+														</table>
+													</td>
+												<tr>
+													</div>
+													<td></td>
+													<td></td>
+													<td></td>
+													<!-- Submit button -->
+			
+													<!-- Close button -->
+													<td><input name="index" title="${submit_externalparameter}" type="submit" value="<spring:message code="ok" />"></td>
+													<td align="right">
+														<a href="${backpage}">
+															<button	type="button" title="${tooltip_close}">
+																<spring:message code="close" />
+															</button>
+														</a>
+													</td>
+												</tr>
+											</table>
+										</form>
+									</td>
+								</tr>
+								<tr height=20></tr>
+							</table>
+						</td>
+					</tr>
 				</table>
+				</div>
 			</td>
 		</tr>
 	</table>

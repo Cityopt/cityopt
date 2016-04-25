@@ -18,41 +18,69 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-
-		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:100%;width:600px;overflow:auto">
-			<table>
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintablenarrow">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<h1><spring:message code="settings"/></h1>
+						<table width="100%">
+							<tr>
+								<td>
+                           			<spring:message code="settings"/>
+								</td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<table class="tablestyle" width="250px">
-							<col style="width:100px">	
-							<col style="width:150px">	
-							
-							<tr height="20">
-								<th><spring:message code="select"/></th>
-							    <th><spring:message code="language"/></th>
-							</tr>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="info">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<table>
 							<tr>
 								<td>
-								    <a href="?lang=fi"><button type=button><spring:message code="set"/></button></a>
+									<table class="tablestyle" width="250px">
+										<col style="width:100px">	
+										<col style="width:150px">	
+										
+										<tr height="20">
+											<th><spring:message code="select"/></th>
+										    <th><spring:message code="language"/></th>
+										</tr>
+										<tr>
+											<td>
+											    <a href="?lang=fi"><button type=button><spring:message code="set"/></button></a>
+											</td>
+									   		<td>
+									   			Finnish
+										    </td>
+									    </tr>
+									    <tr>
+											<td>
+											    <a href="?lang=en"><button type=button><spring:message code="set"/></button></a>
+											</td>
+									   		<td>
+									   			English
+										    </td>
+										</tr>
+									</table>
 								</td>
-						   		<td>
-						   			Finnish
-							    </td>
-						    </tr>
-						    <tr>
-								<td>
-								    <a href="?lang=en"><button type=button><spring:message code="set"/></button></a>
-								</td>
-						   		<td>
-						   			English
-							    </td>
 							</tr>
 						</table>
 					</td>

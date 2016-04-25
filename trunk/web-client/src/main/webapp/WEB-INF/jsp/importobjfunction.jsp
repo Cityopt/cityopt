@@ -16,54 +16,81 @@
 		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="30"></td>
 		<td valign="top">
-			<table>
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<h1><spring:message code="import_objective_function"/></h1>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<table>
-							<col style="width:700px">
-
+						<table width="100%">
 							<tr>
-								<td><b><spring:message code="objective_functions"/></b></td>
-							</tr>
-							<tr>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:60px">
-										<col style="width:200px">
-										<col style="width:540px">
-										<tr>
-											<!-- Select, Objective function, Expression -->
-											<th><spring:message code="select"/></th>
-											<th><spring:message code="objective_function"/></th>
-											<th><spring:message code="expression"/></th>
-										</tr>
-							
-										<c:forEach items="${objFuncs}" var="objectivefunction">
-										<tr>
-											<td><a href="<c:url value='importobjfunction.html?objectivefunctionid=${objectivefunction.obtfunctionid}'/>"><button type="button"><spring:message code="select"/></button></a></td>
-											<td>${objectivefunction.name}</td>
-									    	<td>${objectivefunction.expression}</td>
-									   	</tr>
-										</c:forEach>
-									</table>
+								<td><spring:message code="import_objective_function"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
 								</td>
-							</tr>
-							<tr height="20"></tr>
-							<tr>
-								<!-- Close -button -->
-								<td align="right"><a href="editoptimizationset.html"><button type="button"><spring:message code="close"/></button></a></td>
 							</tr>
 						</table>
 					</td>
 				</tr>
-				<tr height=20></tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="info">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<table>
+							<tr>
+								<td>
+									<table>
+										<col style="width:700px">
+			
+										<tr>
+											<td><b><spring:message code="objective_functions"/></b></td>
+										</tr>
+										<tr>
+											<td valign="top">
+												<table class="tablestyle">
+													<col style="width:60px">
+													<col style="width:200px">
+													<col style="width:540px">
+													<tr>
+														<!-- Select, Objective function, Expression -->
+														<th><spring:message code="select"/></th>
+														<th><spring:message code="objective_function"/></th>
+														<th><spring:message code="expression"/></th>
+													</tr>
+										
+													<c:forEach items="${objFuncs}" var="objectivefunction">
+													<tr>
+														<td><a href="<c:url value='importobjfunction.html?objectivefunctionid=${objectivefunction.obtfunctionid}'/>"><button type="button"><spring:message code="select"/></button></a></td>
+														<td>${objectivefunction.name}</td>
+												    	<td>${objectivefunction.expression}</td>
+												   	</tr>
+													</c:forEach>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<!-- Close -button -->
+											<td align="right"><a href="editoptimizationset.html"><button type="button"><spring:message code="close"/></button></a></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr height=20></tr>
+						</table>
+					</td>
+				</tr>
 			</table>
 		</td>
 	</tr>

@@ -15,43 +15,76 @@
 <table cellspacing="0" cellpadding="0">
 	<tr>	
 		<td><%@ include file="mainmenu.inc"%></td>
-		<td width="30"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:800px;width:800px;overflow:auto">
-			<h1><spring:message code="running_genetic_optimizations"/></h1>
-			<table>
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<table class="tablestyle" width="650">
-							<col style="width: 100px">
-							<col style="width: 150px">
-							<col style="width: 150px">
-							<col style="width: 150px">
-							<col style="width: 100px">
-						
-							<tr height="20">
-							    <th><spring:message code="id"/></th>
-								<th><spring:message code="started"/></th>
-							    <th><spring:message code="deadline"/></th>
-							    <th><spring:message code="status"/></th>
-							    <th><spring:message code="abort"/></th>
-							</tr>
-						
-							<c:forEach items="${optRuns}" var="optRun">
+						<table width="100%">
 							<tr>
-								<td>${optRun.id}</td>
-								<td>${optRun.started}</td>
-								<td>${optRun.deadline}</td>
-								<td>${optRun.status}</td>
 								<td>
-									<a onclick="return confirm('<spring:message code="confirm_delete"/>')" 
-										href="abortgarun.html?id=${optRun.id}">
-										<button align="right"  type="button" value="Abort">
-										Abort</button>
-									</a>
+                           			<spring:message code="running_genetic_optimizations"/>
 								</td>
-						   	</tr>
-							</c:forEach>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="info">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<table>
+							<tr>
+								<td>
+									<table class="tablestyle" width="650">
+										<col style="width: 100px">
+										<col style="width: 150px">
+										<col style="width: 150px">
+										<col style="width: 150px">
+										<col style="width: 100px">
+									
+										<tr height="20">
+										    <th><spring:message code="id"/></th>
+											<th><spring:message code="started"/></th>
+										    <th><spring:message code="deadline"/></th>
+										    <th><spring:message code="status"/></th>
+										    <th><spring:message code="abort"/></th>
+										</tr>
+									
+										<c:forEach items="${optRuns}" var="optRun">
+										<tr>
+											<td>${optRun.id}</td>
+											<td>${optRun.started}</td>
+											<td>${optRun.deadline}</td>
+											<td>${optRun.status}</td>
+											<td>
+												<a onclick="return confirm('<spring:message code="confirm_delete"/>')" 
+													href="abortgarun.html?id=${optRun.id}">
+													<button align="right"  type="button" value="Abort">
+													Abort</button>
+												</a>
+											</td>
+									   	</tr>
+										</c:forEach>
+									</table>
+								</td>
+							</tr>
 						</table>
 					</td>
 				</tr>
@@ -60,6 +93,5 @@
 		</td>
 	</tr>
 </table>
-</div>
 </body>
 </html>

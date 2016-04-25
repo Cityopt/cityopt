@@ -61,8 +61,32 @@ h2.error {
 	cellspacing: 0px;
 }
 
+.maintablenarrow {
+	width: 700px;
+	height: 1000px;
+	border-right: solid 1px;
+	border-right-color: #B3B3B3;
+	border-collapse: collapse;
+	margin: 0px;
+	padding: 0px;
+	cellpadding: 0px;
+	cellspacing: 0px;
+}
+
 .maintablewide {
 	width: 1000px;
+	height: 1000px;
+	border-right: solid 1px;
+	border-right-color: #B3B3B3;
+	border-collapse: collapse;
+	margin: 0px;
+	padding: 0px;
+	cellpadding: 0px;
+	cellspacing: 0px;
+}
+
+.maintableextrawide {
+	width: 1200px;
 	height: 1000px;
 	border-right: solid 1px;
 	border-right-color: #B3B3B3;
@@ -91,6 +115,10 @@ h2.error {
 
 .spacerow {
 	height: 5px;
+}
+
+.spacerowbig {
+	height: 20px;
 }
 
 .regular {
@@ -433,6 +461,7 @@ a.tooltip span {
     border: 2px solid black;
     border-collapse: collapse;
     padding-left: 20px;
+    margin-bottom: 5px;
     margin-left: 0px;
    	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	font-size: 14px;
@@ -876,5 +905,5 @@ form {
     color: #ff0000;
     font-style: italic;
     font-weight: bold;
-    height: 20px;
+    height: 30px;
 }

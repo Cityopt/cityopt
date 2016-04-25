@@ -20,47 +20,78 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:800px;width:800px;overflow:auto">
-			<!--Edit user  -->
-			<h1><spring:message code="edit_user"/></h1>
-
-			<table>
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<table align="left">
-							<col style="width:80px">
-							<col style="width:250px">
-						
+						<table width="100%">
 							<tr>
 								<td>
-									<!--Name-->
-									<spring:message code="name"/>:
+                           			<spring:message code="edit_user"/>
 								</td>
-								<td>
-									${user.name}
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<spring:message code="password"/>*:
-								</td>
-								<td>
-									<form:input style="width:300px" title="${tooltip_edit}" type="text" path="password"/>
-								</td>
-							</tr>
-							<tr height="10">
-								<td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
 								</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
 				<tr>
-					<td align="right">
-						<input type="submit" style="width:100px" value="Update"/>
-						<a href="usermanagement.html"><button style="width:100px" type="button" value="Back"><spring:message code="back"/></button></a>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="info">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<table>
+							<tr>
+								<td>
+									<table align="left">
+										<col style="width:80px">
+										<col style="width:250px">
+									
+										<tr>
+											<td class="infosmall">
+												<!--Name-->
+												<spring:message code="name"/>:
+											</td>
+											<td>
+												${user.name}
+											</td>
+										</tr>
+										<tr>
+											<td class="infosmall">
+												<spring:message code="password"/>*:
+											</td>
+											<td>
+												<form:input style="width:300px" title="${tooltip_edit}" type="text" path="password"/>
+											</td>
+										</tr>
+										<tr height="10">
+											<td>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									<input type="submit" style="width:100px" value="Update"/>
+									<a href="usermanagement.html"><button style="width:100px" type="button" value="Back"><spring:message code="back"/></button></a>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 			</table>

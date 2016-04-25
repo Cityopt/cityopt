@@ -451,13 +451,6 @@
 			<tr>
 				<td></td>
 				<td>
-					<a href="paramreliability.html">
-					<spring:message code="parameter_reliability"/></a>
-				</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td>
 					<a href="settings.html">
 					<spring:message code="settings"/></a>
 				</td>

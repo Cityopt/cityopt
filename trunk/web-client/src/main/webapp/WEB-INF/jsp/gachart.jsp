@@ -20,136 +20,169 @@
 		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="20"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:100%;width:1200px;overflow:auto">
-			<table width="1100px">
-				<col style="width:300px">
-				<col style="width:30px">
-				<col style="width:800px">
-				<tr>
-					<td><h1><spring:message code="genetic_optimization_chart"/></h1>
-						<p><spring:message code="genetic_optimization_chart_instructions"/></p></td>
-					<td></td>
-					<td></td>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintableextrawide">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
+					<td>
+						<table width="100%">
+							<tr>
+								<td>
+                           			<spring:message code="genetic_optimization_chart"/>
+								</td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
 				</tr>
 				<tr>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="info">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
 					<td valign="top">
-						<table>
+						<table width="1100px">
+							<col style="width:300px">
+							<col style="width:30px">
+							<col style="width:800px">
 							<tr>
-								<td>
-									<!-- Scenarios --><b><spring:message code="scenarios"/></b>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<table class="tablestyle" width="360">
-										<col style="width:120px">
-										<col style="width:240px">	
-																															
-										<tr height="20">
-											<!-- Select --><th><spring:message code="select"/></th>
-										    <!-- Name --> <th><spring:message code="name"/></th>
-										</tr>
-														
-										<c:forEach items="${scenarios}" var="scenario">
-										<tr>
-											<c:choose>
-												<c:when test="${usersession.hasSelectedGAScenarioId(scenario.scenid)}">
-													<tr style="background-color: #D4D4D4">													
-													<td>
-													<!-- Remove button -->
-													<spring:message code="added"/> 
-													(<a href="gachart.html?action=remove&scenarioid=${scenario.scenid}">
-													<spring:message code="remove"/></a>)
-													</td>
-												</c:when>
-												<c:otherwise>
-													<tr>
-													<!-- Add -button -->
-													<td><a href="gachart.html?action=add&scenarioid=${scenario.scenid}">
-													<spring:message code="add"/></a></td>
-												</c:otherwise>
-											</c:choose>
-											<td>${scenario.name}</td>
-									   	</tr>
-										</c:forEach>				
-									</table>
-								</td>
-							</tr>
-							<tr height="10">
-							</tr>
-							<tr>
-								<td>
-									<!-- Objective functions -->
-									<b><spring:message code="objective_functions"/></b>
-								</td>
+								<td class="infosmall"><p><spring:message code="genetic_optimization_chart_instructions"/></p></td>
+								<td></td>
+								<td></td>
 							</tr>
 							<tr>
 								<td valign="top">
-									<table class="tablestyle" style="width:360px">
-										<col style="width:120px">
-										<col style="width:240px">
+									<table>
 										<tr>
-											<!-- Select --><th><spring:message code="select"/></th>
-											<!-- Objective function --><th>Objective function</th>
+											<td>
+												<!-- Scenarios --><b><spring:message code="scenarios"/></b>
+											</td>
 										</tr>
-										<c:forEach items="${objFuncs}" var="objFunc">
-											<c:choose>
-												<c:when test="${usersession.hasSelectedGAObjFuncId(objFunc.obtfunctionid)}">
-													<tr style="background-color: #D4D4D4">
-													<td>Selected (<a href="gachart.html?action=remove&objfuncid=${objFunc.obtfunctionid}"><spring:message code="remove"/></a>)</td>
-												</c:when>
-												<c:otherwise>
+										<tr>
+											<td>
+												<table class="tablestyle" width="360">
+													<col style="width:120px">
+													<col style="width:240px">	
+																																		
+													<tr height="20">
+														<!-- Select --><th><spring:message code="select"/></th>
+													    <!-- Name --> <th><spring:message code="name"/></th>
+													</tr>
+																	
+													<c:forEach items="${scenarios}" var="scenario">
 													<tr>
-														<td><a href="gachart.html?action=add&objfuncid=${objFunc.obtfunctionid}"><spring:message code="select"/></a></td>
-												</c:otherwise>
-											</c:choose>
-											
-											<td>${objFunc.name}</td>
-									   	</tr>
-										</c:forEach>
+														<c:choose>
+															<c:when test="${usersession.hasSelectedGAScenarioId(scenario.scenid)}">
+																<tr style="background-color: #D4D4D4">													
+																<td>
+																<!-- Remove button -->
+																<spring:message code="added"/> 
+																(<a href="gachart.html?action=remove&scenarioid=${scenario.scenid}">
+																<spring:message code="remove"/></a>)
+																</td>
+															</c:when>
+															<c:otherwise>
+																<tr>
+																<!-- Add -button -->
+																<td><a href="gachart.html?action=add&scenarioid=${scenario.scenid}">
+																<spring:message code="add"/></a></td>
+															</c:otherwise>
+														</c:choose>
+														<td>${scenario.name}</td>
+												   	</tr>
+													</c:forEach>				
+												</table>
+											</td>
+										</tr>
+										<tr height="10">
+										</tr>
+										<tr>
+											<td>
+												<!-- Objective functions -->
+												<b><spring:message code="objective_functions"/></b>
+											</td>
+										</tr>
+										<tr>
+											<td valign="top">
+												<table class="tablestyle" style="width:360px">
+													<col style="width:120px">
+													<col style="width:240px">
+													<tr>
+														<!-- Select --><th><spring:message code="select"/></th>
+														<!-- Objective function --><th>Objective function</th>
+													</tr>
+													<c:forEach items="${objFuncs}" var="objFunc">
+														<c:choose>
+															<c:when test="${usersession.hasSelectedGAObjFuncId(objFunc.obtfunctionid)}">
+																<tr style="background-color: #D4D4D4">
+																<td>Selected (<a href="gachart.html?action=remove&objfuncid=${objFunc.obtfunctionid}"><spring:message code="remove"/></a>)</td>
+															</c:when>
+															<c:otherwise>
+																<tr>
+																	<td><a href="gachart.html?action=add&objfuncid=${objFunc.obtfunctionid}"><spring:message code="select"/></a></td>
+															</c:otherwise>
+														</c:choose>
+														
+														<td>${objFunc.name}</td>
+												   	</tr>
+													</c:forEach>
+												</table>
+											</td>
+										</tr>		
 									</table>
 								</td>
-							</tr>		
-						</table>
-					</td>
-					<td></td>
-					<td valign="top">
-						<table>
-							<tr>
-								<td valign="top" style="width: 750px; height: 400px; border-style: solid">
-									<img src="gachart.png">
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<table width="100%">
+								<td></td>
+								<td valign="top">
+									<table>
 										<tr>
-											<td align="right">
+											<td valign="top" style="width: 750px; height: 400px; border-style: solid">
+												<img src="gachart.png">
 											</td>
-											<td align="right">
-												<table>
+										</tr>
+										<tr>
+											<td>
+												<table width="100%">
 													<tr>
-														<td>
-															<!-- Remove selections -->
-															<a href="gachart.html?action=removeall"><button type="button" style="width: 150px">
-															<spring:message code="remove_selection"/></button></a>
+														<td align="right">
 														</td>
-													</tr>
-													<tr>
-														<td>
-															<!-- Refresh chart -->
-															<a href="gachart.html?action=refreshchart">
-															<button type="button" style="width: 150px">
-															<spring:message code="refresh_chart"/></button></a>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<!--Open chart window -->
-															<a href="gachart.html?action=openwindow"><button type="button" style="width: 150px">
-															<spring:message code="open_chart_window"/></button></a>
+														<td align="right">
+															<table>
+																<tr>
+																	<td>
+																		<!-- Remove selections -->
+																		<a href="gachart.html?action=removeall"><button type="button" style="width: 150px">
+																		<spring:message code="remove_selection"/></button></a>
+																	</td>
+																</tr>
+																<tr>
+																	<td>
+																		<!-- Refresh chart -->
+																		<a href="gachart.html?action=refreshchart">
+																		<button type="button" style="width: 150px">
+																		<spring:message code="refresh_chart"/></button></a>
+																	</td>
+																</tr>
+																<tr>
+																	<td>
+																		<!--Open chart window -->
+																		<a href="gachart.html?action=openwindow"><button type="button" style="width: 150px">
+																		<spring:message code="open_chart_window"/></button></a>
+																	</td>
+																</tr>
+															</table>
 														</td>
 													</tr>
 												</table>
@@ -157,10 +190,10 @@
 										</tr>
 									</table>
 								</td>
-							</tr>
+							</tr>	
 						</table>
 					</td>
-				</tr>	
+				</tr>
 			</table>
 			</div>
 		</td>

@@ -515,7 +515,8 @@ public class OptimizationController {
 	        	model.put("objFuncForm", objFuncForm);
 	        	model.put("error", controllerService.getMessage("write_name_and_expression", request));
 	        	model.put("type", type);
-	        	return "updateobjfunction";
+	        	controllerService.getFunctions(model);
+	            return "updateobjfunction";
 	        }
 
 	        if (objFuncService.existsByName(project.getPrjid(), name))
@@ -523,7 +524,8 @@ public class OptimizationController {
 	        	model.put("objFuncForm", objFuncForm);
 	        	model.put("error", controllerService.getMessage("objective_function_exists", request));
 	        	model.put("type", type);
-	        	return "updateobjfunction";
+	        	controllerService.getFunctions(model);
+	            return "updateobjfunction";
 	        }
 
 	        SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
@@ -533,7 +535,8 @@ public class OptimizationController {
         	    model.put("error", error.message);
         	    model.put("objFuncForm", objFuncForm);
 	        	model.put("type", type);
-	        	return "updateobjfunction";
+	        	controllerService.getFunctions(model);
+	            return "updateobjfunction";
         	}
         	
 	        oldFunc = objFuncService.save(oldFunc);

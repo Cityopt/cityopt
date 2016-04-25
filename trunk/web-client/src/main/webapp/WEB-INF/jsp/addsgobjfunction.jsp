@@ -16,69 +16,90 @@
         <td>
             <%@ include file="mainmenu.inc"%>
         </td>
-        <td width="30"></td>
         <td valign="top">
-            <table>
-            	<tr>
-            		<td><h2 class="error">${error}</h2></td>
-           		</tr>
-                <tr>
-                    <td>
-                        <h1><spring:message code="add_objective_function"/></h1>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <table>
-                            <col style="width:960px">
-
-                            <tr>
-                                <td><b><spring:message code="objective_functions"/></b></td>
-                            </tr>
-                            <tr>
-                                <td valign="top">
-                                    <table class="tablestyle">
-                                        <col style="width:60px">
-                                        <col style="width:160px">
-                                        <col style="width:200px">
-                                        <col style="width:540px">
-                                        <tr>
-                                            <th><spring:message code="import"/></th>
-                                            <th><spring:message code="name"/></th>
-                                            <th><spring:message code="sense"/></th>
-                                            <th><spring:message code="expression"/></th>
-                                        </tr>
-                            
-                                        <c:forEach items="${objFuncs}" var="objectivefunction">
-                                        <tr>
-                                            <td>
-                                            	<a href="addsgobjfunction.html?obtfunctionid=${objectivefunction.obtfunctionid}">
-                                            		<button type="button">Import</button>
-                                           		</a>
-                                       		</td>
-                                            <td>${objectivefunction.name}</td>
-                                            <td>
-                                                 <c:choose>
-                                                     <c:when test="${objectivefunction.ismaximise}">Maximize</c:when>
-                                                     <c:otherwise>Minimize</c:otherwise>
-                                                 </c:choose>
-                                            </td>
-                                            <td>${objectivefunction.expression}</td>
-                                        </tr>
-                                        </c:forEach>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr height="10"></tr>
-                            <tr>
-                                <td align="right"><a href="geneticalgorithm.html"><button type="button">Close</button></a></td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr height=20></tr>
-            </table>
-        </td>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
+					<td>
+						<table width="100%">
+							<tr>
+								<td><spring:message code="add_objective_function"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+			            <table>
+			            	<tr>
+			                    <td>
+			                        <table>
+			                            <col style="width:750px">
+			                            <tr>
+			                                <td><b><spring:message code="objective_functions"/></b></td>
+			                            </tr>
+			                            <tr>
+			                                <td valign="top">
+			                                    <table class="tablestyle">
+			                                        <col style="width:60px">
+			                                        <col style="width:160px">
+			                                        <col style="width:100px">
+			                                        <col style="width:430px">
+			                                        <tr>
+			                                            <th><spring:message code="import"/></th>
+			                                            <th><spring:message code="name"/></th>
+			                                            <th><spring:message code="sense"/></th>
+			                                            <th><spring:message code="expression"/></th>
+			                                        </tr>
+			                            
+			                                        <c:forEach items="${objFuncs}" var="objectivefunction">
+			                                        <tr>
+			                                            <td>
+			                                            	<a href="addsgobjfunction.html?obtfunctionid=${objectivefunction.obtfunctionid}">
+			                                            		<button type="button">Import</button>
+			                                           		</a>
+			                                       		</td>
+			                                            <td>${objectivefunction.name}</td>
+			                                            <td>
+			                                                 <c:choose>
+			                                                     <c:when test="${objectivefunction.ismaximise}">Maximize</c:when>
+			                                                     <c:otherwise>Minimize</c:otherwise>
+			                                                 </c:choose>
+			                                            </td>
+			                                            <td>${objectivefunction.expression}</td>
+			                                        </tr>
+			                                        </c:forEach>
+			                                    </table>
+			                                </td>
+			                            </tr>
+			                            <tr height="10"></tr>
+			                            <tr>
+			                                <td align="right"><a href="geneticalgorithm.html"><button type="button"><spring:message code="close"/></button></a></td>
+			                            </tr>
+			                        </table>
+			                    </td>
+			                </tr>
+			                <tr height=20></tr>
+			            </table>
+			        </td>
+		        </tr>
+	        </table>
+        	</div>
+       	</td>
     </tr>
 </table>
 </body>

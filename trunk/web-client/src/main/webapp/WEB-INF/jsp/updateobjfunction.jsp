@@ -17,134 +17,148 @@
 		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="30"></td>
 		<td valign="top">
-			<table>
-				<tr>
-					<td><font color="red">${error}</font></td>
-				</tr>
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<h1><spring:message code="update_obj_func"/> step 2</h1>
+						<table width="100%">
+							<tr>
+								<td><spring:message code="update_obj_func"/> step 2</td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 				<tr>
-					<td><p><spring:message code="create_obj_func_instructions_2"/></p></td>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
 				</tr>
 				<tr>
-					<td>
+					<td class="spacecolumn"></td>
+					<td class="info">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
 						<table>
-							<col style="width:30px">
-							<col style="width:250px">
-							<col style="width:20px">
-							<col style="width:250px">
-							<col style="width:20px">
-							<col style="width:250px">
-
-							<tr height="20">
-								<td></td>
-								<!-- Functions -->
-								<td><b><spring:message code="functions"/></b></td>
-							</tr>
 							<tr>
-								<td></td>
+								<td class="infosmall"><spring:message code="create_obj_func_instructions_2"/></td>
+							</tr>
+							<tr height="20"></tr>
+							<tr>
 								<td>
-									<div style="overflow:scroll;height:250px;width:500px;overflow:auto">
-									<table class="tablestyle">
-										<col style="width:150px">
-										<col style="width:350px">
-										<tr>
-											<th><spring:message code="function"/></th>
-											<th><spring:message code="description"/></th>
+									<table>
+										<col style="width:500px">
+										<col style="width:100px">
+										<col style="width:100px">
+			
+										<tr height="20">
+											<!-- Functions -->
+											<td class="infosmall"><spring:message code="functions"/></td>
 										</tr>
-										
-										<c:forEach items="${functions}" var="function">
-											<tr>
-												<td>${function.first}</td>
-												<td>${function.second}</td>
-										   	</tr>
-										</c:forEach>
-										
-									</table>								
-									</div>												
-								</td>
-								<td></td>
-								<td>
+										<tr>
+											<td>
+												<div style="overflow:scroll;height:250px;width:500px;overflow:auto">
+												<table class="tablestyle">
+													<col style="width:150px">
+													<col style="width:350px">
+													<tr>
+														<th><spring:message code="function"/></th>
+														<th><spring:message code="description"/></th>
+													</tr>
+													
+													<c:forEach items="${functions}" var="function">
+														<tr>
+															<td>${function.first}</td>
+															<td>${function.second}</td>
+													   	</tr>
+													</c:forEach>
+													
+												</table>								
+												</div>												
+											</td>
+											<td></td>
+											<td>
+												
+											</td>
+											<td></td>
+										</tr>
+										<tr height="20"></tr>
+										<tr height="20"></tr>
+										<tr>
+											<!-- Name -->
+											<td class="infosmall"><spring:message code="name"/>*</td>
+											<td></td>
+											<td></td>
+											<td></td>
+										</tr>					
+										<tr>
+											<td colspan="3"><form:input style="width:100%" type="text" path="name"/></td>
+											<td></td>
+										</tr>
+										<tr>
+											<!-- Expression -->
+											<td class="infosmall"><spring:message code="expression"/>*</td>
+											<td></td>
+											<td></td>
+											<td></td>
+										</tr>					
+										<tr>
+											<c:set var="expressiontip"><spring:message code="tooltip_expression"/></c:set>
+											<td colspan="3"><form:input style="width:100%" title="${expressiontip}" type="text" path="expression"/></td>
+											<td></td>
+										</tr>
+										<tr>
+											<!-- Optimization sense: Minimize / Maximize -->
+											<td colspan="3" class="infosmall"><spring:message code="optimization_sense"/>: 
+												
+												<select name="optsense" id="optsense" size="1">
+													<c:choose>
+														<c:when test="${function.ismaximise}">
+															<option value="1" ><spring:message code="minimize"/></option>
+															<option value="2" selected><spring:message code="maximize"/></option>
+														</c:when>
+														<c:otherwise>
+															<option value="1" selected><spring:message code="minimize"/></option>
+															<option value="2"><spring:message code="maximize"/></option>
+														</c:otherwise>
+													</c:choose>
+												</select>
+											</td>
 									
+											<td></td>
+										</tr>	
+										<tr>
+											<td colspan="3"> 
+											</td>
+											<td></td>
+										</tr>					
+										<tr>
+											<td></td>
+											<td align="right">
+												<input type="submit" style="width: 100px" value="<spring:message code="ok"/>"></input>
+											</td>
+											<td>
+												<input type="submit" style="width: 100px" value="Cancel" name="cancel">
+											</td>
+										</tr>					
+									</table>
 								</td>
-								<td></td>
 							</tr>
-							<tr height="20"></tr>
-							<tr height="20"></tr>
-							<tr>
-								<td></td>
-								<!-- Name -->
-								<td><spring:message code="name"/>*</td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>					
-							<tr>
-								<td></td>
-								<td colspan="3"><form:input style="width:100%" type="text" path="name"/></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td></td>
-								<!-- Expression -->
-								<td><spring:message code="expression"/>*</td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>					
-							<tr>
-								<td></td>
-								<c:set var="expressiontip"><spring:message code="tooltip_expression"/></c:set>
-								<td colspan="3"><form:input style="width:100%" title="${expressiontip}" type="text" path="expression"/></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td></td>
-								<!-- Optimization sense: Minimize / Maximize -->
-								<td colspan="3"><spring:message code="optimization_sense"/>: 
-									
-									<select name="optsense" id="optsense" size="1">
-										<c:choose>
-											<c:when test="${function.ismaximise}">
-												<option value="1" ><spring:message code="minimize"/></option>
-												<option value="2" selected><spring:message code="maximize"/></option>
-											</c:when>
-											<c:otherwise>
-												<option value="1" selected><spring:message code="minimize"/></option>
-												<option value="2"><spring:message code="maximize"/></option>
-											</c:otherwise>
-										</c:choose>
-									</select>
-								</td>
-						
-								<td></td>
-							</tr>	
-							<tr>
-								<td></td>
-								<td colspan="3"> 
-								</td>
-								<td></td>
-							</tr>					
-							<tr>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td align="right">
-									<!-- Ok submit and Cancel -button -->
-									<input type="submit" style="width:100px" value="<spring:message code="ok"/>"></input>
-									<input type="submit" value="Cancel" name="cancel">
-								</td>
-								<td></td>
-							</tr>					
 						</table>
 					</td>
 				</tr>
 			</table>
+			</div>
 		</td>
 	</tr>
 </table>

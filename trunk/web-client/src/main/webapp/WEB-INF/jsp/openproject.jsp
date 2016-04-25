@@ -13,17 +13,6 @@
 
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
-<style type="text/css">
-table.tablestyle{
-margin: 5%;
-}
-
-h2{
-margin-left: 5%;
-}
-</style>
-
-
 </head>
 
 <body>
@@ -33,41 +22,38 @@ margin-left: 5%;
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td valign="top">
-			<table class="maintable">
-				<tr align="right" style="height: 60px">
-					<td>
-						<table class="info">
-							<col style="width:450px">	
-							<col style="width:160px">	
-							<col style="width:210px">	
-							<tr>
-								<td></td>
-								<td>Language:&nbsp;${usersession.getLanguage()}&nbsp;(<a href="settings.html">Change</a>)</td> 
-								<td align="right"><spring:message code="user"/>: <%= ((org.springframework.security.core.userdetails.UserDetails)org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername() %>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="logout.html"><spring:message code="logout"/></a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
 				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<table>
+						<table width="100%">
 							<tr>
-								<td class="spacecolumn"></td>
 								<td><spring:message code="openproject"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
 				<tr>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
 					<td>
-						<div style="overflow:scroll;height:100%;width:820px;overflow:auto">
-						
-						<h2 class="error">${error}</h2>
-						<table class="tablestyle" width="600">
+						<table class="tablestyle" width="750">
 							<col style="width:150px">	
 							<col style="width:50px">	
-							<col style="width:100px">	
-							<col style="width:250px">	
+							<col style="width:150px">	
+							<col style="width:350px">	
 							<col style="width:50px">	
 							
 							<tr height="20">
@@ -103,10 +89,10 @@ margin-left: 5%;
 							   	</tr>
 							</c:forEach>
 						</table>
-						</div>
 					</td>
 				</tr>
 			</table>
+			</div>
 		</td>
      </tr>
 </table>

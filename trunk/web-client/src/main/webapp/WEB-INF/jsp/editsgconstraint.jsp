@@ -26,72 +26,97 @@
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="30"></td>
 		<td valign="top">
-			<table>
-				<tr>
-					<td class="error">
-						${error}
-					</td>
-				</tr>
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<c:choose>
-						  <c:when test="${optconstid > 0}">
-                            <h1><spring:message code="edit_constraint"/></h1>
-						  </c:when>
-						  <c:otherwise>
-	                        <h1><spring:message code="create_constraint"/></h1>
-						  </c:otherwise>
-						</c:choose>  
+						<table width="100%">
+							<tr>
+								<td>
+									<c:choose>
+							  			<c:when test="${optconstid > 0}">
+	                            			<spring:message code="edit_constraint"/>
+							  			</c:when>
+							  			<c:otherwise>
+		                        			<spring:message code="create_constraint"/>
+							  			</c:otherwise>
+									</c:choose>  
+								</td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
-				<tr height=20></tr>
-                <tr>
-                    <td>
-                        <table>                     
-                            <col style="width:30px">
-                            <col style="width:150px">
-                            <col style="width:400px">
-                            <col style="width:240px">
-                            <tr>
-                                <td></td>
-                                <td><spring:message code="name"/>*</td>
-                                <td><form:input style="width:400px" type="text" path="name"/></td>
-                                <td></td>
-                            </tr>
-                            <tr height=10></tr>
-                            <tr>
-                                <td></td>
-                                <td><spring:message code="lower_bound"/>*</td>
-                                <td><form:input style="width:400px" type="text" path="lowerbound"/></td>
-                                <td></td>
-                            </tr>
-                            <tr height=10></tr>
-                            <tr>
-                                <td></td>
-                                <td><spring:message code="expression"/>*</td>
-                                <td><form:input style="width:400px" type="text" path="expression"/></td>
-                                <td></td>
-                            </tr>
-                            <tr height=10></tr>
-                            <tr>
-                                <td></td>
-                                <td><spring:message code="upper_bound"/>*</td>
-                                <td><form:input style="width:400px" type="text" path="upperbound"/></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td align="right"><input type="submit" value="Ok"></input>
-                                <a href="geneticalgorithm.html"><button type="button"><spring:message code="cancel"/></button></a></td>
-                            </tr>   
-                        </table>
-                    </td>
-                </tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="info">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<table>
+							<tr>
+			                    <td>
+			                        <table>                     
+			                            <col style="width:150px">
+			                            <col style="width:400px">
+			                            <col style="width:240px">
+			                            <tr>
+			                                <td class="infosmall"><spring:message code="name"/>*</td>
+		                                </tr>
+		                                <tr>
+			                                <td><form:input style="width:400px" type="text" path="name"/></td>
+			                                <td></td>
+			                            </tr>
+			                            <tr height=10></tr>
+			                            <tr>
+			                                <td class="infosmall"><spring:message code="lower_bound"/>*</td>
+		                                </tr>
+		                                <tr>
+			                                <td><form:input style="width:400px" type="text" path="lowerbound"/></td>
+			                                <td></td>
+			                            </tr>
+			                            <tr height=10></tr>
+			                            <tr>
+			                                <td class="infosmall"><spring:message code="expression"/>*</td>
+		                                </tr>
+		                                <tr>
+			                                <td><form:input style="width:400px" type="text" path="expression"/></td>
+			                                <td></td>
+			                            </tr>
+			                            <tr height=10></tr>
+			                            <tr>
+			                                <td class="infosmall"><spring:message code="upper_bound"/>*</td>
+		                                </tr>
+		                                <tr>
+			                                <td><form:input style="width:400px" type="text" path="upperbound"/></td>
+			                                <td></td>
+			                            </tr>
+			                            <tr>
+			                                <td align="right"><input type="submit" value="Ok"></input>
+			                                <a href="geneticalgorithm.html"><button type="button"><spring:message code="cancel"/></button></a></td>
+			                            </tr>   
+			                        </table>
+			                    </td>
+			                </tr>
+						</table>
+					</td>
+				</tr>
 			</table>
+			</div>
 		</td>
 	</tr>
 </table>

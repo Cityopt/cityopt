@@ -93,112 +93,135 @@
 	<table cellspacing="0" cellpadding="0">
 		<tr>
 			<td><%@include file='mainmenu.inc'%></td>
-			<td width="30"></td>
 			<td valign="top">
-				<table>
+				<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+				<table class="maintable">			
+					<%@ include file="toprow.inc"%>
+					<tr class="titlerow">
+						<td class="spacecolumn"></td>
+						<td>
+							<table width="100%">
+								<tr>
+									<td>
+	                           			<spring:message code="usermanagement"/>
+									</td>
+									<td align="left" width="40">
+										<div class="round-button">
+											<div class="round-button-circle">
+												<a href="" onclick="openInfoWindow()">?</a>
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
 					<tr>
+						<td class="spacecolumn"></td>
+						<td class="error">${error}</td>
+					</tr>
+					<tr>
+						<td class="spacecolumn"></td>
+						<td class="info">${info}</td>
+					</tr>
+					<tr>
+						<td class="spacecolumn"></td>
 						<td valign="top">
 							<table>
 								<tr>
-									<!-- Users -->
-									<td><h1>
-											<spring:message code="usermanagement" />
-										</h1>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<table class="tablestyle">
-											<col style="width: 50px">
-											<col style="width: 50px">
-											<col style="width: 50px">
-											<col style="width: 50px">
-											<col style="width: 90px">
-											<col style="width: 50px">
-												
+									<td valign="top">
+										<table>
 											<tr>
-												<!-- Username -->
-												<th><spring:message code="username" /></th>
-												<!-- Password -->
-												<th><spring:message code="password" /></th>										
-												<!-- Enabled -->
-												<th><spring:message code="enabled" /></th>
-												
-												<!-- Edit -->
-												<th><spring:message code="edit" /></th>
-												<!-- Edit roles -->
-												<th>Edit roles</th>
-												<!-- Delete -->
-												<th><spring:message code="delete" /></th>
+												<td>
+													<table class="tablestyle" width="500">
+														<col style="width: 150px">
+														<col style="width: 50px">
+														<col style="width: 80px">
+														<col style="width: 120px">
+														<col style="width: 80px">
+															
+														<tr>
+															<!-- Username -->
+															<th><spring:message code="username" /></th>
+															<!-- Enabled -->
+															<th><spring:message code="enabled" /></th>
+															
+															<!-- Edit -->
+															<th><spring:message code="edit" /></th>
+															<!-- Edit roles -->
+															<th><spring:message code="user_roles"/></th>
+															<!-- Delete -->
+															<th><spring:message code="delete" /></th>
+														</tr>
+														 				
+														<c:forEach items="${users}" var="user">													
+															<tr>
+																<td>${user.name}</td>
+																<td align="center">
+																	<c:choose>
+																		<c:when test="${user.enabled eq true}">
+																			TRUE
+																		</c:when>
+																		<c:otherwise>
+																			FALSE
+																		</c:otherwise>
+																	</c:choose>
+																</td>
+																				
+																<td>
+																	<a href="<c:url value='edituser.html?userid=${user.userid}'/>">
+																		<button align="right" type="button" value="Edit" style="width: 80px">
+																			<spring:message code="edit" />
+																		</button>
+																	</a>
+																</td>
+			
+																<td>
+																	<a href="<c:url value='editroles.html?userid=${user.userid}'/>">
+																		<button align="right" type="button" value="Edit" style="width: 120px">
+																			<spring:message code="edit_roles"/>
+																		</button>
+																	</a>
+																</td>
+			
+																<!-- Delete -button -->
+																<td>
+																	<a href="<c:url value='deleteuser.html?userid=${user.userid}'/>"
+																		onclick="return confirm('<spring:message code="confirm_delete_user"/>')">
+																		<button align="right" type="button" value="Delete" style="width: 80px">
+																			<spring:message code="delete" />
+																		</button>
+																	</a>
+																</td>
+															</tr>
+														</c:forEach>
+														
+														<c:if test="${bindingError eq true}">
+															<tr><spring:message code="error" /></tr>
+														</c:if>
+													</table>							
+													<tr>
+														<td align="right">
+															<!-- Create user -button --> <c:set var="update">
+																<spring:message code="update" />
+															</c:set>
+															<a href="createuser.html">
+																<button type="button" style="width: 80px">
+																	<spring:message code="create_user" />
+																</button>
+															</a>
+														</td>
+													</tr>
+												</td>
 											</tr>
-											 				
-											<c:forEach items="${users}" var="user">													
-												<tr>
-													<td>${user.name}</td>
-													<td>${user.password}</td>
-													<td align="center">
-														<c:choose>
-															<c:when test="${user.enabled eq true}">
-																TRUE
-															</c:when>
-															<c:otherwise>
-																FALSE
-															</c:otherwise>
-														</c:choose>
-													</td>
-																	
-													<td>
-														<a href="<c:url value='edituser.html?userid=${user.userid}'/>">
-															<button align="right" type="button" value="Edit">
-																<spring:message code="edit" />
-															</button>
-														</a>
-													</td>
-
-													<td>
-														<a href="<c:url value='editroles.html?userid=${user.userid}'/>">
-															<button align="right" type="button" value="Edit">
-																Edit roles
-															</button>
-														</a>
-													</td>
-
-													<!-- Delete -button -->
-													<td>
-														<a href="<c:url value='deleteuser.html?userid=${user.userid}'/>"
-														onclick="return confirm('<spring:message code="confirm_delete_user"/>')">
-															<button align="right" type="button" value="Delete">
-																<spring:message code="delete" />
-															</button>
-														</a>
-													</td>
-												</tr>
-											</c:forEach>
-											
-											<c:if test="${bindingError eq true}">
-												<tr><spring:message code="error" /></tr>
-											</c:if>
-										</table>							
-											
-										<tr height="0">
-											<td></td>
-										</tr>
-										<tr>
-											<td align="right">
-												<!-- Create user -button --> <c:set var="update">
-													<spring:message code="update" />
-												</c:set>
-												<a href="createuser.html"><button type="button">
-												<spring:message code="create_user" />
-												</button></a>
-											</td>
-										</tr>
+										</table>
 									</td>
 								</tr>
 							</table>
 						</td>
 					</tr>
 				</table>
+				</div>
 			</td>
 		</tr>
 	</table>
