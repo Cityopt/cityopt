@@ -76,7 +76,6 @@ public class InputParamServiceTest {
 		Set<InputParamValDTO> iparamVal = inputParamService.getInputParamVals(1);
 		assertNotNull(iparamVal);
 		assertTrue(iparamVal.size() > 0);
-
 	}
 	
 	@Test
@@ -88,6 +87,18 @@ public class InputParamServiceTest {
 	
 	@Test
 	public void findInputParameterValues() throws EntityNotFoundException {
+		
+		Page<InputParamValDTO> inputParamVal = inputParamValService.findByComponentAndScenario(1, 1,0);
+		
+		assertNotNull(inputParamVal);		
+		assertEquals(2,inputParamVal.getNumberOfElements());
+		assertEquals(1,inputParamVal.getTotalPages());
+		
+	}
+	
+	@Test
+	public void findInputParameter() throws EntityNotFoundException {
+		
 		
 		Page<InputParamValDTO> inputParamVal = inputParamValService.findByComponentAndScenario(1, 1,0);
 		

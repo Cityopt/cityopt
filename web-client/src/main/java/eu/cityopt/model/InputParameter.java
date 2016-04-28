@@ -32,6 +32,29 @@ public class InputParameter extends VersionModel implements java.io.Serializable
 	private String name;
 	private String alias;
 	private String defaultvalue;
+	
+	private String lowerBound;
+	private String upperBound;
+	
+	
+	@Column(name = "lowerBound")
+	public String getLowerBound() {
+		return lowerBound;
+	}
+
+	public void setLowerBound(String lowerBound) {
+		this.lowerBound = lowerBound;
+	}
+
+	@Column(name = "upperBound")
+	public String getUpperBound() {
+		return upperBound;
+	}
+
+	public void setUpperBound(String upperBound) {
+		this.upperBound = upperBound;
+	}
+
 	private Set<ModelParameter> modelparameters = new HashSet<ModelParameter>(0);
 	private Set<InputParamVal> inputparamvals = new HashSet<InputParamVal>(0);
 

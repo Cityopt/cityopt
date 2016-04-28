@@ -13,6 +13,8 @@ public class InputParameterDTO  extends BaseDTO{
 	@Getter @Setter private String name;
 	@Getter @Setter private String defaultvalue;
 	@Getter @Setter private TimeSeriesDTO timeseries;
+	@Getter @Setter private String lowerBound;
+	@Getter @Setter private String upperBound;
 //	@Getter @Setter private Set<ModelParameter> modelparameters = new HashSet<ModelParameter>(0);
 //	@Getter @Setter private Set<InputParamVal> inputparamvals = new HashSet<InputParamVal>(0);
 	/// Name as used in expressions, i.e. componentName + "." + name

@@ -137,4 +137,13 @@ public class InputParameterServiceImpl implements InputParameterService {
 		return inparam.getComponent().getComponentid();
 	}
 
+	@Transactional(readOnly = true)
+	@Override
+	public InputParameterDTO findByNameAndCompId(int compID, String name) {
+		InputParameter inparam = inputParameterRepository.findByNameAndCompId( name,compID);
+		if(inparam==null)
+			return null;
+		else 		
+			return modelMapper.map(inparam, InputParameterDTO.class);
+	}
 }

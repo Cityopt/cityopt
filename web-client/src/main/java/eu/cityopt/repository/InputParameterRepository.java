@@ -14,7 +14,10 @@ public interface InputParameterRepository extends JpaRepository<InputParameter,I
 	@Query("select i from InputParameter i where Lower(i.name) like CONCAT('%',Lower(:name),'%')")
 	List<InputParameter> findByNameContaining(@Param("name") String name);
 	
-	@Query("select i from InputParameter i where Lower(i.name) like Lower(:name)"
-			+ " and i.component.componentid = :compId")
+	/*@Query("select i from InputParameter i where Lower(i.name) like Lower(:name)"
+			+ " and i.component.componentid = :compId")*/
+	@Query("select i from InputParameter i where i.name=:name and i.component.componentid = :compId")
 	InputParameter findByNameAndCompId(@Param("name") String name, @Param("compId") int compId);
+	
+	InputParameter findByNameAndComponent_componentid(@Param("name") String name, @Param("compId") int componentid);
 }

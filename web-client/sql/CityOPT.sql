@@ -360,10 +360,12 @@ CREATE TABLE extParamValSetComp
 CREATE TABLE InputParameter
 (
 	inputID integer NOT NULL DEFAULT nextval(('inputparameter_inputid_seq'::text)::regclass),
-	name varchar(100)	,
-	alias varchar(50)	,
+	name varchar(100),
+	alias varchar(50),
 	componentID integer,
 	defaultValue text,
+	lowerbound varchar(255),
+	upperbound varchar(255),
 	typeID integer,
 	unitID integer,
 	tSeriesID integer,

@@ -8,17 +8,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -79,6 +82,7 @@ import eu.cityopt.sim.eval.SyntaxChecker;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.sim.service.SyntaxCheckerService;
+import eu.cityopt.validators.InputParameterValidator;
 import eu.cityopt.web.ParamForm;
 
 
@@ -91,6 +95,7 @@ public class ParameterController {
     @Autowired
     ProjectService projectService; 
     
+       
     @Autowired
     ComponentService componentService;
     
@@ -141,6 +146,10 @@ public class ParameterController {
 
 	@Autowired
 	TimeSeriesValService timeSeriesValService;
+	
+	@Autowired
+	@Qualifier("inputParameterValidator")
+    InputParameterValidator validator;
 
     @RequestMapping(value="projectparameters", method=RequestMethod.GET)
     public String getProjectParameters(Map<String, Object> model, 
@@ -450,7 +459,7 @@ public class ParameterController {
     public String editInputParameterPost(Map<String, Object> model, 
 		ParamForm inputParamForm,
         @RequestParam(value="inputparamid", required=false) String inputParamId,
-    	@RequestParam(value="cancel", required=false) String cancel) {
+    	@RequestParam(value="cancel", required=false) String cancel, BindingResult result) {
     	        
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -497,6 +506,38 @@ public class ParameterController {
         
         updatedInputParam.setUnit(unit);
         int componentId = updatedInputParam.getComponentComponentid();//inputParamService.getComponentId(updatedInputParam.getInputid());
+        
+
+        validator.validate(updatedInputParam, result);
+        
+        if (result.hasErrors()) {
+        	
+        	InputParameterDTO inputParam;
+			try {
+				inputParam = inputParamService.findByID(nInputParamId);
+				model.put("inputParam", inputParam);
+	            
+	            inputParamForm = new ParamForm();
+	            inputParamForm.setName(inputParam.getName());
+	            inputParamForm.setValue(inputParam.getDefaultvalue());
+	            model.put("inputParamForm", inputParamForm);
+
+	            List<UnitDTO> units = unitService.findAll();
+	            model.put("units", units);
+	        	
+	        	model.put("error",result.getGlobalError().getCode());        	             
+	             
+	            return "editinputparameter";
+				
+			} 
+			catch (EntityNotFoundException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}        	
+        	
+        }    
+        
 
         try {
 			inputParamService.update(updatedInputParam, componentId, unit.getUnitid(), null);
@@ -770,6 +811,7 @@ public class ParameterController {
         {
             return "error";
         }
+        
         securityAuthorization.atLeastExpert_expert(project);
 
         if (strSelectedCompId == null || strSelectedCompId.isEmpty())

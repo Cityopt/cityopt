@@ -85,6 +85,10 @@ public class AprosJob extends CompletableFuture<SimulationOutput>
             if (st instanceof JobSucceeded) {
                 SimulationResults
                     res = new SimulationResults(input, ostr.toString());
+                
+                System.out.printf(res.getMessages());
+                
+                
                 try {
                     System.out.printf("Result files: %s%n", String.join(", ",
                             st.outputDirectory.files().keySet()));

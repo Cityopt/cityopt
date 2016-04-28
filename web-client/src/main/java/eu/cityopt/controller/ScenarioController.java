@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
@@ -77,6 +78,7 @@ import eu.cityopt.service.TimeSeriesValService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.service.impl.ImportServiceImpl;
+import eu.cityopt.service.impl.ProjectServiceImpl;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
@@ -197,6 +199,8 @@ public class ScenarioController {
 	
     @Autowired
     SecurityAuthorization securityAuthorization;
+    
+    static Logger log = Logger.getLogger(ScenarioController.class);
 
 	@RequestMapping(value="createscenario",method=RequestMethod.GET)
 	public String createScenario(Map<String, Object> model) {
@@ -329,6 +333,7 @@ public class ScenarioController {
 		securityAuthorization.atLeastGuest_guest(project);
 
 		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
+				
 		model.put("scenarios", scenarios);
 
 		return "showscenarios";
