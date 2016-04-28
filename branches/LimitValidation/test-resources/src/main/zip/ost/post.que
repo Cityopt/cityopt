@@ -1,0 +1,8 @@
+io close io_pientalo
+io close io_kaup_pientalo
+io close io_kerrostalo
+io close io_liiketilat
+io close io_elinkeinotila
+io close io_julk_tilat
+io close io_weather
+io close io_output

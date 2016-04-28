@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dataset>
+
+  <simulationmodel modelid="1" description="Plumbing test model" modelblob="" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="2015-01-01 00:00:00" version="1"/>
+
+  <project prjid="1" name="Project 1" location="dummy" modelid="1" version="1"/>
+  <project prjid="2" name="Plumbing test project" location="Helsinki" modelid="1" version="1"/>
+
+  <component componentid="0" prjid="1" name="dummy" version="1"/>
+  <component componentid="1" prjid="2" name="C01" version="1"/>
+  <component componentid="2" prjid="2" name="PIP01" version="1"/>
+  <component componentid="3" prjid="2" name="CITYOPT" version="1"/>
+
+  <inputparameter inputid="1" name="typ" typeid="2" componentid="1" defaultvalue="2" version="1"/>
+  <inputparameter inputid="2" componentid="3" name="simulation_start" typeid="4" defaultvalue="2015-01-01T00:00:00" version="1"/>
+  <inputparameter inputid="3" componentid="3" name="simulation_end" typeid="4" defaultvalue="2015-01-01T00:00:00" version="1"/>
+
+  <outputvariable outvarid="1" name="PI12_MIX_MASS_FLOW" typeid="6" componentid="2" version="1"/>
+
+  <scenario scenid="0" prjid="2" name="dummy" description="dummy scenario" version="1"/>
+  <scenario scenid="1" prjid="2" name="testscenario" description="test scenario" version="1"/>
+  <inputparamval inputparamvalid="1" scenid="1" inputid="1" value="3" version="1"/>
+  <inputparamval inputparamvalid="2" scenid="1" inputid="2" value="2015-01-01T00:00:00" version="1"/>
+  <inputparamval inputparamvalid="3" scenid="1" inputid="3" value="2015-01-01T00:01:00" version="1"/>
+
+  <metric metid="0" prjid="1" name="dummy" typeid="1" expression="C01.typ" version="1"/>
+  <metric metid="1" prjid="2" name="symmetric" typeid="1" expression="100 + C01.typ + PIP01.PI12_MIX_MASS_FLOW.values[-1]" version="1"/>
+  <metric metid="2" prjid="2" name="seriesmetric" typeid="6" expression="100 + C01.typ + PIP01.PI12_MIX_MASS_FLOW" version="1"/>
+
+</dataset>

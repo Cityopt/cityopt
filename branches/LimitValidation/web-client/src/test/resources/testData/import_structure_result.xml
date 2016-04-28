@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<dataset>
+  <project name="Empty test project" location="Helsinki"/>
+  <component name="PV_TOTAL_ENERGY"/>
+  <component name="ETH_NETWORK"/>
+  <component name="HEATING_LOAD"/>
+  <component name="CITYOPT"/>
+  <component name="CHP_ELECT_PROD"/>
+  <component name="SAMPLE_DISTRICT"/>
+  <component name="CHP_BOIL_TH_OUT"/>
+  <component name="FUEL_CONSUMPTION"/>
+  <inputparameter name="simulation_start"/>
+  <inputparameter name="simulation_end"/>
+  <inputparameter name="Burner_efficiency"/>
+  <inputparameter name="Heat_storage_nominal_charge_or_discharge_capacity"/>
+  <inputparameter name="CHP_thermal_power_rating"/>
+  <inputparameter name="Share_of_roof_area_occupied_by_THcollectors"/>
+  <inputparameter name="Heat_storage_tank_height"/>
+  <inputparameter name="CHP_electrical_power_rating"/>
+  <inputparameter name="Insulation_layer_factor"/>
+  <inputparameter name="Burner_nominal_power"/>
+  <inputparameter name="Share_of_roof_area_occupied_by_PVpanels"/>
+  <scenariogenerator/>
+  <scenario/>
+  <optconstraint/>
+  <objectivefunction/>
+  <optimizationset/>
+  <optsearchconst/>
+  <optsetscenarios/>
+  <metric name="fuelcost" expression="integrate(fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, Infinity)"/>
+  <metric name="fuelconsumption" expression="FUEL_CONSUMPTION.MULTIPLYER_OUTPUT.values[-1]"/>
+  <decisionvariable/>
+  <scengenresult/>
+  <decisionvariableresult/>
+  <objectivefunctionresult/>
+  <optconstraintresult/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <extparam name="fuel_cost"/>
+  <extparam name="x"/>
+  <algoparamval/>
+  <inputparamval/>
+  <modelparameter/>
+  <metricval/>
+  <timeseriesval/>
+</dataset>

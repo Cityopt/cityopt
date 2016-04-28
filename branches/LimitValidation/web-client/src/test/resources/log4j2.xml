@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+	<Appenders>
+		<RollingFile name="RollingFile" fileName="test-cityopt.log"
+			filePattern="test-cityopt-%d{yyyy-MM-dd}-%i.log">
+			<PatternLayout>
+				<pattern>%d{dd/MMM/yyyy HH:mm:ss,SSS}- %c{1}: %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="4" />
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+
+		<Root level="INFO" additivity="false">
+			<AppenderRef ref="RollingFile" />
+		</Root>
+
+		<Logger name="eu.cityopt" level="DEBUG" />
+
+		<Logger name="org.hibernate" level="DEBUG" />
+
+		<Logger name="org.hibernate.SQL" level="DEBUG" />
+
+		<Logger name="org.hibernate.tool.hbm2ddl" level="DEBUG" />
+
+		<Logger name="org.springframework.transaction" level="DEBUG" />
+
+	</Loggers>
+</Configuration>
