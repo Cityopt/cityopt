@@ -26,13 +26,6 @@
 						<table width="100%">
 							<tr>
 								<td><spring:message code="import_constraint"/></td>
-								<td align="left" width="40">
-									<div class="round-button">
-										<div class="round-button-circle">
-											<a href="" onclick="openInfoWindow()">?</a>
-										</div>
-									</div>
-								</td>
 							</tr>
 						</table>
 					</td>
@@ -80,7 +73,6 @@
 												</table>
 											</td>
 										</tr>
-										<tr height="20"></tr>
 										<tr>
 											<td align="right"><a href="editoptimizationset.html"><button type="button"><spring:message code="close"/></button></a></td>
 										</tr>

@@ -9,6 +9,13 @@
 <title>CityOpt <spring:message code="edit_algorithm_parameter_values"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
+
+<script>
+    function openInfoWindow() {
+    	   window.open("editsgalgoparamval_info.html", '<spring:message code="edit_algorithm_parameter_values" /> info', 'width=600, height=600');
+    }
+</script>
+
 <body>
 <form:form modelAttribute="algoparamvalform" method="post" action="editsgalgoparamval.html">
 <table cellspacing="0" cellpadding="0">

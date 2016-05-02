@@ -210,20 +210,7 @@ h1.info {
 	margin-background: #99ddff;
 }
 
-div.info{
-	border-style: medium;
-	border-color: black;
-	solid border-width: 10px;
-	padding: 4%;
-	margin-left: 10%;
-	margin-top: 5%;
-	margin-right: 5%;
-	margin-bottom: 10%;
-	outline: #064861 inset;
-	font: 'blanchcaps';
-	color: #4D4D4D;
-	background-color: #ffffff;
-}
+
 
 visualInfoCanvas{
 	height: 100%;
@@ -232,12 +219,12 @@ visualInfoCanvas{
 
 }
 
-table.InfoVisual{
+table.InfoVisual {
 	background: #47AFE2;	
 	margin: 1px;
 }
 
-div.infoBlackGray{
+div.infoBlackGray {
 	background-color: #cef3fd;
 }
 
@@ -455,6 +442,35 @@ a.tooltip span {
 	cellspacing: 0px;
 	cellpadding: 0px;
 	border-collapse: collapse;
+}
+
+.infopage {
+	border-color: black; 
+	border-width: 1px;
+	border-collapse: collapse;
+	padding: 4%;
+	margin-left: 5%;
+	margin-top: 5%;
+	margin-right: 5%;
+	margin-bottom: 5%;
+	outline: #064861 inset;
+	vertical-align: top;
+}
+
+.infopage td {
+	vertical-align: top;
+}
+
+.infopagetitlerow {
+    font-family: 'blanchcaps'; PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 32px;
+    background-color: #FBBA00;
+   	margin: 0px;
+	padding: 0px;
+	cellpadding: 0px;
+	cellspacing: 0px;
+	border-collapse: collapse;
+	height: 40px;
 }
 
 .tablestyle {

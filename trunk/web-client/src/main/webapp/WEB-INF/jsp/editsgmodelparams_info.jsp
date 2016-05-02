@@ -13,11 +13,11 @@
 	<table class="infopage">
 		<tr>
 			<td class="spacecolumn"></td>
-			<td><h1><spring:message code="project_parameters" /> info</h1></td>
+			<td><h1><spring:message code="edit_input_parameters"/> info</h1></td>
 		</tr>
 		<tr>
 			<td class="spacecolumn"></td>
-			<td><p><spring:message code="project_parameters_text"/></p></td>
+			<td><p><spring:message code="edit_input_parameter_instructions"/></p></td>
 		</tr>
 	</table>
 </body>

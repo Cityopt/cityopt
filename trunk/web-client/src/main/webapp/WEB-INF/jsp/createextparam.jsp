@@ -47,20 +47,17 @@
 				<tr>
 					<td class="spacecolumn"></td>
 					<td valign="top">
-						<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 						<form:form method="post" action="createextparam.html" modelAttribute="extParam">
 						
-						<table align="center">
-							<col style="width:150px">
-							<col style="width:80px">
-							<col style="width:80px">
+						<table align="left" style="width: 400px">
+							<tr>
+								<td class="infosmall">
+									<spring:message code="name"/>*
+								</td>
+							</tr>
 							<tr>
 								<td>
-								<!-- Name -->
-								<spring:message code="name"/>*
-								</td>
-								<td>
-									<form:input style="width:300px" type="text" path="name"/>
+									<form:input style="width:400px" type="text" path="name"/>
 								</td>
 							</tr>
 							<tr height="10">
@@ -68,16 +65,13 @@
 								</td>
 							</tr>
 							<tr>
-								<td></td>
 								<!-- Create submit & Cancel button -->
 								<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create"/>"/>
 									<input type="submit" value="Cancel" name="cancel">
 								</td>
 							</tr>
 						</table>
-						
 						</form:form>
-						</div>
 					</td>
 				</tr>
 			</table>

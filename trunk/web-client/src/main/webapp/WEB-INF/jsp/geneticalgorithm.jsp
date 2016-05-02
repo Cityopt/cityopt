@@ -141,7 +141,7 @@ function openInfoWindow() {
 															<table class="tablestyle" width="100%" height="80">
 																<tr>
 																	<td>
-																		<div class="error">${error}</div>${runinfo}
+																		${runinfo}
 																		<c:choose>
 									    	                               	<c:when test="${locked}">
 									                                            (<spring:message code="optimization_started_parameters_locked"/>)

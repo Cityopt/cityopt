@@ -137,9 +137,6 @@
 								<td>		
 									<table width="100%">
 									
-										<tr height="30">
-											<td></td>
-										</tr>
 										<tr>
 											<td align="right">
 												<a href="editproject.html"><button type="button"><spring:message code="back"/></button></a>

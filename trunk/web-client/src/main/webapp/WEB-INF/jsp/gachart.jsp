@@ -14,6 +14,12 @@
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 
+<script>
+    function openInfoWindow() {
+    	   window.open("gachart_info.html", '<spring:message code="genetic_optimization_chart" /> info', 'width=600, height=600');
+    }
+</script>
+
 <body>
 <table cellspacing="0" cellpadding="0">
 	<tr>

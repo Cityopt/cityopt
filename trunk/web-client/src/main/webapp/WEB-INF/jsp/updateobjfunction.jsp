@@ -27,13 +27,6 @@
 						<table width="100%">
 							<tr>
 								<td><spring:message code="update_obj_func"/> step 2</td>
-								<td align="left" width="40">
-									<div class="round-button">
-										<div class="round-button-circle">
-											<a href="" onclick="openInfoWindow()">?</a>
-										</div>
-									</div>
-								</td>
 							</tr>
 						</table>
 					</td>

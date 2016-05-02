@@ -9,13 +9,16 @@
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
 </head>
-<body class="Info">	
-
-
-<div class="yellow"><h1 class="info"><spring:message code="genetic_optimization" /> info</h1></div>
-	
-	<div class="info">
-		<p><spring:message code="genetic_optimization_info_text"/></p>
-	</div>
+<body>	
+	<table class="infopage">
+		<tr>
+			<td class="spacecolumn"></td>
+			<td><h1><spring:message code="genetic_optimization" /> info</h1></td>
+		</tr>
+		<tr>
+			<td class="spacecolumn"></td>
+			<td><p><spring:message code="genetic_optimization_info_text"/></p></td>
+		</tr>
+	</table>
 </body>
 </html>

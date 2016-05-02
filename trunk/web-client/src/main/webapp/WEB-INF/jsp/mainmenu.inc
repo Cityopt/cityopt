@@ -362,7 +362,7 @@
 			</c:otherwise>
 		</c:choose>
 		<c:choose>
-			<c:when test="${not empty project}">
+			<c:when test="${not empty scenario}">
 				<tr>
 					<td></td>
 					<td>

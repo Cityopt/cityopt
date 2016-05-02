@@ -48,14 +48,6 @@ var getUrlParameter = function getUrlParameter(sParam) {
 							<table width="100%">
 								<tr>
 									<td><spring:message code="external_parameter_sets"/></td>
-									<td align="left" width="40">
-										<div class="round-button">
-											<div class="round-button-circle">
-												<a href="" onclick="openInfoWindow()">?</a>
-											</div>
-										</div>
-									</td>
-								</tr>
 							</table>
 						</td>
 					</tr>
@@ -106,7 +98,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 			
 												<!-- Create Data Entries -->
 												<tr>
-													<td>
+													<td valign="top">
 														<table class="tablestyle" style="width: 250px" cellspacing="0" cellpadding="0">
 															<col style="width: 60px">
 															<col style="width: 200px">

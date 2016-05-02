@@ -10,6 +10,11 @@
 <title>CityOpt <spring:message code="create_obj_func"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
+<script>
+    function openInfoWindow() {
+   		window.open("createobjfunction_info.html",'<spring:message code="create_obj_func"/> info','width=600,height=800');
+    }
+</script>
 <body>
 <table cellspacing="0" cellpadding="0">
 	<tr>
