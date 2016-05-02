@@ -169,28 +169,12 @@
 										
 										<tr height="10"></tr>
 										<tr>
-											<!-- Components -->
-											<td><b><spring:message code="components"/></b></td>
-											<!-- Input parameter values -->
-											<td><b><spring:message code="input_parameter_values"/></b></td>
+											<td colspan="2"><b><spring:message code="input_parameter_values"/></b></td>
 										</tr>
 										<tr>						
-											<td valign="top">
+											<td valign="top" colspan="3">
 												<table class="tablestyle">
-													<col style="width:150px">
-													<tr>
-														<th><spring:message code="component"/></th>
-													</tr>
-			
-													<c:forEach items="${components}" var="component">
-													<tr>
-														<td>${component.name}</td>
-												   	</tr>
-													</c:forEach>
-												</table>
-											</td>
-											<td valign="top">
-												<table class="tablestyle">
+													<col style="width:200px">
 													<col style="width:200px">
 													<col style="width:50px">
 													<col style="width:50px">
@@ -198,12 +182,14 @@
 													<!-- Parameter names & values -->
 													<tr>			
 														<th><spring:message code="parameter_name"/></th>
+														<th><spring:message code="component"/></th>
 														<th><spring:message code="value"/></th>
 														<th><spring:message code="unit"/></th>
 													</tr>
 													<c:forEach items="${inputParamVals}" var="inputParamVal">
 													<tr>
 														<td>${inputParamVal.inputparameter.name}</td>
+														<td>${inputParamVal.inputparameter.componentName}</td>
 												    	<td>${inputParamVal.value}</td>
 												    	<td>${inputParamVal.inputparameter.unit.name}</td>
 												   	</tr>
