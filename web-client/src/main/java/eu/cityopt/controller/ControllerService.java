@@ -628,6 +628,8 @@ public class ControllerService {
 			}
 			
 			if (extParamValSetId != null) {
+				model.put("extparamvalsetid", extParamValSetId);
+				
 				List<ExtParamValDTO> extParamVals = null;
 				try {
 					extParamVals = extParamValSetService.getExtParamVals(extParamValSetId);

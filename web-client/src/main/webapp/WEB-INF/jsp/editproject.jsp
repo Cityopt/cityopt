@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <script>
     function openModelInfoWindow() {
-    	   window.open("infopage.html",'<spring:message code="model_info"/>','width=600,height=600,scrollbars=yes');
+    	   window.open("infopage.html",'<spring:message code="model_info"/>','width=1200,height=600,scrollbars=yes');
     }
     function openInfoWindow() {
  	   window.open("editproject_info.html",'<spring:message code="edit_project_info"/>','width=600,height=600,scrollbars=yes');

@@ -1144,48 +1144,5 @@ public class ScenarioController {
 		return "timeserieschart";
 	}	
 	
-    @RequestMapping(value="simulationinfo", method=RequestMethod.GET)
-    public String simInfoPage(Map<String, Object> model,
-		HttpServletRequest request)
-    {
-    	ProjectDTO project = (ProjectDTO) model.get("project");
-		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
-		
-        if (project == null || scenario == null)
-        {
-        	return "error";
-        }
-
-		securityAuthorization.atLeastGuest_guest(project);
-
-        model.put("title", controllerService.getMessage("simulation_info_for_scenario", request) + " " + scenario.getName());
-		
-        BufferedReader bufReader = new BufferedReader(new StringReader(scenario.getLog()));
-        String line = null;
-        StringBuilder result = new StringBuilder();
-        
-        try {
-			while( (line = bufReader.readLine()) != null )
-			{
-				if (line.length() > 140)
-				{
-					result.append(line.substring(0, 140));
-					result.append(System.getProperty("line.separator"));
-					result.append(line.substring(140, Math.min(280, line.length() - 1)));
-				}
-				else
-				{
-					result.append(line);
-				}
-				result.append(System.getProperty("line.separator"));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        
-        model.put("infotext", result.toString());
-        
-        return "simulationinfo";
-    }	
-
+    
 }

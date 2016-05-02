@@ -45,13 +45,6 @@
 							  			</c:otherwise>
 									</c:choose>  
 								</td>
-								<td align="left" width="40">
-									<div class="round-button">
-										<div class="round-button-circle">
-											<a href="" onclick="openInfoWindow()">?</a>
-										</div>
-									</div>
-								</td>
 							</tr>
 						</table>
 					</td>

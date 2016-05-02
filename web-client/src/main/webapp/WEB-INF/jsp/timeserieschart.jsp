@@ -19,6 +19,12 @@
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 
+<script>
+    function openInfoWindow() {
+    	   window.open("timeserieschart_info.html",'<spring:message code="time_series_chart" /> info','width=600,height=600');
+    }
+</script>
+
 <body>
 <table cellspacing="0" cellpadding="0">
 	<tr>

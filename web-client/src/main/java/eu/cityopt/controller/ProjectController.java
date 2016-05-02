@@ -1670,34 +1670,7 @@ public class ProjectController {
         return "updatemetric";
     }
    
-    @RequestMapping(value="infopage", method=RequestMethod.GET)
-    public String infoPage(Map<String, Object> model)
-    {
-    	ProjectDTO project = (ProjectDTO) model.get("project");
-    	if (project == null)
-        {
-            return "error";
-        }
-        securityAuthorization.atLeastGuest_guest(project);
-        
-        Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
-        
-        if (nSimulationModelId == null)
-        {
-        	return "error";
-        }
-        
-        model.put("title", "Energy model description");
-
-        try {
-			model.put("infotext", simModelService.findByID(nSimulationModelId).getDescription());
-		} catch (EntityNotFoundException e) {
-			e.printStackTrace();
-		}
-
-        return "infopage";
-    }	
-
+    
 	@RequestMapping("overview.png")
 	public void renderOverviewImage(Map<String, Object> model, OutputStream stream) throws Exception {
 		ProjectDTO project = (ProjectDTO) model.get("project");

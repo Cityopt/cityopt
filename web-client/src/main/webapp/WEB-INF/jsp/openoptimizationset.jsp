@@ -21,7 +21,7 @@
 <table cellspacing="0" cellpadding="0">
 	<tr>	
 		<td><%@ include file="mainmenu.inc"%></td>
-			<td valign="top">
+		<td valign="top">
 		<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
 		<table class="maintablenarrow">			
 			<%@ include file="toprow.inc"%>
@@ -31,13 +31,6 @@
 					<table width="100%">
 						<tr>
 							<td><spring:message code="open_optimization_set"/></td>
-							<td align="left" width="40">
-								<div class="round-button">
-									<div class="round-button-circle">
-										<a href="" onclick="openInfoWindow()">?</a>
-									</div>
-								</div>
-							</td>
 						</tr>
 					</table>
 				</td>
@@ -49,7 +42,6 @@
 			<tr>
 				<td class="spacecolumn"></td>
 				<td valign="top">
-					<div style="overflow:scroll;height:800px;width:600px;overflow:auto">
 					<table class="tablestyle" width="500">
 						<col style="width: 250px">
 						<col style="width: 150px">
@@ -102,7 +94,6 @@
 						</c:forEach>
 					</table>
 					<element><element><h2 class="successful"></element></element>${successful}</h2><element>			
-					</div>
 				</td>
 			</tr>
 		</table>

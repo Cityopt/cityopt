@@ -15,6 +15,12 @@
 
 </head>
 
+<script>
+    function openInfoWindow() {
+    	   window.open("createmetric_info.html",'<spring:message code="create_metric"/> info','width=600,height=600,scrollbars=yes');
+    }
+</script>
+
 <body>
 <table cellspacing="0px" cellpadding="0px">
 	<tr>

@@ -10,6 +10,13 @@
 <title>CityOpt <spring:message code="edit_input_parameters"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
+
+<script>
+    function openInfoWindow() {
+    	   window.open("editsgmodelparams_info.html", '<spring:message code="input_parameters" /> info', 'width=600, height=600');
+    }
+</script>
+
 <body onLoad="showComponent('ModelParameter',${usersession.componentId})">
 <form:form modelAttribute="modelparamform" method="post" action="editsgmodelparams.html">
 <table cellspacing="0" cellpadding="0">

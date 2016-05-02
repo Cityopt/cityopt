@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title><spring:message code="project_parameters"/> info</title>
+<title><spring:message code="edit_algorithm_parameter_values"/> info</title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
 </head>
@@ -13,11 +13,11 @@
 	<table class="infopage">
 		<tr>
 			<td class="spacecolumn"></td>
-			<td><h1><spring:message code="project_parameters" /> info</h1></td>
+			<td><h1><spring:message code="edit_algorithm_parameter_values"/> info</h1></td>
 		</tr>
 		<tr>
 			<td class="spacecolumn"></td>
-			<td><p><spring:message code="project_parameters_text"/></p></td>
+			<td><p><spring:message code="edit_algorithm_parameter_instructions"/></p></td>
 		</tr>
 	</table>
 </body>

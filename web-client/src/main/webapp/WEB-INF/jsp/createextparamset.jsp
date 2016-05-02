@@ -57,7 +57,7 @@
 										<col style="width:150px">
 										<col style="width:150px">
 										<tr>
-											<td>
+											<td class="infosmall">
 												<spring:message code="name"/>*
 											</td>
 											<td>

@@ -19,7 +19,7 @@
 			<td valign="top"><%@ include file="mainmenu.inc"%></td>
 			<td valign="top">
 				<div style="overflow:scroll;height:100%;width:1000px;overflow:auto">
-				<table class="maintable" style="width:1000px">
+				<table class="maintablenarrow">
 					<col style="width:500px">
 					<col style="width:500px">
 					<%@ include file="toprow.inc"%>
@@ -29,13 +29,7 @@
 								<tr>
 									<td class="spacecolumn"></td>
 									<td><spring:message code="deleteproject"/></td>
-									<td align="left" width="40">
-										<div class="round-button">
-											<div class="round-button-circle">
-												<a href="" onclick="openInfoWindow()">?</a>
-											</div>
-										</div>
-									</td>
+									
 								</tr>
 							</table>
 						</td>
@@ -47,9 +41,9 @@
 									<td class="spacecolumn"></td>
 									<td>				
 										<form:form method="post" action="deleteproject.html">
-										<h2 class="error">
+										<p class="error">
 											${error}
-										</h2>
+										</p>
 										
 										<table class="tablestyle" width="400">
 											<tr class="DeleteTables" height="20">
