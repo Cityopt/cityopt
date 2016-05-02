@@ -98,9 +98,6 @@ public class VisualizationController {
 	
 	@Autowired
 	ComponentService componentService;
-
-	@Autowired
-	ComponentInputParamDTOService componentInputParamService;
 	
 	@Autowired
 	InputParameterService inputParamService;

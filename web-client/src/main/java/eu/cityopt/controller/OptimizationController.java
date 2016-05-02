@@ -74,7 +74,6 @@ import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AlgoParamValService;
 import eu.cityopt.service.AlgorithmService;
 import eu.cityopt.service.AppUserService;
-import eu.cityopt.service.ComponentInputParamDTOService;
 import eu.cityopt.service.ComponentService;
 import eu.cityopt.service.CopyService;
 import eu.cityopt.service.DatabaseSearchOptimizationService;
@@ -142,9 +141,6 @@ public class OptimizationController {
 
     @Autowired
     ComponentService componentService;
-
-    @Autowired
-    ComponentInputParamDTOService componentInputParamService;
 
     @Autowired
     InputParameterService inputParamService;
