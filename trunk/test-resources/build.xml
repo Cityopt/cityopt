@@ -12,6 +12,9 @@
         <antcall target="zip-dir">
             <param name="dir" value="ost" />
         </antcall>
+        <antcall target="zip-dir">
+            <param name="dir" value="kala" />
+        </antcall>
     </target>
     <target name="zip-dir">
         <zip destfile="target/classes/${dir}.zip"
