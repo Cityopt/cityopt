@@ -1,0 +1,10 @@
+import "file:cityopt/setup.scl" as CO
+
+main :: <Proc> ()
+main = runApros mdo
+    loadIC "kala.snp.gz"
+    CO.setup
+    acl "uff pre.que"
+    setTime CO.simulation_start
+    waitTo CO.simulation_end
+    acl "uff post.que"

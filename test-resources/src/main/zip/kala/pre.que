@@ -1,0 +1,11 @@
+modi co2_in io_file_name c:/a/kala/CO2_INPUT.txt
+modi io_control io_file_name c:/a/kala/kala_control.txt
+modi io_datain io_file_name c:/a/kala/kala_data.txt
+modi is01 io_file_name c:/a/kala/HEL_2011.txt
+modi output_1 io_file_name c:/a/kala/OUTPUT_1.txt
+! This line intentionally NOT left blank.
+io open co2_in
+io open io_control
+io open io_datain
+io open is01
+io open output_1
