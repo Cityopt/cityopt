@@ -121,6 +121,13 @@ h2.error {
 	height: 20px;
 }
 
+.active {
+	color:#4D4D4D;
+	font-size: 14px;	
+	font-weight: bold;
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
+}
+
 .regular {
 	color:#4D4D4D;
 	font-size 14px;	

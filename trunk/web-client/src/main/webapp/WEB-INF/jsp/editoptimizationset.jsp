@@ -164,7 +164,7 @@
 									<table>
 										<tr>
 											<!-- Objective function -->
-											<td class="infosmall"><spring:message code="objective_function"/></td>
+											<td class="active"><spring:message code="objective_function"/></td>
 										</tr>
 										<tr>
 											<td>
@@ -210,7 +210,7 @@
 										</tr>
 										<tr height="20"></tr>
 										<tr>
-											<td class="infosmall"><spring:message code="constraints"/>
+											<td class="active"><spring:message code="constraints"/>
 											</td>
 										</tr>
 										<tr>
@@ -273,7 +273,7 @@
 										</tr>
 										<tr height="20"></tr>
 										<tr>
-											<td class="infosmall"><spring:message code="external_parameter_set"/></td>
+											<td class="active"><spring:message code="external_parameter_set"/></td>
 										</tr>
 										<tr>
 											<td>
@@ -299,7 +299,7 @@
 									<table style="width: 440px">
 										<col style="width: 100%;">
 										<tr>
-											<td class="infosmall"><spring:message code="results"/></td>
+											<td class="active"><spring:message code="results"/></td>
 										</tr>
 										<tr>
 											<td>
@@ -308,7 +308,7 @@
 													<col style="width: 320px">
 													<col style="width: 80px">
 													<tr>
-														<td valign="top" class="infosmall">
+														<td valign="top" class="regular">
 															<spring:message code="best_scenario"/>
 														</td>
 														<td>
@@ -366,7 +366,7 @@
 										</tr>
 										<tr><td><br></td></tr>
 										<!-- Metrics -->
-										<tr><td class="infosmall"><spring:message code="metrics"/></td></tr>
+										<tr><td class="active"><spring:message code="metrics"/></td></tr>
 										<tr>
 											<td colspan="3">
 												<table class="tablestyle" width="100%">

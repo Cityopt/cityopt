@@ -544,6 +544,34 @@ public class ProjectController {
         return "editproject";
     }
 
+    @RequestMapping(value="simmodelinfo", method=RequestMethod.GET)
+    public String SimModelInfo(Map<String, Object> model)
+    {
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+    	if (project == null)
+        {
+            return "error";
+        }
+        securityAuthorization.atLeastGuest_guest(project);
+        
+        Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
+        
+        if (nSimulationModelId == null)
+        {
+        	return "error";
+        }
+        
+        model.put("title", "Energy model description");
+
+        try {
+			model.put("infotext", simModelService.findByID(nSimulationModelId).getDescription());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+
+        return "simmodelinfo";
+    }	
+    
     @RequestMapping(value = "importstructurefile", method = RequestMethod.POST)
     public String importStructureFile(Map<String, Object> model, @RequestParam("file") MultipartFile file,
 		HttpServletRequest request) {

@@ -121,11 +121,11 @@
 										<tr height="15"></tr>
 										<tr>
 											<!-- Scenario simulation status -->
-											<td class="infosmall"><spring:message code="scenario_simulation_status"/></td>
+											<td class="regular"><spring:message code="scenario_simulation_status"/></td>
 											<td class="regular">${status} (<spring:message code="refresh_by_reloading_page"/>)</td>
 										</tr>
 										<tr>
-											<td class="infosmall"><spring:message code="simulation_info"/></td>
+											<td class="regular"><spring:message code="simulation_info"/></td>
 											<td>
 												<c:if test="${scenario != null && scenario.getLog() != null}">
 													<button type="button" style="width: 150px" onclick="openSimulationInfoWindow()"><spring:message code="show_simulation_info"/></button>
@@ -138,8 +138,8 @@
 											<!--Dynamic simulation period from-->
 											<c:set var="tooltip_simulation_start"><spring:message code="tooltip_dynamicsimulation_start"/></c:set>
 											<c:set var="tooltip_simulation_end"><spring:message code="tooltip_dynamicsimulation_end"/></c:set>
-											<td class="infosmall"><spring:message code="simulation_period_from"/></td>
-											<td class="infosmall"><input name="simstart" title="${tooltip_simulation_start}" type="text" style="width:170px" value="${simStart}"/>
+											<td class="regular"><spring:message code="simulation_period_from"/></td>
+											<td class="regular"><input name="simstart" title="${tooltip_simulation_start}" type="text" style="width:170px" value="${simStart}"/>
 												<spring:message code="to"/>
 												<input name="simend" title="${tooltip_simulation_end}" type="text" style="width:170px" value="${simEnd}" />
 											</td>
@@ -154,14 +154,14 @@
 										<tr height="15"></tr>
 										<tr>
 											<!-- Input parameter & set button -->						
-											<td  class="infosmall"><spring:message code="input_parameters"/></td>
+											<td  class="regular"><spring:message code="input_parameters"/></td>
 											<c:set var="tooltip_scenario_parameters"><spring:message code="tooltip_edit_scenario_parameters"/></c:set>
 											<td><a href="scenarioparameters.html"><button type="button" title="${tooltip_scenario_parameters}" style="width:100px">
 											<spring:message code="set"/></button></a></td>
 										</tr>
 										<tr>
 											<!-- External parameters & set button -->						
-											<td class="infosmall"><spring:message code="external_parameters"/></td>
+											<td class="regular"><spring:message code="external_parameters"/></td>
 											<c:set var="tooltip_scenario_externalparameters"><spring:message code="tooltip_edit_scenario_externalparameters"/></c:set>
 											<td><a href="scenariovariables.html"><button type="button" title="${tooltip_scenario_externalparameters}" style="width:100px">
 											<spring:message code="show"/></button></a></td>

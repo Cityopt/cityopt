@@ -70,12 +70,12 @@
 														<col style="width: 50px">
 														<col style="width: 480px">
 														<tr>
-															<td>
-																<b><spring:message code="components" /></b>
+															<td class="active">
+																<spring:message code="components" />
 															</td>
 															<td></td>
-															<td>
-																<b><spring:message code="input_parameters" /></b>
+															<td class="active">
+																<spring:message code="input_parameters" />
 															</td>
 														</tr>
 														<tr>

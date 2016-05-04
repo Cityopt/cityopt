@@ -1,9 +1,8 @@
 <%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
-<%--@elvariable id="showInfo" type="boolean"--%>
 <%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -11,10 +10,10 @@
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <script>
     function openModelInfoWindow() {
-    	   window.open("infopage.html",'<spring:message code="model_info"/>','width=1200,height=600,scrollbars=yes');
+   		window.open("simmodelinfo.html",'<spring:message code="model_info"/>','width=1200,height=600,scrollbars=yes');
     }
     function openInfoWindow() {
- 	   window.open("editproject_info.html",'<spring:message code="edit_project_info"/>','width=600,height=600,scrollbars=yes');
+ 		window.open("editproject_info.html",'<spring:message code="edit_project_info"/>','width=600,height=600,scrollbars=yes');
  	}
 </script>
 </head>
@@ -56,8 +55,8 @@
 							<tr>
 								<td class="spacecolumn"></td>
 								<td>
+									<form:form method="post" action="editproject.html?action=update" modelAttribute="project">
 									<table>
-										<form:form method="post" action="editproject.html?action=update" modelAttribute="project">
 										<tr>
 											<c:set var="tooltip_name"><spring:message code="tooltip_edit_project_name"/></c:set>
 											<td class="infosmall"><spring:message code="project_name"/>*</td>
@@ -97,7 +96,7 @@
 											<td><input type="submit" title="${tooltip_save}" value=<spring:message code="save_project"/> style="width:120px"></td>
 										</tr>
 									</table>
-								</form:form>
+									</form:form>
 									<table>
 										<tr height=30></tr>	
 										<tr>

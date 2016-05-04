@@ -136,7 +136,7 @@ function openInfoWindow() {
 						                            </tr>
 						                            <tr height="10"></tr>
 						                            <tr>
-														<td valign="top" class="infosmall"><spring:message code="optimization_info"/>:</td>
+														<td valign="top" class="regular"><spring:message code="optimization_info"/>:</td>
 														<td>
 															<table class="tablestyle" width="100%" height="80">
 																<tr>
@@ -158,7 +158,7 @@ function openInfoWindow() {
 													<form:form method="POST" action="importoptimizationproblem.html" enctype="multipart/form-data">
 						        					<tr>
 						        						<!-- Import optimization set file CSV -->
-						        						<td class="infosmall"><spring:message code="import_optimization_problem"/></td>
+						        						<td class="regular"><spring:message code="import_optimization_problem"/></td>
 						 								<td>
 															<input id="file" name="file" type="file"/>
 						                   				</td>
