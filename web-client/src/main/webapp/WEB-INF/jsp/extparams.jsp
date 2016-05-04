@@ -67,12 +67,22 @@
 											<tr>
 												<td valign="top">			
 													<table>										
-														<tr class="external_parameter_sets">
-															<td><b><spring:message code="selected_external_parameter_set" />:</b>
-																${extParamValSet.name} <br>
+														<tr>
+															<td>
 																<table class="tablestyle">
-				
-															</table></td>
+																	<tr>
+																		<td class="regular">
+																			<spring:message code="selected_external_parameter_set" />:
+																		</td>
+																		<td>
+																			${extParamValSet.name}
+																		</td>
+																	</tr>
+																</table>
+															</td>
+														</tr>
+														<tr>
+															<td class="active"><spring:message code="external_parameters" /></td>
 														</tr>
 														<tr class="external_parameter_tables">
 															<td valign="top">

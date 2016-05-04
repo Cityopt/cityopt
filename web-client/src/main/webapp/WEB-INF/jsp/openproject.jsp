@@ -41,6 +41,11 @@
 				</tr>
 				<tr>
 					<td class="spacecolumn"></td>
+					<td class="active"><spring:message code="projects" />
+					</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
 					<td>
 						<table class="tablestyle" width="750">
 							<col style="width:150px">	
