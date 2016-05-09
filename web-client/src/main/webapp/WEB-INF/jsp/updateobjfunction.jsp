@@ -44,7 +44,7 @@
 					<td valign="top">
 						<table>
 							<tr>
-								<td class="infosmall"><spring:message code="create_obj_func_instructions_2"/></td>
+								<td class="regular"><spring:message code="create_obj_func_instructions_2"/></td>
 							</tr>
 							<tr height="20"></tr>
 							<tr>
@@ -56,7 +56,7 @@
 			
 										<tr height="20">
 											<!-- Functions -->
-											<td class="infosmall"><spring:message code="functions"/></td>
+											<td class="active"><spring:message code="functions"/></td>
 										</tr>
 										<tr>
 											<td>

@@ -61,7 +61,7 @@
 							<c:choose>
 					    		<c:when test="${disableEdit}">
 					    			<tr>
-										<td class="infosmall"><spring:message code="scenario_simulated_info"/></td>
+										<td class="regular"><spring:message code="scenario_simulated_info"/></td>
 									</tr>
 									<tr height="10"></tr>
 					    		</c:when>

@@ -39,6 +39,10 @@
 				<td class="spacecolumn"></td>
 				<td class="error">${error}</td>
 			</tr>
+			<tr height="20">
+				<td class="spacecolumn"></td>
+				<td class="active"><spring:message code="optimization_sets" /></td>
+			</tr>
 			<tr>
 				<td class="spacecolumn"></td>
 				<td valign="top">

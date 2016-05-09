@@ -55,7 +55,7 @@
 					<td valign="top">
 						<table>
 							<tr>
-								<td class="infosmall">
+								<td class="regular">
 									<spring:message code="create_obj_func_instructions_1"/>
 								</td>
 							</tr>

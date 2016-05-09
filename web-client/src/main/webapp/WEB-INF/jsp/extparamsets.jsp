@@ -91,9 +91,9 @@ var getUrlParameter = function getUrlParameter(sParam) {
 												<col style="width: 255px">
 			
 												<tr>
-													<td class="infosmall"><spring:message code="external_parameter_sets" /></td>
+													<td class="active"><spring:message code="external_parameter_sets" /></td>
 													<td></td>
-													<td class="infosmall"><spring:message code="external_parameters" /></td>
+													<td class="active"><spring:message code="external_parameters" /></td>
 												</tr>
 			
 												<!-- Create Data Entries -->

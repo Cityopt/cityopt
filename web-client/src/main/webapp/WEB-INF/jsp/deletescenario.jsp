@@ -38,6 +38,10 @@
 				</tr>
 				<tr>
 					<td class="spacecolumn"></td>
+					<td class="active"><spring:message code="scenarios" /></td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
 					<td valign="top">
 						<form:form method="post" action="deletescenario.html">			
 						<table class="tablestyle" width="700">
