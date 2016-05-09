@@ -29,7 +29,6 @@
 								<tr>
 									<td class="spacecolumn"></td>
 									<td><spring:message code="deleteproject"/></td>
-									
 								</tr>
 							</table>
 						</td>
@@ -39,41 +38,51 @@
 							<table>
 								<tr>
 									<td class="spacecolumn"></td>
-									<td>				
-										<form:form method="post" action="deleteproject.html">
-										<p class="error">
-											${error}
-										</p>
-										
-										<table class="tablestyle" width="400">
-											<tr class="DeleteTables" height="20">
-												<!-- Name -->
-												<th><spring:message code="name"/></th>
-												<!-- Location -->
-												<th><spring:message code="location"/></th>
-												<!-- Description -->
-												<th><spring:message code="description"/></th>
-												<!-- Delete -->
-												<th><spring:message code="delete"/></th>
+									<td>
+										<table>				
+											<form:form method="post" action="deleteproject.html">
+											<tr>
+												<td class="error">
+													${error}
+												</td>
 											</tr>
-				
-											<c:forEach items="${projects}" var="project">
-												<tr>
-													<td>${project.name}</td>
-													<td>${project.location}</td>
-													<td>${project.description}</td>
-													<td><a
-														<c:set var="tooltip_delete"><spring:message code="tooltip_delete_project"/></c:set>										
-														href="<c:url value='deleteproject.html?prjid=${project.prjid}'/>" title="${tooltip_delete}"
-														 onclick="return confirm('<spring:message code="confirm_project_deletion"/>')">
-															<button type="button" value="Delete">
-															<!-- Delete button -->
-															<spring:message code="delete"/></button>
-													</a></td>
-												</tr>
-											</c:forEach>
-										</table>
+											<tr>
+												<td class="active"><spring:message code="projects"/></td>
+											</tr>
+											<tr>
+												<td>
+													<table class="tablestyle" width="400">
+														<tr height="20">
+															<!-- Name -->
+															<th><spring:message code="name"/></th>
+															<!-- Location -->
+															<th><spring:message code="location"/></th>
+															<!-- Description -->
+															<th><spring:message code="description"/></th>
+															<!-- Delete -->
+															<th><spring:message code="delete"/></th>
+														</tr>
+							
+														<c:forEach items="${projects}" var="project">
+															<tr>
+																<td>${project.name}</td>
+																<td>${project.location}</td>
+																<td>${project.description}</td>
+																<td><a
+																	<c:set var="tooltip_delete"><spring:message code="tooltip_delete_project"/></c:set>										
+																	href="<c:url value='deleteproject.html?prjid=${project.prjid}'/>" title="${tooltip_delete}"
+																	 onclick="return confirm('<spring:message code="confirm_project_deletion"/>')">
+																		<button type="button" value="Delete">
+																		<!-- Delete button -->
+																		<spring:message code="delete"/></button>
+																</a></td>
+															</tr>
+														</c:forEach>
+													</table>
+												</td>
+											</tr>
 										</form:form>
+										</table>
 									</td>
 								</tr>
 							</table>

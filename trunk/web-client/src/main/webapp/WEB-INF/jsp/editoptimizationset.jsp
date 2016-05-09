@@ -126,8 +126,8 @@
 										<tr>
 											<td><form:input type="text" title="${tooltip_name}" path="name" style="width:100%"/></td>
 											<td></td>
-											<td rowspan="4">
-												<table class="tablestyle" width="270" height="110">
+											<td rowspan="4" valign="top">
+												<table class="tablestyle" width="270" height="120">
 													<tr>
 														<td>${usersession.getOptResultString()}</td>
 													</tr>
@@ -339,6 +339,9 @@
 											</td>
 										</tr>
 										<tr height="10"></tr>
+										<tr>
+											<td class="active"><spring:message code="scenarios"/></td>
+										</tr>
 										<tr>
 											<td>
 												<table class="tablestyle">

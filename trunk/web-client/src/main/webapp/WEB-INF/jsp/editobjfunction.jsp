@@ -55,10 +55,10 @@
 										<tr>
 											<td></td>								
 											<!-- Components -->
-											<td class="infosmall"><spring:message code="components"/></td>
+											<td class="active"><spring:message code="components"/></td>
 											<td></td>
 											<!-- Output variables -->
-											<td class="infosmall"><spring:message code="output_variables"/></td>
+											<td class="active"><spring:message code="output_variables"/></td>
 											<td></td>
 										</tr>
 										<tr>
@@ -113,7 +113,7 @@
 										</tr>
 										<tr>
 											<td></td>								
-											<td class="infosmall"><spring:message code="metrics"/></td>
+											<td class="active"><spring:message code="metrics"/></td>
 											<td></td>
 											<td></td>
 											<td></td>

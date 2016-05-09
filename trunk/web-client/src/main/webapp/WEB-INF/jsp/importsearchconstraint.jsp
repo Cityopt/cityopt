@@ -48,7 +48,7 @@
 										<col style="width:300px">
 			
 										<tr>
-											<td class="infosmall"><spring:message code="search_constraints"/></td>
+											<td class="active"><spring:message code="search_constraints"/></td>
 										</tr>
 										<tr>
 											<td valign="top">

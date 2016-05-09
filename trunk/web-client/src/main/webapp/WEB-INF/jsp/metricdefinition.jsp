@@ -24,7 +24,7 @@
 	<tr>	
 		<td><%@ include file="mainmenu.inc"%></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:100%;width:820px;overflow:auto">
+			<div style="overflow:scroll;width:820px;overflow:auto">
 			<table class="maintable">
 				<%@ include file="toprow.inc"%>
 				<tr class="titlerow">
@@ -38,6 +38,11 @@
 					</td>
 				</tr>
 				<tr height="20"></tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="active"><spring:message code="metrics"/>
+					</td>
+				</tr>
 				<tr>
 					<td class="spacecolumn"></td>
 					<td valign="top">
@@ -89,7 +94,7 @@
 									<!-- Delete button -->
 									<c:set var="tooltipdelete"><spring:message code="tooltip_delete"/></c:set>
 									<a href="<c:url value='metricdefinition.html?metricid=${metric.metid}&action=delete'/>" 
-									onclick="return confirm('Are you sure you want to delete metric')">
+									onclick="return confirm('<spring:message code="confirm_delete" />')">
 										<button align="right" title="${tooltipdelete}" type="button" value="Delete">
 										<spring:message code="delete"/></button>
 									</a>
@@ -100,12 +105,15 @@
 					</td>
 				</tr>
 				<tr>
-					<td></td>
+					<td class="spacecolumn"></td>
 					<td align="right" valign="top">
-						<a href="exportmetrics.html"><button type="button"><spring:message code="export_metrics"/></button></a>
+						<a href="exportmetrics.html">
+							<button type="button"><spring:message code="export_metrics"/></button>
+						</a>
 			   			<c:set var="tooltipcreatemetric"><spring:message code="tooltip_create_metric"/></c:set>
 			   			<a href="createmetric.html?reset=true"><button title="${tooltipcreatemetric}" type="button">
-			   			<spring:message code="create_metric"/></button></a>
+			   				<spring:message code="create_metric"/></button>
+		   				</a>
 			   		</td>
 				</tr>
 			</table>
