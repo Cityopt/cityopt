@@ -86,7 +86,7 @@
 														<col style="width:130px">
 														<col style="width:170px">
 														<tr>
-															<td class="infosmall">
+															<td class="regular">
 																<!-- Scenario (simulation name) simulation status: (Status)  -->
 																<spring:message code="active_scenario"/>: 
 															</td>
@@ -99,7 +99,7 @@
 															</td>
 														</tr>
 														<tr>
-															<td class="infosmall">
+															<td class="regular">
 																<spring:message code="simulation_status"/>: 
 															</td>
 															<td>
@@ -114,7 +114,7 @@
 												</td>
 											</tr>
 											<tr>
-												<td class="infosmall">
+												<td class="regular">
 													<p><spring:message code="summary_chart_instructions_1"/></p>
 													<p><spring:message code="summary_chart_instructions_2"/></p>
 												</td>
@@ -128,6 +128,7 @@
 											
 											<tr>
 												<td>
+													<div style="overflow:scroll;height:250px;width:320px;overflow:auto">
 													<table class="tablestyle" width="300">
 														<col style="width:50px">
 														<col style="width:200px">	
@@ -162,6 +163,7 @@
 													   	</tr>
 														</c:forEach>				
 													</table>
+													</div>
 												</td>
 											</tr>
 											<tr height="10">

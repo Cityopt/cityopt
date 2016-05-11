@@ -74,6 +74,9 @@
 			                </select>
 			                </td>
 			              </tr>
+			              <tr height="10"></tr>
+			              <tr>
+			              	<td class="active"><spring:message code="input_parameters"/></td>
 			              <tr>
 			                <td>
 				              <table class="tablestyle" style="width: 450px">

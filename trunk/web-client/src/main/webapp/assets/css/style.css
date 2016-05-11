@@ -130,25 +130,31 @@ h2.error {
 
 .regular {
 	color:#4D4D4D;
-	font-size 14px;	
+	font-size: 14px;	
 	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 }
 
 .info {
 	color:#B3B3B3;
-	font-size 14px;	
+	font-size: 14px;	
 	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 }
 
 .infosmall {
 	color:#B3B3B3;
-	font-size 12px;	
+	font-size: 12px;	
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
+}
+
+.small {
+	color:#4D4D4D;
+	font-size: 10px;
 	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 }
 
 .successful {
 	color:#FFFFFF;
-	font-size 10px;	
+	font-size: 10px;	
 	text-shadow: 1px 1px 1px black, 0 0 4px #a7ed7c, 0 0 4px #43AF11;	
 	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 }

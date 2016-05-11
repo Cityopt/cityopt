@@ -46,9 +46,10 @@
 			<tr>
 				<td class="spacecolumn"></td>
 				<td valign="top">
-					<table class="tablestyle" width="500">
-						<col style="width: 250px">
-						<col style="width: 150px">
+					<table class="tablestyle" width="600">
+						<col style="width: 240px">
+						<col style="width: 200px">
+						<col style="width: 80px">
 						<col style="width: 80px">
 					
 						<tr height="20">
@@ -73,12 +74,12 @@
 										<td>Database search</td>
 										<td>
 										<a href="<c:url value='openoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=db'/>">
-											<button align="right" title="${open_optimizationset}"  type="button" value="Open"><spring:message code="open"/></button>
+											<button align="right" title="${open_optimizationset}"  type="button" value="Open" style="width: 80px"><spring:message code="open"/></button>
 										</a>
 										</td>
 											<td><a
 													href="<c:url value='cloneoptimizer.html?optimizerid=${openoptimizationset.id}&optsettype=db'/>">
-														<button align="right" title="${clone_optimizationset}" type="button" value="Clone"><spring:message code="clone"/></button>
+														<button align="right" title="${clone_optimizationset}" type="button" value="Clone" style="width: 80px"><spring:message code="clone"/></button>
 											</a></td>
 		
 									</c:when>
@@ -86,10 +87,10 @@
 										<td><spring:message code="genetic_algorithm"/></td>
 										<td>
 										<a href="<c:url value='openoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=ga'/>">
-											<button align="right" title="${open_optimizationset}"  type="button" value="Open"><spring:message code="open"/></button>
+											<button align="right" title="${open_optimizationset}"  type="button" value="Open" style="width: 80px"><spring:message code="open"/></button>
 										</a></td>
 										<td><a	href="<c:url value='cloneoptimizer.html?optimizerid=${openoptimizationset.id}&optsettype=ga'/>">
-														<button align="right" title="${clone_optimizationset}" type="button" value="Clone"><spring:message code="clone"/></button>
+														<button align="right" title="${clone_optimizationset}" type="button" value="Clone" style="width: 80px"><spring:message code="clone"/></button>
 											</a></td>						
 										
 									</c:otherwise>
@@ -97,7 +98,6 @@
 					   	</tr>
 						</c:forEach>
 					</table>
-					<element><element><h2 class="successful"></element></element>${successful}</h2><element>			
 				</td>
 			</tr>
 		</table>
