@@ -40,11 +40,14 @@
 						<td class="spacecolumn"></td>
 						<td class="info">${info}</td>
 					</tr>
+					<tr height="20px">
+						<td class="spacecolumn"></td>
+						<td class="active"><spring:message code="optimization_sets" /></td>
+					</tr>
 					<tr>
 						<td class="spacecolumn"></td>
 						<td valign="top">
-							<form method="get" action="OptimizationController">
-							<table class="tablestyle" width="500" border="1">
+							<table class="tablestyle" width="500">
 								<col style="width: 250px">
 								<col style="width: 150px">
 								<col style="width: 80px">
@@ -88,7 +91,6 @@
 							   	</tr>
 								</c:forEach>
 							</table>
-							</form>
 						</td>
 					</tr>
 				</table>

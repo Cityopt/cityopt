@@ -65,13 +65,12 @@
 							<col style="width:30px">
 							<col style="width:800px">
 							<tr>
-								<td class="infosmall"><p><spring:message code="genetic_optimization_chart_instructions"/></p></td>
-								<td></td>
-								<td></td>
-							</tr>
-							<tr>
 								<td valign="top">
-									<table>
+									<table>	
+										<tr>
+											<td class="regular"><spring:message code="genetic_optimization_chart_instructions"/></td>
+										</tr>
+										<tr class="spacerowbig"></tr>
 										<tr>
 											<td>
 												<!-- Scenarios --><b><spring:message code="scenarios"/></b>
@@ -79,6 +78,7 @@
 										</tr>
 										<tr>
 											<td>
+												<div style="overflow:scroll;height:300px;width:380px;overflow:auto">
 												<table class="tablestyle" width="360">
 													<col style="width:120px">
 													<col style="width:240px">	
@@ -94,23 +94,28 @@
 															<c:when test="${usersession.hasSelectedGAScenarioId(scenario.scenid)}">
 																<tr style="background-color: #D4D4D4">													
 																<td>
-																<!-- Remove button -->
-																<spring:message code="added"/> 
-																(<a href="gachart.html?action=remove&scenarioid=${scenario.scenid}">
-																<spring:message code="remove"/></a>)
+																	<!-- Remove button -->
+																	<spring:message code="added"/> 
+																	<a href="gachart.html?action=remove&scenarioid=${scenario.scenid}">
+																		<button type="button"><spring:message code="remove"/></button>
+																	</a>
 																</td>
 															</c:when>
 															<c:otherwise>
 																<tr>
-																<!-- Add -button -->
-																<td><a href="gachart.html?action=add&scenarioid=${scenario.scenid}">
-																<spring:message code="add"/></a></td>
+																	<!-- Add -button -->
+																	<td>
+																		<a href="gachart.html?action=add&scenarioid=${scenario.scenid}">
+																			<button type="button"><spring:message code="add"/></button>
+																		</a>
+																	</td>
 															</c:otherwise>
 														</c:choose>
 														<td>${scenario.name}</td>
 												   	</tr>
 													</c:forEach>				
 												</table>
+												</div>
 											</td>
 										</tr>
 										<tr height="10">

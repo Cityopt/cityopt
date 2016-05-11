@@ -232,9 +232,9 @@ function openInfoWindow() {
 												<table class="tablestyle" style="width: 620px">
 													<col style="width: 100px;">
 													<col style="width: 50px;">
-													<col style="width: 250px;">
-													<col style="width: 80px;">
-													<col style="width: 80px;">
+													<col style="width: 310px;">
+													<col style="width: 70px;">
+													<col style="width: 70px;">
 													<tr>
 			                                            <th><spring:message code="name"/></th>
 														<!--Optimization Sense -->
@@ -254,7 +254,7 @@ function openInfoWindow() {
 			                                                     <c:otherwise><spring:message code="minimize"/></c:otherwise>
 			                                                 </c:choose>
 			                                            </td>
-														<td>${function.expression}</td>
+														<td class="small">${function.expression}</td>
 			                                            <td><a href="editsgobjfunction.html?obtfunctionid=${function.obtfunctionid}">
 			                                            	<c:choose>
 				                                            	<c:when test="${locked}">
@@ -491,7 +491,7 @@ function openInfoWindow() {
 									</table>
 								</td>
 								<td valign="top">
-									<table style="width: 100%">
+										<table style="width: 100%">
 										<col style="width: 180px;">
 										<col style="width: 270px;">
 										
@@ -516,7 +516,12 @@ function openInfoWindow() {
 									    </tr>
 										<tr>
 											<td colspan="2">
-												<table class="tablestyle" style="width: 450px">
+												<div style="overflow:scroll;height:250px;width:450px;overflow:auto">
+												<table class="tablestyle" style="width: 430px">
+													<col style="width: 230px;">
+													<col style="width: 70px;">
+													<col style="width: 50px;">
+													<col style="width: 50px;">
 													<tr>
 														<th><spring:message code="parameter"/></th>
 														<th><spring:message code="value"/></th>
@@ -549,6 +554,7 @@ function openInfoWindow() {
 			                                        </tr>
 			                                        </c:forEach>
 												</table>
+												</div>
 											</td>
 										</tr>
 										<tr>

@@ -71,7 +71,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td class="infosmall">
+								<td class="active">
 									<!-- User roles -->
 									<spring:message code="user_roles"/>
 								</td>

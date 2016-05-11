@@ -173,6 +173,7 @@
 										</tr>
 										<tr>						
 											<td valign="top" colspan="3">
+												<div style="overflow:scroll;height:300px;width:100%;overflow:auto">
 												<table class="tablestyle">
 													<col style="width:200px">
 													<col style="width:200px">
@@ -195,6 +196,7 @@
 												   	</tr>
 													</c:forEach>
 												</table>
+												</div>
 											</td>
 										</tr>
 									</table>

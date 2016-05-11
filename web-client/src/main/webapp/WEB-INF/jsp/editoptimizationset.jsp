@@ -368,10 +368,10 @@
 											</td>
 										</tr>
 										<tr><td><br></td></tr>
-										<!-- Metrics -->
 										<tr><td class="active"><spring:message code="metrics"/></td></tr>
 										<tr>
 											<td colspan="3">
+												<div style="overflow:scroll;height:250px;width:440px;overflow:auto">
 												<table class="tablestyle" width="100%">
 													<col style="width: 33%">
 													<col style="width: 33%">
@@ -395,6 +395,7 @@
 												    </tr>
 													</c:forEach>
 												</table>
+												</div>
 											</td>
 										</tr>
 										<tr><td><br></td></tr>

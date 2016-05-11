@@ -83,6 +83,7 @@
 									</table>
 								</td>
 							</tr>
+							<tr class="spacerowbig"></tr>
 							<tr>
 								<td colspan="2">
 									<table>
@@ -106,6 +107,7 @@
 																</tr>
 																<tr>						
 																	<td valign="top">
+																		<div style="overflow:scroll;height:350px;width:320px;overflow:auto">
 																		<table class="tablestyle">
 																			<col style="width:80px">
 																			<col style="width:220px">
@@ -128,11 +130,12 @@
 																		   	</tr>
 																			</c:forEach>
 																		</table>
+																		</div>
 																	</td>
 																	<td></td>
 																	<td valign="top">
 																		<table class="tablestyle">
-																			<col style="width:100px">
+																			<col style="width:130px">
 																			<col style="width:150px">
 																			<tr>
 																				<!-- Draw -->
@@ -144,8 +147,8 @@
 																				<c:choose>
 																					<c:when test="${outputVar.outvarid == selectedOutputVar.outvarid}">
 																						<tr style="background-color: rgb(140, 200, 200)">
-																							<td><b><spring:message code="shown"/></b> (<a href="writetable.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">
-																								<button type="button"><spring:message code="remove"/></button></a>)
+																							<td><b><spring:message code="shown"/></b> <a href="writetable.html?action=remove&outputvarid=${outputVar.outvarid}&selectedcompid=${selectedcompid}">
+																								<button type="button"><spring:message code="remove"/></button></a>
 																							</td>
 																							<td><b>${outputVar.name}</b></td>
 																					</c:when>
@@ -190,41 +193,78 @@
 														<td>
 															<table>
 																<tr>
-																	<!-- Selected variable: -->
-																	<td><spring:message code="selected_variable"/>: ${selectedOutputVar.name}</td>
+																	<td>
+																		<table>
+																			<col style="width: 200px">
+																			<col style="width: 250px">
+																			<tr>
+																				<!-- Selected variable: -->
+																				<td colspan="2">
+																					<table width="500px">
+																						<col style="width: 150px">
+																						<col style="width: 350px">
+																						<tr>
+																							<td>
+																								<spring:message code="selected_variable"/>: &nbsp;
+																							</td>
+																							<td align="right">
+																								<table class="tablestyle" width="350px" height="20px">
+																									<tr>
+																										<td>
+																											${selectedOutputVar.getQualifiedName()}
+																										</td>
+																									</tr>
+																								</table>
+																							</td>
+																						</tr>
+																					</table>
+																				</td>
+																			</tr>
+																		</table>
+																	</td>
 																</tr>
 																<tr>
 																	<td>
-																		<table class="tablestyle" width="200">
-																			<col style="width:200px">
-																					
-																			<tr height="20">
-																				<!-- Time -->
-																			    <th><spring:message code="time"/></th>
-																			</tr>
-																			
-																			<c:forEach items="${listOutputVarTimes}" var="listOutputVarTime">
+																		<div style="overflow:scroll;height:350px;width:520px;overflow:auto">
+																		<table width="500px">
+																			<col style="width: 250px">
+																			<col style="width: 250px">
 																			<tr>
-																				<td>${listOutputVarTime}</td>
-																		   	</tr>
-																			</c:forEach>
-																		</table>
-																	</td>
-																	<td>
-																		<table class="tablestyle" width="100">
-																			<col style="width:100px">
-																					
-																			<tr height="20">
-																				<!-- Value -->
-																			    <th><spring:message code="value"/></th>
-																			</tr>
-																			
-																			<c:forEach items="${listOutputVarVals}" var="listOutputVarVal">
 																			<tr>
-																				<td>${listOutputVarVal}</td>
-																		   	</tr>
-																			</c:forEach>
+																				<td>
+																					<table class="tablestyle">
+																						<col style="width:250px">
+																								
+																						<tr height="20">
+																							<!-- Time -->
+																						    <th><spring:message code="time"/></th>
+																						</tr>
+																						
+																						<c:forEach items="${listOutputVarTimes}" var="listOutputVarTime">
+																						<tr>
+																							<td>${listOutputVarTime}</td>
+																					   	</tr>
+																						</c:forEach>
+																					</table>
+																					</div>
+																				</td>
+																				<td align="left">
+																					<table class="tablestyle" width="250px">
+																						<tr height="20">
+																							<!-- Value -->
+																						    <th><spring:message code="value"/></th>
+																						</tr>
+																						
+																						<c:forEach items="${listOutputVarVals}" var="listOutputVarVal">
+																						<tr>
+																							<td>${listOutputVarVal}</td>
+																					   	</tr>
+																						</c:forEach>
+																					</table>
+																				</td>
+																			</tr>
 																		</table>
+																		</div>
 																	</td>
 																</tr>
 															</table>

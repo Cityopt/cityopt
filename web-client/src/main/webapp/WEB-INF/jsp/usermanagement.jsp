@@ -125,6 +125,9 @@
 									<td valign="top">
 										<table>
 											<tr>
+												<td class="active"><spring:message code="users" /></td>
+											</tr>
+											<tr>
 												<td>
 													<table class="tablestyle" width="500">
 														<col style="width: 150px">

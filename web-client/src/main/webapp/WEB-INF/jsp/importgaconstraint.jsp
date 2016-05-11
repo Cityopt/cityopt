@@ -47,7 +47,7 @@
 								<td>
 									<table>
 										<tr>
-											<td class="infosmall"><spring:message code="search_constraints"/></td>
+											<td class="active"><spring:message code="search_constraints"/></td>
 										</tr>
 										<tr>
 											<td valign="top">
@@ -79,7 +79,6 @@
 												</table>
 											</td>
 										</tr>
-										<tr height="10"></tr>
 										<tr>
 											<td align="right"><a href="geneticalgorithm.html"><button type="button"><spring:message code="close"/></button></a></td>
 										</tr>

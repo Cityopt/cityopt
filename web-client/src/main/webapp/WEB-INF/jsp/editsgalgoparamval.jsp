@@ -57,14 +57,17 @@
 				<tr>
 					<td class="spacecolumn"></td>
 					<td valign="top">
-			          <table style="width: 450px">
-			               <tr>
+				    	<table style="width: 700px">
+			            	<tr>
+			               		<td class="active"><spring:message code="algorithm_parameters"/></td>
+			               	</tr>
+				            <tr>
 			               		<td>
-				              		<table class="tablestyle" style="width: 450px">
-			                      		<col>
-			                      		<col align="right">
-			                      		<col align="right">
-				                  		<tr>
+				              		<table class="tablestyle" style="width: 700px">
+                   						<col style="width: 400px">
+										<col style="width: 200px">
+										<col style="width: 100px">
+						          		<tr>
 				                      		<th><spring:message code="parameter"/></th>
 				                      		<th><spring:message code="value"/></th>
 				                      		<th><spring:message code="default_value"/></th>

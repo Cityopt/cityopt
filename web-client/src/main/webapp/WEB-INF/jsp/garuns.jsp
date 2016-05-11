@@ -44,6 +44,11 @@
 					<td valign="top">
 						<table>
 							<tr>
+								<td class="active">
+                           			<spring:message code="running_genetic_optimizations"/>
+								</td>
+							</tr>
+							<tr>
 								<td>
 									<table class="tablestyle" width="650">
 										<col style="width: 100px">

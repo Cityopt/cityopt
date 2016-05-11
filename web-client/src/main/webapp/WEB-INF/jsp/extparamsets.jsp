@@ -99,7 +99,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 												<!-- Create Data Entries -->
 												<tr>
 													<td valign="top">
-														<table class="tablestyle" style="width: 250px" cellspacing="0" cellpadding="0">
+														<table class="tablestyle" style="width: 250px">
 															<col style="width: 60px">
 															<col style="width: 200px">
 															<tr>
