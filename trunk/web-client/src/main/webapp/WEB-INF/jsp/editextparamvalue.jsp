@@ -51,18 +51,27 @@
 			
 						<table align="left">
 							<col style="width:150px">
-							<col style="width:80px">
-							<col style="width:80px">
+							<col style="width:250px">
 							<tr>
 								<td>
 									<!-- Name -->
 									<spring:message code="name"/>
 								</td>
 								<td>
-									${paramForm.name}
+									<form:input style="width:300px" type="text" path="name"/>
 								</td>
 							</tr>
 							<tr>
+								<td>
+									<spring:message code="comment"/>
+								</td>
+								<td>
+									<form:input style="width:300px" type="text" path="comment"/>
+								</td>
+							</tr>
+							
+        					<c:if test="${extParamVal.getExtparam().getType().getTypeid() < 4}">
+        					<tr>
 								<td>
 									<!-- Value -->
 									<spring:message code="value"/>
@@ -71,7 +80,9 @@
 									<form:input style="width:300px" type="text" path="value"/>
 								</td>
 							</tr>
-							<tr>
+							</c:if>
+        					
+        					<tr>
 								<td>					
 									<spring:message code="unit"/>
 								</td>

@@ -75,7 +75,7 @@
 																			<spring:message code="selected_external_parameter_set" />:
 																		</td>
 																		<td>
-																			<table class="tablestyle">
+																			<table class="tablestyle" width="200px" height="30px">
 																				<tr>
 																					<td>
 																						${extParamValSet.name}

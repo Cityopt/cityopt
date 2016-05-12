@@ -1173,6 +1173,7 @@ public class ParameterController {
         ParamForm paramForm = new ParamForm();
         paramForm.setName(extParamVal.getExtparam().getName());
         paramForm.setValue(extParamVal.getValue());
+        paramForm.setComment(extParamVal.getComment());
         
         if (extParamVal.getExtparam().getUnit() != null) {
         	paramForm.setUnit(extParamVal.getExtparam().getUnit().getName());
@@ -1200,8 +1201,9 @@ public class ParameterController {
         securityAuthorization.atLeastStandard_standard(project);
 
         if (cancel != null) {
-            controllerService.getComponentAndExternalParamValues(model, project);
-        	return "extparams";
+            controllerService.getProjectExternalParameterValues(model,project);        
+            controllerService.getComponentAndExternalParamValues(model,project);        
+           return "extparams";
         }
         
         try {
@@ -1219,10 +1221,12 @@ public class ParameterController {
             e.printStackTrace();
         }
 
-        updatedExtParamVal.setValue(paramForm.getValue());
+        if (updatedExtParamVal.getExtparam().getType().getTypeid() < 4)
+        {
+        	updatedExtParamVal.setValue(paramForm.getValue());
+        }
 
-        // Commented because done later other way
-        //extParamValService.save(updatedExtParamVal);
+        updatedExtParamVal.setComment(paramForm.getComment());
 
         ExtParamDTO extParam = updatedExtParamVal.getExtparam();
         try {
@@ -1244,6 +1248,7 @@ public class ParameterController {
 			}
 	        
 			extParam.setUnit(unit);
+			extParam.setName(paramForm.getName());
 			extParamService.save(extParam, project.getPrjid());
         }
         

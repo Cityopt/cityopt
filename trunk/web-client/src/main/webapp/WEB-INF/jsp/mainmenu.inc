@@ -4,16 +4,14 @@
 <table class="menustyle" height="1000" align="left">
 <tr style="height: 58px">
 	<td>
-		<table class="menublock">
+		<table class="menublock" height="58px">
 			<col style="width: 60px">
 			<col style="width: 150px">
 			<tr>
-				<td>
+				<td class="logo">
 					<img alt="Logo" class="logo" src="assets/img/icon_logo_small.gif"/>
 				</td>
-				<td valign="top">
-					<h1>CITYOPT</h1>
-				</td>
+				<td valign="top" class="logotitle">CITYOPT</td>
 			</tr>
 		</table>
 	</td>
