@@ -168,7 +168,7 @@ public class ScenarioGenerator extends VersionModel implements java.io.Serializa
 		this.name = name;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenariogenerator",cascade=CascadeType.REMOVE)
 	public Set<DecisionVariable> getDecisionvariables() {
 		return this.decisionvariables;
 	}
