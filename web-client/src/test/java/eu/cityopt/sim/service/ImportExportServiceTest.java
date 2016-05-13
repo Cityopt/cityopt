@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,8 +47,10 @@ import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.OptimizationSetRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.TimeSeriesRepository;
+import eu.cityopt.service.EntityNotFoundException;
 import eu.cityopt.service.ExtParamService;
 import eu.cityopt.service.ExtParamValSetService;
+import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.util.TempDir;
 
 @Transactional
@@ -66,6 +69,22 @@ public class ImportExportServiceTest extends SimulationTestBase {
     @Inject ExtParamService extParamService;
     @Inject TimeSeriesRepository timeSeriesRepository;
 
+    private boolean importModel(int projectId, byte[] modelData)
+            throws ConfigurationException, IOException,
+                    EntityNotFoundException {
+        importExportService.importSimulationModel(
+                projectId, null, Locale.LanguageRange.parse("en"),
+                modelData, null, null);
+        String warnings = importExportService.importModelInputsAndOutputs(
+                projectId, 0);
+        if (warnings != null) {
+            System.err.println("Warnings from import:");
+            System.err.println(warnings);
+            return false;
+        }
+        return true;
+    }
+
     @Test
     @DatabaseSetup("classpath:/testData/empty_project.xml")
     @ExpectedDatabase(value="classpath:/testData/import_model_result.xml",
@@ -73,14 +92,7 @@ public class ImportExportServiceTest extends SimulationTestBase {
     public void testImportModel() throws Exception {
         int projectId = projectRepository.findByNameContainingIgnoreCase("Empty test project").get(0).getPrjid();
         byte[] modelData = getResourceBytes("/testmodel.zip");
-        importExportService.importSimulationModel(
-                projectId, null, Locale.LanguageRange.parse("en"),
-                modelData, null, null);
-        String warnings = importExportService.importModelInputsAndOutputs(projectId, 0);
-        if (warnings != null) {
-            System.err.println("Warnings from import:");
-            System.err.println(warnings);
-        }
+        importModel(projectId, modelData);
         dumpTables("import_model", true);
     }
 
@@ -99,7 +111,7 @@ public class ImportExportServiceTest extends SimulationTestBase {
         }
         dumpTables("import_problem");
     }
-    
+
     @Test
     @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
     @ExpectedDatabase(value="classpath:/testData/import_problem_result.xml",
@@ -122,7 +134,7 @@ public class ImportExportServiceTest extends SimulationTestBase {
             Files.copy(tsout, System.out);
         }
     }
-    
+
     @Test
     @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
     public void testExportExtParamTimeSeries() throws Exception {
@@ -170,7 +182,7 @@ public class ImportExportServiceTest extends SimulationTestBase {
         }
         dumpTables("import_structure");
     }
-    
+
     @Test
     @DatabaseSetup("classpath:/testData/empty_project.xml")
     @ExpectedDatabase(
@@ -217,7 +229,7 @@ public class ImportExportServiceTest extends SimulationTestBase {
         }
         dumpTables("import_optset");
     }
-    
+
     @Test
     @DatabaseSetup("classpath:/testData/testmodel_scenario.xml")
     public void testExportOptimisationSet() throws Exception {
@@ -261,7 +273,7 @@ public class ImportExportServiceTest extends SimulationTestBase {
                 makeTempPath("imported_scenarios_timeseries.csv"));
         dumpTables("import_scenarios");
     }
-    
+
     @Test
     @DatabaseSetup({"classpath:/testData/plumbing_ga_result2.xml"})
     public void testExportMetrics() throws Exception {
@@ -294,5 +306,17 @@ public class ImportExportServiceTest extends SimulationTestBase {
                 OptimisationProblemIO.writeMulti(binder, System.out);
             }
         }
+    }
+
+    @Test
+    @DatabaseSetup("classpath:/testData/empty_project.xml")
+    @ExpectedDatabase(value="classpath:/testData/time_series_input_result.xml",
+            assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void testImportTsInputs() throws Exception {
+        int projectId = projectRepository.findByNameContainingIgnoreCase(
+                "Empty test project").get(0).getPrjid();
+        byte[] modelData = getResourceBytes("/read_test.zip");
+        importModel(projectId, modelData);
+        dumpTables("time_series_input", false);
     }
 }
