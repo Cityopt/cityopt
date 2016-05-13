@@ -579,23 +579,13 @@ public class ParameterController {
                 	unit = controllerService.getDefaultUnit();
                 }
 
-                List<InputParameterDTO> testInputs = inputParamService.findByName(inputParamName);
-                System.out.println("test inputs size " + testInputs.size() + " name: " + inputParamName);
-                
-                if (testInputs.size() > 0
-                	&& inputParam.getName().equals(inputParamName))
-                {
-                	// Update
-                	inputParam = inputParamService.update(inputParam, inputParam.getComponentComponentid(), unit.getUnitid(), ts);
-                } 
-                else if (testInputs.size() == 0)
-                {
-                    inputParam.setName(inputParamName);
-                	inputParam = inputParamService.save(inputParam, inputParam.getComponentComponentid(), unit.getUnitid(), ts);
-                }
+            	if (inputParam.getName().equals(inputParamName))
+            	{
+            		inputParam = inputParamService.update(inputParam, inputParam.getComponentComponentid(), unit.getUnitid(), ts);
+            	}
                 else
                 {
-                	String error = controllerService.getMessage("imported_input_parameter_exists", request);
+                	String error = controllerService.getMessage("name_conflict", request);
                 	model.put("error", error);
                 }
 
@@ -605,12 +595,11 @@ public class ParameterController {
                 
                 stream.close();
                 System.out.println("Finished importing input time series");
-
-                List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-	            model.put("components", components);
-	            Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
-	            model.put("extParams", extParams);
-
+                
+                int componentId = inputParam.getComponentComponentid();
+            	model.put("selectedcompid", componentId);
+            	List<InputParameterDTO> inputParams = componentService.getInputParameters(componentId);
+                model.put("inputParameters", inputParams);
             } catch (Exception e) {
             	e.printStackTrace();
             }
@@ -824,7 +813,7 @@ public class ParameterController {
         
         int nSelectedCompId = Integer.parseInt(strSelectedCompId);
         String strUnit = inputParamForm.getUnit();
-
+        
         if (inputParamForm.getName() == null || inputParamForm.getName().isEmpty() 
     		|| strUnit == null || strUnit.isEmpty())
         {
@@ -841,10 +830,11 @@ public class ParameterController {
         	return "createinputparameter";
         }
         
+        InputParameterDTO testInput = inputParamService.findByNameAndComponent(inputParamForm.getName(), nSelectedCompId);
         SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
      	boolean isValid = checker.isValidAttributeName(inputParamForm.getName());
 
-     	if (!isValid)
+     	if (!isValid || testInput != null)
      	{
             model.put("error", controllerService.getMessage("write_another_input_parameter_name", request));
             InputParameterDTO newInputParameter = new InputParameterDTO();
