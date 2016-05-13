@@ -87,6 +87,15 @@ public class InputParamServiceTest {
 	}
 	
 	@Test
+	public void findByNameAndComponent() throws EntityNotFoundException {
+		InputParameterDTO iparam = inputParamService.findByNameAndComponent("InputParameter 1",1);
+		assertNotNull(iparam);
+		
+		iparam = inputParamService.findByNameAndComponent("InputParameter 1",4);
+		assertNull(iparam);
+	}
+	
+	@Test
 	public void findInputParameterValues() throws EntityNotFoundException {
 		
 		Page<InputParamValDTO> inputParamVal = inputParamValService.findByComponentAndScenario(1, 1,0);
