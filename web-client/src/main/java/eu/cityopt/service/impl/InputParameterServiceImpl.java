@@ -137,6 +137,7 @@ public class InputParameterServiceImpl implements InputParameterService {
 		return inparam.getComponent().getComponentid();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public InputParameterDTO findByNameAndComponent(String name,
 			int componentId) {
