@@ -48,12 +48,10 @@
 				<tr>
 					<td class="spacecolumn"></td>
 					<td valign="top">
-						<div style="overflow:scroll;height:800px;width:600px;overflow:auto">
-						
 						<table align="center">
 							<col style="width:150px">
 							<col style="width:80px">
-							<col style="width:300px">
+							<col style="width:500px">
 							<form:form method="post" action="editinputparameter.html?inputparamid=${inputParam.inputid}" modelAttribute="inputParamForm">
 							<tr>
 								<td>
@@ -61,6 +59,14 @@
 								</td>
 								<td>
 									${inputParam.name}
+								</td>
+							</tr>
+							<tr>
+								<td>					
+									<spring:message code="unit"/>
+								</td>
+								<td>					
+									${inputParam.unit.name}
 								</td>
 							</tr>
 							<c:choose>
@@ -71,9 +77,17 @@
 										</td>
 										<td><spring:message code="time_series"/></td>																		
 									</tr>
+									<tr height="20">
+										<td>
+										</td>
+									</tr>
 									<tr>
-										<td colspan="2">
-											<table border="1">
+										<td class="active"><spring:message code="time_series" /></td>
+									</tr>
+									<tr>
+										<td colspan="3">
+											<div style="overflow:scroll;height:100%;width:600px;overflow:auto">
+											<table class="tablestyle" border="1">
 												<tr>
 													<td>Times</td>
 													<c:forEach items="${times}" var="time">
@@ -87,6 +101,7 @@
 													</c:forEach>
 												</tr>
 											</table>
+											</div>
 										</td>
 									</tr>			
 								</c:when>
@@ -107,14 +122,6 @@
 								</tr>			
 								</c:otherwise>
 							</c:choose>
-							<tr>
-								<td>					
-									<spring:message code="unit"/>
-								</td>
-								<td>					
-									${inputParam.unit.name}
-								</td>
-							</tr>
 							
 							<tr height="20">
 								<td>
@@ -190,7 +197,6 @@
 							</tr>	
 							</form:form>
 						</table>
-						</div>
 					</td>
 			     </tr>
 		     </table>
