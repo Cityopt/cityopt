@@ -85,6 +85,7 @@ import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.eval.TimeSeriesData.Series;
+import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.util.TimeUtils;
 import eu.cityopt.sim.opt.AlgorithmParameters;
 import eu.cityopt.sim.opt.OptimisationProblem;
@@ -599,7 +600,7 @@ public class ImportExportService {
         metricRepository.save(changedMetrics);
     }
 
-    void saveDefaultInput(Project project, SimulationInput defaultInput) {
+    private void saveDefaultInput(Project project, SimulationInput defaultInput) {
         Namespace namespace = defaultInput.getNamespace();
         List<InputParameter> changedInputs = new ArrayList<>();
         for (Component component : project.getComponents()) {
@@ -608,8 +609,17 @@ public class ImportExportService {
                 if (type != null) {
                     Object value = defaultInput.get(component.getName(), inputParameter.getName());
                     if (value != null) {
-                        String text = type.format(value, namespace);
-                        inputParameter.setDefaultvalue(text);
+                        if (type.isTimeSeriesType()) {
+                            TimeSeries ts = simulationService.saveTimeSeries(
+                                    (TimeSeriesI)value, type,
+                                    namespace.timeOrigin);
+                            inputParameter.setTimeseries(ts);
+                            inputParameter.setDefaultvalue(null);
+                        } else {
+                            String text = type.format(value, namespace);
+                            inputParameter.setDefaultvalue(text);
+                            inputParameter.setTimeseries(null);
+                        }
                         changedInputs.add(inputParameter);
                     }
                 }

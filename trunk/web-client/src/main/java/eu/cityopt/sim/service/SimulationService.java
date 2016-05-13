@@ -79,7 +79,7 @@ import eu.cityopt.sim.eval.util.TimeUtils;
  * <p>
  * We use an injected ExecutorService to perform computations and store results in
  * the background. The actual simulations are run in separate processes.
- * 
+ *
  * @author Hannu Rummukainen
  */
 @Service
@@ -90,7 +90,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     public static final String STATUS_MODEL_FAILURE = "MODEL_FAILURE";
     public static final String STATUS_SIMULATOR_FAILURE = "SIMULATOR_FAILURE";
 
-    private static Logger log = Logger.getLogger(SimulationService.class); 
+    private static Logger log = Logger.getLogger(SimulationService.class);
 
     @Autowired private SyntaxCheckerService syntaxCheckerService;
 
@@ -249,18 +249,19 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         public Integer extParamValSetId;
 
         /** Brief human-readable description. */
+        @Override
         public String toString() {
             return updated.size() + " scenarios updated, "
                     + ignored.size() + " scenarios had no results, "
                     + failures.size() + " scenarios failed.";
-            
+
         }
     }
 
     /**
      * Updates scenario metrics using specific external parameter values.
      * Creates new ScenarioMetrics rows for all scenarios in a project.
-     * 
+     *
      * @param projectId project identifier
      * @param extParamValSetId external parameter value set identifier,
      *    or null, in which case default values of the external parameters
@@ -362,7 +363,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         if (extParamValSet != null) {
             simExternals.setExternalId(extParamValSet.getExtparamvalsetid());
             for (ExtParamValSetComp extParamValSetComp : extParamValSet.getExtparamvalsetcomps()) {
-                ExtParamVal extParamVal = extParamValSetComp.getExtparamval(); 
+                ExtParamVal extParamVal = extParamValSetComp.getExtparamval();
                 String extName = extParamVal.getExtparam().getName();
                 Type extType = namespace.externals.get(extName);
                 if (extType != null) {
@@ -381,7 +382,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     }
 
     /** Loads the data of a time series. */
-    public TimeSeriesI loadTimeSeries(TimeSeries timeseries, 
+    public TimeSeriesI loadTimeSeries(TimeSeries timeseries,
             Type timeSeriesType, EvaluationSetup evsup) {
         TimeSeriesData.Series s = loadTimeSeriesData(
                 timeseries.getTseriesid(), evsup.timeOrigin);
@@ -390,7 +391,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         ts.setTimeSeriesId(timeseries.getTseriesid());
         return ts;
     }
-    
+
     /**
      * Load the data of a time series.
      * @param tsid time series id
@@ -410,7 +411,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         }
         return new TimeSeriesData.Series(times, values);
     }
-    
+
     /**
      * Loads the simulation input parameter values of a scenario.
      * @param scenarioId
@@ -425,7 +426,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     }
 
     /** Loads the simulation input parameter values of a scenario. */
-    public SimulationInput loadSimulationInput(Scenario scenario, ExternalParameters simExternals) 
+    public SimulationInput loadSimulationInput(Scenario scenario, ExternalParameters simExternals)
             throws ParseException {
         SimulationInput simInput = new SimulationInput(simExternals);
         Namespace namespace = simInput.getNamespace();
@@ -455,7 +456,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                 Type simType = namespace.getInputType(component.getName(), inputName);
                 if (simType != null && simType.isTimeSeriesType()) {
                     if (inputParameter.getTimeseries() != null) {
-                        Object simTS = loadTimeSeries(inputParameter.getTimeseries(), 
+                        Object simTS = loadTimeSeries(inputParameter.getTimeseries(),
                                 simType, namespace);
                         simInput.put(component.getName(), inputName, simTS);
                     }
@@ -519,7 +520,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                     simInput, permanent, scenario.getStatus(), scenario.getLog());
         }
         if (scenario.getRunstart() != null) {
-            simOutput.runStart = scenario.getRunstart().toInstant(); 
+            simOutput.runStart = scenario.getRunstart().toInstant();
         }
         if (scenario.getRunend() != null) {
             simOutput.runEnd = scenario.getRunend().toInstant();
@@ -551,15 +552,15 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         return (timeOriginDate != null)
                 ? timeOriginDate.toInstant() : DEFAULT_TIME_ORIGIN;
     }
-    
-    /** 
+
+    /**
      * Load the time origin of the simulation model of the project.
-     * Return a default value if project is null.  
+     * Return a default value if project is null.
      */
     public Instant loadTimeOrigin(eu.cityopt.model.Project prj) {
         return loadTimeOrigin(prj == null ? null : prj.getSimulationmodel());
     }
-    
+
     public EvaluationSetup getEvaluationSetup(eu.cityopt.model.Project prj) {
         return new EvaluationSetup(getEvaluator(), loadTimeOrigin(prj));
     }
@@ -590,7 +591,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
      * values are ignored here.
      * @param projectId
      * @param scenGenId id of ScenarioGenerator instance from which names and types of
-     *   decision variables will be loaded 
+     *   decision variables will be loaded
      */
     @Transactional
     public Namespace makeProjectNamespace(int projectId, int scenGenId) {
@@ -613,7 +614,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
      * scenario specific, and they are ignored here.
      * @param project
      * @param scenarioGenerator either null for basic use cases, or ScenarioGenerator
-     *    instance from which names and types of decision variables will be loaded 
+     *    instance from which names and types of decision variables will be loaded
      */
     public Namespace makeProjectNamespace(Project project, ScenarioGenerator scenarioGenerator) {
         Instant timeOrigin = loadTimeOrigin(project);
@@ -681,20 +682,19 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             return extParamValSetRepository.findOne(extId);
         }
         Namespace namespace = simExternals.getNamespace();
-    
+
         ExtParamValSet extParamValSet = new ExtParamValSet();
         extParamValSet.setName(setName);
         for (ExtParam extParam : project.getExtparams()) {
             String extName = extParam.getName();
             Type simType = namespace.externals.get(extName);
             if (simType != null && simExternals.contains(extName)) {
-                eu.cityopt.model.Type type = typeRepository.findByNameLike(simType.name);
                 ExtParamVal extParamVal = new ExtParamVal();
                 extParamVal.setExtparam(extParam);
                 if (simType.isTimeSeriesType()) {
                     TimeSeries timeSeries = saveTimeSeries(
-                            simExternals.getTS(extName), type,
-                            namespace.timeOrigin, idUpdateList);
+                            simExternals.getTS(extName), simType,
+                            namespace.timeOrigin);
                     extParamVal.setTimeseries(timeSeries);
                     timeSeries.getExtparamvals().add(extParamVal);
                 } else {
@@ -719,6 +719,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         return finalExtParamValSet;
     }
 
+    //XXX What is idUpdateList and why?  Not used.  Passing null below.
     TimeSeries saveTimeSeries(TimeSeriesI simTS, eu.cityopt.model.Type type,
             Instant timeOrigin, List<Runnable> idUpdateList) {
         if (simTS.getTimeSeriesId() != null) {
@@ -735,7 +736,13 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         simTS.setTimeSeriesId(timeSeries.getTseriesid());
         return timeSeries;
     }
-    
+
+    TimeSeries saveTimeSeries(TimeSeriesI simTS, Type type,
+                              Instant timeOrigin) {
+        return saveTimeSeries(simTS, typeRepository.findByNameLike(type.name),
+                              timeOrigin, null);
+    }
+
     /**
      * Save a time series into the database.
      * Because this returns a TimeSeries rather than a TimeSeriesDTO,
@@ -744,7 +751,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
      * @param times Time points as seconds from timeOrigin
      * @param values Series values at the time points.
      * @param type Type attribute of the time series.  We save it but
-     *   I don't think it is used for anything currently. 
+     *   I don't think it is used for anything currently.
      * @param timeOrigin Time origin for converting seconds to timestamps.
      * @return the saved TimeSeries.
      */

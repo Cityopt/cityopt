@@ -86,7 +86,7 @@ import eu.cityopt.sim.opt.Solution;
  * @author Hannu Rummukainen
  */
 public class DbSimulationStorage implements DbSimulationStorageI {
-    private static Logger log = Logger.getLogger(DbSimulationStorage.class); 
+    private static Logger log = Logger.getLogger(DbSimulationStorage.class);
 
     private DbSimulationStorageI proxy;
     private int projectId;
@@ -243,7 +243,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         try {
             SimulationInput input =
                     simulationService.loadSimulationInput(scenario, externals);
-            SimulationOutput output = 
+            SimulationOutput output =
                     simulationService.loadSimulationOutput(scenario, input);
             Gate oldGate = cache.putIfAbsent(input, new Gate(output));
             if (oldGate != null) {
@@ -261,7 +261,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         Project project = projectRepository.findOne(projectId);
         if (project == null) {
             cache.clear();
-            String msg = "Project " + projectId + " has been removed from the database."; 
+            String msg = "Project " + projectId + " has been removed from the database.";
             log.error(msg);
             throw new EntityNotFoundException(msg);
         }
@@ -355,10 +355,9 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                         inputParamVal.setCreatedon(now);
                         if (simType.isTimeSeriesType()) {
                             TimeSeriesI simTS = simInput.getTS(componentName, inputName);
-                            eu.cityopt.model.Type type = typeRepository.findByNameLike(simType.name);
                             if (simTS != null) {
                                 TimeSeries timeSeries = simulationService.saveTimeSeries(
-                                        simTS, type, namespace.timeOrigin, idUpdates);
+                                        simTS, simType, namespace.timeOrigin);
                                 inputParamVal.setTimeseries(timeSeries);
                             }
                         } else {
@@ -398,7 +397,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
             scenario.setStatus(SimulationService.STATUS_SUCCESS);
             SimulationResults simResults = (SimulationResults) simOutput;
             Namespace namespace = simResults.getNamespace();
-            Set<SimulationResult> newResults = new HashSet<SimulationResult>(); 
+            Set<SimulationResult> newResults = new HashSet<SimulationResult>();
             List<Runnable> idUpdates = new ArrayList<Runnable>();
             for (Component component : scenario.getProject().getComponents()) {
                 String componentName = component.getName();
@@ -409,10 +408,9 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                         Type simType = nsComponent.outputs.get(outputName);
                         if (simType != null) {
                             TimeSeriesI simTS = simResults.getTS(componentName, outputName);
-                            eu.cityopt.model.Type type = typeRepository.findByNameLike(simType.name);
                             if (simTS != null) {
                                 TimeSeries timeSeries = simulationService.saveTimeSeries(
-                                        simTS, type, namespace.timeOrigin, idUpdates);
+                                        simTS, simType, namespace.timeOrigin);
 
                                 SimulationResult simulationResult = new SimulationResult();
 
@@ -484,9 +482,8 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                 Type simType = namespace.metrics.get(metric.getName());
                 if (simType.isTimeSeriesType()) {
                     TimeSeriesI simTS = (TimeSeriesI) value;
-                    eu.cityopt.model.Type type = typeRepository.findByNameLike(simType.name);
                     TimeSeries timeSeries = simulationService.saveTimeSeries(
-                            simTS, type, namespace.timeOrigin, idUpdateList);
+                            simTS, simType, namespace.timeOrigin);
                     metricVal.setTimeseries(timeSeries);
                 } else {
                     String text = simType.format(value, namespace);
