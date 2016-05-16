@@ -353,11 +353,6 @@ public class ScenarioController {
 			int nScenarioId = Integer.parseInt(scenarioid);
 			
 			try {						
-				//This function will keep created clone names intact.
-				//author@: Markus Turunen
-				//date: 24.6.2015
-				//ToDO: test&improve
-				//Implement cloneNamer								
 				scenario = scenarioService.findByID(nScenarioId);					
 				String name = scenario.getName();
 				List<ScenarioDTO> list =scenarioService.findByNameContaining(name);	
@@ -366,19 +361,7 @@ public class ScenarioController {
 						 clonename= name+"("+i+")";			
 					}
 				ScenarioDTO cloneScenario = copyService.copyScenario(nScenarioId, clonename, true, false, true, false);
-				
-				/*
-				scenario = scenarioService.findByID(nScenarioId);
-				String clonename= scenario.getName()+"(copy)";
-				List<ScenarioDTO> clonelist =scenarioService.findByName(clonename);
-				if (clonelist.isEmpty()){				
-				ScenarioDTO cloneScenario = copyService.copyScenario(nScenarioId, clonename, true, false, true, false);		
-				}
-				*/
-				
-				//original
-				//ScenarioDTO cloneScenario = copyService.copyScenario(nScenarioId, scenario.getName() + " clone", true, false, true, false);
-				
+				cloneScenario.setStatus("");
 				
 				scenarioService.save(cloneScenario, project.getPrjid());
 				
