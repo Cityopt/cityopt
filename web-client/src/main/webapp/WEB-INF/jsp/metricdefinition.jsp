@@ -46,9 +46,9 @@
 				<tr>
 					<td class="spacecolumn"></td>
 					<td valign="top">
-						<table class="tablestyle" width="700px">
+						<table class="tablestyle" width="760px">
 							<col style="width: 100px">
-							<col style="width: 240px">
+							<col style="width: 300px">
 							<col style="width: 90px">
 							<col style="width: 90px">
 							<col style="width: 90px">
@@ -116,6 +116,7 @@
 		   				</a>
 			   		</td>
 				</tr>
+				<tr height="100%"><td></td></tr>
 			</table>
 			</div>
 		</td>
