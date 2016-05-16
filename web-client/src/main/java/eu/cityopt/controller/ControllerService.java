@@ -577,6 +577,7 @@ public class ControllerService {
 	            model.put("usersession", userSession);
             }
 	        
+	        model.put("usersession", userSession);
 	        List<MetricValDTO> listMetricVals = metricValService.findAll();
 	        List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
 	

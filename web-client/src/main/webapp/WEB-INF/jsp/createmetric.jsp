@@ -28,7 +28,7 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td valign="top">
-			<table class="maintable" style="width: 1000px">			
+			<table class="maintableextrawide">			
 				<%@ include file="toprow.inc"%>
 				<tr class="titlerow">
 					<td>
@@ -107,6 +107,7 @@
 									
 																<tr>
 																	<td valign="top">
+																		<div style="overflow:scroll;height:300px;width:250px;overflow:auto">
 																		<table class="tablestyle">
 																			<col style="width:60px">
 																			<col style="width:190px">
@@ -139,9 +140,11 @@
 																		   	</tr>
 																			</c:forEach>
 																		</table>
+																		</div>
 																	</td>
 																	<td></td>
 																	<td valign="top">
+																		<div style="overflow:scroll;height:300px;width:460px;overflow:auto">
 																		<table class="tablestyle">
 																			<col style="width:150px">
 																			<col style="width:100px">
@@ -164,9 +167,11 @@
 																		    </tr>
 																			</c:forEach>
 																		</table>
+																		</div>
 																	</td>
 																	<td></td>
 																	<td valign="top">
+																		<div style="overflow:scroll;height:300px;width:250px;overflow:auto">
 																		<table class="tablestyle">
 																			<col style="width:200px">
 																			<col style="width:50px">
@@ -183,6 +188,7 @@
 																		    </tr>
 																			</c:forEach>
 																		</table>
+																		</div>
 																	</td>	
 																</tr>
 															</table>

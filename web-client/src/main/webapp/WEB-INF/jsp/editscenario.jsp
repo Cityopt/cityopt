@@ -64,9 +64,9 @@
 								<td>
 									<table width="700">
 										<tr>
+											<form:form method="post" action="editscenario.html?action=update" modelAttribute="scenario">
 											<td>
 												<table>
-													<form:form method="post" action="editscenario.html?action=update" modelAttribute="scenario">
 													<tr>
 														<c:set var="tooltip_name"><spring:message code="tooltip_edit_scenario_name"/></c:set>
 														<td class="infosmall"><spring:message code="scenario_name"/>*</td>
@@ -82,7 +82,6 @@
 														<c:set var="tooltip_description"><spring:message code="tooltip_edit_scenario_description"/></c:set>
 														<td><form:textarea type="text" rows="3" title="${tooltip_description}" path="description" style="width:400px"/></td>
 													</tr>
-													</form:form>
 												</table>
 											</td>
 											<td valign="top" align="right">	
@@ -111,6 +110,7 @@
 													</tr>
 												</table>
 											</td>
+											</form:form>
 										</tr>
 									</table>
 								</td>
