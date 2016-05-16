@@ -23,7 +23,7 @@ public class TempDir implements Closeable {
 
     private final Path path;
     private boolean is_closed;
-    
+
     /** Path to the temporary directory. */
     public Path getPath() {return path;}
 
@@ -40,7 +40,7 @@ public class TempDir implements Closeable {
     }
 
     /** Check whether close() has been called. */
-    public boolean isClosed() {return is_closed;} 
+    public boolean isClosed() {return is_closed;}
 
     /** Delete the directory and its contents. */
     @Override
@@ -63,47 +63,95 @@ public class TempDir implements Closeable {
         delayedDeleter = instance;
     }
 
-    static void deleteTree(Path path) throws IOException {
+    /* Initially copied from the Javadoc of FileVisitor.
+       However, Windows seems to throw AccessDeniedExceptions for no
+       clear reason.  Little that one can do except leave files behind.
+       Coping with that makes this even more complicated than it
+       would normally be. */
+    private static class Deleter extends SimpleFileVisitor<Path> {
+        IOException firstExc;
+
+        private void suppress(IOException exc) {
+            if (firstExc == null) {
+                firstExc = exc;
+            } else {
+                firstExc.addSuppressed(exc);
+            }
+        }
+
+        private void addSuppressedTo(Throwable to) {
+            if (firstExc != null) {
+                to.addSuppressed(firstExc);
+                for (Throwable t : firstExc.getSuppressed()) {
+                    to.addSuppressed(t);
+                }
+            }
+        }
+
+        @Override
+        public FileVisitResult visitFile(
+                Path file, BasicFileAttributes attrs)
+                        throws IOException {
+            Files.delete(file);
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult visitFileFailed(Path file,
+                IOException exc) throws IOException {
+
+            if (exc instanceof AccessDeniedException) {
+                logger.warn("visitFileFailed: " + exc);
+                suppress(exc);
+            } else {
+                addSuppressedTo(exc);
+                throw exc;
+            }
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult postVisitDirectory(
+                Path dir, IOException exc) throws IOException {
+            try {
+                if (exc != null) {
+                    addSuppressedTo(exc);
+                    throw exc;
+                }
+                Files.delete(dir);
+            } catch (AccessDeniedException e) {
+                logger.warn("postVisitDirectory: " + e);
+                suppress(e);
+            } catch (DirectoryNotEmptyException e) {}
+            return FileVisitResult.CONTINUE;
+        }
+    }
+
+    /**
+     * Delete path, recursively if it is a directory.
+     * During recursive deletion AccessDeniedExceptions, commonly thrown
+     * by Windows, are suppressed.  After traversing the whole tree the
+     * first AccessDeniedException is rethrown.  DirectoryNotEmptyExceptions
+     * are ignored.  Other IOExceptions are thrown immediately, interrupting
+     * traversal.  Suppressed AccessDeniedExceptions can be retrieved with
+     * {@link Throwable#getSuppressed()} from the eventually thrown exception.
+     * <p>
+     * Even if no exception is thrown there is no guarantee that
+     * path was deleted.  E.g., a new file may have been created in a
+     * directory during its traversal, causing a DirectoryNotEmptyException,
+     * which is swallowed by deleteTree.
+     *
+     * @param path
+     */
+    public static void deleteTree(Path path) throws IOException {
         if (Files.isDirectory(path)) {
-            /* Initially copied from the Javadoc of FileVisitor.
-               However, Windows seems to throw AccessDeniedExceptions for no
-               clear reason.  Little one can do except leave files behind.
-               Coping with that makes this even more complicated than it
-               would normally be. */
-            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-
-                @Override
-                public FileVisitResult visitFile(
-                        Path file, BasicFileAttributes attrs)
-                                throws IOException {
-                    Files.delete(file);
-                    return FileVisitResult.CONTINUE;
-                }
-                
-                @Override
-                public FileVisitResult visitFileFailed(Path file,
-                        IOException exc) throws IOException {
-                    if (exc instanceof AccessDeniedException) {
-                        logger.warn("visitFileFailed: " + exc);
-                    } else {
-                        throw exc;
-                    }
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult postVisitDirectory(
-                        Path dir, IOException exc) throws IOException {
-                    try {
-                        if (exc != null)
-                            throw exc;
-                        Files.delete(dir);
-                    } catch (AccessDeniedException e) {
-                        logger.warn("postVisitDirectory: " + e);
-                    } catch (DirectoryNotEmptyException e) {}
-                    return FileVisitResult.CONTINUE;
-                }
-            });
+            Deleter del = new Deleter();
+            Files.walkFileTree(path, del);
+            if (del.firstExc != null) {
+                throw del.firstExc;
+            }
+        } else {
+            Files.delete(path);
         }
     }
 }
