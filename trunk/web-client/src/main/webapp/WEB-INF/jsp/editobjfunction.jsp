@@ -64,6 +64,7 @@
 										<tr>
 											<td></td>
 											<td>
+												<div style="overflow:scroll;height:300px;width:250px;overflow:auto">
 												<table class="tablestyle">
 													<col style="width:60px">
 													<col style="width:190px">
@@ -90,6 +91,7 @@
 												   	</tr>
 													</c:forEach>
 												</table>
+												</div>
 											</td>
 											<td></td>
 											<td valign="top">

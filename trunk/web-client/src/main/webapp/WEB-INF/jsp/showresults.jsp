@@ -19,7 +19,7 @@
 		</td>
 		<td valign="top">
 			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
-			<table class="maintable">			
+			<table class="maintablewide">			
 				<%@ include file="toprow.inc"%>
 				<tr class="titlerow">
 					<td class="spacecolumn"></td>
@@ -68,7 +68,7 @@
 									<table class="tablegroup">
 										<col style="width:250px">
 										<col style="width:30px">
-										<col style="width:250px">
+										<col style="width:330px">
 										<col style="width:30px">
 										<col style="width:250px">
 			
@@ -84,6 +84,7 @@
 										</tr>
 										<tr>
 											<td valign="top">
+												<div style="overflow:scroll;height:300px;width:250px;overflow:auto">
 												<table class="tablestyle">
 													<col style="width:60px">
 													<col style="width:190px">
@@ -101,18 +102,23 @@
 														</c:if>
 														<c:if test="${selectedcompid != component.componentid}">
 															<tr>
-															<td><a href="<c:url value='showresults.html?selectedcompid=${component.componentid}&scenarioid=${scenario.scenid}'/>">
-															<spring:message code="select"/></a></td>
+															<td>
+																<a href="<c:url value='showresults.html?selectedcompid=${component.componentid}&scenarioid=${scenario.scenid}'/>">
+																	<button type="button"><spring:message code="select"/></button>
+																</a>
+															</td>
 														</c:if>
 															<td>${component.name}</td>
 												   	</tr>
 													</c:forEach>
 												</table>
+												</div>
 											</td>
 											<td></td>
 											<td valign="top">
+												<div style="overflow:scroll;height:300px;width:330px;overflow:auto">
 												<table class="tablestyle">
-													<col style="width:150px">
+													<col style="width:230px">
 													<col style="width:100px">
 													<tr>
 														<!--Input parameter-->
@@ -128,6 +134,7 @@
 													</tr>
 													</c:forEach>
 												</table>
+												</div>
 											</td>
 											<td></td>
 											<td valign="top">
@@ -193,6 +200,7 @@
 					</td>
 				</tr>
 			</table>
+			</div>
 		</td>
 	</tr>
 </table>
