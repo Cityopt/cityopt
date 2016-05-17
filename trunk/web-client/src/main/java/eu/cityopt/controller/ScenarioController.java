@@ -870,7 +870,8 @@ public class ScenarioController {
 	@RequestMapping(value="scenarioParam", method=RequestMethod.POST)
 	public String scenarioParamPost(Map<String, Object> model,
 		ScenarioParamForm form,
-		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
+		HttpServletRequest request) {
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -914,9 +915,50 @@ public class ScenarioController {
 		}
 		model.put("project", project);
 
-		controllerService.initEditScenario(model, project.getPrjid(), scenario.getScenid());
+		String statusMsg = controllerService.getScenarioStatus(scenario);
+
+		if (statusMsg != null && statusMsg.equals("SUCCESS"))
+		{
+			model.put("disableEdit", true);
+		}
+				
+		ComponentDTO selectedComponent = null;
 		
-		return "editscenario";
+		if (nSelectedCompId > 0)
+		{
+			try {
+				selectedComponent = componentService.findByID(nSelectedCompId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			List<InputParamValDTO> resultInputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
+			ScenarioParamForm newForm = new ScenarioParamForm();
+			 
+            for (InputParamValDTO InputParamValue : resultInputParamVals) {
+                int inputId = InputParamValue.getInputparamvalid();	               
+                String value = ""; 
+                
+                value = InputParamValue.getValue();
+                
+                newForm.getValueByInputId().put(inputId, value);
+            }        
+          
+	        model.put("scenarioParamForm", newForm);			
+			model.put("selectedcompid", selectedCompId);
+			model.put("selectedComponent",  selectedComponent);
+			
+			model.put("inputParamVals", resultInputParamVals);
+		}
+
+		model.put("project", project);
+
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+			
+		model.put("info", controllerService.getMessage("scenario_updated", request));
+		
+		return "scenarioparameters";
 	}
 	
 	@RequestMapping(value="scenariovariables",method=RequestMethod.GET)

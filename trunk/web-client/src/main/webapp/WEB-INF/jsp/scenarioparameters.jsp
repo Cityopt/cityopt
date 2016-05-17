@@ -56,6 +56,10 @@
 				</tr>
 				<tr>
 					<td class="spacecolumn"></td>
+					<td class="successful">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
 					<td valign="top">
 						<table>
 							<c:choose>
