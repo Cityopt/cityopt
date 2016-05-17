@@ -58,7 +58,7 @@ public class Project extends VersionModel implements java.io.Serializable {
 			0);
 	private List<Component> components = new ArrayList<Component>();
 	private Set<OptConstraint> optconstraints = new HashSet<OptConstraint>(0);
-	private Set<Metric> metrics = new HashSet<Metric>(0);
+	private Set<Metric> metrics = new LinkedHashSet<Metric>(0);
 	private Set<UserGroupProject> usergroupprojects = new HashSet<UserGroupProject>(
 			0);
 	private Set<ExtParam> extparams = new HashSet<ExtParam>(0);
@@ -296,6 +296,7 @@ public class Project extends VersionModel implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
+	@OrderBy("name")
 	public Set<Metric> getMetrics() {
 		return this.metrics;
 	}
