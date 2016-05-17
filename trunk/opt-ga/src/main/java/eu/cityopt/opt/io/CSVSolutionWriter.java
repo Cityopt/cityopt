@@ -28,7 +28,7 @@ public class CSVSolutionWriter implements SolutionWriter {
     public final ObjectWriter writer;
     private final OutputStream str;
     private SequenceWriter seq = null;
-    
+
     @AssistedInject
     public CSVSolutionWriter(CsvMapper mapper, OptimisationProblem problem,
                              @Assisted OutputStream str) {
@@ -52,7 +52,7 @@ public class CSVSolutionWriter implements SolutionWriter {
                                     ObjectiveExpression::getName));
         seq.write(row.collect(Collectors.toList()));
     }
-    
+
     @Override
     public synchronized void writeSolution(DecisionValues dvals, Solution sol)
             throws IOException {
@@ -64,9 +64,11 @@ public class CSVSolutionWriter implements SolutionWriter {
         row = Stream.concat(
                 row,
                 Arrays.stream(sol.constraintStatus.infeasibilities).boxed());
-        row = Stream.concat(
-                row,
-                Arrays.stream(sol.objectiveStatus.objectiveValues).boxed());
+        if (sol.objectiveStatus != null) {
+            row = Stream.concat(
+                    row, Arrays.stream(
+                            sol.objectiveStatus.objectiveValues).boxed());
+        }
         seq.write(row.collect(Collectors.toList()));
     }
 

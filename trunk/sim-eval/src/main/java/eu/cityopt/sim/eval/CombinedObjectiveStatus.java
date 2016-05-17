@@ -2,13 +2,13 @@ package eu.cityopt.sim.eval;
 
 /**
  * Combines constraint status and objective function status.
- * 
+ *
  * Constraint violations are compared first, and only if both solutions are
  * equally feasible, are objective functions compared.
  *<p>
  * Can be constructed from a pre-simulation constraint status, without any
  * objective status, as long as the constraint status is strictly infeasible.
- * 
+ *
  * @author Hannu Rummukainen
  */
 public class CombinedObjectiveStatus implements
@@ -39,7 +39,15 @@ public class CombinedObjectiveStatus implements
     public Integer compareTo(CombinedObjectiveStatus other) {
         Integer cmp = constraintStatus.compareTo(other.constraintStatus);
         if (cmp != null && cmp == 0) {
-            cmp = objectiveStatus.compareTo(other.objectiveStatus);
+            if (objectiveStatus == null) {
+                if (other.objectiveStatus != null) {
+                    cmp = 1;
+                }
+            } else if (other.objectiveStatus == null) {
+                cmp = -1;
+            } else {
+                cmp = objectiveStatus.compareTo(other.objectiveStatus);
+            }
         }
         return cmp;
     }
