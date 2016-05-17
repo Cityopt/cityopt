@@ -25,8 +25,9 @@
 <type typeid="1" name="myType" version="1"/>
 <unit unitid="1" name="myUnit" version="1"/>
 
+<metric name="c myMetric" expression="my expression != bad" unitid="1" prjid="1" version="1"/>
 <metric name="myMetric" expression="my expression != bad" unitid="1" prjid="1" version="1"/>
-
+<metric name="a myMetric" expression="my expression != bad" unitid="1" prjid="1" version="1"/>
 
 
 </dataset>

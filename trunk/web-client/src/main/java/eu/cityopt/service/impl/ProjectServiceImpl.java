@@ -223,7 +223,7 @@ public class ProjectServiceImpl implements ProjectService{
 	public Set<MetricDTO> getMetrics(int prjid) {
 		Project item = projectRepository.findOne(prjid);
 		Set<Metric> metrics = item.getMetrics(); 
-		return modelMapper.map(metrics, new TypeToken<Set<MetricDTO>>() {}.getType());
+		return modelMapper.map(metrics, new TypeToken<LinkedHashSet<MetricDTO>>() {}.getType());
 	}
 
 	@Transactional(readOnly = true)

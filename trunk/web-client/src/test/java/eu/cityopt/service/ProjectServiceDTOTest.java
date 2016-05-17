@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -165,9 +166,13 @@ public class ProjectServiceDTOTest {
 		
 		Set<MetricDTO> metrics = projectService.getMetrics(item.getPrjid());
 		Assert.notNull(metrics);
-		MetricDTO met = metrics.iterator().next();
-		assertEquals("myMetric", met.getName());
-		assertEquals("my expression != bad", met.getExpression()); 
+		
+		Iterator<MetricDTO> iterator = metrics.iterator();
+		
+		assertEquals("a myMetric", iterator.next().getName());
+		assertEquals("c myMetric", iterator.next().getName());
+		assertEquals("myMetric", iterator.next().getName());
+		
 	}
 	
 	@Test
