@@ -62,22 +62,22 @@ import eu.cityopt.sim.service.SimulationService;
 @Service
 @SuppressWarnings("serial")
 public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
-	
+
 	@Autowired
 	private ScenarioGeneratorRepository scenarioGeneratorRepository;
-	
+
 	@Autowired
 	private ScenGenObjectiveFunctionRepository scenGenObjectiveFunctionRepository;
-	
+
 	@Autowired
 	private ObjectiveFunctionRepository objectiveFunctionRepository;
-	
+
 	@Autowired
 	private OptConstraintRepository optConstraintRepository;
-	
+
 	@Autowired
 	private ScenGenOptConstraintRepository scenGenOptConstraintRepository;
-	
+
 	@Autowired
 	private ProjectRepository projectRepository;
 
@@ -110,12 +110,12 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
-	
+
+
 	@Transactional(readOnly=true)
 	@Override
 	public List<ScenarioGeneratorDTO> findAll() {
-		return modelMapper.map(scenarioGeneratorRepository.findAll(), 
+		return modelMapper.map(scenarioGeneratorRepository.findAll(),
 				new TypeToken<List<ScenarioGeneratorDTO>>() {}.getType());
 	}
 
@@ -131,25 +131,25 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 	@Transactional
 	@Override
 	public void delete(int id) throws EntityNotFoundException {
-		
+
 		if(scenarioGeneratorRepository.findOne(id) == null) {
 			throw new EntityNotFoundException();
 		}
-		
+
 		scenarioGeneratorRepository.delete(id);
 	}
-	
+
 	@Transactional
 	@Override
 	public ScenarioGeneratorDTO update(ScenarioGeneratorDTO toUpdate) throws EntityNotFoundException {
-		
+
 		if(scenarioGeneratorRepository.findOne(toUpdate.getScengenid()) == null) {
 			throw new EntityNotFoundException();
 		}
-		
+
 		return save(toUpdate);
 	}
-	
+
 	@Transactional
 	@Override
 	public ScenarioGeneratorDTO update(int scenGenId, String name, Integer algorithmId) throws EntityNotFoundException {
@@ -160,28 +160,28 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 	@Override
 	public ScenarioGeneratorDTO findByID(int id) throws EntityNotFoundException {
 		ScenarioGenerator sg = scenarioGeneratorRepository.findOne(id);
-		
+
 		if(sg == null) {
 			throw new EntityNotFoundException();
 		}
-		
+
 		return modelMapper.map(sg, ScenarioGeneratorDTO.class);
 	}
-	
+
 	@Transactional(readOnly=true)
 	@Override
 	public List<AlgoParamDTO> getAlgoParams(int scenGenId) throws EntityNotFoundException {
 		ScenarioGenerator sg = scenarioGeneratorRepository.findOne(scenGenId);
-		
+
 		if(sg == null) {
 			throw new EntityNotFoundException();
 		}
-		
+
 		Algorithm a = sg.getAlgorithm();
 		if(a == null)
 			return new ArrayList<AlgoParamDTO>();
-		
-		return modelMapper.map(a.getAlgoparams(), 
+
+		return modelMapper.map(a.getAlgoparams(),
 				new TypeToken<List<AlgoParamDTO>>() {}.getType());
 	}
 
@@ -270,12 +270,12 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 	public List<ModelParameterDTO> getModelParameters(int scenGenId)
 			throws EntityNotFoundException {
 		ScenarioGenerator sg = scenarioGeneratorRepository.findOne(scenGenId);
-		
+
 		if(sg == null) {
 			throw new EntityNotFoundException();
 		}
-		
-		return modelMapper.map(sg.getModelparameters(), 
+
+		return modelMapper.map(sg.getModelparameters(),
 				new TypeToken<List<ModelParameterDTO>>() {}.getType());
 	}
 
@@ -287,6 +287,8 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 		if (sg == null) {
 			throw new EntityNotFoundException();
 		}
+                //FIXME This breaks if ModelParameter is modified!
+		// Can't we just use ModelMapper?
 		Map<Integer, ModelParameterDTO> dtoByInputId = new HashMap<>();
 		for (ModelParameterDTO dto : modelParams) {
 			dtoByInputId.put(dto.getInputparameter().getInputid(), dto);
@@ -373,51 +375,51 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 
 	@Transactional
 	@Override
-	public OptConstraintDTO addOptConstraint(int scenGenId, OptConstraintDTO ocDTO) 
+	public OptConstraintDTO addOptConstraint(int scenGenId, OptConstraintDTO ocDTO)
 			throws EntityNotFoundException {
-		
+
 		ScenarioGenerator scenGen = scenarioGeneratorRepository.findOne(scenGenId);
 		if(scenGen == null) {
 			throw new EntityNotFoundException();
 		}
-		
+
 		OptConstraint oc = modelMapper.map(ocDTO, OptConstraint.class);
 		oc = optConstraintRepository.save(oc);
 		ScenGenOptConstraint scgoc = new ScenGenOptConstraint();
 		scgoc.setOptconstraint(oc);
 		scgoc.setScenariogenerator(scenGen);;
 		scenGen.getScengenoptconstraints().add(scgoc);
-		
+
 		scenGenOptConstraintRepository.save(scgoc);
 		scenarioGeneratorRepository.save(scenGen);
-		
+
 		return modelMapper.map(oc, OptConstraintDTO.class);
 	}
-	
+
 	@Transactional
 	@Override
-	public void removeOptConstraint(int scenGenId, int optConstraintId) 
+	public void removeOptConstraint(int scenGenId, int optConstraintId)
 			throws EntityNotFoundException {
-		
+
 		ScenGenOptConstraint scenGenOptConst = scenGenOptConstraintRepository.findByScenGenIdAndOptConstId(scenGenId, optConstraintId);
 		if(scenGenOptConst == null) {
 			throw new EntityNotFoundException();
 		}
-		
+
 		scenGenOptConstraintRepository.delete(scenGenOptConst);
 	}
-	
+
 	@Transactional(readOnly=true)
 	@Override
 	public List<OptConstraintDTO> getOptConstraints(int scenGenId) throws EntityNotFoundException {
 		ScenarioGenerator sg = scenarioGeneratorRepository.findOne(scenGenId);
-		
+
 		if(sg == null) {
 			throw new EntityNotFoundException();
 		}
-		
+
 		List<OptConstraint> osList = scenGenOptConstraintRepository.findOptConstraintsforScenGen(sg.getScengenid());
-		
+
 		return modelMapper.map(osList, new TypeToken<List<OptConstraintDTO>>() {}.getType());
 
 	}
@@ -427,19 +429,19 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 	public List<ObjectiveFunctionDTO> getObjectiveFunctions(int scenGenId)
 			throws EntityNotFoundException {
 		ScenarioGenerator sg = scenarioGeneratorRepository.findOne(scenGenId);
-		
+
 		if(sg == null) {
 			throw new EntityNotFoundException();
 		}
-		
+
 		List<ObjectiveFunction> ofList = scenGenObjectiveFunctionRepository.findObjectiveFunctionsforScenGen(sg.getScengenid());
-		
+
 		return modelMapper.map(ofList, new TypeToken<List<ObjectiveFunctionDTO>>() {}.getType());
 	}
-	
+
 	@Transactional
 	@Override
-	public ObjectiveFunctionDTO addObjectiveFunction(int scenGenId, ObjectiveFunctionDTO obtFuncDTO) 
+	public ObjectiveFunctionDTO addObjectiveFunction(int scenGenId, ObjectiveFunctionDTO obtFuncDTO)
 			throws EntityNotFoundException {
 		ScenarioGenerator sg = scenarioGeneratorRepository.findOne(scenGenId);
 		if(sg == null) {
@@ -453,7 +455,7 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 		sgof = scenGenObjectiveFunctionRepository.save(sgof);
 		obtFunc.getScengenobjectivefunctions().add(sgof);
 		sg.getScengenobjectivefunctions().add(sgof);
-		
+
 		return modelMapper.map(obtFunc, ObjectiveFunctionDTO.class);
 	}
 
@@ -462,11 +464,11 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 	public void removeObjectiveFunction(int scenGenId, int objectiveFunctionId)
 			throws EntityNotFoundException {
 		ScenGenObjectiveFunction scenGenObjectiveFunction = scenGenObjectiveFunctionRepository.findByScenGenIdAndOptFunctionId(scenGenId, objectiveFunctionId);
-		
+
 		if(scenGenObjectiveFunction == null) {
 			throw new EntityNotFoundException();
 		}
-		
+
 		scenGenObjectiveFunctionRepository.delete(scenGenObjectiveFunction);
 	}
 
@@ -608,12 +610,12 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 
 	@Transactional(readOnly=true)
 	@Override
-	public ScenarioGeneratorDTO findByName(String name,int prjid) {		
+	public ScenarioGeneratorDTO findByName(String name,int prjid) {
 		ScenarioGenerator sg = scenarioGeneratorRepository.findByNameAndProject_prjid(name,prjid);
 		if(sg==null)
 			return null;
 		else
-			return modelMapper.map(sg, ScenarioGeneratorDTO.class);		
+			return modelMapper.map(sg, ScenarioGeneratorDTO.class);
 	}
 
 	@Transactional(readOnly=true)
@@ -638,12 +640,12 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 		if (name != null) {
 			sg.setName(name);
 		}
-		
+
 		if(description!=null)
 		{
 			sg.setDescription(description);
 		}
-		
+
 		if (algorithmId != null) {
 			sg.setAlgorithm(algorithmRepository.findOne(algorithmId));
 		}

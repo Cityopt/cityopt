@@ -18,6 +18,7 @@ import java.util.concurrent.Future;
 
 import javax.script.ScriptException;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +78,7 @@ import eu.cityopt.sim.opt.Solution;
  * <p>
  * OptimisationAlgorithm implementations are found by scanning the class path.
  * By default the package eu.cityopt and its subpackages are scanned.
- * 
+ *
  * @author Hannu Rummukainen
  */
 @Service
@@ -89,7 +90,7 @@ public class ScenarioGenerationService
     @Autowired private OptimisationSupport optimisationSupport;
     @Autowired private SyntaxCheckerService syntaxCheckerService;
 
-    @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository; 
+    @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository;
     @Autowired private ComponentRepository componentRepository;
     @Autowired private InputParameterRepository inputParameterRepository;
     @Autowired private TypeRepository typeRepository;
@@ -99,7 +100,7 @@ public class ScenarioGenerationService
     @Autowired private ExtParamValSetRepository extParamValSetRepository;
     @Autowired private TimeSeriesValRepository timeSeriesValRepository;
 
-    private static Logger log = Logger.getLogger(ScenarioGenerationService.class); 
+    private static Logger log = Logger.getLogger(ScenarioGenerationService.class);
 
     private JobManager<OptimisationResults> jobManager = new JobManager<>();
 
@@ -204,11 +205,11 @@ public class ScenarioGenerationService
         boolean running = false;
         try {
             syntaxCheckerService.checkOptimisationProblem(problem);
-    
+
             DbSimulationStorageI storage = simulationService.makeDbSimulationStorage(
                     project.getPrjid(), problem.getExternalParameters(),
                     userId, scenarioGenerator.getScengenid());
-    
+
             Instant started = Instant.now();
             Instant deadline = started.plus(algorithmParameters.getMaxRunTime());
             Listener listener = new Listener(started, deadline);
@@ -225,7 +226,7 @@ public class ScenarioGenerationService
                     }, executorService);
             jobManager.putJob(scenGenId, finishJob);
             listeners.put(scenGenId, listener);
-            // If finishJob is cancelled, we need to cancel optimisationJob. 
+            // If finishJob is cancelled, we need to cancel optimisationJob.
             finishJob.whenComplete((result, throwable) -> {
                 if (finishJob.isCancelled()) {
                     optimisationJob.cancel(true);
@@ -274,6 +275,7 @@ public class ScenarioGenerationService
     	   return status.toString();
        }
 
+       @Override
        public String toString() {
            return "Started: " + started + "; Deadline: " + deadline + "; Status: " + status;
        }
@@ -282,7 +284,7 @@ public class ScenarioGenerationService
     /**
      * Returns the status of currently ongoing optimisation runs.
      * The result is a snapshot of the situation at the time the method is called.
-     * @return map from ScenarioGenerator entity id to {@link RunInfo} 
+     * @return map from ScenarioGenerator entity id to {@link RunInfo}
      */
     public Map<Integer, RunInfo> getRunningOptimisations() {
         Map<Integer, RunInfo> statusMap = new HashMap<>();
@@ -318,7 +320,8 @@ public class ScenarioGenerationService
                 scenarioGenerator.getExtparamvalset(), namespace);
         OptimisationProblem problem = new OptimisationProblem(null, externals);
         problem.decisionVars = loadDecisionVariables(scenarioGenerator, namespace, externals);
-        problem.inputExprs = loadInputExpressions(scenarioGenerator, namespace, problem.inputConst);
+        problem.inputExprs = loadInputParameters(
+                scenarioGenerator, namespace, problem.inputConst);
         problem.metrics = simulationService.loadMetricExpressions(project, namespace);
         problem.constraints = optimisationSupport.loadConstraints(scenarioGenerator, namespace);
         problem.objectives = optimisationSupport.loadObjectives(scenarioGenerator, namespace);
@@ -394,7 +397,7 @@ public class ScenarioGenerationService
             ScenarioGenerator scenarioGenerator, Namespace namespace,
             ExternalParameters externals) throws ScriptException, ParseException {
         List<DecisionVariable> simDecisions = new ArrayList<>();
-        for (eu.cityopt.model.DecisionVariable decisionVariable 
+        for (eu.cityopt.model.DecisionVariable decisionVariable
                 : scenarioGenerator.getDecisionvariables()) {
             Symbol symbol = getDecisionVariableSymbol(decisionVariable);
             DecisionDomain domain = null;
@@ -446,12 +449,12 @@ public class ScenarioGenerationService
             if (simDecision.componentName != null) {
                 Map<String, InputParameter> localMap =
                         inputParameterMap.get(simDecision.componentName);
-                InputParameter inputParameter = 
+                InputParameter inputParameter =
                         (localMap != null) ? localMap.get(simDecision.name) : null;
                 if (inputParameter != null) {
                     decisionVariable.setInputparameter(inputParameter);
                 } else {
-                    log.warn("Cannot properly save decision variable " + simDecision 
+                    log.warn("Cannot properly save decision variable " + simDecision
                             + " - no matching input variable.");
                 }
             }
@@ -497,7 +500,7 @@ public class ScenarioGenerationService
         return globalMap;
     }
 
-    public List<InputExpression> loadInputExpressions(
+    public List<InputExpression> loadInputParameters(
             ScenarioGenerator scenarioGenerator, Namespace namespace,
             SimulationInput constantInputHolder) throws ScriptException, ParseException {
         List<InputExpression> simInputExpressions = new ArrayList<>();
@@ -505,8 +508,9 @@ public class ScenarioGenerationService
             InputParameter inputParameter = modelParameter.getInputparameter();
             String componentName = inputParameter.getComponent().getName();
             String inputName = inputParameter.getName();
-            Namespace.Component nsComponent = namespace.components.get(componentName); 
+            Namespace.Component nsComponent = namespace.components.get(componentName);
             Type inputType = nsComponent.inputs.get(inputParameter.getName());
+            //TODO Time series inputs
             String valueText = modelParameter.getValue();
             if (valueText != null) {
                 Object value = inputType.parse(valueText, namespace);
@@ -534,7 +538,7 @@ public class ScenarioGenerationService
             if (inputParameter != null) {
                 modelParameter.setInputparameter(inputParameter);
             } else {
-                log.warn("Cannot properly input expression for " + inputExpression 
+                log.warn("Cannot properly input expression for " + inputExpression
                         + " - no matching input variable.");
             }
             modelParameter.setExpression(inputExpression.getSource());
@@ -557,8 +561,14 @@ public class ScenarioGenerationService
                     modelParameter.setInputparameter(inputParameter);
                     Type type = namespace.getInputType(componentName, inputName);
                     Object value = constantInput.get(componentName, inputName);
-                    String valueString = type.format(value, namespace);
-                    modelParameter.setValue(valueString);
+                    if (type.isTimeSeriesType()) {
+                        //TODO Time series inputs
+                        throw new NotImplementedException(
+                                "Time series inputs not yet supported.");
+                    } else {
+                        String valueString = type.format(value, namespace);
+                        modelParameter.setValue(valueString);
+                    }
 
                     modelParameter.setScenariogenerator(scenarioGenerator);
                     scenarioGenerator.getModelparameters().add(modelParameter);
