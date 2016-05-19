@@ -27,6 +27,8 @@ public class ModelParameter extends VersionModel implements java.io.Serializable
 	private ScenarioGenerator scenariogenerator;
 	private String expression;
 	private String value;
+	
+	private TimeSeries timeseries;
 
 	public ModelParameter() {
 	}
@@ -105,5 +107,15 @@ public class ModelParameter extends VersionModel implements java.io.Serializable
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tseriesid")
+	public TimeSeries getTimeseries() {
+		return this.timeseries;
+	}
+
+	public void setTimeseries(TimeSeries timeseries) {
+		this.timeseries = timeseries;
 	}
 }
