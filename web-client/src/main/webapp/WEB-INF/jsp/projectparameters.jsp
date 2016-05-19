@@ -33,8 +33,8 @@
 				<%@ include file="mainmenu.inc"%>
 			</td>
 			<td valign="top">
-				<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
-				<table class="maintablewide">			
+				<div style="overflow: auto; height: 100%; width: 100%; overflow: auto;">
+				<table class="maintableextrawide">			
 					<%@ include file="toprow.inc"%>
 					<tr class="titlerow">
 						<td class="spacecolumn"></td>
@@ -61,6 +61,9 @@
 									<td class="error">${error}</td>
 								</tr>
 								<tr>
+									<td class="successful">${successText}</td>
+								</tr>
+								<tr>
 									<td>
 										<table class="tablegroup">
 											<tr>
@@ -68,7 +71,7 @@
 													<table>
 														<col style="width: 310px">
 														<col style="width: 50px">
-														<col style="width: 480px">
+														<col style="width: 600px">
 														<tr>
 															<td class="active">
 																<spring:message code="components" />
@@ -134,8 +137,11 @@
 															<td valign="top">
 																<table class="tablestyle">
 																	<col style="width: 150px">
-																	<col style="width: 150px">
-																	<col style="width: 60px">
+																	<col style="width: 100px">
+																	<col style="width: 100px">
+																	<col style="width: 100px">
+																	<col style="width: 50px">
+																	<col style="width: 50px">
 																	<col style="width: 60px">
 																	<col style="width: 60px">
 																	<tr>
@@ -143,6 +149,8 @@
 																		<th><spring:message code="input_parameter" /></th>
 																		<!-- Default value -->
 																		<th><spring:message code="default_value" /></th>
+																		<th>Min</th>
+																		<th>Max</th>
 																		<th><spring:message code="type" /></th>
 																		<!-- Units -->
 																		<th><spring:message code="units" /></th>
@@ -156,6 +164,8 @@
 																		<tr>
 																			<td>${inputParam.name}</td>
 																			<td>${inputParam.defaultvalue}</td>
+																			<td>${inputParam.lowerBound}</td>
+																			<td>${inputParam.upperBound}</td>
 																			<c:choose>
 																				<c:when test="${inputParam.getType().getTypeid() >= 5}">
 																					<td>Time series</td>																		

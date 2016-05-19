@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -44,8 +45,10 @@ import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParamValDTO;
+import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AlgorithmService;
 import eu.cityopt.service.AppUserService;
@@ -82,6 +85,8 @@ import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.validators.InputParameterValidator;
+import eu.cityopt.web.ParamForm;
 import eu.cityopt.web.ScenarioParamForm;
 import eu.cityopt.web.UserSession;
 
@@ -197,6 +202,10 @@ public class ScenarioController {
 	
     @Autowired
     SecurityAuthorization securityAuthorization;
+
+	@Autowired
+	@Qualifier("inputParameterValidator")
+    InputParameterValidator validator;
 
 	@RequestMapping(value="createscenario",method=RequestMethod.GET)
 	public String createScenario(Map<String, Object> model) {
@@ -865,13 +874,13 @@ public class ScenarioController {
 				
 		return "scenarioparameters";
 	}
-
 	
 	@RequestMapping(value="scenarioParam", method=RequestMethod.POST)
 	public String scenarioParamPost(Map<String, Object> model,
 		ScenarioParamForm form,
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
-		HttpServletRequest request) {
+		HttpServletRequest request,
+		BindingResult result) {
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -890,10 +899,66 @@ public class ScenarioController {
         for (InputParamValDTO inputParameterValue : inputParamVals) {
         	InputParamMAP.put(inputParameterValue.getInputparamvalid(), inputParameterValue);
         }
-         
-		for (Map.Entry<Integer, String> entry : form.getValueByInputId().entrySet()) {
-            
-			InputParamValDTO inputParameterValue = InputParamMAP.get(entry.getKey());
+
+        // Validate input values
+        for (Map.Entry<Integer, String> entry : form.getValueByInputId().entrySet()) 
+		{
+        	InputParamValDTO inputParameterValue = InputParamMAP.get(entry.getKey());
+			inputParameterValue.setValue(entry.getValue());
+    		InputParamValDTO updatedInputParamVal = null;
+    		
+    		try {
+    			updatedInputParamVal = inputParamValService.findByID(inputParameterValue.getInputparamvalid());
+    		} catch (EntityNotFoundException e) {
+    			e.printStackTrace();
+    		}
+    		
+    		updatedInputParamVal.setValue(entry.getValue().trim());
+    	
+   	 		validator.validate(updatedInputParamVal, result);
+     
+		    if (result.hasErrors()) {
+	        	model.put("error", result.getGlobalError().getCode());        	             
+
+	        	try {
+					project = projectService.findByID(project.getPrjid());
+				} catch (EntityNotFoundException e1) {
+					e1.printStackTrace();
+				}
+				
+				String statusMsg = controllerService.getScenarioStatus(scenario);
+
+				if (statusMsg != null && statusMsg.equals("SUCCESS"))
+				{
+					model.put("disableEdit", true);
+				}
+						
+				ComponentDTO selectedComponent = null;
+				
+				nSelectedCompId = Integer.parseInt(selectedCompId);
+
+				try {
+					selectedComponent = componentService.findByID(nSelectedCompId);
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+		        model.put("scenarioParamForm", form);			
+				model.put("selectedcompid", selectedCompId);
+				model.put("selectedComponent",  selectedComponent);
+				model.put("inputParamVals", inputParamVals);
+				model.put("project", project);
+
+				List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+				model.put("components", components);
+						
+				return "scenarioparameters";
+	     	}
+		}
+        
+		for (Map.Entry<Integer, String> entry : form.getValueByInputId().entrySet()) 
+		{
+        	InputParamValDTO inputParameterValue = InputParamMAP.get(entry.getKey());
 			inputParameterValue.setValue(entry.getValue());
     		InputParamValDTO updatedInputParamVal = null;
     		

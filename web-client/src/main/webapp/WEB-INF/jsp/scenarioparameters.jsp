@@ -128,12 +128,16 @@
 											<td valign="top">
 												<table class="tablestyle">
 													<col style="width:150px">
+													<col style="width:80px">
+													<col style="width:80px">
 													<col style="width:60px">
 													<col style="width:60px">
 													
 													<tr>
 														<!-- Input parameter -->
 														<th><spring:message code="input_parameters"/></th>
+														<th>Min</th>
+														<th>Max</th>
 														<!-- Value -->
 														<th><spring:message code="value"/></th>
 														<!-- Unit -->
@@ -147,6 +151,8 @@
 													<c:forEach items="${inputParamVals}" var="inputParamVal">
 													<tr>
 														<td>${inputParamVal.inputparameter.name}</td>
+														<td>${inputParamVal.inputparameter.lowerBound}</td>
+														<td>${inputParamVal.inputparameter.upperBound}</td>
 														<td>
 															<c:choose>
 													    		<c:when test="${disableEdit}">
