@@ -6,9 +6,9 @@
 <booleanAttribute key="M2_OFFLINE" value="false"/>
 <stringAttribute key="M2_PROFILES" value=""/>
 <listAttribute key="M2_PROPERTIES">
-<listEntry value="file=plugins/org.simantics.simulation.scheduling_0.0.1.201605021723.jar"/>
+<listEntry value="file=plugins/org.simantics.simulation.scheduling_0.0.1.201605191739.jar"/>
 <listEntry value="pomFile=scheduling-pom.xml"/>
-<listEntry value="sources=plugins/org.simantics.simulation.scheduling.source_0.0.1.201605021723.jar"/>
+<listEntry value="sources=plugins/org.simantics.simulation.scheduling.source_0.0.1.201605191739.jar"/>
 </listAttribute>
 <stringAttribute key="M2_RUNTIME" value="EMBEDDED"/>
 <booleanAttribute key="M2_SKIP_TESTS" value="false"/>
