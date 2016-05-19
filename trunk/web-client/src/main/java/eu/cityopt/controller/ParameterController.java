@@ -14,11 +14,13 @@ import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -79,6 +81,7 @@ import eu.cityopt.sim.eval.SyntaxChecker;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.sim.service.SyntaxCheckerService;
+import eu.cityopt.validators.InputParameterValidator;
 import eu.cityopt.web.ParamForm;
 
 
@@ -142,9 +145,13 @@ public class ParameterController {
 	@Autowired
 	TimeSeriesValService timeSeriesValService;
 
+	@Autowired
+	@Qualifier("inputParameterValidator")
+    InputParameterValidator validator;
+
     @RequestMapping(value="projectparameters", method=RequestMethod.GET)
     public String getProjectParameters(Map<String, Object> model, 
-            @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+        @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
      	
     	ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -396,7 +403,14 @@ public class ParameterController {
         ParamForm inputParamForm = new ParamForm();
         inputParamForm.setName(inputParam.getName());
         inputParamForm.setValue(inputParam.getDefaultvalue());
+        
+        String min = inputParam.getLowerBound() != null ? inputParam.getLowerBound() : "";
+        inputParamForm.setMin(min);
+        String max = inputParam.getUpperBound() != null ? inputParam.getUpperBound() : "";
+        inputParamForm.setMax(max);
         model.put("inputParamForm", inputParamForm);
+
+        System.out.println("input " + inputParam.getName() + " " + inputParam.getDefaultvalue() + " " + inputParam.getLowerBound() + " " + inputParam.getUpperBound());
 
 		TimeSeriesDTO timeSeriesDTO = inputParam.getTimeseries();
 		
@@ -437,7 +451,7 @@ public class ParameterController {
 		}
 		else
 		{
-			System.out.println("Time series empty");
+			// It's a value
 		}
 
         List<UnitDTO> units = unitService.findAll();
@@ -450,18 +464,14 @@ public class ParameterController {
     public String editInputParameterPost(Map<String, Object> model, 
 		ParamForm inputParamForm,
         @RequestParam(value="inputparamid", required=false) String inputParamId,
-    	@RequestParam(value="cancel", required=false) String cancel) {
+    	@RequestParam(value="cancel", required=false) String cancel,
+    	BindingResult result) {
     	        
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
         {
             return "error";
-        }
-        
-        if (cancel != null) {
-        	controllerService.getComponentAndExternalParamValues(model, project);
-        	return "projectparameters";
         }
         
         securityAuthorization.atLeastExpert_expert(project);
@@ -481,8 +491,21 @@ public class ParameterController {
             e.printStackTrace();
         }
         
+        String selectedCompId = "" + updatedInputParam.getComponentComponentid();
+        
+        if (cancel != null) {
+        	controllerService.getComponentAndExternalParamValues(model, project);
+        	controllerService.SetUpSelectedComponent(model, selectedCompId);
+            return "projectparameters";
+        }
+        
         updatedInputParam.setName(inputParamForm.getName());
         updatedInputParam.setDefaultvalue(inputParamForm.getValue());
+        updatedInputParam.setLowerBound(inputParamForm.getMin());
+        updatedInputParam.setUpperBound(inputParamForm.getMax());
+
+        System.out.println("from input min " + inputParamForm.getMin());
+
         TypeDTO type = typeService.findByName(eu.cityopt.sim.eval.Type.DOUBLE.name);
         updatedInputParam.setType(type);
         
@@ -496,30 +519,59 @@ public class ParameterController {
 		}
         
         updatedInputParam.setUnit(unit);
-        int componentId = updatedInputParam.getComponentComponentid();//inputParamService.getComponentId(updatedInputParam.getInputid());
+        int componentId = updatedInputParam.getComponentComponentid();
 
-        try {
-			inputParamService.update(updatedInputParam, componentId, unit.getUnitid(), null);
-		} catch (EntityNotFoundException e1) {
-			e1.printStackTrace();
-		}
+        validator.validate(updatedInputParam, result);
         
-        model.put("selectedcompid", componentId);
+        if (result.hasErrors()) {
+        	InputParameterDTO inputParam;
+			try {
+				inputParam = inputParamService.findByID(nInputParamId);
+				model.put("inputParam", inputParam);
+	            
+	            inputParamForm = new ParamForm();
+	            inputParamForm.setName(inputParam.getName());
+	            inputParamForm.setValue(inputParam.getDefaultvalue());
+	            inputParamForm.setMin(inputParam.getLowerBound());
+	            inputParamForm.setMax(inputParam.getUpperBound());
+	            model.put("inputParamForm", inputParamForm);
 
-        try {
-            model.put("selectedComponent", componentService.findByID(componentId));
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
+	            List<UnitDTO> units = unitService.findAll();
+	            model.put("units", units);
+	        	
+	        	model.put("error", result.getGlobalError().getCode());  
+	        	System.out.println("Error " + result.getGlobalError().toString());
+	    	} 
+			catch (EntityNotFoundException e) 
+			{
+				e.printStackTrace();
+			}        	
+	        return "editinputparameter";
+		} else {
+        	System.out.println("Input param " + updatedInputParam.getDefaultvalue() + " " + updatedInputParam.getLowerBound());
+
+	        try {
+				inputParamService.update(updatedInputParam, componentId, unit.getUnitid(), null);
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
+	        
+	        model.put("selectedcompid", componentId);
+	
+	        try {
+	            model.put("selectedComponent", componentService.findByID(componentId));
+	        } catch (EntityNotFoundException e) {
+	            e.printStackTrace();
+	        }
+	
+	        model.put("project", project);
+	        
+	        controllerService.getComponentAndExternalParamValues(model, project);        
+	        controllerService.SetUpSelectedComponent(model, selectedCompId);
+        	System.out.println("Ok");
+	        
+	        return "projectparameters";
         }
-
-        model.put("project", project);
-        
-        controllerService.getComponentAndExternalParamValues(model, project);        
-        
-        List<InputParameterDTO> inputParams = componentService.getInputParameters(componentId);
-        model.put("inputParameters", inputParams);
-        
-        return "projectparameters";
     }
 
     @RequestMapping(value = "importinputtimeseries", method = RequestMethod.POST)
@@ -546,17 +598,19 @@ public class ParameterController {
                 }
                 model.put("project", project);
 
+                int nInputId = Integer.parseInt(inputId);
+                InputParameterDTO inputParam = inputParamService.findByID(nInputId);
+
                 if (cancel != null)
             	{
                 	controllerService.getComponentAndExternalParamValues(model, project);
-                	return "projectparameters";
+                	 
+                	int componentId = inputParam.getComponentComponentid();
+                	controllerService.SetUpSelectedComponent(model, "" + componentId);
+                    return "projectparameters";
             	}
-            	
-                int nInputId = Integer.parseInt(inputId);
-                InputParameterDTO inputParam = inputParamService.findByID(nInputId);
-                
+
                 InputStream stream = file.getInputStream();
-                System.out.println("Starting import time series");
                 
                 Map<String, TimeSeriesDTOX> tsData = importExportService.readTimeSeriesCsv(project.getPrjid(), stream);
                 Set<String> keys = tsData.keySet();
@@ -589,17 +643,13 @@ public class ParameterController {
                 	model.put("error", error);
                 }
 
-                /*InputParamValDTO inputParamVal = new InputParamValDTO();
-                inputParamVal.setInputparam(inputParam);
-                inputParamVal = inputParamValService.save(inputParamVal);*/
-                
                 stream.close();
-                System.out.println("Finished importing input time series");
                 
                 int componentId = inputParam.getComponentComponentid();
             	model.put("selectedcompid", componentId);
             	List<InputParameterDTO> inputParams = componentService.getInputParameters(componentId);
                 model.put("inputParameters", inputParams);
+                model.put("successText", controllerService.getMessage("file_imported", request));
             } catch (Exception e) {
             	e.printStackTrace();
             }

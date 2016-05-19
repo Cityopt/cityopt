@@ -120,6 +120,22 @@
 										${inputParam.defaultvalue}
 									</td>
 								</tr>			
+								<tr>
+									<td>
+										Min
+									</td>
+									<td>
+										${inputParam.lowerBound}
+									</td>
+								</tr>			
+								<tr>
+									<td>
+										Max
+									</td>
+									<td>
+										${inputParam.upperBound}
+									</td>
+								</tr>			
 								</c:otherwise>
 							</c:choose>
 							
@@ -146,6 +162,22 @@
 								</td>
 								<td>
 									<form:input style="width:300px" type="text" path="value"/>
+								</td>
+							</tr>			
+							<tr>
+								<td>
+									Min
+								</td>
+								<td>
+									<form:input style="width:300px" type="text" path="min"/>
+								</td>
+							</tr>			
+							<tr>
+								<td>
+									Max
+								</td>
+								<td>
+									<form:input style="width:300px" type="text" path="max"/>
 								</td>
 							</tr>			
 							<tr>
