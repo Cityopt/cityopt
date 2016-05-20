@@ -15,6 +15,7 @@ import org.springframework.validation.Validator;
 
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
+import eu.cityopt.DTO.ModelParameterDTO;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.service.InputParamValService;
@@ -68,12 +69,23 @@ public class InputParameterValidator implements Validator {
 					errors.reject(String.format("%s with value %s not within the limits %s-%s",inputparameter.getName(), iVal.getValue(),inputparameter.getLowerBound(),inputparameter.getUpperBound()));					
 				}
 			}
-			
-			
-			
 		}
-		
-		
+		else if(target instanceof ModelParameterDTO)
+		{			
+			ModelParameterDTO mp = (ModelParameterDTO)target;
+			InputParameterDTO inputparameter = mp.getInputparameter();
+			
+			if(!StringUtils.isEmpty(mp.getValue()) && !StringUtils.isEmpty(inputparameter.getLowerBound()) && !StringUtils.isEmpty(inputparameter.getUpperBound()))
+			{
+				Double paramValue= Double.valueOf(mp.getValue());
+				Double lowerBound = Double.valueOf(inputparameter.getLowerBound());
+				Double upperBound = Double.valueOf(inputparameter.getUpperBound());
+				
+				if(!(paramValue>=lowerBound && paramValue<=upperBound))
+				{
+					errors.reject(String.format("%s with value %s not within the limits %s-%s",inputparameter.getName(), mp.getValue(),inputparameter.getLowerBound(),inputparameter.getUpperBound()));					
+				}
+			}
+		}
 	}
-
 }
