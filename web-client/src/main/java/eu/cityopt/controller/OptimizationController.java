@@ -3308,21 +3308,26 @@ public class OptimizationController {
         			e.printStackTrace();
         		}
 
-       	 		validator.validate(inputParamVal, result);
+                ModelParameterDTO modelParamTemp = new ModelParameterDTO();
+                modelParamTemp.setValue(value);
+                modelParamTemp.setInputparameter(inputParamVal.getInputparameter());
+       	 		validator.validate(modelParamTemp, result);
                 
     		    if (result.hasErrors()) {
     		    	errors = errors + result.getGlobalError().getCode() + "<br>\n";
     		    }
-    		    
-                try {
-	                if (StringUtils.isBlank(group)) {
-	                	grouping.setFreeText(inputId, value);
-	                } else {
-	                	grouping.setMultiValue(inputId, value, group);
+    		    else
+    		    {
+	                try {
+		                if (StringUtils.isBlank(group)) {
+		                	grouping.setFreeText(inputId, value);
+		                } else {
+		                	grouping.setMultiValue(inputId, value, group);
+		                }
+	                } catch (ParseException e) {
+	                	errors = errors + e.getMessage() + "<br>\n";
 	                }
-                } catch (ParseException e) {
-                	errors = errors + e.getMessage() + "<br>\n";
-                }
+    		    }
             }
             
             for (ModelParameterGrouping.Group group : grouping.findMismatchingGroups()) {
