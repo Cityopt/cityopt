@@ -58,7 +58,7 @@
 				<tr>
 					<td class="spacecolumn"></td>
 					<td valign="top">
-					  <table style="width: 450px">
+					  <table style="width: 660px">
 			              <tr><td colspan="2"><spring:message code="component"/>:
 			                <select name="selectedcompid" onChange="selectComponent('ModelParameter',this.value)">
 			                 <c:forEach items="${inputcomponents}" var="component">
@@ -79,9 +79,17 @@
 			              	<td class="active"><spring:message code="input_parameters"/></td>
 			              <tr>
 			                <td>
-				              <table class="tablestyle" style="width: 450px">
-			                     <tr>
+				              <table class="tablestyle" style="width: 660px">
+			                     	<col style="width:200px">
+									<col style="width:100px">
+									<col style="width:100px">
+									<col style="width:100px">
+									<col style="width:80px">
+									<col style="width:80px">
+								<tr>
 			                         <th><spring:message code="parameter"/></th>
+			                         <th>Min</th>
+			                         <th>Max</th>
 			                         <th><spring:message code="value"/></th>
 			                         <th><spring:message code="unit"/></th>
 			                         <th><spring:message code="group"/></th>
@@ -89,8 +97,10 @@
 			                     <c:forEach items="${modelparams}" var="mp">
 			                     <tr class="Component${mp.inputparameter.componentComponentid} ModelParameter">
 			                         <td>${mp.inputparameter.name}</td>
+			                         <td>${mp.inputparameter.lowerBound}</td>
+			                         <td>${mp.inputparameter.upperBound}</td>
 			                         <td>
-			                             <form:input align="right" style="width:200px" type="text" path="valueByInputId[${mp.inputparameter.inputid}]"/>
+			                             <form:input align="right" style="width:100px" type="text" path="valueByInputId[${mp.inputparameter.inputid}]"/>
 			                         </td>
 			                         <td>${empty mp.inputparameter.unit ? '' : mp.inputparameter.unit.name}</td>
 			                         <td>
