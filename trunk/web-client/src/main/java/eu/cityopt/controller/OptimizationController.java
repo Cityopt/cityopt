@@ -34,10 +34,12 @@ import org.apache.commons.lang.StringUtils;
 import org.omg.IOP.Encoding;
 import org.python.google.common.io.Files;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -112,6 +114,7 @@ import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.ScenarioGenerationService.RunInfo;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.sim.service.SyntaxCheckerService;
+import eu.cityopt.validators.InputParameterValidator;
 import eu.cityopt.web.AlgoParamValForm;
 import eu.cityopt.web.ExtParamValSetForm;
 import eu.cityopt.web.ModelParamForm;
@@ -231,7 +234,11 @@ public class OptimizationController {
 
     @Autowired
 	SyntaxCheckerService syntaxCheckerService;
-    
+
+	@Autowired
+	@Qualifier("inputParameterValidator")
+    InputParameterValidator validator;
+
     @RequestMapping(value="createobjfunction",method=RequestMethod.GET)
     public String createObjFunction(Map<String, Object> model,
     	@RequestParam(value="reset", required=false) String reset,
@@ -3274,7 +3281,8 @@ public class OptimizationController {
     public String editSGModelParamsPost(ModelMap model,
         ModelParamForm form,
         @RequestParam(value="newgroup", required=false) String newGroup,
-        @RequestParam(value="cleangroups", required=false) String cleanGroups) {
+        @RequestParam(value="cleangroups", required=false) String cleanGroups,
+        BindingResult result) {
 
     	ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null) return "redirect:/openproject.html";
@@ -3292,6 +3300,20 @@ public class OptimizationController {
             	int inputId = entry.getKey();
                 String value = entry.getValue();
                 String group = form.getGroupByInputId().get(inputId);
+                InputParamValDTO inputParamVal = null;
+                
+                try {
+        			inputParamVal = inputParamValService.findByID(inputId);
+        		} catch (EntityNotFoundException e) {
+        			e.printStackTrace();
+        		}
+
+       	 		validator.validate(inputParamVal, result);
+                
+    		    if (result.hasErrors()) {
+    		    	errors = errors + result.getGlobalError().getCode() + "<br>\n";
+    		    }
+    		    
                 try {
 	                if (StringUtils.isBlank(group)) {
 	                	grouping.setFreeText(inputId, value);
@@ -3302,6 +3324,7 @@ public class OptimizationController {
                 	errors = errors + e.getMessage() + "<br>\n";
                 }
             }
+            
             for (ModelParameterGrouping.Group group : grouping.findMismatchingGroups()) {
             	errors = errors + "Error in group " + group.getName()
             			+ ": number of values varies between " + group.getMinNumberOfValues()
