@@ -1231,6 +1231,8 @@ public class ScenarioController {
 		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
 		model.put("scenarios", scenarios);
 		
+		controllerService.clearOptResults(model);
+        
 		return "timeserieschart";
 	}	
 	

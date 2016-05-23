@@ -225,7 +225,8 @@ public class ParameterController {
             model.put("project", project);
             
             controllerService.getComponentAndExternalParamValues(model,project);   
-                        
+            controllerService.clearOptResults(model);
+            
             return "extparams";
         }
 
@@ -1069,7 +1070,8 @@ public class ParameterController {
        
         controllerService.getProjectExternalParameterValues(model,project);        
         controllerService.getComponentAndExternalParamValues(model, project);
-
+        controllerService.clearOptResults(model);
+        
         return "extparams";
     }
 
@@ -1102,6 +1104,7 @@ public class ParameterController {
 
         controllerService.getDefaultExtParamVals(model, project.getPrjid());
         controllerService.getComponentAndExternalParamValues(model, project);
+        controllerService.clearOptResults(model);
         
         return "extparams";
     }
@@ -1304,6 +1307,7 @@ public class ParameterController {
 
         controllerService.getDefaultExtParamVals(model, project.getPrjid());
         controllerService.getComponentAndExternalParamValues(model, project);
+        controllerService.clearOptResults(model);
         
         return "extparams";
     }
@@ -1413,6 +1417,7 @@ public class ParameterController {
         }
         
         controllerService.getComponentAndExternalParamValues(model, project);
+        controllerService.clearOptResults(model);
         
         return "extparams";
     }
