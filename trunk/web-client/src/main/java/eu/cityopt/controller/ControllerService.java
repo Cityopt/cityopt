@@ -405,6 +405,16 @@ public class ControllerService {
 	        }
 	    }
 
+	    public void clearOptResults(Map<String, Object> model)
+	    {
+	    	SearchOptimizationResults emptyResults = new SearchOptimizationResults();
+	        model.put("optresults", emptyResults);
+	        
+	        UserSession session = (UserSession) model.get("usersession");
+        	session.setOptResultString("");
+        	model.put("usersession", session);
+	    }
+	    
 	    public void updateGARuns(Map<String, Object> model) {
 		    Map<Integer, RunInfo> mapRuns = scenarioGenerationService.getRunningOptimisations();
 			List<OptimizationRun> listOptRuns = new ArrayList<OptimizationRun>();
@@ -565,7 +575,7 @@ public class ControllerService {
 	            List<ScenarioWithObjFuncValueDTO> resultScenariosWithValue = (List<ScenarioWithObjFuncValueDTO>) optResults.resultScenarios;
 	            model.put("resultScenariosWithValue", resultScenariosWithValue);
 	            
-	            if (resultScenariosWithValue.size() > 0)
+	            if (resultScenariosWithValue != null && resultScenariosWithValue.size() > 0)
 	            {
 	            	model.put("bestScenarioWithValue", resultScenariosWithValue.get(0));
 	            }
@@ -573,7 +583,12 @@ public class ControllerService {
 	            model.put("optresults", optResults);
 	            
 	            EvaluationResults evResults = optResults.getEvaluationResult();
-	            userSession.setOptResultString(evResults.toString());
+	            
+	            if (evResults != null)
+	            {
+	            	userSession.setOptResultString(evResults.toString());
+	            }
+	            
 	            model.put("usersession", userSession);
             }
 	        

@@ -1346,7 +1346,6 @@ public class ProjectController {
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e2) {
-            // TODO Auto-generated catch block
             e2.printStackTrace();
         }
 
@@ -1375,7 +1374,6 @@ public class ProjectController {
                 try {
                     metric = metricService.findByID(nMetricId);
                 } catch (EntityNotFoundException e1) {
-                    // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
 
@@ -1385,13 +1383,13 @@ public class ProjectController {
                     e.printStackTrace();
                     return "error";
                 }
+                controllerService.clearOptResults(model);
             }
         }
 
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         model.put("project", project);
@@ -1656,6 +1654,8 @@ public class ProjectController {
         Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
         model.put("metrics", metrics);
 
+        controllerService.clearOptResults(model);
+        
         return "metricdefinition";
     }
 
