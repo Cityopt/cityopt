@@ -1565,12 +1565,7 @@ ALTER TABLE UserGroupProject ADD CONSTRAINT FK_UserGroupProject_User
 ALTER TABLE UserGroupProject ADD CONSTRAINT FK_UserGroupProject_UserGroups
 	FOREIGN KEY (userGroupID) REFERENCES UserGroup (userGroupID) ON DELETE No Action ON UPDATE No Action
 ;
-ALTER TABLE scenariogenerator
-ADD CONSTRAINT "uq_name_prjid" UNIQUE ("prjid", "name");
-ALTER TABLE optimizationset
-ADD CONSTRAINT "uq_optname_prjid" UNIQUE ("prjid", "name");
-ALTER TABLE scenariometrics
-ADD CONSTRAINT "uq_scen_extval" UNIQUE ("scenid", "extparamvalsetid");
+
 INSERT INTO Algorithm (algorithmId, description) VALUES
 (1, 'grid search'),
 (2, 'genetic algorithm');
