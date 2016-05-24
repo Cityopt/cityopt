@@ -64,7 +64,7 @@
 				</tr>
 				<tr>
 					<td class="spacecolumn"></td>
-					<td class="info">${info}</td>
+					<td class="successful">${info}</td>
 				</tr>
 				<tr>
 					<td class="spacecolumn"></td>

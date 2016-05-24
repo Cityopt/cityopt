@@ -540,6 +540,7 @@ public class ProjectController {
                 return "error";
             }
         } else {
+        	model.put("error", controllerService.getMessage("file_missing", request));
         }
         return "editproject";
     }
@@ -602,6 +603,7 @@ public class ProjectController {
                 return "error";
             }
         } else {
+        	model.put("error", controllerService.getMessage("file_missing", request));
         }
         return "importdata";
     }
@@ -877,6 +879,7 @@ public class ProjectController {
             	e.printStackTrace();
             }
         } else {
+        	model.put("error", controllerService.getMessage("file_missing", request));
         }
         return "extparams";
     }

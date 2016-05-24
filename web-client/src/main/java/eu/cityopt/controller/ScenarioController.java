@@ -494,6 +494,7 @@ public class ScenarioController {
                 return "error";
 	        }
 	    } else {
+        	model.put("error", controllerService.getMessage("file_missing", request));
 	    }
 	    return "importdata";
 	}
