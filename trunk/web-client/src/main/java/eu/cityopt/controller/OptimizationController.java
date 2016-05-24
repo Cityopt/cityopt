@@ -1511,6 +1511,7 @@ public class OptimizationController {
                 return "importdata";
             }
         } else {
+        	model.put("error", controllerService.getMessage("file_missing", request));
         }
         return "importdata";
     }
@@ -1519,7 +1520,8 @@ public class OptimizationController {
     public String importOptimizationProblem(
             Map<String, Object> model, 
             @RequestParam("fileProblem") MultipartFile fileProblem,
-            @RequestParam("fileTimeSeries") MultipartFile fileTimeSeries) {
+            @RequestParam("fileTimeSeries") MultipartFile fileTimeSeries,
+            HttpServletRequest request) {
 
         if (!fileProblem.isEmpty()) {
             try {
@@ -1561,6 +1563,7 @@ public class OptimizationController {
                 return "error";
             }
         } else {
+        	model.put("error", controllerService.getMessage("file_missing", request));
         }
         return "importdata";
     }
@@ -3230,9 +3233,10 @@ public class OptimizationController {
 
         try {
             ModelParameterGrouping grouping = scenGenService.getModelParameterGrouping(scenGen.getScengenid());
-
             ModelParamForm form = new ModelParamForm();
-            for (int inputId : grouping.getInputParameters().keySet()) {
+            
+            for (int inputId : grouping.getInputParameters().keySet()) 
+            {
                 ModelParameterGrouping.MultiValue multivalue = grouping.getMultiValued().get(inputId);
                 String value = "";
                 String group = "";
@@ -3291,12 +3295,13 @@ public class OptimizationController {
 
 		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
-
+        
         try {
-            ModelParameterGrouping grouping =
-            		scenGenService.getModelParameterGrouping(scenGen.getScengenid());
+            ModelParameterGrouping grouping = scenGenService.getModelParameterGrouping(scenGen.getScengenid());
             String errors = "";
-            for (Map.Entry<Integer, String> entry : form.getValueByInputId().entrySet()) {
+            
+            for (Map.Entry<Integer, String> entry : form.getValueByInputId().entrySet()) 
+            {
             	int inputId = entry.getKey();
                 String value = entry.getValue();
                 String group = form.getGroupByInputId().get(inputId);
@@ -3307,7 +3312,12 @@ public class OptimizationController {
         		} catch (EntityNotFoundException e) {
         			e.printStackTrace();
         		}
-
+                
+                /*if (inputParamVal != null)
+                	System.out.println("model param " + inputParamVal.getInputparameter().getComponentName() + " input: " + inputParamVal.getInputparameter().getName() + " value " + value);
+                else
+                	System.out.println("input param val id " + inputId + " not found");*/
+                
                 ModelParameterDTO modelParamTemp = new ModelParameterDTO();
                 modelParamTemp.setValue(value);
                 modelParamTemp.setInputparameter(inputParamVal.getInputparameter());
