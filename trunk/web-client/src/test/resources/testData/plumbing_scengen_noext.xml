@@ -31,7 +31,7 @@
 
   <decisionvariable decisionvarid="1" scengenid="1" inputid="1" lowerbound="1" upperbound="2" typeid="2" version="1"/>
 
-  <modelparameter modelparamid="2" scengenid="1" inputid="2" value="2015-01-01T00:00:00" expression="" version="1"/>
+  <modelparameter modelparamid="2" scengenid="1" inputid="2" value="2015-01-01T00:00:00" version="1"/>
   <modelparameter modelparamid="3" scengenid="1" inputid="3" value="2015-01-01T00:01:00" version="1"/>
   <modelparameter modelparamid="1" scengenid="1" inputid="1" expression="C01.typ" version="1"/>
 
