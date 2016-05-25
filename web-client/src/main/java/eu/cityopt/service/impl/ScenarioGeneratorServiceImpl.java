@@ -588,6 +588,7 @@ public class ScenarioGeneratorServiceImpl implements ScenarioGeneratorService {
 				ModelParameter mp = new ModelParameter();
 				mp.setInputparameter(input);
 				mp.setValue(input.getDefaultvalue());
+				mp.setTimeseries(input.getTimeseries());
 				mp.setScenariogenerator(sg);
 				sg.getModelparameters().add(mp);
 			}
