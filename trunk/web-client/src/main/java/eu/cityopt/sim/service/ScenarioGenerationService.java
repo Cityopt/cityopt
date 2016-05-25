@@ -510,16 +510,21 @@ public class ScenarioGenerationService
             String inputName = inputParameter.getName();
             Namespace.Component nsComponent = namespace.components.get(componentName);
             Type inputType = nsComponent.inputs.get(inputParameter.getName());
-            //TODO Time series inputs
-            String valueText = modelParameter.getValue();
-            if (valueText != null) {
-                Object value = inputType.parse(valueText, namespace);
-                constantInputHolder.put(componentName, inputName, value);
+            String expr = modelParameter.getExpression();
+            if (expr != null) {
+                simInputExpressions.add(new InputExpression(
+                        componentName, inputName, expr, namespace.evaluator));
+            } else if (inputType.isTimeSeriesType()) {
+                constantInputHolder.put(
+                        componentName, inputName,
+                        simulationService.loadTimeSeries(
+                                modelParameter.getTimeseries(),
+                                inputType, namespace));
             } else {
-                InputExpression simExpression =
-                        new InputExpression(componentName, inputName,
-                                modelParameter.getExpression(), namespace.evaluator);
-                simInputExpressions.add(simExpression);
+                constantInputHolder.put(
+                        componentName, inputName,
+                        inputType.parse(
+                                modelParameter.getValue(), namespace));
             }
         }
         return simInputExpressions;
@@ -562,12 +567,13 @@ public class ScenarioGenerationService
                     Type type = namespace.getInputType(componentName, inputName);
                     Object value = constantInput.get(componentName, inputName);
                     if (type.isTimeSeriesType()) {
-                        //TODO Time series inputs
-                        throw new NotImplementedException(
-                                "Time series inputs not yet supported.");
+                        modelParameter.setTimeseries(
+                                simulationService.saveTimeSeries(
+                                        constantInput.getTS(componentName,
+                                                            inputName),
+                                        type, namespace.timeOrigin));
                     } else {
-                        String valueString = type.format(value, namespace);
-                        modelParameter.setValue(valueString);
+                        modelParameter.setValue(type.format(value, namespace));
                     }
 
                     modelParameter.setScenariogenerator(scenarioGenerator);
