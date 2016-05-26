@@ -48,7 +48,29 @@
 				</tr>
 				<tr>
 					<td class="error">${error}</td>
-				</tr>				
+				</tr>
+				<c:if test="${success != null}">
+ 					<tr height="20">
+ 						<td>
+ 							<table>
+ 								<tr>
+ 									<td class="spacecolumn"></td>
+ 									<c:if test="${success == true}">
+										<td class="successful">
+			 								<spring:message code="simulation_uploaded"/>
+		 								</td>
+	 								</c:if>
+	 								<c:if test="${success == false}">
+	 								 	<td class="error">
+											<h2 class="error"><spring:message code="simulation_upload_failed"/></h2>
+ 										</td>
+	 								</c:if>
+ 								</tr>
+							</table>
+ 						</td>
+					</tr>
+				</c:if>
+ 				
 				<tr height="400px">
 					<td valign="top">
 						<table>
@@ -134,20 +156,6 @@
 												</form:form>
 											</c:otherwise>
 										</c:choose>
-										<tr>
-											<td></td>
-											<td>
-														        							
-			        							 <c:choose>
-			        							 	<c:when test="${success!=null && success==true}">
-			        							 		<spring:message code="simulation_uploaded"/>
-			        							 	</c:when>
-			        							 	<c:when test="${success!=null && success==false}">
-			        							 		<h2 class="error"><spring:message code="simulation_upload_failed"/></h2>
-			        							 	</c:when>
-			        							 </c:choose>
-			       							</td>
-			   							</tr>	
 										<tr height=30></tr>	
 										<tr>
 											<td><spring:message code="input_parameters"/></td>

@@ -36,7 +36,7 @@
 					<td class="spacecolumn"></td>
 					<td class="error">${error}</td>
 				</tr>
-				<tr>
+				<tr height="20">
 					<td class="spacecolumn"></td>
 					<td class="active"><spring:message code="scenarios" /></td>
 				</tr>
@@ -77,7 +77,7 @@
 						</form:form>	
 					</td>
 				</tr>
-				<tr height="10"></tr>
+				<tr><td></td></tr>
 			</table>
 			</div>
 		</td>
