@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1631,7 +1632,8 @@ public class ProjectController {
 	        	
 	        	try {
 					metric = metricService.update(metric);
-				} catch (EntityNotFoundException e) {
+					simService.updateMetricValues(project.getPrjid(), projectService.getDefaultExtParamSetId(project.getPrjid()));
+				} catch (EntityNotFoundException | ParseException | ScriptException e) {
 					e.printStackTrace();
 				}
 	        	model.put("info", controllerService.getMessage("metric_updated", request));

@@ -540,6 +540,10 @@ a.tooltip span {
     background-color: #E6E6E6;
 }
 
+.dark {
+	background-color: #CCCCCC;
+}
+
 table.tablegroup{	
 	border-style: medium;
 	border-color: black;

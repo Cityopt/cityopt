@@ -387,11 +387,21 @@
 													</tr>
 																
 													<c:forEach items="${metricVals}" var="metricVal">
-													<tr>
-														<td>${metricVal.metric.name}</td>
-														<td><fmt:formatNumber type="NUMBER" groupingUsed="false" maxFractionDigits="2" value="${metricVal.value}" /></td>
-												    	<td>${metricVal.scenariometrics.scenario.name}</td>						    	
-												    </tr>
+														<c:choose>
+															<c:when test="${metricVal.scenariometrics.scenario.scenid == bestScenarioWithValue.scenid}">
+																<tr>
+																	<td>${metricVal.metric.name}</td>
+																	<td><fmt:formatNumber type="NUMBER" groupingUsed="false" maxFractionDigits="2" value="${metricVal.value}" /></td>
+															    	<td>${metricVal.scenariometrics.scenario.name}</td>
+															</c:when>
+															<c:otherwise>
+																<tr>
+																	<td class="dark">${metricVal.metric.name}</td>
+																	<td class="dark"><fmt:formatNumber type="NUMBER" groupingUsed="false" maxFractionDigits="2" value="${metricVal.value}" /></td>
+															    	<td class="dark">${metricVal.scenariometrics.scenario.name}</td>
+															</c:otherwise>
+														</c:choose>
+												    	</tr>						    	
 													</c:forEach>
 												</table>
 												</div>

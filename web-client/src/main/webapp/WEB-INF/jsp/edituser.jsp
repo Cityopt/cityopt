@@ -55,7 +55,7 @@
 										<col style="width:250px">
 									
 										<tr>
-											<td class="infosmall">
+											<td class="regular">
 												<!--Name-->
 												<spring:message code="name"/>:
 											</td>
@@ -64,7 +64,7 @@
 											</td>
 										</tr>
 										<tr>
-											<td class="infosmall">
+											<td class="regular">
 												<spring:message code="password"/>*:
 											</td>
 											<td>
