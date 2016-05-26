@@ -17,8 +17,9 @@
 
 <context:annotation-config/>
 
-<context:component-scan base-package="eu.cityopt.repository, eu.cityopt.service,eu.cityopt.sim.service"/>
+<context:component-scan base-package="eu.cityopt.repository, eu.cityopt.service,eu.cityopt.sim.service,eu.cityopt.validators"/>
 <jpa:repositories base-package="eu.cityopt.repository" />
+
 
 <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
@@ -63,17 +64,17 @@
 
 <task:scheduler id="myScheduler" pool-size="2"/>
 
-<bean id="dbSimulationStorage" class="eu.cityopt.sim.service.DbSimulationStorage" scope="prototype"/>
-
-<bean id="ModelMapper" class="org.modelmapper.ModelMapper"></bean>
-
-<bean id="initBean" class="eu.cityopt.config.Initialization"/>
- 
-<bean id="appMetadata" class="eu.cityopt.config.AppMetadata"/>
 
 <bean id="filterMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 	<property name="maxUploadSize" value="100000000" />
 </bean>
 
+<bean id="initBean" class="eu.cityopt.config.Initialization"/>
+
+<bean id="dbSimulationStorage" class="eu.cityopt.sim.service.DbSimulationStorage"/>
+
+<bean id="appMetadata" class="eu.cityopt.config.AppMetadata"/>
+
+<bean id="ModelMapper" class="org.modelmapper.ModelMapper"></bean>
 
 </beans>
