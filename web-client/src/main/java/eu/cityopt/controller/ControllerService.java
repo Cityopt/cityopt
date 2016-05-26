@@ -410,6 +410,9 @@ public class ControllerService {
 	    	SearchOptimizationResults emptyResults = new SearchOptimizationResults();
 	        model.put("optresults", emptyResults);
 	        
+	        model.remove("bestScenarioWithValue");
+	        model.remove("resultScenariosWithValue");
+	        
 	        UserSession session = (UserSession) model.get("usersession");
         	session.setOptResultString("");
         	model.put("usersession", session);
