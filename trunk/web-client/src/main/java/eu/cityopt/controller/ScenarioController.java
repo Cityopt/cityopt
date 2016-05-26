@@ -475,9 +475,7 @@ public class ScenarioController {
 
 	    if (!file.isEmpty()) {
 	        try (InputStream scenarios = file.getInputStream();
-	             InputStream timeSeries
-	                 = (timeSeriesMPFile1 != null
-	                    ? timeSeriesMPFile1.getInputStream() : null)) {
+	             InputStream timeSeries = (timeSeriesMPFile1 != null ? timeSeriesMPFile1.getInputStream() : null)) {
 
 	            try {
 	                project = projectService.findByID(project.getPrjid());
