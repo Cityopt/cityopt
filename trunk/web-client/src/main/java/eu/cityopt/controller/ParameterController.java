@@ -150,7 +150,7 @@ public class ParameterController {
     InputParameterValidator validator;
 
     @RequestMapping(value="projectparameters", method=RequestMethod.GET)
-    public String getProjectParameters(Map<String, Object> model, 
+    public String projectParameters(Map<String, Object> model, 
         @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
      	
     	ProjectDTO project = (ProjectDTO) model.get("project");
@@ -166,7 +166,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="extparams", method=RequestMethod.GET)
-    public String getExtParams(Map<String, Object> model) {
+    public String extParams(Map<String, Object> model) {
      	
     	ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -181,7 +181,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="selectextparamset", method=RequestMethod.GET)
-    public String getSelectExtParamSet(Map<String, Object> model, 
+    public String selectExtParamSet(Map<String, Object> model, 
             @RequestParam(value="selectedextparamsetid", required=false) String selectedExtParamSetId) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -238,7 +238,7 @@ public class ParameterController {
     }
         
     @RequestMapping(value="createcomponent", method=RequestMethod.GET)
-    public String getCreateComponent(Model model) {
+    public String createComponent(Model model) {
     	securityAuthorization.atLeastExpert_expert(model);
         ComponentDTO newComponent = new ComponentDTO();
         model.addAttribute("component", newComponent);
@@ -247,7 +247,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="createcomponent", method=RequestMethod.POST)
-    public String getCreateComponentPost(ComponentDTO componentForm, Map<String, Object> model,
+    public String createComponentPost(ComponentDTO componentForm, Map<String, Object> model,
     	@RequestParam(value="cancel", required=false) String cancel,
     	HttpServletRequest request) {
     		 
@@ -307,7 +307,7 @@ public class ParameterController {
     }
    
     @RequestMapping(value="editcomponent", method=RequestMethod.GET)
-    public String getEditComponent(Map<String, Object> model, @RequestParam(value="componentid", required=true) String componentid) {
+    public String editComponent(Map<String, Object> model, @RequestParam(value="componentid", required=true) String componentid) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -331,7 +331,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="editcomponent", method=RequestMethod.POST)
-    public String getEditComponentPost(ComponentDTO component, Map<String, Object> model,
+    public String editComponentPost(ComponentDTO component, Map<String, Object> model,
         @RequestParam(value="componentid", required=true) String componentid,
         HttpServletRequest request) 
     {
@@ -380,7 +380,7 @@ public class ParameterController {
     }
     
     @RequestMapping(value="editinputparameter", method=RequestMethod.GET)
-    public String getEditInputParameter(Map<String, Object> model, 
+    public String editInputParameter(Map<String, Object> model, 
 		@RequestParam(value="inputparamid", required=true) String inputid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -802,7 +802,7 @@ public class ParameterController {
     }
     
     @RequestMapping(value="createinputparameter", method=RequestMethod.GET)
-    public String getCreateInputParameter(Map<String, Object> model,
+    public String createInputParameter(Map<String, Object> model,
             @RequestParam(value="selectedcompid", required=true) String strSelectedCompId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -841,7 +841,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="createinputparameter", method=RequestMethod.POST)
-    public String getCreateInputParamPost(ParamForm inputParamForm, Map<String, Object> model,
+    public String createInputParamPost(ParamForm inputParamForm, Map<String, Object> model,
         @RequestParam(value="selectedcompid", required=true) String strSelectedCompId,
     	@RequestParam(required=false, value="cancel") String cancel,
     	HttpServletRequest request) 
@@ -935,7 +935,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="deleteinputparameter", method=RequestMethod.GET)
-    public String getDeleteInputParam(Map<String, Object> model,
+    public String deleteInputParam(Map<String, Object> model,
         @RequestParam(value="inputparamid", required=true) String strInputParamId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -964,7 +964,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="createextparam", method=RequestMethod.GET)
-    public String getCreateExtParam(Map<String, Object> model) {
+    public String createExtParam(Map<String, Object> model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -987,7 +987,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="createextparam", method=RequestMethod.POST)
-    public String getCreateExtParamPost(ExtParamDTO extParam, Map<String, Object> model,
+    public String createExtParamPost(ExtParamDTO extParam, Map<String, Object> model,
     	@RequestParam(required=false, value="cancel") String cancel,
     	HttpServletRequest request) {
         
@@ -1076,7 +1076,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="deleteextparam", method=RequestMethod.GET)
-    public String getDeleteExtParam(Map<String, Object> model,
+    public String deleteExtParam(Map<String, Object> model,
         @RequestParam(value="extparamid", required=true) String strExtParamId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1110,7 +1110,7 @@ public class ParameterController {
     }
     
     @RequestMapping(value="editextparam", method=RequestMethod.GET)
-    public String getEditExtParam(Map<String, Object> model,
+    public String editExtParam(Map<String, Object> model,
             @RequestParam(value="extparamid", required=true) String extparamid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1143,7 +1143,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="editextparam", method=RequestMethod.POST)
-    public String getEditExtParamPost(ParamForm paramForm, Map<String, Object> model,
+    public String editExtParamPost(ParamForm paramForm, Map<String, Object> model,
             @RequestParam(value="extparamid", required=true) String extParamId){
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1187,7 +1187,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="editextparamvalue", method=RequestMethod.GET)
-    public String getEditExtParamVal(Map<String, Object> model,
+    public String editExtParamVal(Map<String, Object> model,
             @RequestParam(value="extparamvalid", required=true) String extparamvalid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1232,7 +1232,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="editextparamvalue", method=RequestMethod.POST)
-    public String getEditExtParamValPost(ParamForm paramForm, Map<String, Object> model,
+    public String editExtParamValPost(ParamForm paramForm, Map<String, Object> model,
         @RequestParam(value="extparamvalid", required=true) String extParamValId,
         @RequestParam(value="cancel", required=false) String cancel){
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -1313,7 +1313,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="createextparamset", method=RequestMethod.GET)
-    public String getCreateExtParamSet(Map<String, Object> model) {
+    public String createExtParamSet(Map<String, Object> model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -1375,7 +1375,7 @@ public class ParameterController {
     }
 
     @RequestMapping(value="createextparamset", method=RequestMethod.POST)
-    public String getCreateExtParamSetPost(ExtParamValSetDTO extParamValSet, Map<String, Object> model) {
+    public String createExtParamSetPost(ExtParamValSetDTO extParamValSet, Map<String, Object> model) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)

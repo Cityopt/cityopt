@@ -220,8 +220,8 @@
 														<td valign="top">
 															<div style="overflow:scroll;height:250px;width:320px;overflow:auto">
 															<table class="tablestyle" style="width:300px">
-																<col style="width:100px">
-																<col style="width:200px">
+																<col style="width:120px">
+																<col style="width:180px">
 																		
 																<tr height="20">
 																    <th><spring:message code="draw"/></th>
@@ -233,8 +233,8 @@
 																	<c:choose>
 																		<c:when test="${usersession.hasExtParam(extParamVal.extparamvalid)}">
 																			<tr style="background-color: #D4D4D4">
-																				<td><b><spring:message code="added"/></b> (<a href="timeserieschart.html?action=remove&extparamid=${extParamVal.extparamvalid}">
-																					<button type="button"><spring:message code="remove"/></button></a>)
+																				<td><b><spring:message code="added"/></b> <a href="timeserieschart.html?action=remove&extparamid=${extParamVal.extparamvalid}">
+																					<button type="button"><spring:message code="remove"/></button></a>
 																				</td>
 																				<td><b>${extParamVal.extparam.name}</b></td>
 																		</c:when>
