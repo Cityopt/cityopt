@@ -961,7 +961,9 @@ public class OptimizationController {
 
                 controllerService.initEditOptSet(model, project.getPrjid(), optSet.getOptid());
                 model.put("info", controllerService.getMessage("optimization_set_created", request));
-                
+
+                controllerService.clearOptResults(model);
+
                 return "editoptimizationset";
             }
             else if (nType == 2)
@@ -1001,7 +1003,7 @@ public class OptimizationController {
                 model.put("usersession", session);
                 model.put("scengenerator", scenGen);
                 model.put("info", controllerService.getMessage("optimization_set_created", request));
-                
+
                 return "redirect:/geneticalgorithm.html";
             }
             else
@@ -1726,6 +1728,7 @@ public class OptimizationController {
                 }
                 model.put("metricVals", listProjectMetricVals);
 
+                controllerService.clearOptResults(model);
                 return "editoptimizationset";
             }
             else

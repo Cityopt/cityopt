@@ -51,7 +51,7 @@
 				</tr>
 				<tr>
 					<td class="spacecolumn"></td>
-					<td class="info">${info}</td>
+					<td class="success">${info}</td>
 				</tr>
 				<tr>
 					<td class="spacecolumn"></td>
@@ -387,20 +387,22 @@
 													</tr>
 																
 													<c:forEach items="${metricVals}" var="metricVal">
-														<c:choose>
-															<c:when test="${metricVal.scenariometrics.scenario.scenid == bestScenarioWithValue.scenid}">
-																<tr>
-																	<td>${metricVal.metric.name}</td>
-																	<td><fmt:formatNumber type="NUMBER" groupingUsed="false" maxFractionDigits="2" value="${metricVal.value}" /></td>
-															    	<td>${metricVal.scenariometrics.scenario.name}</td>
-															</c:when>
-															<c:otherwise>
-																<tr>
-																	<td class="dark">${metricVal.metric.name}</td>
-																	<td class="dark"><fmt:formatNumber type="NUMBER" groupingUsed="false" maxFractionDigits="2" value="${metricVal.value}" /></td>
-															    	<td class="dark">${metricVal.scenariometrics.scenario.name}</td>
-															</c:otherwise>
-														</c:choose>
+														<c:if test="${bestScenarioWithValue != null}">
+															<c:choose>
+																<c:when test="${metricVal.scenariometrics.scenario.scenid == bestScenarioWithValue.scenid}">
+																	<tr>
+																		<td>${metricVal.metric.name}</td>
+																		<td><fmt:formatNumber type="NUMBER" groupingUsed="false" maxFractionDigits="2" value="${metricVal.value}" /></td>
+																    	<td>${metricVal.scenariometrics.scenario.name}</td>
+																</c:when>
+																<c:otherwise>
+																	<tr>
+																		<td class="dark">${metricVal.metric.name}</td>
+																		<td class="dark"><fmt:formatNumber type="NUMBER" groupingUsed="false" maxFractionDigits="2" value="${metricVal.value}" /></td>
+																    	<td class="dark">${metricVal.scenariometrics.scenario.name}</td>
+																</c:otherwise>
+															</c:choose>
+														</c:if>
 												    	</tr>						    	
 													</c:forEach>
 												</table>
