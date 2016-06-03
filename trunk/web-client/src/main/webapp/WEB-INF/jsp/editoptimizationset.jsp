@@ -120,7 +120,7 @@
 											<td></td>
 											<td class="infosmall"><spring:message code="optimization_info"/></td>
 											<td align="right">
-												<input type="submit" value="<spring:message code="save"/>" style="width: 120px"/>
+												<input type="submit" value="<spring:message code="save"/>" style="width: 130px"/>
 											</td>
 										</tr>
 										<tr>
@@ -135,7 +135,7 @@
 											</td>
 											<td align="right">
 												<a href="exportoptimizationset.html">
-													<button type="button" style="width: 120px">
+													<button type="button" style="width: 130px">
 														<spring:message code="export_optimization_set"/>
 													</button>
 												</a>
@@ -145,7 +145,7 @@
 											<td class="infosmall"><spring:message code="description"/></td>
 											<td></td>
 											<td align="right">
-												<a href="databaseoptimization.html"><button style="width: 120px" title="${tooltip_run}" type="button">
+												<a href="databaseoptimization.html"><button style="width: 130px" title="${tooltip_run}" type="button">
 													<spring:message code="run_search"/></button>
 												</a>
 											</td>
