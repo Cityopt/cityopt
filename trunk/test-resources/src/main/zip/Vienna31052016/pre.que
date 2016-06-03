@@ -1,7 +1,0 @@
-modi is01 io_file_name RTA2014.txt
-modi is02 io_file_name VIE_bldgs2.txt
-modi is03 io_file_name output.txt
-! This line intentionally NOT left blank.
-io open is01
-io open is02
-io open is03
