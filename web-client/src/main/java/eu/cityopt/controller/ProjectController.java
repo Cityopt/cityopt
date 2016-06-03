@@ -958,6 +958,8 @@ public class ProjectController {
 
         if (prjid != null)
         {
+        	securityAuthorization.atLeastExpert_expert(project);
+
         	ProjectDTO tempProject = null;
             int nProjectToBeDeletedId = Integer.parseInt(prjid);
             

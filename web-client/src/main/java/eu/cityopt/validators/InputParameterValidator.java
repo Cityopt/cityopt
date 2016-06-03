@@ -66,7 +66,7 @@ public class InputParameterValidator implements Validator {
 				
 				if(!(paramValue>=lowerBound && paramValue<=upperBound))
 				{
-					errors.reject(String.format("%s with value %s not within the limits %s-%s",inputparameter.getName(), iVal.getValue(),inputparameter.getLowerBound(),inputparameter.getUpperBound()));					
+					errors.reject(String.format("%s with value %s not within the limits %s-%s",inputparameter.getName(), iVal.getValue(),inputparameter.getLowerBound(),inputparameter.getUpperBound()));
 				}
 			}
 		}
@@ -74,9 +74,11 @@ public class InputParameterValidator implements Validator {
 		{			
 			ModelParameterDTO mp = (ModelParameterDTO)target;
 			InputParameterDTO inputparameter = mp.getInputparameter();
+			//System.out.println("checking model param " + inputparameter.getName() + " " + mp.getValue() + " lower: " + inputparameter.getLowerBound() + " upper: " + inputparameter.getUpperBound());
 			
 			if(!StringUtils.isEmpty(mp.getValue()) && !StringUtils.isEmpty(inputparameter.getLowerBound()) && !StringUtils.isEmpty(inputparameter.getUpperBound()))
 			{
+				System.out.println("bounds found model param " + inputparameter.getName() + " " + mp.getValue() + " lower: " + inputparameter.getLowerBound() + " upper: " + inputparameter.getUpperBound());
 				Double paramValue= Double.valueOf(mp.getValue());
 				Double lowerBound = Double.valueOf(inputparameter.getLowerBound());
 				Double upperBound = Double.valueOf(inputparameter.getUpperBound());
@@ -84,6 +86,7 @@ public class InputParameterValidator implements Validator {
 				if(!(paramValue>=lowerBound && paramValue<=upperBound))
 				{
 					errors.reject(String.format("%s with value %s not within the limits %s-%s",inputparameter.getName(), mp.getValue(),inputparameter.getLowerBound(),inputparameter.getUpperBound()));					
+					System.out.println("error limit");
 				}
 			}
 		}

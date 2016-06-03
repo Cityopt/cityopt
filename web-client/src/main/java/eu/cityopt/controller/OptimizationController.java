@@ -3303,28 +3303,39 @@ public class OptimizationController {
             ModelParameterGrouping grouping = scenGenService.getModelParameterGrouping(scenGen.getScengenid());
             String errors = "";
             
+            UserSession session = getUserSession(model);
+            int nComponentId = session.getComponentId();
+        	System.out.println("selected component " + nComponentId);
+            
             for (Map.Entry<Integer, String> entry : form.getValueByInputId().entrySet()) 
             {
             	int inputId = entry.getKey();
                 String value = entry.getValue();
                 String group = form.getGroupByInputId().get(inputId);
-                InputParamValDTO inputParamVal = null;
+                InputParameterDTO inputParam = null;
                 
                 try {
-        			inputParamVal = inputParamValService.findByID(inputId);
+        			inputParam = inputParamService.findByID(inputId);
         		} catch (EntityNotFoundException e) {
         			e.printStackTrace();
         		}
                 
-                /*if (inputParamVal != null)
-                	System.out.println("model param " + inputParamVal.getInputparameter().getComponentName() + " input: " + inputParamVal.getInputparameter().getName() + " value " + value);
-                else
-                	System.out.println("input param val id " + inputId + " not found");*/
+                /*if (inputParam != null)
+                	System.out.println("input param id " + inputParam.getInputid() + " " + inputParam.getComponentName() + " input: " + inputParam.getName() + " value " + value);
+                */
                 
-                ModelParameterDTO modelParamTemp = new ModelParameterDTO();
-                modelParamTemp.setValue(value);
-                modelParamTemp.setInputparameter(inputParamVal.getInputparameter());
-       	 		validator.validate(modelParamTemp, result);
+                if (nComponentId == inputParam.getComponentComponentid())
+                {
+                	System.out.println("same component " + nComponentId + " input param id " + inputParam.getInputid() + " " + inputParam.getComponentName() + " input: " + inputParam.getName() + " value " + value);
+	                ModelParameterDTO modelParamTemp = new ModelParameterDTO();
+	                modelParamTemp.setValue(value);
+	                modelParamTemp.setInputparameter(inputParam);
+	       	 		validator.validate(modelParamTemp, result);
+                }
+                else
+                {
+                	
+                }
                 
     		    if (result.hasErrors()) {
     		    	errors = errors + result.getGlobalError().getCode() + "<br>\n";
@@ -3385,6 +3396,9 @@ public class OptimizationController {
             @RequestParam("selectedcompid") int selectedCompId) {
 	    UserSession userSession = getUserSession(model);
 	    userSession.setComponentId(selectedCompId);
+	    model.put("usersession", userSession);
+    	System.out.println("component selected id " + selectedCompId);
+
         return "";
     }
 

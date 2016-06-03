@@ -76,7 +76,7 @@
 														<c:set var="expressiontip"><spring:message code="tooltip_expression"/></c:set>
 														<td>
 															<table class="tablestyle" width="600">
-																<tr>
+																<tr height="30">
 																	<td>${usersession.getExpression()}</td>
 																</tr>
 															</table>
