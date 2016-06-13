@@ -6,8 +6,8 @@
 							<col style="width:260px">	
 							<tr>
 								<td></td>
-								<td>Language:&nbsp;${usersession.getLanguage()}&nbsp;(<a href="settings.html">Change</a>)</td> 
-								<td align="right"><spring:message code="user"/>: <%= ((org.springframework.security.core.userdetails.UserDetails)org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername() %>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="logout.html"><spring:message code="logout"/></a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+								<td></td> 
+								<td align="right"><%= ((org.springframework.security.core.userdetails.UserDetails)org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername() %>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="logout.html"><spring:message code="logout"/></a>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 							</tr>
 						</table>
 					</td>
