@@ -7,7 +7,7 @@ import java.io.InputStream;
 
 /**
  * Interface for simulator-specific code.
- * 
+ *
  * @see SimulatorManagers
  * @author Hannu Rummukainen
  */
@@ -18,6 +18,8 @@ public interface SimulatorManager extends Closeable {
      *   or null to attempt auto-detection
      * @param modelData raw model data stream
      * @return model object
+     * @throws AlienModelException if parsing fails but
+     *   it is possible that the model is for a different simulator.
      */
     SimulationModel parseModel(String simulatorName, InputStream modelData)
             throws IOException, ConfigurationException;
@@ -37,7 +39,8 @@ public interface SimulatorManager extends Closeable {
      *   or null to attempt auto-detection
      * @param modelData raw model data bytes
      * @return model object
-     * @throws ConfigurationException 
+     * @throws AlienModelException if parsing fails but
+     *   it is possible that the model is for a different simulator.
      */
     default SimulationModel parseModel(String simulatorName, byte[] modelData)
             throws IOException, ConfigurationException {

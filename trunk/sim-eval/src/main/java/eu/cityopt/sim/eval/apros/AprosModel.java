@@ -49,6 +49,7 @@ import eu.cityopt.sim.eval.SimulationModel;
 import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.SyntaxChecker;
 import eu.cityopt.sim.eval.Type;
+import eu.cityopt.sim.eval.AlienModelException;
 import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.eval.util.TimeUtils;
 import eu.cityopt.sim.eval.util.UncloseableInputStream;
@@ -125,16 +126,19 @@ public class AprosModel implements SimulationModel {
                 }
             }
         }
+        if (profileName == null) {
+            throw new AlienModelException(
+                    "No Apros profile specified in "
+                    + MODEL_CONFIGURATION_FILENAME);
+        }
         if (modelFiles.isEmpty()) {
-            throw new ConfigurationException("No model files found in zip package");
+            throw new ConfigurationException(
+                    "No model files found in zip package");
         }
         if (ucs == null) {
-            throw new ConfigurationException("No " + USER_COMPONENT_PROPERTIES_FILENAME
-                    + " file found in zip package");
-        }
-        if (profileName == null) {
             throw new ConfigurationException(
-                    "No Apros profile specified in " + MODEL_CONFIGURATION_FILENAME);
+                    "No " + USER_COMPONENT_PROPERTIES_FILENAME
+                    + " file found in zip package");
         }
         readTsInputs(dir);
         filterSampleOutputs(modelFiles);
@@ -169,6 +173,7 @@ public class AprosModel implements SimulationModel {
         Properties properties = new Properties();
         properties.load(inputStream);
         String psep = Pattern.quote(System.getProperty("path.separator"));
+        List<String> unknown = new ArrayList<>();
         for (String key : properties.stringPropertyNames()) {
             String value = properties.getProperty(key);
             switch (key) {
@@ -190,15 +195,22 @@ public class AprosModel implements SimulationModel {
             case "aprosProfile":
                 if (this.profileName == null) {
                     if (!manager.checkProfile(value)) {
-                        throw new ConfigurationException("Invalid Apros profile " + value);
+                        throw new ConfigurationException(
+                                "Invalid Apros profile " + value);
                     }
                     this.profileName = value;
                 }
                 break;
             default:
-        		throw new ConfigurationException(
-        				"Unknown property " + key + " in " + MODEL_CONFIGURATION_FILENAME);
+                unknown.add(key);
             }
+        }
+        if (!unknown.isEmpty()) {
+            String msg = "Unknown properties in "
+                       + MODEL_CONFIGURATION_FILENAME + ": "
+                       + String.join(", ", unknown);
+            throw profileName == null ? new AlienModelException(msg)
+                                      : new ConfigurationException(msg);
         }
     }
 
