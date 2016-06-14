@@ -121,7 +121,7 @@ public class ProjectController {
     AppMetadata appMetaData;
 
     @Autowired
-    ProjectService projectService; 
+    ProjectService projectService;
 
     @Autowired
     ProjectRepository projectRepository;
@@ -218,25 +218,25 @@ public class ProjectController {
 
     @Autowired
     MessageSource resource;
-    
+
     @Autowired
     ProjectManagementService projectManagementService;
-    
+
     @Autowired
     ControllerService controllerService;
-    
+
     @Autowired
     SecurityAuthorization securityAuthorization;
 
     @Autowired
     SyntaxCheckerService syntaxCheckerService;
-    
-    // Page where user is redirected if authorization fails.    
+
+    // Page where user is redirected if authorization fails.
     @RequestMapping(value = "/403", method = RequestMethod.GET)
-    public String accessDenied(Map<String, Object> model) {      
+    public String accessDenied(Map<String, Object> model) {
     	 	return "403";
-    }  
-    
+    }
+
     @RequestMapping(value="createproject", method=RequestMethod.GET)
     public String createProject(Map<String, Object> model) {
         ProjectDTO newProject = new ProjectDTO();
@@ -245,7 +245,7 @@ public class ProjectController {
 		securityAuthorization.atLeastExpert();
 
         AppUserDTO user = (AppUserDTO) model.get("user");
-        
+
         if (user != null)
         {
         	model.put("user", user);
@@ -256,10 +256,10 @@ public class ProjectController {
 
     @RequestMapping(value = "createproject", method = RequestMethod.POST)
     public String createProjectPost(Map<String, Object> model,
-		@Validated @ModelAttribute ("newProject") ProjectDTO projectForm, 
+		@Validated @ModelAttribute ("newProject") ProjectDTO projectForm,
 		BindingResult bindingResult,
 		@RequestParam(value="nextpage", required=false) String nextpage,
-        HttpServletRequest request) 
+        HttpServletRequest request)
     {
 		securityAuthorization.atLeastExpert();
 
@@ -274,12 +274,12 @@ public class ProjectController {
         	return "createproject";
         } else if (nextpage != null) {
         	ProjectDTO project = (ProjectDTO) model.get("project");
-        	
+
         	if (project == null)
         	{
         		return "error";
         	}
-        	
+
         	model.put("project", project);
         	model.put("success", null);
         	return "editproject";
@@ -298,17 +298,17 @@ public class ProjectController {
 
             if (projectService.findByName(project.getName()) == null) {
             	controllerService.clearSession(model, request, true);
-                
+
                 // Set up the project Rights.
                 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 String user= ((UserDetails)principal).getUsername();
                 project = projectManagementService.createProjectWithAdminUser(project, user);
-                
+
                 model.put("newProject", project);
                 model.put("project", project);
-                
+
                 UserSession session = (UserSession) model.get("usersession");
-                
+
                 if (session == null)
                 {
                 	session = new UserSession();
@@ -319,7 +319,7 @@ public class ProjectController {
             	session.setActiveScenGen(null);
             	model.put("usersession", session);
             	model.put("success", true);
-                
+
                 return "createproject";
             } else {
                 model.put("newProject", new ProjectDTO());
@@ -333,19 +333,19 @@ public class ProjectController {
     public String openProject(Map<String, Object> model)
     {
     	// Fine if Administrator
-    	List<ProjectDTO> projects= new ArrayList<ProjectDTO>();    			
+    	List<ProjectDTO> projects= new ArrayList<ProjectDTO>();
     	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (principal != null && principal instanceof UserDetails) {
             Collection<? extends GrantedAuthority> authorites = ((UserDetails)principal).getAuthorities();
-           
+
             for (int i = 0; authorites.size() > i; i++) {
             	GrantedAuthority accessProvided = (GrantedAuthority) authorites.toArray()[i];
             	if (accessProvided.getAuthority().equals("ROLE_Administrator")){
-            		projects = projectService.findAll();               
+            		projects = projectService.findAll();
             	}
             }
-            
+
             if (projects.size() == 0) {
             	 String username= ((UserDetails)principal).getUsername();
             	 int userID;
@@ -362,17 +362,17 @@ public class ProjectController {
         model.put("projects", projects);
         return "openproject";
     }
-   
+
     @RequestMapping(value="editproject", method=RequestMethod.GET)
-    public String editProject(Map<String, Object> model, HttpServletRequest request, 
+    public String editProject(Map<String, Object> model, HttpServletRequest request,
 		@RequestParam(value="prjid", required=false) String prjid) {
-       
+
     	if (prjid != null)
         {
     		// Open a new project
-    		
+
     		securityAuthorization.atLeastGuest_guest(prjid);
-    		
+
             int nProjectId = Integer.parseInt(prjid);
             ProjectDTO project = null;
 
@@ -384,15 +384,15 @@ public class ProjectController {
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
             }
-            
+
             controllerService.clearSession(model, request, true);
             UserSession session = (UserSession) model.get("usersession");
-            
+
             if (session == null)
             {
             	session = new UserSession();
             }
-        	
+
             session.setActiveProject(project.getName());
         	session.setActiveScenario(null);
         	session.setActiveOptSet(null);
@@ -415,9 +415,9 @@ public class ProjectController {
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
             }
-            
+
             controllerService.getEnergyModelInfo(model, project.getPrjid());
-                        
+
             model.put("project", project);
         }
         else if (!model.containsKey("project"))
@@ -430,9 +430,9 @@ public class ProjectController {
 
         return "editproject";
     }
-    
+
     @RequestMapping(value="editproject", method=RequestMethod.POST)
-    public String editProjectPost(ProjectDTO projectForm, Map<String, Object> model, 
+    public String editProjectPost(ProjectDTO projectForm, Map<String, Object> model,
         @RequestParam(value="action", required=false) String action,
         HttpServletRequest request) {
 
@@ -453,7 +453,7 @@ public class ProjectController {
                 model.put("error", controllerService.getMessage("write_project_name", request));
         		return "editproject";
         	}
-        	
+
             if (action.equals("create"))
             {
                 project.setName(projectForm.getName());
@@ -463,7 +463,7 @@ public class ProjectController {
             else if (action.equals("update"))
             {
                 try {
-                    project = projectService.findByID(project.getPrjid());                	
+                    project = projectService.findByID(project.getPrjid());
                     project.setName(projectForm.getName().trim());
                     project.setDescription(projectForm.getDescription().trim());
                     project.setLocation(projectForm.getLocation().trim());
@@ -471,12 +471,12 @@ public class ProjectController {
 
                     Integer defaultExtSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
                     int nDefaultExtSetId = 0;
-                    
+
                     if (defaultExtSetId != null)
                     {
                     	nDefaultExtSetId = defaultExtSetId;
                     }
-                    
+
                     project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()), nDefaultExtSetId);
                     controllerService.getEnergyModelInfo(model, project.getPrjid());
                 } catch(ObjectOptimisticLockingFailureException e) {
@@ -517,27 +517,27 @@ public class ProjectController {
                 String simulatorName = null;
                 Instant timeOrigin = null;
 
-                List<Locale.LanguageRange> languageList = 
+                List<Locale.LanguageRange> languageList =
             		Locale.LanguageRange.parse(RequestContextUtils.getLocale(request).getLanguage() + ",en");
                 importExportService.importSimulationModel(project.getPrjid(), 0, languageList, bytes, simulatorName, timeOrigin);
                 importExportService.importModelInputsAndOutputs(project.getPrjid(), 0);
-                
+
                 Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
-                
+
                 if (nSimulationModelId != null)
                 {
                 	model.put("showInfo", true);
                 }
-                
+
                 controllerService.getEnergyModelInfo(model, project.getPrjid());
-                
+
                 model.put("success",true);
-                
+
                 //return "infopage";
             } catch (Exception e) {
             	model.put("success",false);
             	e.printStackTrace();
-            	model.put("error", e.getStackTrace().toString());
+            	model.put("error", e.toString());
                 return "error";
             }
         } else {
@@ -555,14 +555,14 @@ public class ProjectController {
             return "error";
         }
         securityAuthorization.atLeastGuest_guest(project);
-        
+
         Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
-        
+
         if (nSimulationModelId == null)
         {
         	return "error";
         }
-        
+
         model.put("title", "Energy model description");
 
         try {
@@ -572,8 +572,8 @@ public class ProjectController {
 		}
 
         return "simmodelinfo";
-    }	
-    
+    }
+
     @RequestMapping(value = "importstructurefile", method = RequestMethod.POST)
     public String importStructureFile(Map<String, Object> model, @RequestParam("file") MultipartFile file,
 		HttpServletRequest request) {
@@ -586,7 +586,7 @@ public class ProjectController {
                     return "error";
                 }
                 securityAuthorization.atLeastExpert_standard(project);
-                
+
                 try {
                     project = projectService.findByID(project.getPrjid());
                 } catch (Exception e1) {
@@ -623,7 +623,7 @@ public class ProjectController {
                 return;
             }
             securityAuthorization.atLeastStandard_guest(project);
-            
+
 
             try {
                 project = projectService.findByID(project.getPrjid());
@@ -652,16 +652,16 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "exportmetrics", method = RequestMethod.GET)
-	public void exportMetrics(Map<String, Object> model, HttpServletRequest request, 
+	public void exportMetrics(Map<String, Object> model, HttpServletRequest request,
 		HttpServletResponse response) {
 
     	//System.out.println("Export metrics");
         ProjectDTO project = (ProjectDTO) model.get("project");
-		
+
 		if (project == null)
 		{
 			return;
-		}		
+		}
 		securityAuthorization.atLeastStandard_guest(project);
 
 		Path timeSeriesPath = null;
@@ -669,14 +669,14 @@ public class ProjectController {
 		File fileScenario = null;
 		File fileTimeSeries = null;
 		List<File> files = new ArrayList<File>();
-		
+
 		try (TempDir tempDir = new TempDir("export")) {
 	        timeSeriesPath = tempDir.getPath().resolve("timeseries.csv");
 	        scenarioPath = tempDir.getPath().resolve("scenarios.csv");
-	        
+
 	        List<ExtParamValSetDTO> extValSets = projectService.getExtParamValSets(project.getPrjid());
 	        Set<Integer> extParamValSetIds = new HashSet<Integer>();
-	        
+
 	        for (ExtParamValSetDTO extValSet : extValSets)
 	        {
 	        	extParamValSetIds.add(extValSet.getExtparamvalsetid());
@@ -684,7 +684,7 @@ public class ProjectController {
 
 	        Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
 	        Set<Integer> scenarioIds = new HashSet<Integer>();
-	        
+
 	        for (ScenarioDTO scenarioTemp : scenarios)
 	        {
 	        	scenarioIds.add(scenarioTemp.getScenid());
@@ -701,25 +701,25 @@ public class ProjectController {
 			// Set the content type based to zip
 			response.setContentType("Content-type: text/zip");
 			response.setHeader("Content-Disposition", "attachment; filename=metrics.zip");
-	
+
 			ServletOutputStream out = null;
-			
+
 			try {
 				out = response.getOutputStream();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-	
+
 			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
-	
+
 			for (File file : files) {
-		
+
 				try {
 					zos.putNextEntry(new ZipEntry(file.getName()));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-		
+
 				// Get the file
 				FileInputStream fis = null;
 				try {
@@ -728,7 +728,7 @@ public class ProjectController {
 					// If the file does not exists, write an error entry instead of
 					// file
 					// contents
-					
+
 					try {
 						zos.write(("ERROR could not find file " + file.getName()).getBytes());
 						zos.closeEntry();
@@ -741,9 +741,9 @@ public class ProjectController {
 				} catch (IOException e)	{
 					e.printStackTrace();
 				}
-			
+
 				BufferedInputStream fif = new BufferedInputStream(fis);
-		
+
 				// Write the contents of the file
 				int data = 0;
 				try {
@@ -751,10 +751,10 @@ public class ProjectController {
 						zos.write(data);
 					}
 					fif.close();
-		
+
 					zos.closeEntry();
 					System.out.println("Finished file " + file.getName());
-		
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -766,7 +766,7 @@ public class ProjectController {
 	    	e.printStackTrace();
 	    }
 	}
-    
+
     @RequestMapping(value = "importextparam", method = RequestMethod.POST)
     public String importExtParamFile(Map<String, Object> model, @RequestParam("file") MultipartFile file,
 		HttpServletRequest request) {
@@ -790,29 +790,29 @@ public class ProjectController {
 
                 InputStream stream = file.getInputStream();
                 System.out.println("Starting import time series");
-                
+
                 List<ExtParamValDTO> extParamVals = null;
                 ExtParamValSetDTO extParamValSet = null;
-                
+
                 Map<String, TimeSeriesDTOX> tsData = importExportService.readTimeSeriesCsv(project.getPrjid(), stream);
                 Set<String> keys = tsData.keySet();
                 Iterator<String> iter = keys.iterator();
-                
+
                 while (iter.hasNext())
                 {
                 	String extParamName = iter.next();
                 	String baseName = extParamName;
                     TimeSeriesDTOX ts = tsData.get(extParamName);
-	                
+
                 	ExtParamDTO extParam = new ExtParamDTO();
                 	boolean bFoundName = true;
                 	int i = 2;
-                	
+
                 	// Find if the name is already used and create a new name
                 	while (bFoundName)
                 	{
                 		System.out.println("Finding name " + extParamName);
-                        
+
 	                	ExtParamDTO testExtParam = extParamService.findByName(extParamName, project.getPrjid());
 
 	                	if (testExtParam != null)
@@ -828,20 +828,20 @@ public class ProjectController {
 	                	extParamName = baseName + "_" + i;
 	                	i++;
                 	}
-	                
+
 	                extParam.setName(extParamName);
 	                TypeDTO type = typeService.findByName(eu.cityopt.sim.eval.Type.TIMESERIES_STEP.name);
 	                extParam.setType(type);
 	                extParam = extParamService.save(extParam, project.getPrjid());
-	                
+
 	                ExtParamValDTO extParamVal = new ExtParamValDTO();
 	                extParamVal.setExtparam(extParam);
 	                extParamVal = extParamValService.save(extParamVal);
 
 	                Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-	                
+
 	                System.out.println("Default ext param set id " + defaultExtParamValSetId);
-                    
+
 	                if (defaultExtParamValSetId != null)
 	        		{
 	                	try {
@@ -851,14 +851,14 @@ public class ProjectController {
 		                    e1.printStackTrace();
 		                }
 		    		}
-	                
+
 	                if (extParamValSet != null)
 	                {
 		                extParamValSetService.updateExtParamValInSet(extParamValSet.getExtparamvalsetid(), extParamVal, ts, false);
-	                }	                
+	                }
 	                extParamValSet = extParamValSetService.findByID(defaultExtParamValSetId);
 	                model.put("extParamValSet", extParamValSet);
-	                
+
 	                try {
 	                    extParamVals = extParamValSetService.getExtParamVals(defaultExtParamValSetId);
 	                } catch (EntityNotFoundException e) {
@@ -866,11 +866,11 @@ public class ProjectController {
 	                }
 	                model.put("extParamVals", extParamVals);
                 }
-                
+
                 stream.close();
                 System.out.println("Finished importing time series");
                 model.put("info", controllerService.getMessage("file_imported", request));
-                
+
                 List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 	            model.put("components", components);
 	            Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
@@ -886,14 +886,14 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "exportextparam", method = RequestMethod.GET)
-    public void exportExtParam(Map<String, Object> model, 
-		@RequestParam(value="extparamvalid", required=true) String strExtParamValId, 
+    public void exportExtParam(Map<String, Object> model,
+		@RequestParam(value="extparamvalid", required=true) String strExtParamValId,
 		@RequestParam(value="extparamvalsetid", required=true) String strExtParamValSetId,
    		HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         ProjectDTO project = null;
         ExtParamValDTO extParamVal = null;
-        
+
         try {
             project = (ProjectDTO) model.get("project");
 
@@ -909,13 +909,13 @@ public class ProjectController {
                 e1.printStackTrace();
             }
             model.put("project", project);
-            
+
             extParamVal = extParamValService.findByID(Integer.parseInt(strExtParamValId));
         } catch (Exception e) {
         	e.printStackTrace();
             return;
         }
-        
+
         // set headers for the response
         response.setContentType("text/csv");
         String headerKey = "Content-Disposition";
@@ -932,7 +932,7 @@ public class ProjectController {
 
         outputStream.close();
     }
-    
+
     @RequestMapping(value="closeproject", method=RequestMethod.GET)
     public String closeProject(Map<String, Object> model, HttpServletRequest request)
     {
@@ -945,15 +945,15 @@ public class ProjectController {
         securityAuthorization.atLeastGuest_guest(project);
 
         controllerService.clearSession(model, request, true);
-        
+
         return "start";
-    }	
+    }
 
     @RequestMapping(value="deleteproject",method=RequestMethod.GET)
     public String deleteProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid,
 		HttpServletRequest request){
     	securityAuthorization.atLeastExpert();
-        
+
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (prjid != null)
@@ -962,7 +962,7 @@ public class ProjectController {
 
         	ProjectDTO tempProject = null;
             int nProjectToBeDeletedId = Integer.parseInt(prjid);
-            
+
             if (project != null && project.getPrjid() == nProjectToBeDeletedId)
             {
             	model.put("error", controllerService.getMessage("cant_delete_active_project", request));
@@ -974,7 +974,7 @@ public class ProjectController {
 	            } catch (Exception e1) {
 	                e1.printStackTrace();
 	            }
-	
+
 	            try {
 	                projectService.delete(tempProject.getPrjid());
 	            } catch (EntityNotFoundException e) {
@@ -993,8 +993,8 @@ public class ProjectController {
 
     @RequestMapping(value="cloneproject", method=RequestMethod.GET)
     public String cloneProject(Map<String, Object> model, @RequestParam(value = "projectid") String projectid) {
-      
-    	ProjectDTO project= this.ParseProjectIDtoProjectDTO(model, projectid);	
+
+    	ProjectDTO project= this.ParseProjectIDtoProjectDTO(model, projectid);
         securityAuthorization.atLeastAdmin();
         int nProjectId = Integer.parseInt(projectid);
 
@@ -1003,34 +1003,34 @@ public class ProjectController {
         while(projectService.findByName(clonename)!=null) {
             i++;
             clonename = project.getName()+"(copy)("+i+")";
-        }	
-        
+        }
+
         try {
             ProjectDTO ProjectCloner = copyService.copyProject(nProjectId,clonename);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
-        
+
         List<ProjectDTO> projects = projectService.findAll();
         model.put("projects", projects);
         return "openproject";
     }
-    
+
     // Get Project from database based on model and projectID
     public ProjectDTO ParseProjectIDtoProjectDTO(Map<String, Object> model, String projectid){
-    	
+
     	ProjectDTO project = (ProjectDTO) model.get("project");
     	int nProjectId = Integer.parseInt(projectid);
-    	
+
     	try {
     		project = projectService.findByID(nProjectId);
     	} catch (EntityNotFoundException e1) {
     		e1.printStackTrace();
-    	}    	
+    	}
     	model.put("project", project);
     	return project;
     }
-   
+
     @RequestMapping(value="units", method=RequestMethod.GET)
     public String units(Model model) {
     	securityAuthorization.atLeastExpert();
@@ -1042,14 +1042,14 @@ public class ProjectController {
     @RequestMapping(value="deleteunit",method=RequestMethod.GET)
     public String deleteUnit(Map<String, Object> model, @RequestParam(value="unitid", required=true) String unitid,
 		HttpServletRequest request) {
-    	
+
     	securityAuthorization.atLeastExpert();
-        
+
         if (unitid != null)
         {
             UnitDTO unit = null;
             int nUnitId = Integer.parseInt(unitid);
-            
+
             try {
                 unit = unitService.findByID(Integer.parseInt(unitid));
             } catch (Exception e1) {
@@ -1075,7 +1075,7 @@ public class ProjectController {
     public String createUnit(Map<String, Object> model) {
 
     	securityAuthorization.atLeastExpert();
-        
+
         UnitForm unitForm = new UnitForm();
         model.put("unitForm", unitForm);
 
@@ -1094,9 +1094,9 @@ public class ProjectController {
 
     @RequestMapping(value="createunit", method=RequestMethod.POST)
     public String createUnitPost(UnitForm unitForm, Model model) {
-    	
+
     	securityAuthorization.atLeastExpert();
-        
+
         if (unitForm != null)
         {
             if (unitForm.getName() != null && unitForm.getType() != null && !unitForm.getName().isEmpty())
@@ -1130,13 +1130,13 @@ public class ProjectController {
     public String paramReliability(Model model){
 
         securityAuthorization.atLeastExpert();
-        
+
         return "paramreliability";
     }
 
     @RequestMapping(value="importdata", method=RequestMethod.GET)
     public String importData(Map<String, Object> model){
-    
+
     	ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null)
         {
@@ -1156,16 +1156,16 @@ public class ProjectController {
             return "error";
         }
         securityAuthorization.atLeastStandard_guest(project);
-        
+
         return "exportdata";
     }
 
     @RequestMapping(value="exportextparamsets", method=RequestMethod.GET)
-    public void exportExtParamSets(Map<String, Object> model, HttpServletRequest request, 
+    public void exportExtParamSets(Map<String, Object> model, HttpServletRequest request,
     	HttpServletResponse response) {
-        	
+
         ProjectDTO project = (ProjectDTO) model.get("project");
-		
+
 		if (project == null)
 		{
 			return;
@@ -1177,26 +1177,26 @@ public class ProjectController {
 		File fileScenario = null;
 		File fileTimeSeries = null;
 		List<File> files = new ArrayList<File>();
-		
+
 		try (TempDir tempDir = new TempDir("export")) {
 	        timeSeriesPath = tempDir.getPath().resolve("timeseries.csv");
 	        scenarioPath = tempDir.getPath().resolve("ext_param_sets.csv");
-	        
+
 	        List<ExtParamValSetDTO> extValSets = extParamValSetService.findAll();
 	        Set<Integer> extParamValSetIds = new HashSet<Integer>();
-	        
+
 	        for (ExtParamValSetDTO extValSet : extValSets)
 	        {
 	        	extParamValSetIds.add(extValSet.getExtparamvalsetid());
 	        }
 
 	        Integer defaultExtSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-	        
+
 	        if (defaultExtSetId == null)
 	        {
 	        	return;
 	        }
-	        
+
 	    	importExportService.exportExtParamValSets(scenarioPath, timeSeriesPath, project.getPrjid(), defaultExtSetId);
 
 	        fileTimeSeries = timeSeriesPath.toFile();
@@ -1207,25 +1207,25 @@ public class ProjectController {
 			// Set the content type based to zip
 			response.setContentType("Content-type: text/zip");
 			response.setHeader("Content-Disposition", "attachment; filename=external_parameter_sets.zip");
-	
+
 			ServletOutputStream out = null;
-			
+
 			try {
 				out = response.getOutputStream();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-	
+
 			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
-	
+
 			for (File file : files) {
-		
+
 				try {
 					zos.putNextEntry(new ZipEntry(file.getName()));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-		
+
 				// Get the file
 				FileInputStream fis = null;
 				try {
@@ -1233,7 +1233,7 @@ public class ProjectController {
 				} catch (FileNotFoundException fnfe) {
 					// If the file does not exists, write an error entry instead of
 					// file contents
-					
+
 					try {
 						zos.write(("ERROR could not find file " + file.getName()).getBytes());
 						zos.closeEntry();
@@ -1246,9 +1246,9 @@ public class ProjectController {
 				} catch (IOException e)	{
 					e.printStackTrace();
 				}
-			
+
 				BufferedInputStream fif = new BufferedInputStream(fis);
-		
+
 				// Write the contents of the file
 				int data = 0;
 				try {
@@ -1256,10 +1256,10 @@ public class ProjectController {
 						zos.write(data);
 					}
 					fif.close();
-		
+
 					zos.closeEntry();
 					System.out.println("Finished file " + file.getName());
-		
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -1271,9 +1271,9 @@ public class ProjectController {
 	    	e.printStackTrace();
 	    }
 	}
- 
+
     @RequestMapping(value="projectdata", method=RequestMethod.GET)
-    public String projectData(Map<String, Object> model, 
+    public String projectData(Map<String, Object> model,
             @RequestParam(value="selectedcompid", required=false) String selectedCompId,
             @RequestParam(value="selectedextparamvalsetid", required=false) String selectedExtParamValSetId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
@@ -1284,7 +1284,7 @@ public class ProjectController {
         }
 
         securityAuthorization.atLeastGuest_guest(project);
-        
+
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
@@ -1318,7 +1318,7 @@ public class ProjectController {
 
         List<ExtParamValDTO> extParamVals = null;
         Integer defaultExtSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
-        
+
         if (selectedExtParamValSetId != null && defaultExtSetId != null)
         {
             try {
@@ -1423,7 +1423,7 @@ public class ProjectController {
             return "error";
         }
         securityAuthorization.atLeastExpert_expert(project);
-        
+
         UserSession userSession = (UserSession) model.get("usersession");
 
         if (userSession == null)
@@ -1435,7 +1435,7 @@ public class ProjectController {
         {
         	userSession.setExpression("");
         }
-        
+
         List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
         model.put("components", components);
 
@@ -1460,7 +1460,7 @@ public class ProjectController {
         {
             int nInputParamId = Integer.parseInt(inputParamId);
             InputParameterDTO inputParam = null;
-            
+
             if (nInputParamId > 0)
             {
             	try {
@@ -1478,7 +1478,7 @@ public class ProjectController {
         {
             int nOutputParamId = Integer.parseInt(outputParamId);
             OutputVariableDTO outputVar = null;
-            
+
             if (nOutputParamId > 0)
             {
             	try {
@@ -1496,7 +1496,7 @@ public class ProjectController {
         {
             int nMetricId = Integer.parseInt(metricId);
             MetricDTO metric = null;
-            
+
             if (nMetricId > 0)
             {
             	try {
@@ -1514,7 +1514,7 @@ public class ProjectController {
         {
             int nExtParamId = Integer.parseInt(extParamId);
             ExtParamDTO extParam = null;
-            
+
             if (nExtParamId > 0)
             {
             	try {
@@ -1535,12 +1535,12 @@ public class ProjectController {
         		userSession.setExpression(userSession.getExpression() + text);
         	}
         }
-        
+
         model.put("usersession", userSession);
-        
+
         Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
         model.put("extParams", extParams);
-        
+
         return "createmetric";
     }
 
@@ -1554,7 +1554,7 @@ public class ProjectController {
             return "error";
         }
         securityAuthorization.atLeastExpert_expert(project);
-        
+
         controllerService.initUpdateMetric(model,  project.getPrjid());
         controllerService.getFunctions(model);
         return "updatemetric";
@@ -1566,7 +1566,7 @@ public class ProjectController {
 		@RequestParam(value="metricid", required=false) String metricId,
     	@RequestParam(value="cancel", required=false) String cancel,
     	HttpServletRequest request) {
-            
+
     	ProjectDTO project = (ProjectDTO) model.get("project");
         try {
             project = projectService.findByID(project.getPrjid());
@@ -1585,16 +1585,16 @@ public class ProjectController {
             model.put("metrics", metrics);
             return "metricdefinition";
         }
-        
+
         String name = paramForm.getName();
         String expression = paramForm.getValue();
         String unit = paramForm.getUnit();
-        
+
         if (name != null && !name.isEmpty() && expression != null && !expression.isEmpty())
         {
         	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
         	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkMetricExpression(expression);
-        	
+
         	if (error != null) {
         	    model.put("error", error.message);
         	    controllerService.initUpdateMetric(model, project.getPrjid());
@@ -1606,7 +1606,7 @@ public class ProjectController {
 	        newMetric.setName(name.trim());
 	        newMetric.setExpression(expression.trim());
 	        newMetric.setProject (project);
-	        
+
 	        if (unit != null && !unit.isEmpty())
 	        {
 		        try {
@@ -1615,7 +1615,7 @@ public class ProjectController {
 					e2.printStackTrace();
 				}
 	        }
-	        
+
 	        if (action.equals("create")) {
 	        	newMetric = metricService.save(newMetric);
 	        	model.put("info", controllerService.getMessage("metric_created", request));
@@ -1626,12 +1626,12 @@ public class ProjectController {
 					metric = metricService.findByID(nMetricId);
 				} catch (EntityNotFoundException e1) {
 					e1.printStackTrace();
-				} 
-	        	
+				}
+
 	        	metric.setName(newMetric.getName());
 	        	metric.setExpression(newMetric.getExpression());
 	        	metric.setUnit(newMetric.getUnit());
-	        	
+
 	        	try {
 					metric = metricService.update(metric);
 					simService.updateMetricValues(project.getPrjid(), projectService.getDefaultExtParamSetId(project.getPrjid()));
@@ -1640,7 +1640,7 @@ public class ProjectController {
 				}
 	        	model.put("info", controllerService.getMessage("metric_updated", request));
 	        }
-        } 
+        }
         else
         {
             model.put("error", controllerService.getMessage("write_name_and_expression", request));
@@ -1648,39 +1648,39 @@ public class ProjectController {
     	    controllerService.getFunctions(model);
     	    return "updatemetric";
     	}
-        
+
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
 
-        // TODO: update metrics 
-        
+        // TODO: update metrics
+
         model.put("project", project);
         Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
         model.put("metrics", metrics);
 
         controllerService.clearOptResults(model);
-        
+
         return "metricdefinition";
     }
 
     @RequestMapping(value="editmetric", method=RequestMethod.GET)
-    public String editMetric(Map<String, Object> model, 
+    public String editMetric(Map<String, Object> model,
         @RequestParam(value="metricid", required=true) String metricid) {
 
         int nMetricId = Integer.parseInt(metricid);
         MetricDTO metric = null;
         ProjectDTO project = (ProjectDTO) model.get("project");
 
-        if (project == null) 
+        if (project == null)
         {
             return "error";
         }
         securityAuthorization.atLeastExpert_expert(project);
 
-        try { 
+        try {
             metric = metricService.findByID(nMetricId);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
@@ -1689,11 +1689,11 @@ public class ProjectController {
         ParamForm paramForm = new ParamForm();
         paramForm.setName(metric.getName());
         paramForm.setValue(metric.getExpression());
-        
+
         if (metric.getUnit() != null) {
         	paramForm.setUnit(metric.getUnit().getName());
         }
-        
+
         model.put("paramForm", paramForm);
         model.put("action", "edit");
         model.put("metricid", nMetricId);
@@ -1701,34 +1701,34 @@ public class ProjectController {
         List<UnitDTO> units = unitService.findAll();
         model.put("units", units);
         controllerService.getFunctions(model);
-        
+
         return "updatemetric";
     }
-   
-    
+
+
 	@RequestMapping("overview.png")
 	public void renderOverviewImage(Map<String, Object> model, OutputStream stream) throws Exception {
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		
+
 		if (project == null)
 		{
 			return;
 		}
 		securityAuthorization.atLeastGuest_guest(project);
-		
+
 		Integer nSimulationModelId = projectService.getSimulationmodelId(project.getPrjid());
-        
+
         if (nSimulationModelId == null)
         {
         	return;
         }
-        
+
         SimulationModelDTO simModel = simModelService.findByID(nSimulationModelId);
-        
+
         if (simModel != null)
         {
         	byte[] imageBlob = simModel.getImageblob();
-         
+
         	if (imageBlob != null)
         	{
         		stream.write(imageBlob);
@@ -1740,8 +1740,8 @@ public class ProjectController {
     public String error(Map<String, Object> model)
     {
         return "error";
-    }	
-    
+    }
+
     @RequestMapping(value="settings", method=RequestMethod.GET)
     public String settings(Map<String, Object> model, HttpServletRequest request,
 		@RequestParam(value="lang", required=false) String language)
@@ -1751,5 +1751,5 @@ public class ProjectController {
     		controllerService.changeLanguage(model, language);
     	}
         return "settings";
-    }	
+    }
 }
