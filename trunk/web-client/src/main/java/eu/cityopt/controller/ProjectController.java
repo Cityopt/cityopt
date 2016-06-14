@@ -600,7 +600,7 @@ public class ProjectController {
                 model.put("info", controllerService.getMessage("file_imported", request));
             } catch (Exception e) {
             	e.printStackTrace();
-            	model.put("error", e.getStackTrace().toString());
+            	model.put("error", e.toString());
                 return "error";
             }
         } else {
