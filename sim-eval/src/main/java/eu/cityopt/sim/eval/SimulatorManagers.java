@@ -44,7 +44,8 @@ public class SimulatorManagers {
      * Attempts to find a SimulatorManager instance that can run the given model.
      * Returns a parsed SimulationModel on success, and null if the detection fails.
      */
-    public static SimulationModel detectSimulator(byte[] modelData) {
+    public static SimulationModel detectSimulator(byte[] modelData)
+            throws IOException, ConfigurationException {
         // First find distinct SimulatorManager instances.
         Set<SimulatorManager> distinctManagers = new HashSet<>();
         for (SimulatorManager manager : simulatorManagers.values()) {
@@ -54,8 +55,9 @@ public class SimulatorManagers {
         for (SimulatorManager manager: distinctManagers) {
             try {
                 return manager.parseModel(null, modelData);
-            } catch (IOException | ConfigurationException e) {
-                logger.debug("While detecting simulator: No success with " + manager, e);
+            } catch (AlienModelException e) {
+                logger.debug("While detecting simulator: No success with "
+                             + manager, e);
             }
         }
         return null;
@@ -72,9 +74,9 @@ public class SimulatorManagers {
      * @return handle to model structure
      * @throws ConfigurationException if there is an error in the model data, or
      *    a suitable simulator cannot be determined
-     * @throws IOException if the parsing fails 
+     * @throws IOException if the parsing fails
      */
-    public static SimulationModel parseModel(String simulatorName, byte[] modelData) 
+    public static SimulationModel parseModel(String simulatorName, byte[] modelData)
             throws IOException, ConfigurationException {
         SimulationModel model = null;
         if (simulatorName == null) {
