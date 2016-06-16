@@ -1,23 +1,14 @@
 package eu.cityopt.validators;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.ModelParameterDTO;
-import eu.cityopt.model.InputParamVal;
-import eu.cityopt.model.InputParameter;
 import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
 
