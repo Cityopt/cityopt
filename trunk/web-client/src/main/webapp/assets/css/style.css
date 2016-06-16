@@ -681,52 +681,40 @@ table.tablegroup{
     background-image: linear-gradient(to bottom,  #aee247, FBBA00);
 }
 
-
 button {
-	background: #47AFE2;
-    background-image: -webkit-linear-gradient(top, #c7e3f5, #458ee0);
-    background-image: -moz-linear-gradient(top, #c7e3f5, #458ee0);
-    background-image: -ms-linear-gradient(top, #c7e3f5, #458ee0);
-    background-image: -o-linear-gradient(top, #c7e3f5, #458ee0);
-    background-image: linear-gradient(to bottom, #c7e3f5, #458ee0);
-    -webkit-border-radius: 40;
-    -moz-border-radius: 40;
-    border-radius: 40px;
+	background: #F6F6F6;
+	color: #4D4D4D;
+    border-width: 1px;
+    border-color: #E6E6E6;
+    font-size: 22px;
+    border-radius: 7px;
 	font-family: 'blanchcaps', arial;
-	font-size:16px;
-	
-	/*background-color:#F6F6F6;
-	display:inline-block;
-	cursor:pointer;
-	color:#4D4D4D;
+}
+
+.inactivebutton {
+	background: #F6F6F6;
+    color: #4D4D4D;
+    font-size: 24px;
+    border-width: 1px;
+    border-color: #E6E6E6;
+    border-radius: 7px;
 	font-family: 'blanchcaps', arial;
-	font-size:16px;
-	border: 0px;
-	border-radius: 6px;*/
+	font-size:24px;
 }
 
 input[type="button"], input[type="submit"] {
-	background: #c7e3f5;
-    background-image: -webkit-linear-gradient(top, #c7e3f5, #458ee0);
-    background-image: -moz-linear-gradient(top, #c7e3f5, #458ee0);
-    background-image: -ms-linear-gradient(top, #c7e3f5, #458ee0);
-    background-image: -o-linear-gradient(top, #c7e3f5, #458ee0);
-    background-image: linear-gradient(to bottom, #c7e3f5, #458ee0);
-    -webkit-border-radius: 40;
-    -moz-border-radius: 40;
-    border-radius: 40px;
+	background: #47AFE2;
+    color: #FFFFFF;
+    border-width: 1px;
+    border-color: #3BA6D1;
+    border-radius: 7px;
 	font-family: 'blanchcaps', arial;
-	font-size:20px;
+	font-size:24px;
 }
 
 button:hover, input[type="button"]:hover, input[type="submit"]:hover {
-	 background: #ebf7ff;
- 	 background-image: -webkit-linear-gradient(top, #ebf7ff, #3b9ccc);
- 	 background-image: -moz-linear-gradient(top, #ebf7ff, #3b9ccc);
-  	 background-image: -ms-linear-gradient(top, #ebf7ff, #3b9ccc);
-  	 background-image: -o-linear-gradient(top, #ebf7ff, #3b9ccc);
- 	 background-image: linear-gradient(to bottom, #ebf7ff, #3b9ccc);
-	/*background-color:#47AFE2;*/
+	 background: #98cfef;
+ 	 *background-color:#47AFE2;*/
 }
 
 button:active, input[type="button"]:active, input[type="submit"]:active {
