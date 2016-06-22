@@ -27,12 +27,12 @@ import eu.cityopt.sim.eval.Type;
  *
  * @author Hannu Rummukainen
  */
-//TODO This is just a builder.  The data should be a member, not a superclass. 
+//TODO This is just a builder.  The data should be a member, not a superclass.
 public class CsvTimeSeriesData extends TimeSeriesData {
     private ObjectReader reader;
     /**
      * Reserved key for labeling the time column.
-     * Do not use as a series name. 
+     * Do not use as a series name.
      */
     static final String TIMESTAMP_KEY = "timestamp";
 
@@ -88,14 +88,14 @@ public class CsvTimeSeriesData extends TimeSeriesData {
             String[] row = it.next();
             if (row.length > 0) {
                 Double[] rowData = parseRow(row, streamName, rowNumber,
-                        nColumns, timeIndex); 
+                        nColumns, timeIndex);
                 data.add(rowData);
             }
         }
 
         Double[] times = getColumn(data, timeIndex);
         for (Map.Entry<String, Integer> entry : dataIndices.entrySet()) {
-            Double[] col = getColumn(data, entry.getValue()); 
+            Double[] col = getColumn(data, entry.getValue());
             int[] rows = IntStream.range(0, col.length)
                     .filter(i -> col[i] != null).toArray();
             Series sd = new Series();
@@ -136,13 +136,18 @@ public class CsvTimeSeriesData extends TimeSeriesData {
                 }
             }
         }
+        if (timeIndex == -1) {
+            throw new ParseException(
+                    streamName + ":" + rowNumber
+                    + ": No column '" + TIMESTAMP_KEY + "'", 0);
+        }
         return timeIndex;
     }
 
     private Double[] parseRow(String[] row, String streamName, int rowNumber,
             int nColumns, int timeIndex) throws ParseException {
         if (row.length <= timeIndex) {
-            throw new ParseException(streamName + ":" + rowNumber 
+            throw new ParseException(streamName + ":" + rowNumber
                     + ": missing time value", 0);
         }
         Double[] rowData = new Double[nColumns];
