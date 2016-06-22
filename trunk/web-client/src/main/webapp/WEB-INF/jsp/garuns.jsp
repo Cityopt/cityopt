@@ -25,7 +25,7 @@
 						<table width="100%">
 							<tr>
 								<td>
-                           			<spring:message code="running_genetic_optimizations"/>
+                           			<font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="running_genetic_optimizations"/>
 								</td>
 							</tr>
 						</table>

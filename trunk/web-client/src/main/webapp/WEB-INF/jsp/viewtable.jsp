@@ -44,7 +44,7 @@
 						<table width="100%">
 							<tr>
 								<td>
-                           			<spring:message code="time_series_table"/>
+                           			<font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="time_series_table"/>
 								</td>
 								<td align="left" width="40">
 									<div class="round-button">

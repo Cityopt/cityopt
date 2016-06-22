@@ -128,6 +128,12 @@ h2.error {
 	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 }
 
+.activeproject {
+	color:#6D6D6D;
+	font-size: 32px;	
+	font-family: 'blanchcaps';
+}
+
 .regular {
 	color:#4D4D4D;
 	font-size: 14px;	

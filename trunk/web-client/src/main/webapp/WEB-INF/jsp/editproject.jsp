@@ -34,7 +34,7 @@
 						<table width="100%">
 							<tr>
 								<td class="spacecolumn"></td>
-								<td><spring:message code="editproject"/></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="editproject"/></td>
 								<td align="left" width="40">
 									<div class="round-button">
 										<div class="round-button-circle">

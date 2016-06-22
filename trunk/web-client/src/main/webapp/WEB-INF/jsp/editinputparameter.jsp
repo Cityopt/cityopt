@@ -50,8 +50,8 @@
 					<td valign="top">
 						<table align="center">
 							<col style="width:150px">
-							<col style="width:80px">
-							<col style="width:500px">
+							<col style="width:350px">
+							<col style="width:200px">
 							<form:form method="post" action="editinputparameter.html?inputparamid=${inputParam.inputid}" modelAttribute="inputParamForm">
 							<tr>
 								<td>
@@ -224,7 +224,7 @@
 			  					<td></td>
 			   					<td align="right">
 			   						<input type="submit" value="<spring:message code="import_and_save_as_time_series"/>">
-									<input style="width:100px" type="submit" id ="cancel" name="cancel" value="<spring:message code="cancel"/>">
+									<input class="inactivebutton" style="width:100px" type="submit" id ="cancel" name="cancel" value="<spring:message code="cancel"/>">
 			  					</td>
 							</tr>	
 							</form:form>
