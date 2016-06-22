@@ -503,7 +503,7 @@ a.tooltip span {
 }
 
 .tablestyle {
-    border: 2px solid black;
+    border: 1px solid #F2F2F2;
     border-collapse: collapse;
     padding-left: 20px;
     margin-bottom: 5px;
@@ -514,26 +514,29 @@ a.tooltip span {
 
 .tablestyle th {
 	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
-	background: -webkit-linear-gradient(-90deg, #47AFE2 , #2093CB);
- 	background: -o-linear-gradient(-90deg, #47AFE2, #2093CB); 
-    background: -moz-linear-gradient(-90deg right, #47AFE2, #2093CB); 
-    background: linear-gradient(-90deg right, #47AFE2 , #2093CB);
-	
-	/*background: #47AFE2;*/
+	color: white;
+	background: #47AFE2;
 	height: 30px;
+	border: #F2F2F2 1px solid;
 }
 
 .tablestyle td { 
 	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
-	padding:7px; 
-	border:#47AFE2 1px solid;
+	padding: 7px; 
+	border: #F2F2F2 1px solid;
 }
 
 /* Define the default color for all the table rows */
-.tablestyle tr {
+.tablestyle tr:nth-child(odd) {
+	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
+	background: #FFFFFF;
+}
+
+.tablestyle tr:nth-child(even) {
 	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	background: #F6F6F6;
 }
+
 
 /* Define the hover highlight color for the table row */
 .tablestyle tr:hover {
@@ -711,6 +714,22 @@ input[type="button"], input[type="submit"] {
 	font-family: 'blanchcaps', arial;
 	font-size:24px;
 }
+
+input[type="checkbox"] {
+    color: #47AFE2;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    /*-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;*/
+}
+
+/*input[type="checkbox"] + label span {
+    color: #47AFE2;
+	border-radius: 4px;
+    width:19px;
+    height:19px;
+}*/
 
 button:hover, input[type="button"]:hover, input[type="submit"]:hover {
 	 background: #98cfef;
