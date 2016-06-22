@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -46,6 +47,7 @@ import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
 import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
+import eu.cityopt.DTO.ModelParameterDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.UnitDTO;
@@ -65,6 +67,7 @@ import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.MetricService;
 import eu.cityopt.service.MetricValService;
+import eu.cityopt.service.ModelParameterGrouping;
 import eu.cityopt.service.ModelParameterService;
 import eu.cityopt.service.ObjectiveFunctionService;
 import eu.cityopt.service.OptConstraintService;
@@ -86,6 +89,8 @@ import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.validators.InputParameterValidator;
+import eu.cityopt.web.Check;
+import eu.cityopt.web.CheckForm;
 import eu.cityopt.web.ParamForm;
 import eu.cityopt.web.ScenarioParamForm;
 import eu.cityopt.web.UserSession;
@@ -753,7 +758,6 @@ public class ScenarioController {
 
 	@RequestMapping(value="deletescenario",method=RequestMethod.GET)
 	public String deleteScenario(Map<String, Object> model,
-		@RequestParam(value="scenarioid", required=false) String scenarioid,
 		HttpServletRequest request) {
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
@@ -765,39 +769,70 @@ public class ScenarioController {
 
 		securityAuthorization.atLeastExpert_expert(project);
 
-		if (scenarioid != null)
+		CheckForm checkForm = new CheckForm();
+		Set<ScenarioDTO> scenarios = (Set<ScenarioDTO>) projectService.getScenarios(project.getPrjid());
+		Iterator<ScenarioDTO> iter = scenarios.iterator();
+		
+		while (iter.hasNext())
 		{
-			ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+			ScenarioDTO scenario = iter.next();
+			checkForm.getCheckById().put(scenario.getScenid(), new Check());
+			System.out.println("scenario " + scenario.getScenid());
+		}
+		
+		model.put("checkForm", checkForm);
+		model.put("scenarios", scenarios);
 
-			ScenarioDTO tempScenario = null;
-			int nDeleteScenarioId = Integer.parseInt(scenarioid);
+		return "deletescenario";
+	}
 
-			if (scenario != null && scenario.getScenid() == nDeleteScenarioId)
-			{
-				// Active scenario can't be deleted
-				model.put("error", controllerService.getMessage("cant_delete_active_scenario", request));
-			}
-			else
+	@RequestMapping(value="deletescenario",method=RequestMethod.POST)
+	public String deleteScenarios(Map<String, Object> model,
+		HttpServletRequest request, CheckForm checkForm) {
+		
+		ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+
+		ScenarioDTO activeScenario = (ScenarioDTO) model.get("scenario");
+		securityAuthorization.atLeastExpert_expert(project);
+
+		for (Map.Entry<Integer, Check> entry : checkForm.getCheckById().entrySet())
+		{
+			int id = entry.getKey();
+			Check check = entry.getValue();
+			System.out.println("check test id " + id + " check " + check.checked);
+			ScenarioDTO scenario = null;
+
+			if (check.checked)
 			{
 				try {
-					tempScenario = scenarioService.findByID(nDeleteScenarioId);
-				} catch (NumberFormatException e1) {
-					e1.printStackTrace();
-				} catch (EntityNotFoundException e1) {
-					e1.printStackTrace();
+					scenario = scenarioService.findByID(id);
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
 				}
 
-				if (tempScenario != null)
+				if (scenario != null && activeScenario != null && scenario.getScenid() == activeScenario.getScenid())
 				{
+					// Active scenario can't be deleted
+					model.put("error", controllerService.getMessage("cant_delete_active_scenario", request));
+				}
+				else
+				{
+					System.out.println("Deleting scenario id " + id);
+					
 					try {
-						scenarioService.delete(tempScenario.getScenid());
+						scenarioService.delete(scenario.getScenid());
 					} catch (EntityNotFoundException e) {
 						e.printStackTrace();
 					} catch(ObjectOptimisticLockingFailureException e) {
 						model.put("error", controllerService.getMessage("scenario_updated_reload", request));
 					}
 				}
-			}
+			}			
 		}
 
 		Set<ScenarioDTO> scenarios = (Set<ScenarioDTO>) projectService.getScenarios(project.getPrjid());
@@ -805,7 +840,7 @@ public class ScenarioController {
 
 		return "deletescenario";
 	}
-
+	 
 	@RequestMapping(value="scenarioparameters", method=RequestMethod.GET)
 	public String scenarioParameters(Map<String, Object> model,
 		@RequestParam(value="selectedcompid", required=false) String selectedCompId){

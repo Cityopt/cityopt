@@ -19,7 +19,6 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td valign="top">
-			<div style="overflow: auto; height: 100%; width: 820px; overflow: auto;">
 			<table class="maintable">			
 				<%@ include file="toprow.inc"%>
 				<tr class="titlerow">
@@ -40,46 +39,54 @@
 					<td class="spacecolumn"></td>
 					<td class="active"><spring:message code="scenarios" /></td>
 				</tr>
-				<tr>
+				<form:form method="post" action="deletescenario.html" modelAttribute="checkForm">
+				<tr height="300">
 					<td class="spacecolumn"></td>
 					<td valign="top">
-						<form:form method="post" action="deletescenario.html">			
-						<table class="tablestyle" width="700">
-							<col style="width:200px">	
-							<col style="width:450px">
-							<col style="width:50px">
+						<div style="overflow: scroll; height: 300px; width: 760px; overflow: auto;">
+						<table class="tablestyle" width="760">
+							<col style="width:35px">
+							<col style="width:200px">
+							<col style="width:525px">
 							
 							<tr height="20">
+							    <th><spring:message code="select"/></th>
 								<!-- Name -->
 							    <th><spring:message code="name"/></th>
 							    <!-- Description -->
 							    <th><spring:message code="description"/></th>
-							    <!-- Delete -->
-							    <th><spring:message code="delete"/></th>
 							</tr>
-							
 						<c:forEach items="${scenarios}" var="scenario">
 							<tr>
-								<td>${scenario.name}</td>
-								<td>${scenario.description}</td>
-						    	<td>
-						    		<!-- delete button -->
-						    		<c:set var="tooltip_delete"><spring:message code="tooltip_delete"/></c:set>
-									<a href="<c:url value='deletescenario.html?scenarioid=${scenario.scenid}'/>"
-									onclick="return confirm('<spring:message code="confirm_scenario_deletion"/>')">
-										<button align="right" title="${tooltip_delete}"  type="button" value="Delete">
-										<spring:message code="delete"/></button>
-									</a>
+								<td class="checkboxstyle">
+									<form:checkbox path="checkById[${scenario.scenid}].checked" value="true"/>
 								</td>
+  								<td>${scenario.name}</td>
+								<td>${scenario.description}</td>
 						   	</tr>
 						</c:forEach>
 						</table>
-						</form:form>	
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top" align="right">
+						<table>
+							<tr>
+								<td>
+						    		<c:set var="tooltip_delete"><spring:message code="tooltip_delete"/></c:set>
+									<input type="submit" value="<spring:message code="delete"/>" onclick="return confirm('<spring:message code="confirm_scenario_deletion"/>')">
+								</td>
+								<td width="20"></td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 				<tr><td></td></tr>
+				</form:form>
+				<tr><td></td></tr>
 			</table>
-			</div>
 		</td>
 	</tr>
 </table>
