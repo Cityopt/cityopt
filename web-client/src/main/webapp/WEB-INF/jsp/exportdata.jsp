@@ -34,7 +34,7 @@
 							<table width="100%">
 								<tr>
 									<td class="spacecolumn"></td>
-									<td><spring:message code="export_data"/></td>
+									<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="export_data"/></td>
 									
 								</tr>
 							</table>

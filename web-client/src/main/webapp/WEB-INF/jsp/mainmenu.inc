@@ -25,14 +25,7 @@
 				<td>
 					<img src="assets/img/icon_project_black.gif"/>
 				</td>
-			<c:choose>	
-				<c:when test="${usersession.getActiveProject() != null}">
-					<td><b><spring:message code="project"/></b> (${usersession.getActiveProject()})</td>
-				</c:when>
-				<c:otherwise>
-					<td><b><spring:message code="project"/></b></td>
-				</c:otherwise>
-			</c:choose>
+				<td><b><spring:message code="project"/></b></td>
 			</tr>
 			<tr>
 				<td></td>
@@ -137,14 +130,7 @@
 				<td>	
 					<img src="assets/img/icon_scenario_black.gif"/>
 				</td>
-				<c:choose>	
-					<c:when test="${usersession.getActiveScenario() != null}">
-						<td><b>Scenario</b> (${usersession.getActiveScenario()})</td>
-					</c:when>
-					<c:otherwise>
-						<td><b>Scenario</b></td>
-					</c:otherwise>
-				</c:choose>
+				<td><b>Scenario</b></td>
 			</tr>
 			<c:choose>	
 				<c:when test="${not empty project}">
