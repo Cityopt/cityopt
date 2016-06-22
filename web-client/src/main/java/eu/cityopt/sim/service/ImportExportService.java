@@ -578,10 +578,9 @@ public class ImportExportService {
             // expression, delete it.
             Metric metric = oldMetrics.get(name);
             if (metric != null) {
-                eu.cityopt.model.Type oldType = metric.getType();
+                Type oldType = simulationService.getType(metric.getType());
                 String oldExpression = metric.getExpression();
-                if ( ! (oldType.getName().equalsIgnoreCase(type.name)
-                        && oldExpression.equals(expression))) {
+                if (oldType != type || !oldExpression.equals(expression)) {
                     metricRepository.delete(metric);
                     metric = null;
                 }
