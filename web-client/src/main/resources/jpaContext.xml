@@ -38,11 +38,6 @@
 			<entry key="hibernate.format_sql" value="true"/>	
 			<entry key="hibernate.jdbc.batch_size" value="50"/>					
 			<entry key="hibernate.order_inserts" value="true"/>
-			
-			<entry key="hibernate.connection.CharSet" value="true"/>
-			<entry key="hibernate.connection.useUnicode" value="true"/>
-			<entry key="hibernate.connection.characterEncoding" value="utf-8"/>					
-			
 		</map>
 	</property>
 </bean>
