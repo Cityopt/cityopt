@@ -9,7 +9,7 @@
 			<col style="width: 150px">
 			<tr>
 				<td class="logo">
-					<img alt="Logo" class="logo" src="assets/img/icon_logo_small.gif"/>
+					<img alt="Logo" src="assets/img/icon_logo_small.gif"/>
 				</td>
 				<td valign="top" class="logotitle">CITYOPT</td>
 			</tr>
@@ -18,11 +18,18 @@
 </tr>
 <tr>
 	<td>
-		<table class="menublock">
+		<c:choose>
+			<c:when test="${activeblock == 'project'}">
+				<table class="menublockactive">
+			</c:when>
+			<c:otherwise>
+				<table class="menublock">
+			</c:otherwise>
+		</c:choose>
 			<col style="width: 60px">
 			<col style="width: 150px">
 			<tr>
-				<td>
+				<td class="menuicon">
 					<img src="assets/img/icon_project_black.gif"/>
 				</td>
 				<td><b><spring:message code="project"/></b></td>
@@ -127,7 +134,7 @@
 			<col style="width: 60px">
 			<col style="width: 150px">
 			<tr>
-				<td>	
+				<td class="menuicon">	
 					<img src="assets/img/icon_scenario_black.gif"/>
 				</td>
 				<td><b>Scenario</b></td>
@@ -214,7 +221,7 @@
 			<col style="width: 60px">
 			<col style="width: 150px">
 			<tr>
-				<td>
+				<td class="menuicon">
 					<img src="assets/img/icon_optimization_black.gif"/>
 				</td>
 				<td><b><spring:message code="optimization"/></b></td>
@@ -322,7 +329,7 @@
 			<col style="width: 60px">
 			<col style="width: 150px">
 			<tr>
-				<td>
+				<td class="menuicon">
 					<img src="assets/img/icon_Visualization_black.gif"/>
 				</td>
 				<td><b><spring:message code="visualization"/></b></td>
@@ -413,7 +420,7 @@
 			<col style="width: 60px">
 			<col style="width: 150px">
 			<tr>
-				<td>
+				<td class="menuicon">
 					<img src="assets/img/icon_users_black.gif"/>
 				</td>
 				<td><b><spring:message code="users_and_settings"/></b></td>

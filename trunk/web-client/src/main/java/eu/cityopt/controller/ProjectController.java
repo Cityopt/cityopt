@@ -360,6 +360,8 @@ public class ProjectController {
         	//
         }
         model.put("projects", projects);
+        
+        model.put("activeblock", "project");
         return "openproject";
     }
 

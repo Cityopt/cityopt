@@ -388,7 +388,8 @@ public class UserController {
         localeResolver.setLocale(request, response, StringUtils.parseLocaleString(language));
 
         controllerService.changeLanguage(model, language);
-
+        model.put("activeblock", "project");
+        
     	return  "start";
 	}
     
