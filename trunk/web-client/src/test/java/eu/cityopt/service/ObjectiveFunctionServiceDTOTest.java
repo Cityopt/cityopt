@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -100,9 +101,13 @@ public class ObjectiveFunctionServiceDTOTest {
 	public void findObjectiveFunctionResults()
 	{
 		List<ObjectiveFunctionResultDTO> results = objectiveFunctionService.findResultsByScenarioGenerator(1, 1);
-		assertEquals(1,results.size());
+		ObjectiveFunctionResultDTO objectiveFunctionResultDTO = results.get(0);
 		
-		assertEquals(160,results.get(0).getScenID());
+		assertEquals(true,objectiveFunctionResultDTO.isScengenresultFeasible());
+		assertEquals(true,objectiveFunctionResultDTO.isScengenresultParetooptimal());		
+		
+		assertEquals(1,results.size());		
+		assertEquals(103,objectiveFunctionResultDTO.getScengenid());
 		
 	}
 	
