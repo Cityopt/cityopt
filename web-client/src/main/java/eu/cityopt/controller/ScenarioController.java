@@ -1267,7 +1267,7 @@ public class ScenarioController {
 
 		controllerService.clearOptResults(model);
 
-		return "timeserieschart";
+        return "redirect:/timeserieschart.html";
 	}
 
 	@RequestMapping(value="simulationinfo", method=RequestMethod.GET)
