@@ -118,12 +118,14 @@
 							<tr>
 								<td>
 									<table>						
-										<tr height="15"></tr>
 										<tr>
 											<!-- Scenario simulation status -->
-											<td class="regular"><spring:message code="scenario_simulation_status"/></td>
-											<td class="regular">${status} (<spring:message code="refresh_by_reloading_page"/>)</td>
+											<td class="infosmall"><spring:message code="scenario_simulation_status"/>  (<spring:message code="refresh_by_reloading_page"/>)</td>
 										</tr>
+										<tr>	
+											<td class="status">${status}</td>
+										</tr>
+										<tr height="15"></tr>
 										<tr>
 											<td class="regular"><spring:message code="simulation_info"/></td>
 											<td>

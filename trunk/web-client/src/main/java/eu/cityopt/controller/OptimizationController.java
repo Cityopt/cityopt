@@ -3305,8 +3305,7 @@ public class OptimizationController {
 
             UserSession session = getUserSession(model);
             int nComponentId = session.getComponentId();
-        	System.out.println("selected component " + nComponentId);
-
+        	
             for (Map.Entry<Integer, String> entry : form.getValueByInputId().entrySet())
             {
             	int inputId = entry.getKey();
@@ -3320,14 +3319,9 @@ public class OptimizationController {
         			e.printStackTrace();
         		}
 
-                /*if (inputParam != null)
-                	System.out.println("input param id " + inputParam.getInputid() + " " + inputParam.getComponentName() + " input: " + inputParam.getName() + " value " + value);
-                */
-
                 if (nComponentId == inputParam.getComponentComponentid())
                 {
-                	System.out.println("same component " + nComponentId + " input param id " + inputParam.getInputid() + " " + inputParam.getComponentName() + " input: " + inputParam.getName() + " value " + value);
-	                ModelParameterDTO modelParamTemp = new ModelParameterDTO();
+                	ModelParameterDTO modelParamTemp = new ModelParameterDTO();
 	                modelParamTemp.setValue(value);
 	                modelParamTemp.setInputparameter(inputParam);
 	       	 		validator.validate(modelParamTemp, result);
@@ -3397,8 +3391,7 @@ public class OptimizationController {
 	    UserSession userSession = getUserSession(model);
 	    userSession.setComponentId(selectedCompId);
 	    model.put("usersession", userSession);
-    	System.out.println("component selected id " + selectedCompId);
-
+    	
         return "";
     }
 

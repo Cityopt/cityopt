@@ -111,7 +111,7 @@
 									<tr class="spacerow"></tr>
 									<tr>
 										<c:set var="tooltip_create"><spring:message code="tooltip_create_optimizationset"/></c:set>
-										<td align="right"><input type="submit" title="${tooltip_create}" value="Create" style="width: 100px"></td>
+										<td align="right"><input type="submit" title="${tooltip_create}" value="<spring:message code="create"/>" style="width: 100px"></td>
 									</tr>									
 								</table>
 							</td>
