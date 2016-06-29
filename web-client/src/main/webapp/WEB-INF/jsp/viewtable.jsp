@@ -69,16 +69,14 @@
 					<td class="spacecolumn"></td>
 					<td valign="top">
 						<table style="width:950px">	
-							<col style="width:130px">
-							<col style="width:820px">
 							<tr>
-								<td><spring:message code="active_scenario"/></td>
 								<td>
-									<table class="tablestyle" width="200">
+									<table>
 										<tr>
-											<td>
-												${scenario.name}
-											</td>
+											<td class="infosmall"><spring:message code="active_scenario"/></td>
+										</tr>
+										<tr>	
+											<td class="activeline">${scenario.name}</td>
 										</tr>
 									</table>
 								</td>
@@ -135,7 +133,7 @@
 																	<td></td>
 																	<td valign="top">
 																		<table class="tablestyle">
-																			<col style="width:130px">
+																			<col style="width:150px">
 																			<col style="width:150px">
 																			<tr>
 																				<!-- Draw -->
@@ -195,31 +193,13 @@
 																<tr>
 																	<td>
 																		<table>
-																			<col style="width: 200px">
-																			<col style="width: 250px">
 																			<tr>
-																				<!-- Selected variable: -->
-																				<td colspan="2">
-																					<table width="500px">
-																						<col style="width: 150px">
-																						<col style="width: 350px">
-																						<tr>
-																							<td>
-																								<spring:message code="selected_variable"/>: &nbsp;
-																							</td>
-																							<td align="right">
-																								<table class="tablestyle" width="350px" height="20px">
-																									<tr>
-																										<td>
-																											${selectedOutputVar.getQualifiedName()}
-																										</td>
-																									</tr>
-																								</table>
-																							</td>
-																						</tr>
-																					</table>
-																				</td>
+																				<td class="infosmall"><spring:message code="selected_variable"/></td>
 																			</tr>
+																			<tr>	
+																				<td class="activeline">${selectedOutputVar.getQualifiedName()}</td>
+																			</tr>
+																			<tr height="20"></tr>
 																		</table>
 																	</td>
 																</tr>
