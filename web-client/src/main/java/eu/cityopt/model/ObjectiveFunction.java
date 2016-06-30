@@ -159,7 +159,7 @@ public class ObjectiveFunction extends VersionModel implements java.io.Serializa
 		this.optimizationsets = optimizationsets;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "objectivefunction")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "objectivefunction",cascade=CascadeType.REMOVE)
 	public Set<ObjectiveFunctionResult> getObjectivefunctionresults() {
 		return this.objectivefunctionresults;
 	}
