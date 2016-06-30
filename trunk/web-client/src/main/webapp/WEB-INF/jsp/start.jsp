@@ -1,6 +1,6 @@
 <%--@elvariable id="project" type="com.cityopt.DTO.ProjectDTO"--%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -38,7 +38,7 @@
 						<h2>Our approach</h2>
 						<p>The project addresses energy system optimization in different life cycle phases. This will be supported by user-centred design approach. All stakeholders including cities' decision makers, facility managers citizens will be involved throughout all phases of the project</p>
 						<h2>Our team</h2>
-						<p>Our group gathers 7 project partners from 4 European countries, including research institutes, cities, energy utilities and a design studio. CITYOPT applications will be demonstrated in Helsinki (Finland), Vienna (Austria) and Nice Côte d'Azur (France).</p>
+						<p>Our group gathers 7 project partners from 4 European countries, including research institutes, cities, energy utilities and a design studio. CITYOPT applications will be demonstrated in Helsinki (Finland), Vienna (Austria) and Nice CÃ´te d'Azur (France).</p>
 						<i>CITYOPT is supported by the European Commission through the Seventh Framework Programme (FP7)</i>
 					</td>
 				</tr>

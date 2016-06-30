@@ -4,7 +4,7 @@
 <%--@elvariable id="inputParam" type="eu.cityopt.DTO.InputParameterDTO"--%>
 <%--@elvariable id="outputVar" type="eu.cityopt.DTO.OutputVariableDTO"--%>
 <%--@elvariable id="metric" type="eu.cityopt.DTO.MetricDTO"--%>
-<%@ page language="java" contentType="text/html" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
