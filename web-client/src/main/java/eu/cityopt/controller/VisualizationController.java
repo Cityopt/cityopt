@@ -1033,7 +1033,14 @@ public class VisualizationController {
 					
 					XYSeries series = new XYSeries(scenarioTemp.getName());
 					series.add(Double.parseDouble(value1), Double.parseDouble(value2));
+					
 					collection.addSeries(series);						
+					
+					/*if (result.isScengenresultParetooptimal()) {
+						collection.addSeries(series);
+					} else {
+						collection.addSeries(series);
+					}*/
 				}				
 			
 				JFreeChart chart = ScatterPlotVisualization.createChart(collection, controllerService.getMessage("genetic_optimization_scenario_results", request), objFunc1.getName(), objFunc2.getName(), false);

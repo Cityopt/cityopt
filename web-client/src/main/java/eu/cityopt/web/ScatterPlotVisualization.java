@@ -70,14 +70,19 @@ public class ScatterPlotVisualization {
 	*
 	* @return A chart.
 	*/
-	public static JFreeChart createChart(XYDataset dataset, String title, String xAxisLabel, String yAxisLabel, boolean isXDateAxis) {
+	public static JFreeChart createChart(XYDataset dataset, String title, String xAxisLabel, String yAxisLabel, boolean isXDateAxis) 
+	{
 		JFreeChart chart = ChartFactory.createScatterPlot(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
 	
-		chart.setBackgroundPaint(Color.white);
+		chart.setBackgroundPaint(Color.WHITE);
+		//chart.setBackgroundPaint(new Color(230, 230, 230));
 		XYPlot plot = (XYPlot) chart.getPlot();
-		plot.setBackgroundPaint(Color.lightGray);
-		plot.setDomainGridlinePaint(Color.white);
-		plot.setRangeGridlinePaint(Color.white);
+		plot.setBackgroundPaint(Color.LIGHT_GRAY);
+		plot.setBackgroundPaint(new Color(230, 230, 230));
+		plot.setDomainGridlinePaint(Color.WHITE);
+		plot.setDomainGridlinePaint(new Color(230, 230, 230));
+		plot.setRangeGridlinePaint(Color.WHITE);
+		plot.setRangeGridlinePaint(new Color(230, 230, 230));
 		plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
 		plot.setDomainCrosshairVisible(true);
 		plot.setRangeCrosshairVisible(true);
