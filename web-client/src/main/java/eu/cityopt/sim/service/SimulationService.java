@@ -15,18 +15,14 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
-import org.hibernate.internal.SessionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.model.Component;
@@ -96,9 +92,6 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
 
     private static Logger log = Logger.getLogger(SimulationService.class);
 
-    @PersistenceContext
-	private EntityManager em;
-    
     @Autowired private SyntaxCheckerService syntaxCheckerService;
 
     @Autowired private ProjectRepository projectRepository;
@@ -416,7 +409,6 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             times[i] = TimeUtils.toSimTime(tsVal.getTime(), timeOrigin);
             values[i] = Double.valueOf(tsVal.getValue());
         }
-              
         return new TimeSeriesData.Series(times, values);
     }
 
@@ -763,7 +755,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
      * @param timeOrigin Time origin for converting seconds to timestamps.
      * @return the saved TimeSeries.
      */
-     TimeSeries saveTimeSeries(
+    TimeSeries saveTimeSeries(
             double[] times, double[] values,
             eu.cityopt.model.Type type, Instant timeOrigin) {
         TimeSeries timeSeries = new TimeSeries();
@@ -780,6 +772,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             tsvals.add(timeSeriesVal);
         }
         timeSeriesValRepository.save(tsvals);
+
         return timeSeriesRepository.save(timeSeries);
     }
 

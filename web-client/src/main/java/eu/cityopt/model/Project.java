@@ -102,7 +102,7 @@ public class Project extends VersionModel implements java.io.Serializable {
 		this.usergroupprojects = usergroupprojects;
 		this.extparams = extparams;
 		this.optimizationsets = optimizationsets;
-		//this.version = version;
+		this.version = version;
 	}
 	
 	public Project clone() {

@@ -6,7 +6,6 @@ import javax.persistence.Version;
 
 @MappedSuperclass
 public abstract class VersionModel {
-	/*
 	protected Integer version;
 	
 	@Version
@@ -18,5 +17,4 @@ public abstract class VersionModel {
 	public void setVersion(Integer version) {
 		this.version = version;
 	}
-	*/
 }

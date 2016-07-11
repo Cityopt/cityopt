@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
@@ -74,8 +72,7 @@ public class OptimisationSupport {
     private @Autowired SimulationService simulationService;
     private @Autowired SyntaxCheckerService syntaxCheckerService;
 
-    private @PersistenceContext EntityManager em;
-    
+
     /** Results from {@link OptimisationSupport#evaluateScenarios(Project, OptimizationSet)} */
     public static class EvaluationResults {
         /**
@@ -163,9 +160,6 @@ public class OptimisationSupport {
                         + ": " + e.getMessage());
                 evaluationResults.failures.put(scenario.getScenid(), e);
             }
-            em.flush();
-//          ((SessionImpl) em.getDelegate()).getPersistenceContext().
-
         }
         log.info("Evaluated scenarios of project " + project.getPrjid() + ": "
                 + evaluationResults);
