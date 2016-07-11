@@ -423,6 +423,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                                 outputVariable.getSimulationresults().add(simulationResult);
 
                                 simulationResultRepository.save(simulationResult);
+                            
                             }
                         }
                     }

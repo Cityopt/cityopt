@@ -22,7 +22,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "timeseriesval", schema = "public")
-public class TimeSeriesVal extends VersionModel{
+public class TimeSeriesVal extends VersionModel implements java.io.Serializable {
 	
 	private int tseriesvalid;
 	private TimeSeries timeseries;
