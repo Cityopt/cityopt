@@ -36,7 +36,7 @@
 			<entry key="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
 			<!-- <entry key="hibernate.hbm2ddl.auto" value=""/>-->
 			<entry key="hibernate.format_sql" value="true"/>	
-			<entry key="hibernate.jdbc.batch_size" value="50"/>					
+			<entry key="hibernate.jdbc.batch_size" value="500"/>					
 			<entry key="hibernate.order_inserts" value="true"/>
 		</map>
 	</property>
@@ -49,9 +49,18 @@
 
 <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 	<property name="driverClassName" value="org.postgresql.Driver"></property>	
+
+	<!--
+	<property name="url" value="jdbc:postgresql://localhost:5432/CityOPT2?autoReconnect=true"></property>	 
+	<property name="username" value="postgres"></property>
+	<property name="password" value="admin"></property>
+	 -->
+	
+	 
 	<property name="url" value="jdbc:postgresql://localhost:5432/CityOPT?autoReconnect=true"></property>
 	<property name="username" value="cityopt"></property>
 	<property name="password" value="cit.opt#"></property>	
+		
 </bean>
 
 <task:annotation-driven executor="myExecutor" scheduler="myScheduler" proxy-target-class="true"/>
