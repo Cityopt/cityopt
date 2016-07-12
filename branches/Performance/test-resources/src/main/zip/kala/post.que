@@ -1,0 +1,5 @@
+io close co2_in
+io close io_control
+io close io_datain
+io close is01
+io close output_1

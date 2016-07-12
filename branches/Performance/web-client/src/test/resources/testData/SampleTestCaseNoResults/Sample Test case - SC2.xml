@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<!DOCTYPE dataset SYSTEM "src/main/resources/testData/cityopt.dtd">-->
+<dataset>
+<!--  -->
+
+<scenario scenid="2" name="Sample Test case - SC2" createdon="2015-01-26" prjid="1" status="SUCCESS" version="1" />
+
+<inputparamval inputparamvalid="14" scenid="2" inputid="1" value="50" version="1" />
+<inputparamval inputparamvalid="15" scenid="2" inputid="2" value="15" version="1" />
+<inputparamval inputparamvalid="16" scenid="2" inputid="3" value="30" version="1" />
+<inputparamval inputparamvalid="17" scenid="2" inputid="4" value="0.6" version="1" />
+
+<inputparamval inputparamvalid="18" scenid="2" inputid="5" value="5" version="1" />
+<inputparamval inputparamvalid="19" scenid="2" inputid="6" value="8" version="1" />
+<inputparamval inputparamvalid="20" scenid="2" inputid="7" value="3" version="1" />
+<inputparamval inputparamvalid="21" scenid="2" inputid="8" value="3" version="1" />
+
+<inputparamval inputparamvalid="22" scenid="2" inputid="9" value="47.14" version="1" />
+<inputparamval inputparamvalid="23" scenid="2" inputid="10" value="80" version="1" />
+<inputparamval inputparamvalid="24" scenid="2" inputid="11" value="15" version="1" />
+<inputparamval inputparamvalid="25" scenid="2" inputid="12" value="0.9" version="1" />
+<inputparamval inputparamvalid="26" scenid="2" inputid="13" value="0.98" version="1" />
+
+<scenariometrics scenmetricid="2" scenid="2" extparamvalsetid="1" version="1" />
+
+<timeseries tseriesid="6" typeid="4" version="1" /> 
+
+
+<!--<metricval metricvalid="7" metid="2" scenmetricid="2" value="" tseriesid="2"  version="1" />--> <!-- time series -->
+<metricval metricvalid="8" metid="1" scenmetricid="2" value="32992.14"  version="1" />
+<metricval metricvalid="9" metid="3" scenmetricid="2" value="29254.43"  version="1" />
+<metricval metricvalid="10" metid="4" scenmetricid="2" value="83542.94"  version="1" />
+<metricval metricvalid="11" metid="5" scenmetricid="2" value="8354.29"  version="1" />
+<metricval metricvalid="12" metid="6" scenmetricid="2" value="2506288.20"  version="1" />
+
+
+<!-- pk not set -->
+<!--<optsetscenarios  optid="2" scenid="2" value="2514642.49"  version="1" />-->
+
+</dataset>

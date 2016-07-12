@@ -1,0 +1,17 @@
+modi io_pientalo io_file_name pientalo.txt
+modi io_kaup_pientalo io_file_name kaupunkipientalo.txt
+modi io_kerrostalo io_file_name kerrostalo.txt
+modi io_liiketilat io_file_name liiketilat.txt
+modi io_elinkeinotila io_file_name elinkeinotilat.txt
+modi io_julk_tilat io_file_name julkiset.txt
+modi io_weather io_file_name weather.txt
+modi io_output io_file_name output.txt
+! This line intentionally NOT left blank.
+io open io_pientalo
+io open io_kaup_pientalo
+io open io_kerrostalo
+io open io_liiketilat
+io open io_elinkeinotila
+io open io_julk_tilat
+io open io_weather
+io open io_output
