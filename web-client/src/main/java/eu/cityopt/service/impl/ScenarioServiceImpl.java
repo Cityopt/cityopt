@@ -140,10 +140,10 @@ public class ScenarioServiceImpl implements ScenarioService {
 
 	@Override
 	@Transactional(readOnly=true)
-	public Set<ScenarioMetricsDTO> getScenarioMetrics(int scenId)	{
+	public List<ScenarioMetricsDTO> getScenarioMetrics(int scenId)	{
 		Scenario scen = scenarioRepository.findOne(scenId);
-		Set<ScenarioMetrics> scenarioMetrics = scen.getScenariometricses();
-		return modelMapper.map(scenarioMetrics, new TypeToken<Set<ScenarioMetricsDTO>>() {}.getType());
+		List<ScenarioMetrics> scenarioMetrics = scen.getScenariometricses();
+		return modelMapper.map(scenarioMetrics, new TypeToken<List<ScenarioMetricsDTO>>() {}.getType());
 	}
 	
 	@Override
@@ -174,10 +174,10 @@ public class ScenarioServiceImpl implements ScenarioService {
 	
 	@Override
 	@Transactional(readOnly=true)
-	public Set<SimulationResultDTO> getSimulationResults(int scenId) {
+	public List<SimulationResultDTO> getSimulationResults(int scenId) {
 		Scenario scen = scenarioRepository.findOne(scenId);
-		Set<SimulationResult> simRes = scen.getSimulationresults();
-		return modelMapper.map(simRes, new TypeToken<Set<SimulationResultDTO>>() {}.getType());
+		List<SimulationResult> simRes = scen.getSimulationresults();
+		return modelMapper.map(simRes, new TypeToken<List<SimulationResultDTO>>() {}.getType());
 	}
 
 	@Override

@@ -15,6 +15,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
@@ -22,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.data.repository.config.CustomRepositoryImplementationDetector;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +44,7 @@ import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesVal;
+import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.repository.ExtParamValRepository;
 import eu.cityopt.repository.ExtParamValSetCompRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
@@ -89,6 +93,9 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     public static final String STATUS_SUCCESS = "SUCCESS";
     public static final String STATUS_MODEL_FAILURE = "MODEL_FAILURE";
     public static final String STATUS_SIMULATOR_FAILURE = "SIMULATOR_FAILURE";
+    
+    @Autowired
+    CustomQueryRepository customQueryRepository;
 
     private static Logger log = Logger.getLogger(SimulationService.class);
 
@@ -391,16 +398,27 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         ts.setTimeSeriesId(timeseries.getTseriesid());
         return ts;
     }
-
+    
     /**
      * Load the data of a time series.
      * @param tsid time series id
      * @param timeOrigin for translating timestamps to seconds
      */
+    
+    @PersistenceContext EntityManager em;
+    
     public TimeSeriesData.Series loadTimeSeriesData(
             int tsid, Instant timeOrigin) {
-        List<TimeSeriesVal> timeSeriesVals =
+        
+    	/*
+    	List<TimeSeriesVal> timeSeriesVals =
                 timeSeriesValRepository.findTimeSeriesValOrderedByTime(tsid);
+        */
+            	
+    	
+        List<TimeSeriesVal> timeSeriesVals = customQueryRepository.findTimeSeriesValByTimeSeriesID(tsid);
+        
+        
         int n = timeSeriesVals.size();
         double[] times = new double[n];
         double[] values = new double[n];
@@ -409,6 +427,9 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             times[i] = TimeUtils.toSimTime(tsVal.getTime(), timeOrigin);
             values[i] = Double.valueOf(tsVal.getValue());
         }
+        
+        //findTimeSeriesValByTimeSeriesID
+        
         return new TimeSeriesData.Series(times, values);
     }
 
@@ -486,12 +507,12 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     }
 
     /** Loads the simulation result data of a scenario. */
-    public SimulationOutput loadSimulationOutput(Scenario scenario, SimulationInput simInput)
+	public SimulationOutput loadSimulationOutput(Scenario scenario, SimulationInput simInput)
             throws ParseException {
         SimulationOutput simOutput = null;
         if (STATUS_SUCCESS.equals(scenario.getStatus())) {
             Namespace namespace = simInput.getNamespace();
-            SimulationResults simResults = new SimulationResults(simInput, scenario.getLog());
+            SimulationResults simResults = new SimulationResults(simInput, "");
             for (SimulationResult mResult : scenario.getSimulationresults()) {
                 OutputVariable mOutput = mResult.getOutputvariable();
                 String componentName = mOutput.getComponent().getName();
@@ -517,7 +538,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         } else {
             boolean permanent = (STATUS_MODEL_FAILURE.equals(scenario.getStatus()));
             simOutput = new SimulationFailure(
-                    simInput, permanent, scenario.getStatus(), scenario.getLog());
+                    simInput, permanent, scenario.getStatus(), "");
         }
         if (scenario.getRunstart() != null) {
             simOutput.runStart = scenario.getRunstart().toInstant();
@@ -742,6 +763,8 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         return saveTimeSeries(simTS, typeRepository.findByNameLike(type.name),
                               timeOrigin, null);
     }
+    
+    @Autowired CustomQueryRepository customQueryRepo;
 
     /**
      * Save a time series into the database.
@@ -760,7 +783,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             eu.cityopt.model.Type type, Instant timeOrigin) {
         TimeSeries timeSeries = new TimeSeries();
         timeSeries.setType(type);
-        Set<TimeSeriesVal> tsvals = timeSeries.getTimeseriesvals();
+        List<TimeSeriesVal> tsvals = timeSeries.getTimeseriesvals();
         int n = times.length;
         for (int i = 0; i < n; ++i) {
             TimeSeriesVal timeSeriesVal = new TimeSeriesVal();
@@ -770,9 +793,9 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
 
             timeSeriesVal.setTimeseries(timeSeries);
             tsvals.add(timeSeriesVal);
-        }
+        }        
+        
         timeSeriesValRepository.save(tsvals);
-
         return timeSeriesRepository.save(timeSeries);
     }
 

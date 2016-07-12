@@ -25,7 +25,7 @@ public interface ScenarioService extends CityOptService<ScenarioDTO>{
 
 	ScenarioDTO update(ScenarioDTO toUpdate, int prjid) throws EntityNotFoundException;
 	
-	Set<ScenarioMetricsDTO> getScenarioMetrics(int scenId);
+	List<ScenarioMetricsDTO> getScenarioMetrics(int scenId);
 	
 	List<ScenarioDTO> findByNameContaining(String name);
 	
@@ -33,7 +33,7 @@ public interface ScenarioService extends CityOptService<ScenarioDTO>{
 	
 	ScenarioDTO findByName(String name);
 	
-	Set<SimulationResultDTO> getSimulationResults(int scenId);
+	List<SimulationResultDTO> getSimulationResults(int scenId);
 
 	Set<MetricValDTO> getMetricsValues(int scenId);
 
