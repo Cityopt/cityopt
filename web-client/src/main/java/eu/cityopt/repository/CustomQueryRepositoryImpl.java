@@ -207,7 +207,7 @@ public class CustomQueryRepositoryImpl implements CustomQueryRepository {
  
 			@Override
 			public int getBatchSize() {
-				return tsvalues.size();
+				return 100;
 			}
 		});
 	}
