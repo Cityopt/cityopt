@@ -16,25 +16,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.DTO.ComponentInputParamDTO;
+import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesVal;
+import eu.cityopt.model.Type;
 import eu.cityopt.service.impl.ProjectServiceImpl;
 
 @Repository
 public class CustomQueryRepositoryImpl implements CustomQueryRepository {	
 
 	private JdbcTemplate template;
-	
 	static Logger log = Logger.getLogger(ProjectServiceImpl.class);
 	
 	@Autowired //constructor injection - so spring knows that the datasource is required
 	public CustomQueryRepositoryImpl(DataSource dataSource) {
 		template = new JdbcTemplate(dataSource);
 	}
-	
 	
 	@Transactional(readOnly=true)
 	public List<ComponentInputParamDTO> findComponentsWithInputParams(int prjid, int scenid){
@@ -63,17 +66,55 @@ public class CustomQueryRepositoryImpl implements CustomQueryRepository {
 		return components;
 	}
 	
+	@Transactional
+	public TimeSeries insertTimeSeries(TimeSeries timeseries)
+	{
+		 
+		Integer tseriesID = template.queryForObject("select nextval('timeseries_tseriesid_seq');", Integer.class);
+		
+		template.update(new PreparedStatementCreator() {           
+		
+		                @Override
+		                public PreparedStatement createPreparedStatement(Connection connection)
+		                        throws SQLException {
+		                    PreparedStatement ps = connection.prepareStatement("insert into timeseries (tseriesid, typeid) values (?,?)", Statement.RETURN_GENERATED_KEYS);
+		                    ps.setInt(1, tseriesID);		                    
+		                    ps.setInt(2, timeseries.getType().getTypeid());
+		                    return ps;
+		                }
+		            });
+		
+		timeseries.setTseriesid(tseriesID);
+		insertBatch(timeseries.getTimeseriesvals());
+		
+		return timeseries;
+		//return findTimeSeriesByTimeSeriesID(timeSeriesID);
+		
+	}
+	
 	@Transactional(readOnly=true)
 	public List<TimeSeriesVal> findTimeSeriesValByTimeSeriesID(int tid)
 	{
 		String sql = "SELECT value,time,tseriesvalid,tseriesid from timeseriesval where timeseriesval.tseriesid=? order by time";
-
 		Object [] argso = new Object [] { tid };
 		
 		List<TimeSeriesVal> tseriesVal = template.query(sql, argso,
 				new BeanPropertyRowMapper<TimeSeriesVal>(TimeSeriesVal.class));
 		
 		return tseriesVal;		
+	}
+	
+	@Transactional(readOnly=true)
+	public TimeSeries findTimeSeriesByTimeSeriesID(int tid)
+	{
+		String sql = "SELECT * from timeseries where tseriesid=?";
+		Object [] argso = new Object [] { tid };
+		
+		List<TimeSeries>  timeSeriesList =template.query(sql, argso,new BeanPropertyRowMapper<TimeSeries>(TimeSeries.class));
+		
+		if(timeSeriesList.size()>0)
+			return timeSeriesList.get(0);
+		else return null;
 	}
 
 	/** ugly function to update the sequence values when running unit tests with dbunit testdata
@@ -147,9 +188,6 @@ public class CustomQueryRepositoryImpl implements CustomQueryRepository {
 			return false;
 		} 
 	}
-	
-	
-	
 	
 	//insert batch
 	private void insertBatch(final List<TimeSeriesVal> tsvalues){
