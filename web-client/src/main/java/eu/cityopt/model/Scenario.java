@@ -44,7 +44,7 @@ public class Scenario extends VersionModel implements java.io.Serializable {
 	private Date runend;
 	private Date runstart;
 	private String status;
-	//private String log;
+	private String log;
 	private List<ScenarioMetrics> scenariometricses = new ArrayList<ScenarioMetrics>(
 			0);
 	private List<InputParamVal> inputparamvals = new ArrayList<InputParamVal>(0);
@@ -88,7 +88,7 @@ public class Scenario extends VersionModel implements java.io.Serializable {
 		this.runend = runend;
 		this.runstart = runstart;
 		this.status = status;
-		//this.log = log;
+		this.log = log;
 		this.scenariometricses = scenariometricses;
 		this.inputparamvals = inputparamvals;
 		this.optimizationsets = optimizationsets;
@@ -111,7 +111,7 @@ public class Scenario extends VersionModel implements java.io.Serializable {
 		c.runend = this.runend;
 		c.runstart = this.runstart;
 		c.status = this.status;
-		//c.log = this.log;
+		c.log = this.log;
 		c.scenariometricses = this.scenariometricses;
 		c.inputparamvals = this.inputparamvals;
 		c.optimizationsets = this.optimizationsets;
@@ -238,7 +238,7 @@ public class Scenario extends VersionModel implements java.io.Serializable {
 		this.status = status;
 	}
 
-	/*
+	
 	@Column(name = "log")
 	public String getLog() {
 		return this.log;
@@ -247,7 +247,7 @@ public class Scenario extends VersionModel implements java.io.Serializable {
 	public void setLog(String log) {
 		this.log = log;
 	}
-    */
+    
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade=CascadeType.REMOVE)
 	public List<ScenarioMetrics> getScenariometricses() {
