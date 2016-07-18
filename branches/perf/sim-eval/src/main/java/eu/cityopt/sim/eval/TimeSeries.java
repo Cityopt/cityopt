@@ -118,7 +118,7 @@ public class TimeSeries implements TimeSeriesI {
 
     @Override
     public int getDegree() {
-        return fun.degree;
+        return fun.getDegree();
     }
 
     @Override
@@ -226,6 +226,7 @@ public class TimeSeries implements TimeSeriesI {
         return __repr__();
     }
 
+    @Override
     public String __repr__() {
         return "TimeSeries(" + getDegree() + ", " + Arrays.toString(getTimes())
                 + ", " + Arrays.toString(getValues()) + ")";
@@ -338,7 +339,7 @@ public class TimeSeries implements TimeSeriesI {
         return new TimeSeries(fun.transform(
                 (double[] u, double[] v) -> {
                     for (int i = 0; i < u.length; ++i) {
-                        v[i] = modulo(u[i], a); 
+                        v[i] = modulo(u[i], a);
                     }
                 }));
     }
@@ -347,7 +348,7 @@ public class TimeSeries implements TimeSeriesI {
         return new TimeSeries(fun.transform(
                 (double[] u, double[] v) -> {
                     for (int i = 0; i < u.length; ++i) {
-                        v[i] = modulo(a, u[i]); 
+                        v[i] = modulo(a, u[i]);
                     }
                 }));
     }
@@ -356,7 +357,7 @@ public class TimeSeries implements TimeSeriesI {
         return new TimeSeries(fun.combine(other.fun,
                 (double[] u, double[] v) -> {
                     for (int i = 0; i < u.length; ++i) {
-                        v[i] = modulo(u[i], v[i]); 
+                        v[i] = modulo(u[i], v[i]);
                     }
                 }));
     }
