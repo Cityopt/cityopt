@@ -1,0 +1,21 @@
+# Experimental schema for SearchStructuralFormulas.scl output.
+# May be extended as necessary.
+
+start = node
+
+node = element node {
+  attribute name {text},
+  attribute moduleName {text},
+  attribute label {text}?,
+  attribute isUC {bool},
+  attribute type {text}?,
+  element property {
+    attribute type {"constant" | "expression"},
+    attribute name {text},
+    attribute value {text},
+    attribute unit {text}?
+  }*,
+  node*
+}
+
+bool = "True" | "False"

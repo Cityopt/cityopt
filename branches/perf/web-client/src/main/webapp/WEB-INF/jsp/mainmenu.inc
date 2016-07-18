@@ -1,0 +1,453 @@
+<head>
+	<link rel="shortcut icon" href="assets/img/icon_logo_small.gif"> 
+</head>
+<table class="menustyle" height="1000" align="left">
+<tr style="height: 58px">
+	<td>
+		<table class="menublock" height="58px">
+			<col style="width: 60px">
+			<col style="width: 150px">
+			<tr>
+				<td class="logo">
+					<img alt="Logo" src="assets/img/icon_logo_small.gif"/>
+				</td>
+				<td valign="top" class="logotitle">CITYOPT</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td>
+		<c:choose>
+			<c:when test="${activeblock == 'project'}">
+				<table class="menublockactive">
+			</c:when>
+			<c:otherwise>
+				<table class="menublock">
+			</c:otherwise>
+		</c:choose>
+			<col style="width: 60px">
+			<col style="width: 150px">
+			<tr>
+				<td class="menuicon">
+					<img src="assets/img/icon_project_black.gif"/>
+				</td>
+				<td><b><spring:message code="project"/></b></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<a href="createproject.html"><spring:message code="createproject"/></a>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<a href="openproject.html"><spring:message code="openproject"/></a>
+				</td>
+			</tr>
+			<c:choose>	
+				<c:when test="${not empty project}">
+					<tr>
+						<td></td>
+						<td>
+							<a href="editproject.html"><spring:message code="editproject"/></a>
+						</td>
+					</tr>
+				</c:when>
+				<c:otherwise>
+					<tr>
+						<td></td>
+						<td>
+							<spring:message code="editproject"/>
+						</td>
+					</tr>
+				</c:otherwise>
+			</c:choose>
+			<tr>
+				<td></td>
+				<td>
+					<a href="deleteproject.html"><spring:message code="deleteproject"/></a>
+				</td>
+			</tr>
+			<c:choose>	
+				<c:when test="${not empty project}">
+					<tr>
+						<td></td>
+						<td>
+							<a href="importdata.html"><spring:message code="importdata"/></a>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<a href="exportdata.html"><spring:message code="exportdata"/></a>
+						</td>
+					</tr>
+				</c:when>
+				<c:otherwise>
+					<tr>
+						<td></td>
+						<td>
+							<spring:message code="importdata"/>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<spring:message code="exportdata"/>
+						</td>
+					</tr>
+				</c:otherwise>
+			</c:choose>
+			<c:choose>	
+				<c:when test="${not empty project}">
+				<tr>
+					<td></td>
+					<td>
+						<a href="metricdefinition.html"><spring:message code="metrics"/></a>
+					</td>
+				</tr>
+				</c:when>
+				<c:otherwise>
+					<tr>
+						<td></td>
+						<td>
+							<spring:message code="metrics"/>
+						</td>
+					</tr>
+				</c:otherwise>
+			</c:choose>
+			
+			<tr height=10>
+				<td></td>
+				<td>
+					
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td>
+		<table class="menublock">
+			<col style="width: 60px">
+			<col style="width: 150px">
+			<tr>
+				<td class="menuicon">	
+					<img src="assets/img/icon_scenario_black.gif"/>
+				</td>
+				<td><b>Scenario</b></td>
+			</tr>
+			<c:choose>	
+				<c:when test="${not empty project}">
+					<tr>
+						<td></td>
+						<td>
+							<a href="createscenario.html">
+							<spring:message code="create_scenario"/></a>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<a href="openscenario.html">
+							<spring:message code="open_scenario"/></a>
+						</td>
+					</tr>
+					<c:choose>	
+						<c:when test="${usersession.getActiveScenario() != null}">
+							<tr>
+								<td></td>
+								<td>
+									<a href="editscenario.html">
+									<spring:message code="edit_scenario"/></a>
+								</td>
+							</tr>
+						</c:when>
+						<c:otherwise>
+							<tr>
+								<td></td>
+								<td>
+									<spring:message code="edit_scenario"/>
+								</td>
+							</tr> 
+						</c:otherwise>
+					</c:choose>
+					<tr>
+						<td></td>
+						<td>
+							<a href="deletescenario.html">
+							<spring:message code="delete_scenario"/></a>
+						</td>
+					</tr>
+				</c:when>	
+				<c:otherwise>
+					<tr>
+						<td></td>
+						<td>
+							<spring:message code="create_scenario"/>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<spring:message code="open_scenario"/>
+						</td></tr>
+					<tr>
+						<td></td>
+						<td>
+							<spring:message code="edit_scenario"/>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<spring:message code="delete_scenario"/>		
+						</td></tr>
+				</c:otherwise>
+			</c:choose>
+			<tr height=10>
+				<td></td>
+				<td>
+				</td>
+			</tr>
+		</table>
+	</td>
+<tr>
+<tr>
+	<td>
+		<table class="menublock">
+			<col style="width: 60px">
+			<col style="width: 150px">
+			<tr>
+				<td class="menuicon">
+					<img src="assets/img/icon_optimization_black.gif"/>
+				</td>
+				<td><b><spring:message code="optimization"/></b></td>
+			</tr>
+			<c:choose>
+				<c:when test="${not empty project}">
+				<tr>
+					<td></td>
+					<td>
+						<a href="createoptimizationset.html">
+						<spring:message code="create_optimization_set"/></a>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<a href="openoptimizationset.html">
+						<spring:message code="open_optimization_set"/></a>
+					</td>
+				</tr>
+				</c:when>
+				<c:otherwise>	
+					<tr>
+						<td></td>
+						<td>
+							<spring:message code="create_optimization_set"/>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<spring:message code="open_optimization_set"/>		
+						</td>
+					</tr>
+				</c:otherwise>
+			</c:choose>
+			<c:choose>
+				<c:when test="${usersession.getActiveOptSet() != null}">
+					<tr>
+						<td></td>
+						<td>
+							<a href="editoptimizationset.html">
+							<spring:message code="edit"/> ${usersession.getActiveOptSet()}</a>
+						</td>
+					</tr>
+				</c:when>
+				<c:otherwise>
+				</c:otherwise>
+			</c:choose>
+
+			<c:choose>
+				<c:when test="${usersession.getActiveScenGen() != null}">
+					<tr>
+						<td></td>
+						<td>
+							<a href="geneticalgorithm.html">
+							<spring:message code="edit"/> ${usersession.getActiveScenGen()}</a>
+						</td>
+					</tr>
+				</c:when>
+				<c:otherwise>
+				</c:otherwise>
+			</c:choose>
+			<c:choose>
+				<c:when test="${not empty project}">
+					<tr>
+						<td></td>
+						<td>
+							<a href="deleteoptimizationset.html">
+							<spring:message code="delete_optimization_set"/></a>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<a href="garuns.html"><spring:message code="running_genetic_optimizations"/></a>
+						</td>
+					</tr>
+				</c:when>
+				<c:otherwise>
+					<tr>
+						<td></td>
+						<td>
+							<spring:message code="delete_optimization_set"/>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<spring:message code="running_genetic_optimizations"/>
+						</td>
+					</tr>
+				</c:otherwise>
+			</c:choose>
+			<tr height=10>
+				<td>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td>
+		<table class="menublock">
+			<col style="width: 60px">
+			<col style="width: 150px">
+			<tr>
+				<td class="menuicon">
+					<img src="assets/img/icon_Visualization_black.gif"/>
+				</td>
+				<td><b><spring:message code="visualization"/></b></td>
+			</tr>
+			<c:choose>
+				<c:when test="${not empty scenario}">
+					<tr>
+						<td></td>
+						<td>
+							<a href="timeserieschart.html"><spring:message code="time_series_chart"/></a>
+						</td>
+					</tr>
+				</c:when>
+			<c:otherwise>
+				<tr>
+					<td></td>
+					<td>
+						<spring:message code="time_series_chart"/>
+					</td>
+				</tr>
+			</c:otherwise>
+		</c:choose>
+		<c:choose>
+			<c:when test="${not empty scenario}">
+				<tr>
+					<td></td>
+					<td>
+						<a href="summarychart.html"><spring:message code="summary_chart"/></a>
+					</td>
+				</tr>
+			</c:when>
+			<c:otherwise>
+				<tr>
+					<td></td>
+					<td>
+						<spring:message code="summary_chart"/>
+					</td>
+				</tr>
+			</c:otherwise>
+		</c:choose>
+		<c:choose>
+			<c:when test="${not empty scengenerator}">
+				<tr>
+					<td></td>
+					<td>
+						<a href="gachart.html"><spring:message code="genetic_optimization_chart"/></a>
+					</td>
+				</tr>
+			</c:when>
+			<c:otherwise>
+				<tr>
+					<td></td>
+					<td>
+						<spring:message code="genetic_optimization_chart"/>
+					</td>
+				</tr>
+			</c:otherwise>
+		</c:choose>
+		<c:choose>
+			<c:when test="${not empty scenario}">
+				<tr>
+					<td></td>
+					<td>
+						<a href="viewtable.html">
+						<spring:message code="time_series_table"/></a>
+					</td>
+				</tr>
+			</c:when>
+		<c:otherwise>
+			<tr>
+				<td></td>
+				<td>
+					<spring:message code="time_series_table"/>
+				</td>
+			</tr>
+		</c:otherwise>
+	</c:choose>
+	<tr height=10>
+		<td>
+		</td>
+	</tr>
+</table>
+</td>
+</tr>	
+<tr>
+	<td>
+		<table class="menublock">
+			<col style="width: 60px">
+			<col style="width: 150px">
+			<tr>
+				<td class="menuicon">
+					<img src="assets/img/icon_users_black.gif"/>
+				</td>
+				<td><b><spring:message code="users_and_settings"/></b></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<a href="usermanagement.html">
+					<spring:message code="user_management"/></a>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<a href="units.html">
+					<spring:message code="units"/></a>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<a href="settings.html">
+					<spring:message code="settings"/></a>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+</table>
+	
