@@ -2,8 +2,10 @@ package eu.cityopt.model;
 
 // Generated 13.11.2014 15:13:00 by Hibernate Tools 4.0.0
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -42,17 +44,17 @@ public class Scenario extends VersionModel implements java.io.Serializable {
 	private Date runend;
 	private Date runstart;
 	private String status;
-	private String log;
-	private Set<ScenarioMetrics> scenariometricses = new HashSet<ScenarioMetrics>(
+	//private String log;
+	private List<ScenarioMetrics> scenariometricses = new ArrayList<ScenarioMetrics>(
 			0);
-	private Set<InputParamVal> inputparamvals = new HashSet<InputParamVal>(0);
-	private Set<OptimizationSet> optimizationsets = new HashSet<OptimizationSet>(
+	private List<InputParamVal> inputparamvals = new ArrayList<InputParamVal>(0);
+	private List<OptimizationSet> optimizationsets = new ArrayList<OptimizationSet>(
 			0);
-	private Set<SimulationResult> simulationresults = new HashSet<SimulationResult>(
+	private List<SimulationResult> simulationresults = new ArrayList<SimulationResult>(
 			0);
-	private Set<OptSetScenarios> optsetscenarioses = new HashSet<OptSetScenarios>(
+	private List<OptSetScenarios> optsetscenarioses = new ArrayList<OptSetScenarios>(
 			0);
-	private Set<ScenGenResult> scengenresults = new HashSet<ScenGenResult>(0);
+	private List<ScenGenResult> scengenresults = new ArrayList<ScenGenResult>(0);
 
 	public Scenario() {
 	}
@@ -68,12 +70,12 @@ public class Scenario extends VersionModel implements java.io.Serializable {
 			String description, Date createdon, Date updatedon,
 			Integer createdby, Integer updatedby, Date runend, Date runstart,
 			String status, String log,
-			Set<ScenarioMetrics> scenariometricses,
-			Set<InputParamVal> inputparamvals,
-			Set<OptimizationSet> optimizationsets,
-			Set<SimulationResult> simulationresults,
-			Set<OptSetScenarios> optsetscenarioses,
-			Set<ScenGenResult> scengenresults) {
+			List<ScenarioMetrics> scenariometricses,
+			List<InputParamVal> inputparamvals,
+			List<OptimizationSet> optimizationsets,
+			List<SimulationResult> simulationresults,
+			List<OptSetScenarios> optsetscenarioses,
+			List<ScenGenResult> scengenresults) {
 		this.scenid = scenid;
 		this.project = project;
 		this.scenariogenerator = scenariogenerator;
@@ -86,7 +88,7 @@ public class Scenario extends VersionModel implements java.io.Serializable {
 		this.runend = runend;
 		this.runstart = runstart;
 		this.status = status;
-		this.log = log;
+		//this.log = log;
 		this.scenariometricses = scenariometricses;
 		this.inputparamvals = inputparamvals;
 		this.optimizationsets = optimizationsets;
@@ -109,7 +111,7 @@ public class Scenario extends VersionModel implements java.io.Serializable {
 		c.runend = this.runend;
 		c.runstart = this.runstart;
 		c.status = this.status;
-		c.log = this.log;
+		//c.log = this.log;
 		c.scenariometricses = this.scenariometricses;
 		c.inputparamvals = this.inputparamvals;
 		c.optimizationsets = this.optimizationsets;
@@ -236,6 +238,7 @@ public class Scenario extends VersionModel implements java.io.Serializable {
 		this.status = status;
 	}
 
+	/*
 	@Column(name = "log")
 	public String getLog() {
 		return this.log;
@@ -244,59 +247,59 @@ public class Scenario extends VersionModel implements java.io.Serializable {
 	public void setLog(String log) {
 		this.log = log;
 	}
-
-
+    */
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade=CascadeType.REMOVE)
-	public Set<ScenarioMetrics> getScenariometricses() {
+	public List<ScenarioMetrics> getScenariometricses() {
 		return this.scenariometricses;
 	}
 
-	public void setScenariometricses(Set<ScenarioMetrics> scenariometricses) {
+	public void setScenariometricses(List<ScenarioMetrics> scenariometricses) {
 		this.scenariometricses = scenariometricses;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade={CascadeType.REMOVE})
-	public Set<InputParamVal> getInputparamvals() {
+	public List<InputParamVal> getInputparamvals() {
 		return this.inputparamvals;
 	}
 
-	public void setInputparamvals(Set<InputParamVal> inputparamvals) {
+	public void setInputparamvals(List<InputParamVal> inputparamvals) {
 		this.inputparamvals = inputparamvals;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade=CascadeType.REMOVE)
-	public Set<OptimizationSet> getOptimizationsets() {
+	public List<OptimizationSet> getOptimizationsets() {
 		return this.optimizationsets;
 	}
 
-	public void setOptimizationsets(Set<OptimizationSet> optimizationsets) {
+	public void setOptimizationsets(List<OptimizationSet> optimizationsets) {
 		this.optimizationsets = optimizationsets;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade={CascadeType.REMOVE})
-	public Set<SimulationResult> getSimulationresults() {
+	public List<SimulationResult> getSimulationresults() {
 		return this.simulationresults;
 	}
 
-	public void setSimulationresults(Set<SimulationResult> simulationresults) {
+	public void setSimulationresults(List<SimulationResult> simulationresults) {
 		this.simulationresults = simulationresults;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade={CascadeType.REMOVE})
-	public Set<OptSetScenarios> getOptsetscenarioses() {
+	public List<OptSetScenarios> getOptsetscenarioses() {
 		return this.optsetscenarioses;
 	}
 
-	public void setOptsetscenarioses(Set<OptSetScenarios> optsetscenarioses) {
+	public void setOptsetscenarioses(List<OptSetScenarios> optsetscenarioses) {
 		this.optsetscenarioses = optsetscenarioses;
 	}
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scenario", cascade={CascadeType.REMOVE})
-    public Set<ScenGenResult> getScengenresults() {
+    public List<ScenGenResult> getScengenresults() {
           return this.scengenresults;
     }
 
-	public void setScengenresults(Set<ScenGenResult> scengenresults) {
+	public void setScengenresults(List<ScenGenResult> scengenresults) {
 		this.scengenresults = scengenresults;
 	}
 }

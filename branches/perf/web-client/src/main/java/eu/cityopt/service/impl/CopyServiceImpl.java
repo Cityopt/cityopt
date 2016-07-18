@@ -1,8 +1,10 @@
 package eu.cityopt.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -262,7 +264,7 @@ public class CopyServiceImpl implements CopyService {
 		
 		//copy scenario metrics
 		if(copyMetricValues){
-			Set<ScenarioMetrics> smSet = new HashSet<ScenarioMetrics>();
+			List<ScenarioMetrics> smSet = new ArrayList<ScenarioMetrics>();
 			for(ScenarioMetrics sm : scenario.getScenariometricses()){
 				ScenarioMetrics smC = sm.clone();
 				smC.setScenmetricid(0);
@@ -279,7 +281,7 @@ public class CopyServiceImpl implements CopyService {
 						TimeSeries tsc = new TimeSeries();
 						tsc.setType(ts.getType());
 						tsc = timeSeriesRepository.save(tsc);
-						Set<TimeSeriesVal> tsVals = copyTimeSeriesVals(tsc, ts.getTimeseriesvals());
+						List<TimeSeriesVal> tsVals = copyTimeSeriesVals(tsc, ts.getTimeseriesvals());
 						timeSeriesValRepository.save(tsVals);					
 						mvC.setTimeseries(tsc);
 					}
@@ -914,15 +916,15 @@ public class CopyServiceImpl implements CopyService {
 		tscopy.setType(src.getType());
 		tscopy = timeSeriesRepository.save(tscopy);
 		//copy values
-		Set<TimeSeriesVal> tsvCopies = copyTimeSeriesVals(tscopy, src.getTimeseriesvals());
+		List<TimeSeriesVal> tsvCopies = copyTimeSeriesVals(tscopy, src.getTimeseriesvals());
 		tscopy.setTimeseriesvals(tsvCopies);
 		return tscopy;
 	}
 	
 	@Transactional
-	private Set<TimeSeriesVal> copyTimeSeriesVals(TimeSeries timeseries, Set<TimeSeriesVal> timeseriesvals){			
+	private List<TimeSeriesVal> copyTimeSeriesVals(TimeSeries timeseries, List<TimeSeriesVal> timeseriesvals){			
 		
-		Set<TimeSeriesVal> tsvCopies = new HashSet<TimeSeriesVal>();
+		List<TimeSeriesVal> tsvCopies = new ArrayList<TimeSeriesVal>();
 		for(TimeSeriesVal tsv : timeseriesvals){
 			TimeSeriesVal  tsvC = tsv.clone();
 			tsvC.setTseriesvalid(0);

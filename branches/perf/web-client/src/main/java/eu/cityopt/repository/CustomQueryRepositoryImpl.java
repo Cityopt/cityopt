@@ -62,6 +62,19 @@ public class CustomQueryRepositoryImpl implements CustomQueryRepository {
 		
 		return components;
 	}
+	
+	@Transactional(readOnly=true)
+	public List<TimeSeriesVal> findTimeSeriesValByTimeSeriesID(int tid)
+	{
+		String sql = "SELECT value,time,tseriesvalid,tseriesid from timeseriesval where timeseriesval.tseriesid=? order by time";
+
+		Object [] argso = new Object [] { tid };
+		
+		List<TimeSeriesVal> tseriesVal = template.query(sql, argso,
+				new BeanPropertyRowMapper<TimeSeriesVal>(TimeSeriesVal.class));
+		
+		return tseriesVal;		
+	}
 
 	/** ugly function to update the sequence values when running unit tests with dbunit testdata
 	 * (because db unit doesn't even use the sequences when ids are omitted)
@@ -134,6 +147,9 @@ public class CustomQueryRepositoryImpl implements CustomQueryRepository {
 			return false;
 		} 
 	}
+	
+	
+	
 	
 	//insert batch
 	private void insertBatch(final List<TimeSeriesVal> tsvalues){

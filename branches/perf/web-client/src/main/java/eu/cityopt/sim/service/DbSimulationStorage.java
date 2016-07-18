@@ -382,7 +382,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     }
 
     Scenario saveSimulationOutput(Scenario scenario, SimulationOutput simOutput) {
-        scenario.setLog(simOutput.getMessages());
+        //scenario.setLog(simOutput.getMessages());
         scenario.setRunstart((simOutput.runStart != null) ? Date.from(simOutput.runStart) : null);
         scenario.setRunend((simOutput.runEnd != null) ? Date.from(simOutput.runEnd) : null);
 
@@ -397,7 +397,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
             scenario.setStatus(SimulationService.STATUS_SUCCESS);
             SimulationResults simResults = (SimulationResults) simOutput;
             Namespace namespace = simResults.getNamespace();
-            Set<SimulationResult> newResults = new HashSet<SimulationResult>();
+            List<SimulationResult> newResults = new ArrayList<SimulationResult>();
             List<Runnable> idUpdates = new ArrayList<Runnable>();
             for (Component component : scenario.getProject().getComponents()) {
                 String componentName = component.getName();
@@ -435,7 +435,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
             simulationResultRepository.save(newResults);
             scenario = scenarioRepository.save(scenario);
 
-            timeSeriesValRepository.flush();
+            //timeSeriesValRepository.flush();
             for (Runnable update : idUpdates) {
                 update.run();
             }

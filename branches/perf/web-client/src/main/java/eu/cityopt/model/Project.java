@@ -29,6 +29,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.BatchSize;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -258,6 +260,7 @@ public class Project extends VersionModel implements java.io.Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
 	@OrderBy("name")
+	@BatchSize(size=10)
 	public Set<Scenario> getScenarios() {
 		return this.scenarios;
 	}

@@ -25,5 +25,7 @@ public interface CustomQueryRepository {
 	public void deleteTimeSeriesValues(int tseriesid);
 
 	public boolean insertTimeSeriesBatch(List<TimeSeriesVal> tsvalues);
+	
+	public List<TimeSeriesVal> findTimeSeriesValByTimeSeriesID(int tid);
 
 }
