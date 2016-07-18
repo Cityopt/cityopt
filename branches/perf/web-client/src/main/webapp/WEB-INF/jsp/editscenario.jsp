@@ -129,9 +129,11 @@
 										<tr>
 											<td class="regular"><spring:message code="simulation_info"/></td>
 											<td>
+											<!-- 
 												<c:if test="${scenario != null && scenario.getLog() != null}">
 													<button type="button" style="width: 150px" onclick="openSimulationInfoWindow()"><spring:message code="show_simulation_info"/></button>
-												</c:if>		
+												</c:if>
+											-->		
 											</td>
 										</tr>
 										<tr height="15"></tr>
