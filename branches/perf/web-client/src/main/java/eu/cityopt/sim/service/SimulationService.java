@@ -58,9 +58,11 @@ import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
+import eu.cityopt.sim.eval.LazyPiecewiseFunction;
 import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.Namespace;
+import eu.cityopt.sim.eval.PiecewiseFunction;
 import eu.cityopt.sim.eval.SimulationFailure;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationModel;
@@ -93,7 +95,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     public static final String STATUS_SUCCESS = "SUCCESS";
     public static final String STATUS_MODEL_FAILURE = "MODEL_FAILURE";
     public static final String STATUS_SIMULATOR_FAILURE = "SIMULATOR_FAILURE";
-    
+
     @Autowired
     CustomQueryRepository customQueryRepository;
 
@@ -108,7 +110,6 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     @Autowired private ExtParamValSetRepository extParamValSetRepository;
     @Autowired private ExtParamValSetCompRepository extParamValSetCompRepository;
     @Autowired private TimeSeriesRepository timeSeriesRepository;
-    @Autowired private TimeSeriesValRepository timeSeriesValRepository;
     @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository;
 
     @Autowired private ApplicationContext applicationContext;
@@ -391,29 +392,33 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     /** Loads the data of a time series. */
     public TimeSeriesI loadTimeSeries(TimeSeries timeseries,
             Type timeSeriesType, EvaluationSetup evsup) {
-        TimeSeriesData.Series s = loadTimeSeriesData(
-                timeseries.getTseriesid(), evsup.timeOrigin);
-        TimeSeriesI ts = evaluator.makeTS(
-                timeSeriesType, s.getTimes(), s.getValues());
+        TimeSeriesI ts = new eu.cityopt.sim.eval.TimeSeries(
+                new LazyPiecewiseFunction(() -> {
+            TimeSeriesData.Series s = loadTimeSeriesData(
+                    timeseries.getTseriesid(), evsup.timeOrigin);
+            return PiecewiseFunction.make(
+                    timeSeriesType.getInterpolationDegree(),
+                    s.getTimes(), s.getValues());
+        }));
         ts.setTimeSeriesId(timeseries.getTseriesid());
         return ts;
     }
-    
+
     /**
      * Load the data of a time series.
      * @param tsid time series id
      * @param timeOrigin for translating timestamps to seconds
      */
-    
+    @Transactional(readOnly=true)
     public TimeSeriesData.Series loadTimeSeriesData(
             int tsid, Instant timeOrigin) {
-        
+
     	/*
     	List<TimeSeriesVal> timeSeriesVals =
                 timeSeriesValRepository.findTimeSeriesValOrderedByTime(tsid);
         */
         List<TimeSeriesVal> timeSeriesVals = customQueryRepository.findTimeSeriesValByTimeSeriesID(tsid);
-        
+
         int n = timeSeriesVals.size();
         double[] times = new double[n];
         double[] values = new double[n];
@@ -422,9 +427,9 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             times[i] = TimeUtils.toSimTime(tsVal.getTime(), timeOrigin);
             values[i] = Double.valueOf(tsVal.getValue());
         }
-        
+
         //findTimeSeriesValByTimeSeriesID
-        
+
         return new TimeSeriesData.Series(times, values);
     }
 
@@ -758,7 +763,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         return saveTimeSeries(simTS, typeRepository.findByNameLike(type.name),
                               timeOrigin, null);
     }
-    
+
     @Autowired CustomQueryRepository customQueryRepo;
 
     /**
@@ -788,15 +793,15 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
 
             timeSeriesVal.setTimeseries(timeSeries);
             tsvals.add(timeSeriesVal);
-        }   
-        
+        }
+
         return customQueryRepo.insertTimeSeries(timeSeries);
         /*
         timeSeriesValRepository.save(tsvals);
         return timeSeriesRepository.save(timeSeries);
         */
     }
-    
+
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
         log.info("Shutting down.");
