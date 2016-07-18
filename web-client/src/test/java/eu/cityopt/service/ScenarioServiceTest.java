@@ -79,7 +79,7 @@ public class ScenarioServiceTest {
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
 		"classpath:/testData/SampleTestCaseNoResults/Sample Test case - SC1.xml"})
 	public void getScenarioMetrics() throws EntityNotFoundException {
-		Set<ScenarioMetricsDTO> scenmetL = scenarioService.getScenarioMetrics(1);
+		List<ScenarioMetricsDTO> scenmetL = scenarioService.getScenarioMetrics(1);
 		assertNotNull(scenmetL);
 		assertEquals(1,scenmetL.size());
 		ScenarioMetricsDTO scenmet = scenmetL.iterator().next();

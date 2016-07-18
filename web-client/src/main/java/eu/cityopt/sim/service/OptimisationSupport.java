@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
@@ -71,6 +73,8 @@ public class OptimisationSupport {
 
     private @Autowired SimulationService simulationService;
     private @Autowired SyntaxCheckerService syntaxCheckerService;
+    
+    @PersistenceContext EntityManager em;
 
 
     /** Results from {@link OptimisationSupport#evaluateScenarios(Project, OptimizationSet)} */
@@ -139,7 +143,6 @@ public class OptimisationSupport {
                         SimulationResults results = (SimulationResults) output;
                         MetricValues metricValues = new MetricValues(results, problem.metrics);
                         storage.updateMetricValues(metricValues);
-
                         ConstraintStatus constraintValues =
                                 new ConstraintStatus(metricValues, problem.constraints);
                         if (constraintValues.feasible) {
@@ -160,6 +163,8 @@ public class OptimisationSupport {
                         + ": " + e.getMessage());
                 evaluationResults.failures.put(scenario.getScenid(), e);
             }
+            
+            em.flush();
         }
         log.info("Evaluated scenarios of project " + project.getPrjid() + ": "
                 + evaluationResults);
