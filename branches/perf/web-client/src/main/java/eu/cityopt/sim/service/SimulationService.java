@@ -405,8 +405,6 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
      * @param timeOrigin for translating timestamps to seconds
      */
     
-    @PersistenceContext EntityManager em;
-    
     public TimeSeriesData.Series loadTimeSeriesData(
             int tsid, Instant timeOrigin) {
         
@@ -414,10 +412,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     	List<TimeSeriesVal> timeSeriesVals =
                 timeSeriesValRepository.findTimeSeriesValOrderedByTime(tsid);
         */
-            	
-    	
         List<TimeSeriesVal> timeSeriesVals = customQueryRepository.findTimeSeriesValByTimeSeriesID(tsid);
-        
         
         int n = timeSeriesVals.size();
         double[] times = new double[n];
@@ -793,12 +788,15 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
 
             timeSeriesVal.setTimeseries(timeSeries);
             tsvals.add(timeSeriesVal);
-        }        
+        }   
         
+        return customQueryRepo.insertTimeSeries(timeSeries);
+        /*
         timeSeriesValRepository.save(tsvals);
         return timeSeriesRepository.save(timeSeries);
+        */
     }
-
+    
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
         log.info("Shutting down.");
