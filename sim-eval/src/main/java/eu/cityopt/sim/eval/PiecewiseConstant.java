@@ -5,12 +5,12 @@ import java.util.Arrays;
 /**
  * Piecewise constant function defined by a sequence of (t, v) points.
  * Between two defined points, the value is defined by the earlier point.
- * 
+ *
  * @see PiecewiseFunction#make(int, double[], double[])
  *
  * @author Hannu Rummukainen
  */
-public class PiecewiseConstant extends PiecewiseFunction {
+public class PiecewiseConstant extends TabularPiecewiseFunction {
 
     PiecewiseConstant(double[] tt, double[] vv) {
         super(tt, vv, 0);
@@ -94,12 +94,12 @@ public class PiecewiseConstant extends PiecewiseFunction {
     public PiecewiseConstant abs() {
         int n = vv.length;
         double[] tto = new double[n];
-        double[] vvo = new double[n]; 
+        double[] vvo = new double[n];
         for (int i = 0; i < n; ++i) {
             tto[i] = tt[i];
             vvo[i] = Math.abs(vv[i]);
         }
-        return new PiecewiseConstant(tto, vvo); 
+        return new PiecewiseConstant(tto, vvo);
     }
 
     @Override

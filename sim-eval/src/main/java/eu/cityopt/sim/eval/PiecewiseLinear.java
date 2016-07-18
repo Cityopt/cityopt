@@ -9,14 +9,14 @@ import java.util.Arrays;
  * At the t of a vertical segment, the latter v in the sequence defines the
  * function value. You can get both v values by interpolating with an argument
  * vector that contains the t of the vertical segment twice. (This feature is
- * needed to support arithmetic between piecewise functions, and conversion 
+ * needed to support arithmetic between piecewise functions, and conversion
  * of step-interpolated functions to linearly interpolated functions.)
  *
  * @see PiecewiseFunction#make(int, double[], double[])
  *
  * @author Hannu Rummukainen
  */
-public class PiecewiseLinear extends PiecewiseFunction {
+public class PiecewiseLinear extends TabularPiecewiseFunction {
 
     PiecewiseLinear(double[] tt, double[] vv) {
         super(tt, vv, 1);
