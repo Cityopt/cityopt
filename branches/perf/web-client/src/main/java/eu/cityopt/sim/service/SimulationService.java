@@ -392,15 +392,16 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     /** Loads the data of a time series. */
     public TimeSeriesI loadTimeSeries(TimeSeries timeseries,
             Type timeSeriesType, EvaluationSetup evsup) {
+        int tsid = timeseries.getTseriesid();
+        Instant t0 = evsup.timeOrigin;
         TimeSeriesI ts = new eu.cityopt.sim.eval.TimeSeries(
                 new LazyPiecewiseFunction(() -> {
-            TimeSeriesData.Series s = loadTimeSeriesData(
-                    timeseries.getTseriesid(), evsup.timeOrigin);
+            TimeSeriesData.Series s = loadTimeSeriesData(tsid, t0);
             return PiecewiseFunction.make(
                     timeSeriesType.getInterpolationDegree(),
                     s.getTimes(), s.getValues());
         }));
-        ts.setTimeSeriesId(timeseries.getTseriesid());
+        ts.setTimeSeriesId(tsid);
         return ts;
     }
 
