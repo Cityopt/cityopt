@@ -26,6 +26,7 @@ public class ScenarioDTO extends BaseDTO {
 	@Getter @Setter private Date runstart;
 	@Getter @Setter private String status;
     @Getter @Setter private String log;
+	
 //	private Set<ScenarioMetrics> scenariometricses = new HashSet<ScenarioMetrics>(
 //			0);
 //	private Set<InputParamVal> inputparamvals = new HashSet<InputParamVal>(0);
