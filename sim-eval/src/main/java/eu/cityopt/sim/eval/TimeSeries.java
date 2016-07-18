@@ -31,7 +31,7 @@ public class TimeSeries implements TimeSeriesI {
     private double max;
     private double min;
 
-    TimeSeries(PiecewiseFunction function) {
+    public TimeSeries(PiecewiseFunction function) {
         this.fun = function;
     }
 
