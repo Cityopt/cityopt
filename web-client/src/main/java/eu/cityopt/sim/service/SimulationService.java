@@ -399,8 +399,10 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
      * read-only transaction will be created for loading the time series
      * data, but the database may have changed between this call and when
      * the data are loaded.
+     *
+     * The time series can be forced to load by accessing its data, e.g.,
+     * with {@link TimeSeriesI#getTimes()}.
      */
-    //TODO Should we have separate eager & lazy methods?
     public TimeSeriesI loadTimeSeries(TimeSeries timeseries,
             Type timeSeriesType, EvaluationSetup evsup) {
         int tsid = timeseries.getTseriesid();
