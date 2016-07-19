@@ -2,6 +2,8 @@ package eu.cityopt.sim.service;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import eu.cityopt.model.ExtParamValSet;
+import eu.cityopt.model.MetricVal;
 import eu.cityopt.model.ObjectiveFunction;
 import eu.cityopt.model.OptConstraint;
 import eu.cityopt.model.OptSearchConst;
@@ -27,19 +30,24 @@ import eu.cityopt.model.ScenGenObjectiveFunction;
 import eu.cityopt.model.ScenGenOptConstraint;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
+import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.repository.ExtParamValSetRepository;
+import eu.cityopt.repository.MetricRepository;
+import eu.cityopt.repository.MetricValRepository;
 import eu.cityopt.repository.ObjectiveFunctionRepository;
 import eu.cityopt.repository.OptConstraintRepository;
 import eu.cityopt.repository.OptSearchConstRepository;
 import eu.cityopt.repository.OptimizationSetRepository;
 import eu.cityopt.repository.ScenGenObjectiveFunctionRepository;
 import eu.cityopt.repository.ScenGenOptConstraintRepository;
+import eu.cityopt.repository.ScenarioMetricsRepository;
 import eu.cityopt.repository.TimeSeriesValRepository;
 import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.ExternalParameters;
+import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.ObjectiveExpression;
@@ -50,6 +58,7 @@ import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.OptimisationProblem;
+import eu.cityopt.sim.opt.SimulationStructure;
 
 /**
  * Support functions for database optimisation and scenario generation
@@ -59,7 +68,7 @@ import eu.cityopt.sim.opt.OptimisationProblem;
  */
 @Service
 public class OptimisationSupport {
-    private static Logger log = Logger.getLogger(OptimisationSupport.class); 
+    private static Logger log = Logger.getLogger(OptimisationSupport.class);
 
     private @Autowired TypeRepository typeRepository;
     private @Autowired ScenGenOptConstraintRepository scenGenOptConstraintRepository;
@@ -70,10 +79,13 @@ public class OptimisationSupport {
     private @Autowired OptimizationSetRepository optimizationSetRepository;
     private @Autowired TimeSeriesValRepository timeSeriesValRepository;
     private @Autowired ExtParamValSetRepository extParamValSetRepository;
+    private @Autowired MetricRepository metricRepository;
+    private @Autowired ScenarioMetricsRepository scenarioMetricsRepository;
+    private @Autowired MetricValRepository metricValRepository;
 
     private @Autowired SimulationService simulationService;
     private @Autowired SyntaxCheckerService syntaxCheckerService;
-    
+
     @PersistenceContext EntityManager em;
 
 
@@ -101,6 +113,7 @@ public class OptimisationSupport {
         public Map<Integer, Exception> failures = new HashMap<Integer, Exception>();
 
         /** Brief human-readable description. */
+        @Override
         public String toString() {
             return feasible.size() + " feasible scenarios, "
                     + infeasible.size() + " infeasible scenarios, "
@@ -128,9 +141,6 @@ public class OptimisationSupport {
         ExternalParameters externals = problem.getExternalParameters();
         ObjectiveExpression objective = problem.objectives.get(0);
 
-        SimulationStorage storage =
-                simulationService.makeDbSimulationStorage(project.getPrjid(), externals);
-
         EvaluationResults evaluationResults = new EvaluationResults();
         for (Scenario scenario : project.getScenarios()) {
             try {
@@ -140,9 +150,9 @@ public class OptimisationSupport {
                     SimulationOutput output =
                             simulationService.loadSimulationOutput(scenario, input);
                     if (output instanceof SimulationResults) {
-                        SimulationResults results = (SimulationResults) output;
-                        MetricValues metricValues = new MetricValues(results, problem.metrics);
-                        storage.updateMetricValues(metricValues);
+                        MetricValues metricValues = getMetricValues(
+                                scenario, optimizationSet.getExtparamvalset(),
+                                problem.metrics, (SimulationResults)output);
                         ConstraintStatus constraintValues =
                                 new ConstraintStatus(metricValues, problem.constraints);
                         if (constraintValues.feasible) {
@@ -163,7 +173,7 @@ public class OptimisationSupport {
                         + ": " + e.getMessage());
                 evaluationResults.failures.put(scenario.getScenid(), e);
             }
-            
+
             em.flush();
         }
         log.info("Evaluated scenarios of project " + project.getPrjid() + ": "
@@ -172,9 +182,83 @@ public class OptimisationSupport {
     }
 
     /**
+     * Fetch or recompute metric values.
+     * 
+     * Values are fetched from the database if available.  Otherwise
+     * they are computed from exprs & results, and saved into the database.
+     * Database access uses metric ids (not names).  If these are not provided
+     * in exprs values are neither fetched nor saved, just computed from exprs.
+     * @throws ScriptException on expression evaluation errors
+     */
+    public MetricValues getMetricValues(
+            Scenario scen, ExtParamValSet xpvs,
+            Collection<MetricExpression> exprs, SimulationResults results)
+                    throws ScriptException {
+        final Namespace ns = results.getNamespace();
+        final MetricValues mvs = new MetricValues(results);
+        if (exprs != null) {
+            ScenarioMetrics
+                sm = scenarioMetricsRepository.findByScenidAndExtParamValSetid(
+                        scen.getScenid(), xpvs.getExtparamvalsetid());
+            if (sm == null) {
+                sm = new ScenarioMetrics();
+                sm.setScenario(scen);
+                sm.setExtparamvalset(xpvs);
+                sm = scenarioMetricsRepository.save(sm);
+            }
+            Map<Integer, MetricVal> mvmap = new HashMap<>();
+            Set<MetricVal> mvset = sm.getMetricvals();
+            if (mvset != null) {
+                for (MetricVal mv : mvset) {
+                    mvmap.put(mv.getMetric().getMetid(), mv);
+                }
+            }
+            for (MetricExpression expr : exprs) {
+                Integer metid = expr.getMetricId();
+                String name = expr.getMetricName();
+                Type type = ns.metrics.get(name);
+                MetricVal mv = mvmap.get(metid);
+                if (mv != null) {
+                    try {
+                        mvs.put(name,
+                                type.isTimeSeriesType()
+                                ? simulationService.loadTimeSeries(
+                                        mv.getTimeseries(), type, ns)
+                                : type.parse(mv.getValue(), ns));
+                    } catch (ParseException e) {
+                        // Failed to parse saved value - recompute.
+                        // Always scalar here.
+                        mvs.evaluate(expr);
+                        mv.setValue(mvs.getString(name));
+                        mv.setTimeseries(null);
+                        mvmap.put(metid, metricValRepository.save(mv));
+                    }
+                } else {
+                    mvs.evaluate(expr);
+                    if (metid != null) {
+                        mv = new MetricVal();
+                        mv.setMetric(metricRepository.findOne(metid));
+                        mv.setScenariometrics(sm);
+                        if (type.isTimeSeriesType()) {
+                            mv.setTimeseries(
+                                    simulationService.saveTimeSeries(
+                                            mvs.getTS(name), type,
+                                            ns.timeOrigin));
+                        } else {
+                            mv.setValue(mvs.getString(name));
+                        }
+                        mvmap.put(metid, metricValRepository.save(mv));
+                    }
+                }
+            }
+        }
+        return mvs;
+    }
+
+    /**
      * Fills a sim-eval OptimisationProblem structure with a database search
      * problem definition from an OptimizationSet.
-     * The inputConst, decisionVars and inputExprs fields are left empty. 
+     * The inputConst, decisionVars and inputExprs fields are left empty.
      */
     public OptimisationProblem loadOptimisationProblem(
             Project project, OptimizationSet optimizationSet)
@@ -195,7 +279,7 @@ public class OptimisationSupport {
             ScenarioGenerator scenarioGenerator, Namespace namespace)
                     throws ScriptException {
         List<Constraint> simConstraints = new ArrayList<Constraint>();
-        for (ScenGenOptConstraint scenGenOptConstraint 
+        for (ScenGenOptConstraint scenGenOptConstraint
                 : scenarioGenerator.getScengenoptconstraints()) {
             OptConstraint optConstraint = scenGenOptConstraint.getOptconstraint();
             simConstraints.add(loadConstraint(optConstraint, namespace));

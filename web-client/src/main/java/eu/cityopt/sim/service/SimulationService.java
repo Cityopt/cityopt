@@ -235,6 +235,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     }
 
     /** Results from {@link SimulationService#updateMetricValues(int, Integer)} */
+    //XXX Unused.  Will likely be gone if updateMetricValues is fixed.
     public static class MetricUpdateStatus {
         /** Set of scenarios for which new metric values were computed. */
         public Set<Integer> updated = new HashSet<Integer>();
@@ -279,6 +280,8 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
      * @return scenario specific results
      */
     @Transactional
+    //FIXME Make this per metric.
+    // Only caller is ProjectController.updateMetricPost.
     public MetricUpdateStatus updateMetricValues(int projectId, Integer extParamValSetId)
             throws ParseException, ScriptException {
         Project project = projectRepository.findOne(projectId);
@@ -389,7 +392,15 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         return simExternals;
     }
 
-    /** Loads the data of a time series. */
+    /**
+     * Lazily loads the data of a time series.
+     * The caller should probably hold the transaction open until finished
+     * using the returned time series.  If no transaction is open a
+     * read-only transaction will be created for loading the time series
+     * data, but the database may have changed between this call and when
+     * the data are loaded.
+     */
+    //TODO Should we have separate eager & lazy methods?
     public TimeSeriesI loadTimeSeries(TimeSeries timeseries,
             Type timeSeriesType, EvaluationSetup evsup) {
         int tsid = timeseries.getTseriesid();
