@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +16,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.script.ScriptException;
@@ -26,6 +28,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.data.repository.config.CustomRepositoryImplementationDetector;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.model.Component;
@@ -37,10 +40,12 @@ import eu.cityopt.model.ExtParamValSetComp;
 import eu.cityopt.model.InputParamVal;
 import eu.cityopt.model.InputParameter;
 import eu.cityopt.model.Metric;
+import eu.cityopt.model.MetricVal;
 import eu.cityopt.model.OutputVariable;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
+import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesVal;
@@ -48,8 +53,11 @@ import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.repository.ExtParamValRepository;
 import eu.cityopt.repository.ExtParamValSetCompRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
+import eu.cityopt.repository.MetricRepository;
+import eu.cityopt.repository.MetricValRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
+import eu.cityopt.repository.ScenarioMetricsRepository;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.TimeSeriesRepository;
 import eu.cityopt.repository.TimeSeriesValRepository;
@@ -88,7 +96,7 @@ import eu.cityopt.sim.eval.util.TimeUtils;
  *
  * @author Hannu Rummukainen
  */
-@Service
+@Service("simulationservice")
 public class SimulationService implements ApplicationListener<ContextClosedEvent> {
     private static final Instant DEFAULT_TIME_ORIGIN = Instant.ofEpochMilli(0);
 
@@ -111,9 +119,16 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     @Autowired private ExtParamValSetCompRepository extParamValSetCompRepository;
     @Autowired private TimeSeriesRepository timeSeriesRepository;
     @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository;
+    @Autowired private MetricRepository metricRepository;
+    @Autowired private ScenarioMetricsRepository scenarioMetricsRepository;
+    @Autowired private MetricValRepository metricValRepository;
 
     @Autowired private ApplicationContext applicationContext;
     @Autowired private ExecutorService executorService;
+
+    @Resource(name="simulationservice") private SimulationService self;
+
+    @PersistenceContext private EntityManager em;
 
     private JobManager<SimulationOutput> jobManager = new JobManager<>();
 
@@ -521,7 +536,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     }
 
     /** Loads the simulation result data of a scenario. */
-	public SimulationOutput loadSimulationOutput(Scenario scenario, SimulationInput simInput)
+    public SimulationOutput loadSimulationOutput(Scenario scenario, SimulationInput simInput)
             throws ParseException {
         SimulationOutput simOutput = null;
         if (STATUS_SUCCESS.equals(scenario.getStatus())) {
@@ -563,7 +578,92 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         return simOutput;
     }
 
-    //TODO loadMetricValues
+    /**
+     * Fetch or recompute metric values.
+     *
+     * Values are fetched from the database if available.  Otherwise
+     * they are computed from exprs & results, and saved into the database.
+     * Database access uses metric ids (not names).  If these are not provided
+     * in exprs values are neither fetched nor saved, just computed from exprs.
+     * @throws ScriptException on expression evaluation errors
+     */
+    public MetricValues getMetricValues(
+            Scenario scen, ExtParamValSet xpvs,
+            Collection<MetricExpression> exprs, SimulationResults results)
+                    throws ScriptException {
+        final Namespace ns = results.getNamespace();
+        final MetricValues mvs = new MetricValues(results);
+        if (exprs != null) {
+            ScenarioMetrics
+                sm = scenarioMetricsRepository.findByScenidAndExtParamValSetid(
+                        scen.getScenid(), xpvs.getExtparamvalsetid());
+            if (sm == null) {
+                sm = self.makeScenarioMetrics(scen, xpvs);
+            }
+            Map<Integer, MetricVal> mvmap = new HashMap<>();
+            Set<MetricVal> mvset = sm.getMetricvals();
+            if (mvset != null) {
+                for (MetricVal mv : mvset) {
+                    mvmap.put(mv.getMetric().getMetid(), mv);
+                }
+            }
+            for (MetricExpression expr : exprs) {
+                Integer metid = expr.getMetricId();
+                String name = expr.getMetricName();
+                Type type = ns.metrics.get(name);
+                MetricVal mv = mvmap.get(metid);
+                if (mv != null) {
+                    try {
+                        mvs.put(name,
+                                type.isTimeSeriesType()
+                                ? loadTimeSeries(mv.getTimeseries(), type, ns)
+                                : type.parse(mv.getValue(), ns));
+                    } catch (ParseException e) {
+                        // Failed to parse saved value - recompute.
+                        mvs.evaluate(expr);
+                        mvmap.put(metid, self.storeMetricVal(expr, mvs, mv));
+                    }
+                } else {
+                    mvs.evaluate(expr);
+                    if (metid != null) {
+                        mv = new MetricVal();
+                        mv.setMetric(metricRepository.findOne(metid));
+                        mv.setScenariometrics(sm);
+                        mvmap.put(metid, self.storeMetricVal(expr, mvs, mv));
+                    }
+                }
+            }
+        }
+        return mvs;
+    }
+
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
+    private ScenarioMetrics makeScenarioMetrics(
+            Scenario scen, ExtParamValSet xpvs) {
+        ScenarioMetrics sm = new ScenarioMetrics();
+        sm.setScenario(scen);
+        sm.setExtparamvalset(xpvs);
+        return scenarioMetricsRepository.save(sm);
+    }
+
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
+    private MetricVal storeMetricVal(
+            MetricExpression expr, MetricValues mvs, MetricVal mv) {
+        Namespace ns = mvs.getNamespace();
+        String name = expr.getMetricName();
+        Type type = ns.metrics.get(name);
+        if (type.isTimeSeriesType()) {
+            mv.setValue(null);
+            mv.setTimeseries(saveTimeSeries(
+                    mvs.getTS(name), type, ns.timeOrigin));
+            // Flush time series writes to save memory.
+            em.flush();
+        } else {
+            mv.setValue(mvs.getString(name));
+            mv.setTimeseries(null);
+        }
+        return metricValRepository.save(mv);
+    }
 
     /** Loads the metric expressions of a project. */
     public List<MetricExpression> loadMetricExpressions(Project project, Namespace namespace)

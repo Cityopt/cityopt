@@ -79,15 +79,9 @@ public class OptimisationSupport {
     private @Autowired OptimizationSetRepository optimizationSetRepository;
     private @Autowired TimeSeriesValRepository timeSeriesValRepository;
     private @Autowired ExtParamValSetRepository extParamValSetRepository;
-    private @Autowired MetricRepository metricRepository;
-    private @Autowired ScenarioMetricsRepository scenarioMetricsRepository;
-    private @Autowired MetricValRepository metricValRepository;
 
     private @Autowired SimulationService simulationService;
     private @Autowired SyntaxCheckerService syntaxCheckerService;
-
-    @PersistenceContext EntityManager em;
-
 
     /** Results from {@link OptimisationSupport#evaluateScenarios(Project, OptimizationSet)} */
     public static class EvaluationResults {
@@ -150,9 +144,12 @@ public class OptimisationSupport {
                     SimulationOutput output =
                             simulationService.loadSimulationOutput(scenario, input);
                     if (output instanceof SimulationResults) {
-                        MetricValues metricValues = getMetricValues(
-                                scenario, optimizationSet.getExtparamvalset(),
-                                problem.metrics, (SimulationResults)output);
+                        MetricValues
+                            metricValues = simulationService.getMetricValues(
+                                    scenario,
+                                    optimizationSet.getExtparamvalset(),
+                                    problem.metrics,
+                                    (SimulationResults)output);
                         ConstraintStatus constraintValues =
                                 new ConstraintStatus(metricValues, problem.constraints);
                         if (constraintValues.feasible) {
@@ -177,82 +174,6 @@ public class OptimisationSupport {
         log.info("Evaluated scenarios of project " + project.getPrjid() + ": "
                 + evaluationResults);
         return evaluationResults;
-    }
-
-    /**
-     * Fetch or recompute metric values.
-     *
-     * Values are fetched from the database if available.  Otherwise
-     * they are computed from exprs & results, and saved into the database.
-     * Database access uses metric ids (not names).  If these are not provided
-     * in exprs values are neither fetched nor saved, just computed from exprs.
-     * @throws ScriptException on expression evaluation errors
-     */
-    public MetricValues getMetricValues(
-            Scenario scen, ExtParamValSet xpvs,
-            Collection<MetricExpression> exprs, SimulationResults results)
-                    throws ScriptException {
-        final Namespace ns = results.getNamespace();
-        final MetricValues mvs = new MetricValues(results);
-        if (exprs != null) {
-            ScenarioMetrics
-                sm = scenarioMetricsRepository.findByScenidAndExtParamValSetid(
-                        scen.getScenid(), xpvs.getExtparamvalsetid());
-            if (sm == null) {
-                sm = new ScenarioMetrics();
-                sm.setScenario(scen);
-                sm.setExtparamvalset(xpvs);
-                sm = scenarioMetricsRepository.save(sm);
-            }
-            Map<Integer, MetricVal> mvmap = new HashMap<>();
-            Set<MetricVal> mvset = sm.getMetricvals();
-            if (mvset != null) {
-                for (MetricVal mv : mvset) {
-                    mvmap.put(mv.getMetric().getMetid(), mv);
-                }
-            }
-            for (MetricExpression expr : exprs) {
-                Integer metid = expr.getMetricId();
-                String name = expr.getMetricName();
-                Type type = ns.metrics.get(name);
-                MetricVal mv = mvmap.get(metid);
-                if (mv != null) {
-                    try {
-                        mvs.put(name,
-                                type.isTimeSeriesType()
-                                ? simulationService.loadTimeSeries(
-                                        mv.getTimeseries(), type, ns)
-                                : type.parse(mv.getValue(), ns));
-                    } catch (ParseException e) {
-                        // Failed to parse saved value - recompute.
-                        // Always scalar here.
-                        mvs.evaluate(expr);
-                        mv.setValue(mvs.getString(name));
-                        mv.setTimeseries(null);
-                        mvmap.put(metid, metricValRepository.save(mv));
-                    }
-                } else {
-                    mvs.evaluate(expr);
-                    if (metid != null) {
-                        mv = new MetricVal();
-                        mv.setMetric(metricRepository.findOne(metid));
-                        mv.setScenariometrics(sm);
-                        if (type.isTimeSeriesType()) {
-                            mv.setTimeseries(
-                                    simulationService.saveTimeSeries(
-                                            mvs.getTS(name), type,
-                                            ns.timeOrigin));
-                            // Flush time series writes to save memory.
-                            em.flush();
-                        } else {
-                            mv.setValue(mvs.getString(name));
-                        }
-                        mvmap.put(metid, metricValRepository.save(mv));
-                    }
-                }
-            }
-        }
-        return mvs;
     }
 
     /**
