@@ -173,8 +173,6 @@ public class OptimisationSupport {
                         + ": " + e.getMessage());
                 evaluationResults.failures.put(scenario.getScenid(), e);
             }
-
-            em.flush();
         }
         log.info("Evaluated scenarios of project " + project.getPrjid() + ": "
                 + evaluationResults);
@@ -183,7 +181,7 @@ public class OptimisationSupport {
 
     /**
      * Fetch or recompute metric values.
-     * 
+     *
      * Values are fetched from the database if available.  Otherwise
      * they are computed from exprs & results, and saved into the database.
      * Database access uses metric ids (not names).  If these are not provided
@@ -244,6 +242,8 @@ public class OptimisationSupport {
                                     simulationService.saveTimeSeries(
                                             mvs.getTS(name), type,
                                             ns.timeOrigin));
+                            // Flush time series writes to save memory.
+                            em.flush();
                         } else {
                             mv.setValue(mvs.getString(name));
                         }
