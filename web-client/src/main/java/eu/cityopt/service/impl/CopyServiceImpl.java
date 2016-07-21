@@ -264,7 +264,7 @@ public class CopyServiceImpl implements CopyService {
 		
 		//copy scenario metrics
 		if(copyMetricValues){
-			List<ScenarioMetrics> smSet = new ArrayList<ScenarioMetrics>();
+			Set<ScenarioMetrics> smSet = new HashSet<ScenarioMetrics>();
 			for(ScenarioMetrics sm : scenario.getScenariometricses()){
 				ScenarioMetrics smC = sm.clone();
 				smC.setScenmetricid(0);

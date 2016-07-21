@@ -15,8 +15,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
@@ -24,8 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.data.repository.config.CustomRepositoryImplementationDetector;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.model.Component;
@@ -398,22 +396,16 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         ts.setTimeSeriesId(timeseries.getTseriesid());
         return ts;
     }
-    
+
     /**
      * Load the data of a time series.
      * @param tsid time series id
      * @param timeOrigin for translating timestamps to seconds
      */
-    
     public TimeSeriesData.Series loadTimeSeriesData(
             int tsid, Instant timeOrigin) {
-        
-    	/*
-    	List<TimeSeriesVal> timeSeriesVals =
+        List<TimeSeriesVal> timeSeriesVals =
                 timeSeriesValRepository.findTimeSeriesValOrderedByTime(tsid);
-        */
-        List<TimeSeriesVal> timeSeriesVals = customQueryRepository.findTimeSeriesValByTimeSeriesID(tsid);
-        
         int n = timeSeriesVals.size();
         double[] times = new double[n];
         double[] values = new double[n];
@@ -422,9 +414,6 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             times[i] = TimeUtils.toSimTime(tsVal.getTime(), timeOrigin);
             values[i] = Double.valueOf(tsVal.getValue());
         }
-        
-        //findTimeSeriesValByTimeSeriesID
-        
         return new TimeSeriesData.Series(times, values);
     }
 
@@ -502,12 +491,12 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     }
 
     /** Loads the simulation result data of a scenario. */
-	public SimulationOutput loadSimulationOutput(Scenario scenario, SimulationInput simInput)
+    public SimulationOutput loadSimulationOutput(Scenario scenario, SimulationInput simInput)
             throws ParseException {
         SimulationOutput simOutput = null;
         if (STATUS_SUCCESS.equals(scenario.getStatus())) {
             Namespace namespace = simInput.getNamespace();
-            SimulationResults simResults = new SimulationResults(simInput, "");
+            SimulationResults simResults = new SimulationResults(simInput, scenario.getLog());
             for (SimulationResult mResult : scenario.getSimulationresults()) {
                 OutputVariable mOutput = mResult.getOutputvariable();
                 String componentName = mOutput.getComponent().getName();
@@ -533,7 +522,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         } else {
             boolean permanent = (STATUS_MODEL_FAILURE.equals(scenario.getStatus()));
             simOutput = new SimulationFailure(
-                    simInput, permanent, scenario.getStatus(), "");
+                    simInput, permanent, scenario.getStatus(), scenario.getLog());
         }
         if (scenario.getRunstart() != null) {
             simOutput.runStart = scenario.getRunstart().toInstant();
@@ -778,25 +767,28 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             eu.cityopt.model.Type type, Instant timeOrigin) {
         TimeSeries timeSeries = new TimeSeries();
         timeSeries.setType(type);
+                
         List<TimeSeriesVal> tsvals = timeSeries.getTimeseriesvals();
         int n = times.length;
         for (int i = 0; i < n; ++i) {
             TimeSeriesVal timeSeriesVal = new TimeSeriesVal();
 
             timeSeriesVal.setTime(TimeUtils.toDate(times[i], timeOrigin));
-            timeSeriesVal.setValue(Double.toString(values[i]));
+            timeSeriesVal.setValue(values[i]);
 
             timeSeriesVal.setTimeseries(timeSeries);
             tsvals.add(timeSeriesVal);
         }   
+       
         
-        return customQueryRepo.insertTimeSeries(timeSeries);
+        return customQueryRepository.insertTimeSeries(timeSeries);
+        
         /*
         timeSeriesValRepository.save(tsvals);
         return timeSeriesRepository.save(timeSeries);
         */
     }
-    
+
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
         log.info("Shutting down.");
