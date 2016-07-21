@@ -382,7 +382,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     }
 
     Scenario saveSimulationOutput(Scenario scenario, SimulationOutput simOutput) {
-        //scenario.setLog(simOutput.getMessages());
+        scenario.setLog(simOutput.getMessages());
         scenario.setRunstart((simOutput.runStart != null) ? Date.from(simOutput.runStart) : null);
         scenario.setRunend((simOutput.runEnd != null) ? Date.from(simOutput.runEnd) : null);
 
@@ -411,7 +411,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                             if (simTS != null) {
                                 TimeSeries timeSeries = simulationService.saveTimeSeries(
                                         simTS, simType, namespace.timeOrigin);
-
+                                timeSeriesValRepository.flush();
                                 SimulationResult simulationResult = new SimulationResult();
 
                                 simulationResult.setScenario(scenario);
@@ -423,6 +423,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                                 outputVariable.getSimulationresults().add(simulationResult);
 
                                 simulationResultRepository.save(simulationResult);
+                            
                             }
                         }
                     }
@@ -434,7 +435,6 @@ public class DbSimulationStorage implements DbSimulationStorageI {
             simulationResultRepository.save(newResults);
             scenario = scenarioRepository.save(scenario);
 
-            //timeSeriesValRepository.flush();
             for (Runnable update : idUpdates) {
                 update.run();
             }

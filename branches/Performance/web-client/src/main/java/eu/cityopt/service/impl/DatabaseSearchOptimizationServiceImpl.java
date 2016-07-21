@@ -17,7 +17,6 @@ import javax.script.ScriptException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.DTO.ScenarioDTO;
@@ -61,7 +60,7 @@ public class DatabaseSearchOptimizationServiceImpl implements DatabaseSearchOpti
 	@PersistenceContext
 	EntityManager em;
 	
-	@Transactional(readOnly = true)
+	@Transactional
 	public SearchOptimizationResults searchConstEval(int prjId, int optId, int size) throws ParseException, ScriptException, EntityNotFoundException{   	
 		Project project = projectRepository.findOne(prjId);
 		
@@ -75,14 +74,8 @@ public class DatabaseSearchOptimizationServiceImpl implements DatabaseSearchOpti
 		if(optimizationSet.getProject().getPrjid() != prjId)
 			throw new InvalidParameterException("optimization set is not part of the project" +optimizationSet);
 		
-		EvaluationResults er = optSupport.evaluateScenarios(project, optimizationSet); 
-			
-		return persistsResultsFromSearchConstEval(prjId, optId, size, er);
-	}
-	
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public SearchOptimizationResults persistsResultsFromSearchConstEval(int prjId, int optId, int size, EvaluationResults er ) throws ParseException, ScriptException, EntityNotFoundException{   	
 		SearchOptimizationResults sor = new SearchOptimizationResults();
+		EvaluationResults er = optSupport.evaluateScenarios(project, optimizationSet); 
 		sor.setEvaluationResult(er);
 		sor.resultScenarios = new ArrayList<ScenarioWithObjFuncValueDTO>();
 		
@@ -91,7 +84,7 @@ public class DatabaseSearchOptimizationServiceImpl implements DatabaseSearchOpti
 			//sort evaluation results by value
 			Map<Integer, ObjectiveStatus> sortedMap = sortByValue(er.feasible);
 //			sortedMap.forEach((Integer i, ObjectiveStatus s) -> System.out.println(s.objectiveValues[0]));
-			OptimizationSet optimizationSet = optimizationSetRepository.findOne(optId);
+			
 			for(Integer scenId : sortedMap.keySet()){
 				OptSetScenarios oss = new OptSetScenarios();
 				oss.setOptimizationset(optimizationSet);

@@ -25,7 +25,7 @@ import javax.persistence.Version;
 @Entity
 @Table(name = "algoparam", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"name", "algorithmid" }))
-public class AlgoParam extends VersionModel  {
+public class AlgoParam extends VersionModel implements java.io.Serializable {
 
 	private int aparamsid;
 	private Algorithm algorithm;
