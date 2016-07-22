@@ -25,7 +25,7 @@ public interface ScenarioService extends CityOptService<ScenarioDTO>{
 
 	ScenarioDTO update(ScenarioDTO toUpdate, int prjid) throws EntityNotFoundException;
 	
-	List<ScenarioMetricsDTO> getScenarioMetrics(int scenId);
+	Set<ScenarioMetricsDTO> getScenarioMetrics(int scenId);
 	
 	List<ScenarioDTO> findByNameContaining(String name);
 	

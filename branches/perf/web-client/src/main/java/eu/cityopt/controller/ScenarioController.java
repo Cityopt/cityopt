@@ -1286,8 +1286,7 @@ public class ScenarioController {
 
         model.put("title", controllerService.getMessage("simulation_info_for_scenario", request) + " " + scenario.getName());
 
-        //BufferedReader bufReader = new BufferedReader(new StringReader(scenario.getLog()));
-        BufferedReader bufReader = new BufferedReader(new StringReader(""));
+        BufferedReader bufReader = new BufferedReader(new StringReader(scenario.getLog()));
         String line = null;
         StringBuilder result = new StringBuilder();
 

@@ -129,7 +129,7 @@ public class ImportServiceTest extends SimulationTestBase {
     	assertEquals(1, mList.stream().filter(m -> m.getMetric().getType().getName().equals("Double") ).count());
     	
     	Scenario scen = scenarioRepository.findByNamePrjid("scenario1", 1);
-    	List<InputParamVal> vals = scen.getInputparamvals();
+    	Set<InputParamVal> vals = scen.getInputparamvals();
     	for(InputParamVal val : vals)
     		System.out.println(val.getInputparameter().getName());
     	assertEquals(1,scen.getInputparamvals().stream().filter(i -> i.getInputparameter().getName().equals("Burner_efficiency")).count());

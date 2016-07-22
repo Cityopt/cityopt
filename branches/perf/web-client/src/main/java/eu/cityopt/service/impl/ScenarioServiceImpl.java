@@ -1,5 +1,6 @@
 package eu.cityopt.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -140,10 +141,10 @@ public class ScenarioServiceImpl implements ScenarioService {
 
 	@Override
 	@Transactional(readOnly=true)
-	public List<ScenarioMetricsDTO> getScenarioMetrics(int scenId)	{
+	public Set<ScenarioMetricsDTO> getScenarioMetrics(int scenId)	{
 		Scenario scen = scenarioRepository.findOne(scenId);
-		List<ScenarioMetrics> scenarioMetrics = scen.getScenariometricses();
-		return modelMapper.map(scenarioMetrics, new TypeToken<List<ScenarioMetricsDTO>>() {}.getType());
+		Set<ScenarioMetrics> scenarioMetrics = scen.getScenariometricses();
+		return modelMapper.map(scenarioMetrics, new TypeToken<Set<ScenarioMetricsDTO>>() {}.getType());
 	}
 	
 	@Override
@@ -177,7 +178,7 @@ public class ScenarioServiceImpl implements ScenarioService {
 	public List<SimulationResultDTO> getSimulationResults(int scenId) {
 		Scenario scen = scenarioRepository.findOne(scenId);
 		List<SimulationResult> simRes = scen.getSimulationresults();
-		return modelMapper.map(simRes, new TypeToken<List<SimulationResultDTO>>() {}.getType());
+		return modelMapper.map(simRes, new TypeToken<ArrayList<SimulationResultDTO>>() {}.getType());
 	}
 
 	@Override

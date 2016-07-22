@@ -1714,9 +1714,9 @@ public class OptimizationController {
                 } catch (EntityNotFoundException e) {
                     e.printStackTrace();
                 }
-                //List<MetricValDTO> listMetricVals = metricValService.findAll();
+                List<MetricValDTO> listMetricVals = metricValService.findAll();
                 List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
-/*
+
                 for (int i = 0; i < listMetricVals.size(); i++)
                 {
                     MetricValDTO metricVal = listMetricVals.get(i);
@@ -1725,7 +1725,7 @@ public class OptimizationController {
                     {
                         listProjectMetricVals.add(metricVal);
                     }
-                }*/
+                }
                 model.put("metricVals", listProjectMetricVals);
 
                 controllerService.clearOptResults(model);

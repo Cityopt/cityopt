@@ -29,8 +29,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
-import org.hibernate.annotations.BatchSize;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -82,7 +80,7 @@ public class Project extends VersionModel implements java.io.Serializable {
 			Set<Scenario> scenarios, Set<ScenarioGenerator> scenariogenerators,
 			List<Component> components, Set<OptConstraint> optconstraints,
 			Set<Metric> metrics, Set<UserGroupProject> usergroupprojects, 
-			Set<ExtParam> extparams, Set<OptimizationSet> optimizationsets, Integer version) {
+			Set<ExtParam> extparams, Set<OptimizationSet> optimizationsets) {
 		this.prjid = prjid;
 		this.defaultextparamvalset = defaultextparamvalset;
 		this.simulationmodel = simulationmodel;
@@ -104,7 +102,7 @@ public class Project extends VersionModel implements java.io.Serializable {
 		this.usergroupprojects = usergroupprojects;
 		this.extparams = extparams;
 		this.optimizationsets = optimizationsets;
-		this.version = version;
+		//this.version = version;
 	}
 	
 	public Project clone() {
@@ -260,7 +258,6 @@ public class Project extends VersionModel implements java.io.Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade={CascadeType.REMOVE})
 	@OrderBy("name")
-	@BatchSize(size=10)
 	public Set<Scenario> getScenarios() {
 		return this.scenarios;
 	}
