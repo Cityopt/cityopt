@@ -130,7 +130,7 @@ public class InputParamServiceTest {
 		assertEquals(3, tsv.size());
 		for (int i = 0; i < tsv.size(); ++i) {
 			assertEquals(tsd.getTimes()[i], tsv.get(i).getTime());
-			assertEquals(tsd.getValues()[i], Double.parseDouble(tsv.get(i).getValue()), 1e-12);
+			assertEquals(tsd.getValues()[i], (tsv.get(i).getValue()), 1e-12);
 		}
 	}
 }

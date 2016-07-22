@@ -32,12 +32,14 @@ import eu.cityopt.service.impl.ProjectServiceImpl;
 public class CustomQueryRepositoryImpl implements CustomQueryRepository {	
 
 	private JdbcTemplate template;
+	
 	static Logger log = Logger.getLogger(ProjectServiceImpl.class);
 	
 	@Autowired //constructor injection - so spring knows that the datasource is required
 	public CustomQueryRepositoryImpl(DataSource dataSource) {
 		template = new JdbcTemplate(dataSource);
 	}
+	
 	
 	@Transactional(readOnly=true)
 	public List<ComponentInputParamDTO> findComponentsWithInputParams(int prjid, int scenid){
@@ -201,7 +203,7 @@ public class CustomQueryRepositoryImpl implements CustomQueryRepository {
 			public void setValues(PreparedStatement ps, int i) throws SQLException {
 				TimeSeriesVal value = tsvalues.get(i);
 				ps.setTimestamp(1, new java.sql.Timestamp(value.getTime().getTime()));
-				ps.setString(2, value.getValue());
+				ps.setDouble(2, value.getValue());
 				ps.setInt(3, value.getTimeseries().getTseriesid());
 			}
  

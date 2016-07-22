@@ -22,11 +22,11 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "timeseriesval", schema = "public")
-public class TimeSeriesVal extends VersionModel  {
+public class TimeSeriesVal extends VersionModel implements java.io.Serializable {
 	
 	private int tseriesvalid;
 	private TimeSeries timeseries;
-	private String value;
+	private double value;
 	private Date time;
 
 	public TimeSeriesVal() {
@@ -36,7 +36,7 @@ public class TimeSeriesVal extends VersionModel  {
 		this.tseriesvalid = tseriesvalid;
 	}
 
-	public TimeSeriesVal(int tseriesvalid, TimeSeries timeseries, String value,
+	public TimeSeriesVal(int tseriesvalid, TimeSeries timeseries, double value,
 			Date time) {
 		this.tseriesvalid = tseriesvalid;
 		this.timeseries = timeseries;
@@ -75,12 +75,12 @@ public class TimeSeriesVal extends VersionModel  {
 		this.timeseries = timeseries;
 	}
 
-	@Column(name = "value", length = 50)
-	public String getValue() {
+	@Column(name = "value")
+	public double getValue() {
 		return this.value;
 	}
 
-	public void setValue(String value) {
+	public void setValue(double value) {
 		this.value = value;
 	}
 
