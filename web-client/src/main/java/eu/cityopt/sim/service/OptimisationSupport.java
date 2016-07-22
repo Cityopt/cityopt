@@ -2,8 +2,6 @@ package eu.cityopt.sim.service;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import eu.cityopt.model.ExtParamValSet;
-import eu.cityopt.model.MetricVal;
 import eu.cityopt.model.ObjectiveFunction;
 import eu.cityopt.model.OptConstraint;
 import eu.cityopt.model.OptSearchConst;
@@ -28,24 +25,19 @@ import eu.cityopt.model.ScenGenObjectiveFunction;
 import eu.cityopt.model.ScenGenOptConstraint;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioGenerator;
-import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.repository.ExtParamValSetRepository;
-import eu.cityopt.repository.MetricRepository;
-import eu.cityopt.repository.MetricValRepository;
 import eu.cityopt.repository.ObjectiveFunctionRepository;
 import eu.cityopt.repository.OptConstraintRepository;
 import eu.cityopt.repository.OptSearchConstRepository;
 import eu.cityopt.repository.OptimizationSetRepository;
 import eu.cityopt.repository.ScenGenObjectiveFunctionRepository;
 import eu.cityopt.repository.ScenGenOptConstraintRepository;
-import eu.cityopt.repository.ScenarioMetricsRepository;
 import eu.cityopt.repository.TimeSeriesValRepository;
 import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.ExternalParameters;
-import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.ObjectiveExpression;
@@ -53,10 +45,8 @@ import eu.cityopt.sim.eval.ObjectiveStatus;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
-import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.OptimisationProblem;
-import eu.cityopt.sim.opt.SimulationStructure;
 
 /**
  * Support functions for database optimisation and scenario generation
