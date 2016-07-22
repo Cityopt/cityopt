@@ -17,6 +17,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
@@ -115,6 +117,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     @Autowired private ExtParamValSetRepository extParamValSetRepository;
     @Autowired private ExtParamValSetCompRepository extParamValSetCompRepository;
     @Autowired private TimeSeriesRepository timeSeriesRepository;
+    @Autowired private TimeSeriesValRepository timeSeriesValRepository;
     @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository;
     @Autowired private MetricRepository metricRepository;
     @Autowired private ScenarioMetricsRepository scenarioMetricsRepository;
@@ -899,9 +902,9 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             tsvals.add(timeSeriesVal);
         }
 
-        
+
         return customQueryRepository.insertTimeSeries(timeSeries);
-        
+
         /*
         timeSeriesValRepository.save(tsvals);
         return timeSeriesRepository.save(timeSeries);
