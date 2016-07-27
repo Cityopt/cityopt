@@ -2,6 +2,16 @@
   <xsl:output indent="yes"/>
   <xsl:strip-space elements="*"/>
 
+  <!-- Add an explicit null value to timeseries valued extparamval rows,
+       before tseriesid is dropped.
+       For metricval elements the same must currently be done by hand,
+       since we're sorting them later on. -->
+  <xsl:template match="extparamval[@tseriesid and not(@value)]">
+    <extparamval value="[null]">
+      <xsl:apply-templates select="@*|node()"/>
+    </extparamval>
+  </xsl:template>
+
   <!-- Remove id columns to simplify comparisons via the ExpectedDataBase
        annotation of Spring Test DBUnit. -->
   <xsl:template match="@algorithmid"/>
@@ -54,6 +64,9 @@
   <!-- Remove also version columns. -->
   <xsl:template match="@version"/>
 
+  <!-- Remove also passwords. -->
+  <xsl:template match="@password"/>
+
   <!-- Tables with only id fields cannot be compared now, so drop them. -->
   <xsl:template match="extparamvalsetcomp"/>
   <xsl:template match="scenariometrics"/>
@@ -75,13 +88,6 @@
   <xsl:template match="inputparamval/@createdon"/>
   <xsl:template match="simulationmodel/@createdon"/>
   <xsl:template match="simulationmodel/@modelblob"/>
-
-  <!-- Add an explicit null value to timeseries valued extparamval rows -->
-  <xsl:template match="extparamval[not(@value)]">
-    <extparamval value="[null]">
-      <xsl:apply-templates select="@*|node()"/>
-    </extparamval>
-  </xsl:template>
 
   <!-- Elements whose insertion order varies are removed,
        and then output separately in sorted order. -->
