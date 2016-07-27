@@ -83,9 +83,9 @@ import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.TimeSeriesData;
-import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.eval.TimeSeriesData.Series;
 import eu.cityopt.sim.eval.TimeSeriesI;
+import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.eval.util.TimeUtils;
 import eu.cityopt.sim.opt.AlgorithmParameters;
 import eu.cityopt.sim.opt.OptimisationProblem;
@@ -117,6 +117,7 @@ public class ImportExportService {
     static final double DEFAULT_SIMULATED_TIME_SECONDS = TimeUnit.DAYS.toSeconds(365);
 
     @Inject private SimulationService simulationService;
+    @Inject private SimulationStoreService store;
     @Inject private ScenarioGenerationService scenarioGenerationService;
     @Inject private OptimisationSupport optimisationSupport;
 
@@ -609,7 +610,7 @@ public class ImportExportService {
                     Object value = defaultInput.get(component.getName(), inputParameter.getName());
                     if (value != null) {
                         if (type.isTimeSeriesType()) {
-                            TimeSeries ts = simulationService.saveTimeSeries(
+                            TimeSeries ts = store.saveTimeSeries(
                                     (TimeSeriesI)value, type,
                                     namespace.timeOrigin);
                             inputParameter.setTimeseries(ts);
@@ -824,7 +825,7 @@ public class ImportExportService {
             throw new IllegalArgumentException(
                     "No data for series named " + tsname);
         }
-        return simulationService.saveTimeSeries(
+        return store.saveTimeSeries(
                 s.getTimes(), s.getValues(), mtype,
                 tsdata.getEvaluationSetup().timeOrigin)
                 .getTseriesid();
@@ -841,7 +842,7 @@ public class ImportExportService {
      */
     public void loadTimeSeriesVals(
             int tsid, String tsname, TimeSeriesData tsdata) {
-        tsdata.put(tsname, simulationService.loadTimeSeriesData(
+        tsdata.put(tsname, store.loadTimeSeriesData(
                 tsid, tsdata.getEvaluationSetup().timeOrigin));
     }
 
@@ -1082,7 +1083,7 @@ public class ImportExportService {
             }
         }
 
-        SimulationStorage storage = simulationService.makeDbSimulationStorage(
+        SimulationStorage storage = store.makeDbSimulationStorage(
                 projectId, defaultExternals);
         Set<String> scenNames = new HashSet<>(inputs.keySet());
         scenNames.addAll(results.keySet());

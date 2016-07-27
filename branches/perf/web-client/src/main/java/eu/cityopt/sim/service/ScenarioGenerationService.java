@@ -86,6 +86,7 @@ public class ScenarioGenerationService
     @Autowired private SimulationService simulationService;
     @Autowired private OptimisationSupport optimisationSupport;
     @Autowired private SyntaxCheckerService syntaxCheckerService;
+    @Autowired private SimulationStoreService store;
 
     @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository;
     @Autowired private TypeRepository typeRepository;
@@ -201,7 +202,7 @@ public class ScenarioGenerationService
         try {
             syntaxCheckerService.checkOptimisationProblem(problem);
 
-            DbSimulationStorageI storage = simulationService.makeDbSimulationStorage(
+            DbSimulationStorageI storage = store.makeDbSimulationStorage(
                     project.getPrjid(), problem.getExternalParameters(),
                     userId, scenarioGenerator.getScengenid());
 
@@ -563,7 +564,7 @@ public class ScenarioGenerationService
                     Object value = constantInput.get(componentName, inputName);
                     if (type.isTimeSeriesType()) {
                         modelParameter.setTimeseries(
-                                simulationService.saveTimeSeries(
+                                store.saveTimeSeries(
                                         constantInput.getTS(componentName,
                                                             inputName),
                                         type, namespace.timeOrigin));
