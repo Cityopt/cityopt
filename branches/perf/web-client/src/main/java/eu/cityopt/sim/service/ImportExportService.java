@@ -1093,7 +1093,7 @@ public class ImportExportService {
                         inputs.get(scenName), new String[] { scenName, description });
                 SimulationResults resultData = results.get(scenName);
                 put.output = resultData;
-                if (metricExpressions != null) {
+                if (metricExpressions != null && !metricExpressions.isEmpty()) {
                     try {
                         put.metricValues = new MetricValues(resultData, metricExpressions);
                     } catch (ScriptException e) { /* ignore */ }
