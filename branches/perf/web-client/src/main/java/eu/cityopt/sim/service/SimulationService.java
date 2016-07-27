@@ -726,6 +726,10 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     ExtParamValSet saveExternalParameterValues(Project project,
             ExternalParameters simExternals, String setName,
             List<Runnable> idUpdateList) {
+        if (simExternals.getNamespace().externals.isEmpty()) {
+            // Empty ExtParamValSets are not stored in database
+            return null;
+        }
         Integer extId = simExternals.getExternalId();
         if (extId != null) {
             // TODO: Should we check if the external parameter value set has changed?
