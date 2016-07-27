@@ -58,7 +58,6 @@ import eu.cityopt.repository.ScenarioMetricsRepository;
 import eu.cityopt.repository.ScenarioRepository;
 import eu.cityopt.repository.SimulationResultRepository;
 import eu.cityopt.repository.TimeSeriesValRepository;
-import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.DecisionValues;
@@ -114,6 +113,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     private ConcurrentMap<SimulationInput, Gate> cache = new ConcurrentHashMap<>();
 
     @Autowired private SimulationService simulationService;
+    @Autowired private SimulationStoreService store;
     @Autowired private ScenarioGenerationService scenarioGenerationService;
 
     @Autowired private ProjectRepository projectRepository;
@@ -124,7 +124,6 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     @Autowired private ScenarioMetricsRepository scenarioMetricsRepository;
     @Autowired private ExtParamValSetRepository extParamValSetRepository;
     @Autowired private TimeSeriesValRepository timeSeriesValRepository;
-    @Autowired private TypeRepository typeRepository;
     @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository;
     @Autowired private ScenGenResultRepository scenGenResultRepository;
     @Autowired private OptConstraintResultRepository optConstraintResultRepository;
@@ -356,7 +355,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                         if (simType.isTimeSeriesType()) {
                             TimeSeriesI simTS = simInput.getTS(componentName, inputName);
                             if (simTS != null) {
-                                TimeSeries timeSeries = simulationService.saveTimeSeries(
+                                TimeSeries timeSeries = store.saveTimeSeries(
                                         simTS, simType, namespace.timeOrigin);
                                 inputParamVal.setTimeseries(timeSeries);
                             }
@@ -409,7 +408,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                         if (simType != null) {
                             TimeSeriesI simTS = simResults.getTS(componentName, outputName);
                             if (simTS != null) {
-                                TimeSeries timeSeries = simulationService.saveTimeSeries(
+                                TimeSeries timeSeries = store.saveTimeSeries(
                                         simTS, simType, namespace.timeOrigin);
                                 timeSeriesValRepository.flush();
                                 SimulationResult simulationResult = new SimulationResult();
@@ -481,7 +480,7 @@ public class DbSimulationStorage implements DbSimulationStorageI {
                 Type simType = namespace.metrics.get(metric.getName());
                 if (simType.isTimeSeriesType()) {
                     TimeSeriesI simTS = (TimeSeriesI) value;
-                    TimeSeries timeSeries = simulationService.saveTimeSeries(
+                    TimeSeries timeSeries = store.saveTimeSeries(
                             simTS, simType, namespace.timeOrigin);
                     metricVal.setTimeseries(timeSeries);
                 } else {

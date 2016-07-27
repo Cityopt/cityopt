@@ -16,18 +16,13 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.model.Component;
@@ -47,20 +42,15 @@ import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
-import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.repository.ExtParamValRepository;
 import eu.cityopt.repository.ExtParamValSetCompRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
 import eu.cityopt.repository.MetricRepository;
-import eu.cityopt.repository.MetricValRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.repository.ScenarioMetricsRepository;
 import eu.cityopt.repository.ScenarioRepository;
-import eu.cityopt.repository.TimeSeriesRepository;
-import eu.cityopt.repository.TimeSeriesValRepository;
-import eu.cityopt.repository.TypeRepository;
 import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Evaluator;
@@ -82,7 +72,6 @@ import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
-import eu.cityopt.sim.eval.util.TimeUtils;
 
 /**
  * Runs simulations based on project and scenario data, and saves the results.
@@ -109,26 +98,18 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     private static Logger log = Logger.getLogger(SimulationService.class);
 
     @Autowired private SyntaxCheckerService syntaxCheckerService;
+    @Autowired private SimulationStoreService store;
 
     @Autowired private ProjectRepository projectRepository;
     @Autowired private ScenarioRepository scenarioRepository;
-    @Autowired private TypeRepository typeRepository;
     @Autowired private ExtParamValRepository extParamValRepository;
     @Autowired private ExtParamValSetRepository extParamValSetRepository;
     @Autowired private ExtParamValSetCompRepository extParamValSetCompRepository;
-    @Autowired private TimeSeriesRepository timeSeriesRepository;
-    @Autowired private TimeSeriesValRepository timeSeriesValRepository;
     @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository;
     @Autowired private MetricRepository metricRepository;
     @Autowired private ScenarioMetricsRepository scenarioMetricsRepository;
-    @Autowired private MetricValRepository metricValRepository;
 
-    @Autowired private ApplicationContext applicationContext;
     @Autowired private ExecutorService executorService;
-
-    @Resource(name="simulationservice") private SimulationService self;
-
-    @PersistenceContext private EntityManager em;
 
     private JobManager<SimulationOutput> jobManager = new JobManager<>();
 
@@ -174,7 +155,8 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         ExternalParameters externals = loadExternalParametersFromSet(
                 project.getDefaultextparamvalset(), namespace);
         SimulationInput input = loadSimulationInput(scenario, externals);
-        SimulationStorage storage = makeDbSimulationStorage(project.getPrjid(), externals);
+        SimulationStorage storage =
+                store.makeDbSimulationStorage(project.getPrjid(), externals);
 
         SimulationModel model = loadSimulationModel(project);
         boolean started = false;
@@ -304,7 +286,8 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         ExternalParameters externals = loadExternalParameters(project, extParamValSetId, namespace);
         List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
         syntaxCheckerService.checkMetricExpressions(metricExpressions, namespace);
-        SimulationStorage storage = makeDbSimulationStorage(projectId, externals);
+        SimulationStorage storage =
+                store.makeDbSimulationStorage(projectId, externals);
         MetricUpdateStatus status = new MetricUpdateStatus();
         //TODO: first remove all metric values associated with the external parameter value set
         for (Scenario scenario : project.getScenarios()) {
@@ -424,35 +407,13 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         Instant t0 = evsup.timeOrigin;
         TimeSeriesI ts = new eu.cityopt.sim.eval.TimeSeries(
                 new LazyPiecewiseFunction(() -> {
-            TimeSeriesData.Series s = loadTimeSeriesData(tsid, t0);
+            TimeSeriesData.Series s = store.loadTimeSeriesData(tsid, t0);
             return PiecewiseFunction.make(
                     timeSeriesType.getInterpolationDegree(),
                     s.getTimes(), s.getValues());
         }));
         ts.setTimeSeriesId(tsid);
         return ts;
-    }
-
-    /**
-     * Load the data of a time series.
-     * @param tsid time series id
-     * @param timeOrigin for translating timestamps to seconds
-     */
-    @Transactional(readOnly=true)
-    public TimeSeriesData.Series loadTimeSeriesData(
-            int tsid, Instant timeOrigin) {
-
-        List<TimeSeriesVal> timeSeriesVals =
-                timeSeriesValRepository.findTimeSeriesValOrderedByTime(tsid);
-        int n = timeSeriesVals.size();
-        double[] times = new double[n];
-        double[] values = new double[n];
-        for (int i = 0; i < n; ++i) {
-            TimeSeriesVal tsVal = timeSeriesVals.get(i);
-            times[i] = TimeUtils.toSimTime(tsVal.getTime(), timeOrigin);
-            values[i] = Double.valueOf(tsVal.getValue());
-        }
-        return new TimeSeriesData.Series(times, values);
     }
 
     /**
@@ -591,7 +552,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                 sm = scenarioMetricsRepository.findByScenidAndExtParamValSetid(
                         scen.getScenid(), xpvs.getExtparamvalsetid());
             if (sm == null) {
-                sm = self.makeScenarioMetrics(scen, xpvs);
+                sm = store.makeScenarioMetrics(scen, xpvs);
             }
             Map<Integer, MetricVal> mvmap = new HashMap<>();
             Set<MetricVal> mvset = sm.getMetricvals();
@@ -614,7 +575,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                     } catch (ParseException e) {
                         // Failed to parse saved value - recompute.
                         mvs.evaluate(expr);
-                        mvmap.put(metid, self.storeMetricVal(expr, mvs, mv));
+                        mvmap.put(metid, store.storeMetricVal(expr, mvs, mv));
                     }
                 } else {
                     mvs.evaluate(expr);
@@ -622,40 +583,12 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                         mv = new MetricVal();
                         mv.setMetric(metricRepository.findOne(metid));
                         mv.setScenariometrics(sm);
-                        mvmap.put(metid, self.storeMetricVal(expr, mvs, mv));
+                        mvmap.put(metid, store.storeMetricVal(expr, mvs, mv));
                     }
                 }
             }
         }
         return mvs;
-    }
-
-    @Transactional(propagation=Propagation.REQUIRES_NEW)
-    private ScenarioMetrics makeScenarioMetrics(
-            Scenario scen, ExtParamValSet xpvs) {
-        ScenarioMetrics sm = new ScenarioMetrics();
-        sm.setScenario(scen);
-        sm.setExtparamvalset(xpvs);
-        return scenarioMetricsRepository.save(sm);
-    }
-
-    @Transactional(propagation=Propagation.REQUIRES_NEW)
-    private MetricVal storeMetricVal(
-            MetricExpression expr, MetricValues mvs, MetricVal mv) {
-        Namespace ns = mvs.getNamespace();
-        String name = expr.getMetricName();
-        Type type = ns.metrics.get(name);
-        if (type.isTimeSeriesType()) {
-            mv.setValue(null);
-            mv.setTimeseries(saveTimeSeries(
-                    mvs.getTS(name), type, ns.timeOrigin));
-            // Flush time series writes to save memory.
-            em.flush();
-        } else {
-            mv.setValue(mvs.getString(name));
-            mv.setTimeseries(null);
-        }
-        return metricValRepository.save(mv);
     }
 
     /** Loads the metric expressions of a project. */
@@ -789,18 +722,6 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         return Type.getByName((type != null) ? type.getName() : null);
     }
 
-    DbSimulationStorageI makeDbSimulationStorage(int prjid, ExternalParameters externals) {
-        return makeDbSimulationStorage(prjid, externals, null, null);
-    }
-
-    DbSimulationStorageI makeDbSimulationStorage(
-            int prjid, ExternalParameters externals, Integer userId, Integer scenGenId) {
-        DbSimulationStorageI storage =
-                (DbSimulationStorageI) applicationContext.getBean("dbSimulationStorage");
-        storage.initialize(storage, prjid, externals, userId, scenGenId);
-        return storage;
-    }
-
     ExtParamValSet saveExternalParameterValues(Project project,
             ExternalParameters simExternals, String setName,
             List<Runnable> idUpdateList) {
@@ -820,7 +741,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                 ExtParamVal extParamVal = new ExtParamVal();
                 extParamVal.setExtparam(extParam);
                 if (simType.isTimeSeriesType()) {
-                    TimeSeries timeSeries = saveTimeSeries(
+                    TimeSeries timeSeries = store.saveTimeSeries(
                             simExternals.getTS(extName), simType,
                             namespace.timeOrigin);
                     extParamVal.setTimeseries(timeSeries);
@@ -845,70 +766,6 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         idUpdateList.add(
                 () -> simExternals.setExternalId(finalExtParamValSet.getExtparamvalsetid()));
         return finalExtParamValSet;
-    }
-
-    //XXX What is idUpdateList and why?  Not used.  Passing null below.
-    TimeSeries saveTimeSeries(TimeSeriesI simTS, eu.cityopt.model.Type type,
-            Instant timeOrigin, List<Runnable> idUpdateList) {
-        if (simTS.getTimeSeriesId() != null) {
-            TimeSeries timeSeries = timeSeriesRepository.findOne(simTS.getTimeSeriesId());
-            if (timeSeries != null) {
-                //TODO: should we check if the time series has changed?
-                return timeSeries;
-            }
-            simTS.setTimeSeriesId(null);
-        }
-        TimeSeries timeSeries = saveTimeSeries(
-                simTS.getTimes(), simTS.getValues(), type, timeOrigin);
-        // Copy the database row id.
-        simTS.setTimeSeriesId(timeSeries.getTseriesid());
-        return timeSeries;
-    }
-
-    TimeSeries saveTimeSeries(TimeSeriesI simTS, Type type,
-                              Instant timeOrigin) {
-        return saveTimeSeries(simTS, typeRepository.findByNameLike(type.name),
-                              timeOrigin, null);
-    }
-
-    @Autowired CustomQueryRepository customQueryRepo;
-
-    /**
-     * Save a time series into the database.
-     * Because this returns a TimeSeries rather than a TimeSeriesDTO,
-     * it is unlikely to be useful outside the .sim.service package.
-     * Hence the visibility.
-     * @param times Time points as seconds from timeOrigin
-     * @param values Series values at the time points.
-     * @param type Type attribute of the time series.  We save it but
-     *   I don't think it is used for anything currently.
-     * @param timeOrigin Time origin for converting seconds to timestamps.
-     * @return the saved TimeSeries.
-     */
-    TimeSeries saveTimeSeries(
-            double[] times, double[] values,
-            eu.cityopt.model.Type type, Instant timeOrigin) {
-        TimeSeries timeSeries = new TimeSeries();
-        timeSeries.setType(type);
-        List<TimeSeriesVal> tsvals = timeSeries.getTimeseriesvals();
-        int n = times.length;
-        for (int i = 0; i < n; ++i) {
-            TimeSeriesVal timeSeriesVal = new TimeSeriesVal();
-
-            timeSeriesVal.setTime(TimeUtils.toDate(times[i], timeOrigin));
-            timeSeriesVal.setValue(values[i]);
-
-            timeSeriesVal.setTimeseries(timeSeries);
-            tsvals.add(timeSeriesVal);
-        }
-
-
-        return customQueryRepository.insertTimeSeries(timeSeries);
-
-        /*
-        timeSeriesValRepository.save(tsvals);
-        return timeSeriesRepository.save(timeSeries);
-        */
     }
 
     @Override
