@@ -305,7 +305,12 @@ public class OptimisationSupport {
 
     private OptConstraint saveConstraint(
             Project project, Constraint constraint, EvaluationSetup setup) {
-        OptConstraint optConstraint = new OptConstraint();
+        OptConstraint optConstraint =
+                optConstraintRepository.findByNameAndProject_prjid(
+                        constraint.getName(), project.getPrjid());
+        if (optConstraint == null) {
+            optConstraint = new OptConstraint();
+        } // XXX should avoid overwriting by e.g. using a different name
         optConstraint.setName(constraint.getName());
         optConstraint.setExpression(constraint.getExpression().getSource());
         optConstraint.setLowerbound(
@@ -346,7 +351,12 @@ public class OptimisationSupport {
     }
 
     private ObjectiveFunction saveObjective(Project project, ObjectiveExpression objective) {
-        ObjectiveFunction objectiveFunction = new ObjectiveFunction();
+        ObjectiveFunction objectiveFunction =
+                objectiveFunctionRepository.findByName(
+                        project.getPrjid(), objective.getName());
+        if (objectiveFunction == null) {
+            objectiveFunction = new ObjectiveFunction();
+        } // XXX should avoid overwriting by e.g. using a different name
         objectiveFunction.setExpression(objective.getSource());
         objectiveFunction.setIsmaximise(objective.isMaximize());
         objectiveFunction.setName(objective.getName());
