@@ -18,7 +18,6 @@ import java.util.concurrent.Future;
 
 import javax.script.ScriptException;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +39,8 @@ import eu.cityopt.model.ModelParameter;
 import eu.cityopt.model.Project;
 import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.repository.AlgoParamValRepository;
-import eu.cityopt.repository.ComponentRepository;
 import eu.cityopt.repository.DecisionVariableRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
-import eu.cityopt.repository.InputParameterRepository;
 import eu.cityopt.repository.ModelParameterRepository;
 import eu.cityopt.repository.ScenarioGeneratorRepository;
 import eu.cityopt.repository.TimeSeriesValRepository;
@@ -89,10 +86,9 @@ public class ScenarioGenerationService
     @Autowired private SimulationService simulationService;
     @Autowired private OptimisationSupport optimisationSupport;
     @Autowired private SyntaxCheckerService syntaxCheckerService;
+    @Autowired private SimulationStoreService store;
 
     @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository;
-    @Autowired private ComponentRepository componentRepository;
-    @Autowired private InputParameterRepository inputParameterRepository;
     @Autowired private TypeRepository typeRepository;
     @Autowired private DecisionVariableRepository decisionVariableRepository;
     @Autowired private ModelParameterRepository modelParameterRepository;
@@ -206,7 +202,7 @@ public class ScenarioGenerationService
         try {
             syntaxCheckerService.checkOptimisationProblem(problem);
 
-            DbSimulationStorageI storage = simulationService.makeDbSimulationStorage(
+            DbSimulationStorageI storage = store.makeDbSimulationStorage(
                     project.getPrjid(), problem.getExternalParameters(),
                     userId, scenarioGenerator.getScengenid());
 
@@ -568,7 +564,7 @@ public class ScenarioGenerationService
                     Object value = constantInput.get(componentName, inputName);
                     if (type.isTimeSeriesType()) {
                         modelParameter.setTimeseries(
-                                simulationService.saveTimeSeries(
+                                store.saveTimeSeries(
                                         constantInput.getTS(componentName,
                                                             inputName),
                                         type, namespace.timeOrigin));

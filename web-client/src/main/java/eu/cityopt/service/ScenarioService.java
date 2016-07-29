@@ -33,7 +33,7 @@ public interface ScenarioService extends CityOptService<ScenarioDTO>{
 	
 	ScenarioDTO findByName(String name);
 	
-	Set<SimulationResultDTO> getSimulationResults(int scenId);
+	List<SimulationResultDTO> getSimulationResults(int scenId);
 
 	Set<MetricValDTO> getMetricsValues(int scenId);
 

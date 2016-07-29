@@ -426,13 +426,13 @@ public class ParameterController {
 			}
 			
 			Iterator<TimeSeriesValDTO> timeSeriesIter = timeSeriesVals.iterator();
-			List<String> values = new ArrayList<String>();
+			List<Double> values = new ArrayList<Double>();
 			List<String> times = new ArrayList<String>();
 			
 			while(timeSeriesIter.hasNext()) {
 				TimeSeriesValDTO timeSeriesVal = timeSeriesIter.next();
 				times.add(timeSeriesVal.getTime().toString());
-				values.add(timeSeriesVal.getValue().toString());
+				values.add(timeSeriesVal.getValue());
 			}
 			System.out.println("Times: " + times.toString());
 			System.out.println("Values: " + values.toString());

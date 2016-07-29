@@ -45,7 +45,6 @@ import eu.cityopt.sim.eval.ObjectiveStatus;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
-import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.OptimisationProblem;
 
@@ -57,7 +56,7 @@ import eu.cityopt.sim.opt.OptimisationProblem;
  */
 @Service
 public class OptimisationSupport {
-    private static Logger log = Logger.getLogger(OptimisationSupport.class); 
+    private static Logger log = Logger.getLogger(OptimisationSupport.class);
 
     private @Autowired TypeRepository typeRepository;
     private @Autowired ScenGenOptConstraintRepository scenGenOptConstraintRepository;
@@ -71,7 +70,6 @@ public class OptimisationSupport {
 
     private @Autowired SimulationService simulationService;
     private @Autowired SyntaxCheckerService syntaxCheckerService;
-
 
     /** Results from {@link OptimisationSupport#evaluateScenarios(Project, OptimizationSet)} */
     public static class EvaluationResults {
@@ -97,6 +95,7 @@ public class OptimisationSupport {
         public Map<Integer, Exception> failures = new HashMap<Integer, Exception>();
 
         /** Brief human-readable description. */
+        @Override
         public String toString() {
             return feasible.size() + " feasible scenarios, "
                     + infeasible.size() + " infeasible scenarios, "
@@ -124,9 +123,6 @@ public class OptimisationSupport {
         ExternalParameters externals = problem.getExternalParameters();
         ObjectiveExpression objective = problem.objectives.get(0);
 
-        SimulationStorage storage =
-                simulationService.makeDbSimulationStorage(project.getPrjid(), externals);
-
         EvaluationResults evaluationResults = new EvaluationResults();
         for (Scenario scenario : project.getScenarios()) {
             try {
@@ -136,10 +132,12 @@ public class OptimisationSupport {
                     SimulationOutput output =
                             simulationService.loadSimulationOutput(scenario, input);
                     if (output instanceof SimulationResults) {
-                        SimulationResults results = (SimulationResults) output;
-                        MetricValues metricValues = new MetricValues(results, problem.metrics);
-                        storage.updateMetricValues(metricValues);
-
+                        MetricValues
+                            metricValues = simulationService.getMetricValues(
+                                    scenario,
+                                    optimizationSet.getExtparamvalset(),
+                                    problem.metrics,
+                                    (SimulationResults)output);
                         ConstraintStatus constraintValues =
                                 new ConstraintStatus(metricValues, problem.constraints);
                         if (constraintValues.feasible) {
@@ -169,7 +167,7 @@ public class OptimisationSupport {
     /**
      * Fills a sim-eval OptimisationProblem structure with a database search
      * problem definition from an OptimizationSet.
-     * The inputConst, decisionVars and inputExprs fields are left empty. 
+     * The inputConst, decisionVars and inputExprs fields are left empty.
      */
     public OptimisationProblem loadOptimisationProblem(
             Project project, OptimizationSet optimizationSet)
@@ -190,7 +188,7 @@ public class OptimisationSupport {
             ScenarioGenerator scenarioGenerator, Namespace namespace)
                     throws ScriptException {
         List<Constraint> simConstraints = new ArrayList<Constraint>();
-        for (ScenGenOptConstraint scenGenOptConstraint 
+        for (ScenGenOptConstraint scenGenOptConstraint
                 : scenarioGenerator.getScengenoptconstraints()) {
             OptConstraint optConstraint = scenGenOptConstraint.getOptconstraint();
             simConstraints.add(loadConstraint(optConstraint, namespace));
@@ -307,7 +305,12 @@ public class OptimisationSupport {
 
     private OptConstraint saveConstraint(
             Project project, Constraint constraint, EvaluationSetup setup) {
-        OptConstraint optConstraint = new OptConstraint();
+        OptConstraint optConstraint =
+                optConstraintRepository.findByNameAndProject_prjid(
+                        constraint.getName(), project.getPrjid());
+        if (optConstraint == null) {
+            optConstraint = new OptConstraint();
+        } // XXX should avoid overwriting by e.g. using a different name
         optConstraint.setName(constraint.getName());
         optConstraint.setExpression(constraint.getExpression().getSource());
         optConstraint.setLowerbound(
@@ -348,7 +351,12 @@ public class OptimisationSupport {
     }
 
     private ObjectiveFunction saveObjective(Project project, ObjectiveExpression objective) {
-        ObjectiveFunction objectiveFunction = new ObjectiveFunction();
+        ObjectiveFunction objectiveFunction =
+                objectiveFunctionRepository.findByName(
+                        project.getPrjid(), objective.getName());
+        if (objectiveFunction == null) {
+            objectiveFunction = new ObjectiveFunction();
+        } // XXX should avoid overwriting by e.g. using a different name
         objectiveFunction.setExpression(objective.getSource());
         objectiveFunction.setIsmaximise(objective.isMaximize());
         objectiveFunction.setName(objective.getName());

@@ -43,7 +43,7 @@ public class TimeSeriesServiceImpl implements TimeSeriesService {
 	public TimeSeries save(TimeSeriesDTOX tsd) {
         TimeSeries timeSeries = new TimeSeries();
     	timeSeries.setTseriesid(tsd.getTseriesid());
-    	timeSeries.setVersion(tsd.getVersion());
+    	//timeSeries.setVersion(tsd.getVersion());
     	timeSeries.setType((tsd.getType() == null) ? null
     			: typeRepository.findOne(tsd.getType().getTypeid()));
         int n = tsd.getTimes().length;
@@ -53,7 +53,7 @@ public class TimeSeriesServiceImpl implements TimeSeriesService {
         for (int i = 0; i < n; ++i) {
             TimeSeriesVal timeSeriesVal = new TimeSeriesVal();
             timeSeriesVal.setTime(tsd.getTimes()[i]);
-            timeSeriesVal.setValue(Double.toString(tsd.getValues()[i]));
+            timeSeriesVal.setValue(tsd.getValues()[i]);
 
             timeSeriesVal.setTimeseries(timeSeries);
             timeSeries.getTimeseriesvals().add(timeSeriesVal);

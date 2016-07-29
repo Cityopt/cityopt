@@ -304,9 +304,7 @@ public class VisualizationController {
 						for (int i = 0; i < timeSeriesVals.size(); i++)
 						{
 							TimeSeriesValDTO timeSeriesVal = timeSeriesVals.get(i);
-							String value = timeSeriesVal.getValue();
-							value = value.replace(",", ".");
-							timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(value));
+							timeSeries.add(new Minute(timeSeriesVal.getTime()),timeSeriesVal.getValue());
 						}
 						
 						timeSeriesCollection.addSeries(timeSeries);
@@ -334,7 +332,7 @@ public class VisualizationController {
 						
 						while(timeSeriesIter.hasNext()) {
 							TimeSeriesValDTO timeSeriesVal = timeSeriesIter.next();
-							timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(timeSeriesVal.getValue()));
+							timeSeries.add(new Minute(timeSeriesVal.getTime()), timeSeriesVal.getValue());
 						}
 		
 						timeSeriesCollection.addSeries(timeSeries);
@@ -611,9 +609,7 @@ public class VisualizationController {
 					for (int i = 0; i < timeSeriesVals.size(); i++)
 					{
 						TimeSeriesValDTO timeSeriesVal = timeSeriesVals.get(i);
-						String value = timeSeriesVal.getValue();
-						value = value.replace(",", ".");
-						timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(value));
+						timeSeries.add(new Minute(timeSeriesVal.getTime()), timeSeriesVal.getValue());
 					}
 					
 					timeSeriesCollection.addSeries(timeSeries);
@@ -646,7 +642,7 @@ public class VisualizationController {
 					
 					while(timeSeriesIter.hasNext()) {
 						TimeSeriesValDTO timeSeriesVal = timeSeriesIter.next();
-						timeSeries.add(new Minute(timeSeriesVal.getTime()), Double.parseDouble(timeSeriesVal.getValue()));
+						timeSeries.add(new Minute(timeSeriesVal.getTime()), timeSeriesVal.getValue());
 					}
 	
 					timeSeriesCollection.addSeries(timeSeries);
@@ -1242,7 +1238,7 @@ public class VisualizationController {
 			for (int i = 0; i < timeSeriesVals.size(); i++)
 			{
 				TimeSeriesValDTO timeSeriesVal = timeSeriesVals.get(i);
-				listOutputVarVals.add(Double.parseDouble(timeSeriesVal.getValue()));
+				listOutputVarVals.add(timeSeriesVal.getValue());
 				listOutputVarTimes.add(timeSeriesVal.getTime().toString());
 			}
 		} catch (EntityNotFoundException e) {

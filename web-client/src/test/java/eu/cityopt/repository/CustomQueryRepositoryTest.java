@@ -97,7 +97,7 @@ public class CustomQueryRepositoryTest {
 	 	for(int i =0; i < 8000; i++) {
 	 		TimeSeriesVal tsV = new TimeSeriesVal();
 	 		tsV.setTime(cal.getTime());
-	 		tsV.setValue(Integer.toString(i));
+	 		tsV.setValue(i);
 	 		list.add(tsV);
 	 	}
 	 	
@@ -113,7 +113,7 @@ public class CustomQueryRepositoryTest {
 	 	for(int i =0; i < 8000; i++) {
 	 		TimeSeriesVal tsV = new TimeSeriesVal();
 	 		tsV.setTime(cal.getTime());
-	 		tsV.setValue(Integer.toString(i));
+	 		tsV.setValue(i);
 	 		list.add(tsV);
 	 	}
 	 	

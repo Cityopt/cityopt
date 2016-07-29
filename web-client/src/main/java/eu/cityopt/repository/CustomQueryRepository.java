@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.DTO.ComponentInputParamDTO;
+import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesVal;
 
 public interface CustomQueryRepository {
@@ -25,5 +26,9 @@ public interface CustomQueryRepository {
 	public void deleteTimeSeriesValues(int tseriesid);
 
 	public boolean insertTimeSeriesBatch(List<TimeSeriesVal> tsvalues);
+	
+	public List<TimeSeriesVal> findTimeSeriesValByTimeSeriesID(int tid);
+	
+	public TimeSeries insertTimeSeries(TimeSeries timeseries);
 
 }

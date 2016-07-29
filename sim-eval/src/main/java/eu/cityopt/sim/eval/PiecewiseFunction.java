@@ -8,24 +8,15 @@ import java.util.Arrays;
  * @author Hannu Rummukainen
  */
 public abstract class PiecewiseFunction {
-    final double[] tt;
-    final double[] vv;
+    public abstract double[] getTimes();
+    public abstract double[] getValues();
 
     /** Degree of the interpolator.  0 for step interpolator, 1 for linear. */
-    public final int degree;
-
-    PiecewiseFunction(double[] tt, double[] vv, int degree) {
-        this.tt = tt;
-        this.vv = vv;
-        this.degree = degree;
-    }
-    
-    public double[] getTimes() {return tt;}
-    public double[] getValues() {return vv;}
+    public abstract int getDegree();
 
     /**
      * Creates a piecewise function from a sequence of points.
-     * 
+     *
      * @return a PiecewiseConstant instance if degree is zero, or a
      *         PiecewiseLinear instance if <code>degree</code> is one.
      * @throws IllegalArgumentException
@@ -97,44 +88,44 @@ public abstract class PiecewiseFunction {
     public double[] interpolate(double[] at) {
         int no = at.length;
         double[] vvo = new double[no];
-        int ni = vv.length;
+        int ni = getValues().length;
         if (no == 0 || ni == 0) {
             return vvo;
         }
 
         // Find first element of 'at' in the domain of the function
         int io0 = 0;
-        if (at[0] < tt[0]) {
-            int bs0 = Arrays.binarySearch(at, tt[0]);
+        if (at[0] < getTimes()[0]) {
+            int bs0 = Arrays.binarySearch(at, getTimes()[0]);
             io0 = (bs0 < 0) ? ~bs0 : firstEqual(at, bs0);
             if (io0 == no) {
-                // at[no-1] < tt[0] 
+                // at[no-1] < tt[0]
                 return vvo;
             }
         }
-        assert at[io0] >= tt[0] && (io0 == 0 || at[io0-1] < tt[0]);
+        assert at[io0] >= getTimes()[0] && (io0 == 0 || at[io0-1] < getTimes()[0]);
 
         // Find first element of 'at' beyond the domain of the function.
         int io1 = no;
-        if (at[no-1] > tt[ni-1]) {
-            int bs1 = Arrays.binarySearch(at, io0, no, tt[ni-1]);
+        if (at[no-1] > getTimes()[ni-1]) {
+            int bs1 = Arrays.binarySearch(at, io0, no, getTimes()[ni-1]);
             io1 = (bs1 < 0) ? ~bs1 : lastEqual(at, bs1) + 1;
             if (io1 == 0) {
                 // tt[ni-1] < at[0]
                 return vvo;
             }
         }
-        assert (io1 == no || at[io1] >= tt[ni-1]) && at[io1-1] <= tt[ni-1];
+        assert (io1 == no || at[io1] >= getTimes()[ni-1]) && at[io1-1] <= getTimes()[ni-1];
 
         // Find which segment at[io0] is on.
         // Point ii to the segment endpoint.
-        int bs2 = Arrays.binarySearch(tt, at[io0]);
-        int ii = (bs2 < 0) ? ~bs2 : firstEqual(tt, bs2);
+        int bs2 = Arrays.binarySearch(getTimes(), at[io0]);
+        int ii = (bs2 < 0) ? ~bs2 : firstEqual(getTimes(), bs2);
         if (ii == ni) {
             // tt[ni-1] < at[io]
             return vvo;
         }
-        assert tt[ii] >= at[io0] && (ii == 0 || tt[ii-1] <= at[io0]);
+        assert getTimes()[ii] >= at[io0] && (ii == 0 || getTimes()[ii-1] <= at[io0]);
 
         return interpolate(ii, at, vvo, io0, io1);
     }
@@ -146,7 +137,7 @@ public abstract class PiecewiseFunction {
 
     /**
      * Integral over the interval [t0, t1].
-     * 
+     *
      * @param t0
      *            start point of the integration interval
      * @param t1
@@ -157,13 +148,13 @@ public abstract class PiecewiseFunction {
      *            zero-width interval.
      */
     public double integrate(double t0, double t1, double scale) {
-        int n = vv.length;
+        int n = getValues().length;
         if (scale == 0) {
             if (n == 0) {
                 return 0.0;
             }
-            double d0 = Math.max(tt[0],  Math.min(t0, t1));
-            double d1 = Math.min(tt[n-1], Math.max(t0,  t1));
+            double d0 = Math.max(getTimes()[0],  Math.min(t0, t1));
+            double d1 = Math.min(getTimes()[n-1], Math.max(t0,  t1));
             if (d0 > d1) {
                 return 0.0;
             } else if (d1 == d0) {
@@ -181,25 +172,25 @@ public abstract class PiecewiseFunction {
             }
             // Locate the first non-vertical segment on the integration
             // interval, and point i0 to the segment startpoint.
-            t0 = Math.max(t0, tt[0]);
-            int bs0 = Arrays.binarySearch(tt, t0);
-            int i0 = (bs0 >= 0) ? lastEqual(tt, bs0) : ~bs0 - 1;
+            t0 = Math.max(t0, getTimes()[0]);
+            int bs0 = Arrays.binarySearch(getTimes(), t0);
+            int i0 = (bs0 >= 0) ? lastEqual(getTimes(), bs0) : ~bs0 - 1;
             if (i0 >= n-1) {
                 return 0.0;
             }
 
             // Locate the last non-vertical segment of the integration interval,
             // and point i1 to the segment startpoint.
-            t1 = Math.min(t1, tt[n-1]);
-            int bs1 = Arrays.binarySearch(tt, i0, n, t1);
-            int i1 = (bs1 >= 0) ? firstEqual(tt, bs1) - 1 : ~bs1 - 1;
+            t1 = Math.min(t1, getTimes()[n-1]);
+            int bs1 = Arrays.binarySearch(getTimes(), i0, n, t1);
+            int i1 = (bs1 >= 0) ? firstEqual(getTimes(), bs1) - 1 : ~bs1 - 1;
             if (i1 < 0) {
                 return 0.0;
             }
 
             assert t0 <= t1 && i0 <= i1;
-            assert tt[i0] <= t0 && t0 < tt[i0+1];
-            assert tt[i1] < t1 && t1 <= tt[i1+1];
+            assert getTimes()[i0] <= t0 && t0 < getTimes()[i0+1];
+            assert getTimes()[i1] < t1 && t1 <= getTimes()[i1+1];
             return integrate(i0, i1, t0, t1) / scale;
         }
     }
@@ -208,11 +199,11 @@ public abstract class PiecewiseFunction {
 
     /** Mean value of the function over its domain. */
     public double mean() {
-        if (tt.length == 0) {
+        if (getTimes().length == 0) {
             return 0.0;
         } else {
-            double t0 = tt[0];
-            double t1 = tt[tt.length-1];
+            double t0 = getTimes()[0];
+            double t1 = getTimes()[getTimes().length-1];
             return integrate(t0, t1, t1-t0);
         }
     }
@@ -223,8 +214,8 @@ public abstract class PiecewiseFunction {
     /** Supremum value over the domain of the function. */
     public double sup() {
         double m = Double.NEGATIVE_INFINITY;
-        for (int i = 0; i < tt.length; ++i) {
-            double v = vv[i];
+        for (int i = 0; i < getTimes().length; ++i) {
+            double v = getValues()[i];
             if (v > m) {
                 m = v;
             }
@@ -235,8 +226,8 @@ public abstract class PiecewiseFunction {
     /** Infimum value over the domain of the function. */
     public double inf() {
         double m = Double.POSITIVE_INFINITY;
-        for (int i = 0; i < tt.length; ++i) {
-            double v = vv[i];
+        for (int i = 0; i < getTimes().length; ++i) {
+            double v = getValues()[i];
             if (v < m) {
                 m = v;
             }
@@ -246,7 +237,7 @@ public abstract class PiecewiseFunction {
 
     /**
      * Computes the interpolated absolute value function.
-     * 
+     *
      * @return a piecewise function of the same type as this function
      */
     public abstract PiecewiseFunction abs();
@@ -260,28 +251,28 @@ public abstract class PiecewiseFunction {
             throw new IllegalArgumentException(
                     "Invalid slice: start "+t0+" greater than end "+t1);
         }
-        int n = tt.length;
-        if (n == 0 || t0 > tt[n-1] || t1 < tt[0]) {
-            return make(degree, new double[0], new double[0]);
+        int n = getTimes().length;
+        if (n == 0 || t0 > getTimes()[n-1] || t1 < getTimes()[0]) {
+            return make(getDegree(), new double[0], new double[0]);
         }
 
         // Point i0 to the start point of the segment defining the right value at t0.
-        t0 = Math.max(t0, tt[0]);
-        int bs0 = Arrays.binarySearch(tt, t0);
-        int i0 = (bs0 >= 0) ? lastEqual(tt, bs0) : ~bs0 - 1;
-        assert tt[i0] <= t0 && (i0 == n-1 || t0 < tt[i0+1]);
-        double v0 = (i0 == n-1) ? vv[i0] : interpolateOnSegment(i0, t0);
+        t0 = Math.max(t0, getTimes()[0]);
+        int bs0 = Arrays.binarySearch(getTimes(), t0);
+        int i0 = (bs0 >= 0) ? lastEqual(getTimes(), bs0) : ~bs0 - 1;
+        assert getTimes()[i0] <= t0 && (i0 == n-1 || t0 < getTimes()[i0+1]);
+        double v0 = (i0 == n-1) ? getValues()[i0] : interpolateOnSegment(i0, t0);
 
         // Point i1 to the start point of the segment defining the left value at t1.
-        t1 = Math.min(t1, tt[n-1]);
+        t1 = Math.min(t1, getTimes()[n-1]);
         if (t0 == t1) {
-            return make(degree, new double[] { t0 }, new double[] { v0 } );
+            return make(getDegree(), new double[] { t0 }, new double[] { v0 } );
         }
-        int bs1 = Arrays.binarySearch(tt, i0, n, t1);
-        int i1 = (bs1 >= 0) ? lastEqual(tt, bs1) - 1 : ~bs1 - 1;
-        assert (tt[i1] < t1 && t1 <= tt[i1+1]) || (tt[i1] == t1 && t1 == tt[i1+1]);
+        int bs1 = Arrays.binarySearch(getTimes(), i0, n, t1);
+        int i1 = (bs1 >= 0) ? lastEqual(getTimes(), bs1) - 1 : ~bs1 - 1;
+        assert (getTimes()[i1] < t1 && t1 <= getTimes()[i1+1]) || (getTimes()[i1] == t1 && t1 == getTimes()[i1+1]);
         assert t0 < t1 && i0 <= i1;
-        double v1 = (t1 == tt[i1+1]) ? vv[i1+1] : interpolateOnSegment(i1, t1);
+        double v1 = (t1 == getTimes()[i1+1]) ? getValues()[i1+1] : interpolateOnSegment(i1, t1);
 
         int ni = i1 - i0;
         int no = ni + 2;
@@ -291,14 +282,14 @@ public abstract class PiecewiseFunction {
         tto[o] = t0;
         vvo[o] = v0;
         ++o;
-        System.arraycopy(tt, i0+1, tto, o, ni);
-        System.arraycopy(vv, i0+1, vvo, o, ni);
+        System.arraycopy(getTimes(), i0+1, tto, o, ni);
+        System.arraycopy(getValues(), i0+1, vvo, o, ni);
         o += ni;
         tto[o] = t1;
         vvo[o] = v1;
         ++o;
         assert o == no;
-        return make(degree, tto, vvo);
+        return make(getDegree(), tto, vvo);
     }
 
     interface UnaryOperation {
@@ -313,9 +304,9 @@ public abstract class PiecewiseFunction {
      * values of the result function.
      */
     public PiecewiseFunction transform(UnaryOperation op) {
-        double[] vvo = new double[vv.length];
-        op.transform(vv, vvo);
-        return make(degree, tt.clone(), vvo);
+        double[] vvo = new double[getValues().length];
+        op.transform(getValues(), vvo);
+        return make(getDegree(), getTimes().clone(), vvo);
     }
 
     interface BinaryOperation {
@@ -333,13 +324,13 @@ public abstract class PiecewiseFunction {
      */
     public PiecewiseFunction combine(
             PiecewiseFunction other, BinaryOperation op) {
-        int d = Math.max(this.degree, other.degree);
-        int tn = this.tt.length;
-        int on = other.tt.length;
-        double tt0 = tn > 0 ? this.tt[0] : Double.POSITIVE_INFINITY;
-        double tt1 = tn > 0 ? this.tt[tn - 1] : Double.NEGATIVE_INFINITY; 
-        double ot0 = on > 0 ? other.tt[0] : Double.POSITIVE_INFINITY;
-        double ot1 = on > 0 ? other.tt[on - 1] : Double.NEGATIVE_INFINITY;
+        int d = Math.max(this.getDegree(), other.getDegree());
+        int tn = this.getTimes().length;
+        int on = other.getTimes().length;
+        double tt0 = tn > 0 ? this.getTimes()[0] : Double.POSITIVE_INFINITY;
+        double tt1 = tn > 0 ? this.getTimes()[tn - 1] : Double.NEGATIVE_INFINITY;
+        double ot0 = on > 0 ? other.getTimes()[0] : Double.POSITIVE_INFINITY;
+        double ot1 = on > 0 ? other.getTimes()[on - 1] : Double.NEGATIVE_INFINITY;
         //
         // Merge the t coordinate sequences, and interpolate the functions
         // at the merged t coordinates.  When the result degree is 1, step
@@ -421,7 +412,7 @@ public abstract class PiecewiseFunction {
                 ++io;
                 ++ia;
                 ++ib;
-            } 
+            }
         }
         while (ia < na) {
             tto[io] = tta[ia];
@@ -440,29 +431,29 @@ public abstract class PiecewiseFunction {
     @Override
     public String toString() {
         int MAX_PRINT = 100;
-        int n = Math.min(MAX_PRINT, tt.length);
+        int n = Math.min(MAX_PRINT, getTimes().length);
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append('{');
         for (int i = 0; i < n; ++i) {
             sb.append(" (");
-            sb.append(tt[i]);
+            sb.append(getTimes()[i]);
             sb.append(", ");
-            sb.append(vv[i]);
+            sb.append(getValues()[i]);
             sb.append(')');
         }
-        if (tt.length > n) {
+        if (getTimes().length > n) {
             sb.append(" ...");
         }
         sb.append(" length=");
-        sb.append(tt.length);
+        sb.append(getTimes().length);
         sb.append(" }");
         return sb.toString();
     }
 
     @Override
     public int hashCode() {
-        return degree ^ Arrays.hashCode(getTimes()) ^ Arrays.hashCode(getValues());
+        return getDegree() ^ Arrays.hashCode(getTimes()) ^ Arrays.hashCode(getValues());
     }
 
     @Override
@@ -473,7 +464,7 @@ public abstract class PiecewiseFunction {
             return true;
         } else {
             PiecewiseFunction otherFun = (PiecewiseFunction) other;
-            return degree == otherFun.degree
+            return getDegree() == otherFun.getDegree()
                     && Arrays.equals(getTimes(),  otherFun.getTimes())
                     && Arrays.equals(getValues(), otherFun.getValues());
         }

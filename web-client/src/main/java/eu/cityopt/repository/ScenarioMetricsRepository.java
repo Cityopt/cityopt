@@ -11,5 +11,5 @@ import eu.cityopt.model.ScenarioMetrics;
 public interface ScenarioMetricsRepository extends JpaRepository<ScenarioMetrics, Integer> {
 	@Query("select sm from ScenarioMetrics sm where "
 			+ " sm.scenario.scenid = :scenid and sm.extparamvalset.id = :epvsid")
-	public ScenarioMetrics findByScenidAndExtParamValSetid(@Param("scenid") int scenid, @Param("epvsid") int epvsid);
+	public ScenarioMetrics findByScenidAndExtParamValSetid(@Param("scenid") int scenid, @Param("epvsid") Integer epvsid);
 }

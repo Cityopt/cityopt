@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <dataset>
+  <datareliability datareldesc="Actual data"/>
+  <datareliability datareldesc="Technical report"/>
+  <datareliability datareldesc="Scientific bibliography"/>
+  <datareliability datareldesc="Expert opinion"/>
   <extparamvalset name="externals"/>
   <extparamvalset name="testimport"/>
   <project name="Apros test project" location="Helsinki"/>
@@ -11,6 +15,29 @@
   <component name="CHP_BOIL_TH_OUT"/>
   <component name="FUEL_CONSUMPTION"/>
   <component name="CITYOPT"/>
+  <type name="Double"/>
+  <type name="Integer"/>
+  <type name="String"/>
+  <type name="Timestamp"/>
+  <type name="TimeSeries/step"/>
+  <type name="TimeSeries/linear"/>
+  <type name="List of Double"/>
+  <type name="List of Integer"/>
+  <type name="List of Timestamp"/>
+  <unit name="kJ/kg"/>
+  <unit name="kW"/>
+  <unit name="1/K"/>
+  <unit name="kg/s"/>
+  <unit name="min"/>
+  <unit name="C"/>
+  <unit name="%/min"/>
+  <unit name="kJ/kgK"/>
+  <unit name="m2"/>
+  <unit name="MPa"/>
+  <unit name="deg"/>
+  <unit name="m3"/>
+  <unit name="m"/>
+  <unit name="Mpa"/>
   <inputparameter name="CHP_electrical_power_rating" defaultvalue="2400.0"/>
   <inputparameter name="Burner_efficiency" defaultvalue="0.7"/>
   <inputparameter name="Share_of_roof_area_occupied_by_PVpanels" defaultvalue="10.0"/>
@@ -22,6 +49,8 @@
   <inputparameter name="Heat_storage_tank_height" defaultvalue="15.0"/>
   <inputparameter name="simulation_start" defaultvalue="2015-01-01T00:00:00"/>
   <inputparameter name="simulation_end" defaultvalue="2015-01-01T00:00:00"/>
+  <algorithm description="grid search"/>
+  <algorithm description="genetic algorithm"/>
   <scenariogenerator/>
   <scenario description="1st test scenario"/>
   <scenario description="2nd test scenario"/>
@@ -45,9 +74,23 @@
   <extparamval value="[null]"/>
   <extparamval value="100"/>
   <extparamval value="0.01"/>
-  <extparamval value="[null]"/>
   <extparamval value="100.0"/>
+  <extparamval value="[null]"/>
+  <algoparam defaultvalue="1000000" name="max runtime [minutes]"/>
+  <algoparam defaultvalue="100" name="max parallel evaluations"/>
+  <algoparam defaultvalue="10000" name="max scenarios"/>
+  <algoparam defaultvalue="1000000" name="max runtime [minutes]"/>
+  <algoparam defaultvalue="100" name="max parallel evaluations"/>
+  <algoparam defaultvalue="1" name="seed of the random number generator"/>
+  <algoparam defaultvalue="10" name="number of generations"/>
+  <algoparam defaultvalue="100" name="population size"/>
+  <algoparam defaultvalue="25" name="number of parents per generation"/>
+  <algoparam defaultvalue="25" name="number of offspring per generation"/>
+  <algoparam defaultvalue="0.95" name="crossover rate"/>
   <algoparamval/>
+  <appuser/>
+  <usergroup/>
+  <usergroupproject/>
   <inputparamval value="2015-01-01T00:00:00Z"/>
   <inputparamval value="2015-01-01T00:00:00Z"/>
   <inputparamval value="2015-01-01T00:00:00Z"/>
@@ -87,9 +130,9 @@
   <decisionvariableresult/>
   <objectivefunctionresult/>
   <optconstraintresult/>
-  <timeseriesval value="10.0" time="1970-01-01 00:00:00.001"/>
+  <timeseriesval value="10" time="1970-01-01 00:00:00.001"/>
   <timeseriesval value="100.0" time="1970-01-01 00:00:00.0"/>
-  <timeseriesval value="10.0" time="2014-12-31 23:59:59.001"/>
-  <timeseriesval value="10.0" time="2050-01-01 00:00:00.0"/>
+  <timeseriesval value="10" time="2014-12-31 23:59:59.001"/>
+  <timeseriesval value="10" time="2050-01-01 00:00:00.0"/>
   <timeseriesval value="100.0" time="2050-01-01 00:00:00.0"/>
 </dataset>
