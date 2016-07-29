@@ -9,7 +9,7 @@ public class TimeSeriesValDTO extends BaseDTO {
 
 	@Getter @Setter private int tseriesvalid;
 	@Getter @Setter private TimeSeriesDTO timeseries;
-	@Getter @Setter private String value;
+	@Getter @Setter private double value;
 	@Getter @Setter private Date time;
 
 }

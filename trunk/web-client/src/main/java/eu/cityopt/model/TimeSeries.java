@@ -2,7 +2,9 @@ package eu.cityopt.model;
 
 // Generated 13.11.2014 15:13:00 by Hibernate Tools 4.0.0
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -27,7 +29,7 @@ public class TimeSeries extends VersionModel implements java.io.Serializable {
 
 	private int tseriesid;
 	private Type type;
-	private Set<TimeSeriesVal> timeseriesvals = new HashSet<TimeSeriesVal>(0);
+	private List<TimeSeriesVal> timeseriesvals = new ArrayList<TimeSeriesVal>();
 	private Set<MetricVal> metricvals = new HashSet<MetricVal>(0);
 	private Set<SimulationResult> simulationresults = new HashSet<SimulationResult>(
 			0);
@@ -41,7 +43,7 @@ public class TimeSeries extends VersionModel implements java.io.Serializable {
 	}
 
 	public TimeSeries(int tseriesid, Type type,
-			Set<TimeSeriesVal> timeseriesvals,
+			List<TimeSeriesVal> timeseriesvals,
 			Set<MetricVal> metricvals, Set<SimulationResult> simulationresults,
 			Set<ExtParamVal> extparamvals) {
 		this.tseriesid = tseriesid;
@@ -84,12 +86,12 @@ public class TimeSeries extends VersionModel implements java.io.Serializable {
 		this.type = type;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries")
-	public Set<TimeSeriesVal> getTimeseriesvals() {
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "timeseries",cascade=CascadeType.PERSIST)
+	public List<TimeSeriesVal> getTimeseriesvals() {
 		return this.timeseriesvals;
 	}
 
-	public void setTimeseriesvals(Set<TimeSeriesVal> timeseriesvals) {
+	public void setTimeseriesvals(List<TimeSeriesVal> timeseriesvals) {
 		this.timeseriesvals = timeseriesvals;
 	}
 

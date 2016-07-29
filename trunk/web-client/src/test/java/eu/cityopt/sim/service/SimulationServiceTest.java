@@ -10,10 +10,8 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.Locale;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import javax.script.ScriptException;
@@ -27,10 +25,11 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
@@ -54,10 +53,11 @@ import eu.cityopt.sim.eval.SimulationOutput;
  *
  * @author Hannu Rummukainen
  */
-@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:/jpaContext.xml", "classpath:/test-context.xml"})
 @DbUnitConfiguration(dataSetLoader=NullReplacementDataSetLoader.class)
+@DatabaseTearDown(value="classpath:/testData/cleantables.xml",
+        type=DatabaseOperation.DELETE_ALL)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionDbUnitTestExecutionListener.class })
@@ -118,16 +118,13 @@ public class SimulationServiceTest extends SimulationTestBase {
     public void testModel_cancel() throws Exception {
         loadModel("Apros test model", "/testmodel.zip");
         Scenario scenario = scenarioRepository.findByNameContaining("testscenario").get(0);
-        BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>();
         Future<SimulationOutput> job = simulationService.startSimulation(
-                scenario.getScenid(), tasks::add);
+                scenario.getScenid());
         // The cancellation runs the clean-up task synchronously.
         job.cancel(true);
         assertTrue(job.isCancelled());
-        assertTrue(tasks.isEmpty());
         // Just in case some task got run in another thread...
         Thread.sleep(TimeUnit.SECONDS.toMillis(3));
-        assertTrue(tasks.isEmpty());
         // There should be no updates to the database.
         scenario = scenarioRepository.findByNameContaining("testscenario").get(0);
         assertNull(scenario.getStatus());
@@ -160,13 +157,9 @@ public class SimulationServiceTest extends SimulationTestBase {
 	private void runSimulation(int scenId) throws ParseException, IOException,
 			ConfigurationException, InterruptedException, ExecutionException,
 			ScriptException, Exception {
-		BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>();
 		Future<SimulationOutput> job =
-				simulationService.startSimulation(scenId, tasks::add);
-		do {
-			tasks.take().run();
-		} while (!tasks.isEmpty());
-		assertTrue(job.isDone());
+				simulationService.startSimulation(scenId);
+		job.get();
 	}
 
     private void updateMetrics() throws ParseException, ScriptException {

@@ -199,7 +199,7 @@ public class ImportServiceImpl implements ImportService {
 			TimeSeriesVal val = new TimeSeriesVal();
 			val.setTimeseries(ts);
 			val.setTime(d);
-			val.setValue(row.TimeSeriesValue);
+			val.setValue(Double.parseDouble(row.TimeSeriesValue));
 			ts.getTimeseriesvals().add(val);
 			val = timeSeriesValRepository.save(val);
 			
@@ -330,7 +330,7 @@ public class ImportServiceImpl implements ImportService {
             TimeSeriesVal timeSeriesVal = new TimeSeriesVal();
             
             timeSeriesVal.setTime(TimeUtils.toDate(times[i], timeOrigin));
-            timeSeriesVal.setValue(Double.toString(values[i]));
+            timeSeriesVal.setValue((values[i]));
             timeSeriesVal.setTimeseries(timeSeries);
             
             timeSeries.getTimeseriesvals().add(timeSeriesVal);

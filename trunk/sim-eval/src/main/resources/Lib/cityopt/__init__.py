@@ -10,7 +10,7 @@ __all__ = ['TimeSeries', 'todatetime', 'tosimtime', 'integrate',
            'MINUTE_S', 'HOUR_S', 'DAY_S', 'INFINITY',
            'Infinity', 'NaN']
 
-_epoch = datetime.fromtimestamp(0)
+_epoch = datetime.utcfromtimestamp(0)
 
 MINUTE_S = 60
 HOUR_S = 60 * MINUTE_S
@@ -24,7 +24,7 @@ def _timeOrigin():
     return Evaluator.getActiveTimeOrigin()
 
 def _convertSimtimesToDatetimes(simtimes):
-    return [datetime.fromtimestamp(_timeOrigin() + t) for t in simtimes]
+    return [datetime.utcfromtimestamp(_timeOrigin() + t) for t in simtimes]
 
 # Equivalent to timedelta.total_seconds() in Python 2.7
 def _total_seconds(td):
@@ -32,7 +32,7 @@ def _total_seconds(td):
 
 def todatetime(arg):
     try:
-        return datetime.fromtimestamp(_timeOrigin() + arg)
+        return datetime.utcfromtimestamp(_timeOrigin() + arg)
     except TypeError:
         return _convertSimtimesToDatetimes(arg)
 

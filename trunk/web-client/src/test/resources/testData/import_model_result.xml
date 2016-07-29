@@ -1,16 +1,45 @@
 <?xml version="1.0"?>
 <dataset>
+  <datareliability datareldesc="Actual data"/>
+  <datareliability datareldesc="Technical report"/>
+  <datareliability datareldesc="Scientific bibliography"/>
+  <datareliability datareldesc="Expert opinion"/>
   <extparamvalset/>
   <simulationmodel description="test project" simulator="Apros-Combustion-5.13.06-64bit" timeorigin="2015-01-01 00:00:00.0"/>
-  <project name="Empty test project" location="Helsinki" version="2"/>
+  <project name="Empty test project" location="Helsinki"/>
   <component name="PV_TOTAL_ENERGY"/>
   <component name="ETH_NETWORK"/>
   <component name="HEATING_LOAD"/>
+  <component name="CITYOPT"/>
   <component name="CHP_ELECT_PROD"/>
   <component name="SAMPLE_DISTRICT"/>
   <component name="CHP_BOIL_TH_OUT"/>
   <component name="FUEL_CONSUMPTION"/>
-  <component name="CITYOPT"/>
+  <type name="Double"/>
+  <type name="Integer"/>
+  <type name="String"/>
+  <type name="Timestamp"/>
+  <type name="TimeSeries/step"/>
+  <type name="TimeSeries/linear"/>
+  <type name="List of Double"/>
+  <type name="List of Integer"/>
+  <type name="List of Timestamp"/>
+  <unit name="kJ/kg"/>
+  <unit name="kW"/>
+  <unit name="1/K"/>
+  <unit name="kg/s"/>
+  <unit name="min"/>
+  <unit name="C"/>
+  <unit name="%/min"/>
+  <unit name="kJ/kgK"/>
+  <unit name="m2"/>
+  <unit name="MPa"/>
+  <unit name="deg"/>
+  <unit name="m3"/>
+  <unit name="m"/>
+  <unit name="Mpa"/>
+  <unit name="-"/>
+  <unit name="%"/>
   <inputparameter name="simulation_start" defaultvalue="2015-01-01T00:00:00Z"/>
   <inputparameter name="simulation_end" defaultvalue="2015-01-02T00:00:00Z"/>
   <inputparameter name="Burner_efficiency" defaultvalue="0.7"/>
@@ -22,6 +51,8 @@
   <inputparameter name="CHP_thermal_power_rating" defaultvalue="4000.0"/>
   <inputparameter name="Burner_nominal_power" defaultvalue="17000.0"/>
   <inputparameter name="Share_of_roof_area_occupied_by_THcollectors" defaultvalue="0.0"/>
+  <algorithm description="grid search"/>
+  <algorithm description="genetic algorithm"/>
   <scenariogenerator/>
   <scenario/>
   <optconstraint/>
@@ -38,7 +69,21 @@
   <outputvariable name="MULTIPLYER_OUTPUT"/>
   <extparam/>
   <extparamval/>
+  <algoparam defaultvalue="1000000" name="max runtime [minutes]"/>
+  <algoparam defaultvalue="100" name="max parallel evaluations"/>
+  <algoparam defaultvalue="10000" name="max scenarios"/>
+  <algoparam defaultvalue="1000000" name="max runtime [minutes]"/>
+  <algoparam defaultvalue="100" name="max parallel evaluations"/>
+  <algoparam defaultvalue="1" name="seed of the random number generator"/>
+  <algoparam defaultvalue="10" name="number of generations"/>
+  <algoparam defaultvalue="100" name="population size"/>
+  <algoparam defaultvalue="25" name="number of parents per generation"/>
+  <algoparam defaultvalue="25" name="number of offspring per generation"/>
+  <algoparam defaultvalue="0.95" name="crossover rate"/>
   <algoparamval/>
+  <appuser/>
+  <usergroup/>
+  <usergroupproject/>
   <inputparamval/>
   <modelparameter/>
   <metricval/>
