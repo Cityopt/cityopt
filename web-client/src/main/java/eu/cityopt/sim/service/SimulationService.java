@@ -184,6 +184,11 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                                 }
                             }
                             storage.put(put);
+                            log.debug("Simulation job output saved (scenId="
+                                    + scenId + ")");
+                        } else {
+                            log.debug("Simulation job has no output (scenId="
+                                    + scenId + ")");
                         }
                     }, executor);
             jobManager.putJob(scenId, finishJob);
@@ -192,7 +197,12 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                     (output, throwable) -> {
                         // Propagate cancellation of finishJob back to simJob
                         if (finishJob.isCancelled()) {
+                            log.debug("Simulation job cancelled (scenId="
+                                    + scenId + ")");
                             simJob.cancel(true);
+                        } else {
+                            log.debug("Simulation job completed (scenId="
+                                    + scenId + ")");
                         }
                         jobManager.removeJob(scenId, finishJob);
                         try {
