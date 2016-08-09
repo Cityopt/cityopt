@@ -1,5 +1,6 @@
 package eu.cityopt.sim.eval;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -36,5 +37,10 @@ public class HashSimulationStorage implements SimulationStorage {
     @Override
     public Iterator<SimulationOutput> iterator() {
         return inputOutputCache.values().iterator();
+    }
+
+    @Override
+    public void close() throws IOException {
+        inputOutputCache.clear();
     }
 }

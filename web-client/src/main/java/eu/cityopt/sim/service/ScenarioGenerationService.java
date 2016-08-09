@@ -230,6 +230,11 @@ public class ScenarioGenerationService
                 jobManager.removeJob(scenGenId, finishJob);
                 listeners.remove(scenGenId, listener);
                 try {
+                    storage.close();
+                } catch (IOException e) {
+                    log.warn("Failed to close SimulationStorage: " + e.getMessage());
+                }
+                try {
                     model.close();
                 } catch (IOException e) {
                     log.warn("Failed to clean up optimisation run: " + e.getMessage());

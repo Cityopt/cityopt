@@ -1637,7 +1637,7 @@ public class ProjectController {
 	        	try {
 					metric = metricService.update(metric);
 					simService.updateMetricValues(project.getPrjid(), projectService.getDefaultExtParamSetId(project.getPrjid()));
-				} catch (EntityNotFoundException | ParseException | ScriptException e) {
+				} catch (EntityNotFoundException | ParseException | ScriptException | IOException e) {
 					e.printStackTrace();
 				}
 	        	model.put("info", controllerService.getMessage("metric_updated", request));

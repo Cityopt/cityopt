@@ -1,5 +1,6 @@
 package eu.cityopt.sim.eval;
 
+import java.io.Closeable;
 
 /**
  * Access to stored simulation runs for the sim-eval module and scenario
@@ -9,7 +10,8 @@ package eu.cityopt.sim.eval;
  * 
  * @author Hannu Rummukainen
  */
-public interface SimulationStorage extends Iterable<SimulationOutput> {
+public interface SimulationStorage
+        extends Iterable<SimulationOutput>, Closeable {
     /** Data associated with the evaluation of a single set of simulation input. */
     public static class Put {
         /** Short scenario name.  May be null. */

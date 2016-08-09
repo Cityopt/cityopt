@@ -1,5 +1,6 @@
 package eu.cityopt.sim.service;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -142,6 +143,17 @@ public class DbSimulationStorage implements DbSimulationStorageI {
         this.externals = externals;
         this.userId = userId;
         this.scenGenId = scenGenId;
+    }
+
+    @Override
+    public void close() throws IOException {
+        cache.clear();
+        cachePopulated = false;
+        proxy = null;
+        projectId = -1;
+        externals = null;
+        userId = null;
+        scenGenId = null;
     }
 
     //TODO: maybe use entity listener to get updates?

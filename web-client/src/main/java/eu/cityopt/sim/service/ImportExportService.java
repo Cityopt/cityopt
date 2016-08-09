@@ -1083,22 +1083,23 @@ public class ImportExportService {
             }
         }
 
-        SimulationStorage storage = store.makeDbSimulationStorage(
-                projectId, defaultExternals);
-        Set<String> scenNames = new HashSet<>(inputs.keySet());
-        scenNames.addAll(results.keySet());
-        for (String scenName : scenNames) {
-            if (scenName != null) {
-                SimulationStorage.Put put = new SimulationStorage.Put(
-                        inputs.get(scenName), new String[] { scenName, description });
-                SimulationResults resultData = results.get(scenName);
-                put.output = resultData;
-                if (metricExpressions != null && !metricExpressions.isEmpty()) {
-                    try {
-                        put.metricValues = new MetricValues(resultData, metricExpressions);
-                    } catch (ScriptException e) { /* ignore */ }
+        try (SimulationStorage storage = store.makeDbSimulationStorage(
+                projectId, defaultExternals)) {
+            Set<String> scenNames = new HashSet<>(inputs.keySet());
+            scenNames.addAll(results.keySet());
+            for (String scenName : scenNames) {
+                if (scenName != null) {
+                    SimulationStorage.Put put = new SimulationStorage.Put(
+                            inputs.get(scenName), new String[] { scenName, description });
+                    SimulationResults resultData = results.get(scenName);
+                    put.output = resultData;
+                    if (metricExpressions != null && !metricExpressions.isEmpty()) {
+                        try {
+                            put.metricValues = new MetricValues(resultData, metricExpressions);
+                        } catch (ScriptException e) { /* ignore */ }
+                    }
+                    storage.put(put);
                 }
-                storage.put(put);
             }
         }
     }
