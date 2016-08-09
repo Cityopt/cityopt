@@ -3,9 +3,6 @@ package eu.cityopt.sim.eval;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
-import javax.script.Bindings;
 
 import org.python.core.Py;
 import org.python.core.PyException;
