@@ -81,6 +81,9 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
         public Iterator<SimulationOutput> iterator() {
             return Collections.emptyIterator();
         }
+
+        @Override
+        public void close() throws IOException {}
     };
     private OptimisationLog userLog =
             m -> System.err.println(m);

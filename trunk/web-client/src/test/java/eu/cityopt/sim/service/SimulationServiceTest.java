@@ -162,7 +162,7 @@ public class SimulationServiceTest extends SimulationTestBase {
 		job.get();
 	}
 
-    private void updateMetrics() throws ParseException, ScriptException {
+    private void updateMetrics() throws ParseException, ScriptException, IOException {
         Project project = scenarioRepository.findByNameContaining("testscenario").get(0).getProject();
         SimulationService.MetricUpdateStatus status =
                 simulationService.updateMetricValues(project.getPrjid(), null);

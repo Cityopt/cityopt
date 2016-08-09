@@ -206,6 +206,11 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                         }
                         jobManager.removeJob(scenId, finishJob);
                         try {
+                            storage.close();
+                        } catch (IOException e) {
+                            log.warn("Failed to close SimulationStorage: " + e.getMessage());
+                        }
+                        try {
                             try {
                                 runner.close();
                             } finally {
@@ -217,7 +222,10 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                     });
             return finishJob;
         } finally {
-            if (!started) model.close();
+            if (!started) {
+                try { storage.close(); } catch (IOException e) {}
+                model.close();
+            }
         }
     }
 
@@ -290,41 +298,42 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     //FIXME Make this per metric.
     // Only caller is ProjectController.updateMetricPost.
     public MetricUpdateStatus updateMetricValues(int projectId, Integer extParamValSetId)
-            throws ParseException, ScriptException {
+            throws ParseException, ScriptException, IOException {
         Project project = projectRepository.findOne(projectId);
         Namespace namespace = makeProjectNamespace(project);
         ExternalParameters externals = loadExternalParameters(project, extParamValSetId, namespace);
         List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
         syntaxCheckerService.checkMetricExpressions(metricExpressions, namespace);
-        SimulationStorage storage =
-                store.makeDbSimulationStorage(projectId, externals);
-        MetricUpdateStatus status = new MetricUpdateStatus();
-        //TODO: first remove all metric values associated with the external parameter value set
-        for (Scenario scenario : project.getScenarios()) {
-            try {
-                SimulationInput input = loadSimulationInput(scenario, externals);
-                if (input.isComplete()) {
-                    SimulationOutput output = loadSimulationOutput(scenario, input);
-                    if (output instanceof SimulationResults) {
-                        SimulationResults results = (SimulationResults) output;
-                        MetricValues metricValues = new MetricValues(results, metricExpressions);
-                        storage.updateMetricValues(metricValues);
-                        status.updated.add(scenario.getScenid());
+        try (SimulationStorage storage =
+                store.makeDbSimulationStorage(projectId, externals)) {
+            MetricUpdateStatus status = new MetricUpdateStatus();
+            //TODO: first remove all metric values associated with the external parameter value set
+            for (Scenario scenario : project.getScenarios()) {
+                try {
+                    SimulationInput input = loadSimulationInput(scenario, externals);
+                    if (input.isComplete()) {
+                        SimulationOutput output = loadSimulationOutput(scenario, input);
+                        if (output instanceof SimulationResults) {
+                            SimulationResults results = (SimulationResults) output;
+                            MetricValues metricValues = new MetricValues(results, metricExpressions);
+                            storage.updateMetricValues(metricValues);
+                            status.updated.add(scenario.getScenid());
+                        } else {
+                            status.ignored.add(scenario.getScenid());
+                        }
                     } else {
                         status.ignored.add(scenario.getScenid());
                     }
-                } else {
-                    status.ignored.add(scenario.getScenid());
+                } catch (ParseException | ScriptException e) {
+                    log.warn("Failed to update metrics of scenario " + scenario.getScenid()
+                            + ": " + e.getMessage());
+                    status.failures.put(scenario.getScenid(), e);
                 }
-            } catch (ParseException | ScriptException e) {
-                log.warn("Failed to update metrics of scenario " + scenario.getScenid()
-                        + ": " + e.getMessage());
-                status.failures.put(scenario.getScenid(), e);
             }
+            status.extParamValSetId = externals.getExternalId();
+            log.info("Updated scenario metrics for project " + projectId + ": " + status);
+            return status;
         }
-        status.extParamValSetId = externals.getExternalId();
-        log.info("Updated scenario metrics for project " + projectId + ": " + status);
-        return status;
     }
 
     /** Loads the simulation model from a project. */
