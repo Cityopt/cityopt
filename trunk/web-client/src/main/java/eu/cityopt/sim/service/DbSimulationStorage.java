@@ -229,6 +229,8 @@ public class DbSimulationStorage implements DbSimulationStorageI {
     public void loadCache() {
         synchronized (cacheFillMutex) {
             if ( ! cachePopulated) {
+                log.debug("Populating DbSimulationStorage cache for project "
+                        + projectId);
                 Project project = getProject();
                 for (Scenario scenario : project.getScenarios()) {
                     loadScenarioToCache(scenario);
