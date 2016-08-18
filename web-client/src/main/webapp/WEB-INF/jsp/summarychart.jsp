@@ -129,8 +129,9 @@
 											<td valign="top">
 												<table>
 													<tr>
-														<td valign="top" style="width: 750px; height: 400px; border-style: solid; border: 1">
-															<img src="summarychart.png">
+														<td valign="top" style="width: 750px; height: 400px; border-style: solid; border="1">
+															${usersession.getSummaryImageMap()}
+															<img src="assets/img/${usersession.getSummaryFile()}" usemap="#chart">
 														</td>
 													</tr>
 													<tr>
@@ -198,17 +199,17 @@
 																		<table>
 																			<tr>
 																				<td>
-																					<!-- Remove selections -->
-																					<a href="summarychart.html?action=removeall"><button type="button" style="width: 150px">
-																					<spring:message code="remove_selection"/></button></a>
+																					<a href="drawsummarychart.html">
+																						<button type="button" style="width: 150px">
+																						<spring:message code="draw_chart"/></button>
+																					</a>
 																				</td>
 																			</tr>
 																			<tr>
 																				<td>
-																					<!-- Refresh chart -->
-																					<a href="summarychart.html?action=refreshchart">
-																					<button type="button" style="width: 150px">
-																					<spring:message code="refresh_chart"/></button></a>
+																					<!-- Remove selections -->
+																					<a href="summarychart.html?action=removeall"><button type="button" style="width: 150px">
+																					<spring:message code="remove_selection"/></button></a>
 																				</td>
 																			</tr>
 																			<tr>

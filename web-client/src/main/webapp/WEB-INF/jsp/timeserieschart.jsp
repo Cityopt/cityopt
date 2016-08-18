@@ -109,7 +109,8 @@
 									<table>
 										<tr>
 											<td valign="top" style="width: 750px; height: 400px; border-style: solid; border="1">
-												<img src="timeserieschart.png">
+												${usersession.getTimeSeriesImageMap()}
+												<img src="assets/img/${usersession.getTimeSeriesFile()}" usemap="#chart">
 											</td>
 										</tr>
 										<tr>
@@ -163,17 +164,17 @@
 															<table>
 																<tr>
 																	<td>
-																		<!-- Remove selections -->
-																		<a href="timeserieschart.html?action=removeall"><button type="button" style="width: 150px">
-																		<spring:message code="remove_selection"/></button></a>
+																		<a href="drawtimeserieschart.html">
+																			<button type="button" style="width: 150px">
+																			<spring:message code="draw_chart"/></button>
+																		</a>
 																	</td>
 																</tr>
 																<tr>
 																	<td>
-																		<!-- Refresh chart -->
-																		<a href="timeserieschart.html?action=refreshchart">
-																		<button type="button" style="width: 150px">
-																		<spring:message code="refresh_chart"/></button></a>
+																		<!-- Remove selections -->
+																		<a href="timeserieschart.html?action=removeall"><button type="button" style="width: 150px">
+																		<spring:message code="remove_selection"/></button></a>
 																	</td>
 																</tr>
 																<tr>

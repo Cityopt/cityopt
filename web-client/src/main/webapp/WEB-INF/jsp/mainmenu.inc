@@ -375,7 +375,7 @@
 				<tr>
 					<td></td>
 					<td>
-						<a href="gachart.html"><spring:message code="genetic_optimization_chart"/></a>
+						<a href="gachart.html?resetselections=true"><spring:message code="genetic_optimization_chart"/></a>
 					</td>
 				</tr>
 			</c:when>

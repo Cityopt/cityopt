@@ -67,10 +67,6 @@
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>cityOptDispatcherServlet</servlet-name>
-  <url-pattern>*.png</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>cityOptDispatcherServlet</servlet-name>
   <url-pattern>/pdfs/**</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
@@ -86,12 +82,4 @@
   <url-pattern>*.xml</url-pattern>
  </servlet-mapping>
  
- <!-- 
- <error-page>
-	<error-code>403</error-code>
-	<location>/WEB-INF/jsp/403.jsp</location>
-  </error-page>
-  -->
-  
-
 </web-app>

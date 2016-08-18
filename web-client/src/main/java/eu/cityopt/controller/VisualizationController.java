@@ -1,6 +1,9 @@
 package eu.cityopt.controller;
 
+import java.io.File;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -10,8 +13,12 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.entity.StandardEntityCollection;
+import org.jfree.chart.imagemap.ToolTipTagFragmentGenerator;
+import org.jfree.chart.imagemap.URLTagFragmentGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -24,6 +31,7 @@ import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -72,6 +80,7 @@ import eu.cityopt.service.TimeSeriesService;
 import eu.cityopt.service.TimeSeriesValService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
+import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.BarChartVisualization;
@@ -554,14 +563,15 @@ public class VisualizationController {
 		return "summarychart";
 	}
 
-	@RequestMapping("timeserieschart.png")
-	public void renderTimeSeriesChart(Map<String, Object> model, String variation, OutputStream stream,
-		HttpServletRequest request) throws Exception {
+	@RequestMapping("drawtimeserieschart")
+	public String drawTimeSeriesChart(Map<String, Object> model, HttpServletRequest request) throws Exception 
+	{
 		ProjectDTO project = (ProjectDTO) model.get("project");
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
-		if (project == null)
+		if (project == null || scenario == null)
 		{
-			return;
+			return "error";
 		}
 		securityAuthorization.atLeastGuest_guest(project);
 		
@@ -572,16 +582,20 @@ public class VisualizationController {
 			userSession = new UserSession();
 		}
 		
-		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		int nScenId = scenario.getScenid();
-		
 		String status = scenario.getStatus();
-		
+
+		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+			status = "RUNNING";
+		}
+
 		if (status == null || status.isEmpty())
 		{
-			return;
+			return "error";
 		}
-		
+
+		model.put("status", status);
+
 		Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
 	    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
 		String unit = "";
@@ -670,6 +684,7 @@ public class VisualizationController {
 		if (timeSeriesCollection.getSeriesCount() > 0)
 		{
 			JFreeChart chart = null;
+			ChartRenderingInfo chartInfo = new ChartRenderingInfo(new StandardEntityCollection());
 			
 			if (userSession.getTimeSeriesChartType() > 1)
 			{
@@ -681,23 +696,53 @@ public class VisualizationController {
 			} else if (userSession.getTimeSeriesChartType() == 1) {
 				chart = ScatterPlotVisualization.createChart(timeSeriesCollection, controllerService.getMessage("scatter_plot", request), controllerService.getMessage("date", request), controllerService.getMessage("value", request), true);
 			} 
-			
-			ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+
+			if (chart != null)
+			{
+				String imgPath = request.getSession().getServletContext().getRealPath("/") + "assets\\img\\";
+				String imgFileName = "timeserieschart_" + System.currentTimeMillis() + ".png";
+				File file = new File(imgPath + imgFileName);
+				System.out.println(file.getAbsolutePath());
+				
+				ChartUtilities.saveChartAsPNG(file, chart, 750, 400, chartInfo);
+				
+	            ToolTipTagFragmentGenerator tooltipConstructor = new ToolTipTagFragmentGenerator() {
+	                public String generateToolTipFragment(String arg0) {
+	                    String toolTip = " title = \"" + arg0 + "\"";
+	                    return (toolTip);
+	                }
+	            };
+
+	            URLTagFragmentGenerator urlConstructor = new URLTagFragmentGenerator() {
+	                public String generateURLFragment(String arg0) {
+	                    String address = "";
+	                    return address;
+	                }
+	            };
+
+	            String map = ChartUtilities.getImageMap("chart", chartInfo, tooltipConstructor, urlConstructor);
+	            userSession.setTimeSeriesImageMap(map);
+	            userSession.setTimeSeriesFile(imgFileName);
+			}
 		}
-		else
-		{
-			//JFreeChart chart = new JFreeChart();
-		}
+
+		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+		model.put("components", components);
+
+		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
+		model.put("extParamVals", extParamVals);
+
+		return "timeserieschart";
 	}
 
-	@RequestMapping("summarychart.png")
-	public void renderSummaryChart(Map<String, Object> model, String variation, OutputStream stream,
-		HttpServletRequest request) throws Exception {
+	@RequestMapping("drawsummarychart")
+	public String drawSummaryChart(Map<String, Object> model, HttpServletRequest request) throws Exception {
 		ProjectDTO project = (ProjectDTO) model.get("project");
+		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
-		if (project == null)
+		if (project == null || scenario == null)
 		{
-			return;
+			return "error";
 		}
 		securityAuthorization.atLeastGuest_guest(project);
 		
@@ -708,10 +753,23 @@ public class VisualizationController {
 			userSession = new UserSession();
 		}
 		
-		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		int nScenId = scenario.getScenid();
+		String status = scenario.getStatus();
+
+		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+			status = "RUNNING";
+		}
+
+		if (status == null || status.isEmpty())
+		{
+			return "error";
+		}
+
+		model.put("status", status);
 		
 		Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
 	    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
+		ChartRenderingInfo chartInfo = new ChartRenderingInfo(new StandardEntityCollection());
 		
 	    iterator = userSession.getSelectedChartMetricIds().iterator();
 		   
@@ -771,7 +829,30 @@ public class VisualizationController {
 				
 				if (chart != null)
 				{
-					ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+					String imgPath = request.getSession().getServletContext().getRealPath("/") + "assets\\img\\";
+					String imgFileName = "summarychart_" + System.currentTimeMillis() + ".png";
+					File file = new File(imgPath + imgFileName);
+					System.out.println(file.getAbsolutePath());
+					
+					ChartUtilities.saveChartAsPNG(file, chart, 750, 400, chartInfo);
+					
+		            ToolTipTagFragmentGenerator tooltipConstructor = new ToolTipTagFragmentGenerator() {
+		                public String generateToolTipFragment(String arg0) {
+		                    String toolTip = " title = \"" + arg0 + "\"";
+		                    return (toolTip);
+		                }
+		            };
+
+		            URLTagFragmentGenerator urlConstructor = new URLTagFragmentGenerator() {
+		                public String generateURLFragment(String arg0) {
+		                    String address = "";
+		                    return address;
+		                }
+		            };
+
+		            String map = ChartUtilities.getImageMap("chart", chartInfo, tooltipConstructor, urlConstructor);
+		            userSession.setSummaryImageMap(map);
+		            userSession.setSummaryFile(imgFileName);
 				}
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
@@ -856,10 +937,33 @@ public class VisualizationController {
 				} else if (userSession.getSummaryChartType() == 2) {
 					chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("bar_chart", request), "", "");
 				}
-				
+
 				if (chart != null)
 				{
-					ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+					String imgPath = request.getSession().getServletContext().getRealPath("/") + "assets\\img\\";
+					String imgFileName = "summary_" + System.currentTimeMillis() + ".png";
+					File file = new File(imgPath + imgFileName);
+					System.out.println(file.getAbsolutePath());
+					
+					ChartUtilities.saveChartAsPNG(file, chart, 750, 400, chartInfo);
+					
+		            ToolTipTagFragmentGenerator tooltipConstructor = new ToolTipTagFragmentGenerator() {
+		                public String generateToolTipFragment(String arg0) {
+		                    String toolTip = " title = \"" + arg0 + "\"";
+		                    return (toolTip);
+		                }
+		            };
+
+		            URLTagFragmentGenerator urlConstructor = new URLTagFragmentGenerator() {
+		                public String generateURLFragment(String arg0) {
+		                    String address = "";
+		                    return address;
+		                }
+		            };
+
+		            String map = ChartUtilities.getImageMap("chart", chartInfo, tooltipConstructor, urlConstructor);
+		            userSession.setSummaryImageMap(map);
+		            userSession.setSummaryFile(imgFileName);
 				}
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
@@ -912,12 +1016,236 @@ public class VisualizationController {
 			}
 			
 			chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("bar_chart", request), "", "");
+
+			if (chart != null)
+			{
+				String imgPath = request.getSession().getServletContext().getRealPath("/") + "assets\\img\\";
+				String imgFileName = "summary_" + System.currentTimeMillis() + ".png";
+				File file = new File(imgPath + imgFileName);
+				System.out.println(file.getAbsolutePath());
+				
+				ChartUtilities.saveChartAsPNG(file, chart, 750, 400, chartInfo);
+				
+	            ToolTipTagFragmentGenerator tooltipConstructor = new ToolTipTagFragmentGenerator() {
+	                public String generateToolTipFragment(String arg0) {
+	                    String toolTip = " title = \"" + arg0 + "\"";
+	                    return (toolTip);
+	                }
+	            };
+
+	            URLTagFragmentGenerator urlConstructor = new URLTagFragmentGenerator() {
+	                public String generateURLFragment(String arg0) {
+	                    String address = "";
+	                    return address;
+	                }
+	            };
+
+	            String map = ChartUtilities.getImageMap("chart", chartInfo, tooltipConstructor, urlConstructor);
+	            userSession.setSummaryImageMap(map);
+	            userSession.setSummaryFile(imgFileName);
+			}
+		}
+		
+		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
+		model.put("scenarios", scenarios);
+
+		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
+		model.put("metrics", metrics);
+
+		return "summarychart";
+	}
+
+	@RequestMapping(value = "drawgachart", method = RequestMethod.GET)
+	public String drawGAChart(Map<String, Object> model, HttpServletRequest request) throws Exception 
+	{
+		ProjectDTO project = (ProjectDTO) model.get("project");
+		
+		if (project == null)
+		{
+			return "error";
+		}
+		securityAuthorization.atLeastGuest_guest(project);
+		
+		UserSession userSession = (UserSession) model.get("usersession");
+
+		if (userSession == null)
+		{
+			userSession = new UserSession();
+		}
+		
+		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
+
+		if (scenGen == null)
+		{
+			return "error";
+		}
+		
+		if (userSession.getSelectedGAObjFuncIds().size() > 2
+			|| userSession.getSelectedGAObjFuncIds().size() == 0)
+		{
+			return "error";
+		}
+		
+	    Iterator<Integer> iterator = userSession.getSelectedGAObjFuncIds().iterator();
+		int objFunc1Id = iterator.next();
+		
+		ObjectiveFunctionDTO objFunc1 = objFuncService.findByID(objFunc1Id);
+		
+		if (userSession.getSelectedGAObjFuncIds().size() == 1)
+		{
+			ArrayList<ObjectiveFunctionResultDTO> listResults1 = (ArrayList<ObjectiveFunctionResultDTO>) objFuncService.findResultsByScenarioGenerator(scenGen.getScengenid(), objFunc1Id);
+			Iterator<ObjectiveFunctionResultDTO> resultIter = listResults1.iterator();
+			DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
+			
+			while (resultIter.hasNext())
+			{
+				ObjectiveFunctionResultDTO result = (ObjectiveFunctionResultDTO) resultIter.next();
+				
+				if (!userSession.hasSelectedGAScenarioId(result.getScenID()))
+				{
+					continue;
+				}
+				
+				ScenarioDTO scenarioTemp = scenarioService.findByID(result.getScenID());
+				String value1 = result.getValue();
+				
+				ObjectiveFunctionDTO objFunc = objFuncService.findByID(result.getObtfunctionid());
+				categoryDataset.addValue(Double.parseDouble(value1), scenarioTemp.getName(), objFunc.getName());
+			}
+			
+			ChartRenderingInfo chartInfo = new ChartRenderingInfo(new StandardEntityCollection());
+			JFreeChart chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("genetic_optimization_scenario_results", request), "", "");
 			
 			if (chart != null)
 			{
-				ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+				String imgPath = request.getSession().getServletContext().getRealPath("/") + "assets\\img\\";
+				String imgFileName = "gachart_" + System.currentTimeMillis() + ".png";
+				File file = new File(imgPath + imgFileName);
+				System.out.println(file.getAbsolutePath());
+				
+				ChartUtilities.saveChartAsPNG(file, chart, 750, 400, chartInfo);
+				
+	            ToolTipTagFragmentGenerator tooltipConstructor = new ToolTipTagFragmentGenerator() {
+	                public String generateToolTipFragment(String arg0) {
+	                    String toolTip = " title = \"" + arg0 + "\"";
+	                    return (toolTip);
+	                }
+	            };
+
+	            URLTagFragmentGenerator urlConstructor = new URLTagFragmentGenerator() {
+	                public String generateURLFragment(String arg0) {
+	                    String address = "openscenario.html";
+	                    return (address);
+	                }
+	            };
+
+	            String map = ChartUtilities.getImageMap("chart", chartInfo, tooltipConstructor, urlConstructor);
+	            userSession.setGAChartImageMap(map);
+	            userSession.setGAChartFile(imgFileName);
 			}
 		}
+		else if (userSession.getSelectedGAObjFuncIds().size() == 2)
+		{
+			int objFunc2Id = iterator.next();
+			ObjectiveFunctionDTO objFunc2 = objFuncService.findByID(objFunc2Id);
+			XYSeriesCollection collection = new XYSeriesCollection();
+
+			try {
+				ArrayList<ObjectiveFunctionResultDTO> listResults1 = (ArrayList<ObjectiveFunctionResultDTO>) objFuncService.findResultsByScenarioGenerator(scenGen.getScengenid(), objFunc1Id);
+				ArrayList<ObjectiveFunctionResultDTO> listResults2 = (ArrayList<ObjectiveFunctionResultDTO>) objFuncService.findResultsByScenarioGenerator(scenGen.getScengenid(), objFunc2Id);
+				
+				Iterator<ObjectiveFunctionResultDTO> resultIter = listResults1.iterator();
+				
+				while (resultIter.hasNext())
+				{
+					ObjectiveFunctionResultDTO result = (ObjectiveFunctionResultDTO) resultIter.next();
+					
+					if (!userSession.hasSelectedGAScenarioId(result.getScenID()))
+					{
+						continue;
+					}
+					
+					ScenarioDTO scenarioTemp = scenarioService.findByID(result.getScenID());
+
+					String value1 = result.getValue();
+					String value2 = "";
+					
+					Iterator<ObjectiveFunctionResultDTO> resultIter2 = listResults2.iterator();
+					
+					while(resultIter2.hasNext())
+					{
+						ObjectiveFunctionResultDTO result2 = (ObjectiveFunctionResultDTO) resultIter2.next();
+						
+						if (result2.getScenID() == result.getScenID())
+						{
+							value2 = result2.getValue();
+							break;
+						}
+					}
+					
+					XYSeries series = new XYSeries(scenarioTemp.getName());
+					series.add(Double.parseDouble(value1), Double.parseDouble(value2));
+					
+					collection.addSeries(series);						
+					
+					/*if (result.isScengenresultParetooptimal()) {
+						collection.addSeries(series);
+					} else {
+						collection.addSeries(series);
+					}*/
+				}				
+			
+				ChartRenderingInfo chartInfo = new ChartRenderingInfo(new StandardEntityCollection());
+				JFreeChart chart = ScatterPlotVisualization.createChart(collection, controllerService.getMessage("genetic_optimization_scenario_results", request), objFunc1.getName(), objFunc2.getName(), false);
+				
+				if (chart != null)
+				{
+					String imgPath = request.getSession().getServletContext().getRealPath("/") + "assets\\img\\";
+					String imgFileName = "gachart_" + System.currentTimeMillis() + ".png";
+					File file = new File(imgPath + imgFileName);
+					System.out.println(file.getAbsolutePath());
+					
+					ChartUtilities.saveChartAsPNG(file, chart, 750, 400, chartInfo);
+					
+		            ToolTipTagFragmentGenerator tooltipConstructor = new ToolTipTagFragmentGenerator() {
+		                public String generateToolTipFragment(String arg0) {
+		                    String toolTip = " title = \"" + arg0 + "\"";
+		                    return (toolTip);
+		                }
+		            };
+
+		            URLTagFragmentGenerator urlConstructor = new URLTagFragmentGenerator() {
+		                public String generateURLFragment(String arg0) {
+		                    String address = "openscenario.html";
+		                    return (address);
+		                }
+		            };
+
+		            String map = ChartUtilities.getImageMap("chart", chartInfo, tooltipConstructor, urlConstructor);
+		            userSession.setGAChartImageMap(map);
+		            userSession.setGAChartFile(imgFileName);
+				}
+
+				model.put("usersession", userSession);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
+		model.put("scenarios", scenarios);
+
+		List<ObjectiveFunctionDTO> objFuncs = null;
+		
+		try {
+			objFuncs = scenGenService.getObjectiveFunctions(scenGen.getScengenid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		model.put("objFuncs", objFuncs);
+
+		return "gachart";//"redirect:/gachart.html";
 	}
 
 	@RequestMapping("gachart.png")
@@ -1039,11 +1367,31 @@ public class VisualizationController {
 					}*/
 				}				
 			
+				ChartRenderingInfo chartInfo = new ChartRenderingInfo(new StandardEntityCollection());
 				JFreeChart chart = ScatterPlotVisualization.createChart(collection, controllerService.getMessage("genetic_optimization_scenario_results", request), objFunc1.getName(), objFunc2.getName(), false);
 				
 				if (chart != null)
 				{
-					ChartUtilities.writeChartAsPNG(stream, chart, 750, 400);
+					ChartUtilities.writeChartAsPNG(stream, chart, 750, 400, chartInfo);
+					//ChartUtilities.writeImageMap(writer, name, info, useOverLibForToolTips);
+
+		            ToolTipTagFragmentGenerator tooltipConstructor = new ToolTipTagFragmentGenerator() {
+		                public String generateToolTipFragment(String arg0) {
+		                    String toolTip = " title = \"value" + arg0 + "\"";
+		                    return (toolTip);
+		                }
+		            };
+
+		            URLTagFragmentGenerator urlConstructor = new URLTagFragmentGenerator() {
+		                public String generateURLFragment(String arg0) {
+		                    String address = " href=\"ControllerAddress\\methodName?"
+		                        + arg0 + "\"";
+		                    return (address);
+		                }
+		            };
+
+		            //String map = ChartUtilities.getImageMap("chart", chartInfo, tooltipConstructor, urlConstructor);
+		            //userSession.setImageMap(map);
 				}
 
 				model.put("usersession", userSession);

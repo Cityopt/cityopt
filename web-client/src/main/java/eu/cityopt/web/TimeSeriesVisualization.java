@@ -36,6 +36,14 @@ public class TimeSeriesVisualization {
 
 	public TimeSeriesVisualization (String title, TimeSeriesCollection timeSeriesCollection, 
 		String xAxisLabel, String yAxisLabel) {
+		
+		boolean bShowLegend = true;
+		
+		if (timeSeriesCollection.getSeriesCount() > 20)
+		{
+			bShowLegend = false;
+		}
+		
 		JFreeChart chart = createChart(timeSeriesCollection, title, xAxisLabel, yAxisLabel);
 		ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
@@ -86,13 +94,21 @@ public class TimeSeriesVisualization {
 	*
 	* @return A chart.
 	*/
-	public static JFreeChart createChart(XYDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
+	public static JFreeChart createChart(XYDataset dataset, String title, String xAxisLabel, String yAxisLabel) 
+	{
+		boolean bShowLegend = true;
+		
+		if (dataset.getSeriesCount() > 30)
+		{
+			bShowLegend = false;
+		}
+			
 		JFreeChart chart = ChartFactory.createTimeSeriesChart(
 				title, 
 				xAxisLabel,
 				yAxisLabel,
-				dataset, // data
-				true, // create legend?
+				dataset,
+				bShowLegend,
 				true, // generate tooltips?
 				false // generate URLs?
 				);

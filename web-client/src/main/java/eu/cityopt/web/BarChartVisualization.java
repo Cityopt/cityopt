@@ -78,8 +78,16 @@ public class BarChartVisualization {
 	*
 	* @return A chart.
 	*/
-	public static JFreeChart createChart(CategoryDataset dataset, String title, String xAxisLabel, String yAxisLabel) {
-		JFreeChart chart = ChartFactory.createBarChart3D(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
+	public static JFreeChart createChart(CategoryDataset dataset, String title, String xAxisLabel, String yAxisLabel) 
+	{
+		boolean bShowLegend = true;
+		
+		if (dataset.getColumnCount() > 30 || dataset.getRowCount() > 30)
+		{
+			bShowLegend = false;
+		}
+		
+		JFreeChart chart = ChartFactory.createBarChart3D(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, bShowLegend, true, false);
 	
 		chart.setBackgroundPaint(Color.white);
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();

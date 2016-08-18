@@ -82,7 +82,8 @@
 												<table>
 													<tr>
 														<td valign="top" style="width: 750px; height: 400px; border-style: solid">
-															<img src="gachart.png">
+															${usersession.getGAChartImageMap()}
+															<img src="assets/img/${usersession.getGAChartFile()}" usemap="#chart">
 														</td>
 													</tr>
 													<tr>
@@ -95,17 +96,17 @@
 																		<table>
 																			<tr>
 																				<td>
-																					<!-- Remove selections -->
-																					<a href="gachart.html?action=removeall"><button type="button" style="width: 150px">
-																					<spring:message code="remove_selection"/></button></a>
+																					<a href="drawgachart.html">
+																						<button type="button" style="width: 150px">
+																							<spring:message code="draw_chart"/></button>
+																					</a>
 																				</td>
 																			</tr>
 																			<tr>
 																				<td>
-																					<!-- Refresh chart -->
-																					<a href="gachart.html?action=refreshchart">
-																					<button type="button" style="width: 150px">
-																					<spring:message code="refresh_chart"/></button></a>
+																					<!-- Remove selections -->
+																					<a href="gachart.html?action=removeall"><button type="button" style="width: 150px">
+																					<spring:message code="remove_selection"/></button></a>
 																				</td>
 																			</tr>
 																			<tr>
@@ -203,11 +204,11 @@
 																	<c:choose>
 																		<c:when test="${usersession.hasSelectedGAObjFuncId(objFunc.obtfunctionid)}">
 																			<tr style="background-color: #D4D4D4">
-																			<td>Selected (<a href="gachart.html?action=remove&objfuncid=${objFunc.obtfunctionid}"><spring:message code="remove"/></a>)</td>
+																			<td><spring:message code="selected"/> <a href="gachart.html?action=remove&objfuncid=${objFunc.obtfunctionid}"><button type="button"><spring:message code="remove"/></button></a></td>
 																		</c:when>
 																		<c:otherwise>
 																			<tr>
-																				<td><a href="gachart.html?action=add&objfuncid=${objFunc.obtfunctionid}"><spring:message code="select"/></a></td>
+																				<td><a href="gachart.html?action=add&objfuncid=${objFunc.obtfunctionid}"><button type="button"><spring:message code="select"/></button></a></td>
 																		</c:otherwise>
 																	</c:choose>
 																	
