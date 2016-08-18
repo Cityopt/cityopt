@@ -941,7 +941,7 @@ public class VisualizationController {
 				if (chart != null)
 				{
 					String imgPath = request.getSession().getServletContext().getRealPath("/") + "assets\\img\\";
-					String imgFileName = "summary_" + System.currentTimeMillis() + ".png";
+					String imgFileName = "summarychart_" + System.currentTimeMillis() + ".png";
 					File file = new File(imgPath + imgFileName);
 					System.out.println(file.getAbsolutePath());
 					
@@ -1020,7 +1020,7 @@ public class VisualizationController {
 			if (chart != null)
 			{
 				String imgPath = request.getSession().getServletContext().getRealPath("/") + "assets\\img\\";
-				String imgFileName = "summary_" + System.currentTimeMillis() + ".png";
+				String imgFileName = "summarychart_" + System.currentTimeMillis() + ".png";
 				File file = new File(imgPath + imgFileName);
 				System.out.println(file.getAbsolutePath());
 				
