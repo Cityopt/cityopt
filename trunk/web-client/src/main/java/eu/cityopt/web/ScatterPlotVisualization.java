@@ -72,7 +72,14 @@ public class ScatterPlotVisualization {
 	*/
 	public static JFreeChart createChart(XYDataset dataset, String title, String xAxisLabel, String yAxisLabel, boolean isXDateAxis) 
 	{
-		JFreeChart chart = ChartFactory.createScatterPlot(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, false);
+		boolean bShowLegend = true;
+		
+		if (dataset.getSeriesCount() > 30)
+		{
+			bShowLegend = false;
+		}
+		
+		JFreeChart chart = ChartFactory.createScatterPlot(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, bShowLegend, true, true);
 	
 		chart.setBackgroundPaint(Color.WHITE);
 		//chart.setBackgroundPaint(new Color(230, 230, 230));
@@ -86,6 +93,7 @@ public class ScatterPlotVisualization {
 		plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
 		plot.setDomainCrosshairVisible(true);
 		plot.setRangeCrosshairVisible(true);
+		
 		XYItemRenderer r = plot.getRenderer();
 		
 		if (r instanceof XYLineAndShapeRenderer) {

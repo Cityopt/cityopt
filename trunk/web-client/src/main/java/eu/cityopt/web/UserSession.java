@@ -33,6 +33,12 @@ public class UserSession {
 	private String strActiveOptSet;
 	private String strActiveScenGen;
 	private String strLanguage;
+	private String strTimeSeriesImageMap;
+	private String strTimeSeriesFile;
+	private String strSummaryImageMap;
+	private String strSummaryFile;
+	private String strGAChartImageMap;
+	private String strGAChartFile;
 	
 	public String getLanguage() {
 		return strLanguage;
@@ -367,4 +373,59 @@ public class UserSession {
 	public void setOptResultString(String str) {
 		strOptResultString = str;
 	}
+
+	public void setTimeSeriesImageMap(String map) {
+		strTimeSeriesImageMap = map;
+	}
+
+	public String getTimeSeriesImageMap() 
+	{
+		return strTimeSeriesImageMap;
+	}
+	
+	public void setTimeSeriesFile(String file) {
+		strTimeSeriesFile = file;
+	}
+	
+	public String getTimeSeriesFile()
+	{
+		return strTimeSeriesFile;
+	}
+
+	public void setSummaryImageMap(String map) {
+		strSummaryImageMap = map;
+	}
+
+	public String getSummaryImageMap() 
+	{
+		return strSummaryImageMap;
+	}
+	
+	public void setSummaryFile(String file) {
+		strSummaryFile = file;
+	}
+	
+	public String getSummaryFile()
+	{
+		return strSummaryFile;
+	}
+
+	public void setGAChartImageMap(String map) {
+		strGAChartImageMap = map;
+	}
+
+	public String getGAChartImageMap() 
+	{
+		return strGAChartImageMap;
+	}
+	
+	public void setGAChartFile(String file) {
+		strGAChartFile = file;
+	}
+	
+	public String getGAChartFile()
+	{
+		return strGAChartFile;
+	}
+
 }
