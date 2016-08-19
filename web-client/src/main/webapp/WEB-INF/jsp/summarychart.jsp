@@ -248,7 +248,7 @@
 										</tr>
 										
 										<tr>
-											<td>
+											<td valign="top">
 												<div style="overflow:scroll;height:250px;width:520px;overflow:auto">
 												<table class="tablestyle" width="500">
 													<col style="width:150px">

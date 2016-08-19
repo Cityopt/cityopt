@@ -1672,15 +1672,6 @@ public class VisualizationController {
 		}
 		securityAuthorization.atLeastGuest_guest(project);
 
-		if (action != null)
-		{
-			if (action.equals("removeall"))
-			{
-				userSession.removeAllSelectedGAObjFuncIds();
-				userSession.removeAllSelectedGAScenarioIds();
-			}
-		}
-
 		ScenarioGeneratorDTO scenGen = (ScenarioGeneratorDTO) model.get("scengenerator");
 
 		if (scenGen == null)
@@ -1715,16 +1706,60 @@ public class VisualizationController {
 
 		model.put("objFuncs", objFuncs);
 
+		if (action != null)
+		{
+			if (action.equals("selectall"))
+			{
+				userSession.removeAllSelectedGAScenarioIds();
+				
+				for (ScenarioDTO scenario : scenarios)
+				{
+					userSession.addSelectedGAScenarioId(scenario.getScenid());
+				}
+
+				userSession.removeAllSelectedGAObjFuncIds();
+				
+				for (ObjectiveFunctionDTO objFunc : objFuncs)
+				{
+					userSession.addSelectedGAObjFuncId(objFunc.getObtfunctionid());
+					
+					if (userSession.getSelectedGAObjFuncIds().size() >= 2)
+					{
+						break;
+					}
+				}
+			}
+			else if (action.equals("selectpareto"))
+			{
+				reset = "true";
+			}
+			else if (action.equals("removeall"))
+			{
+				userSession.removeAllSelectedGAObjFuncIds();
+				userSession.removeAllSelectedGAScenarioIds();
+			}
+		}
+		
 		// Reset selections
 		if (reset != null && reset.equalsIgnoreCase("true"))
 		{
 			userSession.removeAllSelectedGAScenarioIds();
-			
-			for (ScenarioDTO scenario : scenarios)
-			{
-				userSession.addSelectedGAScenarioId(scenario.getScenid());
-			}
 
+			ObjectiveFunctionDTO objFuncFirst = objFuncs.get(0);
+
+			ArrayList<ObjectiveFunctionResultDTO> listResults = (ArrayList<ObjectiveFunctionResultDTO>) objFuncService.findResultsByScenarioGenerator(scenGen.getScengenid(), objFuncFirst.getObtfunctionid());
+			Iterator<ObjectiveFunctionResultDTO> resultIter = listResults.iterator();
+			
+			while (resultIter.hasNext())
+			{
+				ObjectiveFunctionResultDTO result = (ObjectiveFunctionResultDTO) resultIter.next();
+				
+				if (result.isScengenresultParetooptimal())
+				{
+					userSession.addSelectedGAScenarioId(result.getScenID());
+				}
+			}
+		
 			userSession.removeAllSelectedGAObjFuncIds();
 			
 			for (ObjectiveFunctionDTO objFunc : objFuncs)
