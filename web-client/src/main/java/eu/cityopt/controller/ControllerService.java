@@ -30,6 +30,7 @@ import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.MetricValDTO;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
+import eu.cityopt.DTO.ObjectiveFunctionResultDTO;
 import eu.cityopt.DTO.OptConstraintDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
@@ -45,8 +46,10 @@ import eu.cityopt.service.ExtParamValSetService;
 import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.MetricValService;
+import eu.cityopt.service.ObjectiveFunctionService;
 import eu.cityopt.service.OptimizationSetService;
 import eu.cityopt.service.ProjectService;
+import eu.cityopt.service.ScenarioGeneratorService;
 import eu.cityopt.service.ScenarioService;
 import eu.cityopt.service.SearchOptimizationResults;
 import eu.cityopt.service.SimulationModelService;
@@ -60,6 +63,7 @@ import eu.cityopt.web.OptimizationRun;
 import eu.cityopt.web.Pair;
 import eu.cityopt.web.ParamForm;
 import eu.cityopt.web.ScenarioForm;
+import eu.cityopt.web.ScenarioInfo;
 import eu.cityopt.web.UserSession;
 
 
@@ -104,6 +108,12 @@ public class ControllerService {
 		
 	    @Autowired
 	    AppUserService userService;
+
+	    @Autowired
+	    ObjectiveFunctionService objFuncService;
+
+	    @Autowired
+	    ScenarioGeneratorService scenGenService;
 
 	    @Autowired
 	    SimulationService simService;
@@ -487,7 +497,7 @@ public class ControllerService {
 			Set<ScenarioForm> scenarioForms = new LinkedHashSet<ScenarioForm>();
 			
 			Iterator<ScenarioDTO> iter = scenarios.iterator();
-	    	
+			
 	    	while (iter.hasNext()) {
 	    		ScenarioDTO scenario = (ScenarioDTO) iter.next();
 	    		
@@ -496,6 +506,12 @@ public class ControllerService {
 	    		scenarioForm.setId(scenario.getScenid());
 	    		scenarioForm.setDescription(scenario.getDescription());
 	    		scenarioForm.setStatus(getScenarioStatus(scenario));
+	    		
+	    		if (scenario.getScenariogenerator() != null)
+				{
+	    			scenarioForm.setPareto(isParetoOptimal(scenario.getScenid(), scenario.getScenariogenerator().getScengenid()));
+				}
+	    		
 	    		scenarioForms.add(scenarioForm);
 	    	}
 	    	
@@ -780,6 +796,33 @@ public class ControllerService {
 	    	functions.add(new Pair("xrange(int)", "Sequence from 0 up to argument – 1."));
 	    	functions.add(new Pair("zip(iterable, …)", "Combines given iterables into one iterable of tuples. Example: zip([1,2,3], [9,8,7]) returns [(1,9), (2,8), (3,7)]"));
 	    	model.put("functions", functions);
+	    }
+	
+	    public boolean isParetoOptimal(int nScenId, int nScenGenId)
+	    {
+	    	List<ObjectiveFunctionDTO> objFuncs = null;
+			
+			try {
+				objFuncs = scenGenService.getObjectiveFunctions(nScenGenId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+
+		    ObjectiveFunctionDTO objFuncFirst = objFuncs.get(0);
+	
+			ArrayList<ObjectiveFunctionResultDTO> listResults = (ArrayList<ObjectiveFunctionResultDTO>) objFuncService.findResultsByScenarioGenerator(nScenGenId, objFuncFirst.getObtfunctionid());
+			Iterator<ObjectiveFunctionResultDTO> resultIter = listResults.iterator();
+			
+			while (resultIter.hasNext())
+			{
+				ObjectiveFunctionResultDTO result = (ObjectiveFunctionResultDTO) resultIter.next();
+				
+				if (result.getScenID() == nScenId && result.isScengenresultParetooptimal())
+				{
+					return true;
+				}
+			}	
+			return false;
 	    }
 	}
 

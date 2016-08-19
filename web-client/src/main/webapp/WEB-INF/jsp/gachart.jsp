@@ -156,22 +156,24 @@
 															<div style="overflow:scroll;height:300px;width:380px;overflow:auto">
 															<table class="tablestyle" width="360">
 																<col style="width:120px">
-																<col style="width:240px">	
+																<col style="width:180px">	
+																<col style="width:60px">	
 																																					
 																<tr height="20">
 																	<!-- Select --><th><spring:message code="select"/></th>
 																    <!-- Name --> <th><spring:message code="name"/></th>
+																    <th>Pareto</th>
 																</tr>
 																				
-																<c:forEach items="${scenarios}" var="scenario">
+																<c:forEach items="${scenarioInfos}" var="scenarioInfo">
 																<tr>
 																	<c:choose>
-																		<c:when test="${usersession.hasSelectedGAScenarioId(scenario.scenid)}">
+																		<c:when test="${usersession.hasSelectedGAScenarioId(scenarioInfo.id)}">
 																			<tr style="background-color: #D4D4D4">													
 																			<td>
 																				<!-- Remove button -->
 																				<spring:message code="added"/> 
-																				<a href="gachart.html?action=remove&scenarioid=${scenario.scenid}">
+																				<a href="gachart.html?action=remove&scenarioid=${scenarioInfo.id}">
 																					<button type="button"><spring:message code="remove"/></button>
 																				</a>
 																			</td>
@@ -180,13 +182,21 @@
 																			<tr>
 																				<!-- Add -button -->
 																				<td>
-																					<a href="gachart.html?action=add&scenarioid=${scenario.scenid}">
+																					<a href="gachart.html?action=add&scenarioid=${scenarioInfo.id}">
 																						<button type="button"><spring:message code="add"/></button>
 																					</a>
 																				</td>
 																		</c:otherwise>
 																	</c:choose>
-																	<td>${scenario.name}</td>
+																	<td>${scenarioInfo.name}</td>
+																	<c:choose>
+																		<c:when test="${scenarioInfo.pareto}">
+																			<td align="center">X</td>
+																		</c:when>
+																		<c:otherwise>
+																			<td></td>
+																		</c:otherwise>
+																	</c:choose>
 															   	</tr>
 																</c:forEach>				
 															</table>
