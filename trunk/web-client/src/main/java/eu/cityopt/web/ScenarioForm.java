@@ -8,4 +8,5 @@ public class ScenarioForm {
 	@Getter @Setter private int id;
 	@Getter @Setter private String description;
 	@Getter @Setter private String status;
+	@Getter @Setter private boolean pareto;
 }

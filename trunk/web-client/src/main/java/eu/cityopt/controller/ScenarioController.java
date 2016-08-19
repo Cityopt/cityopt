@@ -777,12 +777,12 @@ public class ScenarioController {
 		{
 			ScenarioDTO scenario = iter.next();
 			checkForm.getCheckById().put(scenario.getScenid(), new Check());
-			System.out.println("scenario " + scenario.getScenid());
+			System.out.println("scenario id " + scenario.getScenid());
 		}
 		
 		model.put("checkForm", checkForm);
-		model.put("scenarios", scenarios);
-
+		controllerService.initScenarioList(model, project.getPrjid());
+		
 		return "deletescenario";
 	}
 
@@ -804,7 +804,7 @@ public class ScenarioController {
 		{
 			int id = entry.getKey();
 			Check check = entry.getValue();
-			System.out.println("check test id " + id + " check " + check.checked);
+			//System.out.println("check test id " + id + " check " + check.checked);
 			ScenarioDTO scenario = null;
 
 			if (check.checked)
@@ -822,10 +822,9 @@ public class ScenarioController {
 				}
 				else
 				{
-					System.out.println("Deleting scenario id " + id);
-					
 					try {
 						scenarioService.delete(scenario.getScenid());
+						System.out.println("Deleted scenario id " + id);
 					} catch (EntityNotFoundException e) {
 						e.printStackTrace();
 					} catch(ObjectOptimisticLockingFailureException e) {
@@ -835,8 +834,7 @@ public class ScenarioController {
 			}			
 		}
 
-		Set<ScenarioDTO> scenarios = (Set<ScenarioDTO>) projectService.getScenarios(project.getPrjid());
-		model.put("scenarios", scenarios);
+		controllerService.initScenarioList(model, project.getPrjid());
 
 		return "deletescenario";
 	}

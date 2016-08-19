@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +87,7 @@ import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.BarChartVisualization;
 import eu.cityopt.web.PieChartVisualization;
 import eu.cityopt.web.ScatterPlotVisualization;
+import eu.cityopt.web.ScenarioInfo;
 import eu.cityopt.web.TimeSeriesVisualization;
 import eu.cityopt.web.UserSession;
 
@@ -1233,7 +1235,19 @@ public class VisualizationController {
 		}
 		
 		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
-		model.put("scenarios", scenarios);
+		Set<ScenarioInfo> scenarioInfos = new HashSet<ScenarioInfo>();
+		
+		for (ScenarioDTO scenario : scenarios)
+		{
+			ScenarioInfo scenarioInfo = new ScenarioInfo();
+			scenarioInfo.setName(scenario.getName());
+			scenarioInfo.setId(scenario.getScenid());
+			scenarioInfo.setPareto(controllerService.isParetoOptimal(scenario.getScenid(), scenGen.getScengenid()));
+			
+			scenarioInfos.add(scenarioInfo);
+		}
+		
+		model.put("scenarioInfos", scenarioInfos);
 
 		List<ObjectiveFunctionDTO> objFuncs = null;
 		
@@ -1680,7 +1694,19 @@ public class VisualizationController {
 		}
 
 		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
-		model.put("scenarios", scenarios);
+		Set<ScenarioInfo> scenarioInfos = new HashSet<ScenarioInfo>();
+		
+		for (ScenarioDTO scenario : scenarios)
+		{
+			ScenarioInfo scenarioInfo = new ScenarioInfo();
+			scenarioInfo.setName(scenario.getName());
+			scenarioInfo.setId(scenario.getScenid());
+			scenarioInfo.setPareto(controllerService.isParetoOptimal(scenario.getScenid(), scenGen.getScengenid()));
+			
+			scenarioInfos.add(scenarioInfo);
+		}
+		
+		model.put("scenarioInfos", scenarioInfos);
 		
 		if (scenarioId != null && action != null)
 		{

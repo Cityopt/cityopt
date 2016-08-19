@@ -43,11 +43,12 @@
 				<tr height="300">
 					<td class="spacecolumn"></td>
 					<td valign="top">
-						<div style="overflow: scroll; height: 300px; width: 760px; overflow: auto;">
+						<div style="overflow: scroll; height: 400px; width: 775px; overflow: auto;">
 						<table class="tablestyle" width="760">
 							<col style="width:35px">
 							<col style="width:200px">
-							<col style="width:525px">
+							<col style="width:425px">
+							<col style="width:60px">
 							
 							<tr height="20">
 							    <th><spring:message code="select"/></th>
@@ -55,14 +56,23 @@
 							    <th><spring:message code="name"/></th>
 							    <!-- Description -->
 							    <th><spring:message code="description"/></th>
+							    <th>Pareto</th>
 							</tr>
-						<c:forEach items="${scenarios}" var="scenario">
+						<c:forEach items="${scenarioForms}" var="scenarioForm">
 							<tr>
 								<td class="checkboxstyle">
-									<form:checkbox path="checkById[${scenario.scenid}].checked" value="true"/>
+									<form:checkbox path="checkById[${scenarioForm.id}].checked" value="true"/>
 								</td>
-  								<td>${scenario.name}</td>
-								<td>${scenario.description}</td>
+  								<td>${scenarioForm.name}</td>
+								<td>${scenarioForm.description}</td>
+								<c:choose>
+									<c:when test="${scenarioForm.pareto}">
+										<td align="center">X</td>
+									</c:when>
+									<c:otherwise>
+										<td></td>
+									</c:otherwise>
+								</c:choose>
 						   	</tr>
 						</c:forEach>
 						</table>

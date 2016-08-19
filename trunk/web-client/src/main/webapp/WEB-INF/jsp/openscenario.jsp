@@ -43,7 +43,8 @@
 					<td valign="top">
 						<table class="tablestyle" width="750">
 							<col style="width:200px">	
-							<col style="width:400px">
+							<col style="width:350px">
+							<col style="width:50px">
 							<col style="width:50px">
 							<col style="width:50px">
 							<col style="width:50px">
@@ -53,6 +54,7 @@
 							    <th><spring:message code="name"/></th>
 							    <!--Description-->
 							    <th><spring:message code="description"/></th>
+							    <th>Pareto</th>
 							    <!--Status-->    
 							    <th><spring:message code="status"/></th>				    
 							    <!--Open-->    
@@ -65,6 +67,14 @@
 							<tr>
 								<td>${scenarioForm.name}</td>
 						    	<td>${scenarioForm.description}</td>
+						    	<c:choose>
+						    		<c:when test="${scenarioForm.pareto}">
+						    			<td align="center">X</td>
+					    			</c:when>
+					    			<c:otherwise>
+					    				<td></td>
+					    			</c:otherwise>
+				    			</c:choose>
 								<td>${scenarioForm.status}</td>			
 								<td>
 									<c:set var="tooltip_open_scenario"><spring:message code="tooltip_open_scenario"/></c:set>
