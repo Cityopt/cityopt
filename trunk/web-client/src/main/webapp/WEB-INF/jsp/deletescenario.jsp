@@ -85,6 +85,13 @@
 						<table>
 							<tr>
 								<td>
+									<a href="deletescenario.html?action=selectnonpareto">
+										<button type="button" style="width: 200px">
+											<spring:message code="select_non_pareto"/>
+										</button>
+									</a>
+								</td>
+								<td>
 						    		<c:set var="tooltip_delete"><spring:message code="tooltip_delete"/></c:set>
 									<input type="submit" value="<spring:message code="delete"/>" onclick="return confirm('<spring:message code="confirm_scenario_deletion"/>')">
 								</td>
