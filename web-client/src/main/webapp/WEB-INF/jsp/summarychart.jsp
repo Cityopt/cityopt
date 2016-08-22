@@ -212,13 +212,6 @@
 																					<spring:message code="remove_selection"/></button></a>
 																				</td>
 																			</tr>
-																			<tr>
-																				<td>
-																					<!--Open chart window -->
-																					<a href="summarychart.html?action=openwindow"><button type="button" style="width: 150px">
-																					<spring:message code="open_chart_window"/></button></a>
-																				</td>
-																			</tr>
 																		</table>
 																	</td>
 																</tr>
