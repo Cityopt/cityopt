@@ -50,6 +50,7 @@ import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.ModelParameterDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.ScenarioGeneratorSimpleDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AlgorithmService;
@@ -758,8 +759,9 @@ public class ScenarioController {
 
 	@RequestMapping(value="deletescenario",method=RequestMethod.GET)
 	public String deleteScenario(Map<String, Object> model,
-		HttpServletRequest request) {
-
+		@RequestParam(value="action", required=false) String action,
+		HttpServletRequest request) 
+	{
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
 		if (project == null)
@@ -772,12 +774,24 @@ public class ScenarioController {
 		CheckForm checkForm = new CheckForm();
 		Set<ScenarioDTO> scenarios = (Set<ScenarioDTO>) projectService.getScenarios(project.getPrjid());
 		Iterator<ScenarioDTO> iter = scenarios.iterator();
-		
+
+		// Go through scenarios
 		while (iter.hasNext())
 		{
+			Check check = new Check();
 			ScenarioDTO scenario = iter.next();
-			checkForm.getCheckById().put(scenario.getScenid(), new Check());
-			System.out.println("scenario id " + scenario.getScenid());
+			ScenarioGeneratorSimpleDTO scenGenSimple = scenario.getScenariogenerator();
+			
+			if (action != null
+				&& action.equals("selectnonpareto")
+				&& scenGenSimple != null 
+				&& !controllerService.isParetoOptimal(scenario.getScenid(), scenGenSimple.getScengenid()))
+			{
+				check.checked = true;
+			}
+			
+			checkForm.getCheckById().put(scenario.getScenid(), check);
+			//System.out.println("scenario id " + scenario.getScenid());
 		}
 		
 		model.put("checkForm", checkForm);
