@@ -41,6 +41,10 @@
 						</td>
 					</tr>
 					<tr>
+						<td class="error">${error}</td>
+						<td class="spacecolumn"></td>
+					</tr>
+					<tr>
 						<td valign="top">
 							<table style="width:100%">
 								<tr height="20"></tr>
@@ -98,11 +102,27 @@
 		
 											</tr>
 											<tr>
-												<td><spring:message
-														code="export_external_parameter_sets_file_CSV" /></td>
-												<td><a href="exportextparamsets.html"><button>
-															<spring:message code="export" />
-														</button></a></td>
+												<td>
+													<spring:message	code="export_external_parameter_sets_file_CSV" />
+												</td>
+												<td>
+													<c:choose>
+														<c:when test="${enableExtParamSetExport}">
+															<a href="exportextparamsets.html">
+																<button type="button">
+																	<spring:message code="export" />
+																</button>
+															</a>
+														</c:when>
+														<c:otherwise>
+															<a href="exportdata.html?error=true">
+																<button type="button">
+																	<spring:message code="export" />
+																</button>
+															</a>
+														</c:otherwise>
+													</c:choose>
+												</td>
 											</tr>
 										</table>
 									</td>
