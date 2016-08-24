@@ -302,6 +302,15 @@ public class ImportExportService {
         }
     }
 
+    /** Writes the model zip data from database to an OutputStream. */
+    @Transactional(readOnly=true)
+    void exportSimulationModel(int projectId, OutputStream out)
+            throws EntityNotFoundException, IOException {
+        Project project = fetchOne(projectRepository, projectId, "project");
+        byte[] data = project.getSimulationmodel().getModelblob();
+        out.write(data);
+    }
+
     /**
      * Creates input parameters and output variables from model data.
      * The required components are also created.  The types of the
