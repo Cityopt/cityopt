@@ -1150,7 +1150,9 @@ public class ProjectController {
     }
 
     @RequestMapping(value="exportdata", method=RequestMethod.GET)
-    public String exportData(Map<String, Object> model){
+    public String exportData(Map<String, Object> model,
+		@RequestParam(value="error", required=false) String error,
+		HttpServletRequest request) {
 
     	ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null)
@@ -1159,6 +1161,22 @@ public class ProjectController {
         }
         securityAuthorization.atLeastStandard_guest(project);
 
+        Integer defaultExtSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
+
+        if (defaultExtSetId == null)
+        {
+    		model.put("enableExtParamSetExport", "false");
+        }
+        else 
+        {
+        	model.put("enableExtParamSetExport", "true");
+        }
+        
+        if (error != null)
+        {
+        	model.put("error", controllerService.getMessage("no_ext_param_sets", request));
+        }
+        
         return "exportdata";
     }
 
@@ -1171,6 +1189,7 @@ public class ProjectController {
 		if (project == null)
 		{
 			return;
+			//return "error";
 		}
 		securityAuthorization.atLeastStandard_guest(project);
 
@@ -1196,7 +1215,10 @@ public class ProjectController {
 
 	        if (defaultExtSetId == null)
 	        {
+	        	System.out.println("No default external parameter set");
 	        	return;
+	        	//model.put("error", controllerService.getMessage("no_ext_param_sets", request));
+	        	//return "exportdata";
 	        }
 
 	    	importExportService.exportExtParamValSets(scenarioPath, timeSeriesPath, project.getPrjid(), defaultExtSetId);
@@ -1272,6 +1294,7 @@ public class ProjectController {
 		} catch (Exception e) {
 	    	e.printStackTrace();
 	    }
+		//return "exportdata";
 	}
 
     @RequestMapping(value="projectdata", method=RequestMethod.GET)
