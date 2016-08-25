@@ -304,7 +304,7 @@ public class ImportExportService {
 
     /** Writes the model zip data from database to an OutputStream. */
     @Transactional(readOnly=true)
-    void exportSimulationModel(int projectId, OutputStream out)
+    public void exportSimulationModel(int projectId, OutputStream out)
             throws EntityNotFoundException, IOException {
         Project project = fetchOne(projectRepository, projectId, "project");
         byte[] data = project.getSimulationmodel().getModelblob();
