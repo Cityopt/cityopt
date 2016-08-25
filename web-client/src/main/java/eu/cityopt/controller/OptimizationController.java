@@ -1145,33 +1145,20 @@ public class OptimizationController {
 
 			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
 
-			for (File file : files) {
-
-				try {
-					zos.putNextEntry(new ZipEntry(file.getName()));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				// Get the file
+			for (File file : files) 
+			{
 				FileInputStream fis = null;
+				
 				try {
 					fis = new FileInputStream(file);
 				} catch (FileNotFoundException fnfe) {
-					// If the file does not exists, write an error entry instead of
-					// file
-					// contents
-
-					try {
-						zos.write(("ERROR could not find file " + file.getName()).getBytes());
-						zos.closeEntry();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					System.out.println("Could find file "
-							+ file.getAbsolutePath());
+					System.out.println("Could not find file " + file.getAbsolutePath());
 					continue;
-				} catch (IOException e)	{
+				}
+					
+				try {
+					zos.putNextEntry(new ZipEntry(file.getName()));
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 
@@ -1249,32 +1236,20 @@ public class OptimizationController {
 
 			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
 
-			for (File file : files) {
-
-				try {
-					zos.putNextEntry(new ZipEntry(file.getName()));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				// Get the file
+			for (File file : files) 
+			{
 				FileInputStream fis = null;
+				
 				try {
 					fis = new FileInputStream(file);
 				} catch (FileNotFoundException fnfe) {
-					// If the file does not exists, write an error entry instead of
-					// file
-					// contents
-
-					try {
-						zos.write(("ERROR could not find file " + file.getName()).getBytes());
-						zos.closeEntry();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
 					System.out.println("Could not find file " + file.getAbsolutePath());
 					continue;
-				} catch (IOException e)	{
+				}
+				
+				try {
+					zos.putNextEntry(new ZipEntry(file.getName()));
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 
