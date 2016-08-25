@@ -1151,7 +1151,8 @@ public class ProjectController {
 
     @RequestMapping(value="exportdata", method=RequestMethod.GET)
     public String exportData(Map<String, Object> model,
-		@RequestParam(value="error", required=false) String error,
+		@RequestParam(value="enableExtParamSetExport", required=false) String enableExtParamSetExport,
+		@RequestParam(value="enableSimModelExport", required=false) String enableSimModelExport,
 		HttpServletRequest request) {
 
     	ProjectDTO project = (ProjectDTO) model.get("project");
@@ -1172,11 +1173,27 @@ public class ProjectController {
         	model.put("enableExtParamSetExport", "true");
         }
         
-        if (error != null)
+        Integer simModelId = projectService.getSimulationmodelId(project.getPrjid());
+
+        if (simModelId == null)
+        {
+    		model.put("enableSimModelExport", "false");
+        }
+        else 
+        {
+        	model.put("enableSimModelExport", "true");
+        }
+        
+        if (enableExtParamSetExport != null && enableExtParamSetExport.equals("false"))
         {
         	model.put("error", controllerService.getMessage("no_ext_param_sets", request));
         }
-        
+
+        if (enableSimModelExport != null && enableSimModelExport.equals("false"))
+        {
+        	model.put("error", controllerService.getMessage("upload_simulation_model_first", request));
+        }
+
         return "exportdata";
     }
 
@@ -1189,7 +1206,6 @@ public class ProjectController {
 		if (project == null)
 		{
 			return;
-			//return "error";
 		}
 		securityAuthorization.atLeastStandard_guest(project);
 
@@ -1217,8 +1233,6 @@ public class ProjectController {
 	        {
 	        	System.out.println("No default external parameter set");
 	        	return;
-	        	//model.put("error", controllerService.getMessage("no_ext_param_sets", request));
-	        	//return "exportdata";
 	        }
 
 	    	importExportService.exportExtParamValSets(scenarioPath, timeSeriesPath, project.getPrjid(), defaultExtSetId);
@@ -1264,8 +1278,7 @@ public class ProjectController {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					System.out.println("Could find file "
-							+ file.getAbsolutePath());
+					System.out.println("Could find file " + file.getAbsolutePath());
 					continue;
 				} catch (IOException e)	{
 					e.printStackTrace();
@@ -1294,7 +1307,60 @@ public class ProjectController {
 		} catch (Exception e) {
 	    	e.printStackTrace();
 	    }
-		//return "exportdata";
+	}
+
+    @RequestMapping(value="exportsimulationmodel", method=RequestMethod.GET)
+    public void exportSimulationModel(Map<String, Object> model, HttpServletRequest request,
+    	HttpServletResponse response) 
+    {
+        ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return;
+		}
+		securityAuthorization.atLeastStandard_guest(project);
+
+		try 
+		{
+	        List<ExtParamValSetDTO> extValSets = extParamValSetService.findAll();
+	        Set<Integer> extParamValSetIds = new HashSet<Integer>();
+
+	        for (ExtParamValSetDTO extValSet : extValSets)
+	        {
+	        	extParamValSetIds.add(extValSet.getExtparamvalsetid());
+	        }
+
+	        Integer simModelId = projectService.getSimulationmodelId(project.getPrjid());
+
+	        if (simModelId == null)
+	        {
+	        	System.out.println("No simulation model");
+	        	return;
+	        }
+
+	        String fileName = project.getName() + "_simulation_model.zip";
+	        fileName = fileName.replace(" ", "");
+
+	        response.setContentType("Content-type: text/zip");
+			response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+
+			ServletOutputStream out = null;
+
+			try {
+				out = response.getOutputStream();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+	    	importExportService.exportSimulationModel(project.getPrjid(), out);
+			System.out.println("Sending file " + fileName);
+
+			response.flushBuffer();
+			out.close();
+		} catch (Exception e) {
+	    	e.printStackTrace();
+	    }
 	}
 
     @RequestMapping(value="projectdata", method=RequestMethod.GET)

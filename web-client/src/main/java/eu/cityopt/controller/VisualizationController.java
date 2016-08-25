@@ -755,7 +755,6 @@ public class VisualizationController {
 			userSession = new UserSession();
 		}
 		
-		int nScenId = scenario.getScenid();
 		String status = scenario.getStatus();
 
 		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
@@ -779,12 +778,10 @@ public class VisualizationController {
 		if (userSession.getSelectedChartMetricIds().size() == 1)
 		{
 			timeSeriesCollection.removeAllSeries();
-			XYSeriesCollection collection = new XYSeriesCollection();
 			DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
 			DefaultPieDataset pieDataset = new DefaultPieDataset();
 
 			int metric1Id = iterator.next(); 
-		    int index = 0;
 		    
 			try {
 				MetricDTO metric1 = metricService.findByID(metric1Id);
@@ -813,7 +810,6 @@ public class VisualizationController {
 						pieDataset.setValue(scenarioTemp.getName(), Double.parseDouble(metricVal1.getValue()));
 					}
 					
-					index++;
 				}				
 			
 				JFreeChart chart = null;

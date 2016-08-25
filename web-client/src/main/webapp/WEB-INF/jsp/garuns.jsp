@@ -16,7 +16,7 @@
 	<tr>	
 		<td><%@ include file="mainmenu.inc"%></td>
 		<td valign="top">
-			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<div style="overflow: auto; height: 100%; width: 1100px; overflow: auto;">
 			<table class="maintable">			
 				<%@ include file="toprow.inc"%>
 				<tr class="titlerow">

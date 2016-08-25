@@ -115,7 +115,28 @@
 															</a>
 														</c:when>
 														<c:otherwise>
-															<a href="exportdata.html?error=true">
+															<a href="exportdata.html?enableExtParamSetExport=false">
+																<button type="button">
+																	<spring:message code="export" />
+																</button>
+															</a>
+														</c:otherwise>
+													</c:choose>
+												</td>
+											</tr>
+											<tr>
+												<td><spring:message code="export_simulation_model" /></td>
+												<td>
+													<c:choose>
+														<c:when test="${enableSimModelExport}">
+															<a href="exportsimulationmodel.html">
+																<button>
+																	<spring:message code="export" />
+																</button>
+															</a>
+														</c:when>
+														<c:otherwise>
+															<a href="exportdata.html?enableSimModelExport=false">
 																<button type="button">
 																	<spring:message code="export" />
 																</button>
