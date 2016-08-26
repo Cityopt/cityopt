@@ -589,9 +589,7 @@ public class ScenarioController {
 	@RequestMapping(value = "exportsimulationresults", method = RequestMethod.GET)
 	public void exportSimulationResults(Map<String, Object> model, HttpServletResponse response) {
 
-		System.out.println("Start");
-
-        ProjectDTO project = (ProjectDTO) model.get("project");
+		ProjectDTO project = (ProjectDTO) model.get("project");
 
 		if (project == null)
 		{
