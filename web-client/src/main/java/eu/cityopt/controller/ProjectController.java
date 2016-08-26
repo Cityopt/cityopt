@@ -756,6 +756,134 @@ public class ProjectController {
 	    }
 	}
 
+    @RequestMapping(value = "exportprojecttemplate", method = RequestMethod.GET)
+    public void exportProjectTemplate(Map<String, Object> model, HttpServletRequest request,
+        HttpServletResponse response) throws IOException {
+
+        ProjectDTO project = null;
+
+        try {
+            project = (ProjectDTO) model.get("project");
+
+            if (project == null)
+            {
+                return;
+            }
+            securityAuthorization.atLeastStandard_guest(project);
+
+            try {
+                project = projectService.findByID(project.getPrjid());
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            model.put("project", project);
+        } catch (Exception e) {
+            return;
+        }
+
+		String imgPath = request.getSession().getServletContext().getRealPath("/") + "assets\\templates\\";
+		String imgFileName = "test-project.csv";
+		File file = new File(imgPath + imgFileName);
+
+		FileInputStream fis = null;
+        OutputStream outputStream = response.getOutputStream();
+
+		try {
+			fis = new FileInputStream(file);
+		} catch (FileNotFoundException fnfe) {
+			System.out.println("Could not find file " + file.getAbsolutePath());
+		}
+
+		BufferedInputStream fif = new BufferedInputStream(fis);
+
+		// Write the contents of the file
+		int data = 0;
+
+		try 
+		{
+			while ((data = fif.read()) != -1) 
+			{
+				outputStream.write(data);
+			}
+			fif.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// set headers for the response
+        response.setContentType("text/csv");
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=\"test-project.csv\"");
+        response.setHeader(headerKey, headerValue);
+
+        outputStream.close();
+		System.out.println("Finished file " + file.getName());
+    }
+
+    @RequestMapping(value = "exportscenariotemplate", method = RequestMethod.GET)
+    public void exportScenarioTemplate(Map<String, Object> model, HttpServletRequest request,
+        HttpServletResponse response) throws IOException {
+
+        ProjectDTO project = null;
+
+        try {
+            project = (ProjectDTO) model.get("project");
+
+            if (project == null)
+            {
+                return;
+            }
+            securityAuthorization.atLeastStandard_guest(project);
+
+            try {
+                project = projectService.findByID(project.getPrjid());
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            model.put("project", project);
+        } catch (Exception e) {
+            return;
+        }
+
+		String imgPath = request.getSession().getServletContext().getRealPath("/") + "assets\\templates\\";
+		String imgFileName = "test-scenario.csv";
+		File file = new File(imgPath + imgFileName);
+
+		FileInputStream fis = null;
+        OutputStream outputStream = response.getOutputStream();
+
+		try {
+			fis = new FileInputStream(file);
+		} catch (FileNotFoundException fnfe) {
+			System.out.println("Could not find file " + file.getAbsolutePath());
+		}
+
+		BufferedInputStream fif = new BufferedInputStream(fis);
+
+		// Write the contents of the file
+		int data = 0;
+
+		try 
+		{
+			while ((data = fif.read()) != -1) 
+			{
+				outputStream.write(data);
+			}
+			fif.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// set headers for the response
+        response.setContentType("text/csv");
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=\"test-scenario.csv\"");
+        response.setHeader(headerKey, headerValue);
+
+        outputStream.close();
+		System.out.println("Finished file " + file.getName());
+    }
+
     @RequestMapping(value = "importextparam", method = RequestMethod.POST)
     public String importExtParamFile(Map<String, Object> model, @RequestParam("file") MultipartFile file,
 		HttpServletRequest request) {

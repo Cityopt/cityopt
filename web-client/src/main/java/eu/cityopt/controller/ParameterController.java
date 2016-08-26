@@ -1234,7 +1234,8 @@ public class ParameterController {
     @RequestMapping(value="editextparamvalue", method=RequestMethod.POST)
     public String editExtParamValPost(ParamForm paramForm, Map<String, Object> model,
         @RequestParam(value="extparamvalid", required=true) String extParamValId,
-        @RequestParam(value="cancel", required=false) String cancel){
+        @RequestParam(value="cancel", required=false) String cancel) 
+    {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)

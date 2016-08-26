@@ -49,11 +49,11 @@
 					<td class="spacecolumn"></td>
 					<td align="right">
 						<spring:message code="download_project_templates"/>
-						<a href="">						
+						<a href="exportprojecttemplate.html">						
 							<button><spring:message code="download"/></button>
 						</a>
 						<spring:message code="download_scenario_templates"/>
-						<a href="">
+						<a href="exportscenariotemplate.html">
 							<button><spring:message code="download"/></button>
 						</a>
 					</td>
