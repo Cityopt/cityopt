@@ -1767,30 +1767,33 @@ public class VisualizationController {
 		{
 			userSession.removeAllSelectedGAScenarioIds();
 
-			ObjectiveFunctionDTO objFuncFirst = objFuncs.get(0);
-
-			ArrayList<ObjectiveFunctionResultDTO> listResults = (ArrayList<ObjectiveFunctionResultDTO>) objFuncService.findResultsByScenarioGenerator(scenGen.getScengenid(), objFuncFirst.getObtfunctionid());
-			Iterator<ObjectiveFunctionResultDTO> resultIter = listResults.iterator();
-			
-			while (resultIter.hasNext())
+			if (objFuncs.size() > 0)
 			{
-				ObjectiveFunctionResultDTO result = (ObjectiveFunctionResultDTO) resultIter.next();
+				ObjectiveFunctionDTO objFuncFirst = objFuncs.get(0);
+	
+				ArrayList<ObjectiveFunctionResultDTO> listResults = (ArrayList<ObjectiveFunctionResultDTO>) objFuncService.findResultsByScenarioGenerator(scenGen.getScengenid(), objFuncFirst.getObtfunctionid());
+				Iterator<ObjectiveFunctionResultDTO> resultIter = listResults.iterator();
 				
-				if (result.isScengenresultParetooptimal())
+				while (resultIter.hasNext())
 				{
-					userSession.addSelectedGAScenarioId(result.getScenID());
+					ObjectiveFunctionResultDTO result = (ObjectiveFunctionResultDTO) resultIter.next();
+					
+					if (result.isScengenresultParetooptimal())
+					{
+						userSession.addSelectedGAScenarioId(result.getScenID());
+					}
 				}
-			}
-		
-			userSession.removeAllSelectedGAObjFuncIds();
 			
-			for (ObjectiveFunctionDTO objFunc : objFuncs)
-			{
-				userSession.addSelectedGAObjFuncId(objFunc.getObtfunctionid());
+				userSession.removeAllSelectedGAObjFuncIds();
 				
-				if (userSession.getSelectedGAObjFuncIds().size() >= 2)
+				for (ObjectiveFunctionDTO objFunc : objFuncs)
 				{
-					break;
+					userSession.addSelectedGAObjFuncId(objFunc.getObtfunctionid());
+					
+					if (userSession.getSelectedGAObjFuncIds().size() >= 2)
+					{
+						break;
+					}
 				}
 			}
 		}
