@@ -3294,20 +3294,14 @@ public class OptimizationController {
         			e.printStackTrace();
         		}
 
-                if (nComponentId == inputParam.getComponentComponentid())
-                {
-                	ModelParameterDTO modelParamTemp = new ModelParameterDTO();
-	                modelParamTemp.setValue(value);
-	                modelParamTemp.setInputparameter(inputParam);
-	       	 		validator.validate(modelParamTemp, result);
-                }
-                else
-                {
-
-                }
+            	//System.out.println("checking model param " + inputParam.getComponentName() + " value: " + value);
+            	ModelParameterDTO modelParamTemp = new ModelParameterDTO();
+                modelParamTemp.setValue(value);
+                modelParamTemp.setInputparameter(inputParam);
+       	 		validator.validate(modelParamTemp, result);
 
     		    if (result.hasErrors()) {
-    		    	errors = errors + result.getGlobalError().getCode() + "<br>\n";
+    		    	errors = /*errors + */ result.getGlobalError().getCode() + "<br>\n";
     		    }
     		    else
     		    {
