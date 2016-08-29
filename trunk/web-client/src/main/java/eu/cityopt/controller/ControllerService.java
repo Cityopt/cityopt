@@ -808,6 +808,11 @@ public class ControllerService {
 				e.printStackTrace();
 			}
 
+			if (objFuncs.size() == 0)
+			{
+				return false;
+			}
+			
 		    ObjectiveFunctionDTO objFuncFirst = objFuncs.get(0);
 	
 			ArrayList<ObjectiveFunctionResultDTO> listResults = (ArrayList<ObjectiveFunctionResultDTO>) objFuncService.findResultsByScenarioGenerator(nScenGenId, objFuncFirst.getObtfunctionid());
