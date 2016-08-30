@@ -647,7 +647,7 @@ CREATE TABLE TimeSeriesVal
 (
 	tSeriesValID integer NOT NULL DEFAULT nextval(('timeseriesval_tseriesvalid_seq'::text)::regclass),
 	tSeriesID integer,
-	value varchar(50)	,
+	value double precision,
 	time timestamp,
 	version integer
 )
