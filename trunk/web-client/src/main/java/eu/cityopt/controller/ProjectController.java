@@ -401,7 +401,7 @@ public class ProjectController {
         	session.setActiveScenGen(null);
         	model.put("usersession", session);
 
-        	controllerService.getEnergyModelInfo(model, project.getPrjid());
+        	controllerService.getEnergyModelInfo(model, project.getPrjid(), request);
 
             model.put("project", project);
         }
@@ -418,7 +418,7 @@ public class ProjectController {
                 e.printStackTrace();
             }
 
-            controllerService.getEnergyModelInfo(model, project.getPrjid());
+            controllerService.getEnergyModelInfo(model, project.getPrjid(), request);
 
             model.put("project", project);
         }
@@ -450,7 +450,7 @@ public class ProjectController {
         {
         	if (projectForm.getName().isEmpty())
         	{
-                controllerService.getEnergyModelInfo(model, project.getPrjid());
+                controllerService.getEnergyModelInfo(model, project.getPrjid(), request);
                 model.put("project", project);
                 model.put("error", controllerService.getMessage("write_project_name", request));
         		return "editproject";
@@ -480,7 +480,7 @@ public class ProjectController {
                     }
 
                     project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()), nDefaultExtSetId);
-                    controllerService.getEnergyModelInfo(model, project.getPrjid());
+                    controllerService.getEnergyModelInfo(model, project.getPrjid(), request);
                 } catch(ObjectOptimisticLockingFailureException e) {
                     model.put("error", controllerService.getMessage("project_updated", request));
                 } catch (Exception e1) {
@@ -531,7 +531,7 @@ public class ProjectController {
                 	model.put("showInfo", true);
                 }
 
-                controllerService.getEnergyModelInfo(model, project.getPrjid());
+                controllerService.getEnergyModelInfo(model, project.getPrjid(), request);
 
                 model.put("success",true);
 

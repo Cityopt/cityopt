@@ -51,6 +51,10 @@
 						
 						<table align="left" style="width: 400px">
 							<tr>
+								<td class="infosmall"><spring:message code="parameter_name_requirements"/></td>
+							</tr>
+							<tr class="spacerow"></tr>
+							<tr>
 								<td class="infosmall">
 									<spring:message code="name"/>*
 								</td>
@@ -65,8 +69,7 @@
 								</td>
 							</tr>
 							<tr>
-								<!-- Create submit & Cancel button -->
-								<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create"/>"/>
+								<td align="right"><button style="width:100px" type="submit" class="activebutton"><spring:message code="create"/></button>
 									<input type="submit" value="Cancel" name="cancel">
 								</td>
 							</tr>

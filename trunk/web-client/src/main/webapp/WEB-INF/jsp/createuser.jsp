@@ -99,9 +99,8 @@
 							</tr>						
 							<tr class="submit" height=50px;>
 								<td></td>
-								<!-- Create submit and Cancel button -->
-								<td align="right"><input style="width: 100px" type="submit"
-									value="<spring:message code="create"/>" /> <td>
+								<td align="right">
+									<button style="width: 100px" type="submit" class="activebutton"><spring:message code="create"/></button>
 									<a href="usermanagement.html">
 										<button	style="width: 100px" type="button" value="Cancel">
 											<spring:message code="cancel" />

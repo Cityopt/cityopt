@@ -80,7 +80,7 @@
 							</tr>
 							<tr>
 								<td align="right">
-									<input type="submit" style="width:100px" value="Update"/>
+									<button class="activebutton" type="submit" style="width:100px">Update</button>
 									<a href="usermanagement.html"><button style="width:100px" type="button" value="Back"><spring:message code="back"/></button></a>
 								</td>
 							</tr>

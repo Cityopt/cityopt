@@ -87,8 +87,8 @@
 										</tr>
 										<tr>
 											<td></td>
-											<!-- Ok and Cansel submit -buttons -->
-											<td align=left><input type="submit" value="<spring:message code="ok"/>"/>
+											<td align=left>
+												<button class="activebutton" type="submit"><spring:message code="ok"/></button>
 											<a href="editoptimizationset.html"><button type="button">
 											<spring:message code="cancel"/></button></a></td>
 										</tr>					

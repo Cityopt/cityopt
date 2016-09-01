@@ -53,7 +53,7 @@
 						<!-- Tooltips -->
 						<c:set var="tooltip_edit"><spring:message code="tooltip_edit_name"/></c:set>
 						<c:set var="tooltip_update"><spring:message code="tooltip_update"/></c:set>
-						<c:set var="tooltip_cansel"><spring:message code="tooltip_cansel"/></c:set>
+						<c:set var="tooltip_cancel"><spring:message code="tooltip_cancel"/></c:set>
 			
 						<table align="left">
 							<col style="width:300px">
@@ -73,8 +73,8 @@
 							</tr>
 							<tr>
 								<td align="right">
-									<input title="${tooltip_update}" style="width:100px" type="submit" value="<spring:message code="update"/>"/>
-									<a href="projectparameters.html"><button title="${tooltip_cansel}" style="width:100px" type="button" value="Cancel">
+									<button class="activebutton" title="${tooltip_update}" style="width:100px" type="submit"><spring:message code="update"/></button>
+									<a href="projectparameters.html"><button title="${tooltip_cancel}" style="width:100px" type="button" value="Cancel">
 									<spring:message code="cancel"/></button></a>
 								</td>
 							</tr>

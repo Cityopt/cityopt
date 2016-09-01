@@ -70,7 +70,7 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td align="right"><a href="addextparamsets.html"><button type="button"><spring:message code="accept"/></button></a>
+					<td align="right"><a href="addextparamsets.html"><button class="activebutton" type="button"><spring:message code="accept"/></button></a>
 					<a href="editoptimizationset.html"><button style="width:100px" type="button" value="Cancel"><spring:message code="cancel"/></button></a></td>
 				</tr>
 			</table>

@@ -93,16 +93,24 @@
 										</tr>					
 										<tr height=10px>						
 											<td align="right">							
-											<c:set var="tooltip_create_project"><spring:message code="tooltip_create_project"/></c:set>
-											<input type="submit" title="${tooltip_create_project}" 
-											value="<spring:message code="createproject"/>" style="width:120px"></td>							
+												<c:set var="tooltip_create_project"><spring:message code="tooltip_create_project"/></c:set>
+			
+												<c:choose>
+			          								<c:when test="${success!=null && success==true}">
+														<input disabled="disabled" type="submit" title="${tooltip_create_project}" value="<spring:message code="createproject"/>" style="width:120px">
+													</c:when>
+													<c:otherwise>
+														<button class="activebutton" type="submit" style="width:120px" title="${tooltip_create_project}"><spring:message code="createproject"/></button>
+													</c:otherwise>
+												</c:choose>
+											</td>							
 										</tr>							
 									</table>						
 									<c:choose>
 	          							<c:when test="${success!=null && success==true}">
 					            			<h2 class="successful"> <spring:message code="projectSuccess"/></h2>
 					            			<c:set var="tooltip_next"><spring:message code="tooltip_next"/></c:set>
-					            			<input type="submit" name="nextpage" style="width:100px" class="big" value="Next" title="${tooltip_next}">
+					            			<input type="submit" name="nextpage" style="width:100px" class="activebutton" value="Next" title="${tooltip_next}">
 					            		</c:when>
 					            		<c:when test="${success!=null && success==false}">
 					            			<h2 class="error"> <spring:message code="projectExists" /> </h2>

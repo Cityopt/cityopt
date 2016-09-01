@@ -75,8 +75,11 @@
 									<element><element><h2 class="successful"></element></element>${successful}</h2><element>				
 									
 									<c:if test="${success!=null && success==true}">
-									<a href="editscenario.html"><button style="width:100px" type="button" value="Next">
-			            			   <spring:message code="next"/></button></a>
+									<a href="editscenario.html">
+										<button class="activebutton" style="width:100px" type="button">
+			            			   		<spring:message code="next"/>
+		            			   		</button>
+	            			   		</a>
 			            			</c:if>
 								</td>
 							</tr>

@@ -17,12 +17,12 @@
 <body>
 <table cellspacing="0px" cellpadding="0px">
 	<tr>
-		<td>
+		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:700px;width:900px;overflow:auto">
+			<div style="overflow:scroll;height:100%;width:900px;overflow:auto">
 			<table>
 				<tr>
 					<td>

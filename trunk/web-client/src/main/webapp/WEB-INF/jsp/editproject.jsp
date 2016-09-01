@@ -186,7 +186,7 @@
 						</table>	
 					</td>
 					<td valign="top" align="right">
-						<img style="width:500px" src="overview.png" border="1"/>
+						<img src="assets/img/${usersession.getSimModelFile()}" style="width:500px" border="1">
 					</td>
 				</tr>
 				<tr height="20">

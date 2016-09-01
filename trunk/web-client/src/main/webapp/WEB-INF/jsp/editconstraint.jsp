@@ -180,8 +180,14 @@
 								<td></td>
 								<td></td>
 								<!-- Ok submit and Cancel -button-->
-								<td align=right><input type="submit" value="<spring:message code="ok"/>"/><a href="editoptimizationset.html"><button type="button">
-								<spring:message code="cancel"/></button></a></td>
+								<td align=right>
+									<button class="activebutton" type="submit"><spring:message code="ok"/></button>
+									<a href="editoptimizationset.html">
+										<button type="button">
+											<spring:message code="cancel"/>
+										</button>
+									</a>
+								</td>
 							</tr>	
 							<form:hidden path="optconstid" />
 						</table>

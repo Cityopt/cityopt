@@ -343,13 +343,25 @@ public class ParameterController {
         }
         securityAuthorization.atLeastExpert_expert(project);
         
-        if (component.getName().isEmpty())
-        {
-        	model.put("error", controllerService.getMessage("write_name", request));
-        	model.put("component", component);
+        String name = component.getName();
+        
+        if (name == null || name.isEmpty()) {
+        	ComponentDTO newComponent = new ComponentDTO();
+            model.put("component", newComponent);
+            model.put("error", controllerService.getMessage("write_component_name", request));
         	return "editcomponent";
         }
         
+    	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
+     	boolean isValid = checker.isValidTopLevelName(name);
+
+     	if (!isValid)
+     	{
+            model.put("component", component);
+            model.put("error", controllerService.getMessage("write_another_component_name", request));
+        	return "editcomponent";
+        }
+     	        
         try {
             project = projectService.findByID(project.getPrjid());
         } catch (EntityNotFoundException e1) {
@@ -466,7 +478,7 @@ public class ParameterController {
 		ParamForm inputParamForm,
         @RequestParam(value="inputparamid", required=false) String inputParamId,
     	@RequestParam(value="cancel", required=false) String cancel,
-    	BindingResult result) {
+    	BindingResult result, HttpServletRequest request) {
     	        
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -505,8 +517,6 @@ public class ParameterController {
         updatedInputParam.setLowerBound(inputParamForm.getMin());
         updatedInputParam.setUpperBound(inputParamForm.getMax());
 
-        System.out.println("from input min " + inputParamForm.getMin());
-
         TypeDTO type = typeService.findByName(eu.cityopt.sim.eval.Type.DOUBLE.name);
         updatedInputParam.setType(type);
         
@@ -521,12 +531,60 @@ public class ParameterController {
         
         updatedInputParam.setUnit(unit);
         int componentId = updatedInputParam.getComponentComponentid();
+        InputParameterDTO inputParam = null;
 
+        try {
+			inputParam = inputParamService.findByID(nInputParamId);
+		} catch (EntityNotFoundException e2) {
+			e2.printStackTrace();
+		}
+		
+        if (inputParamForm.getName() == null || inputParamForm.getName().isEmpty() 
+    		|| strUnit == null || strUnit.isEmpty())
+        {
+        	model.put("inputParam", inputParam);
+            
+            inputParamForm = new ParamForm();
+            inputParamForm.setName(inputParam.getName());
+            inputParamForm.setValue(inputParam.getDefaultvalue());
+            inputParamForm.setMin(inputParam.getLowerBound());
+            inputParamForm.setMax(inputParam.getUpperBound());
+            model.put("inputParamForm", inputParamForm);
+
+            model.put("selectedcompid", componentId);
+
+            List<UnitDTO> units = unitService.findAll();
+            model.put("units", units);
+            model.put("error", controllerService.getMessage("write_input_parameter_and_select_unit", request));
+        	return "editinputparameter";
+        }
+        
+        InputParameterDTO testInput = inputParamService.findByNameAndComponent(inputParamForm.getName(), componentId);
+        SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
+     	boolean isValid = checker.isValidAttributeName(inputParamForm.getName());
+
+     	if (!isValid || testInput != null)
+     	{
+            model.put("error", controllerService.getMessage("write_another_input_parameter_name", request));
+        	model.put("inputParam", inputParam);
+            
+        	inputParamForm = new ParamForm();
+            inputParamForm.setName(inputParam.getName());
+            inputParamForm.setValue(inputParam.getDefaultvalue());
+            inputParamForm.setMin(inputParam.getLowerBound());
+            inputParamForm.setMax(inputParam.getUpperBound());
+            model.put("inputParamForm", inputParamForm);
+            model.put("selectedcompid", componentId);
+
+            List<UnitDTO> units = unitService.findAll();
+            model.put("units", units);
+            return "editinputparameter";
+        }
+         	
         validator.validate(updatedInputParam, result);
         
         if (result.hasErrors()) {
-        	InputParameterDTO inputParam;
-			try {
+        	try {
 				inputParam = inputParamService.findByID(nInputParamId);
 				model.put("inputParam", inputParam);
 	            
@@ -820,13 +878,7 @@ public class ParameterController {
         }
 
         int nSelectedCompId = Integer.parseInt(strSelectedCompId);
-        ComponentDTO component = null;
-        try {
-            component = componentService.findByID(nSelectedCompId);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-
+        
         InputParameterDTO newInputParameter = new InputParameterDTO();
         model.put("inputParam", newInputParameter);
         model.put("selectedcompid", nSelectedCompId);
@@ -1144,7 +1196,7 @@ public class ParameterController {
 
     @RequestMapping(value="editextparam", method=RequestMethod.POST)
     public String editExtParamPost(ParamForm paramForm, Map<String, Object> model,
-            @RequestParam(value="extparamid", required=true) String extParamId){
+            @RequestParam(value="extparamid", required=true) String extParamId) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)

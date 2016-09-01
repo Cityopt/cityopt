@@ -202,7 +202,7 @@
 																<spring:message code="update" />
 															</c:set>
 															<a href="createuser.html">
-																<button type="button" style="width: 80px">
+																<button type="button" style="width: 120px">
 																	<spring:message code="create_user" />
 																</button>
 															</a>

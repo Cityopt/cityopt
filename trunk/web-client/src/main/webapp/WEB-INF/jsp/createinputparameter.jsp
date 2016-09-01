@@ -47,6 +47,11 @@
 				</tr>
 				<tr>
 					<td class="spacecolumn"></td>
+					<td class="infosmall"><spring:message code="parameter_name_requirements"/></td>
+				</tr>
+				<tr height="10"></tr>
+				<tr>
+					<td class="spacecolumn"></td>
 					<td valign="top">
 						<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 						<form:form method="post" action="createinputparameter.html?selectedcompid=${selectedcompid}" modelAttribute="inputParamForm">
@@ -92,9 +97,10 @@
 							</tr>
 							<tr>
 								<td></td>
-								<!-- Create & Cancel button -->
-								<td align="right"><input style="width:100px" type="submit" value="<spring:message code="create"/>"/>
-								<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>"></td>
+								<td align="right">
+									<button class="activebutton" style="width:100px" type="submit"><spring:message code="create"/></button>
+									<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>">
+								</td>
 							</tr>
 						</table>
 						</form:form>

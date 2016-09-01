@@ -71,19 +71,14 @@
 															<td>
 																<table>
 																	<tr>
-																		<td class="regular">
+																		<td class="infosmall">
 																			<spring:message code="selected_external_parameter_set" />:
 																		</td>
-																		<td>
-																			<table class="tablestyle" width="200px" height="30px">
-																				<tr>
-																					<td>
-																						${extParamValSet.name}
-																					</td>
-																				</tr>
-																			</table>
-																		</td>
 																	</tr>
+																	<tr>
+																		<td class="activeline">${extParamValSet.name}</td>
+																	</tr>
+																	<tr class="spacerow"></tr>
 																</table>
 															</td>
 														</tr>
@@ -203,7 +198,7 @@
 																	</tr>
 																	<tr>
 																		<td width="750" align="right">
-																			<a href="createextparam.html"><button type="button"	style="width: 150px">
+																			<a href="createextparam.html"><button type="button"	style="width: 200px">
 																					<spring:message code="create_external_parameter" />
 																				</button>
 																			</a>

@@ -201,7 +201,7 @@
 							<tr>
 								<td></td>
 								<td align="right">
-									<input style="width:120px" type="submit" value="<spring:message code="save_as_value"/>"/>
+									<button class="activebutton" style="width:150px" type="submit"><spring:message code="save_as_value"/></button>
 									<input style="width:120px" type="submit" id="cancel" name="cancel" value="<spring:message code="cancel"/>">
 								</td>
 							</tr>
@@ -223,7 +223,7 @@
 							<tr>	
 			  					<td></td>
 			   					<td align="right">
-			   						<input type="submit" value="<spring:message code="import_and_save_as_time_series"/>">
+			   						<button class="activebutton" type="submit"><spring:message code="import_and_save_as_time_series"/></button>
 									<input class="inactivebutton" style="width:100px" type="submit" id ="cancel" name="cancel" value="<spring:message code="cancel"/>">
 			  					</td>
 							</tr>	

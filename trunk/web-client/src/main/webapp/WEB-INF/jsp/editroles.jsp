@@ -118,8 +118,11 @@
 							</tr>
 							<tr>
 								<!-- Create role and back -buttons -->
-								<td align="right"><a href="createrole.html?userid=${user.userid}"><button style="width:100px" type="button" value="Create"><spring:message code="create_role"/></button></a>
-								<a href="usermanagement.html"><button style="width:100px" type="button" value="Back"><spring:message code="back"/></button></a></td>
+								<td align="right">
+									<a href="createrole.html?userid=${user.userid}">
+										<button style="width:100px" type="button" value="Create"><spring:message code="create_role"/></button></a>
+										<a href="usermanagement.html"><button style="width:100px" type="button" value="Back"><spring:message code="back"/></button></a>
+								</td>
 							</tr>
 						</table>
 					</td>

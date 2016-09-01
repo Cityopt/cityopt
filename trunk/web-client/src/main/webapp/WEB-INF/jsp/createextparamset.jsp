@@ -101,7 +101,7 @@
 							</tr>
 							<tr>
 								<td align="right">
-									<input type="submit" value="Save">
+									<button class="activebutton" type="submit"><spring:message code="save"/></button>
 									<!-- <a href="projectparameters.html"><button type="button">Cancel</button></a>-->
 								</td>
 							</tr>

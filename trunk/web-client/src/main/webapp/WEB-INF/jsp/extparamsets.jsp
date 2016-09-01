@@ -155,10 +155,9 @@ var getUrlParameter = function getUrlParameter(sParam) {
 													<td></td>
 													<td></td>
 													<td></td>
-													<!-- Submit button -->
-			
-													<!-- Close button -->
-													<td><input name="index" title="${submit_externalparameter}" type="submit" value="<spring:message code="ok" />"></td>
+													<td>
+														<button class="activebutton" name="index" title="${submit_externalparameter}" type="submit"><spring:message code="ok" /></button>
+													</td>
 													<td align="right">
 														<a href="${backpage}">
 															<button	type="button" title="${tooltip_close}">

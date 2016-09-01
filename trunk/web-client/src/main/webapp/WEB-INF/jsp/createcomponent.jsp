@@ -46,6 +46,10 @@
 				</tr>
 				<tr>
 					<td class="spacecolumn"></td>
+					<td class="infosmall"><spring:message code="parameter_name_requirements"/></td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
 					<td valign="top">
 						<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 						<form:form method="post" action="createcomponent.html" modelAttribute="component">
@@ -53,9 +57,9 @@
 						<!-- Tool tips -->
 						<c:set var="tooltip_name"><spring:message code="tooltip_name"/></c:set>
 						<c:set var="tooltip_create"><spring:message code="tooltip_create"/></c:set>
-						<c:set var="tooltip_cansel"><spring:message code="tooltip_cansel"/></c:set>
+						<c:set var="tooltip_cancel"><spring:message code="tooltip_cancel"/></c:set>
 			
-						<table align="center">
+						<table align="left">
 							<col style="width:150px">
 							<col style="width:80px">
 							<col style="width:80px">
@@ -75,7 +79,9 @@
 							</tr>
 							<tr>
 								<td align="right">
-									<input title="${tooltip_create}" style="width:100px" type="submit" value="<spring:message code="create"/>"/>
+									<button class="activebutton" title="${tooltip_create}" style="width:100px" type="submit">
+										<spring:message code="create"/>
+									</button>
 									<input type="submit" style="width:100px" name="cancel" value="cancel" />
 								</td>
 							</tr>

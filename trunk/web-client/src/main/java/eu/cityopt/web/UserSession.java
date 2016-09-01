@@ -39,6 +39,7 @@ public class UserSession {
 	private String strSummaryFile;
 	private String strGAChartImageMap;
 	private String strGAChartFile;
+	private String strSimModelFile;
 	
 	public String getLanguage() {
 		return strLanguage;
@@ -428,4 +429,12 @@ public class UserSession {
 		return strGAChartFile;
 	}
 
+	public void setSimModelFile(String file) {
+		strSimModelFile = file;
+	}
+	
+	public String getSimModelFile()
+	{
+		return strSimModelFile;
+	}
 }
