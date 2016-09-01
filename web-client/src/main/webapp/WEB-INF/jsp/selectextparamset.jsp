@@ -81,8 +81,11 @@
 															</c:when>
 															<c:otherwise>
 																<tr>
-																	<td><a href="<c:url value='selectextparamset.html?selectedextparamsetid=${extParamValSet.extparamvalsetid}'/>">
-																	<spring:message code="select"/></a></td>
+																	<td>
+																		<a href="<c:url value='selectextparamset.html?selectedextparamsetid=${extParamValSet.extparamvalsetid}'/>">
+																			<button type=button"><spring:message code="select"/></button>
+																		</a>
+																	</td>
 															</c:otherwise>
 														</c:choose>	
 			
@@ -96,8 +99,8 @@
 										<tr height="20"></tr>
 										<tr>
 											<!-- Create external parameter set & back button -->
-											<td align="right">
-												<a href="createextparamset.html"><button type="button"><spring:message code="create_external_parameter_set"/></button></a>
+											<td align="left" colspan="3">
+												<a href="createextparamset.html"><button class="activebutton" type="button"><spring:message code="create_external_parameter_set"/></button></a>
 												<a href="extparams.html"><button type="button"><spring:message code="back"/></button></a>
 											</td>
 											<td></td>

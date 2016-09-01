@@ -57,7 +57,7 @@
 			   				<c:when test="${success!=null && success==true}">
 			     			   <p class="successful"><spring:message code="optimization_set_created"/></p>
 			     			   <c:set var="tooltip_next"><spring:message code="tooltip_next"/></c:set>
-			     			   <a href='editoptimizationset.html'><button style="width:100px" class="rewardGreen" type="button" value="Next" title="${tooltip_next}">
+			     			   <a href='editoptimizationset.html'><button style="width:100px" class="activebutton" type="button" value="Next" title="${tooltip_next}">
 			     			   <spring:message code="next"/></button></a>
 				     		</c:when>
 			           		<c:when test="${success!=null && success==false}">

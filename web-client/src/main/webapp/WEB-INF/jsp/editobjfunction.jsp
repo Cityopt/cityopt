@@ -194,8 +194,9 @@
 											<td></td>
 											<td></td>
 											<td></td>
-											<td align="right"><input type="submit" value="<spring:message code="ok"/>"></input>
-											<a href="editoptimizationset.html"><button type="button"><spring:message code="cancel"/></button></a></td>
+											<td align="right">
+												<button class="activebutton" type="submit"><spring:message code="ok"/></button>
+												<a href="editoptimizationset.html"><button type="button"><spring:message code="cancel"/></button></a></td>
 											<td></td>
 										</tr>					
 									</table>

@@ -88,7 +88,7 @@
 			              <tr height="10"></tr>
 			              <tr>
 			                  <td align="right">
-			                    <input type="submit" value="Ok"></input>
+			                    <button class="activebutton" type="submit">Ok</button>
 			                    <a href="geneticalgorithm.html"><button type="button"><spring:message code="cancel"/></button></a>
 			                  </td>
 			              </tr>   

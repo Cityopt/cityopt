@@ -62,7 +62,7 @@
               <tr height="10"></tr>
               <tr>
                   <td align="right">
-                    <input type="submit" value="Ok">
+                    <button class="activebutton" type="submit"><spring:message code="ok"/></button>
                     <a href="${context}"><button type="button" style="width: 100px"><spring:message code="cancel"/></button></a>
                   </td>
               </tr>   

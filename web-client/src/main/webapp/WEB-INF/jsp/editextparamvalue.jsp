@@ -58,7 +58,7 @@
 									<spring:message code="name"/>
 								</td>
 								<td>
-									<form:input style="width:300px" type="text" path="name"/>
+									<form:label style="width:300px" type="text" path="name"/>${paramForm.name}
 								</td>
 							</tr>
 							<tr>
@@ -102,8 +102,10 @@
 							<tr>
 								<td></td>
 								<!-- Update and Cancel -buttons -->
-								<td align="right"><input style="width:100px" type="submit" value="<spring:message code="update"/>"/>
-								<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>"></td>
+								<td align="right">
+									<button class="activebutton" style="width:100px" type="submit"><spring:message code="update"/></button>
+									<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>">
+								</td>
 							</tr>
 						</table>
 						

@@ -65,8 +65,10 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td align="right"><input style="width:100px" type="submit" value="Update"/>
-					<a href="editproject.html"><button style="width:100px" type="button" value="Cancel"><spring:message code="cancel"/></button></a></td>
+					<td align="right">
+						<button class="activebutton" style="width:100px" type="submit"><spring:message code="update"/></button>
+						<a href="editproject.html"><button style="width:100px" type="button" value="Cancel"><spring:message code="cancel"/></button></a>
+					</td>
 				</tr>
 			</table>
 			

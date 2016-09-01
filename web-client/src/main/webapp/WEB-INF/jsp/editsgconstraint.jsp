@@ -99,7 +99,8 @@
 			                                <td></td>
 			                            </tr>
 			                            <tr>
-			                                <td align="right"><input type="submit" value="Ok"></input>
+			                                <td align="right">
+			                                	<button class="activebutton" type="submit">Ok</button>
 			                                <a href="geneticalgorithm.html"><button type="button"><spring:message code="cancel"/></button></a></td>
 			                            </tr>   
 			                        </table>

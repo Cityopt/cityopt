@@ -106,14 +106,20 @@
 				</tr>
 				<tr>
 					<td class="spacecolumn"></td>
-					<td align="right" valign="top">
-						<a href="exportmetrics.html">
-							<button type="button"><spring:message code="export_metrics"/></button>
-						</a>
-			   			<c:set var="tooltipcreatemetric"><spring:message code="tooltip_create_metric"/></c:set>
-			   			<a href="createmetric.html?reset=true"><button title="${tooltipcreatemetric}" type="button">
-			   				<spring:message code="create_metric"/></button>
-		   				</a>
+					<td align="left" valign="top">
+						<table style="width: 760px">
+							<tr>
+								<td align="right">
+									<a href="exportmetrics.html">
+										<button type="button"><spring:message code="export_metrics"/></button>
+									</a>
+						   			<c:set var="tooltipcreatemetric"><spring:message code="tooltip_create_metric"/></c:set>
+						   			<a href="createmetric.html?reset=true"><button title="${tooltipcreatemetric}" type="button">
+						   				<spring:message code="create_metric"/></button>
+					   				</a>
+				   				</td>
+			   				</tr>
+		   				</table>
 			   		</td>
 				</tr>
 				<tr height="100%"><td></td></tr>

@@ -740,11 +740,22 @@ button {
 	font-size:24px;
 }
 
-input[type="button"], input[type="submit"] {
+.activebutton {
 	background: #47AFE2;
     color: #FFFFFF;
     border-width: 1px;
     border-color: #3BA6D1;
+    border-radius: 7px;
+	font-family: 'blanchcaps', arial;
+	font-size:24px;
+}
+	
+input[type="button"], input[type="submit"] {
+	background: #F6F6F6;
+    color: #4D4D4D;
+    font-size: 24px;
+    border-width: 1px;
+    border-color: #E6E6E6;
     border-radius: 7px;
 	font-family: 'blanchcaps', arial;
 	font-size:24px;
@@ -767,8 +778,7 @@ input[type="checkbox"] {
 }*/
 
 button:hover, input[type="button"]:hover, input[type="submit"]:hover {
-	 background: #98cfef;
- 	 *background-color:#47AFE2;*/
+	 background: #47AFE2; /*#98cfef;*/
 }
 
 button:active, input[type="button"]:active, input[type="submit"]:active {

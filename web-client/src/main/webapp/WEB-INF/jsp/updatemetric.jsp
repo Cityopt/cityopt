@@ -129,8 +129,7 @@
 										<tr>
 											<td></td>
 											<td align="right">
-												<!-- Ok submit and Cancel -button -->
-												<input type="submit" style="width:100px" value="<spring:message code="ok"/>"></input>
+												<button type="submit" style="width:100px" class="activebutton"><spring:message code="ok"/></button>
 											</td>
 											<td>
 												<input type="submit" value="Cancel" name="cancel" style="width: 100px">

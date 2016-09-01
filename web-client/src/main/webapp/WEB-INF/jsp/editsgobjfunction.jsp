@@ -16,24 +16,32 @@
 <form:input type="hidden" path="obtfunctionid"/>
 <table cellspacing="0" cellpadding="0">
 	<tr>
-		<td>
+		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="30"></td>
 		<td valign="top">
-			<table>
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<h2 class="error">${error}</h2>
+						<table width="100%">
+							<tr>
+								<td align="left">
+			                        <spring:message code="edit_obj_func"/>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 				<tr>
-					<td>
-                        <h1><spring:message code="edit_obj_func"/></h1>
-					</td>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
 				</tr>
 				<tr>
-					<td>
+					<td class="spacecolumn"></td>
+					<td valign="top">
 						<table>
 							<col style="width:30px">
 							<col style="width:250px">
@@ -89,14 +97,17 @@
 								<td></td>
 								<td></td>
 								<td></td>
-								<td align="right"><input type="submit" value="Ok"></input>
-								<a href="geneticalgorithm.html"><button type="button"><spring:message code="cancel"/></button></a></td>
+								<td align="right">
+									<button class="activebutton" type="submit">Ok</button>
+									<a href="geneticalgorithm.html"><button type="button"><spring:message code="cancel"/></button></a></td>
 								<td></td>
 							</tr>					
 						</table>
 					</td>
 				</tr>
+				<tr><td></td></tr>
 			</table>
+			</div>
 		</td>
 	</tr>
 </table>

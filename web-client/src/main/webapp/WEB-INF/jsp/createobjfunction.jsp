@@ -80,7 +80,8 @@
 										<tr>
 											<td></td>
 											<td align="right">
-												<a href="updateobjfunction.html?type=${type}"><button type="button" style="width:100px"><spring:message code="next"/></button></a>
+												<a href="updateobjfunction.html?type=${type}">
+													<button class="activebutton" type="button" style="width:100px"><spring:message code="next"/></button></a>
 												<a href="${cancelPage}"><button style="width:100px" type="button" value="Cancel">
 												<spring:message code="cancel"/></button></a>
 											</td>

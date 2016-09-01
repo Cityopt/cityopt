@@ -93,7 +93,9 @@
 								</td>
 								<td>
 						    		<c:set var="tooltip_delete"><spring:message code="tooltip_delete"/></c:set>
-									<input type="submit" value="<spring:message code="delete"/>" onclick="return confirm('<spring:message code="confirm_scenario_deletion"/>')">
+									<button class="activebutton" type="submit" onclick="return confirm('<spring:message code="confirm_scenario_deletion"/>')">
+										 <spring:message code="delete"/>
+									 </button>
 								</td>
 								<td width="20"></td>
 							</tr>

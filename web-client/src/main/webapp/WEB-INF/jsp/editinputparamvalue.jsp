@@ -57,9 +57,10 @@
 				<tr>
 					<td></td>
 					<c:set var="tooltip_update"><spring:message code="tooltip_update"/></c:set>
-					<c:set var="tooltip_cansel"><spring:message code="tooltip_cansel"/></c:set>
-					<td align="right"><input style="width:100px" title="${tooltip_update}"  type="submit" value="Update"/>
-					<a href="scenarioparameters.html"><button style="width:100px"  title="${tooltip_cansel}" type="button" value="Cancel"><spring:message code="cancel"/></button></a></td>
+					<c:set var="tooltip_cancel"><spring:message code="tooltip_cancel"/></c:set>
+					<td align="right">
+						<button class="activebutton" style="width:100px" title="${tooltip_update}"  type="submit"><spring:message code="update"/></button>
+						<a href="scenarioparameters.html"><button style="width:100px"  title="${tooltip_cancel}" type="button" value="Cancel"><spring:message code="cancel"/></button></a></td>
 				</tr>
 			</table>
 			

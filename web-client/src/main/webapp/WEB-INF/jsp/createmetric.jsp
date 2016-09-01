@@ -58,7 +58,7 @@
 											<td class="error">${error}</td>
 										</tr>
 										<tr>
-											<td class="regular">
+											<td class="infosmall">
 												<spring:message code="create_metric_instructions"/>
 											</td>
 										</tr>
@@ -82,7 +82,7 @@
 															</table>
 														</td>
 														<td align="right">
-															<a href="updatemetric.html"><button type="button" style="width:100px"><spring:message code="next"/></button></a>
+															<a href="updatemetric.html"><button class="activebutton" type="button" style="width:100px"><spring:message code="next"/></button></a>
 														</td>
 														<td align="right">
 															<a href="metricdefinition.html"><button style="width:100px" type="button" value="Cancel">

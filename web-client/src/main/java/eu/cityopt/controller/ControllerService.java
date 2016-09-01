@@ -1,5 +1,8 @@
 package eu.cityopt.controller;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,6 +12,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.imagemap.ToolTipTagFragmentGenerator;
+import org.jfree.chart.imagemap.URLTagFragmentGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
@@ -17,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
+
+import com.sun.jna.platform.FileUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,6 +44,7 @@ import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioWithObjFuncValueDTO;
+import eu.cityopt.DTO.SimulationModelDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentService;
@@ -341,7 +350,7 @@ public class ControllerService {
 	    	model.put("units", Units);	    	
 	    }
 	    
-	    public void getEnergyModelInfo(Map<String, Object> model, int prjId) {
+	    public void getEnergyModelInfo(Map<String, Object> model, int prjId, HttpServletRequest request) {
     		Integer nSimulationModelId = projectService.getSimulationmodelId(prjId);
             
             if (nSimulationModelId != null)
@@ -368,6 +377,46 @@ public class ControllerService {
 				
 				model.put("title", "Energy model description");
                 model.put("infotext", description);
+            
+                SimulationModelDTO simModel = null;
+			
+                try {
+					simModel = simModelService.findByID(nSimulationModelId);
+				} catch (EntityNotFoundException e1) {
+					e1.printStackTrace();
+				}
+
+                if (simModel != null)
+                {
+                	byte[] imageBlob = simModel.getImageblob();
+
+                	if (imageBlob != null)
+                	{
+		    			String imgPath = request.getSession().getServletContext().getRealPath("/") + "assets\\img\\";
+						String imgFileName = "simulationmodel_" + System.currentTimeMillis() + ".png";
+						File file = new File(imgPath + imgFileName);
+						System.out.println(file.getAbsolutePath());
+		
+		                FileOutputStream fos;
+						try {
+							fos = new FileOutputStream(file);
+							fos.write(imageBlob);
+			                fos.close();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+		         
+		    	        UserSession session = (UserSession) model.get("usersession");
+		    	        
+		    	        if (session == null)
+		    	        {
+		    	        	session = new UserSession();
+		    	        }
+		            	model.put("usersession", session);
+
+			            session.setSimModelFile(imgFileName);
+                	}
+            	}
             }
 	    }
 	    
