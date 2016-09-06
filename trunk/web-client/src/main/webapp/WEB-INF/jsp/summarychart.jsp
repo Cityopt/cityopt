@@ -206,7 +206,7 @@
 													<col style="width:300px">	
 													<col style="width:50px">	
 																																		
-													<tr height="20">
+													<tr>
 														<!-- Select --><th><spring:message code="select"/></th>
 													    <!-- Name --> <th><spring:message code="name"/></th>
 													    <th><spring:message code="simulation"/></th>
@@ -257,7 +257,7 @@
 												<col style="width:130px">
 												<col style="width:300px">
 													
-												<tr height="20">
+												<tr>
 													<th><spring:message code="draw"/></th>
 												    <th><spring:message code="name"/></th>
 												</tr>

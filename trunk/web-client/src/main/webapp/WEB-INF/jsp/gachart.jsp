@@ -87,45 +87,7 @@
 														</td>
 													</tr>
 													<tr>
-														<td>
-															<table width="100%">
-																<tr>
-																	<td align="right">
-																	</td>
-																	<td align="right">
-																		<table>
-																			<tr>
-																				<td>
-																					<a href="drawgachart.html">
-																						<button type="button" style="width: 200px">
-																							<spring:message code="draw_chart"/></button>
-																					</a>
-																				</td>
-																			</tr>
-																			<tr>
-																				<td>
-																					<a href="gachart.html?action=selectall"><button type="button" style="width: 200px">
-																					<spring:message code="select_all"/></button></a>
-																				</td>
-																			</tr>
-																			<tr>
-																				<td>
-																					<a href="gachart.html?action=selectpareto"><button type="button" style="width: 200px">
-																					<spring:message code="select_pareto_optimal"/></button></a>
-																				</td>
-																			</tr>
-																			<tr>
-																				<td>
-																					<!-- Remove selections -->
-																					<a href="gachart.html?action=removeall"><button type="button" style="width: 200px">
-																					<spring:message code="remove_selection"/></button></a>
-																				</td>
-																			</tr>
-																		</table>
-																	</td>
-																</tr>
-															</table>
-														</td>
+														
 													</tr>
 												</table>
 											</td>
@@ -233,6 +195,43 @@
 															</table>
 														</td>
 													</tr>	
+												</table>
+											</td>
+											<td valign="top">
+												<table width="100%">
+													<tr>
+														<td align="right">
+															<table>
+																<tr>
+																	<td>
+																		<a href="drawgachart.html">
+																			<button type="button" style="width: 200px">
+																				<spring:message code="draw_chart"/></button>
+																		</a>
+																	</td>
+																</tr>
+																<tr>
+																	<td>
+																		<a href="gachart.html?action=selectall"><button type="button" style="width: 200px">
+																		<spring:message code="select_all"/></button></a>
+																	</td>
+																</tr>
+																<tr>
+																	<td>
+																		<a href="gachart.html?action=selectpareto"><button type="button" style="width: 200px">
+																		<spring:message code="select_pareto_optimal"/></button></a>
+																	</td>
+																</tr>
+																<tr>
+																	<td>
+																		<!-- Remove selections -->
+																		<a href="gachart.html?action=removeall"><button type="button" style="width: 200px">
+																		<spring:message code="remove_selection"/></button></a>
+																	</td>
+																</tr>
+															</table>
+														</td>
+													</tr>
 												</table>
 											</td>
 										</tr>
