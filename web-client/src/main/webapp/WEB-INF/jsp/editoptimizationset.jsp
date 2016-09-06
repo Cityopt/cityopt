@@ -124,7 +124,7 @@
 											</td>
 										</tr>
 										<tr>
-											<td><form:input type="text" title="${tooltip_name}" path="name" style="width:100%"/></td>
+											<td valign="top"><form:input type="text" title="${tooltip_name}" path="name" style="width:100%"/></td>
 											<td></td>
 											<td rowspan="4" valign="top">
 												<table class="tablestyle" width="270" height="120">
