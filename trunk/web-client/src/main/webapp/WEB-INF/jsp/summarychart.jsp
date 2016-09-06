@@ -66,7 +66,7 @@
 					<td valign="top">
 						<table>
 							<tr>
-								<td>
+								<td valign="top">
 									<table width="1000px">
 										<col style="width:250px">
 										<col style="width:30px">
@@ -74,53 +74,11 @@
 										<tr>
 											<td valign="top">
 												<table>
-													<c:choose>
-														<c:when test="${error != null && !error.isEmpty()}">
-															<tr>
-																<td><i><spring:message code="error_in_simulation" />: ${error}</i></td>
-															</tr>
-														</c:when>
-														<c:otherwise>
-														</c:otherwise>
-													</c:choose>
 													<tr>
-														<td>
-															<table width="100%">
-																<tr>
-																	<td class="infosmall"><spring:message code="active_scenario"/></td>
-																</tr>
-																<tr>	
-																	<td class="activeline">${scenario.name}</td>
-																</tr>
-																<tr>
-																	<td class="infosmall"><spring:message code="simulation_status"/></td>
-																</tr>
-																<tr>	
-																	<td class="status">${status}</td>
-																</tr>
-																<tr height="10"></tr>
-																<tr>
-																	<td valign="bottom">
-																		<table>
-																			<tr>
-																				<td class="infosmall">
-																					<p><spring:message code="summary_chart_instructions_1"/></p>
-																					<p><spring:message code="summary_chart_instructions_2"/></p>
-																				</td>
-																			</tr>
-																			<c:choose>
-																				<c:when test="${error != null && !error.isEmpty()}">
-																					<tr>
-																						<td><i><spring:message code="error_in_simulation"/>: ${error}</i></td>
-																					</tr>
-																				</c:when>
-																				<c:otherwise>
-																				</c:otherwise>
-																			</c:choose>
-																		</table>
-																	</td>
-																</tr>	
-															</table>
+														<td class="infosmall">
+															<spring:message code="summary_chart_instructions_1"/>
+															<br><br>
+															<spring:message code="summary_chart_instructions_2"/>
 														</td>
 													</tr>
 												</table>
@@ -232,7 +190,7 @@
 					<td>
 						<table>
 							<tr>
-								<td>
+								<td valign="top">
 									<table>
 										<tr>
 											<td>
@@ -325,9 +283,9 @@
 								</td>
 							</tr>
 						</table>
-						</div>
 					</td>
 				</tr>
+				<tr style="height: 100%"><td></td></tr>
 			</table>
 			</div>
 		</td>

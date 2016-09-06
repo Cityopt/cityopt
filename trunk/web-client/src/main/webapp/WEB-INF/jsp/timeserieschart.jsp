@@ -91,18 +91,12 @@
 														<td class="infosmall"><spring:message code="time_series_chart_instructions"/>
 														</td>
 													</tr>
-													<c:choose>
-														<c:when test="${error != null && !error.isEmpty()}">
-															<tr>
-																<td><i><spring:message code="error_in_simulation"/>: ${error}</i></td>
-															</tr>
-														</c:when>
-														<c:otherwise>
-														</c:otherwise>
-													</c:choose>
 												</table>
 											</td>
 										</tr>	
+										<tr>
+											
+										</tr>
 									</table>
 								</td>
 								<td valign="top">

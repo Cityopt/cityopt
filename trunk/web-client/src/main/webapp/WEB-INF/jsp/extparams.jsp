@@ -184,7 +184,7 @@
 																						<td>${extParam.type.name}</td>
 																						<td>${extParam.unit.name}</td>
 				
-																						<td><a onclick="return confirm('<spring:message code="confirm_delete" />')"
+																						<td><a onclick="return confirm('<spring:message code="confirm_delete_ext_param" />')"
 																								href="<c:url value='deleteextparam.html?extparamid=${extParam.extparamid}'/>">
 																								<button align="right" type="button" value="Remove">
 																							 

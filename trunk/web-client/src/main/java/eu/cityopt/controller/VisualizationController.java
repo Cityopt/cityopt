@@ -398,30 +398,33 @@ public class VisualizationController {
 		model.put("usersession", userSession);
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
-		if (project == null || scenario == null)
+		if (project == null)
 		{
 			return "error";
 		}
 		securityAuthorization.atLeastGuest_guest(project);
 		
-		String status = scenario.getStatus();
-		
-		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
-			status = "RUNNING";
-		}
-		
-		model.put("status", status);
-	
 		if (charttype != null)
 		{
+			if (charttype.equals("0"))
+			{
+				charttype = "1";
+			}
+			
 			userSession.setSummaryChartType(Integer.parseInt(charttype));
 			model.put("charttype", Integer.parseInt(charttype));
 		}
 		else
 		{
-			model.put("charttype", userSession.getSummaryChartType());
+			int nChartType = userSession.getSummaryChartType();
+			
+			if (nChartType == 0)
+			{
+				nChartType = 1;
+			}
+
+			model.put("charttype", nChartType);
 		}
 		
 		if (action != null)
@@ -584,6 +587,16 @@ public class VisualizationController {
 			userSession = new UserSession();
 		}
 		
+		if (userSession.getTimeSeriesChartType() >= 0)
+		{
+			model.put("charttype", userSession.getTimeSeriesChartType());
+		}
+		
+		if (userSession.getSelectedChartOutputVarIds().size() == 0 && userSession.getSelectedChartExtVarIds().size() == 0)
+	    {
+	    	model.put("error", controllerService.getMessage("not_enough_selections", request));
+	    }
+	    
 		int nScenId = scenario.getScenid();
 		String status = scenario.getStatus();
 
@@ -734,15 +747,16 @@ public class VisualizationController {
 		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
 		model.put("extParamVals", extParamVals);
 
+		model.put("usersession", userSession);
+		
 		return "timeserieschart";
 	}
 
 	@RequestMapping("drawsummarychart")
 	public String drawSummaryChart(Map<String, Object> model, HttpServletRequest request) throws Exception {
 		ProjectDTO project = (ProjectDTO) model.get("project");
-		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
 		
-		if (project == null || scenario == null)
+		if (project == null)
 		{
 			return "error";
 		}
@@ -755,29 +769,33 @@ public class VisualizationController {
 			userSession = new UserSession();
 		}
 		
-		String status = scenario.getStatus();
-
-		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
-			status = "RUNNING";
-		}
-
-		if (status == null || status.isEmpty())
+		if (userSession.getSummaryChartType() > 0)
 		{
-			return "error";
+			model.put("charttype", userSession.getSummaryChartType());
 		}
-
-		model.put("status", status);
+		else
+		{
+			model.put("charttype", 1);
+		}
 		
 		Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
-	    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
 		ChartRenderingInfo chartInfo = new ChartRenderingInfo(new StandardEntityCollection());
 		
 	    iterator = userSession.getSelectedChartMetricIds().iterator();
 		   
+	    if (userSession.getSelectedChartMetricIds().size() == 0)
+	    {
+	    	model.put("error", controllerService.getMessage("not_enough_metric_selections", request));
+	    }
+	    
+	    if (userSession.getScenarioIds().size() == 0)
+	    {
+	    	model.put("error", controllerService.getMessage("not_enough_scenario_selections", request));
+	    }
+
 		// Get metrics time series (max 2 metrics)
 		if (userSession.getSelectedChartMetricIds().size() == 1)
 		{
-			timeSeriesCollection.removeAllSeries();
 			DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
 			DefaultPieDataset pieDataset = new DefaultPieDataset();
 
@@ -794,12 +812,26 @@ public class VisualizationController {
 					Integer scenarioId = (Integer) scenIter.next();
 					int nScenarioId = (int)scenarioId;
 					ScenarioDTO scenarioTemp = scenarioService.findByID(nScenarioId);
-					MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
-					DefaultXYDataset dataset = new DefaultXYDataset();
-
-					if (userSession.getSummaryChartType() == 0)
+					List<MetricValDTO> listMetricVals = metricService.getMetricVals(metric1Id, nScenarioId);
+					
+					if (listMetricVals.size() == 0)
+					{
+						System.out.println("Metric values missing for metric " + metric1Id);
+						continue;
+					}
+					
+					MetricValDTO metricVal1 = listMetricVals.get(0);
+					
+					if (userSession.getSummaryChartType() == 3 && Double.parseDouble(metricVal1.getValue()) < 0)
+					{
+						model.put("error", controllerService.getMessage("cant_create_pie_chart_with_negative_values", request));
+					}
+					
+					if (userSession.getSummaryChartType() == 0 || userSession.getSummaryChartType() == 1)
 					{
 						userSession.setSummaryChartType(1);
+
+				    	model.put("error", controllerService.getMessage("not_enough_metric_selections", request));
 					}
 					else if (userSession.getSummaryChartType() == 2) 
 					{
@@ -809,21 +841,23 @@ public class VisualizationController {
 					{
 						pieDataset.setValue(scenarioTemp.getName(), Double.parseDouble(metricVal1.getValue()));
 					}
-					
 				}				
 			
 				JFreeChart chart = null;
+				int nChartType = userSession.getSummaryChartType();
 				
-				if (userSession.getSummaryChartType() == 0) {
+				if (nChartType == 0) {
 					// No time series type for metrics
 					userSession.setSummaryChartType(1);
+					nChartType = 1;
 				}
 				
-				if (userSession.getSummaryChartType() == 2) {
+				if (nChartType == 2) {
 					chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("bar_chart", request), "", "");
-				} else if (userSession.getSummaryChartType() == 3) {
+				} else if (nChartType == 3) {
 					chart = PieChartVisualization.createChart(pieDataset, controllerService.getMessage("pie_chart", request) + " " + metric1.getName(), "", "");
 				}
+				System.out.println("Chart type " + nChartType);
 				
 				if (chart != null)
 				{
@@ -858,7 +892,6 @@ public class VisualizationController {
 		}
 		else if (userSession.getSelectedChartMetricIds().size() == 2)
 		{
-			timeSeriesCollection.removeAllSeries();
 			XYSeriesCollection collection = new XYSeriesCollection();
 			DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
 
@@ -969,7 +1002,6 @@ public class VisualizationController {
 		}
 		else if (userSession.getSelectedChartMetricIds().size() > 2)
 		{
-			timeSeriesCollection.removeAllSeries();
 			DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
 
 			while (iterator.hasNext()) 
@@ -1084,6 +1116,16 @@ public class VisualizationController {
 			return "error";
 		}
 		
+		if (userSession.getSelectedGAObjFuncIds().size() == 0)
+	    {
+	    	model.put("error", controllerService.getMessage("not_enough_selections", request));
+	    }
+
+		if (userSession.getSelectedGAObjFuncIds().size() > 2)
+	    {
+	    	model.put("error", controllerService.getMessage("too_many_obj_func_selections", request));
+	    }
+
 	    Iterator<Integer> iterator = userSession.getSelectedGAObjFuncIds().iterator();
 		int objFunc1Id = iterator.next();
 		
@@ -1254,7 +1296,7 @@ public class VisualizationController {
 		}
 
 		model.put("objFuncs", objFuncs);
-
+		
 		return "gachart";//"redirect:/gachart.html";
 	}
 

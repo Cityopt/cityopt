@@ -29,14 +29,8 @@ import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.RefineryUtilities;
 
-public class PieChartVisualization {
-/**
-* A demonstration application showing how to create a simple time series
-* chart. This example uses monthly data.
-*
-* @param title the frame title.
-*/
-	
+public class PieChartVisualization 
+{
 	public PieChartVisualization (String title, TimeSeriesCollection timeSeriesCollection, String xAxisLabel, String yAxisLabel) {
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		dataset.setValue("Category 1", 40);
@@ -82,6 +76,16 @@ public class PieChartVisualization {
 		if (dataset.getItemCount() > 30)
 		{
 			bShowLegend = false;
+		}
+		
+		if (dataset.getItemCount() == 0)
+		{
+			System.out.println("Cant create pie chart with data set size 0!");
+		}
+
+		for (int i = 0; i < dataset.getItemCount(); i++)
+		{
+			System.out.println("Pie chart data " + dataset.getValue(i));
 		}
 		
 		JFreeChart chart = ChartFactory.createPieChart3D(title, dataset, bShowLegend, true, false);
