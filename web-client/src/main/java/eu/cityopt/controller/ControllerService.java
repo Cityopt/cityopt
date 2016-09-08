@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -555,7 +556,7 @@ public class ControllerService {
 	    		scenarioForm.setId(scenario.getScenid());
 	    		scenarioForm.setDescription(scenario.getDescription());
 	    		scenarioForm.setStatus(getScenarioStatus(scenario));
-	    		
+
 	    		if (scenario.getScenariogenerator() != null)
 				{
 	    			scenarioForm.setPareto(isParetoOptimal(scenario.getScenid(), scenario.getScenariogenerator().getScengenid()));
@@ -563,7 +564,10 @@ public class ControllerService {
 	    		
 	    		scenarioForms.add(scenarioForm);
 	    	}
-	    	
+			/*HashMap<Integer, Boolean> mapParetos = new HashMap<Integer, Boolean>();
+			getParetoOptimal(scenarios, mapParetos);
+			model.put("mapParetos", mapParetos);*/
+			
 	    	model.put("scenarioForms", scenarioForms);
 	    }
 	    
@@ -591,6 +595,32 @@ public class ControllerService {
 			}
 			
 			model.put("status", statusMsg);
+			
+			if (scenario.getRunstart() != null 
+				&& scenario.getRunend() != null)
+			{
+				String time = getSimulationTime(scenario);
+				model.put("simulationEstimate", time);
+			} else {
+				Set<ScenarioDTO> scenarios = projectService.getScenarios(projectId);
+				Iterator<ScenarioDTO> iter = scenarios.iterator();
+				long timeStart = 0;
+				
+				// Find latest scenario that has simulation time available
+				while (iter.hasNext())
+				{
+					ScenarioDTO scenarioEstimate = iter.next();
+					
+					if (scenarioEstimate.getRunend() != null
+						&& scenarioEstimate.getRunstart() != null
+						&& timeStart < scenarioEstimate.getRunstart().getTime())
+					{
+						timeStart = scenarioEstimate.getRunstart().getTime();
+						String time = getSimulationTime(scenarioEstimate);
+						model.put("simulationEstimate", time);
+					}
+				}
+			}
 			
 			List<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 			
@@ -877,6 +907,60 @@ public class ControllerService {
 				}
 			}	
 			return false;
+	    }
+	    
+	    /*public void getParetoOptimal(Set<ScenarioDTO> setScenarios, Map<Integer, Boolean> mapParetos)
+	    {
+	    	List<ObjectiveFunctionDTO> objFuncs = null;
+			
+			try {
+				objFuncs = scenGenService.getObjectiveFunctions(nScenGenId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+
+			if (objFuncs.size() == 0)
+			{
+				return;
+			}
+			
+		    ObjectiveFunctionDTO objFuncFirst = objFuncs.get(0);
+	
+			ArrayList<ObjectiveFunctionResultDTO> listResults = (ArrayList<ObjectiveFunctionResultDTO>) objFuncService.findResultsByScenarioGenerator(nScenGenId, objFuncFirst.getObtfunctionid());
+			Iterator<ObjectiveFunctionResultDTO> resultIter;
+			Iterator<ScenarioDTO> iterScenarios = setScenarios.iterator();
+			
+			while (iterScenarios.hasNext())
+			{
+				ScenarioDTO scen = iterScenarios.next();
+				int nScenId = scen.getScenid();
+				resultIter = listResults.iterator();
+				
+				if (scen.getScenariogenerator() == null)
+				{
+					mapParetos.put(new Integer(nScenId), new Boolean(false));
+				}
+
+				while (resultIter.hasNext())
+				{
+					ObjectiveFunctionResultDTO result = (ObjectiveFunctionResultDTO) resultIter.next();
+					
+					if (result.getScenID() == nScenId && result.isScengenresultParetooptimal())
+					{
+						mapParetos.put(new Integer(nScenId), new Boolean(true));
+					}
+				}	
+				mapParetos.put(new Integer(nScenId), new Boolean(false));
+			}
+	    }*/
+	    
+	    public String getSimulationTime(ScenarioDTO scenario)
+	    {
+			long simSeconds = (long) (scenario.getRunend().getTime() - scenario.getRunstart().getTime()) / 1000;
+			long simMinutes = (long)(simSeconds / 60 + 1);
+			
+			String strTime = simMinutes + " min";
+			return strTime;
 	    }
 	}
 

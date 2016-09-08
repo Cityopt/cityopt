@@ -46,7 +46,7 @@
 				</tr>
 				<tr>
 					<td class="spacecolumn"></td>
-					<td>
+					<td valign="top">
 						<table class="tablestyle" width="750">
 							<col style="width:150px">	
 							<col style="width:50px">	

@@ -127,6 +127,13 @@
 										</tr>
 										<tr height="15"></tr>
 										<tr>
+											<td class="infosmall"><spring:message code="simulation_time_estimate"/></td>
+										</tr>
+										<tr>
+											<td class="activeline">${simulationEstimate}</td>
+										</tr>
+										<tr height="15"></tr>
+										<tr>
 											<td class="regular"><spring:message code="simulation_info"/></td>
 											<td>
 												<c:if test="${scenario != null && scenario.getLog() != null}">
