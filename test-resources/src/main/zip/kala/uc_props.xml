@@ -8,32 +8,27 @@
       </node>
     </node>
     <node name="198" moduleName="198" label="" isUC="True" type="Cost_calculator@1">
+      <property type="constant" name="tax_sold" value="0.0" unit="€/kWh"/>
       <property type="constant" name="isFixed_Bought" value="false"/>
       <property type="constant" name="CO2_sold" value="0.0" unit="kg CO2/MWh"/>
       <property type="constant" name="CO2_bought" value="220.0" unit="kg CO2/MWh"/>
       <property type="constant" name="FixedPrice_Bought" value="0.1" unit="€/kWh"/>
       <property type="constant" name="FixedPrice_TransferCosts_Bought" value="0.08" unit="€/kWh"/>
-      <property type="constant" name="Markup_Bought" value="28.0" unit="%"/>
+      <property type="constant" name="fixedprice_sold" value="0.0" unit="€/kWh"/>
       <property type="constant" name="isFixed_Sold" value="false"/>
+      <property type="constant" name="tax_bought" value="0.0" unit="€/kWh"/>
       <property type="constant" name="FixedPrice_Sold" value="0.035" unit="€/kWh"/>
-      <property type="constant" name="Markup_Sold" value="28.0" unit="%"/>
       <node name="MU76" moduleName="MU76" label="" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_TransferCosts_Bought"/>
-      </node>
-      <node name="MU53" moduleName="MU53_1" label="" isUC="False" type="MULTIPLYER_QF">
-        <property type="expression" name="MULTIPLYER_GAIN" value="(1+ Markup_Bought/100)"/>
+        <property type="expression" name="MULTIPLYER_BIAS" value="(FixedPrice_TransferCosts_Bought+tax_bought)"/>
       </node>
       <node name="MU54" moduleName="MU54_1" label="CO2 from Buying" isUC="False" type="MULTIPLYER_QF2">
         <property type="expression" name="MULTIPLYER_GAIN" value="CO2_bought/1000000"/>
       </node>
-      <node name="MU50" moduleName="MU50_1" label="Sold price" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_GAIN" value="1+ Markup_Sold/100"/>
-      </node>
       <node name="MU44" moduleName="MU44_1" label="Fixed Price" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Bought*( 1+Markup_Bought/100)"/>
+        <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Bought"/>
       </node>
       <node name="MU45" moduleName="MU45_1" label="Sold price" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Sold*(1+Markup_Sold/100)"/>
+        <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Sold"/>
       </node>
       <node name="SB08" moduleName="SB08_1" label="spot/fixed sold" isUC="False" type="SET_BINARY">
         <property type="expression" name="SB_VALUE" value="isFixed_Sold"/>
@@ -41,40 +36,35 @@
       <node name="MU49" moduleName="MU49_1" label="CO2 of energy sold" isUC="False" type="MULTIPLYER_QF2">
         <property type="expression" name="MULTIPLYER_GAIN" value="CO2_sold/1000000"/>
       </node>
+      <node name="MU69" moduleName="MU69" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_BIAS" value="-tax_sold"/>
+      </node>
       <node name="SB05" moduleName="SB05_1" label="spot/fixed bought" isUC="False" type="SET_BINARY">
         <property type="expression" name="SB_VALUE" value="isFixed_Bought"/>
       </node>
-      <node name="MU60" moduleName="MU60_1" label="" isUC="False" type="MULTIPLYER_QF">
-        <property type="expression" name="MULTIPLYER_GAIN" value="(1+ Markup_Bought/100)"/>
-      </node>
     </node>
     <node name="146" moduleName="146" label="" isUC="True" type="Cost_calculator@1">
+      <property type="constant" name="tax_sold" value="0.0" unit="€/kWh"/>
       <property type="constant" name="isFixed_Bought" value="false"/>
       <property type="constant" name="CO2_sold" value="0.0" unit="kg CO2/MWh"/>
       <property type="constant" name="CO2_bought" value="220.0" unit="kg CO2/MWh"/>
       <property type="constant" name="FixedPrice_Bought" value="0.1" unit="€/kWh"/>
       <property type="constant" name="FixedPrice_TransferCosts_Bought" value="0.08" unit="€/kWh"/>
-      <property type="constant" name="Markup_Bought" value="28.0" unit="%"/>
+      <property type="constant" name="fixedprice_sold" value="0.0" unit="€/kWh"/>
       <property type="constant" name="isFixed_Sold" value="false"/>
       <property type="constant" name="FixedPrice_Sold" value="0.035" unit="€/kWh"/>
-      <property type="constant" name="Markup_Sold" value="28.0" unit="%"/>
+      <property type="constant" name="tax_bought" value="0.0" unit="€/kWh"/>
       <node name="MU76" moduleName="MU76_1" label="" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_TransferCosts_Bought"/>
-      </node>
-      <node name="MU53" moduleName="MU53" label="" isUC="False" type="MULTIPLYER_QF">
-        <property type="expression" name="MULTIPLYER_GAIN" value="(1+ Markup_Bought/100)"/>
+        <property type="expression" name="MULTIPLYER_BIAS" value="(FixedPrice_TransferCosts_Bought+tax_bought)"/>
       </node>
       <node name="MU54" moduleName="MU54" label="CO2 from Buying" isUC="False" type="MULTIPLYER_QF2">
         <property type="expression" name="MULTIPLYER_GAIN" value="CO2_bought/1000000"/>
       </node>
-      <node name="MU50" moduleName="MU50" label="Sold price" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_GAIN" value="1+ Markup_Sold/100"/>
-      </node>
       <node name="MU44" moduleName="MU44" label="Fixed Price" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Bought*( 1+Markup_Bought/100)"/>
+        <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Bought"/>
       </node>
       <node name="MU45" moduleName="MU45" label="Sold price" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Sold*(1+Markup_Sold/100)"/>
+        <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Sold"/>
       </node>
       <node name="SB08" moduleName="SB08" label="spot/fixed sold" isUC="False" type="SET_BINARY">
         <property type="expression" name="SB_VALUE" value="isFixed_Sold"/>
@@ -82,11 +72,11 @@
       <node name="MU49" moduleName="MU49" label="CO2 of energy sold" isUC="False" type="MULTIPLYER_QF2">
         <property type="expression" name="MULTIPLYER_GAIN" value="CO2_sold/1000000"/>
       </node>
+      <node name="MU69" moduleName="MU69_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_BIAS" value="-tax_sold"/>
+      </node>
       <node name="SB05" moduleName="SB05" label="spot/fixed bought" isUC="False" type="SET_BINARY">
         <property type="expression" name="SB_VALUE" value="isFixed_Bought"/>
-      </node>
-      <node name="MU60" moduleName="MU60" label="" isUC="False" type="MULTIPLYER_QF">
-        <property type="expression" name="MULTIPLYER_GAIN" value="(1+ Markup_Bought/100)"/>
       </node>
     </node>
     <node name="09" moduleName="09_1" label="" isUC="True" type="Simple Battery with decay@1">
@@ -97,28 +87,1553 @@
     </node>
   </node>
   <node name="Battery function" moduleName="BATTERY_FUNCTION" label="Battery function" isUC="True" type="GenericAprosComposite">
-    <node name="KALASATAMA" moduleName="KALASATAMA" label="" isUC="True" type="Battery+PV+€+CO2@1">
+    <node name="RESIDENTAL" moduleName="RESIDENTAL" label="" isUC="True" type="Battery+PV+€+CO2@1">
       <property type="constant" name="UseFixedPrice_Bought" value="false"/>
       <property type="constant" name="Battery_ChargeRatioOfInitial" value="100.0" unit="%"/>
       <property type="constant" name="CO2_Fixed" value="220.0" unit="kg CO2/MWh"/>
-      <property type="constant" name="CO2_FromInputFile" value="true"/>
-      <property type="constant" name="PV_West" value="10.0" unit="kWp"/>
-      <property type="constant" name="Markup_Sold" value="0.0" unit="%"/>
+      <property type="constant" name="one_biulding_m2" value="14700.0" unit="m2"/>
+      <property type="constant" name="CO2_FromInputFile" value="false"/>
+      <property type="constant" name="amount_of_biuldings" value="1.0"/>
+      <property type="constant" name="PV_West" value="0.0" unit="kWp"/>
+      <property type="constant" name="sell_tax" value="0.028" unit="€/kWh"/>
       <property type="constant" name="Longitude" value="65.0" unit="deg"/>
+      <property type="constant" name="azimuth" value="-22.0" unit="deg"/>
+      <property type="constant" name="cap_upperbound" value="92.0" unit="%"/>
       <property type="constant" name="FixedPrice_Bought" value="0.06" unit="€/kWh"/>
       <property type="constant" name="Latitude" value="25.0" unit="deg"/>
-      <property type="constant" name="FixedPrice_TransferCosts_Bought" value="0.07" unit="€/kWh"/>
-      <property type="constant" name="PV_South" value="50.0" unit="kWp"/>
-      <property type="constant" name="Markup_Bought" value="0.0" unit="%"/>
-      <property type="constant" name="FixedPrice_Sold" value="0.35" unit="€/kWh"/>
+      <property type="constant" name="PV_South" value="0.0" unit="kWp"/>
+      <property type="constant" name="FixedPrice_Sold" value="0.035" unit="€/kWh"/>
+      <property type="constant" name="loss_chargeORdischarge" value="10.0" unit="%"/>
       <property type="constant" name="UseFixedPrice_Sold" value="false"/>
+      <property type="constant" name="standard_meridian" value="15.0" unit="deg"/>
+      <property type="constant" name="transfer_price" value="0.033" unit="€/kWh"/>
       <property type="constant" name="CO2_PV_production" value="0.0" unit="kg CO2/MWh"/>
       <property type="constant" name="PV_East" value="0.0" unit="kWp"/>
-      <property type="constant" name="PV_All_tilt" value="30.0" unit="deg"/>
+      <property type="constant" name="buy_tax" value="0.028" unit="€/kWh"/>
+      <property type="constant" name="PV_All_tilt" value="0.0" unit="deg"/>
       <property type="constant" name="PV_North" value="0.0" unit="kWp"/>
-      <property type="constant" name="Initial_Battery_Capacity" value="45.0" unit="kWh"/>
+      <property type="constant" name="cap_lowerbound" value="20.0" unit="%"/>
+      <property type="constant" name="Initial_Battery_Capacity" value="0.0" unit="kWh"/>
+      <node name="MU72" moduleName="MU72_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU71" moduleName="MU71_1" label="decay of battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="-1*amount_of_biuldings"/>
+      </node>
+      <node name="MU75" moduleName="MU75_1" label="Charge Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_BIAS" value="Battery_ChargeRatioOfInitial/((1-loss_chargeORdischarge/100))"/>
+      </node>
+      <node name="MU08" moduleName="MU08_1" label="Charge Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(1-loss_chargeORdischarge/100)"/>
+      </node>
+      <node name="MU74" moduleName="MU74_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(1-loss_chargeORdischarge/100)"/>
+      </node>
+      <node name="MU73" moduleName="MU73_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(cap_upperbound/100)"/>
+      </node>
+      <node name="MU79" moduleName="MU79_1" label="Charge Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="Battery_ChargeRatioOfInitial/100"/>
+      </node>
+      <node name="MU78" moduleName="MU78_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU77" moduleName="MU77_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="1/((1-loss_chargeORdischarge/100))"/>
+      </node>
+      <node name="MU06" moduleName="MU06_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU05" moduleName="MU05_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU04" moduleName="MU04_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU03" moduleName="MU03_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU81" moduleName="MU81_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(cap_lowerbound/100)"/>
+      </node>
+      <node name="SB02" moduleName="SB02_1" label="" isUC="False" type="SET_BINARY">
+        <property type="expression" name="SB_VALUE" value="CO2_FromInputFile"/>
+      </node>
+      <node name="204" moduleName="204_1" label="" isUC="True" type="Simple Battery with decay@1">
+        <property type="expression" name="Initial_Capacity" value="Initial_Battery_Capacity" unit="kWh"/>
+        <node name="MU36" moduleName="MU36_3" label="Initial Capacity Input" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Initial_Capacity"/>
+        </node>
+      </node>
+      <node name="MU82" moduleName="MU82_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="205" moduleName="205_1" label="" isUC="True" type="Cost_calculator@1">
+        <property type="expression" name="tax_sold" value="sell_tax" unit="€/kWh"/>
+        <property type="expression" name="isFixed_Bought" value="UseFixedPrice_Bought"/>
+        <property type="constant" name="CO2_sold" value="0.0" unit="kg CO2/MWh"/>
+        <property type="constant" name="CO2_bought" value="0.0" unit="kg CO2/MWh"/>
+        <property type="expression" name="FixedPrice_Bought" value="FixedPrice_Bought" unit="€/kWh"/>
+        <property type="expression" name="FixedPrice_TransferCosts_Bought" value="transfer_price" unit="€/kWh"/>
+        <property type="constant" name="fixedprice_sold" value="0.0" unit="€/kWh"/>
+        <property type="expression" name="isFixed_Sold" value="UseFixedPrice_Sold"/>
+        <property type="expression" name="tax_bought" value="buy_tax" unit="€/kWh"/>
+        <property type="expression" name="FixedPrice_Sold" value="FixedPrice_Sold" unit="€/kWh"/>
+        <node name="MU76" moduleName="MU76_3" label="" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="(FixedPrice_TransferCosts_Bought+tax_bought)"/>
+        </node>
+        <node name="MU54" moduleName="MU54_3" label="CO2 from Buying" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="CO2_bought/1000000"/>
+        </node>
+        <node name="MU44" moduleName="MU44_3" label="Fixed Price" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Bought"/>
+        </node>
+        <node name="MU45" moduleName="MU45_3" label="Sold price" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Sold"/>
+        </node>
+        <node name="SB08" moduleName="SB08_3" label="spot/fixed sold" isUC="False" type="SET_BINARY">
+          <property type="expression" name="SB_VALUE" value="isFixed_Sold"/>
+        </node>
+        <node name="MU49" moduleName="MU49_3" label="CO2 of energy sold" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="CO2_sold/1000000"/>
+        </node>
+        <node name="MU69" moduleName="MU69_3" label="" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="-tax_sold"/>
+        </node>
+        <node name="SB05" moduleName="SB05_3" label="spot/fixed bought" isUC="False" type="SET_BINARY">
+          <property type="expression" name="SB_VALUE" value="isFixed_Bought"/>
+        </node>
+      </node>
+      <node name="208" moduleName="208_1" label="CSI correction" isUC="True" type="sol2@1">
+        <property type="expression" name="standard_meridian_longitude" value="standard_meridian"/>
+        <property type="expression" name="longitude" value="Longitude"/>
+        <property type="expression" name="tilt" value="PV_All_tilt"/>
+        <property type="constant" name="south_wall_angle" value="0.0"/>
+        <property type="expression" name="latitude" value="Latitude"/>
+        <property type="expression" name="azimuth" value="azimuth"/>
+        <node name="SOR_01" moduleName="SOR_01_1" label="" isUC="False" type="SOLAR_RADIATION">
+          <property type="expression" name="SOL_RAD_LONGITUDE_STAND" value="360-standard_meridian_longitude" unit="deg"/>
+          <property type="expression" name="SOL_RAD_LONGITUDE_LOCAL" value="360-longitude" unit="deg"/>
+          <property type="expression" name="SOL_RAD_LATITUDE" value="90-latitude" unit="deg"/>
+        </node>
+        <node name="SOI_01" moduleName="SOI_01_1" label="West" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="90+south_wall_angle-ceil(floor((south_wall_angle+90)/180)/2)*360" unit="deg"/>
+        </node>
+        <node name="SOI_02" moduleName="SOI_02_1" label="North" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="south_wall_angle+180-ceil(floor((south_wall_angle+180)/180)/2)*360" unit="deg"/>
+        </node>
+        <node name="SOI_03" moduleName="SOI_03_1" label="South" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="south_wall_angle" unit="deg"/>
+        </node>
+        <node name="SOI_04" moduleName="SOI_04_1" label="East" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="(south_wall_angle-90)-ceil(floor((south_wall_angle-90)/180)/2)*360" unit="deg"/>
+        </node>
+        <node name="SOI02" moduleName="SOI02_1" label="southwest" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+        </node>
+        <node name="04" moduleName="04_11" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_9" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_9" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_9" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_9" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_9" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_9" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_9" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_9" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="SOI01" moduleName="SOI01_1" label="Horizontal surface" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="azimuth" unit="deg"/>
+        </node>
+        <node name="05" moduleName="05_11" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_10" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_10" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_10" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_10" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_10" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_10" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_10" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_10" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="01" moduleName="01_3" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_11" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_11" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_11" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_11" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_11" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_11" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_11" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_11" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="02" moduleName="02_11" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_12" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_12" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_12" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_12" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_12" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_12" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_12" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_12" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="03" moduleName="03_11" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_13" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_13" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_13" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_13" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_13" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_13" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_13" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_13" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="SOI05" moduleName="SOI05_1" label="east" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+        </node>
+        <node name="SOI03" moduleName="SOI03_1" label="west" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+        </node>
+        <node name="SOI04" moduleName="SOI04_1" label="south east" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+        </node>
+      </node>
+      <node name="219" moduleName="219_1" label="" isUC="True" type="PV2@1">
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_South*1000/140"/>
+        <property type="constant" name="beta" value="0.0045"/>
+        <property type="constant" name="equation" value="1"/>
+        <property type="constant" name="Cirr" value="1.0"/>
+        <property type="constant" name="t" value="0.0"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
+        <node name="MU_61" moduleName="MU_61_14" label="t" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+        </node>
+        <node name="MU_49" moduleName="MU_49_14" label="beta" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+        </node>
+        <node name="MU_60" moduleName="MU_60_14" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+        </node>
+        <node name="MU_47" moduleName="MU_47_14" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+        </node>
+        <node name="MU_48" moduleName="MU_48_14" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+        </node>
+        <node name="MU_46" moduleName="MU_46_14" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+        </node>
+        <node name="MU_63" moduleName="MU_63_14" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+        <node name="MU_40" moduleName="MU_40_14" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+      </node>
+      <node name="MU119" moduleName="MU119_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU25" moduleName="MU25_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU26" moduleName="MU26_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="CO2_PV_production"/>
+      </node>
+      <node name="220" moduleName="220_1" label="" isUC="True" type="PV2@1">
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_West*1000/140"/>
+        <property type="constant" name="beta" value="0.0045"/>
+        <property type="constant" name="equation" value="1"/>
+        <property type="constant" name="Cirr" value="1.0"/>
+        <property type="constant" name="t" value="0.0"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
+        <node name="MU_61" moduleName="MU_61_15" label="t" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+        </node>
+        <node name="MU_49" moduleName="MU_49_15" label="beta" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+        </node>
+        <node name="MU_60" moduleName="MU_60_15" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+        </node>
+        <node name="MU_47" moduleName="MU_47_15" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+        </node>
+        <node name="MU_48" moduleName="MU_48_15" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+        </node>
+        <node name="MU_46" moduleName="MU_46_15" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+        </node>
+        <node name="MU_63" moduleName="MU_63_15" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+        <node name="MU_40" moduleName="MU_40_15" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+      </node>
+      <node name="221" moduleName="221_1" label="" isUC="True" type="PV2@1">
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_East*1000/140"/>
+        <property type="constant" name="beta" value="0.0045"/>
+        <property type="constant" name="equation" value="1"/>
+        <property type="constant" name="Cirr" value="1.0"/>
+        <property type="constant" name="t" value="0.0"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
+        <node name="MU_61" moduleName="MU_61_16" label="t" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+        </node>
+        <node name="MU_49" moduleName="MU_49_16" label="beta" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+        </node>
+        <node name="MU_60" moduleName="MU_60_16" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+        </node>
+        <node name="MU_47" moduleName="MU_47_16" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+        </node>
+        <node name="MU_48" moduleName="MU_48_16" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+        </node>
+        <node name="MU_46" moduleName="MU_46_16" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+        </node>
+        <node name="MU_63" moduleName="MU_63_16" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+        <node name="MU_40" moduleName="MU_40_16" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+      </node>
+      <node name="222" moduleName="222_1" label="" isUC="True" type="PV2@1">
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_North*1000/140"/>
+        <property type="constant" name="beta" value="0.0045"/>
+        <property type="constant" name="equation" value="1"/>
+        <property type="constant" name="Cirr" value="1.0"/>
+        <property type="constant" name="t" value="0.0"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
+        <node name="MU_61" moduleName="MU_61_17" label="t" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+        </node>
+        <node name="MU_49" moduleName="MU_49_17" label="beta" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+        </node>
+        <node name="MU_60" moduleName="MU_60_17" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+        </node>
+        <node name="MU_47" moduleName="MU_47_17" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+        </node>
+        <node name="MU_48" moduleName="MU_48_17" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+        </node>
+        <node name="MU_46" moduleName="MU_46_17" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+        </node>
+        <node name="MU_63" moduleName="MU_63_17" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+        <node name="MU_40" moduleName="MU_40_17" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+      </node>
+      <node name="MU109" moduleName="MU109_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings/1000000"/>
+      </node>
+      <node name="MU106" moduleName="MU106_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_BIAS" value="CO2_Fixed"/>
+      </node>
+      <node name="MU105" moduleName="MU105_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_BIAS" value="CO2_PV_production"/>
+      </node>
+      <node name="MU104" moduleName="MU104_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings/1000000"/>
+      </node>
+      <node name="MU11" moduleName="MU11_1" label="Use Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="1/(1-loss_chargeORdischarge/100)"/>
+      </node>
+      <node name="MU15" moduleName="MU15_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="one_biulding_m2"/>
+      </node>
+      <node name="MU139" moduleName="MU139" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU143" moduleName="MU143" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+    </node>
+    <node name="CENTRALIZED" moduleName="CENTRALIZED" label="" isUC="True" type="Battery+PV+€+CO2@1">
+      <property type="constant" name="UseFixedPrice_Bought" value="false"/>
+      <property type="constant" name="Battery_ChargeRatioOfInitial" value="100.0" unit="%"/>
+      <property type="constant" name="CO2_Fixed" value="220.0" unit="kg CO2/MWh"/>
+      <property type="constant" name="one_biulding_m2" value="1.0" unit="m2"/>
+      <property type="constant" name="CO2_FromInputFile" value="false"/>
+      <property type="constant" name="amount_of_biuldings" value="1.0"/>
+      <property type="constant" name="PV_West" value="0.0" unit="kWp"/>
+      <property type="constant" name="sell_tax" value="0.028" unit="€/kWh"/>
+      <property type="constant" name="Longitude" value="65.0" unit="deg"/>
+      <property type="constant" name="azimuth" value="-22.0" unit="deg"/>
+      <property type="constant" name="cap_upperbound" value="92.0" unit="%"/>
+      <property type="constant" name="FixedPrice_Bought" value="0.06" unit="€/kWh"/>
+      <property type="constant" name="Latitude" value="25.0" unit="deg"/>
+      <property type="constant" name="PV_South" value="0.0" unit="kWp"/>
+      <property type="constant" name="FixedPrice_Sold" value="0.035" unit="€/kWh"/>
+      <property type="constant" name="loss_chargeORdischarge" value="15.0" unit="%"/>
+      <property type="constant" name="UseFixedPrice_Sold" value="false"/>
+      <property type="constant" name="standard_meridian" value="15.0" unit="deg"/>
+      <property type="constant" name="transfer_price" value="0.033" unit="€/kWh"/>
+      <property type="constant" name="CO2_PV_production" value="0.0" unit="kg CO2/MWh"/>
+      <property type="constant" name="PV_East" value="0.0" unit="kWp"/>
+      <property type="constant" name="buy_tax" value="0.028" unit="€/kWh"/>
+      <property type="constant" name="PV_All_tilt" value="40.0" unit="deg"/>
+      <property type="constant" name="PV_North" value="0.0" unit="kWp"/>
+      <property type="constant" name="cap_lowerbound" value="20.0" unit="%"/>
+      <property type="constant" name="Initial_Battery_Capacity" value="0.0" unit="kWh"/>
+      <node name="MU72" moduleName="MU72_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU71" moduleName="MU71_2" label="decay of battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="-1*amount_of_biuldings"/>
+      </node>
+      <node name="MU75" moduleName="MU75_2" label="Charge Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_BIAS" value="Battery_ChargeRatioOfInitial/((1-loss_chargeORdischarge/100))"/>
+      </node>
+      <node name="MU08" moduleName="MU08_2" label="Charge Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(1-loss_chargeORdischarge/100)"/>
+      </node>
+      <node name="MU74" moduleName="MU74_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(1-loss_chargeORdischarge/100)"/>
+      </node>
+      <node name="MU73" moduleName="MU73_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(cap_upperbound/100)"/>
+      </node>
+      <node name="MU79" moduleName="MU79_2" label="Charge Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="Battery_ChargeRatioOfInitial/100"/>
+      </node>
+      <node name="MU78" moduleName="MU78_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU77" moduleName="MU77_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="1/((1-loss_chargeORdischarge/100))"/>
+      </node>
+      <node name="MU06" moduleName="MU06_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU05" moduleName="MU05_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU04" moduleName="MU04_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU03" moduleName="MU03_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU81" moduleName="MU81_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(cap_lowerbound/100)"/>
+      </node>
+      <node name="SB02" moduleName="SB02_2" label="" isUC="False" type="SET_BINARY">
+        <property type="expression" name="SB_VALUE" value="CO2_FromInputFile"/>
+      </node>
+      <node name="204" moduleName="204_2" label="" isUC="True" type="Simple Battery with decay@1">
+        <property type="expression" name="Initial_Capacity" value="Initial_Battery_Capacity" unit="kWh"/>
+        <node name="MU36" moduleName="MU36_4" label="Initial Capacity Input" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Initial_Capacity"/>
+        </node>
+      </node>
+      <node name="MU82" moduleName="MU82_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="205" moduleName="205_2" label="" isUC="True" type="Cost_calculator@1">
+        <property type="expression" name="tax_sold" value="sell_tax" unit="€/kWh"/>
+        <property type="expression" name="isFixed_Bought" value="UseFixedPrice_Bought"/>
+        <property type="constant" name="CO2_sold" value="0.0" unit="kg CO2/MWh"/>
+        <property type="constant" name="CO2_bought" value="0.0" unit="kg CO2/MWh"/>
+        <property type="expression" name="FixedPrice_Bought" value="FixedPrice_Bought" unit="€/kWh"/>
+        <property type="expression" name="FixedPrice_TransferCosts_Bought" value="transfer_price" unit="€/kWh"/>
+        <property type="constant" name="fixedprice_sold" value="0.0" unit="€/kWh"/>
+        <property type="expression" name="isFixed_Sold" value="UseFixedPrice_Sold"/>
+        <property type="expression" name="tax_bought" value="buy_tax" unit="€/kWh"/>
+        <property type="expression" name="FixedPrice_Sold" value="FixedPrice_Sold" unit="€/kWh"/>
+        <node name="MU76" moduleName="MU76_4" label="" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="(FixedPrice_TransferCosts_Bought+tax_bought)"/>
+        </node>
+        <node name="MU54" moduleName="MU54_4" label="CO2 from Buying" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="CO2_bought/1000000"/>
+        </node>
+        <node name="MU44" moduleName="MU44_4" label="Fixed Price" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Bought"/>
+        </node>
+        <node name="MU45" moduleName="MU45_4" label="Sold price" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Sold"/>
+        </node>
+        <node name="SB08" moduleName="SB08_4" label="spot/fixed sold" isUC="False" type="SET_BINARY">
+          <property type="expression" name="SB_VALUE" value="isFixed_Sold"/>
+        </node>
+        <node name="MU49" moduleName="MU49_4" label="CO2 of energy sold" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="CO2_sold/1000000"/>
+        </node>
+        <node name="MU69" moduleName="MU69_4" label="" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="-tax_sold"/>
+        </node>
+        <node name="SB05" moduleName="SB05_4" label="spot/fixed bought" isUC="False" type="SET_BINARY">
+          <property type="expression" name="SB_VALUE" value="isFixed_Bought"/>
+        </node>
+      </node>
+      <node name="208" moduleName="208_2" label="CSI correction" isUC="True" type="sol2@1">
+        <property type="expression" name="standard_meridian_longitude" value="standard_meridian"/>
+        <property type="expression" name="longitude" value="Longitude"/>
+        <property type="expression" name="tilt" value="PV_All_tilt"/>
+        <property type="constant" name="south_wall_angle" value="0.0"/>
+        <property type="expression" name="latitude" value="Latitude"/>
+        <property type="expression" name="azimuth" value="azimuth"/>
+        <node name="SOR_01" moduleName="SOR_01_2" label="" isUC="False" type="SOLAR_RADIATION">
+          <property type="expression" name="SOL_RAD_LONGITUDE_STAND" value="360-standard_meridian_longitude" unit="deg"/>
+          <property type="expression" name="SOL_RAD_LONGITUDE_LOCAL" value="360-longitude" unit="deg"/>
+          <property type="expression" name="SOL_RAD_LATITUDE" value="90-latitude" unit="deg"/>
+        </node>
+        <node name="SOI_01" moduleName="SOI_01_2" label="West" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="90+south_wall_angle-ceil(floor((south_wall_angle+90)/180)/2)*360" unit="deg"/>
+        </node>
+        <node name="SOI_02" moduleName="SOI_02_2" label="North" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="south_wall_angle+180-ceil(floor((south_wall_angle+180)/180)/2)*360" unit="deg"/>
+        </node>
+        <node name="SOI_03" moduleName="SOI_03_2" label="South" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="south_wall_angle" unit="deg"/>
+        </node>
+        <node name="SOI_04" moduleName="SOI_04_2" label="East" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="(south_wall_angle-90)-ceil(floor((south_wall_angle-90)/180)/2)*360" unit="deg"/>
+        </node>
+        <node name="SOI02" moduleName="SOI02_2" label="southwest" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+        </node>
+        <node name="04" moduleName="04_12" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_18" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_18" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_18" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_18" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_18" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_18" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_18" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_18" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="SOI01" moduleName="SOI01_2" label="Horizontal surface" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="azimuth" unit="deg"/>
+        </node>
+        <node name="05" moduleName="05_12" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_19" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_19" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_19" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_19" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_19" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_19" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_19" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_19" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="01" moduleName="01_4" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_20" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_20" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_20" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_20" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_20" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_20" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_20" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_20" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="02" moduleName="02_12" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_21" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_21" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_21" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_21" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_21" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_21" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_21" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_21" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="03" moduleName="03_12" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_22" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_22" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_22" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_22" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_22" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_22" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_22" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_22" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="SOI05" moduleName="SOI05_2" label="east" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+        </node>
+        <node name="SOI03" moduleName="SOI03_2" label="west" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+        </node>
+        <node name="SOI04" moduleName="SOI04_2" label="south east" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+        </node>
+      </node>
+      <node name="219" moduleName="219_2" label="" isUC="True" type="PV2@1">
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_South*1000/140"/>
+        <property type="constant" name="beta" value="0.0045"/>
+        <property type="constant" name="equation" value="1"/>
+        <property type="constant" name="Cirr" value="1.0"/>
+        <property type="constant" name="t" value="0.0"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
+        <node name="MU_61" moduleName="MU_61_23" label="t" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+        </node>
+        <node name="MU_49" moduleName="MU_49_23" label="beta" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+        </node>
+        <node name="MU_60" moduleName="MU_60_23" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+        </node>
+        <node name="MU_47" moduleName="MU_47_23" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+        </node>
+        <node name="MU_48" moduleName="MU_48_23" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+        </node>
+        <node name="MU_46" moduleName="MU_46_23" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+        </node>
+        <node name="MU_63" moduleName="MU_63_23" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+        <node name="MU_40" moduleName="MU_40_23" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+      </node>
+      <node name="MU119" moduleName="MU119_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU25" moduleName="MU25_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU26" moduleName="MU26_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="CO2_PV_production"/>
+      </node>
+      <node name="220" moduleName="220_2" label="" isUC="True" type="PV2@1">
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_West*1000/140"/>
+        <property type="constant" name="beta" value="0.0045"/>
+        <property type="constant" name="equation" value="1"/>
+        <property type="constant" name="Cirr" value="1.0"/>
+        <property type="constant" name="t" value="0.0"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
+        <node name="MU_61" moduleName="MU_61_24" label="t" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+        </node>
+        <node name="MU_49" moduleName="MU_49_24" label="beta" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+        </node>
+        <node name="MU_60" moduleName="MU_60_24" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+        </node>
+        <node name="MU_47" moduleName="MU_47_24" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+        </node>
+        <node name="MU_48" moduleName="MU_48_24" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+        </node>
+        <node name="MU_46" moduleName="MU_46_24" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+        </node>
+        <node name="MU_63" moduleName="MU_63_24" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+        <node name="MU_40" moduleName="MU_40_24" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+      </node>
+      <node name="221" moduleName="221_2" label="" isUC="True" type="PV2@1">
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_East*1000/140"/>
+        <property type="constant" name="beta" value="0.0045"/>
+        <property type="constant" name="equation" value="1"/>
+        <property type="constant" name="Cirr" value="1.0"/>
+        <property type="constant" name="t" value="0.0"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
+        <node name="MU_61" moduleName="MU_61_25" label="t" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+        </node>
+        <node name="MU_49" moduleName="MU_49_25" label="beta" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+        </node>
+        <node name="MU_60" moduleName="MU_60_25" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+        </node>
+        <node name="MU_47" moduleName="MU_47_25" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+        </node>
+        <node name="MU_48" moduleName="MU_48_25" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+        </node>
+        <node name="MU_46" moduleName="MU_46_25" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+        </node>
+        <node name="MU_63" moduleName="MU_63_25" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+        <node name="MU_40" moduleName="MU_40_25" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+      </node>
+      <node name="222" moduleName="222_2" label="" isUC="True" type="PV2@1">
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_North*1000/140"/>
+        <property type="constant" name="beta" value="0.0045"/>
+        <property type="constant" name="equation" value="1"/>
+        <property type="constant" name="Cirr" value="1.0"/>
+        <property type="constant" name="t" value="0.0"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
+        <node name="MU_61" moduleName="MU_61_26" label="t" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+        </node>
+        <node name="MU_49" moduleName="MU_49_26" label="beta" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+        </node>
+        <node name="MU_60" moduleName="MU_60_26" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+        </node>
+        <node name="MU_47" moduleName="MU_47_26" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+        </node>
+        <node name="MU_48" moduleName="MU_48_26" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+        </node>
+        <node name="MU_46" moduleName="MU_46_26" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+        </node>
+        <node name="MU_63" moduleName="MU_63_26" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+        <node name="MU_40" moduleName="MU_40_26" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+      </node>
+      <node name="MU109" moduleName="MU109_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings/1000000"/>
+      </node>
+      <node name="MU106" moduleName="MU106_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_BIAS" value="CO2_Fixed"/>
+      </node>
+      <node name="MU105" moduleName="MU105_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_BIAS" value="CO2_PV_production"/>
+      </node>
+      <node name="MU104" moduleName="MU104_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings/1000000"/>
+      </node>
+      <node name="MU11" moduleName="MU11_2" label="Use Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="1/(1-loss_chargeORdischarge/100)"/>
+      </node>
+      <node name="MU15" moduleName="MU15_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="one_biulding_m2"/>
+      </node>
+      <node name="MU139" moduleName="MU139_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU143" moduleName="MU143_1" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+    </node>
+    <node name="COMMERCIAL" moduleName="COMMERCIAL" label="" isUC="True" type="Battery+PV+€+CO2@1">
+      <property type="constant" name="UseFixedPrice_Bought" value="false"/>
+      <property type="constant" name="Battery_ChargeRatioOfInitial" value="100.0" unit="%"/>
+      <property type="constant" name="CO2_Fixed" value="220.0" unit="kg CO2/MWh"/>
+      <property type="constant" name="one_biulding_m2" value="20117.0" unit="m2"/>
+      <property type="constant" name="CO2_FromInputFile" value="false"/>
+      <property type="constant" name="amount_of_biuldings" value="1.0"/>
+      <property type="constant" name="PV_West" value="0.0" unit="kWp"/>
+      <property type="constant" name="sell_tax" value="0.028" unit="€/kWh"/>
+      <property type="constant" name="Longitude" value="65.0" unit="deg"/>
+      <property type="constant" name="azimuth" value="-22.0" unit="deg"/>
+      <property type="constant" name="cap_upperbound" value="92.0" unit="%"/>
+      <property type="constant" name="FixedPrice_Bought" value="0.06" unit="€/kWh"/>
+      <property type="constant" name="Latitude" value="25.0" unit="deg"/>
+      <property type="constant" name="PV_South" value="0.0" unit="kWp"/>
+      <property type="constant" name="FixedPrice_Sold" value="0.035" unit="€/kWh"/>
+      <property type="constant" name="loss_chargeORdischarge" value="10.0" unit="%"/>
+      <property type="constant" name="UseFixedPrice_Sold" value="false"/>
+      <property type="constant" name="standard_meridian" value="15.0" unit="deg"/>
+      <property type="constant" name="transfer_price" value="0.033" unit="€/kWh"/>
+      <property type="constant" name="CO2_PV_production" value="0.0" unit="kg CO2/MWh"/>
+      <property type="constant" name="PV_East" value="0.0" unit="kWp"/>
+      <property type="constant" name="buy_tax" value="0.028" unit="€/kWh"/>
+      <property type="constant" name="PV_All_tilt" value="0.0" unit="deg"/>
+      <property type="constant" name="PV_North" value="0.0" unit="kWp"/>
+      <property type="constant" name="cap_lowerbound" value="20.0" unit="%"/>
+      <property type="constant" name="Initial_Battery_Capacity" value="0.0" unit="kWh"/>
+      <node name="MU72" moduleName="MU72_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU71" moduleName="MU71_3" label="decay of battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="-1*amount_of_biuldings"/>
+      </node>
+      <node name="MU75" moduleName="MU75_3" label="Charge Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_BIAS" value="Battery_ChargeRatioOfInitial/((1-loss_chargeORdischarge/100))"/>
+      </node>
+      <node name="MU08" moduleName="MU08_3" label="Charge Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(1-loss_chargeORdischarge/100)"/>
+      </node>
+      <node name="MU74" moduleName="MU74_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(1-loss_chargeORdischarge/100)"/>
+      </node>
+      <node name="MU73" moduleName="MU73_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(cap_upperbound/100)"/>
+      </node>
+      <node name="MU79" moduleName="MU79_3" label="Charge Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="Battery_ChargeRatioOfInitial/100"/>
+      </node>
+      <node name="MU78" moduleName="MU78_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU77" moduleName="MU77_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="1/((1-loss_chargeORdischarge/100))"/>
+      </node>
+      <node name="MU06" moduleName="MU06_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU05" moduleName="MU05_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU04" moduleName="MU04_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU03" moduleName="MU03_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU81" moduleName="MU81_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(cap_lowerbound/100)"/>
+      </node>
+      <node name="SB02" moduleName="SB02_3" label="" isUC="False" type="SET_BINARY">
+        <property type="expression" name="SB_VALUE" value="CO2_FromInputFile"/>
+      </node>
+      <node name="204" moduleName="204_3" label="" isUC="True" type="Simple Battery with decay@1">
+        <property type="expression" name="Initial_Capacity" value="Initial_Battery_Capacity" unit="kWh"/>
+        <node name="MU36" moduleName="MU36_5" label="Initial Capacity Input" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Initial_Capacity"/>
+        </node>
+      </node>
+      <node name="MU82" moduleName="MU82_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="205" moduleName="205_3" label="" isUC="True" type="Cost_calculator@1">
+        <property type="expression" name="tax_sold" value="sell_tax" unit="€/kWh"/>
+        <property type="expression" name="isFixed_Bought" value="UseFixedPrice_Bought"/>
+        <property type="constant" name="CO2_sold" value="0.0" unit="kg CO2/MWh"/>
+        <property type="constant" name="CO2_bought" value="0.0" unit="kg CO2/MWh"/>
+        <property type="expression" name="FixedPrice_Bought" value="FixedPrice_Bought" unit="€/kWh"/>
+        <property type="expression" name="FixedPrice_TransferCosts_Bought" value="transfer_price" unit="€/kWh"/>
+        <property type="constant" name="fixedprice_sold" value="0.0" unit="€/kWh"/>
+        <property type="expression" name="isFixed_Sold" value="UseFixedPrice_Sold"/>
+        <property type="expression" name="tax_bought" value="buy_tax" unit="€/kWh"/>
+        <property type="expression" name="FixedPrice_Sold" value="FixedPrice_Sold" unit="€/kWh"/>
+        <node name="MU76" moduleName="MU76_5" label="" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="(FixedPrice_TransferCosts_Bought+tax_bought)"/>
+        </node>
+        <node name="MU54" moduleName="MU54_5" label="CO2 from Buying" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="CO2_bought/1000000"/>
+        </node>
+        <node name="MU44" moduleName="MU44_5" label="Fixed Price" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Bought"/>
+        </node>
+        <node name="MU45" moduleName="MU45_5" label="Sold price" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Sold"/>
+        </node>
+        <node name="SB08" moduleName="SB08_5" label="spot/fixed sold" isUC="False" type="SET_BINARY">
+          <property type="expression" name="SB_VALUE" value="isFixed_Sold"/>
+        </node>
+        <node name="MU49" moduleName="MU49_5" label="CO2 of energy sold" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="CO2_sold/1000000"/>
+        </node>
+        <node name="MU69" moduleName="MU69_5" label="" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="-tax_sold"/>
+        </node>
+        <node name="SB05" moduleName="SB05_5" label="spot/fixed bought" isUC="False" type="SET_BINARY">
+          <property type="expression" name="SB_VALUE" value="isFixed_Bought"/>
+        </node>
+      </node>
+      <node name="208" moduleName="208_3" label="CSI correction" isUC="True" type="sol2@1">
+        <property type="expression" name="standard_meridian_longitude" value="standard_meridian"/>
+        <property type="expression" name="longitude" value="Longitude"/>
+        <property type="expression" name="tilt" value="PV_All_tilt"/>
+        <property type="constant" name="south_wall_angle" value="0.0"/>
+        <property type="expression" name="latitude" value="Latitude"/>
+        <property type="expression" name="azimuth" value="azimuth"/>
+        <node name="SOR_01" moduleName="SOR_01_3" label="" isUC="False" type="SOLAR_RADIATION">
+          <property type="expression" name="SOL_RAD_LONGITUDE_STAND" value="360-standard_meridian_longitude" unit="deg"/>
+          <property type="expression" name="SOL_RAD_LONGITUDE_LOCAL" value="360-longitude" unit="deg"/>
+          <property type="expression" name="SOL_RAD_LATITUDE" value="90-latitude" unit="deg"/>
+        </node>
+        <node name="SOI_01" moduleName="SOI_01_3" label="West" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="90+south_wall_angle-ceil(floor((south_wall_angle+90)/180)/2)*360" unit="deg"/>
+        </node>
+        <node name="SOI_02" moduleName="SOI_02_3" label="North" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="south_wall_angle+180-ceil(floor((south_wall_angle+180)/180)/2)*360" unit="deg"/>
+        </node>
+        <node name="SOI_03" moduleName="SOI_03_3" label="South" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="south_wall_angle" unit="deg"/>
+        </node>
+        <node name="SOI_04" moduleName="SOI_04_3" label="East" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="(south_wall_angle-90)-ceil(floor((south_wall_angle-90)/180)/2)*360" unit="deg"/>
+        </node>
+        <node name="SOI02" moduleName="SOI02_3" label="southwest" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+        </node>
+        <node name="04" moduleName="04_13" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_27" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_27" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_27" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_27" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_27" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_27" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_27" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_27" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="SOI01" moduleName="SOI01_3" label="Horizontal surface" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="azimuth" unit="deg"/>
+        </node>
+        <node name="05" moduleName="05_13" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_28" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_28" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_28" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_28" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_28" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_28" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_28" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_28" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="01" moduleName="01_5" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_29" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_29" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_29" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_29" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_29" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_29" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_29" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_29" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="02" moduleName="02_13" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_30" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_30" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_30" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_30" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_30" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_30" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_30" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_30" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="03" moduleName="03_13" label="" isUC="True" type="PV2@1">
+          <property type="constant" name="n_module" value="0.17"/>
+          <property type="constant" name="A" value="1.0"/>
+          <property type="constant" name="beta" value="0.0045"/>
+          <property type="constant" name="equation" value="1"/>
+          <property type="constant" name="Cirr" value="1.0"/>
+          <property type="constant" name="t" value="0.0"/>
+          <property type="constant" name="n_inverter" value="0.98"/>
+          <node name="MU_61" moduleName="MU_61_31" label="t" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+          </node>
+          <node name="MU_49" moduleName="MU_49_31" label="beta" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+          </node>
+          <node name="MU_60" moduleName="MU_60_31" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+          </node>
+          <node name="MU_47" moduleName="MU_47_31" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+          </node>
+          <node name="MU_48" moduleName="MU_48_31" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+          </node>
+          <node name="MU_46" moduleName="MU_46_31" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+            <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+          </node>
+          <node name="MU_63" moduleName="MU_63_31" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+          <node name="MU_40" moduleName="MU_40_31" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+            <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+          </node>
+        </node>
+        <node name="SOI05" moduleName="SOI05_3" label="east" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+        </node>
+        <node name="SOI03" moduleName="SOI03_3" label="west" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+        </node>
+        <node name="SOI04" moduleName="SOI04_3" label="south east" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+        </node>
+      </node>
+      <node name="219" moduleName="219_3" label="" isUC="True" type="PV2@1">
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_South*1000/140"/>
+        <property type="constant" name="beta" value="0.0045"/>
+        <property type="constant" name="equation" value="1"/>
+        <property type="constant" name="Cirr" value="1.0"/>
+        <property type="constant" name="t" value="0.0"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
+        <node name="MU_61" moduleName="MU_61_32" label="t" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+        </node>
+        <node name="MU_49" moduleName="MU_49_32" label="beta" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+        </node>
+        <node name="MU_60" moduleName="MU_60_32" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+        </node>
+        <node name="MU_47" moduleName="MU_47_32" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+        </node>
+        <node name="MU_48" moduleName="MU_48_32" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+        </node>
+        <node name="MU_46" moduleName="MU_46_32" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+        </node>
+        <node name="MU_63" moduleName="MU_63_32" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+        <node name="MU_40" moduleName="MU_40_32" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+      </node>
+      <node name="MU119" moduleName="MU119_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU25" moduleName="MU25_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU26" moduleName="MU26_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="CO2_PV_production"/>
+      </node>
+      <node name="220" moduleName="220_3" label="" isUC="True" type="PV2@1">
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_West*1000/140"/>
+        <property type="constant" name="beta" value="0.0045"/>
+        <property type="constant" name="equation" value="1"/>
+        <property type="constant" name="Cirr" value="1.0"/>
+        <property type="constant" name="t" value="0.0"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
+        <node name="MU_61" moduleName="MU_61_33" label="t" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+        </node>
+        <node name="MU_49" moduleName="MU_49_33" label="beta" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+        </node>
+        <node name="MU_60" moduleName="MU_60_33" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+        </node>
+        <node name="MU_47" moduleName="MU_47_33" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+        </node>
+        <node name="MU_48" moduleName="MU_48_33" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+        </node>
+        <node name="MU_46" moduleName="MU_46_33" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+        </node>
+        <node name="MU_63" moduleName="MU_63_33" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+        <node name="MU_40" moduleName="MU_40_33" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+      </node>
+      <node name="221" moduleName="221_3" label="" isUC="True" type="PV2@1">
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_East*1000/140"/>
+        <property type="constant" name="beta" value="0.0045"/>
+        <property type="constant" name="equation" value="1"/>
+        <property type="constant" name="Cirr" value="1.0"/>
+        <property type="constant" name="t" value="0.0"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
+        <node name="MU_61" moduleName="MU_61_34" label="t" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+        </node>
+        <node name="MU_49" moduleName="MU_49_34" label="beta" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+        </node>
+        <node name="MU_60" moduleName="MU_60_34" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+        </node>
+        <node name="MU_47" moduleName="MU_47_34" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+        </node>
+        <node name="MU_48" moduleName="MU_48_34" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+        </node>
+        <node name="MU_46" moduleName="MU_46_34" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+        </node>
+        <node name="MU_63" moduleName="MU_63_34" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+        <node name="MU_40" moduleName="MU_40_34" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+      </node>
+      <node name="222" moduleName="222_3" label="" isUC="True" type="PV2@1">
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_North*1000/140"/>
+        <property type="constant" name="beta" value="0.0045"/>
+        <property type="constant" name="equation" value="1"/>
+        <property type="constant" name="Cirr" value="1.0"/>
+        <property type="constant" name="t" value="0.0"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
+        <node name="MU_61" moduleName="MU_61_35" label="t" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
+        </node>
+        <node name="MU_49" moduleName="MU_49_35" label="beta" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_GAIN" value="beta"/>
+        </node>
+        <node name="MU_60" moduleName="MU_60_35" label="n_inverter" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_inverter"/>
+        </node>
+        <node name="MU_47" moduleName="MU_47_35" label="used solving method" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="equation"/>
+        </node>
+        <node name="MU_48" moduleName="MU_48_35" label="C_irr" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="Cirr"/>
+        </node>
+        <node name="MU_46" moduleName="MU_46_35" label="n_module" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="n_module"/>
+        </node>
+        <node name="MU_63" moduleName="MU_63_35" label="pv area multiplication is inside the multiplier" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+        <node name="MU_40" moduleName="MU_40_35" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
+          <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
+        </node>
+      </node>
+      <node name="MU109" moduleName="MU109_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings/1000000"/>
+      </node>
+      <node name="MU106" moduleName="MU106_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_BIAS" value="CO2_Fixed"/>
+      </node>
+      <node name="MU105" moduleName="MU105_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_BIAS" value="CO2_PV_production"/>
+      </node>
+      <node name="MU104" moduleName="MU104_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings/1000000"/>
+      </node>
+      <node name="MU11" moduleName="MU11_3" label="Use Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="1/(1-loss_chargeORdischarge/100)"/>
+      </node>
+      <node name="MU15" moduleName="MU15_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="one_biulding_m2"/>
+      </node>
+      <node name="MU139" moduleName="MU139_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU143" moduleName="MU143_2" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+    </node>
+    <node name="OFFICE" moduleName="OFFICE" label="Office" isUC="True" type="Battery+PV+€+CO2@1">
+      <property type="constant" name="UseFixedPrice_Bought" value="false"/>
+      <property type="constant" name="Battery_ChargeRatioOfInitial" value="100.0" unit="%"/>
+      <property type="constant" name="CO2_Fixed" value="220.0" unit="kg CO2/MWh"/>
+      <property type="constant" name="one_biulding_m2" value="14875.0" unit="m2"/>
+      <property type="constant" name="CO2_FromInputFile" value="false"/>
+      <property type="constant" name="amount_of_biuldings" value="1.0"/>
+      <property type="constant" name="PV_West" value="0.0" unit="kWp"/>
+      <property type="constant" name="sell_tax" value="0.028" unit="€/kWh"/>
+      <property type="constant" name="Longitude" value="65.0" unit="deg"/>
+      <property type="constant" name="azimuth" value="-22.0" unit="deg"/>
+      <property type="constant" name="cap_upperbound" value="92.0" unit="%"/>
+      <property type="constant" name="FixedPrice_Bought" value="0.06" unit="€/kWh"/>
+      <property type="constant" name="Latitude" value="25.0" unit="deg"/>
+      <property type="constant" name="PV_South" value="0.0" unit="kWp"/>
+      <property type="constant" name="FixedPrice_Sold" value="0.035" unit="€/kWh"/>
+      <property type="constant" name="UseFixedPrice_Sold" value="false"/>
+      <property type="constant" name="loss_chargeORdischarge" value="10.0" unit="%"/>
+      <property type="constant" name="standard_meridian" value="15.0" unit="deg"/>
+      <property type="constant" name="transfer_price" value="0.033" unit="€/kWh"/>
+      <property type="constant" name="CO2_PV_production" value="0.0" unit="kg CO2/MWh"/>
+      <property type="constant" name="PV_East" value="0.0" unit="kWp"/>
+      <property type="constant" name="buy_tax" value="0.028" unit="€/kWh"/>
+      <property type="constant" name="PV_North" value="0.0" unit="kWp"/>
+      <property type="constant" name="PV_All_tilt" value="0.0" unit="deg"/>
+      <property type="constant" name="cap_lowerbound" value="20.0" unit="%"/>
+      <property type="constant" name="Initial_Battery_Capacity" value="0.0" unit="kWh"/>
+      <node name="MU72" moduleName="MU72" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU71" moduleName="MU71" label="decay of battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="-1*amount_of_biuldings"/>
+      </node>
+      <node name="MU75" moduleName="MU75" label="Charge Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_BIAS" value="Battery_ChargeRatioOfInitial/((1-loss_chargeORdischarge/100))"/>
+      </node>
+      <node name="MU08" moduleName="MU08" label="Charge Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(1-loss_chargeORdischarge/100)"/>
+      </node>
+      <node name="MU74" moduleName="MU74" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(1-loss_chargeORdischarge/100)"/>
+      </node>
+      <node name="MU73" moduleName="MU73" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(cap_upperbound/100)"/>
+      </node>
       <node name="MU79" moduleName="MU79" label="Charge Battery" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_BIAS" value="Battery_ChargeRatioOfInitial*Initial_Battery_Capacity/100"/>
+        <property type="expression" name="MULTIPLYER_GAIN" value="Battery_ChargeRatioOfInitial/100"/>
+      </node>
+      <node name="MU78" moduleName="MU78" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU77" moduleName="MU77" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="1/((1-loss_chargeORdischarge/100))"/>
+      </node>
+      <node name="MU06" moduleName="MU06" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU05" moduleName="MU05" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU04" moduleName="MU04" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU03" moduleName="MU03" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU81" moduleName="MU81" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="(cap_lowerbound/100)"/>
+      </node>
+      <node name="SB02" moduleName="SB02" label="" isUC="False" type="SET_BINARY">
+        <property type="expression" name="SB_VALUE" value="CO2_FromInputFile"/>
       </node>
       <node name="204" moduleName="204" label="" isUC="True" type="Simple Battery with decay@1">
         <property type="expression" name="Initial_Capacity" value="Initial_Battery_Capacity" unit="kWh"/>
@@ -126,36 +1641,31 @@
           <property type="expression" name="MULTIPLYER_BIAS" value="Initial_Capacity"/>
         </node>
       </node>
-      <node name="SB02" moduleName="SB02" label="" isUC="False" type="SET_BINARY">
-        <property type="expression" name="SB_VALUE" value="CO2_FromInputFile"/>
+      <node name="MU82" moduleName="MU82" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
       </node>
       <node name="205" moduleName="205" label="" isUC="True" type="Cost_calculator@1">
+        <property type="expression" name="tax_sold" value="sell_tax" unit="€/kWh"/>
         <property type="expression" name="isFixed_Bought" value="UseFixedPrice_Bought"/>
         <property type="constant" name="CO2_sold" value="0.0" unit="kg CO2/MWh"/>
         <property type="constant" name="CO2_bought" value="0.0" unit="kg CO2/MWh"/>
         <property type="expression" name="FixedPrice_Bought" value="FixedPrice_Bought" unit="€/kWh"/>
-        <property type="expression" name="FixedPrice_TransferCosts_Bought" value="FixedPrice_TransferCosts_Bought" unit="€/kWh"/>
-        <property type="expression" name="Markup_Bought" value="Markup_Bought" unit="%"/>
+        <property type="expression" name="FixedPrice_TransferCosts_Bought" value="transfer_price" unit="€/kWh"/>
+        <property type="constant" name="fixedprice_sold" value="0.0" unit="€/kWh"/>
         <property type="expression" name="isFixed_Sold" value="UseFixedPrice_Sold"/>
+        <property type="expression" name="tax_bought" value="buy_tax" unit="€/kWh"/>
         <property type="expression" name="FixedPrice_Sold" value="FixedPrice_Sold" unit="€/kWh"/>
-        <property type="expression" name="Markup_Sold" value="Markup_Sold" unit="%"/>
         <node name="MU76" moduleName="MU76_2" label="" isUC="False" type="MULTIPLYER_QF2">
-          <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_TransferCosts_Bought"/>
-        </node>
-        <node name="MU53" moduleName="MU53_2" label="" isUC="False" type="MULTIPLYER_QF">
-          <property type="expression" name="MULTIPLYER_GAIN" value="(1+ Markup_Bought/100)"/>
+          <property type="expression" name="MULTIPLYER_BIAS" value="(FixedPrice_TransferCosts_Bought+tax_bought)"/>
         </node>
         <node name="MU54" moduleName="MU54_2" label="CO2 from Buying" isUC="False" type="MULTIPLYER_QF2">
           <property type="expression" name="MULTIPLYER_GAIN" value="CO2_bought/1000000"/>
         </node>
-        <node name="MU50" moduleName="MU50_2" label="Sold price" isUC="False" type="MULTIPLYER_QF2">
-          <property type="expression" name="MULTIPLYER_GAIN" value="1+ Markup_Sold/100"/>
-        </node>
         <node name="MU44" moduleName="MU44_2" label="Fixed Price" isUC="False" type="MULTIPLYER_QF2">
-          <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Bought*( 1+Markup_Bought/100)"/>
+          <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Bought"/>
         </node>
         <node name="MU45" moduleName="MU45_2" label="Sold price" isUC="False" type="MULTIPLYER_QF2">
-          <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Sold*(1+Markup_Sold/100)"/>
+          <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Sold"/>
         </node>
         <node name="SB08" moduleName="SB08_2" label="spot/fixed sold" isUC="False" type="SET_BINARY">
           <property type="expression" name="SB_VALUE" value="isFixed_Sold"/>
@@ -163,36 +1673,43 @@
         <node name="MU49" moduleName="MU49_2" label="CO2 of energy sold" isUC="False" type="MULTIPLYER_QF2">
           <property type="expression" name="MULTIPLYER_GAIN" value="CO2_sold/1000000"/>
         </node>
+        <node name="MU69" moduleName="MU69_2" label="" isUC="False" type="MULTIPLYER_QF2">
+          <property type="expression" name="MULTIPLYER_BIAS" value="-tax_sold"/>
+        </node>
         <node name="SB05" moduleName="SB05_2" label="spot/fixed bought" isUC="False" type="SET_BINARY">
           <property type="expression" name="SB_VALUE" value="isFixed_Bought"/>
         </node>
-        <node name="MU60" moduleName="MU60_2" label="" isUC="False" type="MULTIPLYER_QF">
-          <property type="expression" name="MULTIPLYER_GAIN" value="(1+ Markup_Bought/100)"/>
-        </node>
       </node>
       <node name="208" moduleName="208" label="CSI correction" isUC="True" type="sol2@1">
-        <property type="constant" name="standard_meridian_longitude" value="15.0"/>
+        <property type="expression" name="standard_meridian_longitude" value="standard_meridian"/>
         <property type="expression" name="longitude" value="Longitude"/>
         <property type="expression" name="tilt" value="PV_All_tilt"/>
         <property type="constant" name="south_wall_angle" value="0.0"/>
         <property type="expression" name="latitude" value="Latitude"/>
-        <property type="constant" name="azimuth" value="0.0"/>
+        <property type="expression" name="azimuth" value="azimuth"/>
         <node name="SOR_01" moduleName="SOR_01" label="" isUC="False" type="SOLAR_RADIATION">
-          <property type="expression" name="SOL_RAD_LONGITUDE_STAND" value="360-longitude" unit="deg"/>
+          <property type="expression" name="SOL_RAD_LONGITUDE_STAND" value="360-standard_meridian_longitude" unit="deg"/>
           <property type="expression" name="SOL_RAD_LONGITUDE_LOCAL" value="360-longitude" unit="deg"/>
-          <property type="expression" name="SOL_RAD_LATITUDE" value="latitude" unit="deg"/>
+          <property type="expression" name="SOL_RAD_LATITUDE" value="90-latitude" unit="deg"/>
         </node>
         <node name="SOI_01" moduleName="SOI_01" label="West" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
           <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="90+south_wall_angle-ceil(floor((south_wall_angle+90)/180)/2)*360" unit="deg"/>
         </node>
         <node name="SOI_02" moduleName="SOI_02" label="North" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
           <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="south_wall_angle+180-ceil(floor((south_wall_angle+180)/180)/2)*360" unit="deg"/>
         </node>
         <node name="SOI_03" moduleName="SOI_03" label="South" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
           <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="south_wall_angle" unit="deg"/>
         </node>
         <node name="SOI_04" moduleName="SOI_04" label="East" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
           <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="(south_wall_angle-90)-ceil(floor((south_wall_angle-90)/180)/2)*360" unit="deg"/>
+        </node>
+        <node name="SOI02" moduleName="SOI02" label="southwest" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
         </node>
         <node name="04" moduleName="04_10" label="" isUC="True" type="PV2@1">
           <property type="constant" name="n_module" value="0.17"/>
@@ -227,8 +1744,8 @@
             <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
           </node>
         </node>
-        <node name="SOI02" moduleName="SOI02" label="southwest" isUC="False" type="SOLAR_IRR_PROCESSOR">
-          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
+        <node name="SOI01" moduleName="SOI01" label="Horizontal surface" isUC="False" type="SOLAR_IRR_PROCESSOR">
+          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="azimuth" unit="deg"/>
         </node>
         <node name="05" moduleName="05_10" label="" isUC="True" type="PV2@1">
           <property type="constant" name="n_module" value="0.17"/>
@@ -262,10 +1779,6 @@
           <node name="MU_40" moduleName="MU_40_1" label="Average electrical power output from the inverter (W)" isUC="False" type="MULTIPLYER_QF">
             <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
           </node>
-        </node>
-        <node name="SOI01" moduleName="SOI01" label="Horizontal surface" isUC="False" type="SOLAR_IRR_PROCESSOR">
-          <property type="expression" name="SOL_IRR_TRACK_TILT_ANGLE" value="tilt" unit="deg"/>
-          <property type="expression" name="SOL_IRR_TRACK_AZIMUTH" value="azimuth" unit="deg"/>
         </node>
         <node name="01" moduleName="01_2" label="" isUC="True" type="PV2@1">
           <property type="constant" name="n_module" value="0.17"/>
@@ -377,13 +1890,13 @@
         </node>
       </node>
       <node name="219" moduleName="219" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
-        <property type="expression" name="A" value="PV_South*1000/130"/>
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_South*1000/140"/>
         <property type="constant" name="beta" value="0.0045"/>
         <property type="constant" name="equation" value="1"/>
         <property type="constant" name="Cirr" value="1.0"/>
         <property type="constant" name="t" value="0.0"/>
-        <property type="constant" name="n_inverter" value="0.98"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
         <node name="MU_61" moduleName="MU_61_5" label="t" isUC="False" type="MULTIPLYER_QF2">
           <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
         </node>
@@ -409,67 +1922,23 @@
           <property type="expression" name="MULTIPLYER_GAIN" value="A"/>
         </node>
       </node>
-      <node name="217" moduleName="217" label="" isUC="True" type="Simple Battery with decay@1">
-        <property type="expression" name="Initial_Capacity" value="Initial_Battery_Capacity" unit="kWh"/>
-        <node name="MU36" moduleName="MU36_3" label="Initial Capacity Input" isUC="False" type="MULTIPLYER_QF2">
-          <property type="expression" name="MULTIPLYER_BIAS" value="Initial_Capacity"/>
-        </node>
+      <node name="MU119" moduleName="MU119" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
       </node>
-      <node name="218" moduleName="218" label="" isUC="True" type="Cost_calculator@1">
-        <property type="expression" name="isFixed_Bought" value="UseFixedPrice_Bought"/>
-        <property type="constant" name="CO2_sold" value="0.0" unit="kg CO2/MWh"/>
-        <property type="constant" name="CO2_bought" value="0.0" unit="kg CO2/MWh"/>
-        <property type="expression" name="FixedPrice_Bought" value="FixedPrice_Bought" unit="€/kWh"/>
-        <property type="expression" name="FixedPrice_TransferCosts_Bought" value="FixedPrice_TransferCosts_Bought" unit="€/kWh"/>
-        <property type="expression" name="Markup_Bought" value="Markup_Bought" unit="%"/>
-        <property type="expression" name="isFixed_Sold" value="UseFixedPrice_Sold"/>
-        <property type="expression" name="FixedPrice_Sold" value="FixedPrice_Sold" unit="€/kWh"/>
-        <property type="expression" name="Markup_Sold" value="Markup_Sold" unit="%"/>
-        <node name="MU76" moduleName="MU76_3" label="" isUC="False" type="MULTIPLYER_QF2">
-          <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_TransferCosts_Bought"/>
-        </node>
-        <node name="MU53" moduleName="MU53_3" label="" isUC="False" type="MULTIPLYER_QF">
-          <property type="expression" name="MULTIPLYER_GAIN" value="(1+ Markup_Bought/100)"/>
-        </node>
-        <node name="MU54" moduleName="MU54_3" label="CO2 from Buying" isUC="False" type="MULTIPLYER_QF2">
-          <property type="expression" name="MULTIPLYER_GAIN" value="CO2_bought/1000000"/>
-        </node>
-        <node name="MU50" moduleName="MU50_3" label="Sold price" isUC="False" type="MULTIPLYER_QF2">
-          <property type="expression" name="MULTIPLYER_GAIN" value="1+ Markup_Sold/100"/>
-        </node>
-        <node name="MU44" moduleName="MU44_3" label="Fixed Price" isUC="False" type="MULTIPLYER_QF2">
-          <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Bought*( 1+Markup_Bought/100)"/>
-        </node>
-        <node name="MU45" moduleName="MU45_3" label="Sold price" isUC="False" type="MULTIPLYER_QF2">
-          <property type="expression" name="MULTIPLYER_BIAS" value="FixedPrice_Sold*(1+Markup_Sold/100)"/>
-        </node>
-        <node name="SB08" moduleName="SB08_3" label="spot/fixed sold" isUC="False" type="SET_BINARY">
-          <property type="expression" name="SB_VALUE" value="isFixed_Sold"/>
-        </node>
-        <node name="MU49" moduleName="MU49_3" label="CO2 of energy sold" isUC="False" type="MULTIPLYER_QF2">
-          <property type="expression" name="MULTIPLYER_GAIN" value="CO2_sold/1000000"/>
-        </node>
-        <node name="SB05" moduleName="SB05_3" label="spot/fixed bought" isUC="False" type="SET_BINARY">
-          <property type="expression" name="SB_VALUE" value="isFixed_Bought"/>
-        </node>
-        <node name="MU60" moduleName="MU60_3" label="" isUC="False" type="MULTIPLYER_QF">
-          <property type="expression" name="MULTIPLYER_GAIN" value="(1+ Markup_Bought/100)"/>
-        </node>
+      <node name="MU25" moduleName="MU25" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
       </node>
-      <node name="MU117" moduleName="MU117" label="" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_GAIN" value="1/1000000"/>
-      </node>
-      <node name="MU112" moduleName="MU112" label="" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_GAIN" value="1/1000000"/>
+      <node name="MU26" moduleName="MU26" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="CO2_PV_production"/>
       </node>
       <node name="220" moduleName="220" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
-        <property type="expression" name="A" value="PV_West*1000/130"/>
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_West*1000/140"/>
         <property type="constant" name="beta" value="0.0045"/>
         <property type="constant" name="equation" value="1"/>
         <property type="constant" name="Cirr" value="1.0"/>
         <property type="constant" name="t" value="0.0"/>
-        <property type="constant" name="n_inverter" value="0.98"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
         <node name="MU_61" moduleName="MU_61_6" label="t" isUC="False" type="MULTIPLYER_QF2">
           <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
         </node>
@@ -496,13 +1965,13 @@
         </node>
       </node>
       <node name="221" moduleName="221" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
-        <property type="expression" name="A" value="PV_East*1000/130"/>
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_East*1000/140"/>
         <property type="constant" name="beta" value="0.0045"/>
         <property type="constant" name="equation" value="1"/>
         <property type="constant" name="Cirr" value="1.0"/>
         <property type="constant" name="t" value="0.0"/>
-        <property type="constant" name="n_inverter" value="0.98"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
         <node name="MU_61" moduleName="MU_61_7" label="t" isUC="False" type="MULTIPLYER_QF2">
           <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
         </node>
@@ -529,13 +1998,13 @@
         </node>
       </node>
       <node name="222" moduleName="222" label="" isUC="True" type="PV2@1">
-        <property type="constant" name="n_module" value="0.17"/>
-        <property type="expression" name="A" value="PV_North*1000/130"/>
+        <property type="constant" name="n_module" value="0.1"/>
+        <property type="expression" name="A" value="PV_North*1000/140"/>
         <property type="constant" name="beta" value="0.0045"/>
         <property type="constant" name="equation" value="1"/>
         <property type="constant" name="Cirr" value="1.0"/>
         <property type="constant" name="t" value="0.0"/>
-        <property type="constant" name="n_inverter" value="0.98"/>
+        <property type="constant" name="n_inverter" value="0.9"/>
         <node name="MU_61" moduleName="MU_61_8" label="t" isUC="False" type="MULTIPLYER_QF2">
           <property type="expression" name="MULTIPLYER_BIAS" value="t"/>
         </node>
@@ -562,7 +2031,7 @@
         </node>
       </node>
       <node name="MU109" moduleName="MU109" label="" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_GAIN" value="1/1000000"/>
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings/1000000"/>
       </node>
       <node name="MU106" moduleName="MU106" label="" isUC="False" type="MULTIPLYER_QF2">
         <property type="expression" name="MULTIPLYER_BIAS" value="CO2_Fixed"/>
@@ -571,10 +2040,19 @@
         <property type="expression" name="MULTIPLYER_BIAS" value="CO2_PV_production"/>
       </node>
       <node name="MU104" moduleName="MU104" label="" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_GAIN" value="1/1000000"/>
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings/1000000"/>
       </node>
-      <node name="MU18" moduleName="MU18" label="Charge Battery" isUC="False" type="MULTIPLYER_QF2">
-        <property type="expression" name="MULTIPLYER_BIAS" value="Battery_ChargeRatioOfInitial*Initial_Battery_Capacity/100"/>
+      <node name="MU11" moduleName="MU11" label="Use Battery" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="1/(1-loss_chargeORdischarge/100)"/>
+      </node>
+      <node name="MU15" moduleName="MU15" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="one_biulding_m2"/>
+      </node>
+      <node name="MU139" moduleName="MU139_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
+      </node>
+      <node name="MU143" moduleName="MU143_3" label="" isUC="False" type="MULTIPLYER_QF2">
+        <property type="expression" name="MULTIPLYER_GAIN" value="amount_of_biuldings"/>
       </node>
     </node>
   </node>
