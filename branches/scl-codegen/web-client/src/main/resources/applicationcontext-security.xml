@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:security="http://www.springframework.org/schema/security"
+            xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+	<bean id="encoder" 
+              class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+              <constructor-arg name="strength" value="12" />
+    </bean>
+	
+	<security:http use-expressions="true">
+		<security:expression-handler ref="webExpressionHandler"/>			
+		<security:intercept-url	pattern="/assets/css/**" access="permitAll"/>
+		<security:intercept-url pattern="/assets/img/**" access="permitAll"/>
+		<security:intercept-url pattern="/login.html" access="permitAll"/>
+		<security:intercept-url pattern="/loginerror.html" access="permitAll"/>		
+		<security:intercept-url pattern="/**" access="hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard','ROLE_Guest')" />	
+		<security:form-login login-page="/login.html" authentication-failure-url="/loginerror.html" default-target-url="/loginOK.html" always-use-default-target="true" username-parameter="name" password-parameter="password"/>			
+		<security:access-denied-handler error-page="/accessDenied.html"/>
+		
+	</security:http>
+	<bean id="webExpressionHandler"
+         class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+         <property name="permissionEvaluator" ref="permissionEvaluator" />
+    </bean>
+    <bean id ="permissionEvaluator" class="eu.cityopt.validators.ProjectPermissionEvaluator"/>
+	
+	<security:authentication-manager>
+		<security:authentication-provider>
+			<!-- Enables encryption -->
+			<security:password-encoder ref="encoder"></security:password-encoder>
+			<security:jdbc-user-service data-source-ref="dataSource"
+                          users-by-username-query=
+                            "select us.name, us.password, us.enabled from appuser us where us.name = ?"
+                          authorities-by-username-query=
+                            "SELECT appuser.name, usergroup.name 
+                            FROM appuser, usergroup, usergroupproject 
+                            WHERE appuser.name = ? 
+                            AND usergroupproject.prjid is null 
+                            AND appuser.userid = usergroupproject.userid
+                            AND usergroup.usergroupid = usergroupproject.usergroupid" />
+
+		</security:authentication-provider>
+	</security:authentication-manager>
+</beans>
+		
+<!--  
+			<security:http use-expressions="true">
+                        <security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />           
+                        <security:form-login/>
+                        <security:logout/>              
+   			</security:http>               	  	
+          
+
+            <security:authentication-manager>
+              <security:authentication-provider>
+              	
+                <security:user-service>
+                        <security:user name="joke" password="joke" authorities="ROLE_USER" />
+                </security:user-service>
+              </security:authentication-provider>
+            </security:authentication-manager>
+            
+            
+</beans>
+-->
+

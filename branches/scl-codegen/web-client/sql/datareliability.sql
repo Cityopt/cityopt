@@ -1,0 +1,1 @@
+INSERT INTO datareliability (datareldesc) VALUES ('Actual data'),('Technical report'),('Scientific bibliography'),('Expert opinion');

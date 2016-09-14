@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<dataset>
+  <datareliability datareldesc="Actual data"/>
+  <datareliability datareldesc="Technical report"/>
+  <datareliability datareldesc="Scientific bibliography"/>
+  <datareliability datareldesc="Expert opinion"/>
+  <extparamvalset name="externals"/>
+  <extparamvalset name="testygeneration"/>
+  <project name="Apros test project" location="Helsinki"/>
+  <component name="SAMPLE_DISTRICT"/>
+  <component name="PV_TOTAL_ENERGY"/>
+  <component name="HEATING_LOAD"/>
+  <component name="CHP_ELECT_PROD"/>
+  <component name="ETH_NETWORK"/>
+  <component name="CHP_BOIL_TH_OUT"/>
+  <component name="FUEL_CONSUMPTION"/>
+  <component name="CITYOPT"/>
+  <type name="Double"/>
+  <type name="Integer"/>
+  <type name="String"/>
+  <type name="Timestamp"/>
+  <type name="TimeSeries/step"/>
+  <type name="TimeSeries/linear"/>
+  <type name="List of Double"/>
+  <type name="List of Integer"/>
+  <type name="List of Timestamp"/>
+  <unit name="kJ/kg"/>
+  <unit name="kW"/>
+  <unit name="1/K"/>
+  <unit name="kg/s"/>
+  <unit name="min"/>
+  <unit name="C"/>
+  <unit name="%/min"/>
+  <unit name="kJ/kgK"/>
+  <unit name="m2"/>
+  <unit name="MPa"/>
+  <unit name="deg"/>
+  <unit name="m3"/>
+  <unit name="m"/>
+  <unit name="Mpa"/>
+  <inputparameter name="CHP_electrical_power_rating" defaultvalue="2400.0"/>
+  <inputparameter name="Burner_efficiency" defaultvalue="0.7"/>
+  <inputparameter name="Share_of_roof_area_occupied_by_PVpanels" defaultvalue="10.0"/>
+  <inputparameter name="CHP_thermal_power_rating" defaultvalue="4000.0"/>
+  <inputparameter name="Insulation_layer_factor" defaultvalue="1.0"/>
+  <inputparameter name="Burner_nominal_power" defaultvalue="17000.0"/>
+  <inputparameter name="Share_of_roof_area_occupied_by_THcollectors" defaultvalue="0.0"/>
+  <inputparameter name="Heat_storage_nominal_charge_or_discharge_capacity" defaultvalue="40.0"/>
+  <inputparameter name="Heat_storage_tank_height" defaultvalue="15.0"/>
+  <inputparameter name="simulation_start" defaultvalue="2015-01-01T00:00:00"/>
+  <inputparameter name="simulation_end" defaultvalue="2015-01-01T00:00:00"/>
+  <algorithm description="grid search"/>
+  <algorithm description="genetic algorithm"/>
+  <scenariogenerator name="testygeneration"/>
+  <scenario description="1st test scenario"/>
+  <scenario description="2nd test scenario"/>
+  <scenario description="3rd test scenario"/>
+  <optconstraint name="roof_space" expression="panels + collectors" upperbound="20.0"/>
+  <objectivefunction name="fuelconsumption" expression="fuelconsumption" ismaximise="false"/>
+  <optimizationset/>
+  <optsetscenarios/>
+  <metric name="fuelconsumption" expression="integrate(FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, Infinity)"/>
+  <metric name="fuelcost" expression="integrate(x * y * fuel_cost * FUEL_CONSUMPTION.MULTIPLYER_OUTPUT, 0, Infinity)"/>
+  <decisionvariable name="panels" lowerbound="0.0" upperbound="20.0"/>
+  <decisionvariable name="collectors" lowerbound="0.0" upperbound="20.0"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <outputvariable name="MULTIPLYER_OUTPUT"/>
+  <extparam name="fuel_cost"/>
+  <extparam name="x"/>
+  <extparam name="y"/>
+  <extparamval value="[null]"/>
+  <extparamval value="100"/>
+  <extparamval value="0.01"/>
+  <extparamval value="[null]"/>
+  <extparamval value="100.0"/>
+  <algoparam defaultvalue="1000000" name="max runtime [minutes]"/>
+  <algoparam defaultvalue="100" name="max parallel evaluations"/>
+  <algoparam defaultvalue="10000" name="max scenarios"/>
+  <algoparam defaultvalue="1000000" name="max runtime [minutes]"/>
+  <algoparam defaultvalue="100" name="max parallel evaluations"/>
+  <algoparam defaultvalue="1" name="seed of the random number generator"/>
+  <algoparam defaultvalue="10" name="number of generations"/>
+  <algoparam defaultvalue="100" name="population size"/>
+  <algoparam defaultvalue="25" name="number of parents per generation"/>
+  <algoparam defaultvalue="25" name="number of offspring per generation"/>
+  <algoparam defaultvalue="0.95" name="crossover rate"/>
+  <algoparamval value="10"/>
+  <algoparamval value="5"/>
+  <algoparamval value="10"/>
+  <algoparamval value="1"/>
+  <algoparamval value="5"/>
+  <algoparamval value="5"/>
+  <appuser/>
+  <usergroup/>
+  <usergroupproject/>
+  <inputparamval value="2015-01-01T00:00:00Z"/>
+  <inputparamval value="2015-01-01T00:00:00Z"/>
+  <inputparamval value="2015-01-01T00:00:00Z"/>
+  <inputparamval value="2015-01-08T00:00:00Z"/>
+  <inputparamval value="2015-01-08T00:00:00Z"/>
+  <inputparamval value="2015-01-08T00:00:00Z"/>
+  <inputparamval value="2300.0"/>
+  <inputparamval value="2400.0"/>
+  <inputparamval value="2500.0"/>
+  <inputparamval value="0.6"/>
+  <inputparamval value="0.7"/>
+  <inputparamval value="0.8"/>
+  <inputparamval value="10.0"/>
+  <inputparamval value="11.0"/>
+  <inputparamval value="9.0"/>
+  <inputparamval value="3000.0"/>
+  <inputparamval value="4000.0"/>
+  <inputparamval value="5000.0"/>
+  <inputparamval value="0.9"/>
+  <inputparamval value="1.0"/>
+  <inputparamval value="1.1"/>
+  <inputparamval value="16000.0"/>
+  <inputparamval value="17000.0"/>
+  <inputparamval value="18000.0"/>
+  <inputparamval value="0.0"/>
+  <inputparamval value="0.0"/>
+  <inputparamval value="0.0"/>
+  <inputparamval value="30.0"/>
+  <inputparamval value="40.0"/>
+  <inputparamval value="50.0"/>
+  <inputparamval value="14.0"/>
+  <inputparamval value="15.0"/>
+  <inputparamval value="16.0"/>
+  <modelparameter expression="collectors"/>
+  <modelparameter expression="panels"/>
+  <modelparameter value="0.7"/>
+  <modelparameter value="1.0"/>
+  <modelparameter value="15.0"/>
+  <modelparameter value="17000.0"/>
+  <modelparameter value="2015-06-20T00:00:00Z"/>
+  <modelparameter value="2015-06-27T00:00:00Z"/>
+  <modelparameter value="2400.0"/>
+  <modelparameter value="40.0"/>
+  <modelparameter value="4000.0"/>
+  <metricval/>
+  <scengenresult/>
+  <decisionvariableresult/>
+  <objectivefunctionresult/>
+  <optconstraintresult/>
+  <timeseriesval value="10" time="1970-01-01 00:00:00.001"/>
+  <timeseriesval value="100.0" time="1970-01-01 00:00:00.0"/>
+  <timeseriesval value="10" time="2014-12-31 23:59:59.001"/>
+  <timeseriesval value="10" time="2050-01-01 00:00:00.0"/>
+  <timeseriesval value="100.0" time="2050-01-01 00:00:00.0"/>
+</dataset>
