@@ -80,7 +80,7 @@ setupUCs = applyConfiguration ucData
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="property" mode="let">
+  <xsl:template match="property[@name != @value]" mode="let">
     <xsl:param name="indent"/>
     <xsl:value-of select="$indent"/><xsl:value-of select="@name"
     /> = (<xsl:value-of select="@value"/><xsl:text>)
