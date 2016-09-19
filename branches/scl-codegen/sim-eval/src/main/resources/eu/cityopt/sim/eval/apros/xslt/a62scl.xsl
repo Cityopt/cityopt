@@ -7,13 +7,14 @@
   <xsl:template match="/">
     <xsl:text>/* Start of XSLT generated part */
 
-data Configuration = Node String String [Configuration]
+data Configuration = Node String String (&lt;Proc&gt; [Configuration])
                    | Set String a
 
 applyConfiguration :: Configuration -> AprosSequence ()
 applyConfiguration (Node _ _ children) = fork
     $ fmap ignore
-    $ mapM applyConfiguration children
+    $ mapM applyConfiguration
+    $ runProc children
 applyConfiguration (Set name value) = set name $ toDynamic value
 
 ucData :: Configuration
