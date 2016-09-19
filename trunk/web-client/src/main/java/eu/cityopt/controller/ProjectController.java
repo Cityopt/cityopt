@@ -1787,7 +1787,17 @@ public class ProjectController {
 
         if (name != null && !name.isEmpty() && expression != null && !expression.isEmpty())
         {
-        	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
+            SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
+         	boolean isValid = checker.isValidTopLevelName(name);
+
+         	if (!isValid)
+         	{
+                model.put("error", controllerService.getMessage("write_another_parameter_name", request));
+        	    controllerService.initUpdateMetric(model, project.getPrjid());
+        	    controllerService.getFunctions(model);
+                return "updatemetric";
+            }
+
         	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkMetricExpression(expression);
 
         	if (error != null) {
