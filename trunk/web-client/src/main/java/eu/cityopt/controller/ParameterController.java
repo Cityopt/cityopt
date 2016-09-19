@@ -1344,7 +1344,6 @@ public class ParameterController {
 			}
 	        
 			extParam.setUnit(unit);
-			extParam.setName(paramForm.getName());
 			extParamService.save(extParam, project.getPrjid());
         }
         

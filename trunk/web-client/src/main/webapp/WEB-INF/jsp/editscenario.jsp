@@ -125,7 +125,7 @@
 										<tr>	
 											<td class="status">${status}</td>
 										</tr>
-										<tr height="15"></tr>
+										<tr height="5"></tr>
 										<tr>
 											<td class="infosmall"><spring:message code="simulation_time_estimate"/></td>
 										</tr>
