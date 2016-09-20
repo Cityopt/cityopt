@@ -2,7 +2,7 @@ import "file:cityopt/setup.scl" as CO
 
 main :: <Proc> ()
 main = runApros mdo
-    loadIC "Vienna_2.snp.gz"
+    loadIC "Vienna.snp.gz"
     CO.setup
     acl "uff pre.que"
     setTime CO.simulation_start
