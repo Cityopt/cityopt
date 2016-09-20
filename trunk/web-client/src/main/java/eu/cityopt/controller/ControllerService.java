@@ -37,6 +37,7 @@ import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioWithObjFuncValueDTO;
 import eu.cityopt.DTO.SimulationModelDTO;
 import eu.cityopt.DTO.UnitDTO;
+import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentService;
 import eu.cityopt.service.EntityNotFoundException;
@@ -128,6 +129,9 @@ public class ControllerService {
 	 
 	    @Autowired  
 	    private MessageSource messageSource;
+
+	    @Autowired
+	    private CustomQueryRepository customQueryRepository;
 
 	    public String getMessage(String code, HttpServletRequest request) {
 	    	Locale locale = RequestContextUtils.getLocale(request);
@@ -534,9 +538,10 @@ public class ControllerService {
 	    public void initScenarioList(Map<String, Object> model, int projectId) {
 			Set<ScenarioDTO> scenarios = projectService.getScenarios(projectId);
 			Set<ScenarioForm> scenarioForms = new LinkedHashSet<ScenarioForm>();
+			Set<Integer> paretoOptimal =
+			        customQueryRepository.findParetoOptimalScenarios(projectId);
 			
 			Iterator<ScenarioDTO> iter = scenarios.iterator();
-			
 	    	while (iter.hasNext()) {
 	    		ScenarioDTO scenario = (ScenarioDTO) iter.next();
 	    		
@@ -545,11 +550,7 @@ public class ControllerService {
 	    		scenarioForm.setId(scenario.getScenid());
 	    		scenarioForm.setDescription(scenario.getDescription());
 	    		scenarioForm.setStatus(getScenarioStatus(scenario));
-
-	    		if (scenario.getScenariogenerator() != null)
-				{
-	    			scenarioForm.setPareto(isParetoOptimal(scenario.getScenid(), scenario.getScenariogenerator().getScengenid()));
-				}
+    			scenarioForm.setPareto(paretoOptimal.contains(scenario.getScenid()));
 	    		
 	    		scenarioForms.add(scenarioForm);
 	    	}

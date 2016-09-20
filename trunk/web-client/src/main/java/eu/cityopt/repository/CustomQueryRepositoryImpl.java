@@ -6,8 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -213,4 +215,27 @@ public class CustomQueryRepositoryImpl implements CustomQueryRepository {
 			}
 		});
 	}
+
+    @Transactional(readOnly=true)
+    @Override
+    public Set<Integer> findParetoOptimalScenarios(int projectId) {
+        String sql = "SELECT DISTINCT scenID FROM ScenGenResult JOIN Scenario USING (scenID)"
+                + " WHERE prjID = ? AND paretoOptimal = TRUE;";
+        Object [] argso = new Object [] { projectId };
+        List<Integer> scenarioList =
+                template.queryForList(sql, argso, Integer.class);
+        return new HashSet<Integer>(scenarioList);
+    }
+
+    @Transactional(readOnly=true)
+    @Override
+    public Set<Integer> findParetoOptimalScenarios(int projectId, int scenGenId) {
+        String sql = "SELECT scenID FROM ScenGenResult JOIN Scenario USING (scenID)"
+                + " WHERE prjID = ? AND ScenGenResult.scenGenId = ?"
+                + " AND paretoOptimal = TRUE;";
+        Object [] argso = new Object [] { projectId, scenGenId };
+        List<Integer> scenarioList =
+                template.queryForList(sql, argso, Integer.class);
+        return new HashSet<Integer>(scenarioList);
+    }
 }

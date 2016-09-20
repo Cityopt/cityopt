@@ -52,6 +52,7 @@ import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioGeneratorSimpleDTO;
 import eu.cityopt.DTO.UnitDTO;
+import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AlgorithmService;
 import eu.cityopt.service.AppUserService;
@@ -208,6 +209,9 @@ public class ScenarioController {
 
     @Autowired
     SecurityAuthorization securityAuthorization;
+
+    @Autowired
+    CustomQueryRepository customQueryRepository;
 
 	@Autowired
 	@Qualifier("inputParameterValidator")
@@ -744,6 +748,8 @@ public class ScenarioController {
 		CheckForm checkForm = new CheckForm();
 		Set<ScenarioDTO> scenarios = (Set<ScenarioDTO>) projectService.getScenarios(project.getPrjid());
 		Iterator<ScenarioDTO> iter = scenarios.iterator();
+        Set<Integer> paretoOptimal =
+                customQueryRepository.findParetoOptimalScenarios(project.getPrjid());
 
 		// Go through scenarios
 		while (iter.hasNext())
@@ -755,7 +761,7 @@ public class ScenarioController {
 			if (action != null
 				&& action.equals("selectnonpareto")
 				&& scenGenSimple != null 
-				&& !controllerService.isParetoOptimal(scenario.getScenid(), scenGenSimple.getScengenid()))
+				&& !paretoOptimal.contains(scenario.getScenid()))
 			{
 				check.checked = true;
 			}

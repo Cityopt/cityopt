@@ -2,6 +2,7 @@ package eu.cityopt.repository;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,4 +32,9 @@ public interface CustomQueryRepository {
 	
 	public TimeSeries insertTimeSeries(TimeSeries timeseries);
 
+	/** ids of scenarios that are Pareto-optimal in any scenario generator run */
+	public Set<Integer> findParetoOptimalScenarios(int projectId);
+
+	/** ids of scenarios that are Pareto-optimal in one scenario generator run */
+    public Set<Integer> findParetoOptimalScenarios(int projectId, int scenGenId);
 }
