@@ -19,7 +19,7 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td valign="top">
-			<table class="maintable">			
+			<table class="maintablewide">			
 				<%@ include file="toprow.inc"%>
 				<tr class="titlerow">
 					<td class="spacecolumn"></td>
@@ -43,8 +43,8 @@
 				<tr height="300">
 					<td class="spacecolumn"></td>
 					<td valign="top">
-						<div style="overflow: scroll; height: 400px; width: 775px; overflow: auto;">
-						<table class="tablestyle" width="760">
+						<div style="overflow: scroll; height: 400px; width: 935px; overflow: auto;">
+						<table class="tablestyle" width="915">
 							<col style="width:35px">
 							<col style="width:200px">
 							<col style="width:425px">
