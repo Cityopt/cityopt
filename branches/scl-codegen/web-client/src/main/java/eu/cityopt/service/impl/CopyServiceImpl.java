@@ -678,7 +678,9 @@ public class CopyServiceImpl implements CopyService {
 			log.info("setting scenariometric references");
 			if(sC.getScenariometricses() != null)
 				for(ScenarioMetrics sm : sC.getScenariometricses()){
-					sm.setExtparamvalset(copiedEPVSets.get(sm.getExtparamvalset().getExtparamvalsetid()));
+				    if (sm.getExtparamvalset() != null) {
+				        sm.setExtparamvalset(copiedEPVSets.get(sm.getExtparamvalset().getExtparamvalsetid()));
+				    }
 					scenarioMetricsRepository.save(sm);
 				}
 			

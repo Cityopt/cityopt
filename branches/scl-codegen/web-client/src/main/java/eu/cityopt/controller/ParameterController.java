@@ -283,7 +283,7 @@ public class ParameterController {
     	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
      	boolean isValid = checker.isValidTopLevelName(name);
 
-     	if (!isValid)
+      	if (!isValid)
      	{
      		ComponentDTO newComponent = new ComponentDTO();
             model.put("component", newComponent);
@@ -1344,7 +1344,6 @@ public class ParameterController {
 			}
 	        
 			extParam.setUnit(unit);
-			extParam.setName(paramForm.getName());
 			extParamService.save(extParam, project.getPrjid());
         }
         

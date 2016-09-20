@@ -1,11 +1,8 @@
 package eu.cityopt.controller;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -13,19 +10,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.jfree.chart.ChartUtilities;
-import org.jfree.chart.imagemap.ToolTipTagFragmentGenerator;
-import org.jfree.chart.imagemap.URLTagFragmentGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
-
-import com.sun.jna.platform.FileUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -73,7 +63,6 @@ import eu.cityopt.web.OptimizationRun;
 import eu.cityopt.web.Pair;
 import eu.cityopt.web.ParamForm;
 import eu.cityopt.web.ScenarioForm;
-import eu.cityopt.web.ScenarioInfo;
 import eu.cityopt.web.UserSession;
 
 
