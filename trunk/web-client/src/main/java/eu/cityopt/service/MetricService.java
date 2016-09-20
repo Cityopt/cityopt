@@ -20,4 +20,6 @@ public interface MetricService extends CityOptService<MetricDTO> {
 	List<MetricValDTO> getMetricVals(int metricId, int scenId) throws EntityNotFoundException;
 	
 	List<MetricValDTO> getMetricValsByEParamSet(int metricId, int epvsId) throws EntityNotFoundException;
+
+	List<MetricValDTO> getMetricValsByProject(int projectId) throws EntityNotFoundException;
 }

@@ -22,4 +22,6 @@ public interface MetricValRepository extends JpaRepository<MetricVal, Integer> {
 			+ "where mv.metric.metid = :metId and scm.extparamvalset.extparamvalsetid = :extParamSetId")
 	public List<MetricVal> findByMetricAndEParamSet(@Param("metId") Integer metId,
 			@Param("extParamSetId") Integer epvsId);
+    @Query("select mv from MetricVal mv where mv.metric.project.prjid = :projectId")
+	public List<MetricVal> findByProject(@Param("projectId") Integer projectId);
 }
