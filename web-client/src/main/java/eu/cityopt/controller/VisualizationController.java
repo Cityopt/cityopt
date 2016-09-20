@@ -53,6 +53,7 @@ import eu.cityopt.DTO.ScenarioGeneratorDTO;
 import eu.cityopt.DTO.SimulationResultDTO;
 import eu.cityopt.DTO.TimeSeriesDTO;
 import eu.cityopt.DTO.TimeSeriesValDTO;
+import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentInputParamDTOService;
@@ -184,6 +185,9 @@ public class VisualizationController {
 
     @Autowired
     ControllerService controllerService;
+
+    @Autowired
+    CustomQueryRepository customQueryRepository;
     
 	@RequestMapping(value="timeserieschart", method=RequestMethod.GET)
 	public String timeSeriesChart(Map<String, Object> model, 
@@ -1274,13 +1278,16 @@ public class VisualizationController {
 		
 		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
 		Set<ScenarioInfo> scenarioInfos = new HashSet<ScenarioInfo>();
+        Set<Integer> paretoOptimal =
+                customQueryRepository.findParetoOptimalScenarios(
+                        project.getPrjid(), scenGen.getScengenid());
 		
 		for (ScenarioDTO scenario : scenarios)
 		{
 			ScenarioInfo scenarioInfo = new ScenarioInfo();
 			scenarioInfo.setName(scenario.getName());
 			scenarioInfo.setId(scenario.getScenid());
-			scenarioInfo.setPareto(controllerService.isParetoOptimal(scenario.getScenid(), scenGen.getScengenid()));
+			scenarioInfo.setPareto(paretoOptimal.contains(scenario.getScenid()));
 			
 			scenarioInfos.add(scenarioInfo);
 		}
@@ -1580,13 +1587,16 @@ public class VisualizationController {
 
 		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
 		Set<ScenarioInfo> scenarioInfos = new HashSet<ScenarioInfo>();
+        Set<Integer> paretoOptimal =
+                customQueryRepository.findParetoOptimalScenarios(
+                        project.getPrjid(), scenGen.getScengenid());
 		
 		for (ScenarioDTO scenario : scenarios)
 		{
 			ScenarioInfo scenarioInfo = new ScenarioInfo();
 			scenarioInfo.setName(scenario.getName());
 			scenarioInfo.setId(scenario.getScenid());
-			scenarioInfo.setPareto(controllerService.isParetoOptimal(scenario.getScenid(), scenGen.getScengenid()));
+			scenarioInfo.setPareto(paretoOptimal.contains(scenario.getScenid()));
 			
 			scenarioInfos.add(scenarioInfo);
 		}
