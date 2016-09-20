@@ -81,4 +81,10 @@ public class MetricServiceTest {
 		assertEquals(0, mvs.size());
 	}
 
+    @Test
+    public void getMetricValuesByProject() throws EntityNotFoundException {
+        List<MetricValDTO> mvs = metricService.getMetricValsByProject(1);
+
+        assertEquals(5, mvs.size());
+    }
 }
