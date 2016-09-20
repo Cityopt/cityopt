@@ -132,6 +132,7 @@ h2.error {
 	border-top: 1pt solid #E6E6E6;	
 	color:#4D4D4D;
 	font-size: 14px;	
+	height: 14px;
 	font-weight: bold;
 	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 }
@@ -166,6 +167,7 @@ h2.error {
 	border-top: 1pt solid #E6E6E6;	
 	font-family: PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	font-size: 12px;
+	height: 12px;
 	style: bold;
 	color: #47AFE2;	
 }

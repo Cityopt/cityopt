@@ -50,11 +50,12 @@
 							</tr>
 							<tr>
 								<td>
-									<table class="tablestyle" width="650">
+									<table class="tablestyle" width="750">
 										<col style="width: 100px">
 										<col style="width: 150px">
 										<col style="width: 150px">
 										<col style="width: 150px">
+										<col style="width: 100px">
 										<col style="width: 100px">
 									
 										<tr height="20">
@@ -62,6 +63,7 @@
 											<th><spring:message code="started"/></th>
 										    <th><spring:message code="deadline"/></th>
 										    <th><spring:message code="status"/></th>
+										    <th><spring:message code="time_left_estimate"/></th>
 										    <th><spring:message code="abort"/></th>
 										</tr>
 									
@@ -71,6 +73,7 @@
 											<td>${optRun.started}</td>
 											<td>${optRun.deadline}</td>
 											<td>${optRun.status}</td>
+											<td>${timeLeftEstimate}</td>
 											<td>
 												<a onclick="return confirm('<spring:message code="confirm_delete"/>')" 
 													href="abortgarun.html?id=${optRun.id}">
