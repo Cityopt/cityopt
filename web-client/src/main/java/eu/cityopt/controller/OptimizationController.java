@@ -48,6 +48,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import eu.cityopt.DTO.AlgoParamDTO;
 import eu.cityopt.DTO.AlgoParamValDTO;
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
@@ -3014,13 +3015,32 @@ public class OptimizationController {
         model.put("locked", locked);
         
         /*int nScenariosSimulated = 0;
-
         long scenarioSimTime = 0;
-        long startTimeGA = runInfo.getStarted();
+        long startTimeGA = runInfo.getStartedInstant();
+
+        List<AlgoParamValDTO> algoParamVals = scenGenService.getAlgoParamVals(scenGen.getScengenid());
+        int generations = 0, offspring = 0;
         
-        for (int i = 0; i < scenarios.size(); i++)
+        for (int i = 0; i < algoParamVals.size(); i++)
         {
-        	ScenarioDTO scenario = scenarios.get(i);
+        	AlgoParamValDTO algoParamVal = algoParamVals.get(i); 
+        	
+        	if (algoParamVal.getAlgoparam().getName().equals("number of generations"))
+        	{
+        		generations = Integer.parseInt(algoParamVal.getValue());
+        	}
+        	else if (algoParamVal.getAlgoparam().getName().equals("number of offspring per generation"))
+        	{
+        		offspring = Integer.parseInt(algoParamVal.getValue());
+        	}
+        }
+        
+        Set<ScenarioDTO> scenarios = (Set<ScenarioDTO>) projectService.getScenarios(project.getPrjid());
+		Iterator<ScenarioDTO> iter = scenarios.iterator();
+
+		while (iter.hasNext())
+		{
+        	ScenarioDTO scenario = iter.next();
         	
         	if (scenario.getRunstart() != null && scenario.getRunend() != null
     			&& startTimeGA < scenario.getRunstart().getTime() && startTimeGA < scenario.getRunend().getTime())
@@ -3030,7 +3050,12 @@ public class OptimizationController {
         	}
         }
         
-        long optTimeLeft = (scenarios - nScenariosSimulated) * scenarioSimTime;*/
+        long optTimeLeft = (generations * offspring - nScenariosSimulated) * scenarioSimTime;
+        
+        if (optTimeLeft <= 0)
+        {
+        	optTimeLeft = 1;
+        }*/
         
         UserSession userSession = getUserSession(model);
 
