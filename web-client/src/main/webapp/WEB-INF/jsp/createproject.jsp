@@ -111,6 +111,7 @@
 					            			<h2 class="successful"> <spring:message code="projectSuccess"/></h2>
 					            			<c:set var="tooltip_next"><spring:message code="tooltip_next"/></c:set>
 					            			<input type="submit" name="nextpage" style="width:100px" class="activebutton" value="Next" title="${tooltip_next}">
+		            			   		</button>
 					            		</c:when>
 					            		<c:when test="${success!=null && success==false}">
 					            			<h2 class="error"> <spring:message code="projectExists" /> </h2>

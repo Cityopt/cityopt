@@ -531,8 +531,19 @@ public class OptimizationController {
 	            return "updateobjfunction";
 	        }
 
-	        SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
-        	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkObjectiveExpression(expression);
+            SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
+         	boolean isValid = checker.isValidTopLevelName(name);
+
+         	if (!isValid)
+         	{
+                model.put("error", controllerService.getMessage("write_another_parameter_name", request));
+        	    model.put("objFuncForm", objFuncForm);
+	        	model.put("type", type);
+	        	controllerService.getFunctions(model);
+                return "updateobjfunction";
+            }
+         	
+	        eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkObjectiveExpression(expression);
 
         	if (error != null) {
         	    model.put("error", error.message);
@@ -2097,6 +2108,15 @@ public class OptimizationController {
          	    return "editconstraint";
          	}
 
+         	boolean isValid = checker.isValidTopLevelName(constraint.getName());
+
+         	if (!isValid)
+         	{
+                model.put("error", controllerService.getMessage("write_another_parameter_name", request));
+         	    model.put("constraint", constraint);
+         	    return "editconstraint";
+            }
+
         	String lowerbound = constraint.getLowerbound();
             String upperbound = constraint.getUpperbound();
             String name = constraint.getName();
@@ -2713,6 +2733,15 @@ public class OptimizationController {
             return getEditSGConstraint(project, constraint, model, null);
         }
 
+    	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid(), scenGen.getScengenid());
+     	boolean isValid = checker.isValidTopLevelName(constraint.getName());
+
+     	if (!isValid)
+     	{
+            model.put("error", controllerService.getMessage("write_another_parameter_name", request));
+            return getEditSGConstraint(project, constraint, model, null);
+        }
+        
         OptConstraintDTO testConstraint = optConstraintService.findByNameAndProject(constraint.getName(), project.getPrjid());
 
         if (constrid <= 0 && testConstraint != null) {
@@ -2722,7 +2751,6 @@ public class OptimizationController {
         }
 
         String expression = constraint.getExpression();
-    	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid(), scenGen.getScengenid());
      	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkConstraintExpression(expression);
 
      	if (error != null) {
@@ -2984,6 +3012,26 @@ public class OptimizationController {
 
     	model.put("runinfo", strInfo);
         model.put("locked", locked);
+        
+        /*int nScenariosSimulated = 0;
+
+        long scenarioSimTime = 0;
+        long startTimeGA = runInfo.getStarted();
+        
+        for (int i = 0; i < scenarios.size(); i++)
+        {
+        	ScenarioDTO scenario = scenarios.get(i);
+        	
+        	if (scenario.getRunstart() != null && scenario.getRunend() != null
+    			&& startTimeGA < scenario.getRunstart().getTime() && startTimeGA < scenario.getRunend().getTime())
+        	{
+        		nScenariosSimulated++;
+        		scenarioSimTime = scenario.getRunend().getTime() - scenario.getRunstart().getTime();
+        	}
+        }
+        
+        long optTimeLeft = (scenarios - nScenariosSimulated) * scenarioSimTime;*/
+        
         UserSession userSession = getUserSession(model);
 
         try {
