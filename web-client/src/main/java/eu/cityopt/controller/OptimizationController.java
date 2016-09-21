@@ -1590,8 +1590,16 @@ public class OptimizationController {
 
         if (optSet.getObjectivefunction() == null)
         {
-        	controllerService.getProjectMetricVals(model, project.getPrjid());
-            model.put("error", controllerService.getMessage("obj_func_missing", request));
+        	List<MetricValDTO> listMetricVals = new ArrayList<MetricValDTO>();
+
+	        try {
+				listMetricVals = metricService.getMetricValsByProject(project.getPrjid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+	        
+	        model.put("metricVals", listMetricVals);
+	        model.put("error", controllerService.getMessage("obj_func_missing", request));
             return "editoptimizationset";
         }
 
@@ -1701,20 +1709,17 @@ public class OptimizationController {
                 } catch (EntityNotFoundException e) {
                     e.printStackTrace();
                 }
-                List<MetricValDTO> listMetricVals = metricValService.findAll();
-                List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+                
+                List<MetricValDTO> listMetricVals = new ArrayList<MetricValDTO>();
 
-                for (int i = 0; i < listMetricVals.size(); i++)
-                {
-                    MetricValDTO metricVal = listMetricVals.get(i);
-
-                    if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid())
-                    {
-                        listProjectMetricVals.add(metricVal);
-                    }
-                }
-                model.put("metricVals", listProjectMetricVals);
-
+    	        try {
+    				listMetricVals = metricService.getMetricValsByProject(project.getPrjid());
+    			} catch (EntityNotFoundException e) {
+    				e.printStackTrace();
+    			}
+    	        
+    	        model.put("metricVals", listMetricVals);
+    	        
                 controllerService.clearOptResults(model);
                 return "editoptimizationset";
             }
@@ -2434,18 +2439,23 @@ public class OptimizationController {
 			ScenarioDTO scenarioTemp = scenarioService.findByID(nScenarioId);
 			MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
 		}*/
+        
+        List<MetricValDTO> listProjectMetricVals = null;
 
-        List<MetricValDTO> listMetricVals = metricValService.findAll();
-        List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
+        try {
+        	listProjectMetricVals = metricService.getMetricValsByProject(project.getPrjid());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
 
-        Iterator<MetricValDTO> metricValIter = listMetricVals.iterator();
+        Iterator<MetricValDTO> metricValIter = listProjectMetricVals.iterator();
 
         while (metricValIter.hasNext())
         {
             MetricValDTO metricVal = metricValIter.next();
 
             if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid()
-                    && metricVal.getScenariometrics().getScenario().getScenid() == resultScenario.getScenid())
+                && metricVal.getScenariometrics().getScenario().getScenid() == resultScenario.getScenid())
             {
                 listProjectMetricVals.add(metricVal);
             }
