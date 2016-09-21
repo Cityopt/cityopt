@@ -46,6 +46,7 @@ import eu.cityopt.service.ExtParamValService;
 import eu.cityopt.service.ExtParamValSetService;
 import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
+import eu.cityopt.service.MetricService;
 import eu.cityopt.service.MetricValService;
 import eu.cityopt.service.ObjectiveFunctionService;
 import eu.cityopt.service.OptimizationSetService;
@@ -125,8 +126,11 @@ public class ControllerService {
 	    ScenarioGenerationService scenarioGenerationService;
 
 	    @Autowired
+	    MetricService metricService;
+
+	    @Autowired
 	    MetricValService metricValService;
-	 
+
 	    @Autowired  
 	    private MessageSource messageSource;
 
@@ -493,23 +497,6 @@ public class ControllerService {
 			model.put("optRuns", listOptRuns);
 	    }
 	    
-	    public void getProjectMetricVals(Map<String, Object> model, int projectId) {
-			
-	    	List<MetricValDTO> listMetricVals = metricValService.findAll();
-	    	List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
-
-	        for (int i = 0; i < listMetricVals.size(); i++)
-	        {
-	            MetricValDTO metricVal = listMetricVals.get(i);
-	
-	            if (metricVal.getMetric().getProject().getPrjid() == projectId)
-	            {
-	                listProjectMetricVals.add(metricVal);
-	            }
-	        }
-	        model.put("metricVals", listProjectMetricVals);
-	    }
-
 	    public void getDefaultExtParamVals(Map<String, Object> model, int projectId)
 	    {
 	        List<ExtParamValDTO> extParamVals = null;
@@ -681,18 +668,16 @@ public class ControllerService {
             }
 	        
 	        model.put("usersession", userSession);
-	        List<MetricValDTO> listMetricVals = metricValService.findAll();
-	        List<MetricValDTO> listProjectMetricVals = new ArrayList<MetricValDTO>();
-	
-	        for (int i = 0; i < listMetricVals.size(); i++)
-	        {
-	            MetricValDTO metricVal = listMetricVals.get(i);
-	            if (metricVal.getMetric().getProject().getPrjid() == projectId)
-	            {
-	                listProjectMetricVals.add(metricVal);
-	            }
-	        }
-	        model.put("metricVals", listProjectMetricVals);
+
+	        List<MetricValDTO> listMetricVals = new ArrayList<MetricValDTO>();
+
+	        try {
+				listMetricVals = metricService.getMetricValsByProject(projectId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+	        
+	        model.put("metricVals", listMetricVals);
 	    }
 	    
 	    public void initEditObjFunc(Map<String, Object> model, int projectId, String selectedCompId, UserSession userSession) 
