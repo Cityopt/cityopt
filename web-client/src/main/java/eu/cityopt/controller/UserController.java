@@ -569,16 +569,14 @@ public class UserController {
 	}            	
     
     //@author Markus Turunen: This Method Creates a UserGroupDTO -object based on the parameters given.
-   
     public UserGroupProjectDTO CreateUserGroupDTO(UserGroupDTO usergroup, 
     	ProjectDTO project, AppUserDTO appuser){   
     	
     	securityAuthorization.atLeastAdmin();
-    	UserGroupProjectDTO userGroupDTO=new UserGroupProjectDTO();
-    	userGroupDTO.setProject(project);
-    	userGroupDTO.setProject(project);
-    	userGroupDTO.setAppuser(appuser);    	
-    	return userGroupDTO;
+    	UserGroupProjectDTO userGroupProject = new UserGroupProjectDTO();
+    	userGroupProject.setProject(project);
+    	userGroupProject.setAppuser(appuser);    	
+    	return userGroupProject;
     }
 
     //@author Markus Turunen: Save method for UserGroupProjectDTO  
@@ -654,15 +652,15 @@ public class UserController {
 	            	e.printStackTrace();
 	            }
 	                     
-	            UserGroupProjectDTO usergroupDTO = new UserGroupProjectDTO();             
-	            usergroupDTO.setProject(null);
-	            usergroupDTO.setAppuser(user);
+	            UserGroupProjectDTO usergroupProject = new UserGroupProjectDTO();             
+	            usergroupProject.setProject(null);
+	            usergroupProject.setAppuser(user);
 	           
 	            int roleid = userForm.getRole();
 	            UserGroupDTO userGroup = userGroupService.findByID(roleid);
-	            usergroupDTO.setUsergroup(userGroup);
+	            usergroupProject.setUsergroup(userGroup);
 	            
-	            userGroupProjectService.save(usergroupDTO);
+	            userGroupProjectService.save(usergroupProject);
                           	   
 	            initializeUserManagement(model);           	  
     		} 
