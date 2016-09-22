@@ -1540,11 +1540,17 @@ public class OptimizationController {
                     importExportService.importSimulationStructure(
                             project.getPrjid(), in);
                 }
-                try (InputStream problem = fileProblem.getInputStream();
-                     InputStream ts = fileTimeSeries.getInputStream()) {
-                    importExportService.importOptimisationProblem(
-                            project.getPrjid(), "test_name", problem,
-                            null, null, ts);
+                
+                try (InputStream problem = fileProblem.getInputStream(); InputStream ts = fileTimeSeries.getInputStream()) {
+                	String name = "Imported problem";
+                	int i = 2;
+                	
+                	while (scenGenService.findByName(name, project.getPrjid()) != null) {
+                		name = "Imported problem " + i;
+                		i++;
+                	}
+                    importExportService.importOptimisationProblem(project.getPrjid(), name, problem, null, null, ts);
+                    model.put("info", controllerService.getMessage("file_imported", request));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
