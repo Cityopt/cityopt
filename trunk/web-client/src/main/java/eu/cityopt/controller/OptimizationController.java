@@ -1466,7 +1466,7 @@ public class OptimizationController {
 
         		securityAuthorization.atLeastExpert_expert(project);
 
-                AppUserDTO user = (AppUserDTO) model.get("user");
+        		AppUserDTO user = (AppUserDTO) model.get("user");
 
                 if (user == null)
                 {
@@ -1481,16 +1481,19 @@ public class OptimizationController {
                 model.put("project", project);
 
                 try (InputStream structureStream = file.getInputStream()) {
-                    importExportService.importSimulationStructure(
-                            project.getPrjid(), structureStream);
+                    importExportService.importSimulationStructure(project.getPrjid(), structureStream);
                 }
 
-                System.out.println("Starting importing optimization set");
-                try (InputStream optset = file.getInputStream();
-                     InputStream ts = fileTimeSeries.getInputStream()) {
-                    importExportService.importOptimisationSet(
-                            project.getPrjid(), user.getUserid(),
-                            "optimization set", optset, ts);
+                try (InputStream optset = file.getInputStream(); InputStream ts = fileTimeSeries.getInputStream()) {
+                	String name = "Imported optimization set";
+                	int i = 2;
+                	
+                	while (optSetService.findByName(name, project.getPrjid()) != null) {
+                		name = "Imported optimization set " + i;
+                		i++;
+                	}
+                    
+                	importExportService.importOptimisationSet(project.getPrjid(), user.getUserid(), name, optset, ts);
                 }
 
                 model.put("info", controllerService.getMessage("file_imported", request));
@@ -1542,11 +1545,11 @@ public class OptimizationController {
                 }
                 
                 try (InputStream problem = fileProblem.getInputStream(); InputStream ts = fileTimeSeries.getInputStream()) {
-                	String name = "Imported problem";
+                	String name = "Imported genetic problem";
                 	int i = 2;
                 	
                 	while (scenGenService.findByName(name, project.getPrjid()) != null) {
-                		name = "Imported problem " + i;
+                		name = "Imported genetic problem " + i;
                 		i++;
                 	}
                     importExportService.importOptimisationProblem(project.getPrjid(), name, problem, null, null, ts);
