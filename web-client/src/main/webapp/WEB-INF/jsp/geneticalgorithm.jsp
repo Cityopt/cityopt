@@ -154,30 +154,7 @@ function openInfoWindow() {
 						                                   	</table>
 						                               	</td>
 						                           	</tr>
-													<tr height=5></tr>
-													<form:form method="POST" action="importoptimizationproblem.html" enctype="multipart/form-data">
-						        					<tr>
-						        						<!-- Import optimization set file CSV -->
-						        						<td class="regular"><spring:message code="import_optimization_problem"/></td>
-						 								<td>
-															<input id="file" name="file" type="file"/>
-						                   				</td>
-						                           	</tr>
-													<tr>	
-						   								<td></td>
-						   								<td align="left">
-						        							<c:choose>
-						    	                               	<c:when test="${locked}">
-						                                			<input type="submit" value="<spring:message code="import_file"/>" disabled="disabled">
-						                                	   	</c:when>
-						                                       	<c:otherwise>
-						                                			<input type="submit" value="<spring:message code="import_file"/>">
-						                                   	   	</c:otherwise>
-						                                   	</c:choose>
-						       							</td>
-						                             </tr>
-						    						</form:form>
-												</table>
+													</table>
 											</td>
 										</tr>
 									</table>
