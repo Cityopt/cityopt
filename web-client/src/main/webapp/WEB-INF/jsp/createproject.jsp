@@ -108,7 +108,7 @@
 									</table>						
 									<c:choose>
 	          							<c:when test="${success!=null && success==true}">
-					            			<h2 class="successful"> <spring:message code="projectSuccess"/></h2>
+					            			<p class="info"> <spring:message code="projectSuccess"/></p>
 					            			<c:set var="tooltip_next"><spring:message code="tooltip_next"/></c:set>
 					            			<input type="submit" name="nextpage" style="width:100px" class="activebutton" value="Next" title="${tooltip_next}">
 		            			   		</button>
