@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dataset>
+	<appuser name="Michael" password="s1cher"/>
+	<appuser name="Florian" password="s3curity" />
+	<appuser name="Sepp" password="Seppensicher"/>	
+
+</dataset>

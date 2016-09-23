@@ -1,0 +1,9 @@
+modi dhw_in io_file_name showerheatW.txt
+modi tot_int_gain io_file_name internalg.txt
+modi weather_input io_file_name weather.txt
+modi is_out io_file_name output.txt
+! This line intentionally NOT left blank.
+io open dhw_in
+io open tot_int_gain
+io open weather_input
+io open is_out

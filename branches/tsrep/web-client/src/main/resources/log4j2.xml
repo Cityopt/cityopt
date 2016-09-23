@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+	<Appenders>
+		<RollingFile name="RollingFile" fileName="${sys:catalina.home}/logs/cityopt.log"
+			filePattern="${sys:catalina.home}/logs/cityopt-%d{yyyy-MM-dd}-%i.log">
+			<PatternLayout>
+				<pattern>%d{dd/MMM/yyyy HH:mm:ss,SSS}- %c{1}: %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="4" />
+		</RollingFile>
+		    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+	</Appenders>
+	<Loggers>
+
+		<Root level="INFO" additivity="false">
+			<AppenderRef ref="RollingFile" />
+			<!--<AppenderRef ref="Console" />-->
+		</Root>
+
+		<Logger name="eu.cityopt" level="INFO" />
+
+		<Logger name="org.hibernate" level="INFO" />
+
+		<Logger name="org.hibernate.SQL" level="INFO" />
+
+		<Logger name="org.hibernate.tool.hbm2ddl" level="INFO" />
+
+		<Logger name="org.springframework.transaction" level="INFO" />
+
+	</Loggers>
+</Configuration>

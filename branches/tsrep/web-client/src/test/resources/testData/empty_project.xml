@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dataset>
+
+  <project prjid="1" name="Empty test project" location="Helsinki" version="1"/>
+<!-- 
+  <algorithm algorithmid="1" description="grid search" version="1"/>
+  <algoparam aparamsid="1" algorithmid="1" name="max runtime [minutes]" defaultValue="1000000" version="1"/>
+  <algoparam aparamsid="2" algorithmid="1" name="max scenarios" defaultValue="100" version="1"/>
+
+  <algorithm algorithmid="2" description="genetic algorithm" version="1"/>
+  <algoparam aparamsid="3" algorithmid="2" name="max runtime [minutes]" defaultValue="1000000" version="1"/>
+  <algoparam aparamsid="4" algorithmid="2" name="number of generations" defaultValue="100" version="1"/>
+  <algoparam aparamsid="5" algorithmid="2" name="population size" defaultValue="100" version="1"/>
+  <algoparam aparamsid="6" algorithmid="2" name="number of parents per generation" defaultValue="25" version="1"/>
+  <algoparam aparamsid="7" algorithmid="2" name="number of offspring per generation" defaultValue="25" version="1"/>
+  <algoparam aparamsid="8" algorithmid="2" name="seed of the random number generator" defaultValue="0.95" version="1"/>
+
+  <type typeid="1" name="Double" version="1"/>
+  <type typeid="2" name="Integer" version="1"/>
+  <type typeid="3" name="String" version="1"/>
+  <type typeid="4" name="Timestamp" version="1"/>
+  <type typeid="5" name="TimeSeries/step" version="1"/>
+  <type typeid="6" name="TimeSeries/linear" version="1"/>
+  <type typeid="7" name="List of Double" version="1"/>
+  <type typeid="8" name="List of Integer" version="1"/>
+  <type typeid="9" name="List of Timestamp" version="1"/>
+
+  <unit unitid="1" name="Unit/Double" version="1"/>
+  <unit unitid="2" name="Unit/Integer" version="1"/>
+  <unit unitid="3" name="Unit/String" version="1"/>
+  <unit unitid="4" name="Unit/Timestamp" version="1"/>
+  <unit unitid="5" name="Unit/TimeSeries/step" version="1"/>
+  <unit unitid="6" name="Unit/TimeSeries/linear" version="1"/>
+  <unit unitid="7" name="Unit/List of Double" version="1"/>
+  <unit unitid="8" name="Unit/List of Integer" version="1"/>
+  <unit unitid="9" name="Unit/List of Timestamp" version="1"/>
+ -->
+</dataset>
