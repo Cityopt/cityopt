@@ -92,6 +92,11 @@ the following properties:
   Any value given in the user interface overrides the value in the
   cityopt.properties file.
 
+- nominalSimulationRuntime is the number of seconds that the simulation
+  can be expected to take ("wall clock time").  The value is used to
+  estimate simulation completion time before any simulations have been
+  performed.
+
 The listed timeSeriesInputFiles, if any, must be present in the zip
 file.  Input variables and values are imported from the files into
 Cityopt, where they appear as time series defaulting to the imported

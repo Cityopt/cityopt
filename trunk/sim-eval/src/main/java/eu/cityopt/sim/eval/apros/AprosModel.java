@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.StandardCopyOption;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -68,6 +69,7 @@ public class AprosModel implements SimulationModel {
     String[] resultFilePatterns;
     final Document uc_props;
     final Defaults defaults = new Defaults();
+    Duration nominalSimulationRuntime;
     List<Pair<String, String>> modelOutputs;
     final Map<Pair<String, String>, Pair<double[], double[]>>
         tsInputs = new HashMap<>();
@@ -192,6 +194,10 @@ public class AprosModel implements SimulationModel {
             case "simulationEnd":
             	defaults.simulationEnd = TimeUtils.parseISO8601(value);
             	break;
+            case "nominalSimulationRuntime":
+                this.nominalSimulationRuntime =
+                    Duration.ofNanos((long)(1e9 * Double.valueOf(value)));
+                break;
             case "aprosProfile":
                 if (this.profileName == null) {
                     if (!manager.checkProfile(value)) {
@@ -274,6 +280,11 @@ public class AprosModel implements SimulationModel {
     @Override
     public Defaults getDefaults() {
         return defaults;
+    }
+
+    @Override
+    public Duration getNominalSimulationRuntime() {
+        return nominalSimulationRuntime;
     }
 
     @Override
