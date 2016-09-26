@@ -3,6 +3,7 @@ package eu.cityopt.sim.eval;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Writer;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
@@ -32,6 +33,12 @@ public interface SimulationModel extends Closeable {
 
     /** Returns default configuration for the model, filled so far as known. */
     Defaults getDefaults();
+
+    /** Returns nominal wall clock time required for simulation, if known.
+     *  This is used for estimating completion time before any simulations
+     *  have been performed.
+     */
+    Duration getNominalSimulationRuntime();
 
     /**
      * Returns a human-readable model description in a preferred language,
