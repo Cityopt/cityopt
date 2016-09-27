@@ -40,15 +40,18 @@ function deleteDecisionVariable(decisionvarid) {
 function openInfoWindow() {
 	window.open("ga_info.html",'<spring:message code="genetic_optimization"/> info','width=600,height=600,scrollbars=yes');
 }
-
+function onLoadFunction() {
+	showComponent('ModelParameter', ${usersession.componentId})
+	localizeUTCTimes("utctime")
+}
+<%@ include file="cityopt.js"%>
 </script>
-<script language="javascript"><%@ include file="cityopt.js"%></script>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Cityopt <spring:message code="genetic_optimization"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
-<body onLoad="showComponent('ModelParameter', ${usersession.componentId})">
+<body onLoad="onLoadFunction()">
 <table cellspacing="0" cellpadding="0">
 	<tr>
 		<td valign="top">
@@ -141,7 +144,7 @@ function openInfoWindow() {
 															<table class="tablestyle" width="100%" height="80">
 																<tr>
 																	<td>
-																		${runinfo}
+																	    <span class="utctime">${runinfo}</span>
 																		<c:choose>
 									    	                               	<c:when test="${locked}">
 									                                            (<spring:message code="optimization_started_parameters_locked"/>)
