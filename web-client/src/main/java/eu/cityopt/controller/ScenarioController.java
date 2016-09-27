@@ -86,6 +86,7 @@ import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.service.impl.ImportServiceImpl;
 import eu.cityopt.sim.eval.ConfigurationException;
+import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.ScenarioGenerationService;
@@ -702,7 +703,6 @@ public class ScenarioController {
 		}
 
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
-		controllerService.initEditScenario(model, project.getPrjid(), scenario.getScenid());
 
 		List<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
 		Iterator<InputParamValDTO> iter = inputParamVals.iterator();
@@ -710,23 +710,27 @@ public class ScenarioController {
 		while(iter.hasNext())
 		{
 			InputParamValDTO inputParamVal = iter.next();
-			String inputName = inputParamVal.getInputparameter().getName();
-
-			if (inputName.equals("simulation_start"))
-			{
-				inputParamVal.setValue(simStart);
-				inputParamVal = inputParamValService.save(inputParamVal, null);
-
-				model.put("simStart", inputParamVal.getValue());
-			}
-			else if (inputName.equals("simulation_end"))
-			{
-				inputParamVal.setValue(simEnd);
-				inputParamVal = inputParamValService.save(inputParamVal, null);
-
-				model.put("simEnd", inputParamVal.getValue());
+			if (inputParamVal.getInputparameter().getComponentName().equals(Namespace.CONFIG_COMPONENT)) {
+    			String inputName = inputParamVal.getInputparameter().getName();
+    
+    			if (inputName.equals(Namespace.CONFIG_SIMULATION_START))
+    			{
+    				inputParamVal.setValue(simStart);
+    				inputParamVal = inputParamValService.save(inputParamVal, null);
+    
+    				model.put("simStart", inputParamVal.getValue());
+    			}
+    			else if (inputName.equals(Namespace.CONFIG_SIMULATION_END))
+    			{
+    				inputParamVal.setValue(simEnd);
+    				inputParamVal = inputParamValService.save(inputParamVal, null);
+    
+    				model.put("simEnd", inputParamVal.getValue());
+    			}
 			}
 		}
+		// This uses the new start and end times to estimate simulation time.
+        controllerService.initEditScenario(model, project.getPrjid(), scenario.getScenid());
 
 		return "editscenario";
 	}

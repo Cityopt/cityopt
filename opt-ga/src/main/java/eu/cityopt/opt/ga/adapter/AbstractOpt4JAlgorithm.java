@@ -37,6 +37,8 @@ public abstract class AbstractOpt4JAlgorithm implements OptimisationAlgorithm {
             OptimisationStateListener listener, Instant deadline,
             Executor executor)
             throws ConfigurationException, IOException, ConfigurationException {
+        listener.setMaxIterations(getMaxIterations(parameters));
+        listener.setMaxEvaluations(getMaxEvaluations(parameters));
         OptimiserAdapter adapter = new OptimiserAdapter(
                 problem, storage, runName, listener, deadline,
                 configureOptimizer(parameters),
@@ -48,6 +50,14 @@ public abstract class AbstractOpt4JAlgorithm implements OptimisationAlgorithm {
 
     /** Provides the Optimizer module. */
     protected abstract OptimizerModule configureOptimizer(
+            AlgorithmParameters parameters) throws ConfigurationException;
+
+    /** Determines the maximum number of iterations. */
+    protected abstract int getMaxIterations(
+            AlgorithmParameters parameters) throws ConfigurationException;
+
+    /** Determines the maximum number of individual evaluations. */
+    protected abstract int getMaxEvaluations(
             AlgorithmParameters parameters) throws ConfigurationException;
 
     /**

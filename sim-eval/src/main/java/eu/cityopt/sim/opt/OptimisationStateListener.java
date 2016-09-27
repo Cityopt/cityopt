@@ -9,11 +9,23 @@ import java.util.Iterator;
  * @author Hannu Rummukainen
  */
 public interface OptimisationStateListener extends OptimisationLog {
-    /**
-     * Updates the current status string. This should be a short string such as
-     * "iteration 37" or "63/127 scenarios".
+    /** Sets the maximum number of iterations to be expected.
+     *  This is optional: if not called, then iterations are not counted.
      */
-    public void setProgressState(String state);
+    public void setMaxIterations(int maxIterations);
+
+    /** Sets the number of iterations completed.
+     *  Counting iterations is optional: see {@link #setMaxIterations(int)}.
+     */
+    public void setIteration(int iteration);
+
+    /** Sets the maximum number of individual evaluations to be expected. 
+     *  Should be called in advance, if the maximum is known.
+     */
+    public void setMaxEvaluations(int maxEvaluations);
+
+    /** To be called once after each individual evaluation. */
+    public void evaluationCompleted();
 
     /**
      * Updates the pareto-optimality status of the solutions.

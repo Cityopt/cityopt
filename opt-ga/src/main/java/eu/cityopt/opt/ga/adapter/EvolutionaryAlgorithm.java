@@ -16,13 +16,31 @@ public class EvolutionaryAlgorithm extends AbstractOpt4JAlgorithm {
     protected OptimizerModule configureOptimizer(
             AlgorithmParameters parameters) throws ConfigurationException {
         EvolutionaryAlgorithmModule ea = new EvolutionaryAlgorithmModule();
-        ea.setGenerations(parameters.getInt("number of generations", 10));
+        ea.setGenerations(getMaxIterations(parameters));
         ea.setAlpha(parameters.getInt("population size", 100));
         ea.setMu(parameters.getInt("number of parents per generation", 25));
-        ea.setLambda(parameters.getInt("number of offspring per generation", 25));
+        ea.setLambda(getOffspringPerGeneration(parameters));
         ea.setCrossoverRate(parameters.getDouble("crossover rate", 0.95));
         ea.setCrossoverRateType(CrossoverRateType.CONSTANT);
         return ea;
+    }
+
+    protected int getMaxIterations(
+            AlgorithmParameters parameters) throws ConfigurationException {
+        return parameters.getInt("number of generations", 10);
+    }
+
+    protected int getMaxEvaluations(
+            AlgorithmParameters parameters) throws ConfigurationException {
+        // org.opt4j.optimizers.ea.EvolutionaryAlgorithm always evaluates lambda
+        // individuals per generation, where lambda is the number of offspring. 
+        return getMaxIterations(parameters)
+                * getOffspringPerGeneration(parameters); 
+    }
+
+    private int getOffspringPerGeneration(
+            AlgorithmParameters parameters) throws ConfigurationException {
+        return parameters.getInt("number of offspring per generation", 25);
     }
 
     @Override

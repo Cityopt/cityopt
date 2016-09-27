@@ -227,7 +227,7 @@ public class VisualizationController {
 		model.put("scenario", scenario);
 		String status = scenario.getStatus();
 		
-		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+		if (simService.getRunningSimulations().containsKey(scenario.getScenid())) {
 			status = "RUNNING";
 		}
 		
@@ -604,7 +604,7 @@ public class VisualizationController {
 		int nScenId = scenario.getScenid();
 		String status = scenario.getStatus();
 
-		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+		if (simService.getRunningSimulations().containsKey(scenario.getScenid())) {
 			status = "RUNNING";
 		}
 
@@ -1374,7 +1374,7 @@ public class VisualizationController {
 		model.put("scenario", scenario);
 		String status = scenario.getStatus();
 
-		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+		if (simService.getRunningSimulations().containsKey(scenario.getScenid())) {
 			status = "RUNNING";
 		}
 			
@@ -1445,7 +1445,7 @@ public class VisualizationController {
 		
 		String status = scenario.getStatus();
 
-		if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+		if (simService.getRunningSimulations().containsKey(scenario.getScenid())) {
 			status = "RUNNING";
 		}
 			

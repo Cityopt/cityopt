@@ -84,8 +84,9 @@ class OptimiserAdapter {
         this.archive = task.getInstance(Archive.class);
 
         Optimizer optimizer = task.getInstance(Optimizer.class);
+
         optimizer.addOptimizerIterationListener(
-                iteration -> listener.setProgressState("Iteration " + iteration));
+                iteration -> listener.setIteration(iteration));
     }
 
     CompletableFuture<OptimisationResults> start(Executor executor) {

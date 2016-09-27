@@ -143,4 +143,21 @@ public class TimeEstimatorService {
         return Duration.ofNanos((long)predicted);
     }
 
+    public Instant estimateScenGenCompletionTime(
+            Instant started, int scenarios,
+            Instant deadline, int maxScenarios,
+            Duration priorTimePerScenario) {
+        Duration elapsed = Duration.between(started, Instant.now());
+        Duration timePerScenario;
+        if (priorTimePerScenario != null) {
+            timePerScenario = elapsed.plus(priorTimePerScenario)
+                    .dividedBy(1 + scenarios);
+        } else if (scenarios > 0) {
+            timePerScenario = elapsed.dividedBy(scenarios);
+        } else {
+            return deadline;
+        }
+        return started.plus(timePerScenario.multipliedBy(maxScenarios));
+    }
+
 }

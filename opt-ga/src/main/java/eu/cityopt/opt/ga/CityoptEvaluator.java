@@ -35,6 +35,7 @@ import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.opt.OptimisationLog;
 import eu.cityopt.sim.opt.OptimisationProblem;
+import eu.cityopt.sim.opt.OptimisationStateListener;
 import eu.cityopt.sim.opt.ScenarioNameFormat;
 
 /**
@@ -87,6 +88,7 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     };
     private OptimisationLog userLog =
             m -> System.err.println(m);
+    private OptimisationStateListener stateListener = null;
 	private ScenarioNameFormat formatter;
 
     @Inject
@@ -104,6 +106,11 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
     @Inject(optional=true)
     public void setUserLog(OptimisationLog log) {
         this.userLog = log;
+    }
+
+    @Inject(optional=true)
+    public void setStateListener(OptimisationStateListener listener) {
+        this.stateListener = listener;
     }
 
     @Inject(optional=true)
@@ -176,6 +183,9 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
             if (job != null) {
                 job.cancel(true);
                 jobs.remove(job);
+            }
+            if (stateListener != null) {
+                stateListener.evaluationCompleted();
             }
         }
     }
