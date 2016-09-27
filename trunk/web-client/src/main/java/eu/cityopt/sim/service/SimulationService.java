@@ -2,6 +2,7 @@ package eu.cityopt.sim.service;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +43,6 @@ import eu.cityopt.model.ScenarioGenerator;
 import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.model.SimulationResult;
 import eu.cityopt.model.TimeSeries;
-import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.repository.ExtParamValRepository;
 import eu.cityopt.repository.ExtParamValSetCompRepository;
 import eu.cityopt.repository.ExtParamValSetRepository;
@@ -92,9 +92,6 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     public static final String STATUS_MODEL_FAILURE = "MODEL_FAILURE";
     public static final String STATUS_SIMULATOR_FAILURE = "SIMULATOR_FAILURE";
 
-    @Autowired
-    CustomQueryRepository customQueryRepository;
-
     private static Logger log = Logger.getLogger(SimulationService.class);
 
     @Autowired private SyntaxCheckerService syntaxCheckerService;
@@ -108,10 +105,12 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository;
     @Autowired private MetricRepository metricRepository;
     @Autowired private ScenarioMetricsRepository scenarioMetricsRepository;
+    @Autowired private TimeEstimatorService timeEstimatorService;
 
     @Autowired private ExecutorService executorService;
 
-    private JobManager<SimulationOutput> jobManager = new JobManager<>();
+    private JobManager<SimulationOutput, SimulationJobInfo>
+        jobManager = new JobManager<>();
 
     private Evaluator evaluator = new Evaluator();
 
@@ -159,13 +158,15 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                 store.makeDbSimulationStorage(project.getPrjid(), externals);
 
         SimulationModel model = loadSimulationModel(project);
-        boolean started = false;
+        Duration scenarioDuration = timeEstimatorService.predictSimulationRuntime(
+                project.getPrjid(), input, model.getNominalSimulationRuntime());
+        Instant started = null;
         try {
             List<MetricExpression> metricExpressions = loadMetricExpressions(project, namespace);
             syntaxCheckerService.checkMetricExpressions(metricExpressions, namespace);
             SimulationRunner runner = model.getSimulatorManager().makeRunner(model, input.getNamespace());
             CompletableFuture<SimulationOutput> simJob = runner.start(input);
-            started = true;
+            started = Instant.now();
             CompletableFuture<SimulationOutput> finishJob = simJob.whenCompleteAsync(
                     // Store output & metric values
                     (output, throwable) -> {
@@ -191,7 +192,10 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                                     + scenId + ")");
                         }
                     }, executor);
-            jobManager.putJob(scenId, finishJob);
+            JobManager.JobData<SimulationOutput, SimulationJobInfo> jobData =
+                    jobManager.putJob(scenId, finishJob,
+                            new SimulationJobInfo(started,
+                                    started.plus(scenarioDuration)));
             finishJob.whenComplete(
                     // Clean up
                     (output, throwable) -> {
@@ -204,7 +208,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                             log.debug("Simulation job completed (scenId="
                                     + scenId + ")");
                         }
-                        jobManager.removeJob(scenId, finishJob);
+                        jobManager.removeJob(scenId, jobData);
                         try {
                             storage.close();
                         } catch (IOException e) {
@@ -222,7 +226,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                     });
             return finishJob;
         } finally {
-            if (!started) {
+            if (started != null) {
                 try { storage.close(); } catch (IOException e) {}
                 model.close();
             }
@@ -230,12 +234,19 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     }
 
     /**
-     * Returns set of scenarios for which a simulation is currently running.
+     * Returns scenarios for which a simulation is currently running.
      * The result is a snapshot of the situation at the time the method is called.
-     * @return set of scenario ids
+     * @return map from scenario id to information
      */
-    public Set<Integer> getRunningSimulations() {
-        return jobManager.getJobIds();
+    public Map<Integer, SimulationJobInfo> getRunningSimulations() {
+        Map<Integer, SimulationJobInfo> statusMap = new HashMap<>();
+        for (Map.Entry<Integer, JobManager.JobData<SimulationOutput, SimulationJobInfo>>
+                entry : jobManager.getActiveJobs()) {
+            SimulationJobInfo info = entry.getValue().data;
+            statusMap.put(entry.getKey(),
+                    new SimulationJobInfo(info.started, info.estimatedCompletionTime));
+        }
+        return statusMap;
     }
 
     /**

@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -29,14 +28,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.omg.IOP.Encoding;
-import org.python.google.common.io.Files;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -48,7 +43,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import eu.cityopt.DTO.AlgoParamDTO;
 import eu.cityopt.DTO.AlgoParamValDTO;
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
@@ -69,10 +63,8 @@ import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioGeneratorDTO;
-import eu.cityopt.DTO.ScenarioWithObjFuncValueDTO;
 import eu.cityopt.DTO.TimeSeriesDTOX;
 import eu.cityopt.DTO.TypeDTO;
-import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.service.AlgoParamValService;
 import eu.cityopt.service.AlgorithmService;
@@ -110,9 +102,8 @@ import eu.cityopt.sim.eval.SyntaxChecker;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
-import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
+import eu.cityopt.sim.service.ScenarioGenerationJobInfo;
 import eu.cityopt.sim.service.ScenarioGenerationService;
-import eu.cityopt.sim.service.ScenarioGenerationService.RunInfo;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.sim.service.SyntaxCheckerService;
 import eu.cityopt.validators.InputParameterValidator;
@@ -120,8 +111,6 @@ import eu.cityopt.web.AlgoParamValForm;
 import eu.cityopt.web.ExtParamValSetForm;
 import eu.cityopt.web.ModelParamForm;
 import eu.cityopt.web.ObjFuncForm;
-import eu.cityopt.web.OptimizationRun;
-import eu.cityopt.web.ParamForm;
 import eu.cityopt.web.UserSession;
 
 /**
@@ -3013,7 +3002,7 @@ public class OptimizationController {
 
     	model.put("scengenerator", scenGen);
 
-        RunInfo runInfo = scenarioGenerationService.getRunningOptimisations().get(scenGen.getScengenid());
+        ScenarioGenerationJobInfo runInfo = scenarioGenerationService.getRunningOptimisations().get(scenGen.getScengenid());
         String strInfo = "";
 
         if (runInfo != null) {
@@ -3026,7 +3015,10 @@ public class OptimizationController {
         if ((runInfo != null && !runInfo.toString().isEmpty())
     		|| (status != null && !status.isEmpty()))
         {
-        	strInfo += " status: " + status;
+            if (status == null && runInfo != null) {
+                status = "RUNNING";
+            }
+        	strInfo += " Status: " + status;
         	locked = true;
         }
 

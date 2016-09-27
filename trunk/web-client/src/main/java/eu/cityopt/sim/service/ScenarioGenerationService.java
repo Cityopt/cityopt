@@ -2,6 +2,7 @@ package eu.cityopt.sim.service;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -87,6 +87,7 @@ public class ScenarioGenerationService
     @Autowired private OptimisationSupport optimisationSupport;
     @Autowired private SyntaxCheckerService syntaxCheckerService;
     @Autowired private SimulationStoreService store;
+    @Autowired private TimeEstimatorService timeEstimatorService;
 
     @Autowired private ScenarioGeneratorRepository scenarioGeneratorRepository;
     @Autowired private TypeRepository typeRepository;
@@ -98,11 +99,10 @@ public class ScenarioGenerationService
 
     private static Logger log = Logger.getLogger(ScenarioGenerationService.class);
 
-    private JobManager<OptimisationResults> jobManager = new JobManager<>();
+    private JobManager<OptimisationResults, Listener>
+        jobManager = new JobManager<>();
 
     private List<String> packagesToScan = Arrays.asList("eu.cityopt");
-
-    private Map<Integer, Listener> listeners = new ConcurrentHashMap<>();
 
     public void setAlgorithmPackagesToScan(List<String> values) {
         packagesToScan = values;
@@ -125,15 +125,15 @@ public class ScenarioGenerationService
     }
 
     static class Listener implements OptimisationStateListener {
-        RunInfo info = new RunInfo();
+        ScenarioGenerationJobInfo info;
+        Duration priorTimePerScenario;
         Object messageMutex = new Object();
         StringBuilder messages = new StringBuilder();
 
-        volatile String progressState = "started";
-
-        Listener(Instant started, Instant deadline) {
-            info.started = started;
-            info.deadline = deadline;
+        Listener(Instant started, Instant deadline,
+                Duration priorTimePerScenario) {
+            this.info = new ScenarioGenerationJobInfo(started, deadline);
+            this.priorTimePerScenario = priorTimePerScenario;
         }
 
         @Override
@@ -153,12 +153,49 @@ public class ScenarioGenerationService
         }
 
         @Override
-        public void setProgressState(String state) {
-            progressState = state;
+        public void updateParetoFront(Iterator<Solution> solutions) {
         }
 
         @Override
-        public void updateParetoFront(Iterator<Solution> solutions) {
+        public void setMaxIterations(int maxIterations) {
+            synchronized (info) {
+                info.maxIterations = maxIterations;
+            }
+        }
+
+        @Override
+        public void setIteration(int iteration) {
+            synchronized (info) {
+                info.iteration = iteration;
+            }
+        }
+
+        @Override
+        public void setMaxEvaluations(int maxEvaluations) {
+            synchronized (info) {
+                info.maxScenarios = maxEvaluations;
+            }
+        }
+
+        @Override
+        public void evaluationCompleted() {
+            synchronized (info) {
+                ++info.scenarios;
+            }
+        }
+
+        ScenarioGenerationJobInfo getInfo(
+                TimeEstimatorService timeEstimatorService) {
+            ScenarioGenerationJobInfo snapshot = null;
+            synchronized (info) {
+                snapshot = new ScenarioGenerationJobInfo(info);
+            }
+            snapshot.estimatedCompletionTime =
+                    timeEstimatorService.estimateScenGenCompletionTime(
+                        snapshot.started, snapshot.scenarios,
+                        snapshot.deadline, snapshot.maxScenarios,
+                        priorTimePerScenario);
+            return snapshot;
         }
     }
 
@@ -208,7 +245,9 @@ public class ScenarioGenerationService
 
             Instant started = Instant.now();
             Instant deadline = started.plus(algorithmParameters.getMaxRunTime());
-            Listener listener = new Listener(started, deadline);
+            Duration scenarioRuntime = timeEstimatorService.predictSimulationRuntime(
+                    project.getPrjid(), problem.inputConst, model.getNominalSimulationRuntime());
+            Listener listener = new Listener(started, deadline, scenarioRuntime);
             CompletableFuture<OptimisationResults> optimisationJob = optimisationAlgorithm.start(
                     problem, algorithmParameters, storage,
                     runName, listener, deadline, executorService);
@@ -220,15 +259,14 @@ public class ScenarioGenerationService
                         }
                         storage.saveScenarioGeneratorResults(results, messages);
                     }, executorService);
-            jobManager.putJob(scenGenId, finishJob);
-            listeners.put(scenGenId, listener);
+            JobManager.JobData<OptimisationResults, Listener> jobData =
+                    jobManager.putJob(scenGenId, finishJob, listener);
             // If finishJob is cancelled, we need to cancel optimisationJob.
             finishJob.whenComplete((result, throwable) -> {
                 if (finishJob.isCancelled()) {
                     optimisationJob.cancel(true);
                 }
-                jobManager.removeJob(scenGenId, finishJob);
-                listeners.remove(scenGenId, listener);
+                jobManager.removeJob(scenGenId, jobData);
                 try {
                     storage.close();
                 } catch (IOException e) {
@@ -248,54 +286,16 @@ public class ScenarioGenerationService
     }
 
     /**
-     * Information about an ongoing optimisation run.
-     * @see ScenarioGenerationService#getRunningOptimisations()
-     */
-    public static class RunInfo {
-        /** When the run was started. */
-       Instant started;
-
-        /**
-         * When the run should be ending. Derived from the start time and the
-         * configured maximum run time.
-         */
-       Instant deadline;
-
-       /** Short status string, e.g. "iteration 43" */
-       String status;
-
-       public String getStarted() {
-    	   return started.toString();
-       }
-
-       public String getDeadline() {
-    	   return deadline.toString();
-       }
-
-       public String getStatus() {
-    	   return status.toString();
-       }
-
-       @Override
-       public String toString() {
-           return "Started: " + started + "; Deadline: " + deadline + "; Status: " + status;
-       }
-    }
-
-    /**
      * Returns the status of currently ongoing optimisation runs.
      * The result is a snapshot of the situation at the time the method is called.
      * @return map from ScenarioGenerator entity id to {@link RunInfo}
      */
-    public Map<Integer, RunInfo> getRunningOptimisations() {
-        Map<Integer, RunInfo> statusMap = new HashMap<>();
-        for (Map.Entry<Integer, Listener> entry : listeners.entrySet()) {
-            Listener listener = entry.getValue();
-            RunInfo runInfo = new RunInfo();
-            runInfo.started = listener.info.started;
-            runInfo.deadline = listener.info.deadline;
-            runInfo.status = listener.progressState;
-            statusMap.put(entry.getKey(), runInfo);
+    public Map<Integer, ScenarioGenerationJobInfo> getRunningOptimisations() {
+        Map<Integer, ScenarioGenerationJobInfo> statusMap = new HashMap<>();
+        for (Map.Entry<Integer, JobManager.JobData<OptimisationResults, Listener>>
+                entry : jobManager.getActiveJobs()) {
+            Listener listener = entry.getValue().data;
+            statusMap.put(entry.getKey(), listener.getInfo(timeEstimatorService));
         }
         return statusMap;
     }
@@ -308,9 +308,7 @@ public class ScenarioGenerationService
      *  cancellation fails for some other reason.
      */
     public boolean cancelOptimisation(int scenGenId) {
-        boolean canceled = jobManager.cancelJob(scenGenId);
-        listeners.remove(scenGenId);
-        return canceled;
+        return jobManager.cancelJob(scenGenId);
     }
 
     OptimisationProblem loadOptimisationProblem(

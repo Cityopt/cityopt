@@ -2,6 +2,7 @@ package eu.cityopt.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -59,8 +60,10 @@ import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.sim.service.TimeEstimatorService;
+import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
-import eu.cityopt.sim.service.ScenarioGenerationService.RunInfo;
+import eu.cityopt.sim.service.ScenarioGenerationJobInfo;
 import eu.cityopt.web.OptimizationRun;
 import eu.cityopt.web.Pair;
 import eu.cityopt.web.ParamForm;
@@ -118,6 +121,9 @@ public class ControllerService {
 
 	    @Autowired
 	    SimulationService simService;
+
+	    @Autowired
+	    TimeEstimatorService timeEstimatorService;
 
 	    @Autowired
 	    SimulationModelService simModelService;
@@ -421,7 +427,7 @@ public class ControllerService {
 	    public String getScenarioStatus(ScenarioDTO scenario) {
 	    	String statusMsg = scenario.getStatus();
 
-			if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+			if (simService.getRunningSimulations().containsKey(scenario.getScenid())) {
 				statusMsg = "RUNNING";
 			}
 			
@@ -476,20 +482,17 @@ public class ControllerService {
 	    }
 	    
 	    public void updateGARuns(Map<String, Object> model) {
-		    Map<Integer, RunInfo> mapRuns = scenarioGenerationService.getRunningOptimisations();
+		    Map<Integer, ScenarioGenerationJobInfo> mapRuns =
+		            scenarioGenerationService.getRunningOptimisations();
 			List<OptimizationRun> listOptRuns = new ArrayList<OptimizationRun>();
-			Iterator iter = mapRuns.entrySet().iterator();
-	        
-			while (iter.hasNext()) {
-		        Map.Entry pair = (Map.Entry) iter.next();
-		        RunInfo runInfo = new RunInfo(); 
-		        runInfo = (RunInfo) pair.getValue();
-
+			for (Map.Entry<Integer, ScenarioGenerationJobInfo> pair : mapRuns.entrySet()) {
+			    ScenarioGenerationJobInfo runInfo = pair.getValue();
 		        OptimizationRun optRun = new OptimizationRun();
-		        optRun.setId((int)pair.getKey());
-		        optRun.setStarted(runInfo.getStarted());
-		        optRun.setDeadline(runInfo.getDeadline());
-		        optRun.setStatus(runInfo.getStatus());
+		        optRun.setId(pair.getKey());
+		        optRun.setStarted(runInfo.started.toString());
+		        optRun.setEstimated(runInfo.estimatedCompletionTime.toString());
+		        optRun.setDeadline(runInfo.deadline.toString());
+		        optRun.setStatus(runInfo.formatEvaluationStatus());
 		        
 		        listOptRuns.add(optRun);
 		    }
@@ -563,7 +566,7 @@ public class ControllerService {
 			
 			String statusMsg = getScenarioStatus(scenario);
 
-			if (simService.getRunningSimulations().contains(scenario.getScenid())) {
+			if (simService.getRunningSimulations().containsKey(scenario.getScenid())) {
 				model.put("disableEdit", true);
 			}
 			else if (statusMsg != null && statusMsg.equals("SUCCESS"))
@@ -579,24 +582,10 @@ public class ControllerService {
 				String time = getSimulationTime(scenario);
 				model.put("simulationEstimate", time);
 			} else {
-				Set<ScenarioDTO> scenarios = projectService.getScenarios(projectId);
-				Iterator<ScenarioDTO> iter = scenarios.iterator();
-				long timeStart = 0;
-				
-				// Find latest scenario that has simulation time available
-				while (iter.hasNext())
-				{
-					ScenarioDTO scenarioEstimate = iter.next();
-					
-					if (scenarioEstimate.getRunend() != null
-						&& scenarioEstimate.getRunstart() != null
-						&& timeStart < scenarioEstimate.getRunstart().getTime())
-					{
-						timeStart = scenarioEstimate.getRunstart().getTime();
-						String time = getSimulationTime(scenarioEstimate);
-						model.put("simulationEstimate", time);
-					}
-				}
+			    Duration d = timeEstimatorService.predictSimulationRuntime(projectId, scenarioId);
+			    if (d != null) {
+                    model.put("simulationEstimate", (d.getSeconds() / 60 + 1) + " min");
+			    }
 			}
 			
 			List<InputParamValDTO> inputParamVals = scenarioService.getInputParamVals(scenario.getScenid());
@@ -607,15 +596,16 @@ public class ControllerService {
 			while(iter.hasNext())
 			{
 				InputParamValDTO inputParamVal = iter.next();
-				String inputName = inputParamVal.getInputparameter().getName();
-				
-				if (inputName.equals("simulation_start"))
-				{
-					model.put("simStart", inputParamVal.getValue());
-				}
-				else if (inputName.equals("simulation_end"))
-				{
-					model.put("simEnd", inputParamVal.getValue());
+				if (inputParamVal.getInputparameter().getComponentName().equals(Namespace.CONFIG_COMPONENT)) {
+	                String inputName = inputParamVal.getInputparameter().getName();
+    				if (inputName.equals(Namespace.CONFIG_SIMULATION_START))
+    				{
+    					model.put("simStart", inputParamVal.getValue());
+    				}
+    				else if (inputName.equals(Namespace.CONFIG_SIMULATION_END))
+    				{
+    					model.put("simEnd", inputParamVal.getValue());
+    				}
 				}
 			}
 

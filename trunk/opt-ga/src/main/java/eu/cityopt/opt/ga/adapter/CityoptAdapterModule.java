@@ -5,10 +5,11 @@ import org.opt4j.core.optimizer.Control;
 import com.google.inject.AbstractModule;
 
 import eu.cityopt.opt.ga.CityoptModule;
+import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.opt.OptimisationLog;
 import eu.cityopt.sim.opt.OptimisationProblem;
+import eu.cityopt.sim.opt.OptimisationStateListener;
 import eu.cityopt.sim.opt.ScenarioNameFormat;
-import eu.cityopt.sim.eval.SimulationStorage;
 
 /**
  * Configures the classes required by {@link CityoptModule}.
@@ -20,7 +21,7 @@ public class CityoptAdapterModule extends AbstractModule {
     private OptimisationProblem problem;
     private SimulationStorage storage;
     private ScenarioNameFormat formatter;
-    private OptimisationLog optimisationLog;
+    private OptimisationStateListener listener;
     private Control control;
 
     /**
@@ -29,12 +30,12 @@ public class CityoptAdapterModule extends AbstractModule {
      */
     public CityoptAdapterModule(
             OptimisationProblem problem, SimulationStorage storage,
-            ScenarioNameFormat formatter, OptimisationLog optimisationLog,
+            ScenarioNameFormat formatter, OptimisationStateListener listener,
             Control control) {
         this.problem = problem;
         this.storage = storage;
         this.formatter = formatter;
-        this.optimisationLog = optimisationLog;
+        this.listener = listener;
         this.control = control;
     }
 
@@ -44,7 +45,8 @@ public class CityoptAdapterModule extends AbstractModule {
         bind(OptimisationProblem.class).toInstance(problem);
         bind(SimulationStorage.class).toInstance(storage);
         bind(ScenarioNameFormat.class).toInstance(formatter);
-        bind(OptimisationLog.class).toInstance(optimisationLog);
+        bind(OptimisationLog.class).toInstance(listener);
+        bind(OptimisationStateListener.class).toInstance(listener);
         if (control != null) {
             bind(Control.class).toInstance(control);
         }

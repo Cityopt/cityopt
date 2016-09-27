@@ -176,7 +176,8 @@ public class GridSearchOptimiser extends AbstractOptimiser {
 
         int evaluationsStarted = 0;
         int evaluationLimit = (totalCount < maxEvaluationsTotal)
-                ? (int) totalCount : maxEvaluationsTotal; 
+                ? (int) totalCount : maxEvaluationsTotal;
+        listener.setMaxEvaluations(evaluationLimit);
         while (true) {
             if (Thread.interrupted()) {
                 throw new InterruptedException();
@@ -187,8 +188,7 @@ public class GridSearchOptimiser extends AbstractOptimiser {
                     new DecisionValues(decisions), jobId);
             ++evaluationsStarted;
             job.whenComplete((s, t) -> {
-                int n = evaluationsCompleted.get();
-                listener.setProgressState(n +"/" + evaluationLimit);
+                listener.evaluationCompleted();
             });
 
             boolean carry = true;
