@@ -56,7 +56,7 @@
  								<tr>
  									<td class="spacecolumn"></td>
  									<c:if test="${success == true}">
-										<td class="successful">
+										<td class="info">
 			 								<spring:message code="simulation_uploaded"/>
 		 								</td>
 	 								</c:if>
@@ -122,7 +122,7 @@
 									<table>
 										<tr height=30></tr>	
 										<tr>
-											<td><spring:message code="loaded_energy_model"/>:</td>
+											<td class="info"><spring:message code="loaded_energy_model"/>:</td>
 											<td>${loadedEnergyModel}</td>
 										</tr>
 										<c:choose>
@@ -141,8 +141,8 @@
 						        					<tr>
 						        						<!-- Energy model to upload: -->
 						        						<c:set var="tooltip_energymodel"><spring:message code="tooltip_edit_project_energymodel"/></c:set>
-														<td><spring:message code="energy_model_to_upload"/>:</td>
-														<td><input type="file" name="file" title="${tooltip_energymodel}"></td>
+														<td class="info"><spring:message code="energy_model_to_upload"/>:</td>
+														<td class="info"><input type="file" name="file" title="${tooltip_energymodel}"></td>
 													</tr>
 						       						<tr>	
 						       							<td></td>
@@ -158,7 +158,7 @@
 										</c:choose>
 										<tr height=30></tr>	
 										<tr>
-											<td><spring:message code="input_parameters"/></td>
+											<td class="info"><spring:message code="input_parameters"/></td>
 										
 											<c:set var="tooltip_set_input_parameter"><spring:message code="tooltip_edit_project_set_input_parameter"/></c:set>
 											<td><a href="projectparameters.html"><button type="button" title="${tooltip_set_input_parameter}" style="width:120px">
@@ -166,7 +166,7 @@
 										</tr>
 										<tr height=3></tr>	
 										<tr>
-											<td><spring:message code="output_variables"/></td>
+											<td class="info"><spring:message code="output_variables"/></td>
 										
 											<c:set var="tooltip_outputparameters"><spring:message code="tooltip_edit_project_set_output_parameters"/></c:set>
 										<td>
@@ -176,7 +176,7 @@
 										</tr>
 										<tr height=3></tr>	
 										<tr>
-											<td><spring:message code="external_parameters"/></td>
+											<td class="info"><spring:message code="external_parameters"/></td>
 											<td><a href="extparams.html"><button type="button" title="" style="width:120px">
 											<spring:message code="set"/></button></a></td>
 										</tr>

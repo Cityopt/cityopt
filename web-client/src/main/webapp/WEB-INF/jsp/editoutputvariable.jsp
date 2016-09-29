@@ -54,17 +54,21 @@
 							<col style="width:100px">
 							<col style="width:250px">
 							<tr>
-								<td>
+								<td class="infosmall">
 									<spring:message code="name"/>
 								</td>
-								<td>
+							</tr>
+							<tr>
+								<td class="activeline">
 									${outputVar.name}
 								</td>
 							</tr>
 							<tr>
-								<td>					
+								<td class="infosmall">					
 									<spring:message code="unit"/>
 								</td>
+							</tr>
+							<tr>
 								<td>					
 									<form:select path="unit">
 										<option value="${outputVar.unit.name}" selected>${outputVar.unit.name}</option>

@@ -53,35 +53,40 @@
 				<tr>
 					<td class="spacecolumn"></td>
 					<td valign="top">
-						<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
+						<div style="overflow:scroll;height:500px;width:600px;overflow:auto">
 						<form:form method="post" action="createinputparameter.html?selectedcompid=${selectedcompid}" modelAttribute="inputParamForm">
 						
-						<table align="center">
-							<col style="width:150px">
-							<col style="width:80px">
-							<col style="width:80px">
+						<table align="left">
+							<col style="width:300px">
+							<col style="width:250px">
 							<tr>
-								<td>
+								<td class="infosmall">
 									<!-- Name -->
 									<spring:message code="name"/>*
 								</td>
+							</tr>
+							<tr>
 								<td>
 									<form:input style="width:300px" type="text" path="name"/>
 								</td>
 							</tr>
 							<tr>
-								<td>
+								<td class="infosmall">
 									<!-- Default value -->
 									<spring:message code="default_value"/>
 								</td>
+							</tr>
+							<tr>
 								<td>
 									<form:input style="width:300px" type="text" path="value"/>
 								</td>
 							</tr>
 							<tr>
-								<td>					
+								<td class="infosmall">					
 									<spring:message code="unit"/>
 								</td>
+							</tr>
+							<tr>
 								<td>					
 									<form:select path="unit">
 										<option value="${inputParam.unit.name}" selected>${inputParam.unit.name}</option>
@@ -91,12 +96,11 @@
 									</form:select>				
 								</td>
 							</tr>
-							<tr height="10">
+							<tr class="spacerowbig">
 								<td>
 								</td>
 							</tr>
 							<tr>
-								<td></td>
 								<td align="right">
 									<button class="activebutton" style="width:100px" type="submit"><spring:message code="create"/></button>
 									<input style="width:100px" type="submit" name="cancel" value="<spring:message code="cancel"/>">

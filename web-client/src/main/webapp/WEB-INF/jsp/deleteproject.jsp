@@ -50,7 +50,7 @@
 												<td class="active"><spring:message code="projects"/></td>
 											</tr>
 											<tr>
-												<td>
+												<td valign="top">
 													<table class="tablestyle" width="400">
 														<tr height="20">
 															<!-- Name -->
@@ -87,6 +87,9 @@
 								</tr>
 							</table>
 						</td>
+					</tr>
+					<tr style="height: 100%">
+						<td></td>
 					</tr>
 				</table>
 				</div>
