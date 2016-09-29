@@ -9,9 +9,11 @@ public class SimulationJobInfo implements JobInfo {
     public double fractionComplete;
 
     public SimulationJobInfo(Instant started, Instant estimatedCompletionTime) {
+        this.started = started;
+        this.estimatedCompletionTime = estimatedCompletionTime;
         long done = Duration.between(started, Instant.now()).toMillis();
         long all = Duration.between(started, estimatedCompletionTime).toMillis();
-        fractionComplete = Math.min(1.0, (double)done / all);
+        this.fractionComplete = Math.min(1.0, (double)done / all);
     }
 
     @Override

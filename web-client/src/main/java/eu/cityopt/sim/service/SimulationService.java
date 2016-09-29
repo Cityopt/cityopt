@@ -227,6 +227,9 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             return finishJob;
         } finally {
             if (started != null) {
+                log.debug("Started simulation job (scenId=" + scenId
+                        + ", predicted runtime=" + scenarioDuration);
+            } else {
                 try { storage.close(); } catch (IOException e) {}
                 model.close();
             }
