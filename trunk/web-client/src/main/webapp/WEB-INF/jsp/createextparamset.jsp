@@ -60,6 +60,8 @@
 											<td class="infosmall">
 												<spring:message code="name"/>*
 											</td>
+										</tr>
+										<tr>
 											<td>
 												<form:input style="width:150px" type="text" path="name"/>
 											</td>

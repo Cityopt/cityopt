@@ -54,46 +54,56 @@
 										<table>
 											<tr>
 												<!-- Project name: -->
-												<td><b><spring:message code="project_name" /></b>:
+												<td class="infosmall"><spring:message code="project_name" />
+											</tr>
+											<tr>
+												<td class="activeline">
 													${project.name}</td>
-												<td><c:if test="project != null">
-												${project.name}
-											</c:if></td>
+												</td>
 											</tr>
 											<tr>
 												<!-- Location: -->
-												<td><b><spring:message code="location" /></b>:
+												<td class="infosmall"><spring:message code="location" />
 													${project.location}</td>
-												<td><c:if test="project != null">
-												${project.location}
-											</c:if></td>
+											</tr>
+											<tr>
+												<td class="activeline">
+													<c:if test="project != null">
+														${project.location}
+													</c:if>
+												</td>
 											</tr>
 											<tr>
 												<!-- Design target: -->
-												<td><b><spring:message code="design_target" /></b>:
-													${project.description}</td>
+												<td class="infosmall"><spring:message code="design_target" />
+												</td>
+											</tr>
+											<tr>
+												<td class="activeline">
+													<c:if test="project != null">
+														${project.designtarget}
+													</c:if>
+												</td>
 												<td></td>
 											</tr>
 											<tr>
 												<!-- Description: -->
-												<td><b><spring:message code="description" /></b>:
-													${project.description}</td>
-												<td><c:if test="project != null">
-												${project.description}
-											</c:if></td>
+												<td class="infosmall"><spring:message code="description" /></td>
+											</tr>
+											<tr>
+												<td class="activeline">${project.description}</td>
 											</tr>
 											<tr height="20"></tr>
 											<tr>
 												<!-- Export project file (CSV) -->
-												<td><spring:message code="export_project_file_CSV" /></td>
+												<td class="info"><spring:message code="export_project_file_CSV" /></td>
 												<td><a href="exportstructurefile.html"><button>
-															<spring:message code="export" />
+													<spring:message code="export" />
 														</button></a></td>
-		
 											</tr>
 											<tr>
 												<!-- Export scenario file CSV -->
-												<td><spring:message code="export_scenario_file_CSV" /></td>
+												<td class="info"><spring:message code="export_scenario_file_CSV" /></td>
 												<td>
 													<!-- Export -button --> <a href="exportscenarios.html"><button>
 															<spring:message code="export" />
@@ -102,7 +112,7 @@
 		
 											</tr>
 											<tr>
-												<td>
+												<td class="info">
 													<spring:message	code="export_external_parameter_sets_file_CSV" />
 												</td>
 												<td>
@@ -125,7 +135,7 @@
 												</td>
 											</tr>
 											<tr>
-												<td><spring:message code="export_simulation_model" /></td>
+												<td class="info"><spring:message code="export_simulation_model" /></td>
 												<td>
 													<c:choose>
 														<c:when test="${enableSimModelExport}">

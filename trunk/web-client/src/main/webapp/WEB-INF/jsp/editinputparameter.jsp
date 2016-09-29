@@ -54,35 +54,41 @@
 							<col style="width:200px">
 							<form:form method="post" action="editinputparameter.html?inputparamid=${inputParam.inputid}" modelAttribute="inputParamForm">
 							<tr>
-								<td>
+								<td class="infosmall">
 									<spring:message code="name"/>
 								</td>
-								<td>
+							</tr>
+							<tr>
+								<td class="activeline">
 									${inputParam.name}
 								</td>
 							</tr>
 							<tr>
-								<td>					
+								<td class="infosmall">					
 									<spring:message code="unit"/>
 								</td>
-								<td>					
+							</tr>
+							<tr>
+								<td class="activeline">					
 									${inputParam.unit.name}
 								</td>
 							</tr>
 							<c:choose>
 								<c:when test="${inputParam.getType().getTypeid() >= 5}">
 									<tr>
-										<td>
+										<td class="infosmall">
 											<spring:message code="type"/>
 										</td>
-										<td><spring:message code="time_series"/></td>																		
+									</tr>
+									<tr>
+										<td class="activeline"><spring:message code="time_series"/></td>																		
 									</tr>
 									<tr height="20">
 										<td>
 										</td>
 									</tr>
 									<tr>
-										<td class="active"><spring:message code="time_series" /></td>
+										<td class="info"><spring:message code="time_series" /></td>
 									</tr>
 									<tr>
 										<td colspan="3">
@@ -107,32 +113,40 @@
 								</c:when>
 								<c:otherwise>
 								<tr>
-									<td>
+									<td class="infosmall">
 										<spring:message code="type"/>
 									</td>
-										<td><spring:message code="value"/></td>																		
 								</tr>
 								<tr>
-									<td>
+									<td class="activeline"><spring:message code="value"/></td>																		
+								</tr>
+								<tr>
+									<td class="infosmall">
 										<spring:message code="default_value"/>
 									</td>
-									<td>
+								</tr>
+								<tr>
+									<td class="activeline">
 										${inputParam.defaultvalue}
 									</td>
 								</tr>			
 								<tr>
-									<td>
+									<td class="infosmall">
 										Min
 									</td>
-									<td>
+								</tr>
+								<tr>
+									<td class="activeline">
 										${inputParam.lowerBound}
 									</td>
 								</tr>			
 								<tr>
-									<td>
+									<td class="infosmall">
 										Max
 									</td>
-									<td>
+								</tr>
+								<tr>
+									<td class="activeline">
 										${inputParam.upperBound}
 									</td>
 								</tr>			
@@ -149,42 +163,52 @@
 								</td>
 							</tr>
 							<tr>
-								<td>
+								<td class="infosmall">
 									<spring:message code="name"/>*
 								</td>
-								<td>
+							</tr>
+							<tr>
+								<td class="activeline">
 									<form:input style="width:300px" type="text" path="name"/>
 								</td>
 							</tr>
 							<tr>
-								<td>
+								<td class="infosmall">
 									<spring:message code="default_value"/>
 								</td>
-								<td>
+							</tr>
+							<tr>
+								<td class="activeline">
 									<form:input style="width:300px" type="text" path="value"/>
 								</td>
 							</tr>			
 							<tr>
-								<td>
+								<td class="infosmall">
 									Min
 								</td>
-								<td>
+							</tr>
+							<tr>	
+								<td class="activeline">
 									<form:input style="width:300px" type="text" path="min"/>
 								</td>
 							</tr>			
 							<tr>
-								<td>
+								<td class="infosmall">
 									Max
 								</td>
-								<td>
+							</tr>
+							<tr>
+								<td class="activeline">
 									<form:input style="width:300px" type="text" path="max"/>
 								</td>
 							</tr>			
 							<tr>
-								<td>					
+								<td class="infosmall">					
 									<spring:message code="unit"/>
 								</td>
-								<td>					
+							</tr>
+							<tr>
+								<td class="infosmall">					
 									<form:select path="unit">
 										<option value="${inputParam.unit.name}" selected>${inputParam.unit.name}</option>
 										<c:forEach items="${units}" var="unit">																																
@@ -217,8 +241,8 @@
 							</form:form>
 							<form:form method="POST" action="importinputtimeseries.html?inputid=${inputParam.inputid}" enctype="multipart/form-data">
 							<tr>
-								<td><spring:message code="import_time_series"/></td>
-								<td><input id="file" name="file" type="file"/></td>
+								<td class="info"><spring:message code="import_time_series"/></td>
+								<td class="info"><input id="file" name="file" type="file"/></td>
 							</tr>
 							<tr>	
 			  					<td></td>

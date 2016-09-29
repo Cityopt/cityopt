@@ -218,7 +218,7 @@
 																				</tr>
 																				<form:form method="POST" action="importextparam.html" enctype="multipart/form-data">
 														        					<tr>
-														        						<td><spring:message code="import_external_time_series" /> (CSV)</td>
+														        						<td class="info"><spring:message code="import_external_time_series" /> (CSV)</td>
 																						<td><input id="file" name="file" type="file"/></td>
 																						<td align="right"><input type="submit" value="<spring:message code="import_file"/>"></td>	
 																					</tr>
