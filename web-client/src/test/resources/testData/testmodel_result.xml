@@ -23,20 +23,7 @@
   <type name="List of Double"/>
   <type name="List of Integer"/>
   <type name="List of Timestamp"/>
-  <unit name="kJ/kg"/>
-  <unit name="kW"/>
-  <unit name="1/K"/>
-  <unit name="kg/s"/>
-  <unit name="min"/>
-  <unit name="C"/>
-  <unit name="%/min"/>
-  <unit name="kJ/kgK"/>
-  <unit name="m2"/>
-  <unit name="MPa"/>
-  <unit name="deg"/>
-  <unit name="m3"/>
-  <unit name="m"/>
-  <unit name="Mpa"/>
+  <unit/>
   <inputparameter name="CHP_electrical_power_rating" defaultvalue="2400.0"/>
   <inputparameter name="Burner_efficiency" defaultvalue="0.7"/>
   <inputparameter name="Share_of_roof_area_occupied_by_PVpanels" defaultvalue="10.0"/>
@@ -85,9 +72,6 @@
   <algoparam defaultvalue="25" name="number of offspring per generation"/>
   <algoparam defaultvalue="0.95" name="crossover rate"/>
   <algoparamval/>
-  <appuser/>
-  <usergroup/>
-  <usergroupproject/>
   <inputparamval value="2015-01-01T00:00:00Z"/>
   <inputparamval value="2015-01-01T00:00:00Z"/>
   <inputparamval value="2015-01-01T00:00:00Z"/>

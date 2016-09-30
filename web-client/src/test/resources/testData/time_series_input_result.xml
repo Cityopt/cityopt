@@ -17,20 +17,7 @@
   <type name="List of Double"/>
   <type name="List of Integer"/>
   <type name="List of Timestamp"/>
-  <unit name="kJ/kg"/>
-  <unit name="kW"/>
-  <unit name="1/K"/>
-  <unit name="kg/s"/>
-  <unit name="min"/>
-  <unit name="C"/>
-  <unit name="%/min"/>
-  <unit name="kJ/kgK"/>
-  <unit name="m2"/>
-  <unit name="MPa"/>
-  <unit name="deg"/>
-  <unit name="m3"/>
-  <unit name="m"/>
-  <unit name="Mpa"/>
+  <unit/>
   <inputparameter name="simulation_start" defaultvalue="2016-01-01T00:00:00Z"/>
   <inputparameter name="simulation_end" defaultvalue="2016-01-01T00:01:00Z"/>
   <inputparameter name="SP_VALUE"/>
@@ -59,9 +46,6 @@
   <algoparam defaultvalue="25" name="number of offspring per generation"/>
   <algoparam defaultvalue="0.95" name="crossover rate"/>
   <algoparamval/>
-  <appuser/>
-  <usergroup/>
-  <usergroupproject/>
   <inputparamval/>
   <modelparameter/>
   <metricval/>
