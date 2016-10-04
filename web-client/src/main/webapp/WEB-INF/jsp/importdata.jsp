@@ -25,8 +25,8 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td valign="top">
-			<div style="overflow:scroll;height:100%;width:1100px;overflow:auto">
-			<table class="maintable">
+			<div style="overflow:scroll;height:100%;width:100%;overflow:auto">
+			<table class="maintablewide">
 				<%@ include file="toprow.inc"%>
 				<tr class="titlerow">
 					<td colspan="2">
@@ -47,19 +47,6 @@
 				</tr>
 				<tr>
 					<td class="spacecolumn"></td>
-					<td align="right">
-						<spring:message code="download_project_templates"/>
-						<a href="exportprojecttemplate.html">						
-							<button><spring:message code="download"/></button>
-						</a>
-						<spring:message code="download_scenario_templates"/>
-						<a href="exportscenariotemplate.html">
-							<button><spring:message code="download"/></button>
-						</a>
-					</td>
-				</tr>
-				<tr>
-					<td class="spacecolumn"></td>
 					<td class="error">${error}</td>
 				</tr>
 				<tr>
@@ -70,145 +57,209 @@
 					<td class="spacecolumn"></td>
 					<td valign="top">
 						<table>
-							<tr>
-								<td><spring:message code="project_name"/>:</td>
-								<td>
-									<c:if test="project != null">
-										${project.name}
-									</c:if>
-								</td>
-							</tr>
-							<tr>
-								<!-- Location: -->						
-								<td><spring:message code="location"/>:</td>
-								<td>
-									<c:if test="project != null">
-										${project.location}
-									</c:if>
-								</td>
-							</tr>
-							<tr>
-								<!-- Design target: -->						
-								<td><spring:message code="design_target"/>:</td>
-								<td></td>
-							</tr>
-							<tr>
-								<!-- Description: -->						
-								<td><spring:message code="description"/>:</td>
-								<td>
-									<c:if test="project != null">
-										${project.description}
-									</c:if>
-								</td>
-							</tr>
-    						<tr class="spacerowbig"></tr>
+							<col style="width:700px">
+							<col style="width:200px">
 							<tr>
 								<td>
-									<br>
-									<!-- Import project data -->
-									<b><spring:message code="import_project_data"/></b>
+									<table>
+										<col style="width:100px">
+										<col style="width:300px">
+										<col style="width:300px">
+										<tr>
+											<td colspan="2" class="info">
+												<!-- Import project data -->
+												<spring:message code="import_project_data"/>
+											</td>
+										</tr>
+										<tr><td colspan="3" class="activeline"></td></tr>
+										<form:form method="POST" action="importstructurefile.html" enctype="multipart/form-data">
+											<tr>
+												<td></td>
+				        						<td></td>
+												<td class="infosmall"><spring:message code="project_file"/> (CSV)</td>
+											</tr>
+				        					<tr>
+				        						<!-- Import project file (CSV) -->
+			        							<td></td>
+				        						<td></td>
+												<td class="infosmall"><input id="file" name="file" type="file"/></td>
+											</tr>
+											<tr class="spacerow"></tr>
+											<tr>	
+												<td></td>
+				        						<td></td>
+				        						<td>
+				        							<!--Import file-->
+				        							<input type="submit" value="<spring:message code="import_file"/>">
+													<a href="projectdata.html">
+														<button><spring:message code="show_project_data"/></button>
+													</a>
+				       							</td>
+				   							</tr>	
+			    						</form:form>
+			    						<tr class="spacerowbig"></tr>
+										<tr><td colspan="2" class="info"><spring:message code="import_scenarios"/></td></tr>
+			    						<tr><td colspan="3" class="activeline"></td></tr>
+			    						<tr>
+											<td></td>
+											<td class="infosmall"><spring:message code="scenario_file"/> (CSV)</td>
+											<td class="infosmall"><spring:message code="time_series_file"/> (CSV)</td>
+										</tr>
+										<form:form method="POST" action="importscenarios.html" enctype="multipart/form-data">
+				        					<tr>
+				        						<td></td>
+												<td class="infosmall"><input class="inactivebutton" id="file" name="file" type="file"/></td>
+												<td class="infosmall"><input id="timeSeriesFile1" name="timeSeriesFile1" type="file"/></td>
+											</tr>
+											<tr class="spacerow"></tr>
+											<tr>	
+			       								<td></td>
+				        						<td></td>
+												<td>
+				        							<!-- Import file -->
+				        							<input type="submit" value="<spring:message code="import_files"/>">
+					       							<a href="showscenarios.html">
+														<button style="width:150px">
+															<spring:message code="show_scenarios"/>
+														</button>
+													</a>
+												</td>
+				   							</tr>	
+			    						</form:form>
+			    						<tr class="spacerowbig"></tr>
+			    						<tr><td colspan="2" class="info"><spring:message code="import_database_optimization_set"/></td></tr>
+			    						<tr><td colspan="3" class="activeline"></td></tr>
+										<form:form method="POST" action="importoptimizationset.html" enctype="multipart/form-data">
+				        					<tr>
+				        						<td></td>
+												<!-- Import optimization set file CSV -->
+				        						<td class="infosmall"><spring:message code="database_optimization_set_file"/> (CSV)</td>
+												<td class="infosmall"><spring:message code="time_series"/> (CSV)</td>
+											</tr>
+											<tr>
+				        						<!-- Import external parameter sets (CSV) -->
+				        						<td></td>
+												<td class="infosmall"><input id="file" name="file" type="file"/></td>
+												<td class="infosmall"><input id="fileTimeSeries" name="fileTimeSeries" type="file"/></td>
+											</tr>
+											<tr class="spacerow"></tr>
+											<tr>	
+				       							<td></td>
+			        							<td></td>
+				        						<td>
+				        							<input type="submit" value="<spring:message code="import_files"/>">
+				       							</td>
+				   							</tr>	
+			    						</form:form>
+			    						<tr class="spacerowbig"></tr>
+			    						<tr><td colspan="2" class="info"><spring:message code="import_genetic_optimization_set"/></td></tr>
+			    						<tr><td colspan="3" class="activeline"></td></tr>
+										<form:form method="POST" action="importoptimizationproblem.html" enctype="multipart/form-data">
+				        					<tr>
+				        						<td></td>
+												<td class="infosmall"><spring:message code="genetic_optimization_file"/> (CSV)</td>
+												<td class="infosmall"><spring:message code="time_series"/> (CSV)</td>
+											</tr>
+											<tr>
+				        						<!-- Import external parameter sets (CSV) -->
+				        						<td></td>
+												<td class="infosmall"><input id="fileProblem" name="fileProblem" type="file"/></td>
+												<td class="infosmall"><input id="fileTimeSeries" name="fileTimeSeries" type="file"/></td>
+											</tr>
+											<tr class="spacerow"></tr>
+											<tr>	
+			       								<td></td>
+				        						<td></td>
+				        						<td>
+				        							<input type="submit" value="<spring:message code="import_files"/>">
+				       							</td>
+				   							</tr>	
+			    						</form:form>
+									</table>
+								</td>
+								<td valign="top">
+									<table style="width: 100%">
+										<tr>
+											<td class="info">
+												<spring:message code="project_name"/>
+											</td>
+										</tr>
+										<tr>
+											<td class="activeline">
+												<c:if test="project != null">
+													${project.name}
+												</c:if>
+											</td>
+										</tr>
+										<tr height="5"></tr>
+										<tr>
+											<!-- Location: -->						
+											<td class="info"><spring:message code="location"/></td>
+										</tr>
+										<tr>
+											<td class="activeline">
+												<c:if test="project != null">
+													${project.location}
+												</c:if>
+											</td>
+										</tr>
+										<tr height="5"></tr>
+										<tr>
+											<!-- Design target: -->						
+											<td class="info"><spring:message code="design_target"/></td>
+										</tr>
+										<tr>
+											<td class="activeline">
+												<c:if test="project != null">
+													${project.designtarget}
+												</c:if>
+											</td>
+										</tr>
+										<tr height="5"></tr>
+										<tr>
+											<!-- Description: -->						
+											<td class="info">
+												<spring:message code="description"/></td>
+										</tr>
+										<tr>
+											<td class="regular">
+												<textarea readonly="readonly" style="overflow:hidden; margin-top: 2px" rows="6" cols="24">
+													<c:if test="project != null">
+														${project.description}
+													</c:if>
+												</textarea>
+											</td>
+										</tr>
+			    						<tr class="spacerowbig"></tr>
+   										<tr>
+											<td class="info">
+												<spring:message code="project_templates"/>
+											</td>
+										</tr>
+										<tr>
+											<td class="activeline">
+												<a href="exportprojecttemplate.html">						
+													<button style="width: 200px; margin-top: 7px"><spring:message code="download"/></button>
+												</a>
+											</td>
+										</tr>
+										<tr height="10"></tr>
+   										<tr>
+											<td class="info">
+												<spring:message code="scenario_templates"/>
+											</td>
+										</tr>
+										<tr>
+											<td class="activeline">
+												<a href="exportscenariotemplate.html">
+													<button style="width: 200px; margin-top: 7px"><spring:message code="download"/></button>
+												</a>
+											</td>
+										</tr>
+									</table>
 								</td>
 							</tr>
-							<form:form method="POST" action="importstructurefile.html" enctype="multipart/form-data">
-	        					<tr>
-	        						<!-- Import project file (CSV) -->
-	        						<td><spring:message code="import_project_file_CSV"/></td>
-									<td><input id="file" name="file" type="file"/></td>
-								</tr>
-								<tr>	
-	       							<td></td>
-	        						<td>
-	        							<!--Import file-->
-	        							<input type="submit" value="<spring:message code="import_file"/>">
-	       							</td>
-	   							</tr>	
-    						</form:form>
-    						<tr class="spacerowbig"></tr>
-    						<form:form method="POST" action="importoptimizationset.html" enctype="multipart/form-data">
-	        					<tr>
-	        						<td><b><spring:message code="import_database_optimization_set"/></b></td>
-									<!-- Import optimization set file CSV -->
-	        						<td><spring:message code="database_optimization_set_file"/> (CSV)</td>
-									<td><spring:message code="time_series"/></td>
-								</tr>
-								<tr>
-	        						<!-- Import external parameter sets (CSV) -->
-	        						<td></td>
-									<td><input id="file" name="file" type="file"/></td>
-									<td><input id="fileTimeSeries" name="fileTimeSeries" type="file"/></td>
-								</tr>
-								<tr>	
-	       							<td></td>
-	        						<td>
-	        							<input type="submit" value="<spring:message code="import_files"/>">
-	       							</td>
-	   							</tr>	
-    						</form:form>
-    						<tr class="spacerowbig"></tr>
-    						<form:form method="POST" action="importoptimizationproblem.html" enctype="multipart/form-data">
-	        					<tr>
-	        						<td><b><spring:message code="import_genetic_optimization_set"/></b></td>
-									<td><spring:message code="genetic_optimization_file"/> (CSV)</td>
-									<td><spring:message code="time_series"/> (CSV)</td>
-								</tr>
-								<tr>
-	        						<!-- Import external parameter sets (CSV) -->
-	        						<td></td>
-									<td><input id="fileProblem" name="fileProblem" type="file"/></td>
-									<td><input id="fileTimeSeries" name="fileTimeSeries" type="file"/></td>
-								</tr>
-								<tr height="20"></tr>
-								<tr>	
-	       							<td></td>
-	        						<td>
-	        							<input type="submit" value="<spring:message code="import_files"/>">
-	       							</td>
-	   							</tr>	
-    						</form:form>
-    						<tr>
-								<td></td>
-								<td></td>
-								<!-- Show project data & Import buttons -->		
-								<td align="right">
-									<a href="projectdata.html">
-										<button><spring:message code="show_project_data"/></button>
-									</a>
-								</td>
-							</tr>
-    						<tr class="spacerowbig"></tr>
-    						<tr>
-								<td class="active">
-									<spring:message code="import_scenarios"/>
-								</td>
-								<td><spring:message code="scenario_file"/></td>
-								<td><spring:message code="time_series_file"/></td>
-							</tr>
-							<form:form method="POST" action="importscenarios.html" enctype="multipart/form-data">
-	        					<tr>
-	        						<td><spring:message code="import_scenarios"/> (CSV)</td>
-									<td><input id="file" name="file" type="file"/></td>
-									<td><input id="timeSeriesFile1" name="timeSeriesFile1" type="file"/></td>
-								</tr>
-								<tr>	
-	       							<td></td>
-									<td>
-	        							<!-- Import file -->
-	        							<input type="submit" value="<spring:message code="import_files"/>">
-	       							</td>
-	   							</tr>	
-    						</form:form>
-							<tr>
-								<td></td>
-    							<td></td>					
-								<td align="right">
-									<a href="showscenarios.html">
-										<button style="width:150px">
-											<spring:message code="show_scenarios"/>
-										</button>
-									</a>
-								</td>
-							</tr>
-						</table>
+						</table>									
 					</td>
 				</tr>
 			</table>
