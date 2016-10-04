@@ -796,6 +796,14 @@ button:active, input[type="button"]:active, input[type="submit"]:active {
 	background-color:#47AFE2;
 }
 
+input[type="button"]:focus, input[type="submit"]:focus {
+	 background: #47AFE2;
+}
+
+button:focus {
+	 background: #47AFE2;
+}
+
 .big{ font-size: 200%; }
 
 .number-button {
