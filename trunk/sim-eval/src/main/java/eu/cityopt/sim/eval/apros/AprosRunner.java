@@ -166,10 +166,12 @@ public class AprosRunner implements SimulationRunner {
         }
         Instant runStart = Instant.now();
         Experiment xpt = manager.createExperiment();
-        MemoryDirectory
+        MemoryDirectory mdir, cdir = new MemoryDirectory();
+        // Apparently modelDir is not thread safe.
+        synchronized (this) {
             mdir = new MemoryDirectory(new HashMap<>(modelDir.files()),
-                                       new HashMap<>(modelDir.directories())),
-            cdir = new MemoryDirectory();
+                                       new HashMap<>(modelDir.directories()));
+        }
         mdir.addDirectory("cityopt", cdir);
         cdir.addFile("setup.scl", new LocalFile(setup_scl));
         Application launcher = new ProfileApplication(profile, "Launcher.exe");
