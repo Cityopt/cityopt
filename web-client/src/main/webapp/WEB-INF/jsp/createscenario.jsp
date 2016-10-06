@@ -72,7 +72,7 @@
 										</tr>
 									</table>
 									<!-- Information message if scenario is created -->
-									<element><element><h2 class="successful"></element></element>${successful}</h2><element>				
+									<element><element><p class="info"></element></element>${successful}</p><element>				
 									
 									<c:if test="${success!=null && success==true}">
 									<a href="editscenario.html">
