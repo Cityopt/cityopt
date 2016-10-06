@@ -157,7 +157,13 @@ public class TimeEstimatorService {
         } else {
             return deadline;
         }
-        return started.plus(timePerScenario.multipliedBy(maxScenarios));
+        Instant estimated =
+                started.plus(timePerScenario.multipliedBy(maxScenarios));
+        if (estimated.isBefore(deadline)) {
+            return estimated;
+        } else {
+            return deadline;
+        }
     }
 
 }
