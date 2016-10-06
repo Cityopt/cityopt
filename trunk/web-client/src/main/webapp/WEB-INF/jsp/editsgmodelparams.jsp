@@ -59,7 +59,7 @@
 					<td class="spacecolumn"></td>
 					<td valign="top">
 					  <table style="width: 660px">
-			              <tr><td colspan="2"><spring:message code="component"/>:
+			              <tr><td colspan="2" class="info"><spring:message code="component"/>: 
 			                <select name="selectedcompid" onChange="selectComponent('ModelParameter',this.value)">
 			                 <c:forEach items="${inputcomponents}" var="component">
 			                   <c:choose>

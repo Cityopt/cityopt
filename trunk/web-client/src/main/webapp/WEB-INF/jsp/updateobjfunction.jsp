@@ -44,7 +44,7 @@
 					<td valign="top">
 						<table>
 							<tr>
-								<td class="regular"><spring:message code="create_obj_func_instructions_2"/></td>
+								<td class="info"><spring:message code="create_obj_func_instructions_2"/></td>
 							</tr>
 							<tr height="20"></tr>
 							<tr>

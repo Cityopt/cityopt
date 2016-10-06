@@ -43,7 +43,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td class="regular"><spring:message code="create_metric_instructions_2"/></td>
+								<td class="info"><spring:message code="create_metric_instructions_2"/></td>
 							</tr>
 							<tr height="10"></tr>
 							<tr>

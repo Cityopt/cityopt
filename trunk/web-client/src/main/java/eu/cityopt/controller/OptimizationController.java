@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.text.ParseException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -3025,11 +3027,30 @@ public class OptimizationController {
     	model.put("runinfo", strInfo);
         model.put("locked", locked);
         
-        /*int nScenariosSimulated = 0;
-        long scenarioSimTime = 0;
-        long startTimeGA = runInfo.getStartedInstant();
+        if (runInfo != null && runInfo.getEstimatedCompletionTime() != null) 
+        {
+        	Instant now = Instant.now();
+        	Instant compInstant = runInfo.getEstimatedCompletionTime();
+        	
+        	long totalSecs = Math.abs(Duration.between(compInstant, now).getSeconds());
+        	//System.out.println("Optimation completion time: " + totalSecs + " seconds");
 
-        List<AlgoParamValDTO> algoParamVals = scenGenService.getAlgoParamVals(scenGen.getScengenid());
+        	long hours = (long)((totalSecs + 1800) / 3600);
+        	long minutes = (totalSecs - hours * 3600) / 60;
+        	String time = "";
+        	
+        	if (hours >= 1) {
+        		time = hours + " h ";
+        	}
+
+        	if (minutes >= 1) {
+        		time += minutes + " min";
+        	}
+
+        	model.put("completionTime", time);
+        }
+        
+        /*List<AlgoParamValDTO> algoParamVals = scenGenService.getAlgoParamVals(scenGen.getScengenid());
         int generations = 0, offspring = 0;
         
         for (int i = 0; i < algoParamVals.size(); i++)

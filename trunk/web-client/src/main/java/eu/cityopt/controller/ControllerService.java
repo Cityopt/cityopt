@@ -584,7 +584,7 @@ public class ControllerService {
 			} else {
 			    Duration d = timeEstimatorService.predictSimulationRuntime(projectId, scenarioId);
 			    if (d != null) {
-                    model.put("simulationEstimate", (d.getSeconds() / 60 + 1) + " min");
+                    model.put("simulationEstimate", (int)(d.getSeconds() / 60 + 1) + " min");
 			    }
 			}
 			

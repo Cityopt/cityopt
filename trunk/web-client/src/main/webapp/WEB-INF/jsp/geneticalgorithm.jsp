@@ -139,7 +139,11 @@ function onLoadFunction() {
 						                            </tr>
 						                            <tr height="10"></tr>
 						                            <tr>
-														<td valign="top" class="regular"><spring:message code="optimization_info"/>:</td>
+						                            	<td class="infosmall"><spring:message code="optimization_completion_time"/></td>
+						                            	<td class="infosmall"><spring:message code="optimization_info"/></td>
+					                            	</tr>
+						                            <tr>
+														<td valign="top" class="activeline">${completionTime}</td>
 														<td>
 															<table class="tablestyle" width="100%" height="80">
 																<tr>

@@ -51,7 +51,7 @@
 				</tr>
 				<tr>
 					<td class="spacecolumn"></td>
-					<td class="success">${info}</td>
+					<td class="info">${info}</td>
 				</tr>
 				<tr>
 					<td class="spacecolumn"></td>
