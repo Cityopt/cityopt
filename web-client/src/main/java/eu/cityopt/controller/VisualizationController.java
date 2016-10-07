@@ -471,7 +471,7 @@ public class VisualizationController {
 
 		if (action != null && action.equals("openwindow"))
 		{
-			TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
+			/*TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
 			Iterator<Integer> iterator = userSession.getSelectedChartMetricIds().iterator();
 			
 			// Get metrics time series (max 2 metrics)
@@ -513,7 +513,7 @@ public class VisualizationController {
 							timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
 							System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
 							timeSeriesCollection.addSeries(timeSeries);*/
-						} 
+				/*		} 
 						else if (userSession.getSummaryChartType() == 1) 
 						{
 							XYSeries series = new XYSeries(scenarioTemp.getName());
@@ -523,7 +523,7 @@ public class VisualizationController {
 							data[1][0] = Double.parseDouble(metricVal2.getValue());
 						    dataset.addSeries(scenario.getName(), data);*/
 						    //System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
-							collection.addSeries(series);						
+					/*		collection.addSeries(series);						
 						} 
 						else if (userSession.getSummaryChartType() == 2) 
 						{
@@ -561,9 +561,9 @@ public class VisualizationController {
 				} catch (EntityNotFoundException e) {
 					e.printStackTrace();
 				}
-			}
+			}*/
 		}
-		
+
 		model.put("usersession", userSession);
 		
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
@@ -772,7 +772,7 @@ public class VisualizationController {
 		{
 			userSession = new UserSession();
 		}
-		
+
 		if (userSession.getSummaryChartType() > 0)
 		{
 			model.put("charttype", userSession.getSummaryChartType());
@@ -782,10 +782,8 @@ public class VisualizationController {
 			model.put("charttype", 1);
 		}
 		
-		Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
 		ChartRenderingInfo chartInfo = new ChartRenderingInfo(new StandardEntityCollection());
-		
-	    iterator = userSession.getSelectedChartMetricIds().iterator();
+		Iterator<Integer> iterator = userSession.getSelectedChartMetricIds().iterator();
 		   
 	    if (userSession.getSelectedChartMetricIds().size() == 0)
 	    {
@@ -861,14 +859,13 @@ public class VisualizationController {
 				} else if (nChartType == 3) {
 					chart = PieChartVisualization.createChart(pieDataset, controllerService.getMessage("pie_chart", request) + " " + metric1.getName(), "", "");
 				}
-				System.out.println("Chart type " + nChartType);
-				
+
 				if (chart != null)
 				{
 					String imgPath = request.getSession().getServletContext().getRealPath("/") + "assets\\img\\";
 					String imgFileName = "summarychart_" + System.currentTimeMillis() + ".png";
 					File file = new File(imgPath + imgFileName);
-					System.out.println(file.getAbsolutePath());
+					System.out.println("Wrote file " + file.getAbsolutePath());
 					
 					ChartUtilities.saveChartAsPNG(file, chart, 750, 400, chartInfo);
 					
@@ -934,11 +931,11 @@ public class VisualizationController {
 						value2 = Double.parseDouble(metricVals2.get(0).getValue());
 					}
 					
-					if (userSession.getSummaryChartType() == 1) 
+					if (userSession.getSummaryChartType() == 1)
 					{
 						XYSeries series = new XYSeries(scenarioTemp.getName());
 						series.add(value1, value2);
-						collection.addSeries(series);						
+						collection.addSeries(series);
 					} 
 					else if (userSession.getSummaryChartType() == 2) 
 					{
@@ -978,7 +975,7 @@ public class VisualizationController {
 					String imgPath = request.getSession().getServletContext().getRealPath("/") + "assets\\img\\";
 					String imgFileName = "summarychart_" + System.currentTimeMillis() + ".png";
 					File file = new File(imgPath + imgFileName);
-					System.out.println(file.getAbsolutePath());
+					System.out.println("Wrote file " + file.getAbsolutePath());
 					
 					ChartUtilities.saveChartAsPNG(file, chart, 750, 400, chartInfo);
 					

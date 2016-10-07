@@ -221,7 +221,6 @@ public class ScenarioController {
 	@RequestMapping(value="createscenario",method=RequestMethod.GET)
 	public String createScenario(Map<String, Object> model) {
 
-		AppUserDTO user = (AppUserDTO) model.get("user");
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
 		securityAuthorization.atLeastExpert_standard(project);
