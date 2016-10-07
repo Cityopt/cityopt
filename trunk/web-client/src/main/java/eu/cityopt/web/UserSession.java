@@ -40,7 +40,12 @@ public class UserSession {
 	private String strGAChartImageMap;
 	private String strGAChartFile;
 	private String strSimModelFile;
-	
+
+	public UserSession() {
+		nTimeSeriesChartType = 0;
+		nSummaryChartType = 1;
+	}
+
 	public String getLanguage() {
 		return strLanguage;
 	}
@@ -89,10 +94,6 @@ public class UserSession {
 		this.strActiveScenario = strScenario;
 	}
 
-	public UserSession() {
-		nTimeSeriesChartType = 0;
-	}
-	
 	public String getMultiVariableId() {
 		return nMultiVariableId;
 	}
