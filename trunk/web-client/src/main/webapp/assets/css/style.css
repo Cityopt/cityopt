@@ -97,6 +97,15 @@ h2.error {
 	cellspacing: 0px;
 }
 
+.maintablehelppage {
+	width: 500px;
+	border-collapse: collapse;
+	margin: 0px;
+	padding: 0px;
+	cellpadding: 0px;
+	cellspacing: 0px;
+}
+
 .titlerow {
     font-family: 'blanchcaps'; PT Sans, tahoma, verdana, arial, helvetica, sans-serif;
 	font-size: 32px;

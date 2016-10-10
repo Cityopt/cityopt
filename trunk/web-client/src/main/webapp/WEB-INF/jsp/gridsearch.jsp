@@ -18,7 +18,7 @@
 
 <script>
 function openInfoWindow() {
-	window.open("gridsearch_info.html",'<spring:message code="grid_search"/> info','width=600,height=600,scrollbars=yes');
+	window.open("gridsearch_info.html",'<spring:message code="grid_search"/> info','width=510,height=600,scrollbars=yes');
 }
 </script>
 

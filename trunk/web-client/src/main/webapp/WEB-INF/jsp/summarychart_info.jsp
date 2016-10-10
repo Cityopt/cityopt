@@ -10,18 +10,42 @@
 
 </head>
 <body>	
-	<table class="infopage">
+	<table class="maintablehelppage">
+		<tr class="spacerowbig"></tr>
 		<tr>
 			<td class="spacecolumn"></td>
-			<td><h1><spring:message code="summary_chart" /> info</h1></td>
+			<td>
+				<table width="100%">
+					<tr class="titlerow">
+						<td colspan="1">
+							<table width="100%">
+								<tr>
+									<td class="spacecolumn"></td>
+									<td><font class="activeproject"><spring:message code="summary_chart"/></font>&nbsp;&nbsp;Info</td>
+									<td align="left" width="40">
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td class="spacecolumn"></td>
 		</tr>
 		<tr>
 			<td class="spacecolumn"></td>
-			<td><p><spring:message code="summary_chart_instructions_1"/></p></td>
-		</tr>
-		<tr>
+			<td>
+				<table>
+					<tr>
+						<td class="spacecolumn"></td>
+						<td><spring:message code="summary_chart_instructions_1"/></td>
+					</tr>
+					<tr>
+						<td class="spacecolumn"></td>
+						<td><spring:message code="summary_chart_instructions_2"/></td>
+					</tr>
+				</table>
 			<td class="spacecolumn"></td>
-			<td><p><spring:message code="summary_chart_instructions_2"/></p></td>
 		</tr>
 	</table>
 </body>

@@ -10,14 +10,38 @@
 
 </head>
 <body>	
-	<table class="infopage">
+	<table class="maintablehelppage">
+		<tr class="spacerowbig"></tr>
 		<tr>
 			<td class="spacecolumn"></td>
-			<td><h1><spring:message code="grid_search" /> info</h1></td>
+			<td>
+				<table width="100%">
+					<tr class="titlerow">
+						<td colspan="1">
+							<table width="100%">
+								<tr>
+									<td class="spacecolumn"></td>
+									<td><font class="activeproject"><spring:message code="grid_search"/></font>&nbsp;&nbsp;Info</td>
+									<td align="left" width="40">
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td class="spacecolumn"></td>
 		</tr>
 		<tr>
 			<td class="spacecolumn"></td>
-			<td><p><spring:message code="grid_search_instructions"/></p></td>
+			<td>
+				<table>
+					<tr>
+						<td class="spacecolumn"></td>
+						<td><spring:message code="grid_search_instructions"/></td>
+					</tr>
+				</table>
+			<td class="spacecolumn"></td>
 		</tr>
 	</table>
 </body>

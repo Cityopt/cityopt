@@ -12,7 +12,7 @@
 </head>
 <script>
     function openInfoWindow() {
-   		window.open("createobjfunction_info.html",'<spring:message code="create_obj_func"/> info','width=600,height=800');
+   		window.open("createobjfunction_info.html",'<spring:message code="create_obj_func"/> info','width=510,height=600');
     }
 </script>
 <body>

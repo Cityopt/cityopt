@@ -20,7 +20,7 @@
 </head>
 <script>
     function openInfoWindow() {
-    	   window.open("scenarioparameters_info.html",'<spring:message code="scenario_parameters" /> info','width=600,height=600');
+    	   window.open("scenarioparameters_info.html",'<spring:message code="scenario_parameters" /> info','width=510,height=600');
     }
 </script>
 <body>

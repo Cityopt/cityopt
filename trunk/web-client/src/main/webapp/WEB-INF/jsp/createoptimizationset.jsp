@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <script>
     function openInfoWindow() {
-   		window.open("createoptimizationset_info.html",'<spring:message code="create_optimization_set_info_title"/>','width=600,height=800');
+   		window.open("createoptimizationset_info.html",'<spring:message code="create_optimization_set_info_title"/>','width=510,height=600');
     }
 </script>
 

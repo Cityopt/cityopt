@@ -20,7 +20,7 @@
 
 <script>
     function openInfoWindow() {
-    	   window.open("summarychart_info.html",'<spring:message code="summary_chart" /> info','width=600,height=600');
+    	   window.open("summarychart_info.html",'<spring:message code="summary_chart" /> info','width=510,height=600');
     }
 </script>
 

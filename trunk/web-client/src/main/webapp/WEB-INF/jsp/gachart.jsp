@@ -16,7 +16,7 @@
 
 <script>
     function openInfoWindow() {
-    	   window.open("gachart_info.html", '<spring:message code="genetic_optimization_chart" /> info', 'width=600, height=600');
+    	   window.open("gachart_info.html", '<spring:message code="genetic_optimization_chart" /> info', 'width=510, height=600');
     }
 </script>
 
