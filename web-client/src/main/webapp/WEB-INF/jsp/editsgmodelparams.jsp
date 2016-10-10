@@ -13,7 +13,7 @@
 
 <script>
     function openInfoWindow() {
-    	   window.open("editsgmodelparams_info.html", '<spring:message code="input_parameters" /> info', 'width=600, height=600');
+    	   window.open("editsgmodelparams_info.html", '<spring:message code="input_parameters" /> info', 'width=510, height=600');
     }
 </script>
 

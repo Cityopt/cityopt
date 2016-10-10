@@ -12,7 +12,7 @@
 
 <script>
     function openInfoWindow() {
-    	   window.open("createproject_info.html",'<spring:message code="create_project_info"/>','width=600,height=600,scrollbars=yes');
+    	   window.open("createproject_info.html",'<spring:message code="create_project_info"/>','width=510,height=600,scrollbars=yes');
     }
 </script>
 

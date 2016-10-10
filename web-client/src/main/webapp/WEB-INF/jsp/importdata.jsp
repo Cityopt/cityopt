@@ -12,7 +12,7 @@
 
 <script>
     function openInfoWindow() {
-    	   window.open("importdata_info.html",'<spring:message code="import_data"/> info','width=500,height=600,scrollbars=yes');
+    	   window.open("importdata_info.html",'<spring:message code="import_data"/> info','width=510,height=600,scrollbars=yes');
     }
 </script>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />

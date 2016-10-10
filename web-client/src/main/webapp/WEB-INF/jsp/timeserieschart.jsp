@@ -21,7 +21,7 @@
 
 <script>
     function openInfoWindow() {
-    	   window.open("timeserieschart_info.html",'<spring:message code="time_series_chart" /> info','width=600,height=600');
+    	   window.open("timeserieschart_info.html",'<spring:message code="time_series_chart" /> info','width=510,height=600');
     }
 </script>
 

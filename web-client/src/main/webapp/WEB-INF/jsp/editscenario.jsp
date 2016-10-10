@@ -16,7 +16,7 @@
 
 <script>
     function openInfoWindow() {
-    	   window.open("editscenario_info.html",'<spring:message code="edit_scenario_info"/>','width=600,height=600,scrollbars=yes');
+    	   window.open("editscenario_info.html",'<spring:message code="edit_scenario_info"/>','width=510,height=600,scrollbars=yes');
     }
     function openSimulationInfoWindow() {
  	   window.open("simulationinfo.html",'<spring:message code="simulation_info"/>','width=1400,height=600,scrollbars=yes');

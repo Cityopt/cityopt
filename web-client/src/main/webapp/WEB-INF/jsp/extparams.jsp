@@ -21,7 +21,7 @@
 
 <script>
     function openInfoWindow() {
-    	   window.open("extparams_info.html", '<spring:message code="external_parameters" /> info', 'width=600, height=600');
+    	   window.open("extparams_info.html", '<spring:message code="external_parameters" /> info', 'width=510, height=600');
     }
 </script>
 
