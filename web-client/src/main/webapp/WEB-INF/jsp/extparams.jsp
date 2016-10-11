@@ -56,6 +56,9 @@
 					<tr>
 						<td class="spacecolumn"></td>
 						<td class="error">${error}</td>
+					<tr>
+						<td class="spacecolumn"></td>
+						<td class="info">${info}</td>
 					</tr>
 					<tr>
 						<td class="spacecolumn"></td>

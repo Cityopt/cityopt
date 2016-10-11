@@ -55,7 +55,7 @@ public class InputParameterValidator implements Validator {
 			}
 			catch (Exception e)
 			{
-				errors.reject(String.format("%s with value %s not a number",inputparameter.getName(), iVal.getValue()));
+				errors.reject(String.format("%s with value %s not a number", inputparameter.getName(), iVal.getValue()));
 			}
 			
 			if(!StringUtils.isEmpty(iVal.getValue()) && !StringUtils.isEmpty(inputparameter.getLowerBound()) && !StringUtils.isEmpty(inputparameter.getUpperBound()))

@@ -1095,6 +1095,7 @@ public class ParameterController {
             }
         }
 
+        model.put("info", controllerService.getMessage("ext_parameter_created", request));
         model.put("project", project);
        
         controllerService.getProjectExternalParameterValues(model,project);        
