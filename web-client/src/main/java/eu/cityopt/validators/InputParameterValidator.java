@@ -49,6 +49,15 @@ public class InputParameterValidator implements Validator {
 			InputParamValDTO iVal = (InputParamValDTO)target;
 			InputParameterDTO inputparameter = iVal.getInputparameter();
 			
+			try
+			{
+				Double.parseDouble(iVal.getValue());
+			}
+			catch (Exception e)
+			{
+				errors.reject(String.format("%s with value %s not a number",inputparameter.getName(), iVal.getValue()));
+			}
+			
 			if(!StringUtils.isEmpty(iVal.getValue()) && !StringUtils.isEmpty(inputparameter.getLowerBound()) && !StringUtils.isEmpty(inputparameter.getUpperBound()))
 			{
 				Double paramValue= Double.valueOf(iVal.getValue());
