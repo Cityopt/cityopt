@@ -51,6 +51,7 @@ import eu.cityopt.service.MetricService;
 import eu.cityopt.service.MetricValService;
 import eu.cityopt.service.ObjectiveFunctionService;
 import eu.cityopt.service.OptimizationSetService;
+import eu.cityopt.service.OutputVariableService;
 import eu.cityopt.service.ProjectService;
 import eu.cityopt.service.ScenarioGeneratorService;
 import eu.cityopt.service.ScenarioService;
@@ -137,6 +138,9 @@ public class ControllerService {
 	    @Autowired
 	    MetricValService metricValService;
 
+	    @Autowired
+	    OutputVariableService outVarService;
+	    
 	    @Autowired  
 	    private MessageSource messageSource;
 
@@ -205,7 +209,7 @@ public class ControllerService {
 	    }
 	    
 	    // Set up the project External Parameter values.
-	    public void getProjectExternalParameterValues(Map<String,Object> model, ProjectDTO project) {
+	    public void getProjectExternalParameterValues(Map<String, Object> model, ProjectDTO project) {
 	    	 List<ExtParamValDTO> extParamVals = null;
 	         Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 	         
@@ -227,7 +231,91 @@ public class ControllerService {
 	             model.put("extParamVals", extParamVals);
 	         }
 	    }
-	    
+
+	    public void getSelectedOutAndExtParameters(Map<String, Object> model, UserSession userSession) 
+	    {
+		    ArrayList<String> selectedParams = new ArrayList<String>();
+			Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
+	
+			while (iterator.hasNext())
+			{
+				OutputVariableDTO outVar = null;
+	
+				try {
+					outVar = outVarService.findByID(iterator.next());
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+				if (outVar != null)
+				{
+					selectedParams.add(outVar.getQualifiedName());
+				}
+			}
+	
+			iterator = userSession.getSelectedChartExtVarIds().iterator();
+	
+			while (iterator.hasNext())
+			{
+				ExtParamValDTO extParamVal = null;
+	
+				try {
+					extParamVal = extParamValService.findByID(iterator.next());
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+				if (extParamVal != null)
+				{
+					selectedParams.add(extParamVal.getExtparam().getName());
+				}
+			}
+	
+			model.put("selectedParams", selectedParams);
+		}
+
+	    public void getSelectedScenariosAndMetrics(Map<String, Object> model, UserSession userSession) 
+	    {
+		    ArrayList<String> selectedParams = new ArrayList<String>();
+			Iterator<Integer> iterator = userSession.getScenarioIds().iterator();
+	
+			while (iterator.hasNext())
+			{
+				ScenarioDTO scenario = null;
+	
+				try {
+					scenario = scenarioService.findByID(iterator.next());
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+				if (scenario != null)
+				{
+					selectedParams.add(scenario.getName());
+				}
+			}
+	
+			iterator = userSession.getSelectedChartMetricIds().iterator();
+	
+			while (iterator.hasNext())
+			{
+				MetricDTO metric = null;
+	
+				try {
+					metric = metricService.findByID(iterator.next());
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+				if (metric != null)
+				{
+					selectedParams.add(metric.getName());
+				}
+			}
+	
+			model.put("selectedParams", selectedParams);
+		}
+
 	    // Set up component and External parameter Values according to project and model attributes.  
 	    public void getComponentAndExternalParamValues(Map<String,Object> model, ProjectDTO project ){
 	    	List<ComponentDTO> components = projectService.getComponents(project.getPrjid());

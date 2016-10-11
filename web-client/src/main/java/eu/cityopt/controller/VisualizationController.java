@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
+import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.MetricValDTO;
@@ -298,86 +299,11 @@ public class VisualizationController {
 			}
 		}
 
-		if (action != null && action.equals("openwindow") && status != null && !status.isEmpty())
-		{
-			Iterator<Integer> iterator = userSession.getSelectedChartOutputVarIds().iterator();
-		    TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
-			
-		    // Get output variable results
-			while(iterator.hasNext()) {
-				int outputVarId = iterator.next(); 
-		    
-				try {
-					OutputVariableDTO outputVar = outputVarService.findByID(outputVarId);
-					SimulationResultDTO simResult = simResultService.findByOutVarIdScenId(outputVarId, scenario.getScenid());
-						
-					if (simResult != null)
-					{
-						List<TimeSeriesValDTO> timeSeriesVals = simResultService.getTimeSeriesValsOrderedByTime(simResult.getSimresid());
-						TimeSeries timeSeries = new TimeSeries(outputVar.getComponent().getName() + "." + outputVar.getName());
-	
-						for (int i = 0; i < timeSeriesVals.size(); i++)
-						{
-							TimeSeriesValDTO timeSeriesVal = timeSeriesVals.get(i);
-							timeSeries.add(new Minute(timeSeriesVal.getTime()),timeSeriesVal.getValue());
-						}
-						
-						timeSeriesCollection.addSeries(timeSeries);
-					}
-				} catch (EntityNotFoundException e) {
-					e.printStackTrace();
-				}
-		    }
-
-			iterator = userSession.getSelectedChartExtVarIds().iterator();
-			   
-			// Get external parameter time series
-			while(iterator.hasNext()) {
-				int extVarId = iterator.next(); 
-		    
-				try {
-					ExtParamValDTO extVarVal = extParamValService.findByID(extVarId);
-					TimeSeriesDTO timeSeriesDTO = extVarVal.getTimeseries();
-					
-					if (timeSeriesDTO != null)
-					{
-						List<TimeSeriesValDTO> timeSeriesVals = timeSeriesValService.findByTimeSeriesIdOrderedByTime(timeSeriesDTO.getTseriesid());
-						TimeSeries timeSeries = new TimeSeries(extVarVal.getExtparam().getName());
-						Iterator<TimeSeriesValDTO> timeSeriesIter = timeSeriesVals.iterator();
-						
-						while(timeSeriesIter.hasNext()) {
-							TimeSeriesValDTO timeSeriesVal = timeSeriesIter.next();
-							timeSeries.add(new Minute(timeSeriesVal.getTime()), timeSeriesVal.getValue());
-						}
-		
-						timeSeriesCollection.addSeries(timeSeries);
-					}
-					else
-					{
-						TimeSeries timeSeries = new TimeSeries(extVarVal.getExtparam().getName());
-						timeSeries.add(new Minute(new Date()), Double.parseDouble(extVarVal.getValue()));
-						
-						timeSeriesCollection.addSeries(timeSeries);
-					}
-				} catch (EntityNotFoundException e) {
-					e.printStackTrace();
-				}
-		    }
-
-			if (timeSeriesCollection.getSeriesCount() > 0)
-			{
-				if (userSession.getTimeSeriesChartType() == 0) {
-					TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName(), timeSeriesCollection, "Time", "");
-				} else if (userSession.getTimeSeriesChartType() == 1) {
-					ScatterPlotVisualization demo = new ScatterPlotVisualization(project.getName(), timeSeriesCollection, "Date", "Value", true);
-				}
-			}
-		}
-		
 		model.put("usersession", userSession);
 		
-		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
-		model.put("extParamVals", extParamVals);
+		controllerService.getSelectedOutAndExtParameters(model, userSession);
+		
+		controllerService.getProjectExternalParameterValues(model, project);
 		
 		return "timeserieschart";
 	}
@@ -468,103 +394,9 @@ public class VisualizationController {
 				userSession.removeMetricId(Integer.parseInt(metricid));
 			}
 		}
-
-		if (action != null && action.equals("openwindow"))
-		{
-			/*TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
-			Iterator<Integer> iterator = userSession.getSelectedChartMetricIds().iterator();
-			
-			// Get metrics time series (max 2 metrics)
-			if (userSession.getSelectedChartMetricIds().size() == 2)
-			{
-				XYSeriesCollection collection = new XYSeriesCollection();
-				DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
-				DefaultPieDataset pieDataset = new DefaultPieDataset();
-				timeSeriesCollection.removeAllSeries();
-				
-				int metric1Id = iterator.next(); 
-				int metric2Id = iterator.next(); 
-			    
-				try {
-					MetricDTO metric1 = metricService.findByID(metric1Id);
-					MetricDTO metric2 = metricService.findByID(metric2Id);
-					//Set<MetricValDTO> metricVals1 = metricService.getMetricVals(metric1Id);
-					//Set<MetricValDTO> metricVals2 = metricService.getMetricVals(metric2Id);
-					TimeSeries timeSeries = new TimeSeries("Scenario metric values");
-
-					Set<Integer> scenarioIds = userSession.getScenarioIds();
-					Iterator<Integer> scenIter = scenarioIds.iterator();
-					DefaultXYDataset dataset = new DefaultXYDataset();
-
-					while (scenIter.hasNext())
-					{
-						Integer integerScenarioId = (Integer) scenIter.next();
-						int nScenarioId = (int)integerScenarioId;
-						ScenarioDTO scenarioTemp = scenarioService.findByID(nScenarioId);
-						MetricValDTO metricVal1 = metricService.getMetricVals(metric1Id, nScenarioId).get(0);
-						MetricValDTO metricVal2 = metricService.getMetricVals(metric2Id, nScenarioId).get(0);
-					
-						//timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
-						
-						
-						if (userSession.getSummaryChartType() == 0) 
-						{
-							/*TimeSeries timeSeries = new TimeSeries(scenarioTemp.getName());
-							timeSeries.add(new Minute((int)Double.parseDouble(metricVal1.getValue()), new Hour()), Double.parseDouble(metricVal2.getValue()));
-							System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
-							timeSeriesCollection.addSeries(timeSeries);*/
-				/*		} 
-						else if (userSession.getSummaryChartType() == 1) 
-						{
-							XYSeries series = new XYSeries(scenarioTemp.getName());
-							series.add(Double.parseDouble(metricVal1.getValue()), Double.parseDouble(metricVal2.getValue()));
-							/*double[][] data = new double[2][1];
-							data[0][0] = Double.parseDouble(metricVal1.getValue());
-							data[1][0] = Double.parseDouble(metricVal2.getValue());
-						    dataset.addSeries(scenario.getName(), data);*/
-						    //System.out.println("time series point " + metricVal1.getValue() + ", " + metricVal2.getValue() );
-					/*		collection.addSeries(series);						
-						} 
-						else if (userSession.getSummaryChartType() == 2) 
-						{
-							categoryDataset.addValue(Double.parseDouble(metricVal1.getValue()), scenarioTemp.getName(), metric1.getName());
-							categoryDataset.addValue(Double.parseDouble(metricVal2.getValue()), scenarioTemp.getName(), metric2.getName());
-						} 
-						else if (userSession.getSummaryChartType() == 3) 
-						{
-							pieDataset.setValue(scenarioTemp.getName(), Double.parseDouble(metricVal1.getValue()));
-						}
-						
-						//index++;
-					}				
-															
-					timeSeriesCollection.addSeries(timeSeries);
-				
-					//JFreeChart chart = null;
-				
-					if (userSession.getSummaryChartType() == 0) {
-						userSession.setSummaryChartType(1);
-					}
-					
-					// TODO
-					if (userSession.getSummaryChartType() == 1) {
-						//ScatterPlotVisualization demo = new ScatterPlotVisualization("Scatter plot", dataset, "", "", false);
-						//chart = TimeSeriesVisualization.createChart(timeSeriesCollection, "Time series", metric1.getName(), metric2.getName());
-					} else if (userSession.getSummaryChartType() == 2) {
-						//chart = ScatterPlotVisualization.createChart(timeSeriesCollection, "Scatter plot", metric1.getName(), metric2.getName(), false);
-					}
-
-					if (timeSeriesCollection.getSeriesCount() > 0)
-					{
-						TimeSeriesVisualization demo = new TimeSeriesVisualization(project.getName(), timeSeriesCollection, "Time", "");
-					}
-				} catch (EntityNotFoundException e) {
-					e.printStackTrace();
-				}
-			}*/
-		}
-
+		
 		model.put("usersession", userSession);
+		controllerService.getSelectedScenariosAndMetrics(model, userSession);
 		
 		Set<MetricDTO> metrics = projectService.getMetrics(project.getPrjid());
 		model.put("metrics", metrics);
@@ -748,8 +580,8 @@ public class VisualizationController {
 		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 		model.put("components", components);
 
-		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
-		model.put("extParamVals", extParamVals);
+		controllerService.getSelectedOutAndExtParameters(model, userSession);
+		controllerService.getProjectExternalParameterValues(model, project);
 
 		model.put("usersession", userSession);
 		
@@ -818,7 +650,9 @@ public class VisualizationController {
 					
 					if (listMetricVals.size() == 0)
 					{
-						System.out.println("Metric values missing for metric " + metric1Id);
+						String error = controllerService.getMessage("metric_values_missing", request) + metric1.getName();
+						System.out.println(error);
+						model.put("error", error);
 						continue;
 					}
 					
@@ -1076,6 +910,8 @@ public class VisualizationController {
 	            userSession.setSummaryFile(imgFileName);
 			}
 		}
+		
+		controllerService.getSelectedScenariosAndMetrics(model, userSession);
 		
 		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
 		model.put("scenarios", scenarios);

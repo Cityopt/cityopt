@@ -94,8 +94,25 @@
 												</table>
 											</td>
 										</tr>	
+										<tr class="spacerowbig"><td></td></tr>
 										<tr>
-											
+											<td>
+												<b><spring:message code="selected_parameters"/></b>
+											</td>
+										</tr>
+										<tr>
+											<td valign="bottom">
+												<table class="tablestyle" style="width: 100%">
+													<tr>
+														<th><spring:message code="parameter"/></th>
+													</tr>
+													<c:forEach items="${selectedParams}" var="selectedParam">
+														<tr>
+															<td>${selectedParam}</td>
+														</tr>
+													</c:forEach>
+												</table>
+											</td>
 										</tr>
 									</table>
 								</td>
