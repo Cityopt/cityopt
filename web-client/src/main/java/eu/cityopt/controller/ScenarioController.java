@@ -917,7 +917,33 @@ public class ScenarioController {
 		securityAuthorization.atLeastStandard_standard(project);
 
 		ScenarioDTO scenario = (ScenarioDTO) model.get("scenario");
+		
+		if (selectedCompId == null || selectedCompId.isEmpty())
+		{
+			try {
+				project = projectService.findByID(project.getPrjid());
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String statusMsg = controllerService.getScenarioStatus(scenario);
+
+			if (statusMsg != null && statusMsg.equals("SUCCESS"))
+			{
+				model.put("disableEdit", true);
+			}
+
+	        model.put("scenarioParamForm", form);
+			model.put("project", project);
+
+			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+			model.put("components", components);
+
+			return "scenarioparameters";
+		}
+			
 		int nSelectedCompId = Integer.parseInt(selectedCompId);
+		
 		List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
 		Map<Integer, InputParamValDTO> InputParamMAP = new HashMap<>();
 

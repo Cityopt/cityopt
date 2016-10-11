@@ -30,8 +30,8 @@
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td valign="top">
-			<div style="overflow: auto; height: 100%; width: 820px; overflow: auto;">
-			<table class="maintable">
+			<div style="overflow: auto; height: 100%; width: 1000px; overflow: auto;">
+			<table class="maintablewide">
 				<%@ include file="toprow.inc"%>
 				<tr class="titlerow">
 					<td class="spacecolumn"></td>
@@ -80,6 +80,7 @@
 										<col style="width:250px">
 										<col style="width:50px">
 										<col style="width:300px">	
+										<col style="width:150px">	
 										<tr>
 											<td>
 												<!-- Components -->
@@ -173,19 +174,25 @@
 																							
 												</table>
 											</td>
-										</tr>
-										<tr>
-											<td></td>
-											<td></td>
-											<td align="right">
-												<!-- Update -button -->
-												<c:choose>
-													<c:when test="${disableEdit}">
-										    		</c:when>
-										    		<c:otherwise>
-														<input style="width:100px" title="${tooltip_update}"  type="submit" value="Update"/>
-											    	</c:otherwise>
-												</c:choose>
+											<td valign="top" align="right">
+												<table>
+													<tr>
+														<td>
+															<c:choose>
+																<c:when test="${disableEdit}">
+													    		</c:when>
+													    		<c:otherwise>
+																	<input style="width:100px" title="${tooltip_update}"  type="submit" value="<spring:message code="update"/>">
+														    	</c:otherwise>
+															</c:choose>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<a href="editscenario.html"><button style="width:100px" type="button"><spring:message code="back"/></button></a>
+														</td>
+													</tr>
+												</table>
 										    </td>
 										</tr>
 									</table>
