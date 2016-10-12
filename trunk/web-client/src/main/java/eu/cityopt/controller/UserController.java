@@ -210,7 +210,7 @@ import eu.cityopt.service.ImportService;
 @Controller
 @SessionAttributes({
     "project", "scenario", "optimizationset", "scengenerator", "optresults",
-    "usersession", "user", "version"})
+    "usersession", "user", "version", "activeblock", "page"})
 public class UserController {
 
     @Autowired
@@ -409,6 +409,8 @@ public class UserController {
     public String getUserManagement(Map<String, Object> model) {
 
     	securityAuthorization.atLeastAdmin();
+    	model.put("activeblock", "settings");
+    	model.put("page", "usermanagement");
         AppUserDTO user = (AppUserDTO) model.get("user");      
         if (user != null) {
         	initializeUserManagement(model);                

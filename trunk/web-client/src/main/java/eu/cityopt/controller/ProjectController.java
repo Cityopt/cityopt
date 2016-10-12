@@ -114,7 +114,7 @@ import eu.cityopt.web.UserSession;
 @Controller
 @SessionAttributes({
     "project", "scenario", "optimizationset", "scengenerator", "optresults",
-    "usersession", "user", "version"})
+    "usersession", "user", "version", "page", "activeblock"})
 public class ProjectController {
 
     @Autowired
@@ -244,6 +244,9 @@ public class ProjectController {
 
 		securityAuthorization.atLeastExpert();
 
+    	model.put("activeblock", "project");
+    	model.put("page", "createproject");
+
         AppUserDTO user = (AppUserDTO) model.get("user");
 
         if (user != null)
@@ -332,6 +335,9 @@ public class ProjectController {
     @RequestMapping(value="openproject", method=RequestMethod.GET)
     public String openProject(Map<String, Object> model)
     {
+    	model.put("activeblock", "project");
+    	model.put("page", "openproject");
+
     	// Fine if Administrator
     	List<ProjectDTO> projects= new ArrayList<ProjectDTO>();
     	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -369,6 +375,9 @@ public class ProjectController {
     public String editProject(Map<String, Object> model, HttpServletRequest request,
 		@RequestParam(value="prjid", required=false) String prjid) {
 
+    	model.put("activeblock", "project");
+    	model.put("page", "editproject");
+    	
     	if (prjid != null)
         {
     		// Open a new project
@@ -1071,6 +1080,9 @@ public class ProjectController {
 		HttpServletRequest request){
     	securityAuthorization.atLeastExpert();
 
+    	model.put("activeblock", "project");
+    	model.put("page", "deleteproject");
+
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (prjid != null)
@@ -1149,10 +1161,12 @@ public class ProjectController {
     }
 
     @RequestMapping(value="units", method=RequestMethod.GET)
-    public String units(Model model) {
+    public String units(Map<String, Object> model) {
     	securityAuthorization.atLeastExpert();
-        List<UnitDTO> units = unitService.findAll();
-        model.addAttribute("units", units);
+    	model.put("activeblock", "settings");
+    	model.put("page", "units");
+    	List<UnitDTO> units = unitService.findAll();
+        model.put("units", units);
         return "units";
     }
 
@@ -1254,6 +1268,9 @@ public class ProjectController {
     @RequestMapping(value="importdata", method=RequestMethod.GET)
     public String importData(Map<String, Object> model){
 
+       	model.put("activeblock", "project");
+    	model.put("page", "importdata");
+ 
     	ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null)
         {
@@ -1270,6 +1287,9 @@ public class ProjectController {
 		@RequestParam(value="enableSimModelExport", required=false) String enableSimModelExport,
 		HttpServletRequest request) {
 
+       	model.put("activeblock", "project");
+    	model.put("page", "exportdata");
+ 
     	ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null)
         {
@@ -1535,6 +1555,9 @@ public class ProjectController {
     public String metricDefinition(Map<String, Object> model,
             @RequestParam(value="metricid", required=false) String metricid,
             @RequestParam(value="action", required=false) String action) {
+
+     	model.put("activeblock", "project");
+    	model.put("page", "metricdefinition");
 
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1951,6 +1974,9 @@ public class ProjectController {
     public String settings(Map<String, Object> model, HttpServletRequest request,
 		@RequestParam(value="lang", required=false) String language)
     {
+    	model.put("activeblock", "settings");
+    	model.put("page", "settings");
+ 
     	//String language = request.getLocale().getLanguage();
     	if (language != null && !language.isEmpty()) {
     		controllerService.changeLanguage(model, language);

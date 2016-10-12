@@ -65,7 +65,7 @@ import eu.cityopt.web.ParamForm;
 @Controller
 @SessionAttributes({
     "project", "scenario", "optimizationset", "scengenerator", "optresults",
-    "usersession", "user", "version"})
+    "usersession", "user", "version", "activeblock", "page"})
 public class ParameterController {
 
     @Autowired
