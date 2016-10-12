@@ -94,7 +94,8 @@ import eu.cityopt.web.TimeSeriesVisualization;
 import eu.cityopt.web.UserSession;
 
 @Controller
-@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession", "user"})
+@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession", "user",
+	"activeblock", "page"})
 public class VisualizationController {
 	
 	@Autowired
@@ -199,6 +200,9 @@ public class VisualizationController {
 		@RequestParam(value="metricid", required=false) String metricid,
 		@RequestParam(value="action", required=false) String action,
 		@RequestParam(value="charttype", required=false) String charttype) {
+
+		model.put("activeblock", "visualization");
+    	model.put("page", "timeserieschart");
 
 		UserSession userSession = (UserSession) model.get("usersession");
 		
@@ -317,6 +321,9 @@ public class VisualizationController {
 		@RequestParam(value="metricid", required=false) String metricid,
 		@RequestParam(value="action", required=false) String action,
 		@RequestParam(value="charttype", required=false) String charttype) {
+
+		model.put("activeblock", "visualization");
+    	model.put("page", "summarychart");
 
 		UserSession userSession = (UserSession) model.get("usersession");
 		
@@ -1146,6 +1153,9 @@ public class VisualizationController {
 		@RequestParam(value="outputvarid", required=false) String outputvarid,
 		@RequestParam(value="extparamid", required=false) String extparamid) {
 
+		model.put("activeblock", "visualization");
+    	model.put("page", "viewtable");
+
 		ProjectDTO project = (ProjectDTO) model.get("project");
 		
 		if (project == null)
@@ -1395,6 +1405,9 @@ public class VisualizationController {
 		@RequestParam(value="action", required=false) String action,
 		@RequestParam(value="resetselections", required=false) String reset,
 		@RequestParam(value="charttype", required=false) String charttype) {
+
+		model.put("activeblock", "visualization");
+    	model.put("page", "gachart");
 
 		UserSession userSession = (UserSession) model.get("usersession");
 		

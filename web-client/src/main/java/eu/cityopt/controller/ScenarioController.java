@@ -103,7 +103,7 @@ import eu.cityopt.web.UserSession;
  *
  */
 @Controller
-@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession", "user"})
+@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession", "user", "activeblock", "page"})
 public class ScenarioController {
 
 	@Autowired
@@ -221,6 +221,9 @@ public class ScenarioController {
 	@RequestMapping(value="createscenario",method=RequestMethod.GET)
 	public String createScenario(Map<String, Object> model) {
 
+     	model.put("activeblock", "scenario");
+    	model.put("page", "createscenario");
+ 
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
 		securityAuthorization.atLeastExpert_standard(project);
@@ -313,7 +316,10 @@ public class ScenarioController {
 	@RequestMapping(value="openscenario",method=RequestMethod.GET)
 	public String openScenario (Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid)
 	{
-		ProjectDTO project = (ProjectDTO) model.get("project");
+     	model.put("activeblock", "scenario");
+    	model.put("page", "openscenario");
+
+    	ProjectDTO project = (ProjectDTO) model.get("project");
 
 		if (project == null)
 		{
@@ -400,7 +406,11 @@ public class ScenarioController {
 
 	@RequestMapping(value="editscenario", method=RequestMethod.GET)
 	public String editScenario (Map<String, Object> model) {
-		if (!model.containsKey("project"))
+     	
+		model.put("activeblock", "scenario");
+    	model.put("page", "editscenario");
+
+    	if (!model.containsKey("project"))
 		{
 			return "error";
 		}
@@ -739,7 +749,10 @@ public class ScenarioController {
 		@RequestParam(value="action", required=false) String action,
 		HttpServletRequest request) 
 	{
-		ProjectDTO project = (ProjectDTO) model.get("project");
+     	model.put("activeblock", "scenario");
+    	model.put("page", "deletescenario");
+
+    	ProjectDTO project = (ProjectDTO) model.get("project");
 
 		if (project == null)
 		{
@@ -834,7 +847,8 @@ public class ScenarioController {
 	 
 	@RequestMapping(value="scenarioparameters", method=RequestMethod.GET)
 	public String scenarioParameters(Map<String, Object> model,
-		@RequestParam(value="selectedcompid", required=false) String selectedCompId){
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+		
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
 		if (project == null)

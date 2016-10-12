@@ -120,7 +120,7 @@ import eu.cityopt.web.UserSession;
  *
  */
 @Controller
-@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession", "user"})
+@SessionAttributes({"project", "scenario", "optimizationset", "scengenerator", "optresults", "usersession", "user", "activeblock", "page"})
 public class OptimizationController {
     @Autowired
     ProjectService projectService;
@@ -869,6 +869,9 @@ public class OptimizationController {
     public String createOptimizationSet(Map<String, Object> model,
 		HttpServletRequest request)
     {
+    	model.put("activeblock", "optimization");
+    	model.put("page", "createoptimizationset");
+
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -1025,6 +1028,9 @@ public class OptimizationController {
         @RequestParam(value="optsetid", required=false) String optsetid,
         @RequestParam(value="optsettype", required=false) String optsettype)
     {
+    	model.put("activeblock", "optimization");
+    	model.put("page", "editoptimizationset");
+
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -1634,8 +1640,11 @@ public class OptimizationController {
 
     @RequestMapping(value="openoptimizationset",method=RequestMethod.GET)
     public String openOptimizationSet(Map<String, Object> model,
-            @RequestParam(value="optsetid", required=false) String optsetid,
-            @RequestParam(value="optsettype", required=false) String optsettype) {
+        @RequestParam(value="optsetid", required=false) String optsetid,
+        @RequestParam(value="optsettype", required=false) String optsettype) {
+
+    	model.put("activeblock", "optimization");
+    	model.put("page", "openoptimizationset");
 
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1781,6 +1790,9 @@ public class OptimizationController {
         @RequestParam(value="optsetid", required=false) String optsetid,
         @RequestParam(value="optsettype", required=false) String optsettype,
         HttpServletRequest request) {
+
+    	model.put("activeblock", "optimization");
+    	model.put("page", "deleteoptimizationset");
 
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -2469,6 +2481,9 @@ public class OptimizationController {
     @RequestMapping(value="garuns", method=RequestMethod.GET)
     public String runningGeneticOptimizations(Map<String, Object> model) {
 
+    	model.put("activeblock", "optimization");
+    	model.put("page", "garuns");
+
         ProjectDTO project = (ProjectDTO) model.get("project");
 
 		if (project == null)
@@ -2979,7 +2994,11 @@ public class OptimizationController {
 
     @RequestMapping(value="geneticalgorithm", method=RequestMethod.GET)
     public String geneticAlgorithm(ModelMap model) {
-        ProjectDTO project = (ProjectDTO) model.get("project");
+        
+    	model.put("activeblock", "optimization");
+    	model.put("page", "geneticalgorithm");
+
+    	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
         	return "redirect:/openproject.html";
