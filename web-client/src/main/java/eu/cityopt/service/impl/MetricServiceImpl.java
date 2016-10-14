@@ -133,7 +133,18 @@ public class MetricServiceImpl implements MetricService {
                 new TypeToken<List<MetricValDTO>>() {}.getType());
     }
     
-	@Transactional
+    @Override
+    @Transactional(readOnly = true)
+    public List<MetricValDTO> getMetricValsByProjectScen(int projectId, int scenId) throws EntityNotFoundException {
+        List<MetricVal> res = metricValRepository.findByProjectScen(projectId, scenId);
+        if(res == null) {
+            throw new EntityNotFoundException();
+        }       
+        return modelMapper.map(res, 
+                new TypeToken<List<MetricValDTO>>() {}.getType());
+    }
+
+    @Transactional
 	public void setProject(int metId, int prjid){
 		Metric met = metricRepository.findOne(metId);
 		Project p = projectRepository.findOne(prjid);
