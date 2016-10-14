@@ -24,4 +24,8 @@ public interface MetricValRepository extends JpaRepository<MetricVal, Integer> {
 			@Param("extParamSetId") Integer epvsId);
     @Query("select mv from MetricVal mv where mv.metric.project.prjid = :projectId")
 	public List<MetricVal> findByProject(@Param("projectId") Integer projectId);
+    @Query("select mv from MetricVal mv LEFT JOIN FETCH mv.scenariometrics scm "
+            + "where mv.metric.project.prjid = :projectId and scm.scenario.scenid = :scenId")
+    public List<MetricVal> findByProjectScen(@Param("projectId") Integer projectId,
+            @Param("scenId") Integer scenId);
 }
