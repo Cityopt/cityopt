@@ -129,11 +129,11 @@
 											</tr>
 											<tr>
 												<td>
-													<table class="tablestyle" width="500">
+													<table class="tablestyle" width="600">
 														<col style="width: 150px">
 														<col style="width: 50px">
 														<col style="width: 80px">
-														<col style="width: 120px">
+														<col style="width: 160px">
 														<col style="width: 80px">
 															
 														<tr>
@@ -174,7 +174,7 @@
 			
 																<td>
 																	<a href="<c:url value='editroles.html?userid=${user.userid}'/>">
-																		<button align="right" type="button" value="Edit" style="width: 120px">
+																		<button align="right" type="button" value="Edit" style="width: 150px">
 																			<spring:message code="edit_roles"/>
 																		</button>
 																	</a>

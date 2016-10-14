@@ -170,11 +170,7 @@
 				</c:otherwise>
 			</c:choose>
 			
-			<tr height=10>
-				<td></td>
-				<td>
-					
-				</td>
+			<tr height="10">
 			</tr>
 		</table>
 	</td>
@@ -289,10 +285,7 @@
 						</td></tr>-->
 				</c:otherwise>
 			</c:choose>
-			<tr height=10>
-				<td></td>
-				<td>
-				</td>
+			<tr height="10">
 			</tr>
 		</table>
 	</td>
@@ -384,8 +377,14 @@
 					<tr>
 						<td></td>
 						<td>
-							<a href="geneticalgorithm.html">
-							<spring:message code="edit"/> ${usersession.getActiveScenGen()}</a>
+							<c:choose>
+								<c:when test="${page == 'geneticalgorithm'}">
+									<a href=geneticalgorithm.html><font color="white"><spring:message code="edit"/> ${usersession.getActiveScenGen()}</font></a>
+								</c:when>
+								<c:otherwise>
+									<a href="geneticalgorithm.html"><spring:message code="edit"/> ${usersession.getActiveScenGen()}</a>
+								</c:otherwise>
+							</c:choose>
 						</td>
 					</tr>
 				</c:when>
@@ -437,8 +436,6 @@
 				</c:otherwise>
 			</c:choose>
 			<tr height=10>
-				<td>
-				</td>
 			</tr>
 		</table>
 	</td>
@@ -562,8 +559,6 @@
 		</c:otherwise>
 	</c:choose>
 	<tr height=10>
-		<td>
-		</td>
 	</tr>
 </table>
 </td>
@@ -625,6 +620,7 @@
 					</c:choose>
 				</td>
 			</tr>
+			<tr height="10"></tr>
 		</table>
 	</td>
 </tr>

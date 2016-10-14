@@ -330,6 +330,9 @@ public class ScenarioController {
 
 		if (scenarioid != null)
 		{
+	     	model.put("activeblock", "scenario");
+	    	model.put("page", "editscenario");
+
 			controllerService.initEditScenario(model, project.getPrjid(), Integer.parseInt(scenarioid));
 			return "editscenario";
 		}
