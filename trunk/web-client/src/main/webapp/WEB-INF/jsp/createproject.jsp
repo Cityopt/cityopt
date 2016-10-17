@@ -110,9 +110,8 @@
 	          							<c:when test="${success!=null && success==true}">
 					            			<p class="info"> <spring:message code="projectSuccess"/></p>
 					            			<c:set var="tooltip_next"><spring:message code="tooltip_next"/></c:set>
-					            			<input type="submit" name="nextpage" style="width:100px" class="activebutton" value="Next" title="${tooltip_next}">
-		            			   		</button>
-					            		</c:when>
+					            			<input type="submit" name="nextpage" style="width:100px; background: #47AFE2" value="<spring:message code="next"/>" title="${tooltip_next}">
+		            			   		</c:when>
 					            		<c:when test="${success!=null && success==false}">
 					            			<h2 class="error"> <spring:message code="projectExists" /> </h2>
 					            		</c:when>            	
