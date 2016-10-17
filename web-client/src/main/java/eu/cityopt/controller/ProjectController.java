@@ -282,6 +282,8 @@ public class ProjectController {
         	{
         		return "error";
         	}
+        	model.put("activeblock", "project");
+        	model.put("page", "editproject");
 
         	model.put("project", project);
         	model.put("success", null);
@@ -1810,6 +1812,7 @@ public class ProjectController {
 
         if (name != null && !name.isEmpty() && expression != null && !expression.isEmpty())
         {
+        	name = name.trim();
             SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
          	boolean isValid = checker.isValidTopLevelName(name);
 

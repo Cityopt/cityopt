@@ -1290,18 +1290,10 @@ public class ScenarioController {
 		model.put("status", statusMsg);
 		model.put("error", errorMsg);
 
-		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-		model.put("components", components);
-
-		Set<ExtParamValDTO> extParamVals = projectService.getExtParamVals(project.getPrjid());
-		model.put("extParamVals", extParamVals);
-
-		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
-		model.put("scenarios", scenarios);
-
 		controllerService.clearOptResults(model);
 
-        return "redirect:/timeserieschart.html";
+		controllerService.initEditScenario(model, project.getPrjid(), scenario.getScenid());
+		return "editscenario";
 	}
 
 	@RequestMapping(value="simulationinfo", method=RequestMethod.GET)
