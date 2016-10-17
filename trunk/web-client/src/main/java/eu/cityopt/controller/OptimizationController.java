@@ -2455,23 +2455,10 @@ public class OptimizationController {
         List<MetricValDTO> listProjectMetricVals = null;
 
         try {
-        	listProjectMetricVals = metricService.getMetricValsByProject(project.getPrjid());
+        	listProjectMetricVals = metricService.getMetricValsByProjectScen(project.getPrjid(), resultScenario.getScenid());
 		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
-
-        Iterator<MetricValDTO> metricValIter = listProjectMetricVals.iterator();
-
-        while (metricValIter.hasNext())
-        {
-            MetricValDTO metricVal = metricValIter.next();
-
-            if (metricVal.getMetric().getProject().getPrjid() == project.getPrjid()
-                && metricVal.getScenariometrics().getScenario().getScenid() == resultScenario.getScenid())
-            {
-                listProjectMetricVals.add(metricVal);
-            }
-        }
 
         model.put("metricVals", listProjectMetricVals);
 
