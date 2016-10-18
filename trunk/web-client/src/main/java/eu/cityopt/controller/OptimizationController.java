@@ -546,8 +546,12 @@ public class OptimizationController {
 	            return "updateobjfunction";
         	}
 
-	        oldFunc = objFuncService.save(oldFunc);
-
+        	try {
+        		oldFunc = objFuncService.save(oldFunc);
+			} catch (ObjectOptimisticLockingFailureException e){
+				model.put("error", controllerService.getMessage("project_updated", request));
+			}
+				
         	if (type.equals("db")) {
 		        try {
 		            optSet = optSetService.findByID(optSet.getOptid());
@@ -569,7 +573,12 @@ public class OptimizationController {
 					e.printStackTrace();
 				}
 
-        		scenGen = scenGenService.save(scenGen);
+        		try {
+        			scenGen = scenGenService.save(scenGen);
+    			} catch (ObjectOptimisticLockingFailureException e){
+    				model.put("error", controllerService.getMessage("optimization_set_updated", request));
+    			}
+
         		return "redirect:/geneticalgorithm.html";
         	}
     	}
@@ -742,7 +751,8 @@ public class OptimizationController {
     @RequestMapping(value="cloneoptimizer", method=RequestMethod.GET)
     public String cloneOptimizer(Map<String, Object> model,
 		@RequestParam(value="optimizerid") String optimizerid,
-    	@RequestParam(value="optsettype", required=false) String optsettype) {
+    	@RequestParam(value="optsettype", required=false) String optsettype,
+    	HttpServletRequest request) {
 
 	    ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -792,8 +802,12 @@ public class OptimizationController {
 
 	        	try {
 	        		OptimizationSetDTO cloneoptimisation = copyService.copyOptimizationSet(noptimizerid, clonename, true);
-	            	cloneoptimisation=optSetService.save(cloneoptimisation);
-
+	            	
+	        		try {
+	        			cloneoptimisation = optSetService.save(cloneoptimisation);
+	        		} catch (ObjectOptimisticLockingFailureException e){
+	    				model.put("error", controllerService.getMessage("project_updated", request));
+	    			}
 		        } catch (EntityNotFoundException e1) {
 		            e1.printStackTrace();
 		        }
@@ -808,7 +822,9 @@ public class OptimizationController {
 	        		newScenGen = scenGenService.save(newScenGen);
 		        } catch (EntityNotFoundException e1) {
 		            e1.printStackTrace();
-		        }
+		        } catch (ObjectOptimisticLockingFailureException e){
+					model.put("error", controllerService.getMessage("project_updated", request));
+				}
 	        }
 
 	        try {
@@ -959,7 +975,11 @@ public class OptimizationController {
 	                optSet.setExtparamvalset(extParamValSet);
                 }
 
-                optSet = optSetService.save(optSet);
+                try {
+                	optSet = optSetService.save(optSet);
+                } catch (ObjectOptimisticLockingFailureException e){
+    				model.put("error", controllerService.getMessage("optimization_set_updated", request));
+    			}
 
                 UserSession session = (UserSession) model.get("usersession");
                 session.setActiveOptSet(optSet.getName());
@@ -1003,7 +1023,11 @@ public class OptimizationController {
 	                scenGen.setExtparamvalset(extParamValSet);
                 }
 
-                scenGen = scenGenService.save(scenGen);
+                try {
+                	scenGen = scenGenService.save(scenGen);
+                } catch (ObjectOptimisticLockingFailureException e){
+    				model.put("error", controllerService.getMessage("optimization_set_updated", request));
+    			}
 
                 UserSession session = (UserSession) model.get("usersession");
                 session.setActiveScenGen(scenGen.getName());
@@ -1096,7 +1120,12 @@ public class OptimizationController {
         oldOptSet.setName(optSet.getName());
         oldOptSet.setDescription(optSet.getDescription());
 
-        oldOptSet = optSetService.save(oldOptSet);
+        try {
+        	oldOptSet = optSetService.save(oldOptSet);
+        } catch (ObjectOptimisticLockingFailureException e){
+			model.put("error", controllerService.getMessage("optimization_set_updated", request));
+		}
+        
         model.put("optimizationset", oldOptSet);
 
         controllerService.initEditOptSet(model, project.getPrjid(), oldOptSet.getOptid());
@@ -1990,9 +2019,14 @@ public class OptimizationController {
             newOptConstraint.setExpression(constraint.getExpression());
             newOptConstraint.setLowerbound(constraint.getLowerbound());
             newOptConstraint.setUpperbound(constraint.getUpperbound());
-            optConstraintService.save(newOptConstraint);
-
+            
             try {
+            	optConstraintService.save(newOptConstraint);
+	        } catch (ObjectOptimisticLockingFailureException e){
+				model.put("error", controllerService.getMessage("optimization_set_updated", request));
+			}
+
+	        try {
                 optSetService.addOptConstraint(optSet.getOptid(), newOptConstraint);
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();

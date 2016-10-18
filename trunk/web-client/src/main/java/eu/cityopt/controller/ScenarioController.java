@@ -272,7 +272,10 @@ public class ScenarioController {
 					scenario = scenarioService.saveWithDefaultInputValues(scenario, project.getPrjid());
 				} catch (EntityNotFoundException e) {
 					e.printStackTrace();
+				} catch (ObjectOptimisticLockingFailureException e){
+					model.put("error", controllerService.getMessage("project_updated", request));
 				}
+
 				model.put("components", components);
 				model.put("successful", controllerService.getMessage("scenario_created", request));
 				model.put("scenario",  scenario);
@@ -392,8 +395,11 @@ public class ScenarioController {
 				ScenarioDTO cloneScenario = copyService.copyScenario(nScenarioId, clonename, true, false, true, false);
 				cloneScenario.setStatus("");
 
-				scenarioService.save(cloneScenario, project.getPrjid());
-
+				try {
+					scenarioService.save(cloneScenario, project.getPrjid());
+		        } catch (ObjectOptimisticLockingFailureException e){
+					model.put("error", controllerService.getMessage("project_updated", request));
+				}
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (EntityNotFoundException e) {
@@ -698,7 +704,8 @@ public class ScenarioController {
 	@RequestMapping(value = "setsimulationdate", method = RequestMethod.POST)
 	public String setSimulationDatePost(Map<String, Object> model,
 		@RequestParam(value="simstart", required=true) String simStart,
-		@RequestParam(value="simend", required=true) String simEnd) {
+		@RequestParam(value="simend", required=true) String simEnd,
+		HttpServletRequest request) {
 
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -729,14 +736,24 @@ public class ScenarioController {
     			if (inputName.equals(Namespace.CONFIG_SIMULATION_START))
     			{
     				inputParamVal.setValue(simStart);
-    				inputParamVal = inputParamValService.save(inputParamVal, null);
+    				
+    				try {
+    					inputParamVal = inputParamValService.save(inputParamVal, null);
+    		        } catch (ObjectOptimisticLockingFailureException e){
+    					model.put("error", controllerService.getMessage("project_updated", request));
+    				}
     
     				model.put("simStart", inputParamVal.getValue());
     			}
     			else if (inputName.equals(Namespace.CONFIG_SIMULATION_END))
     			{
     				inputParamVal.setValue(simEnd);
-    				inputParamVal = inputParamValService.save(inputParamVal, null);
+    				
+    				try {
+    					inputParamVal = inputParamValService.save(inputParamVal, null);
+    		        } catch (ObjectOptimisticLockingFailureException e){
+    					model.put("error", controllerService.getMessage("project_updated", request));
+    				}
     
     				model.put("simEnd", inputParamVal.getValue());
     			}
@@ -1039,7 +1056,12 @@ public class ScenarioController {
 
     		updatedInputParamVal.setValue(entry.getValue().trim());
     		updatedInputParamVal.setScenario(scenario);
-    		inputParamValService.save(updatedInputParamVal, null);
+    		
+    		try {
+    			inputParamValService.save(updatedInputParamVal, null);
+            } catch (ObjectOptimisticLockingFailureException e){
+    			model.put("error", controllerService.getMessage("project_updated", request));
+    		}
 		}
 
 		try {
@@ -1168,7 +1190,8 @@ public class ScenarioController {
 
 	@RequestMapping(value="editinputparamvalue", method=RequestMethod.POST)
 	public String editInputParamValPost(InputParamValDTO inputParamVal, Map<String, Object> model,
-		@RequestParam(value="inputparamvalid", required=true) String inputParamValId){
+		@RequestParam(value="inputparamvalid", required=true) String inputParamValId,
+		HttpServletRequest request){
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
 		if (project == null)
@@ -1207,7 +1230,12 @@ public class ScenarioController {
 
 		updatedInputParamVal.setValue(inputParamVal.getValue());
 		updatedInputParamVal.setScenario(scenario);
-		inputParamValService.save(updatedInputParamVal, null);
+		
+		try {
+			inputParamValService.save(updatedInputParamVal, null);
+        } catch (ObjectOptimisticLockingFailureException e){
+			model.put("error", controllerService.getMessage("project_updated", request));
+		}
 
 		int componentID =  inputParamService.getComponentId(updatedInputParamVal.getInputparameter().getInputid());
 		model.put("selectedcompid", componentID);

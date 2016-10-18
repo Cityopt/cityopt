@@ -486,14 +486,15 @@ public class UserController {
 			}
 			
 			// Set up Boolean Checkbox Bug fix Form Checkbox get nulls; 
-			if(form.getEnabled().get(key)!=null){
+			if(form.getEnabled().get(key) != null){
 				user.setEnabled(true);
 			}else{
 				user.setEnabled(false);
 			}    			    					   			
-			//userService.save(user);
-			try {userService.update(user);} catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
+
+			try {
+				userService.update(user);
+			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
     	 }
@@ -579,13 +580,6 @@ public class UserController {
     	return userGroupProject;
     }
 
-    //@author Markus Turunen: Save method for UserGroupProjectDTO  
-    public void saveGroupProject(UserGroupProjectDTO userproject){
-    	securityAuthorization.atLeastAdmin();
-    	userGroupProjectService.save(userproject);
-    }
-
-    //@author Markus Turunen: List of User's Projects warning very very complex structure.. 
     public void FindUsersProjects(Map<String, Object> model){   
     	securityAuthorization.atLeastAdmin();
     	List<AppUserDTO> users= userService.findAll();
@@ -616,7 +610,8 @@ public class UserController {
     
     @RequestMapping(value="createuser", method=RequestMethod.POST)
     public String createUserPost(@Validated @ModelAttribute("UserForm") UserForm userForm, 
-    	BindingResult bindingResult, Map<String, Object> model ) {    	    	
+    	BindingResult bindingResult, Map<String, Object> model,
+    	HttpServletRequest request) {    	    	
     	 
     	securityAuthorization.atLeastAdmin();
     	
@@ -643,7 +638,11 @@ public class UserController {
 	            String hashedPassword = passwordEnconder.encode(user.getPassword());
 	            user.setPassword(hashedPassword);
 	                          
-	            user = userService.save(user);
+	            try {
+	            	user = userService.save(user);
+	            } catch (ObjectOptimisticLockingFailureException e){
+	    			model.put("error", controllerService.getMessage("project_updated", request));
+	    		}
 	            
 	            try {
 	            	userService.update(user);
@@ -660,7 +659,11 @@ public class UserController {
 	            UserGroupDTO userGroup = userGroupService.findByID(roleid);
 	            usergroupProject.setUsergroup(userGroup);
 	            
-	            userGroupProjectService.save(usergroupProject);
+	            try {
+	            	userGroupProjectService.save(usergroupProject);
+	            } catch (ObjectOptimisticLockingFailureException e){
+	    			model.put("error", controllerService.getMessage("project_updated", request));
+	    		}
                           	   
 	            initializeUserManagement(model);           	  
     		} 
@@ -704,7 +707,8 @@ public class UserController {
 
     @RequestMapping(value="edituser", method=RequestMethod.POST)
 	public String getEditUserPost(UserForm userForm, Map<String, Object> model,
-		@RequestParam(value="userid", required=true) String userId) {
+		@RequestParam(value="userid", required=true) String userId,
+		HttpServletRequest request) {
     	
     	securityAuthorization.atLeastAdmin();
     	AppUserDTO user = this.ParseUserIDtoUser(userId);
@@ -714,7 +718,12 @@ public class UserController {
     		BCryptPasswordEncoder passwordEnconder = new BCryptPasswordEncoder(12);
             String hashedPassword = passwordEnconder.encode(userForm.getPassword());
             user.setPassword(hashedPassword);
-			userService.save(user);
+            
+            try {
+            	userService.save(user);
+            } catch (ObjectOptimisticLockingFailureException e){
+    			model.put("error", controllerService.getMessage("project_updated", request));
+    		}
 		}
 
 		List<AppUserDTO> users = userService.findAll();

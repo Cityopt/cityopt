@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -160,7 +161,8 @@ public class ParameterController {
 
     @RequestMapping(value="selectextparamset", method=RequestMethod.GET)
     public String selectExtParamSet(Map<String, Object> model, 
-            @RequestParam(value="selectedextparamsetid", required=false) String selectedExtParamSetId) {
+        @RequestParam(value="selectedextparamsetid", required=false) String selectedExtParamSetId,
+        HttpServletRequest request) {
 
         ProjectDTO project = (ProjectDTO) model.get("project");
         if (project == null)
@@ -186,9 +188,12 @@ public class ParameterController {
                 e.printStackTrace();
             }
 
-            //			project.setDefaultextparamvalset(selectedExtParamSet);
-            project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()), 
-                    selectedExtParamValSet.getExtparamvalsetid());
+            try {
+            	project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()), 
+            		selectedExtParamValSet.getExtparamvalsetid());
+            } catch (ObjectOptimisticLockingFailureException e){
+				model.put("error", controllerService.getMessage("project_updated", request));
+			}
 
             model.put("selectedextparamsetid", nSelectedExtParamSetId);
             model.put("extParamValSet", selectedExtParamValSet);
@@ -271,7 +276,12 @@ public class ParameterController {
      	
      	ComponentDTO component = new ComponentDTO();
         component.setName(componentForm.getName().trim());
-        componentService.save(component, project.getPrjid());
+        
+        try {
+        	componentService.save(component, project.getPrjid());
+        } catch (ObjectOptimisticLockingFailureException e){
+			model.put("error", controllerService.getMessage("project_updated", request));
+		}
 
         try {
             model.put("project", projectService.findByID(project.getPrjid()));
@@ -355,7 +365,12 @@ public class ParameterController {
         }
         oldComponent.setName(component.getName());
 
-        componentService.save(oldComponent, project.getPrjid());
+        try {
+        	componentService.save(oldComponent, project.getPrjid());
+        } catch (ObjectOptimisticLockingFailureException e){
+			model.put("error", controllerService.getMessage("project_updated", request));
+		}
+        
         model.put("selectedcompid", oldComponent.getComponentid());
         model.put("selectedComponent",  oldComponent);
 
@@ -770,7 +785,8 @@ public class ParameterController {
     public String editOutputParameterPost(Map<String, Object> model, 
 		ParamForm paramForm,
         @RequestParam(value="outputvarid", required=false) String outputVarId,
-    	@RequestParam(value="cancel", required=false) String cancel) {
+    	@RequestParam(value="cancel", required=false) String cancel,
+    	HttpServletRequest request) {
             
     	ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -811,7 +827,13 @@ public class ParameterController {
         
 		updatedOutputVar.setUnit(unit);
         int componentId = updatedOutputVar.getComponent().getComponentid();
-        outputVarService.save(updatedOutputVar);
+        
+        try {
+        	outputVarService.save(updatedOutputVar);
+        } catch (ObjectOptimisticLockingFailureException e){
+			model.put("error", controllerService.getMessage("project_updated", request));
+		}
+
 
         /*try {
         	outputVarService.update(updatedOutputVar);
@@ -955,7 +977,11 @@ public class ParameterController {
         inputParam.setUnit(unit);
         inputParam.setType(typeService.findByName(eu.cityopt.sim.eval.Type.DOUBLE.name));
         
-    	inputParamService.save(inputParam, component.getComponentid(), unit.getUnitid(), null);
+        try {
+        	inputParamService.save(inputParam, component.getComponentid(), unit.getUnitid(), null);
+        } catch (ObjectOptimisticLockingFailureException e){
+			model.put("error", controllerService.getMessage("project_updated", request));
+		}
 
         controllerService.SetUpSelectedComponent(model, strSelectedCompId);
         controllerService.getProjectExternalParameterValues(model, project);
@@ -1073,7 +1099,11 @@ public class ParameterController {
         	newExtParam.setType(typeDTO);
         }
 
-        newExtParam = extParamService.save(newExtParam, project.getPrjid());
+        try {
+        	newExtParam = extParamService.save(newExtParam, project.getPrjid());
+        } catch (ObjectOptimisticLockingFailureException e){
+			model.put("error", controllerService.getMessage("project_updated", request));
+		}
 
         List<ExtParamValSetDTO> extParamSets = projectService.getExtParamValSets(project.getPrjid());
 
@@ -1175,8 +1205,10 @@ public class ParameterController {
 
     @RequestMapping(value="editextparam", method=RequestMethod.POST)
     public String editExtParamPost(ParamForm paramForm, Map<String, Object> model,
-            @RequestParam(value="extparamid", required=true) String extParamId) {
-        ProjectDTO project = (ProjectDTO) model.get("project");
+        @RequestParam(value="extparamid", required=true) String extParamId,
+        HttpServletRequest request) {
+    
+    	ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
         {
@@ -1210,7 +1242,11 @@ public class ParameterController {
         
 		updatedExtParam.setUnit(unit);
         
-        extParamService.save(updatedExtParam, project.getPrjid());
+		try {
+			extParamService.save(updatedExtParam, project.getPrjid());
+        } catch (ObjectOptimisticLockingFailureException e){
+			model.put("error", controllerService.getMessage("project_updated", request));
+		}
 
         model.put("project", project);
 
@@ -1265,7 +1301,8 @@ public class ParameterController {
     @RequestMapping(value="editextparamvalue", method=RequestMethod.POST)
     public String editExtParamValPost(ParamForm paramForm, Map<String, Object> model,
         @RequestParam(value="extparamvalid", required=true) String extParamValId,
-        @RequestParam(value="cancel", required=false) String cancel) 
+        @RequestParam(value="cancel", required=false) String cancel,
+        HttpServletRequest request) 
     {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1323,7 +1360,12 @@ public class ParameterController {
 			}
 	        
 			extParam.setUnit(unit);
-			extParamService.save(extParam, project.getPrjid());
+			
+			try {
+				extParamService.save(extParam, project.getPrjid());
+	        } catch (ObjectOptimisticLockingFailureException e){
+				model.put("error", controllerService.getMessage("project_updated", request));
+			}
         }
         
 		int nDefaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
@@ -1344,7 +1386,8 @@ public class ParameterController {
     }
 
     @RequestMapping(value="createextparamset", method=RequestMethod.GET)
-    public String createExtParamSet(Map<String, Object> model) {
+    public String createExtParamSet(Map<String, Object> model,
+		HttpServletRequest request) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
@@ -1372,13 +1415,23 @@ public class ParameterController {
             ExtParamValDTO extParamVal = new ExtParamValDTO();
             extParamVal.setExtparam(extParam);
             extParamVal.setValue("0");
-            extParamVal = extParamValService.save(extParamVal);
+            
+            try {
+            	extParamVal = extParamValService.save(extParamVal);
+            } catch (ObjectOptimisticLockingFailureException e){
+    			model.put("error", controllerService.getMessage("project_updated", request));
+    		}
 
             extParamVals.add(extParamVal);
         }
 
         extParamValSet.setName("New set");
-        extParamValSet = extParamValSetService.save(extParamValSet);
+        
+        try {
+        	extParamValSet = extParamValSetService.save(extParamValSet);
+        } catch (ObjectOptimisticLockingFailureException e){
+			model.put("error", controllerService.getMessage("project_updated", request));
+		}
 
         try {
             extParamValSetService.addExtParamVals(extParamValSet.getExtparamvalsetid(), extParamVals);
@@ -1386,7 +1439,11 @@ public class ParameterController {
             e.printStackTrace();
         }
 
-        extParamValSet = extParamValSetService.save(extParamValSet);
+        try {
+        	extParamValSet = extParamValSetService.save(extParamValSet);
+        } catch (ObjectOptimisticLockingFailureException e){
+			model.put("error", controllerService.getMessage("project_updated", request));
+		}
 
         Integer intSimModelId = projectService.getSimulationmodelId(project.getPrjid());
         int nSimModelId = 0;
@@ -1396,7 +1453,12 @@ public class ParameterController {
         	nSimModelId = Integer.parseInt("" + intSimModelId);
         }
         
-        project = projectService.save(project, nSimModelId, extParamValSet.getExtparamvalsetid());
+        try {
+        	project = projectService.save(project, nSimModelId, extParamValSet.getExtparamvalsetid());
+        } catch (ObjectOptimisticLockingFailureException e){
+			model.put("error", controllerService.getMessage("project_updated", request));
+		}
+
         model.put("project", project);
 
         model.put("extParamValSet", extParamValSet);
@@ -1432,7 +1494,12 @@ public class ParameterController {
 	            e2.printStackTrace();
 	        }
 	        extParamValSet.setName(newName);
-	        extParamValSet = extParamValSetService.save(extParamValSet);
+	        
+	        try {
+	        	extParamValSet = extParamValSetService.save(extParamValSet);
+	        } catch (ObjectOptimisticLockingFailureException e){
+				model.put("error", controllerService.getMessage("project_updated", request));
+			}
 	
 	        model.put("project", project);
 	        List<ExtParamValDTO> listExtParamVals = null;
