@@ -471,7 +471,13 @@ public class ProjectController {
             if (action.equals("create"))
             {
                 project.setName(projectForm.getName());
-                project = projectService.save(project, 0, 0);
+                
+                try {
+                	project = projectService.save(project, 0, 0);
+                } catch (ObjectOptimisticLockingFailureException e){
+        			model.put("error", controllerService.getMessage("project_updated", request));
+        		}
+
                 model.put("project", project);
             }
             else if (action.equals("update"))
@@ -491,7 +497,12 @@ public class ProjectController {
                     	nDefaultExtSetId = defaultExtSetId;
                     }
 
-                    project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()), nDefaultExtSetId);
+                    try {
+                    	project = projectService.save(project, projectService.getSimulationmodelId(project.getPrjid()), nDefaultExtSetId);
+                    } catch (ObjectOptimisticLockingFailureException e){
+            			model.put("error", controllerService.getMessage("project_updated", request));
+            		}
+
                     controllerService.getEnergyModelInfo(model, project.getPrjid(), request);
                 } catch(ObjectOptimisticLockingFailureException e) {
                     model.put("error", controllerService.getMessage("project_updated", request));
@@ -961,11 +972,21 @@ public class ProjectController {
 	                extParam.setName(extParamName);
 	                TypeDTO type = typeService.findByName(eu.cityopt.sim.eval.Type.TIMESERIES_STEP.name);
 	                extParam.setType(type);
-	                extParam = extParamService.save(extParam, project.getPrjid());
+	                
+	                try {
+	                	extParam = extParamService.save(extParam, project.getPrjid());
+	                } catch (ObjectOptimisticLockingFailureException e){
+	        			model.put("error", controllerService.getMessage("project_updated", request));
+	        		}
 
 	                ExtParamValDTO extParamVal = new ExtParamValDTO();
 	                extParamVal.setExtparam(extParam);
-	                extParamVal = extParamValService.save(extParamVal);
+	                
+	                try {
+	                	extParamVal = extParamValService.save(extParamVal);
+	                } catch (ObjectOptimisticLockingFailureException e){
+	        			model.put("error", controllerService.getMessage("project_updated", request));
+	        		}
 
 	                Integer defaultExtParamValSetId = projectService.getDefaultExtParamSetId(project.getPrjid());
 
@@ -1227,7 +1248,8 @@ public class ProjectController {
     }
 
     @RequestMapping(value="createunit", method=RequestMethod.POST)
-    public String createUnitPost(UnitForm unitForm, Model model) {
+    public String createUnitPost(UnitForm unitForm, Map<String, Object> model,
+		HttpServletRequest request) {
 
     	securityAuthorization.atLeastExpert();
 
@@ -1250,12 +1272,17 @@ public class ProjectController {
                 }
 
                 //System.out.println("unit " + newUnit.getName() + " type " + newUnit.getType());
-                unitService.save(newUnit);
+                
+                try {
+                	unitService.save(newUnit);
+                } catch (ObjectOptimisticLockingFailureException e){
+        			model.put("error", controllerService.getMessage("project_updated", request));
+        		}
             }
         }
 
         List<UnitDTO> units = unitService.findAll();
-        model.addAttribute("units", units);
+        model.put("units", units);
 
         return "units";
     }
@@ -1557,7 +1584,8 @@ public class ProjectController {
     @RequestMapping(value="metricdefinition",method=RequestMethod.GET)
     public String metricDefinition(Map<String, Object> model,
             @RequestParam(value="metricid", required=false) String metricid,
-            @RequestParam(value="action", required=false) String action) {
+            @RequestParam(value="action", required=false) String action,
+            HttpServletRequest request) {
 
      	model.put("activeblock", "project");
     	model.put("page", "metricdefinition");
@@ -1594,7 +1622,12 @@ public class ProjectController {
                 cloneMetric.setExpression(metric.getExpression());
                 cloneMetric.setProject(project);
                 cloneMetric.setUnit(metric.getUnit());
-                cloneMetric = metricService.save(cloneMetric);
+                
+                try {
+                	cloneMetric = metricService.save(cloneMetric);
+                } catch (ObjectOptimisticLockingFailureException e){
+        			model.put("error", controllerService.getMessage("project_updated", request));
+        		}
             }
             else if (action.equals("delete")) {
                 MetricDTO metric = null;
@@ -1849,7 +1882,12 @@ public class ProjectController {
 	        }
 
 	        if (action.equals("create")) {
-	        	newMetric = metricService.save(newMetric);
+	        	try {
+	        		newMetric = metricService.save(newMetric);
+	            } catch (ObjectOptimisticLockingFailureException e){
+	    			model.put("error", controllerService.getMessage("project_updated", request));
+	    		}
+
 	        	model.put("info", controllerService.getMessage("metric_created", request));
 	        } else if (action.equals("edit")) {
 	        	int nMetricId = Integer.parseInt(metricId);
