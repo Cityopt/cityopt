@@ -40,6 +40,7 @@ import eu.cityopt.model.Type;
 import eu.cityopt.repository.OutputVariableRepository;
 import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.TypeRepository;
+import eu.cityopt.security.SecurityAuthorization;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentInputParamDTOService;
 import eu.cityopt.service.ComponentService;

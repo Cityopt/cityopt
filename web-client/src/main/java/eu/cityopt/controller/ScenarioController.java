@@ -54,6 +54,7 @@ import eu.cityopt.DTO.ScenarioGeneratorSimpleDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.security.SecurityAuthorization;
 import eu.cityopt.service.AlgorithmService;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentInputParamDTOService;

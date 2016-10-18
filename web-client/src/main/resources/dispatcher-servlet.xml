@@ -32,6 +32,7 @@
 	</bean>
 		
 	<context:component-scan base-package="eu.cityopt.controller"/>	
+	<context:component-scan base-package="eu.cityopt.security"/>	
 	<mvc:annotation-driven/>
 			
 	<mvc:resources location="assets" mapping="/assets/**"/>

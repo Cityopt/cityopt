@@ -68,6 +68,7 @@ import eu.cityopt.DTO.ScenarioGeneratorDTO;
 import eu.cityopt.DTO.TimeSeriesDTOX;
 import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.security.SecurityAuthorization;
 import eu.cityopt.service.AlgoParamValService;
 import eu.cityopt.service.AlgorithmService;
 import eu.cityopt.service.AppUserService;
@@ -220,7 +221,7 @@ public class OptimizationController {
 
     @Autowired
     SecurityAuthorization securityAuthorization;
-
+    
     @Autowired
     ControllerService controllerService;
 
@@ -2637,7 +2638,7 @@ public class OptimizationController {
                 	 model.put("error", controllerService.getMessage("objective_function_exists", request));
 
                 	 try {
-        	            model.put("objFuncs", sortBy(ObjectiveFunctionDTO::getName,
+        	            model.put("objFuncs", controllerService.sortBy(ObjectiveFunctionDTO::getName,
                     		projectService.getObjectiveFunctions(project.getPrjid())));
         	            // TODO filter out functions that are already in scenGen
         	        } catch (EntityNotFoundException e) {
@@ -2653,7 +2654,7 @@ public class OptimizationController {
         	return "redirect:/geneticalgorithm.html";
         } else {
 	        try {
-	            model.put("objFuncs", sortBy(ObjectiveFunctionDTO::getName,
+	            model.put("objFuncs", controllerService.sortBy(ObjectiveFunctionDTO::getName,
             		projectService.getObjectiveFunctions(project.getPrjid())));
 	            // TODO filter out functions that are already in scenGen
 	        } catch (EntityNotFoundException e) {
@@ -2700,7 +2701,7 @@ public class OptimizationController {
 
 		securityAuthorization.atLeastExpert_expert(project);
 
-		UserSession userSession = getUserSession(model);
+		UserSession userSession = controllerService.getUserSession(model);
 
         model.put("constraint", constraint);
 
@@ -2818,7 +2819,7 @@ public class OptimizationController {
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
         try {
-            model.put("constraints", sortBy(OptConstraintDTO::getName,
+            model.put("constraints", controllerService.sortBy(OptConstraintDTO::getName,
                     projectService.getOptConstraints(project.getPrjid())));
             // TODO filter out constraints that are already in scenGen
         } catch (EntityNotFoundException e) {
@@ -2997,157 +2998,7 @@ public class OptimizationController {
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid())
         	return "error";
 
-        return getGeneticAlgorithm(project, scenGen, model);
-    }
-
-    private String getGeneticAlgorithm(ProjectDTO project, ScenarioGeneratorDTO scenGen, Map<String, Object> model) {
-
-    	try {
-			scenGen = scenGenService.findByID(scenGen.getScengenid());
-		} catch (EntityNotFoundException e1) {
-			e1.printStackTrace();
-		}
-
-    	model.put("scengenerator", scenGen);
-
-        ScenarioGenerationJobInfo runInfo = scenarioGenerationService.getRunningOptimisations().get(scenGen.getScengenid());
-        String strInfo = "";
-
-        if (runInfo != null) {
-        	strInfo += runInfo.toString();
-        }
-
-        String status = scenGen.getStatus();
-        boolean locked = false;
-
-        if ((runInfo != null && !runInfo.toString().isEmpty())
-    		|| (status != null && !status.isEmpty()))
-        {
-            if (status == null && runInfo != null) {
-                status = "RUNNING";
-            }
-        	strInfo += " Status: " + status;
-        	locked = true;
-        }
-
-    	model.put("runinfo", strInfo);
-        model.put("locked", locked);
-        
-        if (runInfo != null && runInfo.getEstimatedCompletionTime() != null) 
-        {
-        	Instant now = Instant.now();
-        	Instant compInstant = runInfo.getEstimatedCompletionTime();
-        	
-        	long totalSecs = Math.abs(Duration.between(compInstant, now).getSeconds());
-        	//System.out.println("Optimation completion time: " + totalSecs + " seconds");
-
-        	long hours = (long)((totalSecs + 1800) / 3600);
-        	long minutes = (totalSecs - hours * 3600) / 60;
-        	String time = "";
-        	
-        	if (hours >= 1) {
-        		time = hours + " h ";
-        	}
-
-        	if (minutes >= 1) {
-        		time += minutes + " min";
-        	}
-
-        	model.put("completionTime", time);
-        }
-        
-        /*List<AlgoParamValDTO> algoParamVals = scenGenService.getAlgoParamVals(scenGen.getScengenid());
-        int generations = 0, offspring = 0;
-        
-        for (int i = 0; i < algoParamVals.size(); i++)
-        {
-        	AlgoParamValDTO algoParamVal = algoParamVals.get(i); 
-        	
-        	if (algoParamVal.getAlgoparam().getName().equals("number of generations"))
-        	{
-        		generations = Integer.parseInt(algoParamVal.getValue());
-        	}
-        	else if (algoParamVal.getAlgoparam().getName().equals("number of offspring per generation"))
-        	{
-        		offspring = Integer.parseInt(algoParamVal.getValue());
-        	}
-        }
-        
-        Set<ScenarioDTO> scenarios = (Set<ScenarioDTO>) projectService.getScenarios(project.getPrjid());
-		Iterator<ScenarioDTO> iter = scenarios.iterator();
-
-		while (iter.hasNext())
-		{
-        	ScenarioDTO scenario = iter.next();
-        	
-        	if (scenario.getRunstart() != null && scenario.getRunend() != null
-    			&& startTimeGA < scenario.getRunstart().getTime() && startTimeGA < scenario.getRunend().getTime())
-        	{
-        		nScenariosSimulated++;
-        		scenarioSimTime = scenario.getRunend().getTime() - scenario.getRunstart().getTime();
-        	}
-        }
-        
-        long optTimeLeft = (generations * offspring - nScenariosSimulated) * scenarioSimTime;
-        
-        if (optTimeLeft <= 0)
-        {
-        	optTimeLeft = 1;
-        }*/
-        
-        UserSession userSession = getUserSession(model);
-
-        try {
-            List<ComponentDTO> components = sortComponentsByName(
-                    projectService.getComponents(project.getPrjid()));
-            model.put("components", components);
-            model.put("objFuncs", sortBy(ObjectiveFunctionDTO::getName,
-                    scenGenService.getObjectiveFunctions(scenGen.getScengenid())));
-            model.put("constraints", sortBy(OptConstraintDTO::getName,
-                    scenGenService.getOptConstraints(scenGen.getScengenid())));
-            List<DecisionVariableDTO> decVars = scenGenService.getDecisionVariables(scenGen.getScengenid());
-            model.put("decVars", sortBy(DecisionVariableDTO::getName, decVars));
-            Integer extParamValSetId = (scenGen.getExtparamvalset() == null) ? null
-                                                                             : scenGen.getExtparamvalset().getExtparamvalsetid();
-            model.put("extparamvals", (extParamValSetId == null) ? new ArrayList<ExtParamValDTO>()
-                                                                 : sortBy(epv -> epv.getExtparam().getName(),
-                                                                         extParamValSetService.getExtParamVals(extParamValSetId)));
-            model.put("extparamvalsetid", extParamValSetId);
-            List<ModelParameterDTO> modelParams = scenGenService.getModelParameters(scenGen.getScengenid());
-            model.put("modelparams", sortBy(mp -> mp.getInputparameter().getQualifiedName(), modelParams));
-            model.put("paramgrouping", scenGenService.getModelParameterGrouping(scenGen.getScengenid()));
-            model.put("algorithms", algorithmService.findAll());
-            model.put("algoparamvals", scenGenService.getOrCreateAlgoParamVals(scenGen.getScengenid()));
-
-            List<ComponentDTO> inputComponents = pickInputComponents(modelParams, components);
-            model.put("inputcomponents", inputComponents);
-            if (userSession.getComponentId() == 0 && !inputComponents.isEmpty()) {
-                userSession.setComponentId(inputComponents.iterator().next().getComponentid());
-            }
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-            return "error";
-        }
-
-        if (scenGen.getAlgorithm().getAlgorithmid() == 1)
-        {
-        	return "gridsearch";
-        }
-        else
-        {
-        	return "geneticalgorithm";
-        }
-    }
-
-    private List<ComponentDTO> pickInputComponents(
-            List<ModelParameterDTO> modelParams, List<ComponentDTO> components) {
-        Set<Integer> componentIds = new HashSet<>();
-        for (ModelParameterDTO mp : modelParams) {
-            componentIds.add(mp.getInputparameter().getComponentComponentid());
-        }
-        return components.stream().filter(
-                c -> componentIds.contains(c.getComponentid()))
-                .collect(Collectors.toList());
+        return controllerService.getGeneticAlgorithm(project, scenGen, model);
     }
 
     @RequestMapping(value="geneticalgorithm", method=RequestMethod.POST)
@@ -3164,14 +3015,14 @@ public class OptimizationController {
         if (scenGen == null || scenGen.getProject().getPrjid() != project.getPrjid()) return "redirect:/openproject.html";
 
         if (StringUtils.isBlank(scenGenForm.getName())) {
-            return getGeneticAlgorithm(project, scenGen, model);
+            return controllerService.getGeneticAlgorithm(project, scenGen, model);
         }
         try {
             scenGen = scenGenService.update(scenGen.getScengenid(), scenGenForm.getName(), scenGenForm.getDescription(), algorithmId);
             model.put("scengenerator", scenGen);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
-            return getGeneticAlgorithm(project, scenGen, model);
+            return controllerService.getGeneticAlgorithm(project, scenGen, model);
         }
 
         if (!StringUtils.isBlank(run)) {
@@ -3182,7 +3033,7 @@ public class OptimizationController {
                 | IOException e) {
                 e.printStackTrace();
                 model.put("error", e.getMessage());
-                return getGeneticAlgorithm(project, scenGen, model);
+                return controllerService.getGeneticAlgorithm(project, scenGen, model);
             }
         }
 
@@ -3338,36 +3189,11 @@ public class OptimizationController {
                 form.getValueByInputId().put(inputId, value);
                 form.getGroupByInputId().put(inputId, group);
             }
-            return getEditSGModelParams(project, scenGen, model, form, grouping);
+            return controllerService.getEditSGModelParams(project, scenGen, model, form, grouping);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
             return "redirect:/geneticalgorithm.html";
         }
-    }
-
-    String getEditSGModelParams(
-    		ProjectDTO project, ScenarioGeneratorDTO scenGen, ModelMap model,
-    		ModelParamForm form, ModelParameterGrouping grouping) {
-        UserSession userSession = getUserSession(model);
-    	try {
-	        List<ComponentDTO> components = sortComponentsByName(
-	                projectService.getComponents(project.getPrjid()));
-	        List<ModelParameterDTO> modelParams = sortBy(mp -> mp.getInputparameter().getQualifiedName(),
-	                scenGenService.getModelParameters(scenGen.getScengenid()));
-            model.put("modelparamform", form);
-            model.put("modelparams", modelParams);
-            model.put("groups", sortBy(s -> s, grouping.getGroupsByName().keySet()));
-
-            List<ComponentDTO> inputComponents = pickInputComponents(modelParams, components);
-            model.put("inputcomponents", inputComponents);
-            if (userSession.getComponentId() == 0 && !inputComponents.isEmpty()) {
-                userSession.setComponentId(inputComponents.iterator().next().getComponentid());
-            }
-    	} catch (EntityNotFoundException e) {
-            e.printStackTrace();
-            return "redirect:/geneticalgorithm.html";
-    	}
-        return "editsgmodelparams";
     }
 
     @RequestMapping(value="editsgmodelparams", method=RequestMethod.POST)
@@ -3389,7 +3215,7 @@ public class OptimizationController {
             ModelParameterGrouping grouping = scenGenService.getModelParameterGrouping(scenGen.getScengenid());
             String errors = "";
 
-            UserSession session = getUserSession(model);
+            UserSession session = controllerService.getUserSession(model);
             int nComponentId = session.getComponentId();
         	
             for (Map.Entry<Integer, String> entry : form.getValueByInputId().entrySet())
@@ -3444,7 +3270,7 @@ public class OptimizationController {
                 // is not preserved in the form command object.
                 scenGenService.updateDecisionVariables(scenGen.getScengenid(), grouping);
                 model.put("error", errors);
-            	return getEditSGModelParams(project, scenGen, model, form, grouping);
+            	return controllerService.getEditSGModelParams(project, scenGen, model, form, grouping);
             } else {
             	scenGenService.setModelParameterGrouping(scenGen.getScengenid(), grouping);
             }
@@ -3468,42 +3294,11 @@ public class OptimizationController {
     @RequestMapping(value="selectcomponent", method=RequestMethod.POST)
     public @ResponseBody String selectComponentPost(ModelMap model,
             @RequestParam("selectedcompid") int selectedCompId) {
-	    UserSession userSession = getUserSession(model);
+	    UserSession userSession = controllerService.getUserSession(model);
 	    userSession.setComponentId(selectedCompId);
 	    model.put("usersession", userSession);
     	
         return "";
     }
 
-    private UserSession getUserSession(Map<String, Object> model) {
-        UserSession userSession = (UserSession) model.get("usersession");
-        if (userSession == null) {
-            userSession = new UserSession();
-            model.put("usersession", userSession);
-        }
-        return userSession;
-    }
-
-    private static <T> List<T> sortBy(Function<T, String> key, Collection<T> collection) {
-        List<T> list = new ArrayList<>(collection);
-        list.sort(Comparator.comparing(key,
-                Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
-        return list;
-    }
-
-    /// Sorts components by name, leaving the special CITYOPT component last.
-    private List<ComponentDTO> sortComponentsByName(List<ComponentDTO> components) {
-        List<ComponentDTO> list = new ArrayList<>(components);
-        list.sort(Comparator.comparing(ComponentDTO::getName,
-                Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
-        for (Iterator<ComponentDTO> it = list.iterator(); it.hasNext();) {
-            ComponentDTO comp = it.next();
-            if (Namespace.CONFIG_COMPONENT.equals(comp.getName())) {
-                it.remove();
-                list.add(comp);
-                break;
-            }
-        }
-        return list;
-    }
 }

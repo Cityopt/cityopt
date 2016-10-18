@@ -65,6 +65,7 @@ import eu.cityopt.DTO.TypeDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.config.AppMetadata;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.security.SecurityAuthorization;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentInputParamDTOService;
 import eu.cityopt.service.ComponentService;

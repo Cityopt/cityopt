@@ -3,18 +3,25 @@ package eu.cityopt.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -22,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import eu.cityopt.DTO.AppUserDTO;
 import eu.cityopt.DTO.ComponentDTO;
+import eu.cityopt.DTO.DecisionVariableDTO;
 import eu.cityopt.DTO.ExtParamDTO;
 import eu.cityopt.DTO.ExtParamValDTO;
 import eu.cityopt.DTO.ExtParamValSetDTO;
@@ -29,16 +37,19 @@ import eu.cityopt.DTO.InputParamValDTO;
 import eu.cityopt.DTO.InputParameterDTO;
 import eu.cityopt.DTO.MetricDTO;
 import eu.cityopt.DTO.MetricValDTO;
+import eu.cityopt.DTO.ModelParameterDTO;
 import eu.cityopt.DTO.ObjectiveFunctionDTO;
 import eu.cityopt.DTO.ObjectiveFunctionResultDTO;
 import eu.cityopt.DTO.OptConstraintDTO;
 import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
+import eu.cityopt.DTO.ScenarioGeneratorDTO;
 import eu.cityopt.DTO.ScenarioWithObjFuncValueDTO;
 import eu.cityopt.DTO.SimulationModelDTO;
 import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.repository.CustomQueryRepository;
+import eu.cityopt.service.AlgorithmService;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentService;
 import eu.cityopt.service.EntityNotFoundException;
@@ -49,6 +60,7 @@ import eu.cityopt.service.InputParamValService;
 import eu.cityopt.service.InputParameterService;
 import eu.cityopt.service.MetricService;
 import eu.cityopt.service.MetricValService;
+import eu.cityopt.service.ModelParameterGrouping;
 import eu.cityopt.service.ObjectiveFunctionService;
 import eu.cityopt.service.OptimizationSetService;
 import eu.cityopt.service.OutputVariableService;
@@ -65,6 +77,7 @@ import eu.cityopt.sim.service.TimeEstimatorService;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
 import eu.cityopt.sim.service.ScenarioGenerationJobInfo;
+import eu.cityopt.web.ModelParamForm;
 import eu.cityopt.web.OptimizationRun;
 import eu.cityopt.web.Pair;
 import eu.cityopt.web.ParamForm;
@@ -147,6 +160,9 @@ public class ControllerService {
 	    @Autowired
 	    private CustomQueryRepository customQueryRepository;
 
+	    @Autowired
+	    private AlgorithmService algorithmService;
+	    
 	    public String getMessage(String code, HttpServletRequest request) {
 	    	Locale locale = RequestContextUtils.getLocale(request);
 	        return messageSource.getMessage(code, null, locale);
@@ -839,6 +855,174 @@ public class ControllerService {
 	        model.put("units", units);
 	    }
 	    
+	    public String getGeneticAlgorithm(ProjectDTO project, ScenarioGeneratorDTO scenGen, Map<String, Object> model) {
+
+	    	try {
+				scenGen = scenGenService.findByID(scenGen.getScengenid());
+			} catch (EntityNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+	    	model.put("scengenerator", scenGen);
+
+	        ScenarioGenerationJobInfo runInfo = scenarioGenerationService.getRunningOptimisations().get(scenGen.getScengenid());
+	        String strInfo = "";
+
+	        if (runInfo != null) {
+	        	strInfo += runInfo.toString();
+	        }
+
+	        String status = scenGen.getStatus();
+	        boolean locked = false;
+
+	        if ((runInfo != null && !runInfo.toString().isEmpty())
+	    		|| (status != null && !status.isEmpty()))
+	        {
+	            if (status == null && runInfo != null) {
+	                status = "RUNNING";
+	            }
+	        	strInfo += " Status: " + status;
+	        	locked = true;
+	        }
+
+	    	model.put("runinfo", strInfo);
+	        model.put("locked", locked);
+	        
+	        if (runInfo != null && runInfo.getEstimatedCompletionTime() != null) 
+	        {
+	        	Instant now = Instant.now();
+	        	Instant compInstant = runInfo.getEstimatedCompletionTime();
+	        	
+	        	long totalSecs = Math.abs(Duration.between(compInstant, now).getSeconds());
+	        	//System.out.println("Optimization completion time: " + totalSecs + " seconds");
+
+	        	long hours = (long) Math.floor((double)(totalSecs / 3600));
+	        	long minutes = (long)((totalSecs - hours * 3600) / 60);
+	        	String time = "";
+	        	
+	        	if (hours >= 1) {
+	        		time = hours + " h ";
+	        	}
+
+	        	if (minutes >= 1) {
+	        		time += minutes + " min";
+	        	}
+
+	        	model.put("completionTime", time);
+	        }
+	        
+	        UserSession userSession = getUserSession(model);
+
+	        try {
+	            List<ComponentDTO> components = sortComponentsByName(
+	                    projectService.getComponents(project.getPrjid()));
+	            model.put("components", components);
+	            model.put("objFuncs", sortBy(ObjectiveFunctionDTO::getName,
+	                    scenGenService.getObjectiveFunctions(scenGen.getScengenid())));
+	            model.put("constraints", sortBy(OptConstraintDTO::getName,
+	                    scenGenService.getOptConstraints(scenGen.getScengenid())));
+	            List<DecisionVariableDTO> decVars = scenGenService.getDecisionVariables(scenGen.getScengenid());
+	            model.put("decVars", sortBy(DecisionVariableDTO::getName, decVars));
+	            Integer extParamValSetId = (scenGen.getExtparamvalset() == null) ? null
+	                                                                             : scenGen.getExtparamvalset().getExtparamvalsetid();
+	            model.put("extparamvals", (extParamValSetId == null) ? new ArrayList<ExtParamValDTO>()
+	                                                                 : sortBy(epv -> epv.getExtparam().getName(),
+	                                                                         extParamValSetService.getExtParamVals(extParamValSetId)));
+	            model.put("extparamvalsetid", extParamValSetId);
+	            List<ModelParameterDTO> modelParams = scenGenService.getModelParameters(scenGen.getScengenid());
+	            model.put("modelparams", sortBy(mp -> mp.getInputparameter().getQualifiedName(), modelParams));
+	            model.put("paramgrouping", scenGenService.getModelParameterGrouping(scenGen.getScengenid()));
+	            model.put("algorithms", algorithmService.findAll());
+	            model.put("algoparamvals", scenGenService.getOrCreateAlgoParamVals(scenGen.getScengenid()));
+
+	            List<ComponentDTO> inputComponents = pickInputComponents(modelParams, components);
+	            model.put("inputcomponents", inputComponents);
+	            if (userSession.getComponentId() == 0 && !inputComponents.isEmpty()) {
+	                userSession.setComponentId(inputComponents.iterator().next().getComponentid());
+	            }
+	        } catch (EntityNotFoundException e) {
+	            e.printStackTrace();
+	            return "error";
+	        }
+
+	        if (scenGen.getAlgorithm().getAlgorithmid() == 1)
+	        {
+	        	return "gridsearch";
+	        }
+	        else
+	        {
+	        	return "geneticalgorithm";
+	        }
+	    }
+	    
+	    public String getEditSGModelParams(
+	    		ProjectDTO project, ScenarioGeneratorDTO scenGen, ModelMap model,
+	    		ModelParamForm form, ModelParameterGrouping grouping) {
+	        UserSession userSession = getUserSession(model);
+	    	try {
+		        List<ComponentDTO> components = sortComponentsByName(
+		                projectService.getComponents(project.getPrjid()));
+		        List<ModelParameterDTO> modelParams = sortBy(mp -> mp.getInputparameter().getQualifiedName(),
+		                scenGenService.getModelParameters(scenGen.getScengenid()));
+	            model.put("modelparamform", form);
+	            model.put("modelparams", modelParams);
+	            model.put("groups", sortBy(s -> s, grouping.getGroupsByName().keySet()));
+
+	            List<ComponentDTO> inputComponents = pickInputComponents(modelParams, components);
+	            model.put("inputcomponents", inputComponents);
+	            if (userSession.getComponentId() == 0 && !inputComponents.isEmpty()) {
+	                userSession.setComponentId(inputComponents.iterator().next().getComponentid());
+	            }
+	    	} catch (EntityNotFoundException e) {
+	            e.printStackTrace();
+	            return "redirect:/geneticalgorithm.html";
+	    	}
+	        return "editsgmodelparams";
+	    }
+
+	    public List<ComponentDTO> pickInputComponents(
+	            List<ModelParameterDTO> modelParams, List<ComponentDTO> components) {
+	        Set<Integer> componentIds = new HashSet<>();
+	        for (ModelParameterDTO mp : modelParams) {
+	            componentIds.add(mp.getInputparameter().getComponentComponentid());
+	        }
+	        return components.stream().filter(
+	                c -> componentIds.contains(c.getComponentid()))
+	                .collect(Collectors.toList());
+	    }
+
+	    public UserSession getUserSession(Map<String, Object> model) {
+	        UserSession userSession = (UserSession) model.get("usersession");
+	        if (userSession == null) {
+	            userSession = new UserSession();
+	            model.put("usersession", userSession);
+	        }
+	        return userSession;
+	    }
+
+	    public static <T> List<T> sortBy(Function<T, String> key, Collection<T> collection) {
+	        List<T> list = new ArrayList<>(collection);
+	        list.sort(Comparator.comparing(key,
+	                Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
+	        return list;
+	    }
+
+	    /// Sorts components by name, leaving the special CITYOPT component last.
+	    public List<ComponentDTO> sortComponentsByName(List<ComponentDTO> components) {
+	        List<ComponentDTO> list = new ArrayList<>(components);
+	        list.sort(Comparator.comparing(ComponentDTO::getName,
+	                Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
+	        for (Iterator<ComponentDTO> it = list.iterator(); it.hasNext();) {
+	            ComponentDTO comp = it.next();
+	            if (Namespace.CONFIG_COMPONENT.equals(comp.getName())) {
+	                it.remove();
+	                list.add(comp);
+	                break;
+	            }
+	        }
+	        return list;
+	    }
+
 	    public void changeLanguage(Map<String, Object> model, String language)
 	    {
 	    	UserSession session = (UserSession) model.get("usersession");
@@ -961,51 +1145,6 @@ public class ControllerService {
 			}	
 			return false;
 	    }
-	    
-	    /*public void getParetoOptimal(Set<ScenarioDTO> setScenarios, Map<Integer, Boolean> mapParetos)
-	    {
-	    	List<ObjectiveFunctionDTO> objFuncs = null;
-			
-			try {
-				objFuncs = scenGenService.getObjectiveFunctions(nScenGenId);
-			} catch (EntityNotFoundException e) {
-				e.printStackTrace();
-			}
-
-			if (objFuncs.size() == 0)
-			{
-				return;
-			}
-			
-		    ObjectiveFunctionDTO objFuncFirst = objFuncs.get(0);
-	
-			ArrayList<ObjectiveFunctionResultDTO> listResults = (ArrayList<ObjectiveFunctionResultDTO>) objFuncService.findResultsByScenarioGenerator(nScenGenId, objFuncFirst.getObtfunctionid());
-			Iterator<ObjectiveFunctionResultDTO> resultIter;
-			Iterator<ScenarioDTO> iterScenarios = setScenarios.iterator();
-			
-			while (iterScenarios.hasNext())
-			{
-				ScenarioDTO scen = iterScenarios.next();
-				int nScenId = scen.getScenid();
-				resultIter = listResults.iterator();
-				
-				if (scen.getScenariogenerator() == null)
-				{
-					mapParetos.put(new Integer(nScenId), new Boolean(false));
-				}
-
-				while (resultIter.hasNext())
-				{
-					ObjectiveFunctionResultDTO result = (ObjectiveFunctionResultDTO) resultIter.next();
-					
-					if (result.getScenID() == nScenId && result.isScengenresultParetooptimal())
-					{
-						mapParetos.put(new Integer(nScenId), new Boolean(true));
-					}
-				}	
-				mapParetos.put(new Integer(nScenId), new Boolean(false));
-			}
-	    }*/
 	    
 	    public String getSimulationTime(ScenarioDTO scenario)
 	    {

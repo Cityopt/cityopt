@@ -1,4 +1,4 @@
-package eu.cityopt.controller;
+package eu.cityopt.web;
 
 import java.sql.Date;
 import java.util.Map;
