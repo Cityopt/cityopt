@@ -56,6 +56,7 @@ import eu.cityopt.DTO.TimeSeriesDTO;
 import eu.cityopt.DTO.TimeSeriesValDTO;
 import eu.cityopt.repository.CustomQueryRepository;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.security.SecurityAuthorization;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentInputParamDTOService;
 import eu.cityopt.service.ComponentService;

@@ -26,9 +26,6 @@ public class InfoController {
     ControllerService controllerService;
     
     @Autowired
-    SecurityAuthorization securityAuthorization;
-
-    @Autowired
     ProjectService projectService;
 
     @Autowired

@@ -71,8 +71,6 @@ import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.DTO.UserGroupDTO;
 import eu.cityopt.DTO.UserGroupProjectDTO;
 import eu.cityopt.config.AppMetadata;
-//Contains Forms for UI
-import eu.cityopt.forms.ExternParamIDForm;
 import eu.cityopt.sim.eval.Type;
 
 import java.io.BufferedInputStream;
@@ -146,10 +144,9 @@ import eu.cityopt.DTO.UnitDTO;
 import eu.cityopt.DTO.UserGroupDTO;
 import eu.cityopt.DTO.UserGroupProjectDTO;
 import eu.cityopt.config.AppMetadata;
-//Contains Forms for UI
-import eu.cityopt.forms.ExternParamIDForm;
 import eu.cityopt.model.UserGroupProject;
 import eu.cityopt.repository.ProjectRepository;
+import eu.cityopt.security.SecurityAuthorization;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.AprosService;
 import eu.cityopt.service.ComponentInputParamDTOService;
@@ -187,6 +184,7 @@ import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.RoleForm;
 import eu.cityopt.web.ScenarioParamForm;
 import eu.cityopt.web.UnitForm;
+import eu.cityopt.web.UserForm;
 import eu.cityopt.web.UserManagementForm;
 import eu.cityopt.web.UserSession;
 import eu.cityopt.service.ImportService;

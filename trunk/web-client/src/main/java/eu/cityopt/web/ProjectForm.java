@@ -1,4 +1,4 @@
-package eu.cityopt.controller;
+package eu.cityopt.web;
 
 public class ProjectForm {
 	private String projectName;

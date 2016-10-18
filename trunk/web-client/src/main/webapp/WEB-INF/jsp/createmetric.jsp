@@ -58,7 +58,7 @@
 											<td class="error">${error}</td>
 										</tr>
 										<tr>
-											<td class="infosmall">
+											<td class="info">
 												<spring:message code="create_metric_instructions"/>
 											</td>
 										</tr>

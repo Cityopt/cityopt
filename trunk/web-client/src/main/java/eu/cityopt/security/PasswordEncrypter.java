@@ -1,4 +1,4 @@
-package eu.cityopt.crypting;
+package eu.cityopt.security;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
