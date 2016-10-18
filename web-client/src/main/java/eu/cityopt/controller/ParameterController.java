@@ -1468,7 +1468,8 @@ public class ParameterController {
     }
 
     @RequestMapping(value="createextparamset", method=RequestMethod.POST)
-    public String createExtParamSetPost(ExtParamValSetDTO extParamValSet, Map<String, Object> model) {
+    public String createExtParamSetPost(ExtParamValSetDTO extParamValSet, Map<String, Object> model,
+		HttpServletRequest request) {
         ProjectDTO project = (ProjectDTO) model.get("project");
 
         if (project == null)
