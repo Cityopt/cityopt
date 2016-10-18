@@ -10,6 +10,5 @@ public class EditUserForm {
 
 	@Getter @Setter private Map<Integer, String> names;
 	@Getter @Setter private Map<Integer, String> passwords;
-	@Getter @Setter private Map<Integer, Boolean> enables;
-			
+	@Getter @Setter private Map<Integer, Boolean> enables;		
 }
