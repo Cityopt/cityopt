@@ -1348,6 +1348,11 @@ public class ScenarioController {
         try {
 			while( (line = bufReader.readLine()) != null )
 			{
+				line = line.replace('<', ' ');
+				line = line.replace('>', ' ');
+				line = line.replace('&', ' ');
+				line = line.trim();
+				
 				if (line.length() > 140)
 				{
 					result.append(line.substring(0, 140));
