@@ -12,7 +12,7 @@
 
 <script>
     function openInfoWindow() {
-    	   window.open("editsgalgoparamval_info.html", '<spring:message code="edit_algorithm_parameter_values" /> info', 'width=510, height=600');
+    	   window.open("editsgalgoparamval_info.html", '<spring:message code="edit_algorithm_parameter_values" /> info', 'width=560, height=600');
     }
 </script>
 

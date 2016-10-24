@@ -40,7 +40,7 @@ pageEncoding="UTF-8"%>
 				<table>
 					<tr>
 						<td class="spacecolumn"></td>
-						<td><pre>${infotext}</pre></td>
+						<td><pre><c:out value="${infotext}"/></pre></td>
 						<td class="spacecolumn"></td>
 					</tr>
 				</table>

@@ -102,7 +102,6 @@
 								</td>								
 							</tr>						
 							<tr class="submit" height=50px;>
-								<td></td>
 								<td align="right">
 									<button style="width: 100px" type="submit" class="activebutton"><spring:message code="create"/></button>
 									<a href="usermanagement.html">

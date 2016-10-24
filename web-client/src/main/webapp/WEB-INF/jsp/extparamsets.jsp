@@ -148,18 +148,15 @@ var getUrlParameter = function getUrlParameter(sParam) {
 																	<td>${extParamVal.value}</td>
 																</tr>
 															</c:forEach>
-															</tr>
 														</table>
 													</td>
+												</tr>
+												<tr class="spacerowbig"></tr>
 												<tr>
-													</div>
 													<td></td>
 													<td></td>
-													<td></td>
-													<td>
-														<button class="activebutton" name="index" title="${submit_externalparameter}" type="submit"><spring:message code="ok" /></button>
-													</td>
 													<td align="right">
+														<button class="activebutton" name="index" title="${submit_externalparameter}" type="submit"><spring:message code="select" /></button>
 														<a href="${backpage}">
 															<button	type="button" title="${tooltip_close}">
 																<spring:message code="close" />
