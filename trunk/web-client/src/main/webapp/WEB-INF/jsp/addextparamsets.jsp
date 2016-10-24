@@ -13,65 +13,79 @@
 </head>
 
 <body>
-<table cellspacing="0px" cellpadding="0px">
-	<tr>
-		<td>
-			<%@ include file="mainmenu.inc"%>
-		</td>
-		<td width=30></td>
-		<td>
-			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
-			<h1><spring:message code="create_external_param_set"/></h1>
-
-			<table align="center">
-				<col style="width:30px">
-				<col style="width:250px">
-				<col style="width:30px">
-				<col style="width:250px">
-				<tr>
-					<td></td>
+<table cellspacing="0" cellpadding="0">
+    <tr>
+        <td>
+            <%@ include file="mainmenu.inc"%>
+        </td>
+        <td valign="top">
+			<div style="overflow: auto; height: 100%; width: 500px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<spring:message code="external_param_sets"/>
-					</td>
-					<td></td>
-					<td>
-						<spring:message code="variables"/>
-					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td>
-						<table class="tablestyle">
-							<col style="width:250px">
-									
-							<c:forEach items="${extparamsets}" var="extParamSet">
+						<table width="100%">
 							<tr>
-								<td>${extParamSet.name}</td>
-						   	</tr>
-							</c:forEach>
-						</table>		
-					</td>
-					<td></td>
-					<td>
-						<table class="tablestyle">
-							<col style="width:250px">
-									
-							<c:forEach items="${extparams}" var="extParam">
-							<tr>
-								<td>${extParam.name}</td>
-						   	</tr>
-							</c:forEach>
-						</table>		
-					</td>
-				</tr>
-				<tr height="10">
-					<td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="add_external_param_set_small"/></td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 				<tr>
-					<td></td>
-					<td align="right"><a href="addextparamsets.html"><button class="activebutton" type="button"><spring:message code="accept"/></button></a>
-					<a href="editoptimizationset.html"><button style="width:100px" type="button" value="Cancel"><spring:message code="cancel"/></button></a></td>
+					<td>
+						<table align="center">
+							<col style="width:30px">
+							<col style="width:250px">
+							<col style="width:30px">
+							<col style="width:250px">
+							<tr>
+								<td></td>
+								<td>
+									<spring:message code="external_param_sets"/>
+								</td>
+								<td></td>
+								<td>
+									<spring:message code="variables"/>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>
+									<table class="tablestyle">
+										<col style="width:250px">
+												
+										<c:forEach items="${extparamsets}" var="extParamSet">
+										<tr>
+											<td>${extParamSet.name}</td>
+									   	</tr>
+										</c:forEach>
+									</table>		
+								</td>
+								<td></td>
+								<td>
+									<table class="tablestyle">
+										<col style="width:250px">
+												
+										<c:forEach items="${extparams}" var="extParam">
+										<tr>
+											<td>${extParam.name}</td>
+									   	</tr>
+										</c:forEach>
+									</table>		
+								</td>
+							</tr>
+							<tr height="10">
+								<td>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td align="right"><a href="addextparamsets.html"><button class="activebutton" type="button"><spring:message code="accept"/></button></a>
+								<a href="editoptimizationset.html"><button style="width:100px" type="button" value="Cancel"><spring:message code="cancel"/></button></a></td>
+							</tr>
+						</table>
+					</td>
 				</tr>
 			</table>
 			</div>

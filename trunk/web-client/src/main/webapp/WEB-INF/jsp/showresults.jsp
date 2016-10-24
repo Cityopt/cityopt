@@ -26,7 +26,7 @@
 					<td>
 						<table width="100%">
 							<tr>
-								<td><spring:message code="optimization_results"/></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="optimization_results_small"/></td>
 							</tr>
 						</table>
 					</td>

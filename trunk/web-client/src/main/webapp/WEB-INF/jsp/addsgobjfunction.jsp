@@ -25,7 +25,7 @@
 					<td>
 						<table width="100%">
 							<tr>
-								<td><spring:message code="add_objective_function"/></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="add_objective_function_small"/></td>
 							</tr>
 						</table>
 					</td>

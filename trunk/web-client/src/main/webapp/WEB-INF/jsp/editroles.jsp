@@ -49,27 +49,16 @@
 					<td valign="top">
 						<table>
 							<tr>
-								<td>
-									<table align="left">
-										<col style="width:80px">
-										<col style="width:250px">
-									
-										<tr>
-											<td>
-												<!--Name-->
-												<spring:message code="name"/>:
-											</td>
-											<td>
-												${user.name}
-											</td>
-										</tr>
-										<tr height="10">
-											<td>
-											</td>
-										</tr>
-									</table>
+								<td class="infosmall">
+									<spring:message code="name"/>
 								</td>
 							</tr>
+							<tr>
+								<td class="activeline">
+									${user.name}
+								</td>
+							</tr>
+							<tr class="spacerowbig"></tr>
 							<tr>
 								<td class="active">
 									<!-- User roles -->

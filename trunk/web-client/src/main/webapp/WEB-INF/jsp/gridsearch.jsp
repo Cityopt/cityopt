@@ -37,7 +37,7 @@ function openInfoWindow() {
 					<td>
 						<table width="100%">
 							<tr>
-								<td><spring:message code="grid_search"/></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="grid_search_small"/></td>
 								<td align="left" width="40">
 									<div class="round-button">
 										<div class="round-button-circle">

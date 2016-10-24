@@ -21,26 +21,35 @@
 </head>
 
 <body>
-<table cellspacing="0" cellpadding="0">
+<table cellspacing="0px" cellpadding="0px">
 	<tr>
 		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="30"></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:auto;width:1100px;overflow:auto">
-			<table>
-				<col style="width:30px">
-				<col style="width:750px">	
-				<tr>
-					<td colspan="2" height="80">
-						<!-- Project data -->
-						<h1><spring:message code="project_data"/></h1>
+			<div style="overflow:scroll;height:100%;width:100%;overflow:auto">
+			<table class="maintablewide">
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td colspan="2">
+						<table width="100%">
+							<tr>
+								<td class="spacecolumn"></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="project_data_small"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
+				<tr class="spacerowbig"></tr>
 				<tr>
-					<td>
-					</td>
+					<td class="spacecolumn"></td>
 					<td>
 						<table>
 							<tr>

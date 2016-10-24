@@ -32,7 +32,7 @@
 						<table width="100%">
 							<tr>
 								<td class="spacecolumn"></td>
-								<td><spring:message code="createproject"/></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="create_project_small"/></td>
 								<td align="left" width="40">
 									<div class="round-button">
 										<div class="round-button-circle">
@@ -100,7 +100,7 @@
 														<input disabled="disabled" type="submit" title="${tooltip_create_project}" value="<spring:message code="createproject"/>" style="width:120px">
 													</c:when>
 													<c:otherwise>
-														<button class="activebutton" type="submit" style="width:120px" title="${tooltip_create_project}"><spring:message code="createproject"/></button>
+														<button class="activebutton" type="submit" style="width:150px" title="${tooltip_create_project}"><spring:message code="createproject"/></button>
 													</c:otherwise>
 												</c:choose>
 											</td>							

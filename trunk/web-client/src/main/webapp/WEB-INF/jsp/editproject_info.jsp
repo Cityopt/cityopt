@@ -13,7 +13,7 @@
 	<table class="maintablehelppage">
 		<tr class="spacerowbig"></tr>
 		<tr>
-			<td class="spacecolumn"></td>
+			<td class="spacecolumnsmall"></td>
 			<td>
 				<table width="100%">
 					<tr class="titlerow">
@@ -30,10 +30,10 @@
 					</tr>
 				</table>
 			</td>
-			<td class="spacecolumn"></td>
+			<td class="spacecolumnsmall"></td>
 		</tr>
 		<tr>
-			<td class="spacecolumn"></td>
+			<td class="spacecolumnsmall"></td>
 			<td>
 				<table>
 					<tr>
@@ -41,7 +41,7 @@
 						<td><spring:message code="edit_project_info_text"/></td>
 					</tr>
 				</table>
-			<td class="spacecolumn"></td>
+			<td class="spacecolumnsmall"></td>
 		</tr>
 	</table>
 </body>

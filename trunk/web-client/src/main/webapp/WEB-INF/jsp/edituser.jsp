@@ -55,18 +55,23 @@
 										<col style="width:250px">
 									
 										<tr>
-											<td class="regular">
+											<td class="infosmall">
 												<!--Name-->
-												<spring:message code="name"/>:
-											</td>
-											<td>
-												${user.name}
+												<spring:message code="name"/>
 											</td>
 										</tr>
 										<tr>
-											<td class="regular">
-												<spring:message code="password"/>*:
+											<td class="activeline">
+												${user.name}
 											</td>
+										</tr>
+										<tr class="spacerow"></tr>
+										<tr>
+											<td class="infosmall">
+												<spring:message code="password"/>*
+											</td>
+										</tr>
+										<tr>
 											<td>
 												<form:input style="width:300px" title="${tooltip_edit}" type="text" path="password"/>
 											</td>
@@ -79,7 +84,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td align="right">
+								<td align="left">
 									<button class="activebutton" type="submit" style="width:100px">Update</button>
 									<a href="usermanagement.html"><button style="width:100px" type="button" value="Back"><spring:message code="back"/></button></a>
 								</td>

@@ -30,7 +30,7 @@
 					<td>
 						<table width="100%">
 							<tr>
-								<td><spring:message code="create_constraint"/></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="create_constraint_small"/></td>
 							</tr>
 						</table>
 					</td>

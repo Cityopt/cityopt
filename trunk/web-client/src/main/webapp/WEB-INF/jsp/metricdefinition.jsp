@@ -32,7 +32,7 @@
 						<table width="100%">
 							<tr>
 								<td class="spacecolumn"></td>
-								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="project_metrics"/></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="project_metrics_small"/></td>
 							</tr>
 						</table>
 					</td>

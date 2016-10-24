@@ -16,14 +16,20 @@
         <td>
             <%@ include file="mainmenu.inc"%>
         </td>
-        <td width="30"></td>
         <td valign="top">
-            <table>
-                <tr>
-                    <td>
-                        <h1><spring:message code="add_constraint"/></h1>
-                    </td>
-                </tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
+					<td>
+						<table width="100%">
+							<tr>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="add_constraint_small"/></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
                 <tr>
                     <td>
                         <table>

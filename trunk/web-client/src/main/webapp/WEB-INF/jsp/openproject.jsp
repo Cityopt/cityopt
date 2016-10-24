@@ -30,7 +30,7 @@
 					<td>
 						<table width="100%">
 							<tr>
-								<td><spring:message code="openproject"/></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="open_project_small"/></td>
 							</tr>
 						</table>
 					</td>

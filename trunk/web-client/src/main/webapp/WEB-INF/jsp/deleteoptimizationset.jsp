@@ -26,7 +26,7 @@
 							<table width="100%">
 								<tr>
 									<td>
-	                           			<font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="delete_optimization_set"/>
+	                           			<font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="delete_optimization_set_small"/>
 									</td>
 								</tr>
 							</table>

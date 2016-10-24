@@ -11,10 +11,10 @@
 <head>
 <c:choose>
   <c:when test="${decisionvarid > 0}">
-    <title>CityOpt <spring:message code="edit_decision_variable"/></title>
+    <title>CityOpt <spring:message code="edit_decision_variable_small"/></title>
   </c:when>
   <c:otherwise>
-    <title>CityOpt <spring:message code="create_decision_variable"/></title>
+    <title>CityOpt <spring:message code="create_decision_variable_small"/></title>
   </c:otherwise>
 </c:choose>  
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
@@ -38,12 +38,13 @@
 						<table width="100%">
 							<tr>
 								<td>
+									<font class="activeproject">${project.name}</font>&nbsp;&nbsp;
 									<c:choose>
 	                        			<c:when test="${decisionvarid > 0}">
-		                            		<spring:message code="edit_decision_variable"/>
+		                            		<spring:message code="edit_decision_variable_small"/>
 			                        	</c:when>
 		        	                  	<c:otherwise>
-	                            			<spring:message code="create_decision_variable"/>
+	                            			<spring:message code="create_decision_variable_small"/>
 			                			</c:otherwise>
 	                        		</c:choose> 
 								</td>                        
