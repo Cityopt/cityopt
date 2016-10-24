@@ -29,7 +29,7 @@
 					<td>
 						<table width="100%">
 							<tr>
-								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="external_parameters"/></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="external_parameters_small"/></td>
 							</tr>
 						</table>
 					</td>

@@ -29,14 +29,10 @@
 						<table width="100%">
 							<tr>
 								<td>
-                           			<spring:message code="account_creation"/>
+									<font class="activeproject">${project.name}</font>&nbsp;&nbsp;
+                           			<spring:message code="create_user_small"/>
 								</td>
 								<td align="left" width="40">
-									<div class="round-button">
-										<div class="round-button-circle">
-											<a href="" onclick="openInfoWindow()">?</a>
-										</div>
-									</div>
 								</td>
 							</tr>
 						</table>
@@ -62,32 +58,40 @@
 							<col style="width: 300px">
 							
 							<tr class="username">								
-								<td class="infosmall"><label for="projectname"><spring:message code="username" />*:</label></td>
+								<td class="infosmall"><label for="projectname"><spring:message code="username" />*</label></td>
+							</tr>
+							<tr>								
 								<c:set var="tooltip_name"><spring:message code="tooltip_create_user_name"/></c:set>									
 								<td><form:input style="width:300px" type="text" path="name" title="${tooltip_name}"/></td>
 								<td><form:errors path="name" cssClass="error"/></td>								
 							</tr>
 							
+							<tr class="spacerow"></tr>
 							<tr class="password">							
-								<td class="infosmall"><label for="location"><spring:message code="password" />*:</label></td>
+								<td class="infosmall"><label for="location"><spring:message code="password" />*</label></td>
+							</tr>
+							<tr>
 								<c:set var="tooltip_password"><spring:message code="tooltip_create_user_password"/></c:set>								
 								<td><form:input style="width:300px" type="text"	path="password" title="${tooltip_password}" /></td>
 								<td><form:errors path="password" cssClass="error"/></td>
 							</tr>
+							<tr class="spacerow"></tr>
 							
 							<tr class="enabled">	
 								<td class="infosmall"><spring:message code="activate" />
 								<c:set var="tooltip_enabled"><spring:message code="tooltip_enable_user"/></c:set>
-								<td><form:radiobutton path="enabled" value="true" checked="checked" title="${tooltip_enabled}" /> 
+								<form:radiobutton path="enabled" value="true" checked="checked" title="${tooltip_enabled}" /> 
 								<spring:message code="yes" /> 
 									<form:radiobutton path="enabled" value="false" title="${tooltip_enabled}" /> 
 								<spring:message code="no" />
 								</td>
-								<td>
 							</tr>
+							<tr class="spacerow"></tr>
 							
 							<tr>							
-								<td class="infosmall"><spring:message code="role" />:</td>
+								<td class="infosmall"><spring:message code="role" /></td>
+							</tr>
+							<tr>
 								<td>
 								<c:set var="tooltip_role"><spring:message code="tooltip_role"/></c:set>	
 								<form:select path="role" title="${tooltip_role}" >

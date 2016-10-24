@@ -33,7 +33,7 @@
 						<table width="100%">
 							<tr>
 								<td class="spacecolumn"></td>
-								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="import_data"/></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="import_data_small"/></td>
 								<td align="left" width="40">
 									<div class="round-button">
 										<div class="round-button-circle">
@@ -90,14 +90,11 @@
 				        						<td></td>
 				        						<td>
 				        							<!--Import file-->
-				        							<input type="submit" value="<spring:message code="import_file"/>">
-													<a href="projectdata.html">
-														<button><spring:message code="show_project_data"/></button>
-													</a>
+				        							<input type="submit" style="width: 155px" value="<spring:message code="import_file"/>">
 				       							</td>
 				   							</tr>	
 			    						</form:form>
-			    						<tr class="spacerowbig"></tr>
+		    							<tr class="spacerowbig"></tr>
 										<tr><td colspan="2" class="info"><spring:message code="import_scenarios"/></td></tr>
 			    						<tr><td colspan="3" class="activeline"></td></tr>
 			    						<tr>
@@ -117,15 +114,11 @@
 				        						<td></td>
 												<td>
 				        							<!-- Import file -->
-				        							<input type="submit" value="<spring:message code="import_files"/>">
-					       							<a href="showscenarios.html">
-														<button style="width:150px">
-															<spring:message code="show_scenarios"/>
-														</button>
-													</a>
-												</td>
-				   							</tr>	
-			    						</form:form>
+				        							<input type="submit" style="width: 155px" value="<spring:message code="import_files"/>"/>
+			        							</td>
+		        							</tr>
+			    							</form:form>
+			    							
 			    						<tr class="spacerowbig"></tr>
 			    						<tr><td colspan="2" class="info"><spring:message code="import_database_optimization_set"/></td></tr>
 			    						<tr><td colspan="3" class="activeline"></td></tr>
@@ -256,6 +249,34 @@
 												</a>
 											</td>
 										</tr>
+										<tr style="height: 10px"></tr>
+			    						<tr>
+											<td class="info">
+												<spring:message code="project_data"/>
+											</td>
+										</tr>
+										<tr>
+			    							<td class="activeline">
+												<a href="projectdata.html">
+													<button style="width: 200px; margin-top: 7px"><spring:message code="show_project_data"/></button>
+												</a>
+											</td>
+										</tr>
+										<tr style="height: 10px"></tr>
+		    							<tr>
+											<td class="info">
+												<spring:message code="scenario_data"/>
+											</td>
+										</tr>
+										<tr>
+		    								<td class="activeline">
+				       							<a href="showscenarios.html">
+													<button style="width: 200px; margin-top: 7px">
+														<spring:message code="show_scenarios"/>
+													</button>
+												</a>
+											</td>
+			   							</tr>	
 									</table>
 								</td>
 							</tr>

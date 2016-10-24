@@ -26,7 +26,7 @@
 					<td>
 						<table width="100%">
 							<tr>
-								<td><spring:message code="update_obj_func"/> step 2</td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="update_obj_func_small"/> step 2</td>
 							</tr>
 						</table>
 					</td>

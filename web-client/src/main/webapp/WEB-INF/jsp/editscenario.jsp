@@ -19,7 +19,7 @@
     	   window.open("editscenario_info.html",'<spring:message code="edit_scenario_info"/>','width=510,height=600,scrollbars=yes');
     }
     function openSimulationInfoWindow() {
- 	   window.open("simulationinfo.html",'<spring:message code="simulation_info"/>','width=1400,height=600,scrollbars=yes');
+ 	   window.open("simulationinfo.html",'<spring:message code="simulation_info"/>','width=1225,height=600,scrollbars=yes');
 	}
 </script>
 
@@ -40,7 +40,7 @@
 					<td>
 						<table width="100%">
 							<tr>
-								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="edit_scenario"/></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="edit_scenario_small"/></td>
 								<td align="left" width="40">
 									<div class="round-button">
 										<div class="round-button-circle">

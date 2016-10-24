@@ -103,7 +103,7 @@
 							<table width="100%">
 								<tr>
 									<td>
-	                           			<spring:message code="usermanagement"/>
+	                           			<spring:message code="user_management"/>
 									</td>
 								</tr>
 							</table>

@@ -33,7 +33,8 @@
 						<table width="100%">
 							<tr>
 								<td>
-                           			<spring:message code="edit_algorithm_parameter_values"/>
+									<font class="activeproject">${project.name}</font>&nbsp;&nbsp;
+                           			<spring:message code="edit_algorithm_parameter_values_small"/>
 								</td>
 								<td align="left" width="40">
 									<div class="round-button">

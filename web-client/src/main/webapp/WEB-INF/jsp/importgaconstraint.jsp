@@ -25,7 +25,7 @@
 						<table width="100%">
 							<tr>
 								<td>
-                           			<spring:message code="import_genetic_constraints"/>
+                           			<font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="import_constraint_small"/>
 								</td>
 							</tr>
 						</table>

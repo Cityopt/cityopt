@@ -97,8 +97,17 @@ h2.error {
 	cellspacing: 0px;
 }
 
-.maintablehelppage {
+.maintablehelppagebig {
 	width: 500px;
+	border-collapse: collapse;
+	margin: 0px;
+	padding: 0px;
+	cellpadding: 0px;
+	cellspacing: 0px;
+}
+
+.maintablehelppagebig {
+	width: 1100px;
 	border-collapse: collapse;
 	margin: 0px;
 	padding: 0px;
@@ -120,6 +129,10 @@ h2.error {
 
 .spacecolumn {
 	width: 30px;
+}
+
+.spacecolumnsmall {
+	width: 20px;
 }
 
 .spacerow {

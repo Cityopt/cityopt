@@ -11,14 +11,40 @@
 </head>
 
 <body>	
-	<table class="infopage">
+	<table class="maintablehelppagebig">
+		<tr class="spacerowbig"></tr>
 		<tr>
-			<td class="spacecolumn"></td>
-			<td><h1>${title}</h1></td>
+			<td class="spacecolumnsmall"></td>
+			<td>
+				<table width="100%">
+					<tr class="titlerow">
+						<td colspan="1">
+							<table width="100%">
+								<tr>
+									<td class="spacecolumn"></td>
+									<td><font class="activeproject">${title}</font>&nbsp;&nbsp;Info</td>
+									<td align="left" width="40">
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td class="spacecolumnsmall"></td>
 		</tr>
 		<tr>
-			<td class="spacecolumn"></td>
-			<td><p>${infotext}</p></td>
+			<td class="spacecolumnsmall"></td>
+			<td>
+				<table>
+					<tr>
+						<td class="spacecolumn"></td>
+						<td><p>${infotext}</p></td>
+						<td class="spacecolumn"></td>
+					</tr>
+				</table>
+			</td>
+			<td class="spacecolumnsmall"></td>
 		</tr>
 	</table>
 </body>

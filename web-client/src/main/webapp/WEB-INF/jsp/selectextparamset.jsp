@@ -27,7 +27,7 @@
 					<td>
 						<table width="100%">
 							<tr>
-								<td><spring:message code="select_external_parameter_set"/></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="select_external_parameter_set_small"/></td>
 								<td align="left" width="40">
 									<div class="round-button">
 										<div class="round-button-circle">

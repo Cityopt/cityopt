@@ -14,19 +14,32 @@
 <form:input type="hidden" path="extParamValSet.extparamvalsetid"/>
 <form:input type="hidden" path="extParamValSet.name"/>
 <input type="hidden" name="context" value="${context}"/>
-<table cellspacing="0" cellpadding="0">
+<table cellspacing="0px" cellpadding="0px">
 	<tr>
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="30"></td>
 		<td valign="top">
-          <table style="width: 450px">
-               <tr>
-	               <td>
-	                  <h1><spring:message code="edit_external_parameter_set"/></h1>
-	               </td>
-               </tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
+					<td>
+						<table width="100%">
+							<tr>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="edit_external_parameter_value_set_small"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
               <tr>
 	              <td>
 	                <spring:message code="external_parameter_set"/>: ${extparamvalset.name}
@@ -67,6 +80,7 @@
                   </td>
               </tr>   
 			</table>
+		</div>
 		</td>
 	</tr>
 </table>

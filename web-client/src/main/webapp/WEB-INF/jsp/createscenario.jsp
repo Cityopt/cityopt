@@ -26,7 +26,7 @@
 					<td>
 						<table width="100%">
 							<tr>
-								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="create_scenario"/></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="create_scenario_small"/></td>
 							</tr>
 						</table>
 					</td>

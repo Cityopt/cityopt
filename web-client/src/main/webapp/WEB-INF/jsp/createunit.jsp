@@ -16,47 +16,66 @@
 <body>
 <table cellspacing="0px" cellpadding="0px">
 	<tr>
-		<td>
-			<%@ include file="mainmenu.inc"%>
-		</td>
-		<td width=30></td>
+		<td><%@ include file="mainmenu.inc"%></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
 			<form:form method="post" action="createunit.html" modelAttribute="unitForm">
-			
-			<!-- Create unit -->
-			<h1><spring:message code="create_unit"/></h1>
-
-			<table align="center">
-				<col style="width:150px">
-				<col style="width:300px">
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-					<!-- Name -->
-					<spring:message code="name"/>*
-					</td>
-					<td>
-						<form:input style="width:300px" type="text" path="name"/>
-					</td>
-				</tr>
-				<tr height="10">
-					<td>
-					<!-- Type -->
-					<spring:message code="type"/>
-					</td>
-					<td>
-						<form:select path="type" items="${types}" style="width: 300px" />
+						<table width="100%">
+							<tr>
+								<td>
+                           			<spring:message code="create_unit"/>
+								</td>
+								<td align="left" width="40">
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 				<tr>
-					<td></td>
-					<td align="right"><button class="activebutton" style="width:100px" type="submit"><spring:message code="create"/></button>
-					<a href="units.html"><button style="width:100px" type="button" value="Cancel"><spring:message code="cancel"/></button></a></td>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
+						<table>
+							<tr>
+								<td class="infosmall">
+									<spring:message code="name"/>*
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<form:input style="width:300px" type="text" path="name"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="infosmall">
+									<spring:message code="type"/>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<form:select path="type" items="${types}" style="width: 300px" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right"><button class="activebutton" style="width:100px" type="submit"><spring:message code="create"/></button>
+									<a href="units.html"><button style="width:100px" type="button" value="Cancel"><spring:message code="cancel"/></button></a>
+								</td>
+							</tr>
+						</table>
+					</td>
 				</tr>
 			</table>
 			
-			</form:form>
 			</div>
+			</form:form>
 		</td>
      </tr>
 </table>

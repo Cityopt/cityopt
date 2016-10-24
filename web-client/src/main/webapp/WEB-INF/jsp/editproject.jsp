@@ -10,10 +10,10 @@
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <script>
     function openModelInfoWindow() {
-   		window.open("simmodelinfo.html",'<spring:message code="model_info"/>','width=1200,height=600,scrollbars=yes');
+   		window.open("simmodelinfo.html",'<spring:message code="model_info"/>','width=1130,height=600,scrollbars=yes');
     }
     function openInfoWindow() {
- 		window.open("editproject_info.html",'<spring:message code="edit_project_info"/>','width=510,height=600,scrollbars=yes');
+ 		window.open("editproject_info.html",'<spring:message code="edit_project_info"/>','width=508,height=600,scrollbars=yes');
  	}
 </script>
 </head>
@@ -34,7 +34,7 @@
 						<table width="100%">
 							<tr>
 								<td class="spacecolumn"></td>
-								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="editproject"/></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="edit_project_small"/></td>
 								<td align="left" width="40">
 									<div class="round-button">
 										<div class="round-button-circle">

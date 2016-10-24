@@ -50,7 +50,7 @@
 						<form:form method="post" modelAttribute="user">
 						<table align="center">
 							<col style="width:100px">
-							<col style="width:300px">
+							<col style="width:250px">
 							<tr>
 								<td>
 									<!-- User -->
@@ -67,7 +67,7 @@
 								</td>
 								<td>
 									<!-- Roletypes: Guest, Standard, Expert, Administrator -->
-									<select name="roleType" id="roleType" size="1">
+									<select name="roleType" id="roleType" size="1" style="width: 200px">
 										<option value="Guest" selected><spring:message code="guest"/></option>
 										<option value="Standard"><spring:message code="standard"/></option>
 										<option value="Expert"><spring:message code="expert"/></option>
@@ -75,57 +75,28 @@
 									</select>
 								</td>
 							</tr>
-							<c:forEach items="${userRoles}" var="projectRole">
-								<tr>
-									<td>							    	
-							    		<form:select path="role">
-							    			<option value="${projectRole.usergroup.name}" selected>${projectRole.usergroup.name}</option>
-							    				<c:forEach items="${userGroups}" var="userGroup">
-							    					<option value="${userGroup.usergroupid}">${userGroup.name}</option>							    			
-							    				</c:forEach>
-							    		</form:select>
-							   		</td> 	
-							    								    	
-									<td>
-										<form:select path="project">
-												<option value="${projectRole.project.name}"	selected>${projectRole.project.name}</option>
-										<c:forEach items="${projects}" var="project">
-												<option value="${project.name}">${project.name}</option>
-										</c:forEach>								
-										</form:select>								
-									</td>
-									
-									<td>
-										<c:set var="tooltip_delete"><spring:message code="tooltip_delete"/></c:set>	
-										<a href="<c:url value='removerole.html?userid=${user.userid}&projectid=${projectRole.usergroupprojectid}'/>" title="${tooltip_delete}"
-										 onclick="return confirm('<spring:message code="confirm_project_deletion"/>')">
-											<button align="right" type="button"><spring:message code="remove"/></button>
-										</a>
-									</td>
-							   	</tr>
-							</c:forEach>
 							<tr>
 								<td>
 									<!--Project-->
 									<spring:message code="project"/>
 								</td>
 								<td>
-									<select name="roleProjectId" id="roleProjectId" size="1">
+									<select name="roleProjectId" id="roleProjectId" size="1" style="width: 200px">
 										<c:forEach items="${projects}" var="project">
 											<option value="${project.prjid}">${project.name}</option>
 										</c:forEach>	
 									</select>
 								</td>
 							</tr>
+							<tr class="spacerowbig"></tr>
 							<tr>
 								<td></td>
-								<td align="right">
+								<td align="left">
 									<button class="activebutton" style="width:100px" type="submit"><spring:message code="create_role"/></button>
 									<a href="editroles.html?userid=${user.userid}"><button style="width:100px" type="button" value="Cancel">
 									<spring:message code="cancel"/></button></a></td>
 							</tr>
 						</table>
-						
 						</form:form>
 					</td>
 				</tr>

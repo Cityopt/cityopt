@@ -11,28 +11,35 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>CityOpt <spring:message code="edit_constraint"/></title>
+<title>CityOpt <spring:message code="edit_constraint_small"/></title>
 <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 </head>
 <body>
 <form:form method="post" action="editconstraint.html" modelAttribute="constraint">
-<table cellspacing="0" cellpadding="0">
+<table cellspacing="0px" cellpadding="0px">
 	<tr>
 		<td>
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width="30"></td>
 		<td valign="top">
-			<table>
-				<tr>
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
 					<td>
-						<h2 class="error">${error}</h2>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<!--Edit constraint-->
-						<h1><spring:message code="edit_constraint"/></h1>
+						<table width="100%">
+							<tr>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="edit_constraint_small"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 				<tr>
@@ -194,6 +201,7 @@
 					</td>
 				</tr>
 			</table>
+			</div>
 		</td>
 	</tr>
 </table>

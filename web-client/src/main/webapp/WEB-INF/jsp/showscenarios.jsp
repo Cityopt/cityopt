@@ -20,40 +20,67 @@
 		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:100%;width:900px;overflow:auto">
-			<table>
-				<tr>
-					<td>
-						<!-- Show scenarios -->
-						<h1><spring:message code="show_scenarios"/></h1>
-						<table class="tablestyle" width="600" border="1">
-							<col style="width:200px">	
-							<col style="width:250px">
-																												
-							<tr height="20">
-								<!-- Name -->
-							    <th><spring:message code="name"/></th>
-							    <!-- Description -->
-							    <th><spring:message code="description"/></th>
-							</tr>
-											
-							<c:forEach items="${scenarios}" var="scenario">
+			<div style="overflow:scroll;height:100%;width:100%;overflow:auto">
+			<table class="maintable">
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td colspan="2">
+						<table width="100%">
 							<tr>
-								<td>${scenario.name}</td>
-								<td>${scenario.description}</td>			
-						   	</tr>
-							</c:forEach>				
+								<td class="spacecolumn"></td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="scenario_data_small"/></td>
+								<td align="left" width="40">
+									<div class="round-button">
+										<div class="round-button-circle">
+											<a href="" onclick="openInfoWindow()">?</a>
+										</div>
+									</div>
+								</td>
+							</tr>
 						</table>
 					</td>
-			    </tr>
-		       	<tr>
-		       		<!-- Back -button -->
-			   		<td align="right">
-			   			<a href="importdata.html"><button type="button">
-			   			<spring:message code="back"/></button></a>
-			   		</td>
+				</tr>
+				<tr class="spacerowbig"></tr>
+				<tr>
+					<td valign="top">
+						<table>
+							<tr>
+								<td class="spacecolumn"></td>
+								<td valign="top">
+									<b><spring:message code="scenarios"></spring:message></b>
+									<table class="tablestyle" width="600">
+										<col style="width:200px">	
+										<col style="width:250px">
+																															
+										<tr height="20">
+											<!-- Name -->
+										    <th><spring:message code="name"/></th>
+										    <!-- Description -->
+										    <th><spring:message code="description"/></th>
+										</tr>
+														
+										<c:forEach items="${scenarios}" var="scenario">
+										<tr>
+											<td>${scenario.name}</td>
+											<td>${scenario.description}</td>			
+									   	</tr>
+										</c:forEach>				
+									</table>
+								</td>
+								<td class="spacecolumn"></td>
+						    </tr>
+					       	<tr>
+					       		<td class="spacecolumn"></td>
+						   		<td align="right">
+						   			<a href="importdata.html"><button type="button">
+						   			<spring:message code="back"/></button></a>
+						   		</td>
+								<td class="spacecolumn"></td>
+						   	</tr>
+						   	<tr height="100%"><td></td></tr>
+					   	</table>
+				   	</td>
 			   	</tr>
 		    </table>
 			</div>

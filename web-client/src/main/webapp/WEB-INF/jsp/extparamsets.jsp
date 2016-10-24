@@ -47,7 +47,8 @@ var getUrlParameter = function getUrlParameter(sParam) {
 						<td>
 							<table width="100%">
 								<tr>
-									<td><spring:message code="external_parameter_sets"/></td>
+									<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="external_parameter_sets_small"/></td>
+								</tr>
 							</table>
 						</td>
 					</tr>

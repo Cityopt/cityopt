@@ -30,7 +30,7 @@
 					<td>
 						<table width="100%">
 							<tr>
-								<td><spring:message code="create_obj_func"/> step 1</td>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="create_obj_func_small"/> step 1</td>
 								<td align="left" width="40">
 									<div class="round-button">
 										<div class="round-button-circle">

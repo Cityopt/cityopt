@@ -29,7 +29,7 @@
 						<table width="100%">
 							<tr>
 								<td align="left">
-			                        <spring:message code="edit_obj_func"/>
+			                        <font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="edit_obj_func_small"/>
 								</td>
 							</tr>
 						</table>

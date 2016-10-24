@@ -14,22 +14,26 @@
 </head>
 
 <body>
-<table cellspacing="0px" cellpadding="0px">
+<table cellspacing="0" cellpadding="0">
 	<tr>
-		<td>
+		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
-
-		<td width=30></td>
 		<td valign="top">
-			<div style="overflow:scroll;height:500px;width:500px;overflow:auto">
+			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
 			<form:form method="post" action="editinputparamvalue.html?inputparamvalid=${inputParamVal.inputparamvalid}" modelAttribute="inputParamVal">
-			<h1><spring:message code="edit_input_parameter_value"/></h1>
-
-			<table align="center">
-				<col style="width:150px">
-				<col style="width:80px">
-				<col style="width:80px">
+			<table class="maintable">			
+				<%@ include file="toprow.inc"%>
+				<tr class="titlerow">
+					<td class="spacecolumn"></td>
+					<td>
+						<table width="100%">
+							<tr>
+								<td><font class="activeproject">${project.name}</font>&nbsp;&nbsp;<spring:message code="edit_objective_function_small"/></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
 				<tr>
 					<td>
 						<!-- Name -->
