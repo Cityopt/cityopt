@@ -1408,6 +1408,15 @@ public class ParameterController {
         Iterator<ExtParamDTO> iter = extParams.iterator();
         Set<ExtParamValDTO> extParamVals = new HashSet<ExtParamValDTO>();
 
+        if (extParams.isEmpty())
+        {
+        	model.put("error", controllerService.getMessage("external_parameters_missing", request));
+        	List<ExtParamValSetDTO> extParamValSets = projectService.getExtParamValSets(project.getPrjid());
+            model.put("extParamValSets", extParamValSets);
+            model.put("project", project);
+        	return "selectextparamset";
+        }
+        
         while (iter.hasNext())
         {
             ExtParamDTO extParam = iter.next();
