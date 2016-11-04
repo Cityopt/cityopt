@@ -24,6 +24,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.time.Day;
 import org.jfree.data.time.Hour;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
@@ -551,7 +552,10 @@ public class VisualizationController {
 			}
 			
 			if (userSession.getTimeSeriesChartType() == 0) {
-				chart = TimeSeriesVisualization.createChart(timeSeriesCollection, controllerService.getMessage("time_series", request), controllerService.getMessage("date", request), controllerService.getMessage("value", request));
+				chart = TimeSeriesVisualization.createChart(timeSeriesCollection, 
+					controllerService.getMessage("time_series", request), 
+					controllerService.getMessage("date", request), 
+					controllerService.getMessage("value", request), true);
 			} else if (userSession.getTimeSeriesChartType() == 1) {
 				chart = ScatterPlotVisualization.createChart(timeSeriesCollection, controllerService.getMessage("scatter_plot", request), controllerService.getMessage("date", request), controllerService.getMessage("value", request), true);
 			} 
@@ -697,7 +701,7 @@ public class VisualizationController {
 				}
 				
 				if (nChartType == 2) {
-					chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("bar_chart", request), "", "");
+					chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("bar_chart", request), "", "", true);
 				} else if (nChartType == 3) {
 					chart = PieChartVisualization.createChart(pieDataset, controllerService.getMessage("pie_chart", request) + " " + metric1.getName(), "", "");
 				}
@@ -809,7 +813,7 @@ public class VisualizationController {
 
 					chart = ScatterPlotVisualization.createChart(collection, controllerService.getMessage("scatter_plot", request), metric1.getName() + " " + unit1, metric2.getName() + " " + unit2, false);
 				} else if (userSession.getSummaryChartType() == 2) {
-					chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("bar_chart", request), "", "");
+					chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("bar_chart", request), "", "", true);
 				}
 
 				if (chart != null)
@@ -888,7 +892,7 @@ public class VisualizationController {
 				userSession.setSummaryChartType(2);
 			}
 			
-			chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("bar_chart", request), "", "");
+			chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("bar_chart", request), "", "", true);
 
 			if (chart != null)
 			{
@@ -955,23 +959,12 @@ public class VisualizationController {
 			return "error";
 		}
 		
-		if (userSession.getSelectedGAObjFuncIds().size() > 2
-			|| userSession.getSelectedGAObjFuncIds().size() == 0)
-		{
-			return "error";
-		}
-		
 		if (userSession.getSelectedGAObjFuncIds().size() == 0)
 	    {
 	    	model.put("error", controllerService.getMessage("not_enough_selections", request));
 	    }
 
-		if (userSession.getSelectedGAObjFuncIds().size() > 2)
-	    {
-	    	model.put("error", controllerService.getMessage("too_many_obj_func_selections", request));
-	    }
-
-	    Iterator<Integer> iterator = userSession.getSelectedGAObjFuncIds().iterator();
+		Iterator<Integer> iterator = userSession.getSelectedGAObjFuncIds().iterator();
 		int objFunc1Id = iterator.next();
 		
 		ObjectiveFunctionDTO objFunc1 = objFuncService.findByID(objFunc1Id);
@@ -999,7 +992,7 @@ public class VisualizationController {
 			}
 			
 			ChartRenderingInfo chartInfo = new ChartRenderingInfo(new StandardEntityCollection());
-			JFreeChart chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("genetic_optimization_scenario_results", request), "", "");
+			JFreeChart chart = BarChartVisualization.createChart(categoryDataset, controllerService.getMessage("genetic_optimization_scenario_results", request), "", "", true);
 			
 			if (chart != null)
 			{
@@ -1114,6 +1107,114 @@ public class VisualizationController {
 				model.put("usersession", userSession);
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
+			}
+		}
+		else if (userSession.getSelectedGAObjFuncIds().size() > 2)
+		{
+			iterator = userSession.getSelectedGAObjFuncIds().iterator();
+			ArrayList<ArrayList<Double>> allObjFuncValues = new ArrayList<ArrayList<Double>>();
+			ArrayList<String> scenarioNames = new ArrayList<String>();
+			ArrayList<String> functionNames = new ArrayList<String>();
+
+			// Go through objective functions
+			while (iterator.hasNext())
+			{
+				int objFuncId = iterator.next();
+				ArrayList<Double> objFuncValues = new ArrayList<Double>();
+				ObjectiveFunctionDTO objFunc = objFuncService.findByID(objFuncId);
+				
+				functionNames.add(objFunc.getName());
+				
+				try {
+					ArrayList<ObjectiveFunctionResultDTO> listResults = (ArrayList<ObjectiveFunctionResultDTO>) objFuncService.findResultsByScenarioGenerator(scenGen.getScengenid(), objFuncId);
+					
+					Iterator<ObjectiveFunctionResultDTO> resultIter = listResults.iterator();
+					
+					while (resultIter.hasNext())
+					{
+						ObjectiveFunctionResultDTO result = (ObjectiveFunctionResultDTO) resultIter.next();
+						
+						if (!userSession.hasSelectedGAScenarioId(result.getScenID()))
+						{
+							continue;
+						}
+						
+						// TODO fix long list
+						ScenarioDTO scenarioTemp = scenarioService.findByID(result.getScenID());
+						scenarioNames.add(scenarioTemp.getName());
+						
+						String value = result.getValue();
+						objFuncValues.add(Double.parseDouble(value));
+					}				
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+				
+				// Define start and end of scale
+				double min = controllerService.getMinValue(objFuncValues);
+				double max = controllerService.getMaxValue(objFuncValues);
+				double length = max - min;
+				double start = min - length / 10;
+
+				ArrayList<Double> scaledValues = new ArrayList<Double>();
+				
+				// Scale values
+				for (Double d : objFuncValues)
+				{
+					double scaledValue = (d - start) / (length * 1.2);
+					scaledValues.add(scaledValue);
+				}
+				allObjFuncValues.add(scaledValues);
+			}
+
+			DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
+			
+			for (int i = 0; i < allObjFuncValues.get(0).size(); i++)
+			{
+				int j = 0;
+
+				for (ArrayList<Double> list : allObjFuncValues)
+				{
+					double value = (double) list.get(i);
+					categoryDataset.addValue(value, scenarioNames.get(i), functionNames.get(j));
+					j++;
+				}
+			}
+				
+			JFreeChart chart = null;
+			ChartRenderingInfo chartInfo = new ChartRenderingInfo(new StandardEntityCollection());
+			
+			chart = BarChartVisualization.createChart(categoryDataset, 
+				controllerService.getMessage("genetic_optimization_scenario_results", request), 
+				controllerService.getMessage("objective_function", request), 
+				controllerService.getMessage("value", request), false);
+
+			if (chart != null)
+			{
+				String imgPath = request.getSession().getServletContext().getRealPath("/") + "assets\\img\\";
+				String imgFileName = "gachart_" + System.currentTimeMillis() + ".png";
+				File file = new File(imgPath + imgFileName);
+				System.out.println(file.getAbsolutePath());
+				
+				ChartUtilities.saveChartAsPNG(file, chart, 750, 400, chartInfo);
+				
+	            ToolTipTagFragmentGenerator tooltipConstructor = new ToolTipTagFragmentGenerator() {
+	                public String generateToolTipFragment(String arg0) {
+	                    String toolTip = " title = \"" + arg0 + "\"";
+	                    return (toolTip);
+	                }
+	            };
+
+	            URLTagFragmentGenerator urlConstructor = new URLTagFragmentGenerator() {
+	                public String generateURLFragment(String arg0) {
+	                    String address = "";
+	                    return address;
+	                }
+	            };
+
+	            String map = ChartUtilities.getImageMap("chart", chartInfo, tooltipConstructor, urlConstructor);
+	            userSession.setGAChartImageMap(map);
+	            userSession.setGAChartFile(imgFileName);
 			}
 		}
 		
@@ -1490,11 +1591,6 @@ public class VisualizationController {
 				for (ObjectiveFunctionDTO objFunc : objFuncs)
 				{
 					userSession.addSelectedGAObjFuncId(objFunc.getObtfunctionid());
-					
-					if (userSession.getSelectedGAObjFuncIds().size() >= 2)
-					{
-						break;
-					}
 				}
 			}
 			else if (action.equals("selectpareto"))
@@ -1535,11 +1631,6 @@ public class VisualizationController {
 				for (ObjectiveFunctionDTO objFunc : objFuncs)
 				{
 					userSession.addSelectedGAObjFuncId(objFunc.getObtfunctionid());
-					
-					if (userSession.getSelectedGAObjFuncIds().size() >= 2)
-					{
-						break;
-					}
 				}
 			}
 		}

@@ -5,16 +5,20 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.apache.commons.lang3.Range;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -44,7 +48,7 @@ public class TimeSeriesVisualization {
 			bShowLegend = false;
 		}
 		
-		JFreeChart chart = createChart(timeSeriesCollection, title, xAxisLabel, yAxisLabel);
+		JFreeChart chart = createChart(timeSeriesCollection, title, xAxisLabel, yAxisLabel, true);
 		ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
 		chartPanel.setMouseZoomable(true, false);
@@ -94,7 +98,8 @@ public class TimeSeriesVisualization {
 	*
 	* @return A chart.
 	*/
-	public static JFreeChart createChart(XYDataset dataset, String title, String xAxisLabel, String yAxisLabel) 
+	public static JFreeChart createChart(XYDataset dataset, String title, String xAxisLabel, 
+		String yAxisLabel, boolean bTimeValues) 
 	{
 		boolean bShowLegend = true;
 		
@@ -139,7 +144,21 @@ public class TimeSeriesVisualization {
 		}
 		
 		DateAxis axis = (DateAxis) plot.getDomainAxis();
-		axis.setDateFormatOverride(new SimpleDateFormat("dd-MM-yyyy"));//MMM-yyyy"));
+		
+		if (bTimeValues)
+		{
+			axis.setDateFormatOverride(new SimpleDateFormat("dd-MM-yyyy"));//MMM-yyyy"));
+		}
+		else
+		{
+			org.jfree.data.Range range = axis.getRange();
+			NumberAxis numberAxis = new NumberAxis();
+			numberAxis.setRange(0, range.getUpperBound() + 1);
+			numberAxis.setNumberFormatOverride(new DecimalFormat("##"));
+			numberAxis.sett MinorTickCount((int)range.getUpperBound());
+			plot.setDomainAxis(numberAxis);
+		}
+		
 		return chart;
 	}
 		

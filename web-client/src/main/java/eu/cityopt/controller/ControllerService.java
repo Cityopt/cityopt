@@ -1154,5 +1154,35 @@ public class ControllerService {
 			String strTime = simMinutes + " min";
 			return strTime;
 	    }
+	    
+	    public double getMinValue(List<Double> values)
+	    {
+	    	double min = values.get(0); 
+	    			
+	    	for (Double d : values)
+	    	{
+	    		if (d < min)
+	    		{
+	    			min = d;
+	    		}
+	    	}
+	    	
+	    	return min;
+	    }
+
+	    public double getMaxValue(List<Double> values)
+	    {
+	    	double max = values.get(0); 
+	    			
+	    	for (Double d : values)
+	    	{
+	    		if (d > max)
+	    		{
+	    			max = d;
+	    		}
+	    	}
+	    	
+	    	return max;
+	    }
 	}
 

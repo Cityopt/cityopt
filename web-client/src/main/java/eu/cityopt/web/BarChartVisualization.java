@@ -45,7 +45,7 @@ public class BarChartVisualization {
 		categoryDataset.addValue(3.0, "Row 2", "Column 2");
 		categoryDataset.addValue(2.0, "Row 2", "Column 3");
 				
-		JFreeChart chart = createChart(categoryDataset, title, xAxisLabel, yAxisLabel);
+		JFreeChart chart = createChart(categoryDataset, title, xAxisLabel, yAxisLabel, true);
 
 		ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
@@ -78,7 +78,8 @@ public class BarChartVisualization {
 	*
 	* @return A chart.
 	*/
-	public static JFreeChart createChart(CategoryDataset dataset, String title, String xAxisLabel, String yAxisLabel) 
+	public static JFreeChart createChart(CategoryDataset dataset, String title, String xAxisLabel, String yAxisLabel,
+		boolean bShowYAxisValues) 
 	{
 		boolean bShowLegend = true;
 		
@@ -87,7 +88,7 @@ public class BarChartVisualization {
 			bShowLegend = false;
 		}
 		
-		JFreeChart chart = ChartFactory.createBarChart3D(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, bShowLegend, true, false);
+		JFreeChart chart = ChartFactory.createBarChart(title, xAxisLabel, yAxisLabel, dataset, PlotOrientation.VERTICAL, bShowLegend, true, false);
 	
 		chart.setBackgroundPaint(Color.white);
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();
@@ -97,6 +98,12 @@ public class BarChartVisualization {
 		plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
 		plot.setDomainCrosshairVisible(true);
 		plot.setRangeCrosshairVisible(true);
+		
+		if (!bShowYAxisValues)
+		{
+			plot.getRangeAxis().setVisible(false);
+		}
+		
 		/*XYItemRenderer r = plot.getRenderer();
 		
 		if (r instanceof XYLineAndShapeRenderer) {
