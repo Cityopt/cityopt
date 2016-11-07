@@ -155,7 +155,7 @@ public class TimeSeriesVisualization {
 			NumberAxis numberAxis = new NumberAxis();
 			numberAxis.setRange(0, range.getUpperBound() + 1);
 			numberAxis.setNumberFormatOverride(new DecimalFormat("##"));
-			numberAxis.sett MinorTickCount((int)range.getUpperBound());
+			numberAxis.setMinorTickCount((int)range.getUpperBound());
 			plot.setDomainAxis(numberAxis);
 		}
 		
