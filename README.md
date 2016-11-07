@@ -7,7 +7,7 @@ For more details, please refer to [Features](https://github.com/Microsoft/LightG
 
 Get Started
 ------------
-To get started, please follow the [Installation Guide](https://github.com/Microsoft/LightGBM/wiki/Installation-Guide).
+To get started, please follow the [Installation Guide](https://github.com/Cityopt/cityopt/misc/Installation-Guide).
 
 Documents
 ------------
