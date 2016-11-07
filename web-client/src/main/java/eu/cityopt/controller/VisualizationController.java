@@ -555,7 +555,7 @@ public class VisualizationController {
 				chart = TimeSeriesVisualization.createChart(timeSeriesCollection, 
 					controllerService.getMessage("time_series", request), 
 					controllerService.getMessage("date", request), 
-					controllerService.getMessage("value", request), true);
+					controllerService.getMessage("value", request));
 			} else if (userSession.getTimeSeriesChartType() == 1) {
 				chart = ScatterPlotVisualization.createChart(timeSeriesCollection, controllerService.getMessage("scatter_plot", request), controllerService.getMessage("date", request), controllerService.getMessage("value", request), true);
 			} 

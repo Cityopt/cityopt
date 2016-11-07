@@ -48,23 +48,11 @@ public class TimeSeriesVisualization {
 			bShowLegend = false;
 		}
 		
-		JFreeChart chart = createChart(timeSeriesCollection, title, xAxisLabel, yAxisLabel, true);
+		JFreeChart chart = createChart(timeSeriesCollection, title, xAxisLabel, yAxisLabel);
 		ChartPanel chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
 		chartPanel.setMouseZoomable(true, false);
 
-		/*if (bSaveAsImage)
-		{
-			File file = new File("testchart.png");
-			
-			try {
-				file.createNewFile();
-				ChartUtilities.saveChartAsPNG(file, chart, 500, 270);
-				//ChartUtilities.saveChartAsPNG(file, chart, 500, 270);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}*/
 		
 		JFrame f = new JFrame(title);
         f.setTitle(title);
@@ -99,7 +87,7 @@ public class TimeSeriesVisualization {
 	* @return A chart.
 	*/
 	public static JFreeChart createChart(XYDataset dataset, String title, String xAxisLabel, 
-		String yAxisLabel, boolean bTimeValues) 
+		String yAxisLabel) 
 	{
 		boolean bShowLegend = true;
 		
@@ -145,19 +133,7 @@ public class TimeSeriesVisualization {
 		
 		DateAxis axis = (DateAxis) plot.getDomainAxis();
 		
-		if (bTimeValues)
-		{
-			axis.setDateFormatOverride(new SimpleDateFormat("dd-MM-yyyy"));//MMM-yyyy"));
-		}
-		else
-		{
-			org.jfree.data.Range range = axis.getRange();
-			NumberAxis numberAxis = new NumberAxis();
-			numberAxis.setRange(0, range.getUpperBound() + 1);
-			numberAxis.setNumberFormatOverride(new DecimalFormat("##"));
-			numberAxis.setMinorTickCount((int)range.getUpperBound());
-			plot.setDomainAxis(numberAxis);
-		}
+		axis.setDateFormatOverride(new SimpleDateFormat("dd-MM-yyyy"));//MMM-yyyy"));
 		
 		return chart;
 	}
