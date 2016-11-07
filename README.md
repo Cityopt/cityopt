@@ -7,11 +7,11 @@ For more details, please refer to [Features](https://github.com/Microsoft/LightG
 
 Get Started
 ------------
-To get started, please follow the [Installation Guide](https://github.com/Cityopt/cityopt/misc/Installatio-Guide.txt).
+To get started, please follow the [Installation Guide](https://github.com/Cityopt/cityopt/wiki/Installation-Guide).
 
 Documents
 ------------
-* [**Installation Guide**](https://github.com/Microsoft/LightGBM/wiki/Installation-Guide)
+* [**Installation Guide**](https://github.com/Cityopt/cityopt/wiki/Installation-Guide)
 * [**Features**](https://github.com/Microsoft/LightGBM/wiki/Features)
 
 Repository
@@ -38,7 +38,4 @@ The repository contains the following Eclipse projects:
   Not needed for the production version of the CityOPT Planning tool.
 
 - misc - miscellaneous; e.g. an Apros script required in CityOPT.
-
-In addition, the top-level Maven build file pom.xml is directly in the trunk
-folder.
 
