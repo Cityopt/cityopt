@@ -1,4 +1,4 @@
-Cityopt optimization and visualization tool
+Cityopt optimization and simulation tool
 ==========
 
 Cityopt tool is used for optimizing energy or other systems. It includes also genetic algorithm search and many visualization options.
