@@ -3,8 +3,6 @@ Cityopt optimization and simulation tool
 
 Cityopt tool is used for optimizing energy or other systems. It includes also genetic algorithm search and many visualization options.
 
-For more details, please refer to [Features](https://github.com/Microsoft/LightGBM/wiki/Features).
-
 Get Started
 ------------
 To get started, please follow the [Installation Guide](https://github.com/Cityopt/cityopt/wiki/Installation-Guide).
@@ -12,7 +10,6 @@ To get started, please follow the [Installation Guide](https://github.com/Cityop
 Documents
 ------------
 * [**Installation Guide**](https://github.com/Cityopt/cityopt/wiki/Installation-Guide)
-* [**Features**](https://github.com/Microsoft/LightGBM/wiki/Features)
 
 Repository
 ------------
