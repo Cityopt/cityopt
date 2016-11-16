@@ -33,7 +33,7 @@ public class ScenarioGeneratorDTO extends BaseDTO {
 	@Getter @Setter private Set<ModelParameterDTO> modelparameters;	
 //	@Getter @Setter private Set<ScenGenResultDTO> scengenresults = new HashSet<ScenGenResult>(0);
 //	@Getter @Setter private Set<ScenGenOptConstraintDTO> scengenoptconstraints;
-//	@Getter @Setter private Set<ScenarioDTO> scenarios;
+	@Getter @Setter private Set<ScenarioSimpleDTO> scenarios;
 //	@Getter @Setter private Set<AlgoParamValDTO> algoparamvals;
 //	@Getter @Setter private Set<ScenGenObjectiveFunctionDTO> scengenobjectivefunctions;
 }
