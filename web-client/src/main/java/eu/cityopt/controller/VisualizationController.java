@@ -52,6 +52,7 @@ import eu.cityopt.DTO.OutputVariableDTO;
 import eu.cityopt.DTO.ProjectDTO;
 import eu.cityopt.DTO.ScenarioDTO;
 import eu.cityopt.DTO.ScenarioGeneratorDTO;
+import eu.cityopt.DTO.ScenarioSimpleDTO;
 import eu.cityopt.DTO.SimulationResultDTO;
 import eu.cityopt.DTO.TimeSeriesDTO;
 import eu.cityopt.DTO.TimeSeriesValDTO;
@@ -1533,13 +1534,13 @@ public class VisualizationController {
 			return "error";
 		}
 
-		Set<ScenarioDTO> scenarios = projectService.getScenarios(project.getPrjid());
+		Set<ScenarioSimpleDTO> scenarios = scenGen.getScenarios();
 		Set<ScenarioInfo> scenarioInfos = new HashSet<ScenarioInfo>();
         Set<Integer> paretoOptimal =
                 customQueryRepository.findParetoOptimalScenarios(
                         project.getPrjid(), scenGen.getScengenid());
 		
-		for (ScenarioDTO scenario : scenarios)
+		for (ScenarioSimpleDTO scenario : scenarios)
 		{
 			ScenarioInfo scenarioInfo = new ScenarioInfo();
 			scenarioInfo.setName(scenario.getName());
@@ -1581,7 +1582,7 @@ public class VisualizationController {
 			{
 				userSession.removeAllSelectedGAScenarioIds();
 				
-				for (ScenarioDTO scenario : scenarios)
+				for (ScenarioSimpleDTO scenario : scenarios)
 				{
 					userSession.addSelectedGAScenarioId(scenario.getScenid());
 				}
