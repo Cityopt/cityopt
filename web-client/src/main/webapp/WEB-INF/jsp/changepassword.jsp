@@ -15,7 +15,7 @@
 
 <body>
 <table cellspacing="0px" cellpadding="0px">
-<form:form action="edituser.html?userid=${user.userid}" method="post" modelAttribute="user">
+<form:form action="changepassword.html?userid=${user.userid}" method="post" modelAttribute="user">
 	<tr>
 		<td>
 			<%@ include file="mainmenu.inc"%>
@@ -30,7 +30,7 @@
 						<table width="100%">
 							<tr>
 								<td>
-                           			<spring:message code="edit_user"/>
+                           			<spring:message code="change_password"/>
 								</td>
 							</tr>
 						</table>
@@ -68,7 +68,7 @@
 										<tr class="spacerow"></tr>
 										<tr>
 											<td class="infosmall">
-												<spring:message code="password"/>*
+												<spring:message code="new_password"/>*
 											</td>
 										</tr>
 										<tr>
@@ -85,8 +85,7 @@
 							</tr>
 							<tr>
 								<td align="left">
-									<button class="activebutton" type="submit" style="width:100px"><spring:message code="update" /></button>
-									<a href="usermanagement.html"><button style="width:100px" type="button" value="Back"><spring:message code="back"/></button></a>
+									<button class="activebutton" type="submit" style="width:160px"><spring:message code="change_password" /></button>
 								</td>
 							</tr>
 						</table>

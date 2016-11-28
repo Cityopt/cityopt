@@ -181,6 +181,7 @@ import eu.cityopt.sim.eval.SimulatorManagers;
 import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
+import eu.cityopt.web.PasswordForm;
 import eu.cityopt.web.RoleForm;
 import eu.cityopt.web.ScenarioParamForm;
 import eu.cityopt.web.UnitForm;
@@ -328,8 +329,6 @@ public class UserController {
     	return "403";
     }
     
-    //@author Markus Display the log-in page.
-    // This is the method where Security is redirecting the user for login.
     @RequestMapping(method=RequestMethod.GET, value="/login")
     public String displayLoginPage(Map<String, Object> model) {    		 		   		 
     	AppUserDTO user = new AppUserDTO();
@@ -337,8 +336,25 @@ public class UserController {
     	return "login";		 
 	}
 
-    //@author Markus Get the Authenticated user information. 
-    private String getPrincipal(){
+    public void initUserInfo(Map<String, Object> model) {
+    	AppUserDTO user = null;
+    	String userName = getPrincipal();
+    	
+    	try {
+            user = userService.findByName(userName);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+    	
+    	model.put("user", user);
+
+    	List<UserGroupProjectDTO> listUserGroupProjects = userGroupProjectService.findByUser(user.getUserid());
+        model.put("userRoles", listUserGroupProjects);
+        
+        model.put("passwordForm", new PasswordForm());
+    }
+    
+    public String getPrincipal() {
         String userName = null;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -350,7 +366,130 @@ public class UserController {
         return userName;
     }
     
-    //@author Markus everyone can log out the system even intruders.
+    public void initializeUserManagement(Map<String, Object> model){
+    	securityAuthorization.atLeastAdmin();   	
+    	//Set up Variables 
+    	List<AppUserDTO> users = userService.findAll();
+        List<UserGroupDTO> userGroups= userGroupService.findAll();
+        List<ProjectDTO> projects = projectService.findAll();        
+        List<UserGroupProjectDTO> usergroupprojects= userGroupProjectService.findAll();
+        UserForm userForm = new UserForm();        
+    	UserManagementForm form = this.CreateUsemanagementForm(users);
+    	    	  	
+    	//Put Front controller using model attribute.
+    	model.put("UserForm",userForm);
+    	model.put("UserGroupProject", usergroupprojects);
+    	model.put("UserManagementForm", form);	
+        model.put("projects", projects);                
+        model.put("userGroups", userGroups);
+        model.put("users", users);
+        List<UserGroupProjectDTO> listUserGroupProjects = userGroupProjectService.findAll();       
+        model.put("userRoles", listUserGroupProjects);
+        
+        // Put a list of ProjectDTOs by User in a list form into model.
+        this.FindUsersProjects(model);
+    }    
+  
+    public UserManagementForm CreateUsemanagementForm(List<AppUserDTO> users) {    
+    	securityAuthorization.atLeastAdmin();
+    	// Set up initial variables.
+    	UserManagementForm form = new UserManagementForm();
+    	UserGroupProject usergroup;	
+	    	
+	    // This iterates all users and set up their information from database 
+		for (Iterator i = users.iterator(); i.hasNext(); ){	
+			
+			AppUserDTO appuser=(AppUserDTO) i.next();
+			int id = appuser.getUserid();
+			String name = appuser.getName();
+			String password=  appuser.getPassword();		
+			int ugpResult = 0;
+			String project="";
+			
+			// Find userGroup Project and set up user group id.
+			List <UserGroupProjectDTO> list = userGroupProjectService.findByUser(name);
+				for(UserGroupProjectDTO ugp : list ){
+					if(ugp.getProject()==null){
+						ugpResult=ugp.getUsergroup().getUsergroupid();
+						project += "null";
+					}else{
+					project += ugp.getProject().getName();
+					}					
+				}
+	
+			// Set up the form for Spring From.
+			form.getProject().put(id, project);	
+			form.getUserRole().put(id, ugpResult);		
+			form.getUser().put(id,name);
+			form.getPassword().put(id, password);	
+		}
+	
+		return form;   
+	}            	
+    
+    //@author Markus Turunen: This Method Creates a UserGroupDTO -object based on the parameters given.
+    public UserGroupProjectDTO CreateUserGroupDTO(UserGroupDTO usergroup, 
+    	ProjectDTO project, AppUserDTO appuser){   
+    	
+    	securityAuthorization.atLeastAdmin();
+    	UserGroupProjectDTO userGroupProject = new UserGroupProjectDTO();
+    	userGroupProject.setProject(project);
+    	userGroupProject.setAppuser(appuser);    	
+    	return userGroupProject;
+    }
+
+    public void FindUsersProjects(Map<String, Object> model){   
+    	securityAuthorization.atLeastAdmin();
+    	List<AppUserDTO> users= userService.findAll();
+    	ArrayList <List <ProjectDTO> > ListOfUserProjects = new ArrayList<List <ProjectDTO>>();
+    	   	
+    	for (int i=0; users.size() > i; i++) {
+    		List<ProjectDTO> userProject = userGroupProjectService.findProjectsByUser(users.get(i).getUserid());
+    		ListOfUserProjects.add(userProject);
+    	}    	
+    	model.put("UserProject",ListOfUserProjects);
+    	
+    	// TODO make parser in JSP-page to utilize this resource.
+    	// I made this to display user projects in user management,
+    	// could not figure out how to utilize it in JSP.
+    }
+
+    public void InitiateEditUser(Map<String, Object> model, String userid){
+    	securityAuthorization.atLeastAdmin();
+    	int nUserId = 0;
+        AppUserDTO user = null;
+        nUserId = Integer.parseInt(userid);        
+        try {
+            user = userService.findByID(nUserId);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+        List<ProjectDTO> projects = projectService.findAll();
+        List<UserGroupDTO> userGroups= userGroupService.findAll();
+        
+        model.put("projects", projects);
+        model.put("userGroups", userGroups);
+        RoleForm form = new RoleForm();        
+        model.put("RoleForm", form);
+        model.put("user", user);
+        List<UserGroupProjectDTO> listUserGroupProjects = userGroupProjectService.findByUser(nUserId);
+        model.put("userRoles", listUserGroupProjects);
+    }
+
+    
+
+    public AppUserDTO FindAuthenticatedUser(Authentication authentication) throws Exception{
+		
+		String authenticatedUserName = authentication.getName();			
+		AppUserDTO appuserdto;
+		try {
+			appuserdto = userService.findByName(authenticatedUserName);
+		} catch (EntityNotFoundException e) {
+			throw new Exception("User dosen't exist in database or being authorized");			
+		}
+		return appuserdto;
+	}
+    	    
     @RequestMapping(value="/logout",  method=RequestMethod.GET)
     public String logoutPage(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) {
     		    		
@@ -365,7 +504,6 @@ public class UserController {
         return "redirect:/login.html?logout";
     }
     
-    //@author Markus Turunen Event what happens if credentials given are not valid.
     @RequestMapping(value="/loginerror",  method=RequestMethod.GET)
     public String loginError(Map<String, Object> model) {
 		return "redirect:/login.html?error";
@@ -378,7 +516,7 @@ public class UserController {
 		// We check model because project doesn't exist yet.
 		controllerService.clearSession(model, null, true);
 		AppUserDTO user = new AppUserDTO();
-		user.setName(this.getPrincipal());
+		user.setName(getPrincipal());
 		model.put("user", user);
     	
 		String language = request.getLocale().getLanguage();
@@ -387,6 +525,7 @@ public class UserController {
 
         controllerService.changeLanguage(model, language);
         model.put("activeblock", "project");
+        model.remove("page");
         
     	return  "start";
 	}
@@ -404,21 +543,23 @@ public class UserController {
     }
     
     @RequestMapping(value="usermanagement", method=RequestMethod.GET)
-    public String getUserManagement(Map<String, Object> model) {
+    public String userManagement(Map<String, Object> model) {
 
     	securityAuthorization.atLeastAdmin();
     	model.put("activeblock", "settings");
     	model.put("page", "usermanagement");
         AppUserDTO user = (AppUserDTO) model.get("user");      
+        
         if (user != null) {
         	initializeUserManagement(model);                
             return "usermanagement";
         }        
+        
         return "error";
     }
     
     @RequestMapping(value="usermanagement",method=RequestMethod.POST)
-    public String getEditUser(Map<String, Object> model,
+    public String userManagementPost(Map<String, Object> model,
     		 UserManagementForm form, BindingResult bindingResult) {    	
 //    	Test print of Form: uncomment if you need to see user information collected from form.
     	/*
@@ -503,97 +644,18 @@ public class UserController {
 		return "usermanagement";   	
 	} 
     
-    //@author Markus Turunen: This is helper method construct the user management -classes
-   
-    public void initializeUserManagement(Map<String, Object> model){
-    	securityAuthorization.atLeastAdmin();   	
-    	//Set up Variables 
-    	List<AppUserDTO> users = userService.findAll();
-        List<UserGroupDTO> userGroups= userGroupService.findAll();
-        List<ProjectDTO> projects = projectService.findAll();        
-        List<UserGroupProjectDTO> usergroupprojects= userGroupProjectService.findAll();
-        UserForm userForm = new UserForm();        
-    	UserManagementForm form = this.CreateUsemanagementForm(users);
-    	    	  	
-    	//Put Front controller using model attribute.
-    	model.put("UserForm",userForm);
-    	model.put("UserGroupProject", usergroupprojects);
-    	model.put("UserManagementForm", form);	
-        model.put("projects", projects);                
-        model.put("userGroups", userGroups);
-        model.put("users", users);
-        List<UserGroupProjectDTO> listUserGroupProjects = userGroupProjectService.findAll();       
-        model.put("userRoles", listUserGroupProjects);
+    @RequestMapping(value="userinfo", method=RequestMethod.GET)
+    public String userInfo(Map<String, Object> model) {
+    	
+    	ProjectDTO project = controllerService.GetProject(model);
+    	securityAuthorization.atLeastStandard();
+
+    	model.put("activeblock", "settings");
+    	model.put("page", "userinfo");
         
-        // Put a list of ProjectDTOs by User in a list form into model.
-        this.FindUsersProjects(model);
-    }    
-  
-	//@author Marus Turunen Form Factory: This method creates the user management -form. 
-    
-    public UserManagementForm CreateUsemanagementForm(List<AppUserDTO> users){    
-    	securityAuthorization.atLeastAdmin();
-    // Set up initial variables.
-    	UserManagementForm form = new UserManagementForm();
-    	UserGroupProject usergroup;	
-
-	    	
-	    // This iterates all users and set up their information from database 
-		for (Iterator i = users.iterator(); i.hasNext(); ){	
-			
-			AppUserDTO appuser=(AppUserDTO) i.next();
-			int id = appuser.getUserid();
-			String name = appuser.getName();
-			String password=  appuser.getPassword();		
-			int ugpResult = 0;
-			String project="";
-			
-			// Find userGroup Project and set up user group id.
-			List <UserGroupProjectDTO> list = userGroupProjectService.findByUser(name);
-				for(UserGroupProjectDTO ugp : list ){
-					if(ugp.getProject()==null){
-						ugpResult=ugp.getUsergroup().getUsergroupid();
-						project += "null";
-					}else{
-					project += ugp.getProject().getName();
-					}					
-				}
-	
-			// Set up the form for Spring From.
-			form.getProject().put(id, project);	
-			form.getUserRole().put(id, ugpResult);		
-			form.getUser().put(id,name);
-			form.getPassword().put(id, password);	
-		}
-	
-		return form;   
-	}            	
-    
-    //@author Markus Turunen: This Method Creates a UserGroupDTO -object based on the parameters given.
-    public UserGroupProjectDTO CreateUserGroupDTO(UserGroupDTO usergroup, 
-    	ProjectDTO project, AppUserDTO appuser){   
-    	
-    	securityAuthorization.atLeastAdmin();
-    	UserGroupProjectDTO userGroupProject = new UserGroupProjectDTO();
-    	userGroupProject.setProject(project);
-    	userGroupProject.setAppuser(appuser);    	
-    	return userGroupProject;
-    }
-
-    public void FindUsersProjects(Map<String, Object> model){   
-    	securityAuthorization.atLeastAdmin();
-    	List<AppUserDTO> users= userService.findAll();
-    	ArrayList <List <ProjectDTO> > ListOfUserProjects = new ArrayList<List <ProjectDTO>>();
-    	   	
-    	for(int i=0;users.size()>i;i++){
-    		List<ProjectDTO> userProject = userGroupProjectService.findProjectsByUser(users.get(i).getUserid());
-    		ListOfUserProjects.add(userProject);
-    	}    	
-    	model.put("UserProject",ListOfUserProjects);
-    	
-    	// TODO make parser in JSP-page to utilize this resource.
-    	// I made this to display user projects in user management,
-    	// could not figure out how to utilize it in JSP.
+    	initUserInfo(model);
+        
+        return "userinfo";
     }
     
     @RequestMapping(value="createuser",method=RequestMethod.GET)
@@ -602,11 +664,10 @@ public class UserController {
     	securityAuthorization.atLeastAdmin();    	
     	UserForm UserForm = new UserForm();
         model.put("userForm", UserForm);        
-        this.initializeUserManagement(model);      
+        initializeUserManagement(model);      
         
         return "createuser";
     }
-    
     
     @RequestMapping(value="createuser", method=RequestMethod.POST)
     public String createUserPost(@Validated @ModelAttribute("UserForm") UserForm userForm, 
@@ -682,7 +743,7 @@ public class UserController {
      }
     
     @RequestMapping(value="edituser",method=RequestMethod.GET)
-    public String getEditUser(Map<String, Object> model, 
+    public String editUser(Map<String, Object> model, 
         @RequestParam(value="userid", required=true) String userid) {
     	securityAuthorization.atLeastAdmin();
     	
@@ -706,7 +767,7 @@ public class UserController {
     }
 
     @RequestMapping(value="edituser", method=RequestMethod.POST)
-	public String getEditUserPost(UserForm userForm, Map<String, Object> model,
+	public String editUserPost(UserForm userForm, Map<String, Object> model,
 		@RequestParam(value="userid", required=true) String userId,
 		HttpServletRequest request) {
     	
@@ -721,7 +782,7 @@ public class UserController {
             
             try {
             	userService.save(user);
-            } catch (ObjectOptimisticLockingFailureException e){
+            } catch (ObjectOptimisticLockingFailureException e) {
     			model.put("error", controllerService.getMessage("project_updated", request));
     		}
 		}
@@ -732,34 +793,77 @@ public class UserController {
 		return "usermanagement";
     }
 
-    //@author Markus Turunen: Other classes going to use this service:
-    public void InitiateEditUser(Map<String, Object> model, String userid){
-    	securityAuthorization.atLeastAdmin();
-    	int nUserId = 0;
-        AppUserDTO user = null;
-        nUserId = Integer.parseInt(userid);        
-        try {
-            user = userService.findByID(nUserId);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-        List<ProjectDTO> projects = projectService.findAll();
-        List<UserGroupDTO> userGroups= userGroupService.findAll();
-        
-        model.put("projects", projects);
-        model.put("userGroups", userGroups);
-        RoleForm form = new RoleForm();        
-        model.put("RoleForm", form);
-        model.put("user", user);
-        List<UserGroupProjectDTO> listUserGroupProjects = userGroupProjectService.findByUser(nUserId);
-        model.put("userRoles", listUserGroupProjects);
+    @RequestMapping(value="confirmpassword",method=RequestMethod.POST)
+    public String changePassword(Map<String, Object> model, 
+        @RequestParam(value="userid", required=true) String userId,
+        PasswordForm passwordForm, HttpServletRequest request) {
+    	
+    	securityAuthorization.atLeastStandard();
+    	AppUserDTO user = this.ParseUserIDtoUser(userId);
+    	
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+		
+		if (passwordEncoder.matches(passwordForm.getOldPassword(), user.getPassword()))
+		{
+	    	AppUserDTO newUser = new AppUserDTO();
+	        newUser.setName(user.getName());
+	        newUser.setUserid(user.getUserid());
+	        model.put("user", newUser);
+	        
+	        return "changepassword";
+		}
+		else
+		{
+			model.put("error", controllerService.getMessage("wrong_password", request));
+			initUserInfo(model);
+			return "userinfo";
+		}
     }
 
+    @RequestMapping(value="changepassword", method=RequestMethod.POST)
+	public String changePasswordPost(UserForm userForm, Map<String, Object> model,
+		@RequestParam(value="userid", required=true) String userId,
+		HttpServletRequest request) {
+    	
+    	securityAuthorization.atLeastStandard();
+    	AppUserDTO user = this.ParseUserIDtoUser(userId);
+    	String password = userForm.getPassword();
+    	
+    	if (password != null)
+		{
+    		if (password.length() < 5)
+    		{
+    			model.put("error", controllerService.getMessage("password_too_short", request));
+
+    			AppUserDTO newUser = new AppUserDTO();
+    	        newUser.setName(user.getName());
+    	        newUser.setUserid(user.getUserid());
+    	        model.put("user", newUser);
+
+    			return "changepassword";
+    		}
+
+    		BCryptPasswordEncoder passwordEnconder = new BCryptPasswordEncoder(12);
+            String hashedPassword = passwordEnconder.encode(userForm.getPassword());
+            user.setPassword(hashedPassword);
+            
+            try {
+            	userService.save(user);
+        		model.put("info", controllerService.getMessage("password_changed", request));
+            } catch (ObjectOptimisticLockingFailureException e) {
+    			model.put("error", controllerService.getMessage("project_updated", request));
+    		}
+		}
+
+		initUserInfo(model);
+		return "userinfo";
+    }
+    
     @RequestMapping(value="editroles", method=RequestMethod.GET)
     public String editRoles(Map<String, Object> model, 
     	@RequestParam(value="userid", required=true) String userid) {
     	securityAuthorization.atLeastAdmin();
-    	this.InitiateEditUser(model, userid);    	
+    	InitiateEditUser(model, userid);    	
         return "editroles";
     }
 
@@ -792,7 +896,7 @@ public class UserController {
 			e.printStackTrace();
 		}   	
     	
-		this.InitiateEditUser(model, userid);				
+    	InitiateEditUser(model, userid);				
 		return "editroles";
    	}
              
@@ -880,7 +984,7 @@ public class UserController {
         }
 
         // Link back to to previous page
-        this.InitiateEditUser(model,userid);       
+        InitiateEditUser(model,userid);       
         return "editroles";
     }
 
@@ -903,7 +1007,7 @@ public class UserController {
         // Setup user management page with changes
         List<AppUserDTO> users = userService.findAll();
         //model.addAttribute("users", users);
-        this.initializeUserManagement(model);        
+        initializeUserManagement(model);        
         return "usermanagement";
     }
 }

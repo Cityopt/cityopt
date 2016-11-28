@@ -585,6 +585,19 @@
 				<td></td>
 				<td>
 					<c:choose>
+						<c:when test="${page == 'userinfo'}">
+							<a href="userinfo.html"><font color="white"><spring:message code="user_info"/></font></a>
+						</c:when>
+						<c:otherwise>
+							<a href="userinfo.html"><spring:message code="user_info"/></a>
+						</c:otherwise>
+					</c:choose>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<c:choose>
 						<c:when test="${page == 'usermanagement'}">
 							<a href="usermanagement.html"><font color="white"><spring:message code="user_management"/></font></a>
 						</c:when>

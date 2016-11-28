@@ -56,13 +56,12 @@ color: #4D4D4D;
 							</tr>
 							<tr>
 								<td align="center"><form:input class="login" id="name"
-										path="name" type="text" value="admin" style="width: 100px" /></td>
+									path="name" type="text" value="admin" style="width: 100px" /></td>
 							</tr>
 							<tr>
 								<td align="center"><form:input class="login" id="password"
-										path="password" type="password" value="admin"
-										style="width: 100px" /></td>
-							
+									path="password" type="password" value="admin"
+									style="width: 100px" /></td>
 							</tr>
 							
 							<tr align="left">

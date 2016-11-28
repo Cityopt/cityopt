@@ -17,7 +17,8 @@
 		<td width="20"></td>
 		<td valign="top">
 			<h1><spring:message code="access_is_denied"/></h1>
-			<h1><spring:message code="no_authority"/></h1>			
+			<h1><spring:message code="no_authority"/></h1>
+			<a href="login.html"><button type="button"><spring:message code="login" /></button></a>			
 		</td>
 	</tr>
 </table>

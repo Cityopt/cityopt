@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -48,7 +50,11 @@ import eu.cityopt.DTO.ScenarioGeneratorDTO;
 import eu.cityopt.DTO.ScenarioWithObjFuncValueDTO;
 import eu.cityopt.DTO.SimulationModelDTO;
 import eu.cityopt.DTO.UnitDTO;
+import eu.cityopt.DTO.UserGroupDTO;
+import eu.cityopt.DTO.UserGroupProjectDTO;
+import eu.cityopt.model.UserGroupProject;
 import eu.cityopt.repository.CustomQueryRepository;
+import eu.cityopt.security.SecurityAuthorization;
 import eu.cityopt.service.AlgorithmService;
 import eu.cityopt.service.AppUserService;
 import eu.cityopt.service.ComponentService;
@@ -71,6 +77,8 @@ import eu.cityopt.service.SearchOptimizationResults;
 import eu.cityopt.service.SimulationModelService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
+import eu.cityopt.service.UserGroupProjectService;
+import eu.cityopt.service.UserGroupService;
 import eu.cityopt.sim.service.ScenarioGenerationService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.sim.service.TimeEstimatorService;
@@ -81,14 +89,18 @@ import eu.cityopt.web.ModelParamForm;
 import eu.cityopt.web.OptimizationRun;
 import eu.cityopt.web.Pair;
 import eu.cityopt.web.ParamForm;
+import eu.cityopt.web.PasswordForm;
+import eu.cityopt.web.RoleForm;
 import eu.cityopt.web.ScenarioForm;
+import eu.cityopt.web.UserForm;
+import eu.cityopt.web.UserManagementForm;
 import eu.cityopt.web.UserSession;
 
 
 @Controller
 @SessionAttributes({
     "project", "scenario", "optimizationset", "scengenerator", "optresults",
-    "usersession", "user", "version"})
+    "usersession", "user", "version", "activeblock", "page"})
 public class ControllerService {
 	
 	 	@Autowired
@@ -154,6 +166,15 @@ public class ControllerService {
 	    @Autowired
 	    OutputVariableService outVarService;
 	    
+	    @Autowired
+	    SecurityAuthorization securityAuthorization;
+	    
+	    @Autowired
+	    UserGroupService userGroupService;
+	    
+	    @Autowired
+	    UserGroupProjectService userGroupProjectService;
+	    
 	    @Autowired  
 	    private MessageSource messageSource;
 
@@ -162,25 +183,12 @@ public class ControllerService {
 
 	    @Autowired
 	    private AlgorithmService algorithmService;
-	    
+
 	    public String getMessage(String code, HttpServletRequest request) {
 	    	Locale locale = RequestContextUtils.getLocale(request);
 	        return messageSource.getMessage(code, null, locale);
 	    }
-
-	    public AppUserDTO FindAuthenticatedUser(Authentication authentication) throws Exception{
-			
-			String authenticatedUserName = authentication.getName();			
-			AppUserDTO appuserdto;
-			try {
-				appuserdto = userService.findByName(authenticatedUserName);
-			} catch (EntityNotFoundException e) {
-				throw new Exception("User dosen't exist in database or being authorized");			
-			}
-			return appuserdto;
-		}
-	    	    
-	   
+	    
 	    public static ProjectDTO GetProject(Map<String,Object> model){    	
 	    	ProjectDTO project =(ProjectDTO) model.get("project");	    	  	
 	    	return project;
@@ -556,6 +564,8 @@ public class ControllerService {
 	        model.remove("optresults");
 	        model.remove("usersession");
 	        model.remove("user");
+	        model.remove("activeblock");
+	        model.remove("page");
 
 	        if (language != null && !language.isEmpty())
 	        {

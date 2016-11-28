@@ -74,6 +74,11 @@ public class SecurityAuthorization {
 		
 	}	
 	
+	@PreAuthorize("hasAnyRole('ROLE_Administrator','ROLE_Expert','ROLE_Standard')")
+	public void atLeastStandard(){		
+	
+	}
+
 	@PreAuthorize("hasRole('ROLE_Administrator') or ("
 		    +" hasAnyRole('ROLE_Expert','ROLE_Standard') and ("
 			+" hasPermission(#project,'ROLE_Administrator')"
