@@ -1482,7 +1482,7 @@ public class OptimizationController {
 		@RequestParam("fileTimeSeries") MultipartFile fileTimeSeries,
 		HttpServletRequest request) {
 
-        if (!file.isEmpty()) {
+        if (!file.isEmpty() && !fileTimeSeries.isEmpty()) {
             try {
                 ProjectDTO project = (ProjectDTO) model.get("project");
 
@@ -1500,12 +1500,7 @@ public class OptimizationController {
                 	return "error";
                 }
 
-                try {
-                    project = projectService.findByID(project.getPrjid());
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-                model.put("project", project);
+                project = controllerService.updateProject(model);
 
                 try (InputStream structureStream = file.getInputStream()) {
                     importExportService.importSimulationStructure(project.getPrjid(), structureStream);
@@ -1524,6 +1519,8 @@ public class OptimizationController {
                 }
 
                 model.put("info", controllerService.getMessage("file_imported", request));
+                project = controllerService.updateProject(model);
+                model.put("project", project);
             } catch (Exception e) {
                 e.printStackTrace();
             	model.put("error", e.getMessage());
@@ -1542,7 +1539,7 @@ public class OptimizationController {
             @RequestParam("fileTimeSeries") MultipartFile fileTimeSeries,
             HttpServletRequest request) {
 
-        if (!fileProblem.isEmpty()) {
+        if (!fileProblem.isEmpty() && !fileTimeSeries.isEmpty()) {
             try {
                 ProjectDTO project = (ProjectDTO) model.get("project");
 

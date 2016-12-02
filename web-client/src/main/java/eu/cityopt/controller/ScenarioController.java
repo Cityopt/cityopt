@@ -505,17 +505,13 @@ public class ScenarioController {
 
 	    if (!file.isEmpty()) {
 	        try (InputStream scenarios = file.getInputStream();
-	             InputStream timeSeries = (timeSeriesMPFile1 != null ? timeSeriesMPFile1.getInputStream() : null)) {
+        		InputStream timeSeries = (timeSeriesMPFile1 != null ? timeSeriesMPFile1.getInputStream() : null)) {
 
-	            try {
-	                project = projectService.findByID(project.getPrjid());
-	            } catch (Exception e1) {
-	                e1.printStackTrace();
-	            }
-	            model.put("project", project);
 
 	            importExportService.importScenarioData(project.getPrjid(), scenarios, "Imported from " + file.getOriginalFilename(), timeSeries);
 	            model.put("info", controllerService.getMessage("file_imported", request));
+	        	project = controllerService.updateProject(model);
+	            model.put("project", project);
             } catch (Exception e) {
 	            e.printStackTrace();
             	model.put("error", e.toString());

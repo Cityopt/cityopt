@@ -194,6 +194,23 @@ public class ControllerService {
 	    	return project;
 	    }
 	    
+	    public ProjectDTO updateProject(Map<String, Object> model) 
+	    {
+	    	ProjectDTO project = (ProjectDTO) model.get("project");
+	        
+	    	if (project == null) {
+	    		return null;
+	    	}
+	    	
+	    	try {
+				project = projectService.findByID(project.getPrjid());
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+
+	    	return project;
+	    }
+
 	    public void updateProject(Map<String,Object> model, ProjectDTO project) {    	
 	        
 	        try {

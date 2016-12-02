@@ -605,24 +605,22 @@ public class ProjectController {
 
         if (!file.isEmpty()) {
             try {
-            	ProjectDTO project = (ProjectDTO) model.get("project");
-                if (project == null)
+            	ProjectDTO project = controllerService.updateProject(model);
+           
+            	if (project == null)
                 {
                     return "error";
                 }
-                securityAuthorization.atLeastExpert_standard(project);
 
-                try {
-                    project = projectService.findByID(project.getPrjid());
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-                model.put("project", project);
+            	securityAuthorization.atLeastExpert_standard(project);
 
                 InputStream structureStream = file.getInputStream();
                 importExportService.importSimulationStructure(project.getPrjid(), structureStream);
                 structureStream.close();
                 model.put("info", controllerService.getMessage("file_imported", request));
+                
+                project = controllerService.updateProject(model);
+                model.put("project", project);
             } catch (Exception e) {
             	e.printStackTrace();
             	model.put("error", e.toString());
@@ -1301,11 +1299,9 @@ public class ProjectController {
        	model.put("activeblock", "project");
     	model.put("page", "importdata");
  
-    	ProjectDTO project = (ProjectDTO) model.get("project");
-        if (project == null)
-        {
-            return "error";
-        }
+    	ProjectDTO project = controllerService.updateProject(model);
+        model.put("project", project);
+        
         securityAuthorization.atLeastExpert_standard(project);
 
         return "importdata";

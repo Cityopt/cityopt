@@ -179,7 +179,7 @@
 										</tr>
 										<tr>
 											<td class="activeline">
-												<c:if test="project != null">
+												<c:if test="${not empty project}">
 													${project.name}
 												</c:if>
 											</td>
@@ -191,7 +191,7 @@
 										</tr>
 										<tr>
 											<td class="activeline">
-												<c:if test="project != null">
+												<c:if test="${not empty project}">
 													${project.location}
 												</c:if>
 											</td>
@@ -203,7 +203,7 @@
 										</tr>
 										<tr>
 											<td class="activeline">
-												<c:if test="project != null">
+												<c:if test="${not empty project}">
 													${project.designtarget}
 												</c:if>
 											</td>
@@ -217,7 +217,7 @@
 										<tr>
 											<td class="regular">
 												<textarea readonly="readonly" style="overflow:hidden; margin-top: 2px" rows="6" cols="24">
-													<c:if test="project != null">
+													<c:if test="${not empty project}">
 														${project.description}
 													</c:if>
 												</textarea>
