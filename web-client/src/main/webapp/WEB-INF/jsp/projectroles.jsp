@@ -73,10 +73,12 @@
 										<col style="width:120px">	
 										<col style="width:120px">	
 										<col style="width:120px">	
+										<col style="width:100px">	
 										
 										<tr height="20">
 										    <th><spring:message code="user"/></th>
 										    <th><spring:message code="role"/></th>
+										    <th></th>
 										    <th></th>
 										    <th></th>
 										    <th></th>
@@ -93,22 +95,27 @@
 										   		</td> 	
 												<td>
 													<a href="changeprojectrole.html?userid=${projectRole.user.userid}&role=admin">
-														<button type="button" style="width: 150px"><spring:message code="make_admin" /></button>
+														<button type="button" style="width: 140px"><spring:message code="make_admin" /></button>
 													</a>
 												</td>
 												<td>
 													<a href="changeprojectrole.html?userid=${projectRole.user.userid}&role=expert">
-														<button type="button" style="width: 150px"><spring:message code="make_expert" /></button>
+														<button type="button" style="width: 140px"><spring:message code="make_expert" /></button>
 													</a>
 												</td>
 												<td>
 													<a href="changeprojectrole.html?userid=${projectRole.user.userid}&role=standard">
-														<button type="button" style="width: 150px"><spring:message code="make_standard" /></button>
+														<button type="button" style="width: 140px"><spring:message code="make_standard" /></button>
 													</a>
 												</td>
 												<td>
 													<a href="changeprojectrole.html?userid=${projectRole.user.userid}&role=guest">
-														<button type="button" style="width: 150px"><spring:message code="make_guest" /></button>
+														<button type="button" style="width: 140px"><spring:message code="make_guest" /></button>
+													</a>
+												</td>
+												<td>
+													<a href="changeprojectrole.html?userid=${projectRole.user.userid}&role=remove">
+														<button type="button" style="width: 110px"><spring:message code="remove_role" /></button>
 													</a>
 												</td>
 										   	</tr>

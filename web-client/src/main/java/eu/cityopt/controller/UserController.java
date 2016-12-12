@@ -734,7 +734,8 @@ public class UserController {
 		}
     	
     	int nRoleId = 4;
-		
+		boolean bRemoveRole = false;
+    	
 		if (role.equals("admin")) {
 			nRoleId = 1;
 		} else if (role.equals("expert")) {
@@ -743,6 +744,8 @@ public class UserController {
 			nRoleId = 3;
 		} else if (role.equals("guest")) {
 			nRoleId = 4;
+		} else if (role.equals("remove")) {
+			bRemoveRole = true;
 		}
 		
     	UserGroupProjectDTO userGroupProject = userGroupProjectService.findByUserAndProject(nUserId, project.getPrjid());
@@ -756,9 +759,20 @@ public class UserController {
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
-            
-    		userGroupProject.setUsergroup(userGroup);
-    		userGroupProjectService.save(userGroupProject);
+
+			if (bRemoveRole)
+			{
+				try {
+					userGroupProjectService.delete(userGroupProject.getUsergroupprojectid());
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				userGroupProject.setUsergroup(userGroup);
+				userGroupProjectService.save(userGroupProject);
+			}
     	}
     	else
     	{
