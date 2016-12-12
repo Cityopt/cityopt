@@ -594,6 +594,25 @@
 					</c:choose>
 				</td>
 			</tr>
+			<c:choose>
+				<c:when test="${not empty project}">
+					<tr>
+						<td></td>
+						<td>
+							<c:choose>
+								<c:when test="${page == 'projectroles'}">
+									<a href="projectroles.html"><font color="white"><spring:message code="project_roles"/></font></a>
+								</c:when>
+								<c:otherwise>
+									<a href="projectroles.html"><spring:message code="project_roles"/></a>
+								</c:otherwise>
+							</c:choose>
+						</td>
+					</tr>
+				</c:when>
+				<c:otherwise>
+				</c:otherwise>
+			</c:choose>
 			<tr>
 				<td></td>
 				<td>

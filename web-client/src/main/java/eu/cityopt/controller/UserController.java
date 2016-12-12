@@ -182,6 +182,7 @@ import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
 import eu.cityopt.sim.service.SimulationService;
 import eu.cityopt.web.PasswordForm;
+import eu.cityopt.web.ProjectRole;
 import eu.cityopt.web.RoleForm;
 import eu.cityopt.web.ScenarioParamForm;
 import eu.cityopt.web.UnitForm;
@@ -485,7 +486,7 @@ public class UserController {
 		try {
 			appuserdto = userService.findByName(authenticatedUserName);
 		} catch (EntityNotFoundException e) {
-			throw new Exception("User dosen't exist in database or being authorized");			
+			throw new Exception("User doesn't exist in the database");			
 		}
 		return appuserdto;
 	}
@@ -657,7 +658,131 @@ public class UserController {
         
         return "userinfo";
     }
+
+    public void initProjectRoles(Map<String, Object> model, ProjectDTO project) 
+    {
+    	ArrayList<AppUserDTO> users = (ArrayList<AppUserDTO>) userService.findAll();
+    	Iterator<AppUserDTO> iter = users.iterator();
+    	ArrayList<ProjectRole> projectRoles = new ArrayList<ProjectRole>();
+    	
+    	while (iter.hasNext())
+    	{
+    		AppUserDTO user = iter.next();
+    		ProjectRole role = new ProjectRole();
+    		role.setUser(user);
+    		role.setProject(project);
+    		
+    		UserGroupProjectDTO userGroupProject = userGroupProjectService.findByUserAndProject(user.getUserid(), project.getPrjid());
+			UserGroupDTO userGroup = new UserGroupDTO();
+
+    		if (userGroupProject != null)
+    		{
+    			userGroup = userGroupProject.getUsergroup();
+    		}
+    		
+    		role.setProjectRole(userGroup.getName());
+    		projectRoles.add(role);
+    	}
+    	
+    	model.put("projectRoles", projectRoles);
+    }
     
+    @RequestMapping(value="projectroles", method=RequestMethod.GET)
+    public String projectRoles(Map<String, Object> model) {
+    	
+    	ProjectDTO project = controllerService.GetProject(model);
+    	
+    	if (project == null)
+    	{
+    		return "error";
+    	}
+    	
+        securityAuthorization.atLeastExpert_admin(project);
+
+    	model.put("activeblock", "settings");
+    	model.put("page", "projectroles");
+        
+    	initProjectRoles(model, project);
+    	
+        return "projectroles";
+    }
+
+    @RequestMapping(value="changeprojectrole", method=RequestMethod.GET)
+    public String changeProjectRole(Map<String, Object> model,
+        @RequestParam(value="userid", required=true) String userid,
+        @RequestParam(value="role", required=true) String role) 
+    {
+    	ProjectDTO project = controllerService.GetProject(model);
+    	
+    	if (project == null)
+    	{
+    		return "error";
+    	}
+    	
+    	securityAuthorization.atLeastExpert_admin(project);
+
+    	model.put("activeblock", "settings");
+    	model.put("page", "projectroles");
+        
+    	int nUserId = Integer.parseInt(userid);
+    	AppUserDTO user = null;
+    	
+		try {
+			user = userService.findByID(nUserId);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+    	
+    	int nRoleId = 4;
+		
+		if (role.equals("admin")) {
+			nRoleId = 1;
+		} else if (role.equals("expert")) {
+			nRoleId = 2;
+		} else if (role.equals("standard")) {
+			nRoleId = 3;
+		} else if (role.equals("guest")) {
+			nRoleId = 4;
+		}
+		
+    	UserGroupProjectDTO userGroupProject = userGroupProjectService.findByUserAndProject(nUserId, project.getPrjid());
+    	
+    	if (userGroupProject != null)
+    	{
+            UserGroupDTO userGroup = null;
+            
+			try {
+				userGroup = userGroupService.findByID(nRoleId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+            
+    		userGroupProject.setUsergroup(userGroup);
+    		userGroupProjectService.save(userGroupProject);
+    	}
+    	else
+    	{
+    		userGroupProject = new UserGroupProjectDTO();
+    		userGroupProject.setProject(project);
+    		userGroupProject.setAppuser(user);
+    		
+            UserGroupDTO userGroup = null;
+            
+			try {
+				userGroup = userGroupService.findByID(nRoleId);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+            userGroupProject.setUsergroup(userGroup);
+    		
+            userGroupProjectService.save(userGroupProject);
+    	}
+    	
+    	initProjectRoles(model, project);
+    	
+        return "projectroles";
+    }
+
     @RequestMapping(value="createuser",method=RequestMethod.GET)
     public String createUser(Map<String, Object> model) {
     	
