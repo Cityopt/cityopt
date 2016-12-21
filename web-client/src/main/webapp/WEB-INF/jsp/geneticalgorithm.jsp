@@ -407,12 +407,17 @@ function onLoadFunction() {
 			                                            <td>
 			                                           	    <c:choose>
 						                                       	<c:when test="${locked}">
-						                                            <input type="submit" value="<spring:message code="remove"/>" onClick="deleteConstraint(${constraint.optconstid})" disabled="disabled">
+						                                       		<a href="deletesgconstraint.html?constrid=${constraint.optconstid}">
+						                                       			<button type="button" disabled="disabled" onClick="deleteConstraint(${constraint.optconstid})">
 					                                      	   	</c:when>
 						                                       	<c:otherwise>
-						                                            <input type="submit" value="<spring:message code="remove"/>" onClick="deleteConstraint(${constraint.optconstid})">
+						                                       		<a href="deletesgconstraint.html?constrid=${constraint.optconstid}">
+						                                       			<button type="button" onClick="deleteConstraint(${constraint.optconstid})">
 						                                       	</c:otherwise>
 						                                   	</c:choose>
+						                                   			<spring:message code="remove"/>
+						                                   		</button>
+					                                   		</a>
 			                                           	</td>
 												   	</tr>
 													</c:forEach>
@@ -422,28 +427,28 @@ function onLoadFunction() {
 										<tr>
 											<td>
 			                               	    <a href="editsgconstraint.html">
-			                               	    <c:choose>
-			                                       	<c:when test="${locked}">
-			                                            <button type="button" style="width: 100px" disabled="disabled">
-			                                     	   	</c:when>
-			                                       	<c:otherwise>
-			                                            <button type="button" style="width: 100px">
-			                                       	</c:otherwise>
-			                                   	</c:choose>
-								
-			                                    <spring:message code="create"/></button></a>
+				                               	    <c:choose>
+				                                       	<c:when test="${locked}">
+				                                            <button type="button" style="width: 100px" disabled="disabled">
+				                                     	   	</c:when>
+				                                       	<c:otherwise>
+				                                            <button type="button" style="width: 100px">
+				                                       	</c:otherwise>
+				                                   	</c:choose>
+										            <spring:message code="create"/></button>
+									            </a>
+									            
 			                                    <a href="importgaconstraint.html">
-			                                    
-			                    				<c:choose>
-			                                       	<c:when test="${locked}">
-			                                            <button type="button" style="width: 100px" disabled="disabled">
-			                                     	   	</c:when>
-			                                       	<c:otherwise>
-			                                            <button type="button" style="width: 100px">
-			                                       	</c:otherwise>
-			                                   	</c:choose>
-								                
-			                                    <spring:message code="import"/></button></a>
+				                                    <c:choose>
+				                                       	<c:when test="${locked}">
+				                                            <button type="button" style="width: 100px" disabled="disabled">
+				                                     	   	</c:when>
+				                                       	<c:otherwise>
+				                                            <button type="button" style="width: 100px">
+				                                       	</c:otherwise>
+				                                   	</c:choose>
+									                <spring:message code="import"/></button>
+								                </a>
 											</td>
 										</tr>
 										<tr height="10"></tr>

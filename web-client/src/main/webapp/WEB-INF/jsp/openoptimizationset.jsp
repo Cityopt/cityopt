@@ -71,7 +71,7 @@
 							<td>${openoptimizationset.name}</td>
 								<c:choose>
 									<c:when test="${openoptimizationset.isDatabaseSearch()}">
-										<td>Database search</td>
+										<td><spring:message code="database_search" /></td>
 										<td>
 										<a href="<c:url value='openoptimizationset.html?optsetid=${openoptimizationset.id}&optsettype=db'/>">
 											<button align="right" title="${open_optimizationset}"  type="button" value="Open" style="width: 80px"><spring:message code="open"/></button>

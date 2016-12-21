@@ -18,12 +18,12 @@
 <form:form method="post" action="editconstraint.html" modelAttribute="constraint">
 <table cellspacing="0px" cellpadding="0px">
 	<tr>
-		<td>
+		<td valign="top">
 			<%@ include file="mainmenu.inc"%>
 		</td>
 		<td valign="top">
 			<div style="overflow: auto; height: 100%; width: 1200px; overflow: auto;">
-			<table class="maintable">			
+			<table class="maintablewide">			
 				<%@ include file="toprow.inc"%>
 				<tr class="titlerow">
 					<td class="spacecolumn"></td>
@@ -43,109 +43,16 @@
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<table>
-							<col style="width:250px">
-							<col style="width:30px">
-							<col style="width:250px">
-							<col style="width:30px">
-							<col style="width:250px">
-
-							<tr>
-								<!-- Component, Input parameters and Output variables -->
-								<td><b><spring:message code="component"/></b></td>
-								<td></td>
-								<td><b><spring:message code="input_parameters"/></b></td>
-								<td></td>
-								<td><b><spring:message code="output_variables"/></b></td>
-							</tr>
-							<tr>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:60px">
-										<col style="width:190px">
-										<tr>
-											<!-- Select, Component -->
-											<th><spring:message code="select"/></th>
-											<th><spring:message code="component"/></th>
-										</tr>
-							
-										<c:forEach items="${components}" var="component">
-										<tr>
-											<c:if test="${selectedcompid == component.componentid}">
-												<tr style="background-color: #D4D4D4"><td>Selected</td>
-											</c:if>
-											<c:if test="${selectedcompid != component.componentid}">
-												<tr>
-												<td><a href="<c:url value='editconstraint.html?selectedcompid=${component.componentid}'/>">Select</a></td>
-											</c:if>
-												<td>${component.name}</td>
-									   	</tr>
-										</c:forEach>
-									</table>
-								</td>
-								<td></td>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:250px">
-										<tr>
-											<!-- Input parameter -->
-											<th><spring:message code="input_parameter"/></th>
-										</tr>
-					
-										<c:forEach items="${inputParams}" var="inputParam">
-										<tr>
-											<td>${inputParam.name}</td>
-										</tr>
-										</c:forEach>
-									</table>
-								</td>
-								<td></td>
-								<td valign="top">
-									<table class="tablestyle">
-										<col style="width:250px">
-										<tr>
-											<!--Output variable-->
-											<th><spring:message code="output_variable"/></th>
-										</tr>
-					
-										<c:forEach items="${outputVars}" var="outputVar">
-										<tr>
-											<td>${outputVar.name}</td>
-										</tr>
-										</c:forEach>
-									</table>
-								</td>
-							</tr>
-							<tr height="20"></tr>
-							<tr>
-								<!--Metrics-->
-								<td><b><spring:message code="metrics"/></b></td>
-							</tr>
-							<tr>
-								<td>
-									<table class="tablestyle">
-										<col style="width:250px">
-										
-										<tr>
-											<!--Metric-->
-											<th><spring:message code="metric"/></th>
-										</tr>
-					
-										<c:forEach items="${metrics}" var="metric">
-										<tr>
-											<td>${metric.name}</td>
-									   	</tr>
-										</c:forEach>
-									</table>										
-								</td>
-							</tr>
-						</table>
-					</td>
+					<td class="spacecolumn"></td>
+					<td class="error">${error}</td>
 				</tr>
-				<tr height=20></tr>
 				<tr>
-					<td>
+					<td class="spacecolumn"></td>
+					<td class="info">${info}</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td valign="top">
 						<table>						
 							<col style="width:30px">
 							<col style="width:150px">
@@ -183,7 +90,6 @@
 								<td></td>
 							</tr>
 							<tr>
-								<td></td>
 								<td></td>
 								<td></td>
 								<!-- Ok submit and Cancel -button-->

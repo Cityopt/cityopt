@@ -2001,6 +2001,13 @@ public class OptimizationController {
             	return "createconstraint";
         	}
 
+        	if (constraint.getLowerbound().isEmpty() || constraint.getUpperbound().isEmpty())
+        	{
+        		model.put("error", controllerService.getMessage("write_lower_and_upper_bounds", request));
+        		model.put("constraint", constraint);
+            	return "createconstraint";
+        	}
+        	
         	String expression = constraint.getExpression();
         	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
          	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkConstraintExpression(expression);
@@ -2148,6 +2155,13 @@ public class OptimizationController {
             	return "editconstraint";
         	}
 
+        	if (constraint.getLowerbound().isEmpty() || constraint.getUpperbound().isEmpty())
+        	{
+        		model.put("error", controllerService.getMessage("write_lower_and_upper_bounds", request));
+        		model.put("constraint", constraint);
+            	return "editconstraint";
+        	}
+        	
         	String expression = constraint.getExpression();
         	SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
          	eu.cityopt.sim.eval.SyntaxChecker.Error error = checker.checkConstraintExpression(expression);
@@ -2819,7 +2833,7 @@ public class OptimizationController {
         return "redirect:/geneticalgorithm.html";
     }
 
-    @RequestMapping(value="deletesgconstraint", method=RequestMethod.POST)
+    @RequestMapping(value="deletesgconstraint", method=RequestMethod.GET)
     public String deleteSGConstraintPost(
             ModelMap model, @RequestParam("constrid") Integer constrid) {
         ProjectDTO project = (ProjectDTO) model.get("project");
