@@ -49,14 +49,13 @@
 					<td valign="top">
 						<table class="tablestyle" width="750">
 							<col style="width:150px">	
-							<col style="width:50px">	
 							<col style="width:150px">	
-							<col style="width:350px">	
+							<col style="width:400px">	
+							<col style="width:50px">	
 							<col style="width:50px">	
 							
 							<tr height="20">
 							    <th><spring:message code="name"/></th>
-							    <th>Id</th>
 							    <th><spring:message code="location"/></th>
 							    <th><spring:message code="description"/></th>
 							    <th><spring:message code="open"/></th>
@@ -67,7 +66,6 @@
 							
 								<tr>
 									<td>${project.name}</td>
-							    	<td>${project.prjid}</td>
 									<td>${project.location}</td>			
 									<td>${project.description}</td>			
 									
@@ -86,6 +84,40 @@
 									</td>
 							   	</tr>
 							</c:forEach>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="info">
+						<table width="750">
+							<col style="width:33%">	
+							<col style="width:34%">	
+							<col style="width:33%">	
+							<tr>
+								<td align="left">
+									<c:choose>
+										<c:when test="${pagenum > 1}">
+											<a href="openproject.html?pagenum=${(pagenum - 1)}">
+												< <spring:message code="previous"/>
+											</a>
+										</c:when>
+										<c:otherwise>
+											 &nbsp;
+										</c:otherwise>	
+									</c:choose>
+								</td>
+								<td align="center">
+									<spring:message code="page" /> ${pagenum}/${pages}
+								</td>
+								<td align="right">
+									<c:if test="${pagenum < pages}">
+										<a href="openproject.html?pagenum=${(pagenum + 1)}">
+											<spring:message code="next"/> >
+										</a>
+									</c:if>
+								</td>
+							</tr>
 						</table>
 					</td>
 				</tr>

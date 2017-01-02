@@ -336,29 +336,36 @@ public class ProjectController {
     }
 
     @RequestMapping(value="openproject", method=RequestMethod.GET)
-    public String openProject(Map<String, Object> model)
+    public String openProject(Map<String, Object> model,
+    	@RequestParam(value="pagenum", required=false) String pagenum)
     {
     	model.put("activeblock", "project");
     	model.put("page", "openproject");
 
     	// Fine if Administrator
-    	List<ProjectDTO> projects= new ArrayList<ProjectDTO>();
+    	List<ProjectDTO> projects = new ArrayList<ProjectDTO>();
     	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+    	boolean bAdmin = false;
+    	
         if (principal != null && principal instanceof UserDetails) {
             Collection<? extends GrantedAuthority> authorites = ((UserDetails)principal).getAuthorities();
 
-            for (int i = 0; authorites.size() > i; i++) {
+            for (int i = 0; i < authorites.size(); i++) {
             	GrantedAuthority accessProvided = (GrantedAuthority) authorites.toArray()[i];
-            	if (accessProvided.getAuthority().equals("ROLE_Administrator")){
-            		projects = projectService.findAll();
+            	if (accessProvided.getAuthority().equals("ROLE_Administrator")) {
+            		bAdmin = true;
+            		break;
             	}
             }
 
-            if (projects.size() == 0) {
-            	 String username= ((UserDetails)principal).getUsername();
-            	 int userID;
-				try {
+            if (bAdmin)
+            {
+        		projects = projectService.findAll();
+            } else {
+            	String username= ((UserDetails)principal).getUsername();
+            	int userID;
+
+            	try {
 					userID = userService.findByName(username).getUserid();
 					projects = userGroupProjectService.findProjectsByUser(userID);
 				} catch (EntityNotFoundException e) {
@@ -368,8 +375,22 @@ public class ProjectController {
         } else {
         	//
         }
-        model.put("projects", projects);
+
+        model.put("pages", (int)Math.ceil((double)projects.size() / 10));
+
+        if (pagenum != null && !pagenum.isEmpty())
+        {
+        	int nPageNum = Integer.parseInt(pagenum);
+        	projects = projects.subList((nPageNum - 1) * 10, Math.min(nPageNum * 10, projects.size()));
+            model.put("pagenum", pagenum);
+        }
+        else
+        {
+        	projects = projects.subList(0, Math.min(10, projects.size()));
+            model.put("pagenum", "1");
+        }
         
+        model.put("projects", projects);
         model.put("activeblock", "project");
         return "openproject";
     }
