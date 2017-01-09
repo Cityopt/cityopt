@@ -231,22 +231,37 @@ public class ControllerService {
 	    	}
 	    }
 	    
-	    //Set up SelectedComponent
-	    public void SetUpSelectedComponent(Map<String,Object> model, String selectedCompId) {
-	    	ComponentDTO selectedComponent = null; 
-	    	if (selectedCompId != null)
-	         {
-	             int nSelectedCompId = Integer.parseInt(selectedCompId);
-	             try {
-	                 selectedComponent = componentService.findByID(nSelectedCompId);
-	             } catch (EntityNotFoundException e) {
-	                 e.printStackTrace();
-	             }
-	             model.put("selectedcompid", selectedCompId);
-	             model.put("selectedComponent",  selectedComponent);
-	             List<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
-	             model.put("inputParameters", inputParams);
-	         }
+	    public void setUpSelectedComponent(Map<String,Object> model, String selectedCompId, int nInputPageNum) 
+	    {
+	    	ComponentDTO selectedComponent = null;
+	    	
+	    	if (selectedCompId != null && !selectedCompId.isEmpty())
+	        {
+	            int nSelectedCompId = Integer.parseInt(selectedCompId);
+	            try {
+	                selectedComponent = componentService.findByID(nSelectedCompId);
+	            } catch (EntityNotFoundException e) {
+	                e.printStackTrace();
+	            }
+	            model.put("selectedcompid", selectedCompId);
+	            model.put("selectedComponent",  selectedComponent);
+	            List<InputParameterDTO> inputParams = componentService.getInputParameters(nSelectedCompId);
+	            
+	            model.put("inputpages", (int)Math.ceil((double)inputParams.size() / 10));
+
+		        if (nInputPageNum > 0)
+		        {
+		        	inputParams = inputParams.subList((nInputPageNum - 1) * 10, Math.min(nInputPageNum * 10, inputParams.size()));
+		            model.put("inputpagenum", nInputPageNum);
+		        }
+		        else
+		        {
+		        	inputParams = inputParams.subList(0, Math.min(10, inputParams.size()));
+		            model.put("inputpagenum", "1");
+		        }
+		        
+		        model.put("inputParameters", inputParams);
+	        }
 	    }
 	    
 	    // Set up the project External Parameter values.
@@ -357,14 +372,32 @@ public class ControllerService {
 			model.put("selectedParams", selectedParams);
 		}
 
-	    // Set up component and External parameter Values according to project and model attributes.  
-	    public void getComponentAndExternalParamValues(Map<String,Object> model, ProjectDTO project ){
-	    	List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+	    public void getComponents(Map<String,Object> model, ProjectDTO project,
+    		int nCompPageNum) {
+	        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
+	    	model.put("comppages", (int)Math.ceil((double)components.size() / 10));
+
+	        if (nCompPageNum > 0)
+	        {
+	        	components = components.subList((nCompPageNum - 1) * 10, Math.min(nCompPageNum * 10, components.size()));
+	            model.put("comppagenum", nCompPageNum);
+	        }
+	        else
+	        {
+	        	components = components.subList(0, Math.min(10, components.size()));
+	            model.put("comppagenum", "1");
+	        }
+	         
+	        model.put("components", components);
+	    }   
+
+	    public void getComponentAndExternalParamValues(Map<String,Object> model, ProjectDTO project) {
+	        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 	        model.put("components", components);
 	        Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
 	        model.put("extParams", extParams);
 	    }   
-	    
+
 	    // Finds an External Parameter Value DTO object with it's id.
 	    public ExtParamValSetDTO FindExternalParameterValSetByID(int id){
 	    	ExtParamValSetDTO selectedExtParamValSet = null;
@@ -1210,6 +1243,10 @@ public class ControllerService {
 	    	}
 	    	
 	    	return max;
+	    }
+	    
+	    public boolean areStringsNotSet(String str1, String str2) {
+	    	return (str1 == null || str1.isEmpty()) && (str2 == null || str2.isEmpty());
 	    }
 	}
 

@@ -130,7 +130,9 @@ public class ParameterController {
 
     @RequestMapping(value="projectparameters", method=RequestMethod.GET)
     public String projectParameters(Map<String, Object> model, 
-        @RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+        @RequestParam(value="selectedcompid", required=false) String selectedCompId,
+        @RequestParam(value="comppagenum", required=false) String comppagenum,
+        @RequestParam(value="inputpagenum", required=false) String inputpagenum) {
      	
     	ProjectDTO project = (ProjectDTO) model.get("project");
 		
@@ -139,8 +141,26 @@ public class ParameterController {
     	securityAuthorization.atLeastGuest_guest(project);
 		model.put("project", project);
 
-		controllerService.SetUpSelectedComponent(model, selectedCompId);
-        controllerService.getComponentAndExternalParamValues(model,project);        
+		if (comppagenum != null && !comppagenum.isEmpty())
+		{
+			int nCompPageNum = Integer.parseInt(comppagenum);
+			controllerService.getComponents(model, project, nCompPageNum);
+		}
+		else
+		{
+			controllerService.getComponents(model, project, 1);
+		}
+		
+		if (inputpagenum != null && !inputpagenum.isEmpty())
+		{
+			int nInputPageNum = Integer.parseInt(inputpagenum);
+			controllerService.setUpSelectedComponent(model, selectedCompId, nInputPageNum);
+		}
+		else
+		{
+			controllerService.setUpSelectedComponent(model, selectedCompId, 1);
+		}
+		
         return "projectparameters";
     }
 
@@ -243,7 +263,8 @@ public class ParameterController {
         
         if (cancel != null)
         {
-        	return "editproject";
+        	 controllerService.getComponents(model, project, 1);        
+             return "projectparameters";
         }
         
         securityAuthorization.atLeastExpert_expert(project);
@@ -289,7 +310,7 @@ public class ParameterController {
             e.printStackTrace();
         }
 
-        controllerService.getComponentAndExternalParamValues(model, project);        
+        controllerService.getComponents(model, project, 1);        
         
         return "projectparameters";
     }
@@ -379,7 +400,7 @@ public class ParameterController {
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
-        controllerService.getComponentAndExternalParamValues(model, project);        
+        controllerService.getComponents(model, project, 1);        
 
         return "projectparameters";
     }
@@ -500,8 +521,8 @@ public class ParameterController {
         String selectedCompId = "" + updatedInputParam.getComponentComponentid();
         
         if (cancel != null) {
-        	controllerService.getComponentAndExternalParamValues(model, project);
-        	controllerService.SetUpSelectedComponent(model, selectedCompId);
+        	controllerService.getComponents(model, project, 1);
+        	controllerService.setUpSelectedComponent(model, selectedCompId, 1);
             return "projectparameters";
         }
         
@@ -524,6 +545,7 @@ public class ParameterController {
         
         updatedInputParam.setUnit(unit);
         int componentId = updatedInputParam.getComponentComponentid();
+        
         InputParameterDTO inputParam = null;
 
         try {
@@ -556,7 +578,29 @@ public class ParameterController {
         SyntaxChecker checker = syntaxCheckerService.getSyntaxChecker(project.getPrjid());
      	boolean isValid = checker.isValidAttributeName(inputParamForm.getName());
 
-     	if (!isValid || testInput != null)
+        boolean bValueEdited = true;
+        
+        if (testInput == null) {
+        	bValueEdited = false;
+        }
+        else
+        {
+	     	/*System.out.println("testinput " + testInput.getName() + " " + testInput.getDefaultvalue() + " " + testInput.getLowerBound()
+	     		+ " " + testInput.getUpperBound() + " " + testInput.getUnit());
+	        System.out.println("updatedInputParam " + updatedInputParam.getName() + " " + updatedInputParam.getDefaultvalue() + " " + updatedInputParam.getLowerBound()
+	     		+ " " + updatedInputParam.getUpperBound() + " " + updatedInputParam.getUnit());
+	
+	        if ((controllerService.areStringsNotSet(testInput.getDefaultvalue(), updatedInputParam.getDefaultvalue()) || (testInput.getDefaultvalue() != null && testInput.getDefaultvalue().equals(updatedInputParam.getDefaultvalue())))
+	         		&& (controllerService.areStringsNotSet(testInput.getLowerBound(), updatedInputParam.getLowerBound()) || (testInput.getLowerBound() != null && testInput.getLowerBound().equals(updatedInputParam.getLowerBound()))) 
+	         		&& (controllerService.areStringsNotSet(testInput.getUpperBound(), updatedInputParam.getUpperBound()) || (testInput.getUpperBound() != null && testInput.getUpperBound().equals(updatedInputParam.getUpperBound())))
+	         		&& (testInput.getUnit() != null && testInput.getUnit().getName() != null && updatedInputParam.getUnit() != null && testInput.getUnit().getName().equals(updatedInputParam.getUnit().getName())))
+	        {
+	     		bValueEdited = false; 
+	        }*/
+        }
+        
+   		if (!isValid || 
+ 			(testInput != null && !bValueEdited))
      	{
             model.put("error", controllerService.getMessage("write_another_input_parameter_name", request));
         	model.put("inputParam", inputParam);
@@ -592,7 +636,7 @@ public class ParameterController {
 	            model.put("units", units);
 	        	
 	        	model.put("error", result.getGlobalError().getCode());  
-	        	System.out.println("Error " + result.getGlobalError().toString());
+	        	//System.out.println("Error " + result.getGlobalError().toString());
 	    	} 
 			catch (EntityNotFoundException e) 
 			{
@@ -600,7 +644,7 @@ public class ParameterController {
 			}        	
 	        return "editinputparameter";
 		} else {
-        	System.out.println("Input param " + updatedInputParam.getDefaultvalue() + " " + updatedInputParam.getLowerBound());
+        	//System.out.println("Input param " + updatedInputParam.getDefaultvalue() + " " + updatedInputParam.getLowerBound());
 
 	        try {
 				inputParamService.update(updatedInputParam, componentId, unit.getUnitid(), null);
@@ -618,10 +662,9 @@ public class ParameterController {
 	
 	        model.put("project", project);
 	        
-	        controllerService.getComponentAndExternalParamValues(model, project);        
-	        controllerService.SetUpSelectedComponent(model, selectedCompId);
-        	System.out.println("Ok");
-	        
+	        controllerService.getComponents(model, project, 1);        
+	        controllerService.setUpSelectedComponent(model, selectedCompId, 1);
+        	
 	        return "projectparameters";
         }
     }
@@ -655,10 +698,10 @@ public class ParameterController {
 
                 if (cancel != null)
             	{
-                	controllerService.getComponentAndExternalParamValues(model, project);
+                	controllerService.getComponents(model, project, 1);
                 	 
                 	int componentId = inputParam.getComponentComponentid();
-                	controllerService.SetUpSelectedComponent(model, "" + componentId);
+                	controllerService.setUpSelectedComponent(model, "" + componentId, 1);
                     return "projectparameters";
             	}
 
@@ -708,7 +751,7 @@ public class ParameterController {
         } else {
         }
     	
-        controllerService.getComponentAndExternalParamValues(model, project);
+        controllerService.getComponents(model, project, 1);
         return "projectparameters";
     }
     
@@ -873,7 +916,7 @@ public class ParameterController {
         if (strSelectedCompId == null || strSelectedCompId.isEmpty())
         {
             model.put("project", project);
-            controllerService.getComponentAndExternalParamValues(model, project);        
+            controllerService.getComponents(model, project, 1);        
             return "projectparameters";
         }
 
@@ -910,7 +953,7 @@ public class ParameterController {
 
         if (cancel != null)
         {
-            controllerService.getComponentAndExternalParamValues(model, project);
+            controllerService.getComponents(model, project, 1);
         	return "projectparameters";
         }
         
@@ -983,9 +1026,9 @@ public class ParameterController {
 			model.put("error", controllerService.getMessage("project_updated", request));
 		}
 
-        controllerService.SetUpSelectedComponent(model, strSelectedCompId);
+        controllerService.setUpSelectedComponent(model, strSelectedCompId, 1);
         controllerService.getProjectExternalParameterValues(model, project);
-        controllerService.getComponentAndExternalParamValues(model, project);        
+        controllerService.getComponents(model, project, 1);        
         
         return "projectparameters";
     }
@@ -1014,7 +1057,7 @@ public class ParameterController {
 			e.printStackTrace();
 		}
         controllerService.getDefaultExtParamVals(model, project.getPrjid());
-        controllerService.getComponentAndExternalParamValues(model, project);
+        controllerService.getComponents(model, project, 1);
         
         return "projectparameters";
     }

@@ -115,7 +115,7 @@
 																			</c:when>
 																			<c:otherwise>
 																				<tr>
-																					<td><a href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}'/>" title="${tooltip_select}">
+																					<td><a href="<c:url value='projectparameters.html?selectedcompid=${component.componentid}&comppagenum=${comppagenum}'/>" title="${tooltip_select}">
 																							<button type="button"><spring:message code="select" /></button>
 																						</a>
 																					</td>
@@ -180,13 +180,80 @@
 																						<spring:message code="edit" />
 																					</button>
 																			</a></td>
-																			<td><a  onclick="return confirm('Are you sure you want to delete')" href="<c:url value='deleteinputparameter.html?inputparamid=${inputParam.inputid}'/>">
+																			<td><a  onclick="return confirm('<spring:message code="confirm_delete" />')" href="<c:url value='deleteinputparameter.html?inputparamid=${inputParam.inputid}'/>">
 																					<button align="right" type="button" value="Remove">
 																						<spring:message code="remove" />
 																					</button>
 																			</a></td>
 																		</tr>
 																	</c:forEach>
+																</table>
+															</td>
+														</tr>
+														<tr>
+															<td class="info">
+																<table width="310">
+																	<col style="width:33%">	
+																	<col style="width:34%">	
+																	<col style="width:33%">	
+																	<tr>
+																		<td align="left">
+																			<c:choose>
+																				<c:when test="${comppagenum > 1}">
+																					<a href="projectparameters.html?selectedcompid=${selectedcompid}&comppagenum=${(comppagenum - 1)}&inputpagenum=${inputpagenum}">
+																						< <spring:message code="previous"/>
+																					</a>
+																				</c:when>
+																				<c:otherwise>
+																					 &nbsp;
+																				</c:otherwise>	
+																			</c:choose>
+																		</td>
+																		<td align="center">
+																			<spring:message code="page" /> ${comppagenum}/${comppages}
+																		</td>
+																		<td align="right">
+																			<c:if test="${comppagenum < comppages}">
+																				<a href="projectparameters.html?selectedcompid=${selectedcompid}&comppagenum=${(comppagenum + 1)}&inputpagenum=${inputpagenum}">
+																					<spring:message code="next"/> >
+																				</a>
+																			</c:if>
+																		</td>
+																	</tr>
+																</table>
+															</td>
+															<td></td>
+															<td class="info">
+																<table width="670">
+																	<col style="width:33%">	
+																	<col style="width:34%">	
+																	<col style="width:33%">	
+																	<tr>
+																		<td align="left">
+																			<c:choose>
+																				<c:when test="${inputpagenum > 1}">
+																					<a href="projectparameters.html?selectedcompid=${selectedcompid}&comppagenum=${(comppagenum)}&inputpagenum=${inputpagenum - 1}">
+																						< <spring:message code="previous"/>
+																					</a>
+																				</c:when>
+																				<c:otherwise>
+																					 &nbsp;
+																				</c:otherwise>	
+																			</c:choose>
+																		</td>
+																		<td align="center">
+																			<c:if test="${not empty inputpagenum && not empty inputpages && inputpages > 0}">
+																				<spring:message code="page" /> ${inputpagenum}/${inputpages}
+																			</c:if>
+																		</td>
+																		<td align="right">
+																			<c:if test="${inputpagenum < inputpages}">
+																				<a href="projectparameters.html?selectedcompid=${selectedcompid}&comppagenum=${comppagenum}&inputpagenum=${(inputpagenum + 1)}">
+																					<spring:message code="next"/> >
+																				</a>
+																			</c:if>
+																		</td>
+																	</tr>
 																</table>
 															</td>
 														</tr>
