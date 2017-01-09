@@ -784,42 +784,70 @@ public class ParameterController {
 
 	@RequestMapping(value="outputvariables",method=RequestMethod.GET)
 	public String outputVariables(Map<String, Object> model,
-		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
+		@RequestParam(value="comppagenum", required=false) String comppagenum,
+	    @RequestParam(value="outputpagenum", required=false) String outputpagenum) {
+	     	
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+		
+    	if (controllerService.NullCheck(project)){return "error";}
+			
+    	securityAuthorization.atLeastGuest_guest(project);
+		model.put("project", project);
 
-		ProjectDTO project = (ProjectDTO) model.get("project");
-
-		if (project == null)
+		if (comppagenum != null && !comppagenum.isEmpty())
 		{
-			return "error";
+			int nCompPageNum = Integer.parseInt(comppagenum);
+			controllerService.getComponents(model, project, nCompPageNum);
+		}
+		else
+		{
+			controllerService.getComponents(model, project, 1);
 		}
 
-		securityAuthorization.atLeastGuest_guest(project);
-
-		if (selectedCompId != null)
+		if (selectedCompId != null && !selectedCompId.isEmpty())
 		{
 			int nSelectedCompId = Integer.parseInt(selectedCompId);
 			
 			ComponentDTO selectedComponent = null;
-			List<OutputVariableDTO> outputVariables=null;
+			List<OutputVariableDTO> outputVariables = null;
+			
 			try {
-				selectedComponent = componentService.findByID(nSelectedCompId);				
+				selectedComponent = componentService.findByID(nSelectedCompId);
 				outputVariables = componentService.getOutputVariables(nSelectedCompId);
-				
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
 
-			//Hibernate.initialize(selectedComponent.getInputparameters());
-			//model.put("inputParams", selectedComponent.getInputparameters());
-			model.put("selectedComponent",  selectedComponent);
+            model.put("outputpages", (int)Math.ceil((double)outputVariables.size() / 10));
+
+            if (outputpagenum != null && !outputpagenum.isEmpty())
+    		{
+    			int nOutputPageNum = Integer.parseInt(outputpagenum);
+    			
+    		    if (nOutputPageNum > 0)
+    		    {
+    		    	outputVariables = outputVariables.subList((nOutputPageNum - 1) * 10, Math.min(nOutputPageNum * 10, outputVariables.size()));
+    	            model.put("outputpagenum", nOutputPageNum);
+    	        }
+    	        else
+    	        {
+    	        	outputVariables = outputVariables.subList(0, Math.min(10, outputVariables.size()));
+    	            model.put("outputpagenum", "1");
+    	        }
+    		}
+    		else
+    		{
+    			outputVariables = outputVariables.subList(0, Math.min(10, outputVariables.size()));
+	            model.put("outputpagenum", "1");
+    		}
+    	    
+	    	model.put("selectedComponent",  selectedComponent);
 			model.put("selectedcompid", selectedCompId);
 			model.put("outputVariables", outputVariables);
-			
 		}
 
 		model.put("project", project);
-		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-		model.put("components", components);
 		
 		return "outputvariables";
 	}
@@ -840,8 +868,8 @@ public class ParameterController {
         securityAuthorization.atLeastExpert_expert(project);
 
         if (cancel != null) {
-            controllerService.getComponentAndExternalParamValues(model, project);        
-        	return "outputvariables";
+   			controllerService.getComponents(model, project, 1);
+            return "outputvariables";
         }
         
         try {
@@ -877,13 +905,6 @@ public class ParameterController {
 			model.put("error", controllerService.getMessage("project_updated", request));
 		}
 
-
-        /*try {
-        	outputVarService.update(updatedOutputVar);
-		} catch (EntityNotFoundException e1) {
-			e1.printStackTrace();
-		}*/
-        
         model.put("selectedcompid", componentId);
 
         try {
@@ -894,7 +915,7 @@ public class ParameterController {
 
         model.put("project", project);
         
-        controllerService.getComponentAndExternalParamValues(model, project);        
+        controllerService.getComponents(model, project, 1);
         
         List<OutputVariableDTO> outputVars = componentService.getOutputVariables(componentId);
         model.put("outputVariables", outputVars);

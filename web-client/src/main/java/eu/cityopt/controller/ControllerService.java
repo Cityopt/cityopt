@@ -373,7 +373,8 @@ public class ControllerService {
 		}
 
 	    public void getComponents(Map<String,Object> model, ProjectDTO project,
-    		int nCompPageNum) {
+    		int nCompPageNum)
+	    {
 	        List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
 	    	model.put("comppages", (int)Math.ceil((double)components.size() / 10));
 
@@ -387,7 +388,6 @@ public class ControllerService {
 	        	components = components.subList(0, Math.min(10, components.size()));
 	            model.put("comppagenum", "1");
 	        }
-	         
 	        model.put("components", components);
 	    }   
 
