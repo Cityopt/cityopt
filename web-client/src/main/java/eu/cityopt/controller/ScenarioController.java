@@ -863,11 +863,13 @@ public class ScenarioController {
 
 		return "deletescenario";
 	}
-	 
+
 	@RequestMapping(value="scenarioparameters", method=RequestMethod.GET)
 	public String scenarioParameters(Map<String, Object> model,
-		@RequestParam(value="selectedcompid", required=false) String selectedCompId) {
-		
+		@RequestParam(value="selectedcompid", required=false) String selectedCompId,
+		@RequestParam(value="comppagenum", required=false) String comppagenum,
+        @RequestParam(value="inputpagenum", required=false) String inputpagenum) 
+	{
 		ProjectDTO project = (ProjectDTO) model.get("project");
 
 		if (project == null)
@@ -894,7 +896,7 @@ public class ScenarioController {
 		ComponentDTO selectedComponent = null;
 		int nSelectedCompId = 0;
 
-		if (selectedCompId != null)
+		if (selectedCompId != null && !selectedCompId.isEmpty())
 		{
 			nSelectedCompId = Integer.parseInt(selectedCompId);
 
@@ -903,7 +905,6 @@ public class ScenarioController {
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
-
 
 			List<InputParamValDTO> inputParamVals = inputParamValService.findByComponentAndScenario(nSelectedCompId, scenario.getScenid());
 			ScenarioParamForm form = new ScenarioParamForm();
@@ -927,9 +928,16 @@ public class ScenarioController {
 
 		model.put("project", project);
 
-		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-		model.put("components", components);
-
+		if (comppagenum != null && !comppagenum.isEmpty())
+		{
+			int nCompPageNum = Integer.parseInt(comppagenum);
+			controllerService.getComponents(model, project, nCompPageNum);
+		}
+		else
+		{
+			controllerService.getComponents(model, project, 1);
+		}
+			
 		return "scenarioparameters";
 	}
 
@@ -969,9 +977,8 @@ public class ScenarioController {
 	        model.put("scenarioParamForm", form);
 			model.put("project", project);
 
-			List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-			model.put("components", components);
-
+			controllerService.getComponents(model, project, 1);
+			
 			return "scenarioparameters";
 		}
 			
@@ -1033,9 +1040,8 @@ public class ScenarioController {
 				model.put("inputParamVals", inputParamVals);
 				model.put("project", project);
 
-				List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-				model.put("components", components);
-
+				controllerService.getComponents(model, project, 1);
+				
 				return "scenarioparameters";
 	     	}
 		}
@@ -1107,9 +1113,8 @@ public class ScenarioController {
 
 		model.put("project", project);
 
-		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-		model.put("components", components);
-
+		controllerService.getComponents(model, project, 1);
+		
 		model.put("info", controllerService.getMessage("scenario_updated", request));
 
 		return "scenarioparameters";
@@ -1250,9 +1255,9 @@ public class ScenarioController {
 		model.put("project", project);
 		Set<ExtParamDTO> extParams = projectService.getExtParams(project.getPrjid());
 		model.put("extParams", extParams);
-		List<ComponentDTO> components = projectService.getComponents(project.getPrjid());
-		model.put("components", components);
-
+		
+		controllerService.getComponents(model, project, 1);
+		
 		return "scenarioparameters";
 	}
 

@@ -128,7 +128,7 @@
 						</table>
 					</td>
 				</tr>
-				<tr class="spacerowbig">
+				<tr height="100%">
 				</tr>
 			</table>
 			</div>

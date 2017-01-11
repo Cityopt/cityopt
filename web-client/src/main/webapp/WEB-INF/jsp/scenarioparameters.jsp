@@ -94,35 +94,74 @@
 										</tr>
 										<tr>
 											<td valign="top">
-												<table class="tablestyle">
-													<col style="width:80px">
-													<col style="width:150px">
+												<table>
 													<tr>
-														<!-- Select -->
-														<th><spring:message code="select"/></th>
-														<!-- Component -->
-														<th><spring:message code="component"/></th>
+														<td>
+															<table class="tablestyle">
+																<col style="width:80px">
+																<col style="width:150px">
+																<tr>
+																	<!-- Select -->
+																	<th><spring:message code="select"/></th>
+																	<!-- Component -->
+																	<th><spring:message code="component"/></th>
+																</tr>
+																<!-- Tooltips -->
+																<c:set var="tooltip_select"><spring:message code="tooltip_select"/></c:set>
+																<c:set var="tooltip_selected"><spring:message code="tooltip_selected"/></c:set>
+																
+																<c:forEach items="${components}" var="component">
+																<c:if test="${selectedComponent.componentid == component.componentid}">
+																	<tr title="${tooltip_selected}" style="background-color: #D4D4D4">
+																		<td><b><spring:message code="selected"/></b></td>
+																		<td><b>${component.name}</b></td>
+																</c:if>
+																<c:if test="${selectedComponent.componentid != component.componentid}">
+																	<tr>
+																		<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}&comppagenum=${comppagenum}'/>" title="${tooltip_select}">
+																				<button type="button"><spring:message code="select"/></button>
+																			</a>
+																		</td>
+																		<td>${component.name}</td>
+																</c:if>
+															   	</tr>
+																</c:forEach>
+															</table>
+														</td>
 													</tr>
-													<!-- Tooltips -->
-													<c:set var="tooltip_select"><spring:message code="tooltip_select"/></c:set>
-													<c:set var="tooltip_selected"><spring:message code="tooltip_selected"/></c:set>
-													
-													<c:forEach items="${components}" var="component">
-													<c:if test="${selectedComponent.componentid == component.componentid}">
-														<tr title="${tooltip_selected}" style="background-color: #D4D4D4">
-															<td><b><spring:message code="selected"/></b></td>
-															<td><b>${component.name}</b></td>
-													</c:if>
-													<c:if test="${selectedComponent.componentid != component.componentid}">
-														<tr>
-															<td><a href="<c:url value='scenarioparameters.html?selectedcompid=${component.componentid}'/>" title="${tooltip_select}">
-																	<button type="button"><spring:message code="select"/></button>
-																</a>
-															</td>
-															<td>${component.name}</td>
-													</c:if>
-												   	</tr>
-													</c:forEach>
+													<tr>
+														<td class="info">
+															<table width="230">
+																<col style="width:33%">	
+																<col style="width:34%">	
+																<col style="width:33%">	
+																<tr>
+																	<td align="left">
+																		<c:choose>
+																			<c:when test="${comppagenum > 1}">
+																				<a href="scenarioparameters.html?selectedcompid=${selectedcompid}&comppagenum=${(comppagenum - 1)}">
+																					< <spring:message code="previous"/>
+																				</a>
+																			</c:when>
+																			<c:otherwise>
+																				 &nbsp;
+																			</c:otherwise>	
+																		</c:choose>
+																	</td>
+																	<td align="center">
+																		<spring:message code="page" /> ${comppagenum}/${comppages}
+																	</td>
+																	<td align="right">
+																		<c:if test="${comppagenum < comppages}">
+																			<a href="scenarioparameters.html?selectedcompid=${selectedcompid}&comppagenum=${(comppagenum + 1)}">
+																				<spring:message code="next"/> >
+																			</a>
+																		</c:if>
+																	</td>
+																</tr>
+															</table>
+														</td>
+													</tr>
 												</table>
 											</td>
 											<td></td>
