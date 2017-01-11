@@ -318,7 +318,9 @@ public class ScenarioController {
 	}
 
 	@RequestMapping(value="openscenario",method=RequestMethod.GET)
-	public String openScenario (Map<String, Object> model, @RequestParam(value="scenarioid", required=false) String scenarioid)
+	public String openScenario (Map<String, Object> model, 
+		@RequestParam(value="scenarioid", required=false) String scenarioid,
+       	@RequestParam(value="pagenum", required=false) String pagenum)
 	{
      	model.put("activeblock", "scenario");
     	model.put("page", "openscenario");
@@ -342,7 +344,7 @@ public class ScenarioController {
 		}
 		else
 		{
-			controllerService.initScenarioList(model, project.getPrjid());
+			controllerService.initScenarioList(model, project.getPrjid(), pagenum);
 		}
 
 		return "openscenario";
@@ -409,7 +411,7 @@ public class ScenarioController {
 			}
 		}
 
-		controllerService.initScenarioList(model, project.getPrjid());
+		controllerService.initScenarioList(model, project.getPrjid(), "1");
 
 		return "openscenario";
 	}
@@ -804,7 +806,7 @@ public class ScenarioController {
 		}
 		
 		model.put("checkForm", checkForm);
-		controllerService.initScenarioList(model, project.getPrjid());
+		controllerService.initScenarioList(model, project.getPrjid(), "*");
 		
 		return "deletescenario";
 	}
@@ -857,7 +859,7 @@ public class ScenarioController {
 			}			
 		}
 
-		controllerService.initScenarioList(model, project.getPrjid());
+		controllerService.initScenarioList(model, project.getPrjid(), "*");
 
 		return "deletescenario";
 	}

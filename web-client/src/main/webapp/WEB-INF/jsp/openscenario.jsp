@@ -94,6 +94,40 @@
 						</table>
 					</td>
 				</tr>
+				<tr>
+					<td class="spacecolumn"></td>
+					<td class="info">
+						<table width="750">
+							<col style="width:33%">	
+							<col style="width:34%">	
+							<col style="width:33%">	
+							<tr>
+								<td align="left">
+									<c:choose>
+										<c:when test="${pagenum > 1}">
+											<a href="openscenario.html?pagenum=${(pagenum - 1)}">
+												< <spring:message code="previous"/>
+											</a>
+										</c:when>
+										<c:otherwise>
+											 &nbsp;
+										</c:otherwise>	
+									</c:choose>
+								</td>
+								<td align="center">
+									<spring:message code="page" /> ${pagenum}/${pages}
+								</td>
+								<td align="right">
+									<c:if test="${pagenum < pages}">
+										<a href="openscenario.html?pagenum=${(pagenum + 1)}">
+											<spring:message code="next"/> >
+										</a>
+									</c:if>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
 				<tr class="spacerowbig">
 				</tr>
 			</table>

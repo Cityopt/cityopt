@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -689,11 +690,30 @@ public class ControllerService {
 	        }
 		}
 	    
-	    public void initScenarioList(Map<String, Object> model, int projectId) {
-			Set<ScenarioDTO> scenarios = projectService.getScenarios(projectId);
-			Set<ScenarioForm> scenarioForms = new LinkedHashSet<ScenarioForm>();
+	    public void initScenarioList(Map<String, Object> model, int projectId, String pagenum) 
+	    {
+			Set<ScenarioDTO> setScenarios = projectService.getScenarios(projectId);
+			List<ScenarioDTO> scenarios = Arrays.asList(setScenarios.toArray(new ScenarioDTO[0]));
+	        model.put("pages", (int)Math.ceil((double)scenarios.size() / 10));
+
+	        if (pagenum != null && !pagenum.isEmpty())
+	        {
+	        	if (!"*".equals(pagenum))
+	        	{
+	        		int nPageNum = Integer.parseInt(pagenum);
+	        		scenarios = scenarios.subList((nPageNum - 1) * 10, Math.min(nPageNum * 10, scenarios.size()));
+	        		model.put("pagenum", pagenum);
+	        	}
+	        }
+	        else
+	        {
+	        	scenarios = scenarios.subList(0, Math.min(10, scenarios.size()));
+	            model.put("pagenum", "1");
+	        }
+		        
+	        Set<ScenarioForm> scenarioForms = new LinkedHashSet<ScenarioForm>();
 			Set<Integer> paretoOptimal =
-			        customQueryRepository.findParetoOptimalScenarios(projectId);
+					customQueryRepository.findParetoOptimalScenarios(projectId);
 			
 			Iterator<ScenarioDTO> iter = scenarios.iterator();
 	    	while (iter.hasNext()) {
