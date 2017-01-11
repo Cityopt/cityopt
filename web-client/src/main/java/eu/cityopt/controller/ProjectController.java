@@ -1119,8 +1119,11 @@ public class ProjectController {
     }
 
     @RequestMapping(value="deleteproject",method=RequestMethod.GET)
-    public String deleteProject(Map<String, Object> model, @RequestParam(value="prjid", required=false) String prjid,
-		HttpServletRequest request){
+    public String deleteProject(Map<String, Object> model, 
+		@RequestParam(value="prjid", required=false) String prjid,
+       	@RequestParam(value="pagenum", required=false) String pagenum,
+    	HttpServletRequest request) 
+	{
     	securityAuthorization.atLeastExpert();
 
     	model.put("activeblock", "project");
@@ -1158,6 +1161,19 @@ public class ProjectController {
         }
 
         List<ProjectDTO> projects = projectService.findAll();
+        model.put("pages", (int)Math.ceil((double)projects.size() / 10));
+
+        if (pagenum != null && !pagenum.isEmpty())
+        {
+        	int nPageNum = Integer.parseInt(pagenum);
+        	projects = projects.subList((nPageNum - 1) * 10, Math.min(nPageNum * 10, projects.size()));
+            model.put("pagenum", pagenum);
+        }
+        else
+        {
+        	projects = projects.subList(0, Math.min(10, projects.size()));
+            model.put("pagenum", "1");
+        }
         model.put("projects",projects);
 
         return "deleteproject";
