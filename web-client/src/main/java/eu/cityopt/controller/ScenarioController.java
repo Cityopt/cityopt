@@ -849,7 +849,7 @@ public class ScenarioController {
 				{
 					try {
 						scenarioService.delete(scenario.getScenid());
-						System.out.println("Deleted scenario id " + id);
+						//System.out.println("Deleted scenario id " + id);
 					} catch (EntityNotFoundException e) {
 						e.printStackTrace();
 					} catch(ObjectOptimisticLockingFailureException e) {

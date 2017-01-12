@@ -127,10 +127,10 @@ public class ScenGenResult extends VersionModel implements java.io.Serializable 
 		this.paretooptimal = paretooptimal;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scengenresult")
-	public Set<ObjectiveFunctionResult> getObjectivefunctionresults() {
-		return this.objectivefunctionresults;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "scengenresult", cascade=CascadeType.REMOVE)
+    public Set<ObjectiveFunctionResult> getObjectivefunctionresults() {
+    	return this.objectivefunctionresults;
+    }
 
 	public void setObjectivefunctionresults(
 			Set<ObjectiveFunctionResult> objectivefunctionresults) {
