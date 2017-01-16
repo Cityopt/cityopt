@@ -56,7 +56,7 @@
   <timeseries tseriesid="342" version="0" typeid="6"/>
   <metricval metricvalid="217" metid="66" scenmetricid="256" value="101.03143398" version="0"/>
   <metricval metricvalid="221" metid="66" scenmetricid="260" value="102.1154875" version="0"/>
-  <decisionvariable decisionvarid="1" scengenid="1" lowerbound="1" upperbound="d/50" typeid="2" inputid="1" version="1"/>
+  <decisionvariable decisionvarid="1" scengenid="1" name="x" lowerbound="1" upperbound="d/50" typeid="2" inputid="1" version="1"/>
   <scengenresult scengenresultid="102" feasible="false" paretooptimal="false" scengenid="1" scenid="159" version="1"/>
   <scengenresult scengenresultid="103" feasible="true" paretooptimal="true" scengenid="1" scenid="160" version="1"/>
   <decisionvariableresult decvarresultid="102" value="1" scengenresultid="102" decisionvarid="1" version="0"/>

@@ -57,15 +57,15 @@
 <outputvariable outvarid="4" componentid="3" unitid="18" typeid="4" name="Heating_Power" version="1" />
 
 <!-- input parameter constraints id: 1,5,6-->
-<optconstraint optconstid="1" prjid="1" expression="Solar_thermal_panels.collector_area" lowerbound="0.1" upperbound="250"  version="1" />
-<optconstraint optconstid="2" prjid="1" expression="Storage_Vertical_tank_with_heat_structure.Height_of_tank" lowerbound="1" upperbound="11"  version="1" />
-<optconstraint optconstid="3" prjid="1" expression="Storage_Vertical_tank_with_heat_structure.Cross_sectional_free_area_of_tank" lowerbound="0.3" upperbound="11"  version="1" />
+<optconstraint optconstid="1" prjid="1" name="these" expression="Solar_thermal_panels.collector_area" lowerbound="0.1" upperbound="250"  version="1" />
+<optconstraint optconstid="2" prjid="1" name="should" expression="Storage_Vertical_tank_with_heat_structure.Height_of_tank" lowerbound="1" upperbound="11"  version="1" />
+<optconstraint optconstid="3" prjid="1" name="not" expression="Storage_Vertical_tank_with_heat_structure.Cross_sectional_free_area_of_tank" lowerbound="0.3" upperbound="11"  version="1" />
 <!-- output parameter constraints -->
-<optconstraint optconstid="4" prjid="1" expression="Solar_thermal_panels.heating_power" lowerbound="0" upperbound="80"  version="1" />
-<optconstraint optconstid="5" prjid="1" expression="Storage_Vertical_tank_with_heat_structure.Liquid_Temperature" lowerbound="0" upperbound="90"  version="1" />
-<optconstraint optconstid="6" prjid="1" expression="Gas_boiler.Heating_Power" lowerbound="0" upperbound="100"  version="1" />
+<optconstraint optconstid="4" prjid="1" name="need" expression="Solar_thermal_panels.heating_power" lowerbound="0" upperbound="80"  version="1" />
+<optconstraint optconstid="5" prjid="1" name="to" expression="Storage_Vertical_tank_with_heat_structure.Liquid_Temperature" lowerbound="0" upperbound="90"  version="1" />
+<optconstraint optconstid="6" prjid="1" name="have" expression="Gas_boiler.Heating_Power" lowerbound="0" upperbound="100"  version="1" />
 <!-- metric value constraints -->
-<optconstraint optconstid="7" prjid="1" expression="Energy_Supply2" lowerbound="0" upperbound="90000"  version="1" />
+<optconstraint optconstid="7" prjid="1" name="names" expression="Energy_Supply2" lowerbound="0" upperbound="90000"  version="1" />
 
 
 <objectivefunction obtfunctionid="1" prjid="1" typeid="1" name="ObjectiveFunction 1" expression="CO2_Emissions + Cost" ismaximise="false" version="1"/>

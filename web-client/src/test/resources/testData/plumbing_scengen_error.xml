@@ -36,11 +36,11 @@
 
   <optconstraint optconstid="1" prjid="2" name="con1" expression="meanie(PIP01.PI12_MIX_MASS_FLOW)" lowerbound="0.1" upperbound="1.0" version="1"/>
 
-  <scenariogenerator scengenid="1" prjid="2" algorithmid="1" extparamvalsetid="1" version="1"/>
+  <scenariogenerator scengenid="1" prjid="2" name="foo" algorithmid="1" extparamvalsetid="1" version="1"/>
   <scengenobjectivefunction sgobfunctionid="1" scengenid="1" optfunctionid="1" version="1"/>
   <scengenoptconstraint sgoptconstraintid="1" scengenid="1" optconstid="1" version="1"/>
 
-  <decisionvariable decisionvarid="1" scengenid="1" inputid="1" lowerbound="1" upperbound="2" typeid="2" version="1"/>
+  <decisionvariable decisionvarid="1" scengenid="1" name="x" inputid="1" lowerbound="1" upperbound="2" typeid="2" version="1"/>
 
   <modelparameter modelparamid="2" scengenid="1" inputid="2" value="2015-01-01T00:00:00" expression="" version="1"/>
   <modelparameter modelparamid="3" scengenid="1" inputid="3" value="2015-01-01T00:01:00" version="1"/>
