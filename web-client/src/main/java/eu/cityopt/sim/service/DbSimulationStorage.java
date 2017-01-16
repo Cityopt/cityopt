@@ -473,9 +473,8 @@ public class DbSimulationStorage implements DbSimulationStorageI {
 
         if (!newScenario) {
             ScenarioMetrics oldScenarioMetrics =
-                    scenarioMetricsRepository.findByScenidAndExtParamValSetid(
-                            scenario.getScenid(),
-                            (extParamValSet != null) ? extParamValSet.getExtparamvalsetid() : null);
+                    scenarioMetricsRepository.findByScenarioAndExtparamvalset(
+                            scenario, extParamValSet);
             if (oldScenarioMetrics != null) {
                 scenarioMetricsRepository.delete(oldScenarioMetrics);
             }

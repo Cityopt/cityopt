@@ -582,9 +582,8 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
         final MetricValues mvs = new MetricValues(results);
         if (exprs != null) {
             ScenarioMetrics
-                sm = scenarioMetricsRepository.findByScenidAndExtParamValSetid(
-                        scen.getScenid(), 
-                        (xpvs != null) ? xpvs.getExtparamvalsetid() : null);
+                sm = scenarioMetricsRepository.findByScenarioAndExtparamvalset(
+                        scen, xpvs);
             if (sm == null) {
                 sm = store.makeScenarioMetrics(scen, xpvs);
             }
