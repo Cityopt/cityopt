@@ -1,6 +1,7 @@
 package eu.cityopt.opt.io;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +50,7 @@ import eu.cityopt.test.TestResources;
 
 public class ImportTest {
     private static TestResources res;
-   
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -80,7 +81,7 @@ public class ImportTest {
 
     public class TsTestModule extends TestModule {
         Evaluator evaluator = new Evaluator();
-        
+
         @Override
         protected void configure() {
             super.configure();
@@ -128,7 +129,7 @@ public class ImportTest {
         thrown.expectMessage("duplicate");
         binder.makeNamespace(new Evaluator(), tm.t0);
     }
-    
+
     @Test
     public void testNoClash() throws Exception {
         TestModule tm = new TestModule();
@@ -179,7 +180,7 @@ public class ImportTest {
         assertEquals(0, c.outputs.size());
         assertEquals(Type.DOUBLE, c.inputs.get("CHP_thermal_power_rating"));
 
-        c = s.namespace.components.get("HEATING_LOAD"); 
+        c = s.namespace.components.get("HEATING_LOAD");
         assertEquals(0, c.inputs.size());
         assertEquals(1, c.outputs.size());
         assertEquals(Type.TIMESERIES_LINEAR, c.outputs.get("MULTIPLYER_OUTPUT"));
@@ -188,7 +189,7 @@ public class ImportTest {
         assertEquals(2, s.metrics.size());
         assertEquals(Type.DOUBLE, s.namespace.metrics.get("fuelconsumption"));
     }
-    
+
     @Test
     public void readTsVars() throws Exception {
         TsTestModule tm = new TsTestModule();
@@ -228,7 +229,7 @@ public class ImportTest {
     	}
     	binder.getItems().forEach( i -> System.out.println(i.scenarioname));
     }
-    
+
     @Test
     public void readScenarioCsv() throws JsonProcessingException, IOException {
     	TsTestModule tm = new TsTestModule();
@@ -266,7 +267,7 @@ public class ImportTest {
     @Test
     public void testReadTimeSeries() throws Exception {
         Evaluator evaluator = new Evaluator();
-        Instant t0 = Instant.parse("2050-01-01T00:00:00Z"); 
+        Instant t0 = Instant.parse("2050-01-01T00:00:00Z");
         EvaluationSetup setup = new EvaluationSetup(evaluator, t0);
         CsvTimeSeriesData tsd = new CsvTimeSeriesData(setup);
         String name = "/timeSeries.csv";
@@ -299,7 +300,7 @@ public class ImportTest {
         cfm.setTimeOrigin(tm.t0.toString());
         return cfm;
     }
-    
+
     @Test
     public void testInjectProblem() throws Exception {
         CityoptFileModule cfm = getCityoptFileModule();
@@ -314,15 +315,13 @@ public class ImportTest {
             task.close();
         }
     }
-    
+
     // dot -Tpdf -Grankdir=LR -O cfm-deps.dot
     @Test
     public void graphCityoptModules() throws IOException {
         String dotname = res.properties.getProperty("dot_file");
-        if (dotname == null || dotname.isEmpty()) {
-            System.out.println("Dependency graph output skipped.");
-            return;
-        }
+        assumeFalse("Output file name (dot_file) not set",
+                    dotname == null || dotname.isEmpty());
         CityoptDistributorModule distr = new CityoptDistributorModule();
         CityoptOutputModule output = new CityoptOutputModule();
         Injector cf_inj = Guice.createInjector(
