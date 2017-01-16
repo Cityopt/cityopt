@@ -14,6 +14,8 @@ import javax.script.ScriptException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.model.ExtParamValSet;
 import eu.cityopt.model.ObjectiveFunction;
@@ -115,6 +117,7 @@ public class OptimisationSupport {
      * @throws ParseException
      * @throws ScriptException
      */
+    @Transactional(readOnly=true, propagation=Propagation.REQUIRES_NEW)
     public EvaluationResults evaluateScenarios(
             Project project, OptimizationSet optimizationSet)
             throws ParseException, ScriptException {
