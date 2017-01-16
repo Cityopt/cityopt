@@ -62,8 +62,7 @@
 											</tr>
 											<tr>
 												<!-- Location: -->
-												<td class="infosmall"><spring:message code="location" />
-													${project.location}</td>
+												<td class="infosmall"><spring:message code="location" /></td>
 											</tr>
 											<tr>
 												<td class="activeline">
