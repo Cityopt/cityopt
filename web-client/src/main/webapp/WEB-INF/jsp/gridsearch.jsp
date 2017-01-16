@@ -72,58 +72,81 @@ function openInfoWindow() {
 							<tr>
 								<td colspan="2">
 									<table>
-										<col style="width: 150px;">
-										<col style="width: 250px;">
+										<col style="width: 400px;">
 										<col style="width: 550px;">
 										<tr>
-											<!-- Name -->
-											<td><spring:message code="name"/>:</td>
-											<td><form:input type="text" path="name" style="width:200px"/></td>
-			                                <td align="right"><input type="submit" value="Save" style="width: 150px"></td>
-										</tr>
-			                            <tr>
-			                            	<td>
-			                            		<spring:message code="type"/>:
-			                            	</td>
-			                            	<td>
-			                                    <select name="algorithmid">
-			                                        <c:forEach items="${algorithms}" var="algo">
-			                                            <c:choose>
-			                                                <c:when test="${algo.algorithmid == scengenerator.algorithm.algorithmid}">
-			                                                   <option value="${algo.algorithmid}" selected>${algo.description}</option>
-			                                                </c:when>
-			                                                <c:otherwise>
-			                                                   <option value="${algo.algorithmid}">${algo.description}</option>
-			                                                </c:otherwise>
-			                                            </c:choose>
-			                                        </c:forEach>
-			                                    </select>
-			                                </td>
-			                                <td align="right">
-			                                	<a href="exportoptimizationproblem.html"><button type="button" style="width: 150px"><spring:message code="export_optimization_problem"/></button></a>
+											<td>
+												<table>
+													<tr>
+														<td class="infosmall"><spring:message code="name"/></td>
+													</tr>
+													<tr>
+														<td><form:input type="text" path="name" style="width:200px"/></td>
+													</tr>
+						                            <tr class="spacerow"></tr>
+													<tr>
+						                            	<td class="infosmall">
+						                            		<spring:message code="type"/>
+						                            	</td>
+													</tr>
+													<tr>
+						                            	<td>
+						                                    <select name="algorithmid">
+						                                        <c:forEach items="${algorithms}" var="algo">
+						                                            <c:choose>
+						                                                <c:when test="${algo.algorithmid == scengenerator.algorithm.algorithmid}">
+						                                                   <option value="${algo.algorithmid}" selected>${algo.description}</option>
+						                                                </c:when>
+						                                                <c:otherwise>
+						                                                   <option value="${algo.algorithmid}">${algo.description}</option>
+						                                                </c:otherwise>
+						                                            </c:choose>
+						                                        </c:forEach>
+						                                    </select>
+						                                </td>
+						                            </tr>
+													<tr class="spacerow"></tr>
+						                            <tr>
+														<td class="infosmall"><spring:message code="grid_search_progress"/></td>
+													</tr>
+													<tr>
+														<td class="activeline">${runinfo}</td>
+													</tr>
+													<tr class="spacerow"></tr>
+													<form:form method="POST" action="importoptimizationproblem.html" enctype="multipart/form-data">
+						        					<tr>
+						        						<!-- Import optimization set file CSV -->
+						        						<td class="infosmall"><spring:message code="import_optimization_problem"/></td>
+														<td><input id="file" name="file" type="file"/></td>
+														<td align="right"></td>
+													</tr>
+													<tr>	
+						       							<td></td>
+						        						<td>
+						        							<input type="submit" value="Import file">
+						       							</td>
+						   							</tr>	
+						    						</form:form>
+												</table>
 											</td>
-			                            </tr>
-			                            <tr>
-											<td><spring:message code="grid_search_progress"/>:</td>
-											<td>${runinfo}</td>
-											<td align="right">
-												<input type="submit" name="run" value="Run algorithm" style="width: 150px">
+											<td valign="top" align="right">
+												<table>
+													<tr>
+													    <td align="right"><input type="submit" value="<spring:message code="save" />" style="width: 150px"></td>
+												    </tr>
+												    <tr>
+						                                <td align="right">
+						                                	<a href="exportoptimizationproblem.html"><button type="button" style="width: 150px"><spring:message code="export_optimization_problem"/></button></a>
+														</td>
+													</tr>	
+													<tr>
+														<td align="right">
+															<input type="submit" name="run" value="<spring:message code="run_algorithm" />" style="width: 150px">
+														</td>
+													</tr>															
+												</table>
 											</td>
 										</tr>
-										<form:form method="POST" action="importoptimizationproblem.html" enctype="multipart/form-data">
-			        					<tr>
-			        						<!-- Import optimization set file CSV -->
-			        						<td><spring:message code="import_optimization_problem"/></td>
-											<td><input id="file" name="file" type="file"/></td>
-											<td align="right"></td>
-										</tr>
-										<tr>	
-			       							<td></td>
-			        						<td>
-			        							<input type="submit" value="Import file">
-			       							</td>
-			   							</tr>	
-			    						</form:form>
 									</table>
 								</td>
 							</tr>

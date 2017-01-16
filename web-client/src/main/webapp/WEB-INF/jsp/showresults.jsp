@@ -42,14 +42,10 @@
 							<tr>
 								<td>
 									<table>
-										<col style="width:130px">
-										<col style="width:200px">
-										<col style="width:20px">
-										<col style="width:80px">
-										<col style="width:300px">
 										<tr>
-											<!-- Scenario name: -->
-											<td valign="top"><spring:message code="scenario_name"/>:</td>
+											<td valign="top" class="infosmall"><spring:message code="scenario_name"/></td>
+										</tr>
+										<tr>	
 											<td valign="top">
 												<table class="tablestyle" width="200">
 													<tr height="30">
@@ -57,9 +53,12 @@
 													</tr>
 												</table>
 											</td>
-											<td></td>
-											<!-- Description: -->
-											<td valign="top"><spring:message code="description"/>:</td>
+										</tr>
+										<tr class="spacerow"></tr>
+										<tr>	
+											<td class="infosmall"><spring:message code="description"/></td>
+										</tr>
+										<tr>
 											<td>
 												<table class="tablestyle" width="300">
 													<tr height="80">
@@ -69,10 +68,6 @@
 											</td>
 										</tr>
 										<tr height="10">
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
 											<td></td>
 										</tr>
 									</table>

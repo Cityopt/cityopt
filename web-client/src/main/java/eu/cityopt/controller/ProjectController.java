@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.time.Instant;
@@ -685,6 +686,10 @@ public class ProjectController {
             importExportService.exportSimulationStructure(project.getPrjid(), outputStream);
         } catch (EntityNotFoundException | ScriptException e) {
             e.printStackTrace();
+			final PrintStream printStream = new PrintStream(outputStream);
+			printStream.print("Error exporting structure file: ");
+			printStream.print(e.getMessage());
+			printStream.close();
         }
 
         outputStream.close();
@@ -708,6 +713,7 @@ public class ProjectController {
 		File fileScenario = null;
 		File fileTimeSeries = null;
 		List<File> files = new ArrayList<File>();
+		ServletOutputStream out = null;
 
 		try (TempDir tempDir = new TempDir("export")) {
 	        timeSeriesPath = tempDir.getPath().resolve("timeseries.csv");
@@ -741,12 +747,14 @@ public class ProjectController {
 			response.setContentType("Content-type: text/zip");
 			response.setHeader("Content-Disposition", "attachment; filename=metrics.zip");
 
-			ServletOutputStream out = null;
-
 			try {
 				out = response.getOutputStream();
 			} catch (IOException e) {
 				e.printStackTrace();
+				final PrintStream printStream = new PrintStream(out);
+				printStream.print("Error exporting metrics: ");
+				printStream.print(e.getMessage());
+				printStream.close();
 			}
 
 			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
@@ -766,6 +774,10 @@ public class ProjectController {
 					zos.putNextEntry(new ZipEntry(file.getName()));
 				} catch (IOException e) {
 					e.printStackTrace();
+					final PrintStream printStream = new PrintStream(out);
+					printStream.print("Error exporting metrics: ");
+					printStream.print(e.getMessage());
+					printStream.close();
 				}
 
 				BufferedInputStream fif = new BufferedInputStream(fis);
@@ -783,6 +795,10 @@ public class ProjectController {
 
 				} catch (IOException e) {
 					e.printStackTrace();
+					final PrintStream printStream = new PrintStream(out);
+					printStream.print("Error exporting metrics: ");
+					printStream.print(e.getMessage());
+					printStream.close();
 				}
 			}
 			response.flushBuffer();
@@ -790,6 +806,10 @@ public class ProjectController {
 			out.close();
 		} catch (Exception e) {
 	    	e.printStackTrace();
+	    	final PrintStream printStream = new PrintStream(out);
+			printStream.print("Error exporting metrics: ");
+			printStream.print(e.getMessage());
+			printStream.close();
 	    }
 	}
 
@@ -798,7 +818,8 @@ public class ProjectController {
         HttpServletResponse response) throws IOException {
 
         ProjectDTO project = null;
-
+        OutputStream output = response.getOutputStream();
+        
         try {
             project = (ProjectDTO) model.get("project");
 
@@ -815,6 +836,10 @@ public class ProjectController {
             }
             model.put("project", project);
         } catch (Exception e) {
+        	final PrintStream printStream = new PrintStream(output);
+			printStream.print("Error exporting project template: ");
+			printStream.print(e.getMessage());
+			printStream.close();
             return;
         }
 
@@ -845,6 +870,10 @@ public class ProjectController {
 			fif.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+        	final PrintStream printStream = new PrintStream(output);
+			printStream.print("Error exporting project template: ");
+			printStream.print(e.getMessage());
+			printStream.close();
 		}
 
 		// set headers for the response
@@ -862,7 +891,8 @@ public class ProjectController {
         HttpServletResponse response) throws IOException {
 
         ProjectDTO project = null;
-
+        OutputStream output = response.getOutputStream();
+        
         try {
             project = (ProjectDTO) model.get("project");
 
@@ -876,9 +906,17 @@ public class ProjectController {
                 project = projectService.findByID(project.getPrjid());
             } catch (Exception e1) {
                 e1.printStackTrace();
+            	final PrintStream printStream = new PrintStream(output);
+    			printStream.print("Error exporting scenario template: ");
+    			printStream.print(e1.getMessage());
+    			printStream.close();
             }
             model.put("project", project);
         } catch (Exception e) {
+        	final PrintStream printStream = new PrintStream(output);
+			printStream.print("Error exporting scenario template: ");
+			printStream.print(e.getMessage());
+			printStream.close();
             return;
         }
 
@@ -893,6 +931,10 @@ public class ProjectController {
 			fis = new FileInputStream(file);
 		} catch (FileNotFoundException fnfe) {
 			System.out.println("Could not find file " + file.getAbsolutePath());
+        	final PrintStream printStream = new PrintStream(output);
+			printStream.print("Error exporting scenario template: ");
+			printStream.print(fnfe.getMessage());
+			printStream.close();
 		}
 
 		BufferedInputStream fif = new BufferedInputStream(fis);
@@ -909,6 +951,10 @@ public class ProjectController {
 			fif.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+        	final PrintStream printStream = new PrintStream(output);
+			printStream.print("Error exporting scenario template: ");
+			printStream.print(e.getMessage());
+			printStream.close();
 		}
 
 		// set headers for the response
@@ -1057,7 +1103,8 @@ public class ProjectController {
 
         ProjectDTO project = null;
         ExtParamValDTO extParamVal = null;
-
+        OutputStream output = response.getOutputStream();
+        
         try {
             project = (ProjectDTO) model.get("project");
 
@@ -1071,13 +1118,21 @@ public class ProjectController {
                 project = projectService.findByID(project.getPrjid());
             } catch (Exception e1) {
                 e1.printStackTrace();
-            }
+            	final PrintStream printStream = new PrintStream(output);
+    			printStream.print("Error exporting external parameter: ");
+    			printStream.print(e1.getMessage());
+    			printStream.close();
+    	    }
             model.put("project", project);
 
             extParamVal = extParamValService.findByID(Integer.parseInt(strExtParamValId));
         } catch (Exception e) {
         	e.printStackTrace();
-            return;
+        	final PrintStream printStream = new PrintStream(output);
+			printStream.print("Error exporting external parameter: ");
+			printStream.print(e.getMessage());
+			printStream.close();
+			return;
         }
 
         // set headers for the response
@@ -1086,15 +1141,17 @@ public class ProjectController {
         String headerValue = String.format("attachment; filename=\"external_parameters.csv\"");
         response.setHeader(headerKey, headerValue);
 
-        OutputStream outputStream = response.getOutputStream();
-
         try {
-            importExportService.exportExtParamTimeSeries(Integer.parseInt(strExtParamValSetId), outputStream, extParamVal.getExtparam());
+            importExportService.exportExtParamTimeSeries(Integer.parseInt(strExtParamValSetId), output, extParamVal.getExtparam());
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
+        	final PrintStream printStream = new PrintStream(output);
+			printStream.print("Error exporting external parameter: ");
+			printStream.print(e.getMessage());
+			printStream.close();
         }
 
-        outputStream.close();
+        output.close();
     }
 
     @RequestMapping(value="closeproject", method=RequestMethod.GET)
@@ -1407,6 +1464,7 @@ public class ProjectController {
 		File fileScenario = null;
 		File fileTimeSeries = null;
 		List<File> files = new ArrayList<File>();
+		ServletOutputStream out = null;
 
 		try (TempDir tempDir = new TempDir("export")) {
 	        timeSeriesPath = tempDir.getPath().resolve("timeseries.csv");
@@ -1438,13 +1496,15 @@ public class ProjectController {
 			// Set the content type based to zip
 			response.setContentType("Content-type: text/zip");
 			response.setHeader("Content-Disposition", "attachment; filename=external_parameter_sets.zip");
-
-			ServletOutputStream out = null;
-
+			
 			try {
 				out = response.getOutputStream();
 			} catch (IOException e) {
 				e.printStackTrace();
+	        	final PrintStream printStream = new PrintStream(out);
+				printStream.print("Error exporting external parameter sets: ");
+				printStream.print(e.getMessage());
+				printStream.close();
 			}
 
 			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
@@ -1464,6 +1524,10 @@ public class ProjectController {
 					zos.putNextEntry(new ZipEntry(file.getName()));
 				} catch (IOException e) {
 					e.printStackTrace();
+		        	final PrintStream printStream = new PrintStream(out);
+					printStream.print("Error exporting external parameter sets: ");
+					printStream.print(e.getMessage());
+					printStream.close();
 				}
 
 				BufferedInputStream fif = new BufferedInputStream(fis);
@@ -1481,6 +1545,10 @@ public class ProjectController {
 
 				} catch (IOException e) {
 					e.printStackTrace();
+		        	final PrintStream printStream = new PrintStream(out);
+					printStream.print("Error exporting external parameter sets: ");
+					printStream.print(e.getMessage());
+					printStream.close();
 				}
 			}
 			response.flushBuffer();
@@ -1488,7 +1556,11 @@ public class ProjectController {
 			out.close();
 		} catch (Exception e) {
 	    	e.printStackTrace();
-	    }
+        	final PrintStream printStream = new PrintStream(out);
+			printStream.print("Error exporting external parameter sets: ");
+			printStream.print(e.getMessage());
+			printStream.close();
+		}
 	}
 
     @RequestMapping(value="exportsimulationmodel", method=RequestMethod.GET)
@@ -1502,6 +1574,7 @@ public class ProjectController {
 			return;
 		}
 		securityAuthorization.atLeastStandard_guest(project);
+		ServletOutputStream out = null;
 
 		try 
 		{
@@ -1527,12 +1600,14 @@ public class ProjectController {
 	        response.setContentType("Content-type: text/zip");
 			response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
 
-			ServletOutputStream out = null;
-
 			try {
 				out = response.getOutputStream();
 			} catch (IOException e) {
 				e.printStackTrace();
+				final PrintStream printStream = new PrintStream(out);
+				printStream.print("Error exporting simulation model: ");
+				printStream.print(e.getMessage());
+				printStream.close();
 			}
 
 	    	importExportService.exportSimulationModel(project.getPrjid(), out);
@@ -1542,6 +1617,10 @@ public class ProjectController {
 			out.close();
 		} catch (Exception e) {
 	    	e.printStackTrace();
+	    	final PrintStream printStream = new PrintStream(out);
+			printStream.print("Error exporting simulation model: ");
+			printStream.print(e.getMessage());
+			printStream.close();
 	    }
 	}
 

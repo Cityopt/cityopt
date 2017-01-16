@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.io.StringReader;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -584,6 +585,13 @@ public class ScenarioController {
 		File fileScenario = null;
 		File fileTimeSeries = null;
 		List<File> files = new ArrayList<File>();
+		ServletOutputStream out = null;
+
+		try {
+			out = response.getOutputStream();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		try (TempDir tempDir = new TempDir("export")) {
 	        timeSeriesPath = tempDir.getPath().resolve("timeseries.csv");
@@ -598,15 +606,7 @@ public class ScenarioController {
 			// Set the content type based to zip
 			response.setContentType("Content-type: text/zip");
 			response.setHeader("Content-Disposition", "attachment; filename=scenarios.zip");
-
-			ServletOutputStream out = null;
-
-			try {
-				out = response.getOutputStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
+			
 			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
 
 			for (File file : files) 
@@ -624,6 +624,10 @@ public class ScenarioController {
 					zos.putNextEntry(new ZipEntry(file.getName()));
 				} catch (IOException e) {
 					e.printStackTrace();
+					final PrintStream printStream = new PrintStream(out);
+					printStream.print("Error exporting scenarios: ");
+					printStream.print(e.getMessage());
+					printStream.close();
 				}
 				BufferedInputStream fif = new BufferedInputStream(fis);
 
@@ -634,18 +638,24 @@ public class ScenarioController {
 						zos.write(data);
 					}
 					fif.close();
-
 					zos.closeEntry();
 					System.out.println("Finished file " + file.getName());
-
 				} catch (IOException e) {
 					e.printStackTrace();
+					final PrintStream printStream = new PrintStream(out);
+					printStream.print("Error exporting scenarios: ");
+					printStream.print(e.getMessage());
+					printStream.close();
 				}
 			}
 			response.flushBuffer();
 			zos.close();
 		} catch (Exception e) {
 	    	e.printStackTrace();
+			final PrintStream printStream = new PrintStream(out);
+			printStream.print("Error exporting scenarios: ");
+			printStream.print(e.getMessage());
+			printStream.close();
 	    }
 	}
 
@@ -673,6 +683,7 @@ public class ScenarioController {
 		File fileScenario = null;
 		File fileTimeSeries = null;
 		List<File> files = new ArrayList<File>();
+		ServletOutputStream out = null;
 
 		try (TempDir tempDir = new TempDir("export")) {
 	        timeSeriesPath = tempDir.getPath().resolve("timeseries.csv");
@@ -689,13 +700,15 @@ public class ScenarioController {
 			// Set the content type based to zip
 			response.setContentType("Content-type: text/zip");
 			response.setHeader("Content-Disposition", "attachment; filename=simulation_results.zip");
-
-			ServletOutputStream out = null;
-
+			
 			try {
 				out = response.getOutputStream();
 			} catch (IOException e) {
 				e.printStackTrace();
+				final PrintStream printStream = new PrintStream(out);
+				printStream.print("Error exporting simulation results: ");
+				printStream.print(e.getMessage());
+				printStream.close();
 			}
 
 			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
@@ -714,6 +727,10 @@ public class ScenarioController {
 					zos.putNextEntry(new ZipEntry(file.getName()));
 				} catch (IOException e) {
 					e.printStackTrace();
+					final PrintStream printStream = new PrintStream(out);
+					printStream.print("Error exporting simulation results: ");
+					printStream.print(e.getMessage());
+					printStream.close();
 				}
 
 				BufferedInputStream fif = new BufferedInputStream(fis);
@@ -731,12 +748,20 @@ public class ScenarioController {
 
 				} catch (IOException e) {
 					e.printStackTrace();
+					final PrintStream printStream = new PrintStream(out);
+					printStream.print("Error exporting simulation results: ");
+					printStream.print(e.getMessage());
+					printStream.close();
 				}
 			}
 			response.flushBuffer();
 			zos.close();
 		} catch (Exception e) {
 	    	e.printStackTrace();
+	    	final PrintStream printStream = new PrintStream(out);
+			printStream.print("Error exporting simulation results: ");
+			printStream.print(e.getMessage());
+			printStream.close();
 	    }
 	}
 
