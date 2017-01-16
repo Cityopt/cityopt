@@ -82,7 +82,6 @@ import eu.cityopt.service.ScenarioGeneratorService;
 import eu.cityopt.service.ScenarioService;
 import eu.cityopt.service.SimulationResultService;
 import eu.cityopt.service.TimeSeriesService;
-import eu.cityopt.service.TimeSeriesValService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.service.impl.ImportServiceImpl;
@@ -160,9 +159,6 @@ public class ScenarioController {
 
 	@Autowired
 	TimeSeriesService timeSeriesService;
-
-	@Autowired
-	TimeSeriesValService timeSeriesValService;
 
 	@Autowired
 	OutputVariableService outputVarService;
@@ -347,6 +343,51 @@ public class ScenarioController {
 			controllerService.initScenarioList(model, project.getPrjid(), pagenum);
 		}
 
+		ParamForm paramForm = new ParamForm();
+		model.put("paramForm", paramForm);
+
+		return "openscenario";
+	}
+
+	@RequestMapping(value="openscenario", method=RequestMethod.POST)
+	public String openScenarioPost (Map<String, Object> model, ParamForm paramForm)
+	{
+     	model.put("activeblock", "scenario");
+    	model.put("page", "openscenario");
+
+    	ProjectDTO project = (ProjectDTO) model.get("project");
+
+		if (project == null)
+		{
+			return "error";
+		}
+
+		securityAuthorization.atLeastGuest_guest(project);
+
+		String page = paramForm.getValue();
+		int nPage = 1;
+		
+		if (page != null && !page.isEmpty())
+		{
+			if (page.matches("[0-9]+"))
+			{
+				nPage = Integer.parseInt(page);
+			}
+			else
+			{
+				nPage = 1;
+			}
+		}
+
+		if (nPage < 1)
+		{
+			nPage = 1;
+		}
+
+		controllerService.initScenarioList(model, project.getPrjid(), "" + nPage);
+		paramForm.setValue("");
+		model.put("paramForm", paramForm);
+		
 		return "openscenario";
 	}
 

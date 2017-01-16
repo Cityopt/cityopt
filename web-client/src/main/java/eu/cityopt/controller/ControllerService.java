@@ -694,15 +694,27 @@ public class ControllerService {
 	    {
 			Set<ScenarioDTO> setScenarios = projectService.getScenarios(projectId);
 			List<ScenarioDTO> scenarios = Arrays.asList(setScenarios.toArray(new ScenarioDTO[0]));
-	        model.put("pages", (int)Math.ceil((double)scenarios.size() / 10));
+	        int pages = (int)Math.ceil((double)scenarios.size() / 10);
+	        model.put("pages", pages);
 
 	        if (pagenum != null && !pagenum.isEmpty())
 	        {
 	        	if (!"*".equals(pagenum))
 	        	{
 	        		int nPageNum = Integer.parseInt(pagenum);
+	        		
+	        		if (nPageNum < 1)
+	        		{
+	        			nPageNum = 1;
+	        		}
+	        		
+	        		if (nPageNum > pages)
+	        		{
+	        			nPageNum = pages;
+	        		}
+
 	        		scenarios = scenarios.subList((nPageNum - 1) * 10, Math.min(nPageNum * 10, scenarios.size()));
-	        		model.put("pagenum", pagenum);
+	        		model.put("pagenum", nPageNum);
 	        	}
 	        }
 	        else

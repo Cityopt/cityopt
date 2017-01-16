@@ -93,12 +93,10 @@ import eu.cityopt.service.ScenarioService;
 import eu.cityopt.service.SimulationModelService;
 import eu.cityopt.service.SimulationResultService;
 import eu.cityopt.service.TimeSeriesService;
-import eu.cityopt.service.TimeSeriesValService;
 import eu.cityopt.service.TypeService;
 import eu.cityopt.service.UnitService;
 import eu.cityopt.service.UserGroupProjectService;
 import eu.cityopt.service.UserGroupService;
-import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.SyntaxChecker;
 import eu.cityopt.sim.eval.util.TempDir;
 import eu.cityopt.sim.service.ImportExportService;
@@ -180,9 +178,6 @@ public class ProjectController {
 
     @Autowired
     TimeSeriesService timeSeriesService;
-
-    @Autowired
-    TimeSeriesValService timeSeriesValService;
 
     @Autowired
     OutputVariableService outputVarService;

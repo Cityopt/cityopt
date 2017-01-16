@@ -125,6 +125,16 @@
 									</c:if>
 								</td>
 							</tr>
+							<tr>
+								<td></td>
+								<form:form method="post" action="openscenario.html" modelAttribute="paramForm">
+								<td align="center">
+									<spring:message code="go_to_page" />&nbsp;<form:input type="text" path="value" style="width:20px"/>&nbsp;
+									<input type="submit" value="<spring:message code="go"/>"/>
+								</td>
+								</form:form>
+								<td></td>								
+							</tr>
 						</table>
 					</td>
 				</tr>
