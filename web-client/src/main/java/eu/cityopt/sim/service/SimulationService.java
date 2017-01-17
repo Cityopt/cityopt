@@ -584,16 +584,16 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             ScenarioMetrics
                 sm = scenarioMetricsRepository.findByScenarioAndExtparamvalset(
                         scen, xpvs);
-            if (sm == null) {
-                sm = store.makeScenarioMetrics(scen, xpvs);
-            }
             Map<Integer, MetricVal> mvmap = new HashMap<>();
-            Set<MetricVal> mvset = sm.getMetricvals();
-            if (mvset != null) {
-                for (MetricVal mv : mvset) {
-                    mvmap.put(mv.getMetric().getMetid(), mv);
+            if (sm != null) {
+                Set<MetricVal> mvset = sm.getMetricvals();
+                if (mvset != null) {
+                    for (MetricVal mv : mvset) {
+                        mvmap.put(mv.getMetric().getMetid(), mv);
+                    }
                 }
             }
+            List<MetricExpression> to_save = new ArrayList<>();
             for (MetricExpression expr : exprs) {
                 Integer metid = expr.getMetricId();
                 String name = expr.getMetricName();
@@ -608,18 +608,16 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
                     } catch (ParseException e) {
                         // Failed to parse saved value - recompute.
                         mvs.evaluate(expr);
-                        mvmap.put(metid, store.storeMetricVal(expr, mvs, mv));
+                        to_save.add(expr);
                     }
                 } else {
                     mvs.evaluate(expr);
                     if (metid != null) {
-                        mv = new MetricVal();
-                        mv.setMetric(metricRepository.findOne(metid));
-                        mv.setScenariometrics(sm);
-                        mvmap.put(metid, store.storeMetricVal(expr, mvs, mv));
+                        to_save.add(expr);
                     }
                 }
             }
+            store.saveMetricValues(to_save, mvs, scen, xpvs);
         }
         return mvs;
     }

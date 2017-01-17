@@ -1,11 +1,17 @@
 package eu.cityopt.sim.service;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.python.google.common.base.Functions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -13,12 +19,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.model.ExtParamValSet;
+import eu.cityopt.model.Metric;
 import eu.cityopt.model.MetricVal;
 import eu.cityopt.model.Scenario;
 import eu.cityopt.model.ScenarioMetrics;
 import eu.cityopt.model.TimeSeries;
 import eu.cityopt.model.TimeSeriesVal;
 import eu.cityopt.repository.CustomQueryRepository;
+import eu.cityopt.repository.MetricRepository;
 import eu.cityopt.repository.MetricValRepository;
 import eu.cityopt.repository.ScenarioMetricsRepository;
 import eu.cityopt.repository.TimeSeriesRepository;
@@ -43,6 +51,7 @@ import eu.cityopt.sim.eval.util.TimeUtils;
 class SimulationStoreService {
 
     @Autowired private ScenarioMetricsRepository scenarioMetricsRepository;
+    @Autowired private MetricRepository metricRepository;
     @Autowired private MetricValRepository metricValRepository;
     @Autowired private TypeRepository typeRepository;
     @Autowired private TimeSeriesRepository timeSeriesRepository;
@@ -87,8 +96,41 @@ class SimulationStoreService {
         return storage;
     }
 
+    /**
+     * Save values of the listed metrics.
+     * @param to_save List of metrics to save
+     * @param mvs Values are retrieved from here.
+     * @param scen Associated scenario
+     * @param xpvs Associated xpvset
+     */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
-    MetricVal storeMetricVal(
+    public void saveMetricValues(
+            List<MetricExpression> to_save, MetricValues mvs,
+            Scenario scen, ExtParamValSet xpvs) {
+        ScenarioMetrics sm = scenarioMetricsRepository
+                .findByScenarioAndExtparamvalset(scen, xpvs);
+        if (sm == null) {
+            sm = makeScenarioMetrics(scen, xpvs);
+        }
+        Map<Integer, MetricVal> mvmap = new HashMap<>();
+        for (MetricVal mv : sm.getMetricvals()) {
+            mvmap.put(mv.getMetric().getMetid(), mv);
+        }
+        for (MetricExpression expr : to_save) {
+            int metid = expr.getMetricId();
+            MetricVal mv = mvmap.get(metid);
+            if (mv == null) {
+                mv = new MetricVal();
+                mv.setScenariometrics(sm);
+                mv.setMetric(metricRepository.findOne(metid));
+                mv = metricValRepository.save(mv);
+            }
+            storeMetricVal(expr, mvs, mv);
+        }
+//        em.flush();
+    }
+
+    private MetricVal storeMetricVal(
             MetricExpression expr, MetricValues mvs, MetricVal mv) {
         Namespace ns = mvs.getNamespace();
         String name = expr.getMetricName();
@@ -106,8 +148,7 @@ class SimulationStoreService {
         return metricValRepository.save(mv);
     }
 
-    @Transactional(propagation=Propagation.REQUIRES_NEW)
-    ScenarioMetrics makeScenarioMetrics(
+    private ScenarioMetrics makeScenarioMetrics(
             Scenario scen, ExtParamValSet xpvs) {
         ScenarioMetrics sm = new ScenarioMetrics();
         sm.setScenario(scen);
