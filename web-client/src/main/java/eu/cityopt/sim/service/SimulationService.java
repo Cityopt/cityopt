@@ -17,6 +17,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import javax.persistence.EntityManager;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
@@ -55,11 +56,9 @@ import eu.cityopt.sim.eval.ConfigurationException;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.Evaluator;
 import eu.cityopt.sim.eval.ExternalParameters;
-import eu.cityopt.sim.eval.LazyPiecewiseFunction;
 import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.Namespace;
-import eu.cityopt.sim.eval.PiecewiseFunction;
 import eu.cityopt.sim.eval.SimulationFailure;
 import eu.cityopt.sim.eval.SimulationInput;
 import eu.cityopt.sim.eval.SimulationModel;
@@ -69,7 +68,6 @@ import eu.cityopt.sim.eval.SimulationRunner;
 import eu.cityopt.sim.eval.SimulationStorage;
 import eu.cityopt.sim.eval.SimulatorManager;
 import eu.cityopt.sim.eval.SimulatorManagers;
-import eu.cityopt.sim.eval.TimeSeriesData;
 import eu.cityopt.sim.eval.TimeSeriesI;
 import eu.cityopt.sim.eval.Type;
 
@@ -107,6 +105,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     @Autowired private ScenarioMetricsRepository scenarioMetricsRepository;
     @Autowired private TimeEstimatorService timeEstimatorService;
 
+    @Autowired private EntityManager em;
     @Autowired private ExecutorService executorService;
 
     private JobManager<SimulationOutput, SimulationJobInfo>
@@ -434,19 +433,11 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
      * The time series can be forced to load by accessing its data, e.g.,
      * with {@link TimeSeriesI#getTimes()}.
      */
-    public TimeSeriesI loadTimeSeries(TimeSeries timeseries,
-            Type timeSeriesType, EvaluationSetup evsup) {
-        int tsid = timeseries.getTseriesid();
-        Instant t0 = evsup.timeOrigin;
-        TimeSeriesI ts = new eu.cityopt.sim.eval.TimeSeries(
-                new LazyPiecewiseFunction(() -> {
-            TimeSeriesData.Series s = store.loadTimeSeriesData(tsid, t0);
-            return PiecewiseFunction.make(
-                    timeSeriesType.getInterpolationDegree(),
-                    s.getTimes(), s.getValues());
-        }));
-        ts.setTimeSeriesId(tsid);
-        return ts;
+    public TimeSeriesI loadTimeSeries(
+            TimeSeries timeseries, Type timeSeriesType,
+            EvaluationSetup evsup) {
+        return store.loadTimeSeries(
+                timeseries, timeSeriesType, evsup);
     }
 
     /**
@@ -578,46 +569,13 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
             Scenario scen, ExtParamValSet xpvs,
             Collection<MetricExpression> exprs, SimulationResults results)
                     throws ScriptException {
-        final Namespace ns = results.getNamespace();
         final MetricValues mvs = new MetricValues(results);
         if (exprs != null) {
-            ScenarioMetrics
-                sm = scenarioMetricsRepository.findByScenarioAndExtparamvalset(
-                        scen, xpvs);
-            Map<Integer, MetricVal> mvmap = new HashMap<>();
-            if (sm != null) {
-                Set<MetricVal> mvset = sm.getMetricvals();
-                if (mvset != null) {
-                    for (MetricVal mv : mvset) {
-                        mvmap.put(mv.getMetric().getMetid(), mv);
-                    }
-                }
-            }
-            List<MetricExpression> to_save = new ArrayList<>();
-            for (MetricExpression expr : exprs) {
-                Integer metid = expr.getMetricId();
-                String name = expr.getMetricName();
-                Type type = ns.metrics.get(name);
-                MetricVal mv = mvmap.get(metid);
-                if (mv != null) {
-                    try {
-                        mvs.put(name,
-                                type.isTimeSeriesType()
-                                ? loadTimeSeries(mv.getTimeseries(), type, ns)
-                                : type.parse(mv.getValue(), ns));
-                    } catch (ParseException e) {
-                        // Failed to parse saved value - recompute.
-                        mvs.evaluate(expr);
-                        to_save.add(expr);
-                    }
-                } else {
-                    mvs.evaluate(expr);
-                    if (metid != null) {
-                        to_save.add(expr);
-                    }
-                }
-            }
-            store.saveMetricValues(to_save, mvs, scen, xpvs);
+            List<MetricExpression> to_save = store.readMetricValues(
+                    scen, xpvs, exprs, mvs);
+            em.flush();
+            store.saveMetricValues(to_save, mvs, scen.getScenid(),
+                                   xpvs.getExtparamvalsetid());
         }
         return mvs;
     }
