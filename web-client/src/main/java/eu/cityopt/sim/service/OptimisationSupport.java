@@ -117,6 +117,7 @@ public class OptimisationSupport {
      * @throws ParseException
      * @throws ScriptException
      */
+    @Transactional(readOnly=true, propagation=Propagation.REQUIRES_NEW)
     public EvaluationResults evaluateScenarios(
             Project project, OptimizationSet optimizationSet)
             throws ParseException, ScriptException {

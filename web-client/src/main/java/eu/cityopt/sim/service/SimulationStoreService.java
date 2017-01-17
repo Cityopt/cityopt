@@ -172,7 +172,7 @@ class SimulationStoreService {
      * @param scenid Scenario id
      * @param xpvsid ExtParamValSet id
      */
-    @Transactional
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     public void saveMetricValues(
             List<MetricExpression> to_save, MetricValues mvs,
             int scenid, int xpvsid) {
