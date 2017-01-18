@@ -66,9 +66,7 @@
 											</tr>
 											<tr>
 												<td class="activeline">
-													<c:if test="project != null">
-														${project.location}
-													</c:if>
+													${project.location}
 												</td>
 											</tr>
 											<tr>
@@ -78,9 +76,7 @@
 											</tr>
 											<tr>
 												<td class="activeline">
-													<c:if test="project != null">
-														${project.designtarget}
-													</c:if>
+													${project.designtarget}
 												</td>
 												<td></td>
 											</tr>
