@@ -627,6 +627,7 @@ public class ScenarioController {
 					final PrintStream printStream = new PrintStream(out);
 					printStream.print("Error exporting scenarios: ");
 					printStream.print(e.getMessage());
+					printStream.print(e.getStackTrace());
 					printStream.close();
 				}
 				BufferedInputStream fif = new BufferedInputStream(fis);
@@ -645,6 +646,7 @@ public class ScenarioController {
 					final PrintStream printStream = new PrintStream(out);
 					printStream.print("Error exporting scenarios: ");
 					printStream.print(e.getMessage());
+					printStream.print(e.getStackTrace());
 					printStream.close();
 				}
 			}
@@ -655,6 +657,7 @@ public class ScenarioController {
 			final PrintStream printStream = new PrintStream(out);
 			printStream.print("Error exporting scenarios: ");
 			printStream.print(e.getMessage());
+			printStream.print(e.getStackTrace());
 			printStream.close();
 	    }
 	}
@@ -708,6 +711,7 @@ public class ScenarioController {
 				final PrintStream printStream = new PrintStream(out);
 				printStream.print("Error exporting simulation results: ");
 				printStream.print(e.getMessage());
+				printStream.print(e.getStackTrace());
 				printStream.close();
 			}
 
@@ -730,6 +734,7 @@ public class ScenarioController {
 					final PrintStream printStream = new PrintStream(out);
 					printStream.print("Error exporting simulation results: ");
 					printStream.print(e.getMessage());
+					printStream.print(e.getStackTrace());
 					printStream.close();
 				}
 
@@ -751,6 +756,7 @@ public class ScenarioController {
 					final PrintStream printStream = new PrintStream(out);
 					printStream.print("Error exporting simulation results: ");
 					printStream.print(e.getMessage());
+					printStream.print(e.getStackTrace());
 					printStream.close();
 				}
 			}
@@ -761,6 +767,7 @@ public class ScenarioController {
 	    	final PrintStream printStream = new PrintStream(out);
 			printStream.print("Error exporting simulation results: ");
 			printStream.print(e.getMessage());
+			printStream.print(e.getStackTrace());
 			printStream.close();
 	    }
 	}

@@ -689,6 +689,7 @@ public class ProjectController {
 			final PrintStream printStream = new PrintStream(outputStream);
 			printStream.print("Error exporting structure file: ");
 			printStream.print(e.getMessage());
+			printStream.print(e.getStackTrace());
 			printStream.close();
         }
 
@@ -754,6 +755,7 @@ public class ProjectController {
 				final PrintStream printStream = new PrintStream(out);
 				printStream.print("Error exporting metrics: ");
 				printStream.print(e.getMessage());
+				printStream.print(e.getStackTrace());
 				printStream.close();
 			}
 
@@ -777,6 +779,7 @@ public class ProjectController {
 					final PrintStream printStream = new PrintStream(out);
 					printStream.print("Error exporting metrics: ");
 					printStream.print(e.getMessage());
+					printStream.print(e.getStackTrace());
 					printStream.close();
 				}
 
@@ -798,6 +801,7 @@ public class ProjectController {
 					final PrintStream printStream = new PrintStream(out);
 					printStream.print("Error exporting metrics: ");
 					printStream.print(e.getMessage());
+					printStream.print(e.getStackTrace());
 					printStream.close();
 				}
 			}
@@ -809,6 +813,7 @@ public class ProjectController {
 	    	final PrintStream printStream = new PrintStream(out);
 			printStream.print("Error exporting metrics: ");
 			printStream.print(e.getMessage());
+			printStream.print(e.getStackTrace());
 			printStream.close();
 	    }
 	}
@@ -1121,6 +1126,7 @@ public class ProjectController {
             	final PrintStream printStream = new PrintStream(output);
     			printStream.print("Error exporting external parameter: ");
     			printStream.print(e1.getMessage());
+    			printStream.print(e1.getStackTrace());
     			printStream.close();
     	    }
             model.put("project", project);
@@ -1131,6 +1137,7 @@ public class ProjectController {
         	final PrintStream printStream = new PrintStream(output);
 			printStream.print("Error exporting external parameter: ");
 			printStream.print(e.getMessage());
+			printStream.print(e.getStackTrace());
 			printStream.close();
 			return;
         }
@@ -1148,6 +1155,7 @@ public class ProjectController {
         	final PrintStream printStream = new PrintStream(output);
 			printStream.print("Error exporting external parameter: ");
 			printStream.print(e.getMessage());
+			printStream.print(e.getStackTrace());
 			printStream.close();
         }
 
@@ -1504,6 +1512,7 @@ public class ProjectController {
 	        	final PrintStream printStream = new PrintStream(out);
 				printStream.print("Error exporting external parameter sets: ");
 				printStream.print(e.getMessage());
+				printStream.print(e.getStackTrace());
 				printStream.close();
 			}
 
@@ -1527,6 +1536,7 @@ public class ProjectController {
 		        	final PrintStream printStream = new PrintStream(out);
 					printStream.print("Error exporting external parameter sets: ");
 					printStream.print(e.getMessage());
+					printStream.print(e.getStackTrace());
 					printStream.close();
 				}
 
@@ -1548,6 +1558,7 @@ public class ProjectController {
 		        	final PrintStream printStream = new PrintStream(out);
 					printStream.print("Error exporting external parameter sets: ");
 					printStream.print(e.getMessage());
+					printStream.print(e.getStackTrace());
 					printStream.close();
 				}
 			}
@@ -1559,6 +1570,7 @@ public class ProjectController {
         	final PrintStream printStream = new PrintStream(out);
 			printStream.print("Error exporting external parameter sets: ");
 			printStream.print(e.getMessage());
+			printStream.print(e.getStackTrace());
 			printStream.close();
 		}
 	}
@@ -1607,6 +1619,7 @@ public class ProjectController {
 				final PrintStream printStream = new PrintStream(out);
 				printStream.print("Error exporting simulation model: ");
 				printStream.print(e.getMessage());
+				printStream.print(e.getStackTrace());
 				printStream.close();
 			}
 
@@ -1620,6 +1633,7 @@ public class ProjectController {
 	    	final PrintStream printStream = new PrintStream(out);
 			printStream.print("Error exporting simulation model: ");
 			printStream.print(e.getMessage());
+			printStream.print(e.getStackTrace());
 			printStream.close();
 	    }
 	}
