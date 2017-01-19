@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
@@ -105,7 +106,7 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
     @Autowired private ScenarioMetricsRepository scenarioMetricsRepository;
     @Autowired private TimeEstimatorService timeEstimatorService;
 
-    @Autowired private EntityManager em;
+    @PersistenceContext private EntityManager em;
     @Autowired private ExecutorService executorService;
 
     private JobManager<SimulationOutput, SimulationJobInfo>
