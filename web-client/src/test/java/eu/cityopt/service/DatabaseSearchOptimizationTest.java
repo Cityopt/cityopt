@@ -94,15 +94,15 @@ import eu.cityopt.sim.service.SimulationService.MetricUpdateStatus;
     DbUnitTestExecutionListener.class })
 //@Ignore
 public class DatabaseSearchOptimizationTest {
-	
-	@Autowired ComponentRepository componentRepository;	
-	@Autowired ProjectRepository projectRepository;	
-	@Autowired SimulationResultRepository simResRepository;	
-	@Autowired SimulationService simulationService;	
-	@Autowired ScenarioRepository scenarioRepository;	
-	@Autowired TimeSeriesValRepository timeSeriesValRepository;	
-	@Autowired OptimizationSetRepository optimizationSetRepository;	
-	@Autowired ObjectiveFunctionRepository objectiveFunctionRepository;	
+
+	@Autowired ComponentRepository componentRepository;
+	@Autowired ProjectRepository projectRepository;
+	@Autowired SimulationResultRepository simResRepository;
+	@Autowired SimulationService simulationService;
+	@Autowired ScenarioRepository scenarioRepository;
+	@Autowired TimeSeriesValRepository timeSeriesValRepository;
+	@Autowired OptimizationSetRepository optimizationSetRepository;
+	@Autowired ObjectiveFunctionRepository objectiveFunctionRepository;
 	@Autowired TimeSeriesRepository timeSeriesRepository;
 	@Autowired TypeRepository typeRepository;
 	@Autowired UnitRepository unitRepository;
@@ -112,26 +112,26 @@ public class DatabaseSearchOptimizationTest {
 	@Autowired DatabaseSearchOptimizationServiceImpl dbSearchOptService;
 
 	@PersistenceContext EntityManager em;
-	
-    @Autowired DataSource dataSource; 
-	
+
+    @Autowired DataSource dataSource;
+
 	public static final String STATUS_SUCCESS = "SUCCESS";
     public static final String STATUS_MODEL_FAILURE = "MODEL_FAILURE";
     public static final String STATUS_SIMULATOR_FAILURE = "SIMULATOR_FAILURE";
-	
+
 //    private IDatabaseTester databaseTester;
-    
+
 //    public static boolean isDbSetUp=false;
 
 //    @javax.annotation.Resource
 //    public PlatformTransactionManager transactionManager;
-    
+
 //    @BeforeClass
 //    @Test
 //    public void foo(){
-//    	
+//
 //    }
-    
+
     //this is not really faster and StreamingXML producer (which might be faster) throws strange "only one iterator allowed" exception
     //additionally it seems to omit the transaction management, messing up the database everytime
 //    @Before
@@ -141,7 +141,7 @@ public class DatabaseSearchOptimizationTest {
 //    		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 //      	  	def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
 //      	  	transactionManager.getTransaction(def).setRollbackOnly();
-//    		
+//
 //    		databaseTester = new DataSourceDatabaseTester(dataSource);
 //
 //	        InputSource is2 = new InputSource("./src/test/resources/testData/fullTestcaseBecauseDBUnitIsToStupidToAllowSplitting.xml");
@@ -150,7 +150,7 @@ public class DatabaseSearchOptimizationTest {
 //
 //			IDataSet dataSet2 = new FlatXmlDataSet(prod2);
 //
-//			
+//
 //			databaseTester.setSetUpOperation(DatabaseOperation.CLEAN_INSERT);
 //			databaseTester.setTearDownOperation(DatabaseOperation.DELETE_ALL);
 //
@@ -160,9 +160,9 @@ public class DatabaseSearchOptimizationTest {
 //		    isDbSetUp = true;
 //    	}
 //    }
-    
+
 //    @Autowired ScriptUtils scriptUtils;
-    
+
 //    @After
 //    public void cleanDatabase() throws Exception
 //    {
@@ -170,25 +170,25 @@ public class DatabaseSearchOptimizationTest {
 //		ScriptUtils.executeSqlScript(dataSource.getConnection(), new FileSystemResource("./sql/CityOPT.sql"));
 //
 //    }
-    
+
 //    @BeforeClass
 //    @DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml",
 //    	"classpath:/testData/Sample Test case - SC1.xml", "classpath:/testData/Sample Test case - SC2.xml",
 //    	"classpath:/testData/Sample Test case - SC3.xml", "classpath:/testData/Sample Test case - SC4.xml",
 //    	"classpath:/testData/Sample Test case - SC5.xml"})
 //	public static void setUpBeforeClass() throws Exception {
-//		
+//
 //	}
-    
+
 	@Test
 	public void testMetricCalculation() throws Exception{
 
-		Project project = projectRepository.findOne(1);		
-        
+		Project project = projectRepository.findOne(1);
+
         MetricUpdateStatus status = simulationService.updateMetricValues(project.getPrjid(), 1);
-        
+
         Set<Integer> mapp = status.updated;
-        
+
         System.out.println(status);
         for(int scenID : mapp){
         	for (ScenarioMetrics sm : scenarioRepository.findOne(scenID).getScenariometricses()){
@@ -199,115 +199,116 @@ public class DatabaseSearchOptimizationTest {
         	}
         }
 	}
-	
+
 	@Test
-	public void searchConstEval() throws ParseException, ScriptException{   	
+	public void searchConstEval() throws Exception {
 		Project project = projectRepository.findOne(1);
-		
+
 		//there is just one optset, so pick this one..
 		OptimizationSet optimizationSet = project.getObjectivefunctions().iterator().next().getOptimizationsets().iterator().next();
-		
-		EvaluationResults er = optSupport.evaluateScenarios(project, optimizationSet);
-		
+
+		EvaluationResults er = optSupport.evaluateScenarios(
+		        project.getPrjid(), optimizationSet.getOptid());
+
 		System.out.println(er);
-		
+
 		assertEquals(3, er.feasible.size());
 		assertEquals(2, er.infeasible.size());
-		
+
 		for (int id : er.infeasible){
 			System.out.println("infeasible id: " + id);
 		}
-		
+
 		//scenid 3 + 4 are infeasible?
 		assertTrue(er.infeasible.contains(3));
 		assertTrue(er.infeasible.contains(4));
 	}
-	
+
 	@Test
-	public void dbSearchOptTest() throws ParseException, ScriptException, 
-			EntityNotFoundException {	
-		
+	public void dbSearchOptTest() throws ParseException, ScriptException,
+			EntityNotFoundException {
+
 		SearchOptimizationResults sor = dbSearchOptService.searchConstEval(1, 1,3);
-		
+
 		assertEquals(3,sor.resultScenarios.size());
 		ScenarioWithObjFuncValueDTO scen = sor.resultScenarios.get(0);
 		assertNotNull(scen);
 		assertEquals(5, scen.getScenid());
 	}
-	
+
 	@Test
-	public void dbSearchOptTestNoConstraints() throws ParseException, ScriptException, 
-			EntityNotFoundException {	
+	public void dbSearchOptTestNoConstraints() throws ParseException, ScriptException,
+			EntityNotFoundException {
 		OptimizationSet os = optimizationSetRepository.findOne(1);
 		optSearchConstRepository.deleteOptConstraintsforOptSet(1);
 		em.flush();
-		
+
 		os = optimizationSetRepository.findOne(1);
 		assertTrue(os.getOptsearchconsts().size() == 0);
-		
+
 		SearchOptimizationResults sor = dbSearchOptService.searchConstEval(1, 1, 5);
-		
+
 		assertEquals(5,sor.resultScenarios.size());
 		ScenarioWithObjFuncValueDTO scen = sor.resultScenarios.get(0);
 		assertNotNull(scen);
 		assertEquals(5, scen.getScenid());
-		
+
 		sor = dbSearchOptService.searchConstEval(1, 1, 3);
 		assertEquals(3,sor.resultScenarios.size());
 		scen = sor.resultScenarios.get(0);
 		assertNotNull(scen);
 		assertEquals(5, scen.getScenid());
 	}
-	
+
 	@Test
-	public void dbSearchOptTestIsMaximise() throws ParseException, ScriptException, 
-			EntityNotFoundException {   
+	public void dbSearchOptTestIsMaximise() throws ParseException, ScriptException,
+			EntityNotFoundException {
 		long start = System.nanoTime();
 		OptimizationSet os = optimizationSetRepository.findOne(1);
 		ObjectiveFunction of = os.getObjectivefunction();
 		of.setIsmaximise(true);
-		objectiveFunctionRepository.saveAndFlush(of);		
-		
+		objectiveFunctionRepository.saveAndFlush(of);
+
 		SearchOptimizationResults sor = dbSearchOptService.searchConstEval(1, 1,3);
-		
+
 		System.out.printf("time in millis: " + (System.nanoTime()- start)/1000000);
-		
+
 //		os = optimizationSetRepository.findOne(1);
-//		
+//
 //		Scenario scen = os.getScenario();
-		
+
 		assertEquals(3,sor.resultScenarios.size());
 		ScenarioWithObjFuncValueDTO scen = sor.resultScenarios.get(0);
 		assertNotNull(scen);
 		assertEquals(2, scen.getScenid());
-		
+
 //		of.setIsmaximise(false);
 //		objectiveFunctionRepository.saveAndFlush(of);
 	}
-	
+
 	@Test
-	public void dbSearchOptTestNoResult() throws ParseException, ScriptException, 
-			EntityNotFoundException {   
+	public void dbSearchOptTestNoResult() throws ParseException, ScriptException,
+			EntityNotFoundException {
 		long start = System.nanoTime();
 		OptimizationSet os = optimizationSetRepository.findOne(1);
 		ObjectiveFunction of = os.getObjectivefunction();
 		of.setIsmaximise(true);
-		objectiveFunctionRepository.saveAndFlush(of);		
+		objectiveFunctionRepository.saveAndFlush(of);
 		OptConstraint oc = optConstraintRepository.findOne(1);
 		assertTrue(oc.getExpression().equals("Solar_thermal_panels.collector_area"));
 		oc.setLowerbound("200");
 		em.flush();
-		
+
 		SearchOptimizationResults sor =dbSearchOptService.searchConstEval(1, 1, 5);
-		
+
 		System.out.printf("time in millis: " + (System.nanoTime()- start)/1000000);
-		
+
 //		os = optimizationSetRepository.findOne(1);
-//		
+//
 //		Scenario scen = os.getScenario();
-		
+
 		assertEquals(0,sor.resultScenarios.size());
 //		assertEquals(0, scen.getScenid());
 	}
-	
+
 }
