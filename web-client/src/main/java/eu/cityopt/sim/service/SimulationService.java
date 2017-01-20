@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.function.BiConsumer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -561,22 +562,26 @@ public class SimulationService implements ApplicationListener<ContextClosedEvent
      * Fetch or recompute metric values.
      *
      * Values are fetched from the database if available.  Otherwise
-     * they are computed from exprs & results, and saved into the database.
+     * they are computed from exprs & results.  saver is called with a list
+     * of metrics whose values should be saved back into the database (it may
+     * postpone the saving so that we can run in a R/O transaction).
      * Database access uses metric ids (not names).  If these are not provided
-     * in exprs values are neither fetched nor saved, just computed from exprs.
+     * in exprs, values are just computed; they are neither fetched
+     * nor added to the list passed to saver.
      * @throws ScriptException on expression evaluation errors
      */
     public MetricValues getMetricValues(
             Scenario scen, ExtParamValSet xpvs,
-            Collection<MetricExpression> exprs, SimulationResults results)
+            Collection<MetricExpression> exprs, SimulationResults results,
+            BiConsumer<List<MetricExpression>, MetricValues> saver)
                     throws ScriptException {
         final MetricValues mvs = new MetricValues(results);
         if (exprs != null) {
             List<MetricExpression> to_save = store.readMetricValues(
                     scen, xpvs, exprs, mvs);
-            em.flush();
-            store.saveMetricValues(to_save, mvs, scen.getScenid(),
-                                   xpvs.getExtparamvalsetid());
+            saver.accept(to_save, mvs);
+//            store.saveMetricValues(to_save, mvs, scen.getScenid(),
+//                                   xpvs.getExtparamvalsetid());
         }
         return mvs;
     }

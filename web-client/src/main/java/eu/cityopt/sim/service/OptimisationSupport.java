@@ -21,9 +21,7 @@ import javax.script.ScriptException;
 import org.apache.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.cityopt.DTO.ScenarioWithObjFuncValueDTO;
@@ -53,6 +51,7 @@ import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.ExternalParameters;
+import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.ObjectiveExpression;
@@ -62,7 +61,6 @@ import eu.cityopt.sim.eval.SimulationOutput;
 import eu.cityopt.sim.eval.SimulationResults;
 import eu.cityopt.sim.eval.Type;
 import eu.cityopt.sim.opt.OptimisationProblem;
-import eu.cityopt.sim.service.OptimisationSupport.EvaluationResults;
 
 /**
  * Support functions for database optimisation and scenario generation
@@ -85,6 +83,7 @@ public class OptimisationSupport {
     private @Autowired ExtParamValSetRepository extParamValSetRepository;
 
     private @Autowired SimulationService simulationService;
+    private @Autowired SimulationStoreService simulationStoreService;
     private @Autowired SyntaxCheckerService syntaxCheckerService;
 
     @Autowired
@@ -119,6 +118,17 @@ public class OptimisationSupport {
          */
         public Map<Integer, Exception> failures = new HashMap<Integer, Exception>();
 
+        private final SimulationStoreService store;
+
+        private final int xpvsid;
+
+        private List<Runnable> to_run = new ArrayList<>();
+
+        private EvaluationResults(SimulationStoreService store, int xpvsid) {
+            this.store = store;
+            this.xpvsid = xpvsid;
+        }
+
         /** Brief human-readable description. */
         @Override
         public String toString() {
@@ -126,6 +136,19 @@ public class OptimisationSupport {
                     + infeasible.size() + " infeasible scenarios, "
                     + ignored.size() + " scenarios had no results, "
                     + failures.size() + " scenarios failed.";
+        }
+
+        private void saveMetricVals() {
+            for (Runnable r : to_run) {
+                r.run();
+            }
+        }
+
+        private void addToSave(int scenid, List<MetricExpression> to_save,
+                               MetricValues mvs) {
+            to_run.add(
+                    () -> store.saveMetricValues(
+                            to_save, mvs, scenid, xpvsid));
         }
     }
 
@@ -196,7 +219,9 @@ public class OptimisationSupport {
 
     /**
      * Evaluates metric, constraints and objective functions on all scenarios
-     * of a project.
+     * of a project.  Caller must call
+     * {@link EvaluationResults#saveMetricVals()} on the result.
+     *
      * @param prjId Project id
      * @param optId OptimizationSet id
      * @return structure containing the objective values of the scenarios that
@@ -235,14 +260,17 @@ public class OptimisationSupport {
     private EvaluationResults evaluateScenarios(
             Project project, OptimizationSet optimizationSet)
             throws ParseException, ScriptException {
+        ExtParamValSet xpvs = optimizationSet.getExtparamvalset();
         OptimisationProblem problem = loadOptimisationProblem(project, optimizationSet);
         syntaxCheckerService.checkOptimizationSet(problem);
         ExternalParameters externals = problem.getExternalParameters();
         ObjectiveExpression objective = problem.objectives.get(0);
 
-        EvaluationResults evaluationResults = new EvaluationResults();
+        EvaluationResults evaluationResults = new EvaluationResults(
+                simulationStoreService, xpvs.getExtparamvalsetid());
         for (Scenario scenario : project.getScenarios()) {
             try {
+                int scenid = scenario.getScenid();
                 SimulationInput input =
                         simulationService.loadSimulationInput(scenario, externals);
                 if (input.isComplete()) {
@@ -251,10 +279,10 @@ public class OptimisationSupport {
                     if (output instanceof SimulationResults) {
                         MetricValues
                             metricValues = simulationService.getMetricValues(
-                                    scenario,
-                                    optimizationSet.getExtparamvalset(),
-                                    problem.metrics,
-                                    (SimulationResults)output);
+                                    scenario, xpvs, problem.metrics,
+                                    (SimulationResults)output,
+                                    (to_save, mvs) -> evaluationResults
+                                            .addToSave(scenid, to_save, mvs));
                         ConstraintStatus constraintValues =
                                 new ConstraintStatus(metricValues, problem.constraints);
                         if (constraintValues.feasible) {
@@ -279,6 +307,18 @@ public class OptimisationSupport {
         log.info("Evaluated scenarios of project " + project.getPrjid() + ": "
                 + evaluationResults);
         return evaluationResults;
+    }
+
+    /**
+     * Save updated metric values.
+     * Callers of {@link #evaluateScenarios(int, int)}
+     * must call this to flush metric value changes into the database.
+     * The reason for doing it like this is to allow evaluateScenarios
+     * to run in a R/O transaction.
+     */
+    @Transactional
+    public void saveMetricVals(EvaluationResults er) {
+        er.saveMetricVals();
     }
 
     /**

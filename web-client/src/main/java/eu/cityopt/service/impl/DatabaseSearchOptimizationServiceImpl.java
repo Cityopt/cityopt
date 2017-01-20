@@ -71,6 +71,7 @@ public class DatabaseSearchOptimizationServiceImpl implements DatabaseSearchOpti
 	                        EntityNotFoundException {
 		SearchOptimizationResults sor = optSupport.searchOptimization(
 		        prjId, optId, size);
+		optSupport.saveMetricVals(sor.getEvaluationResult());
                 optSetScenariosService.saveEvaluationResults(optId, sor);
 
 		return sor;

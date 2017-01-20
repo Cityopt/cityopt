@@ -172,7 +172,7 @@ class SimulationStoreService {
      * @param scenid Scenario id
      * @param xpvsid ExtParamValSet id
      */
-    @Transactional(propagation=Propagation.REQUIRES_NEW)
+    @Transactional
     public void saveMetricValues(
             List<MetricExpression> to_save, MetricValues mvs,
             int scenid, int xpvsid) {
@@ -213,8 +213,6 @@ class SimulationStoreService {
             mv.setValue(null);
             mv.setTimeseries(saveTimeSeries(
                     mvs.getTS(name), type, ns.timeOrigin));
-            // Flush time series writes to save memory.
-            em.flush();
         } else {
             mv.setValue(mvs.getString(name));
             mv.setTimeseries(null);
