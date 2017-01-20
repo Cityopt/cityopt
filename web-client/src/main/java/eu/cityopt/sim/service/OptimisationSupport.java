@@ -220,7 +220,7 @@ public class OptimisationSupport {
     /**
      * Evaluates metric, constraints and objective functions on all scenarios
      * of a project.  Caller must call
-     * {@link EvaluationResults#saveMetricVals()} on the result.
+     * {@link #saveMetricVals(EvaluationResults)} on the result.
      *
      * @param prjId Project id
      * @param optId OptimizationSet id
