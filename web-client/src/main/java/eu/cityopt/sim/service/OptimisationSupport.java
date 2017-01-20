@@ -1,20 +1,30 @@
 package eu.cityopt.sim.service;
 
+import java.security.InvalidParameterException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
+import java.util.stream.Stream;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import eu.cityopt.DTO.ScenarioWithObjFuncValueDTO;
 import eu.cityopt.model.ExtParamValSet;
 import eu.cityopt.model.ObjectiveFunction;
 import eu.cityopt.model.OptConstraint;
@@ -30,14 +40,18 @@ import eu.cityopt.repository.ObjectiveFunctionRepository;
 import eu.cityopt.repository.OptConstraintRepository;
 import eu.cityopt.repository.OptSearchConstRepository;
 import eu.cityopt.repository.OptimizationSetRepository;
+import eu.cityopt.repository.ProjectRepository;
 import eu.cityopt.repository.ScenGenObjectiveFunctionRepository;
 import eu.cityopt.repository.ScenGenOptConstraintRepository;
 import eu.cityopt.repository.TimeSeriesValRepository;
 import eu.cityopt.repository.TypeRepository;
+import eu.cityopt.service.EntityNotFoundException;
+import eu.cityopt.service.SearchOptimizationResults;
 import eu.cityopt.sim.eval.Constraint;
 import eu.cityopt.sim.eval.ConstraintStatus;
 import eu.cityopt.sim.eval.EvaluationSetup;
 import eu.cityopt.sim.eval.ExternalParameters;
+import eu.cityopt.sim.eval.MetricExpression;
 import eu.cityopt.sim.eval.MetricValues;
 import eu.cityopt.sim.eval.Namespace;
 import eu.cityopt.sim.eval.ObjectiveExpression;
@@ -69,7 +83,17 @@ public class OptimisationSupport {
     private @Autowired ExtParamValSetRepository extParamValSetRepository;
 
     private @Autowired SimulationService simulationService;
+    private @Autowired SimulationStoreService simulationStoreService;
     private @Autowired SyntaxCheckerService syntaxCheckerService;
+
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    ModelMapper modelMapper;
+
+    @PersistenceContext
+    private EntityManager em;
 
     /** Results from {@link OptimisationSupport#evaluateScenarios(Project, OptimizationSet)} */
     public static class EvaluationResults {
@@ -94,6 +118,17 @@ public class OptimisationSupport {
          */
         public Map<Integer, Exception> failures = new HashMap<Integer, Exception>();
 
+        private final SimulationStoreService store;
+
+        private final int xpvsid;
+
+        private List<Runnable> to_run = new ArrayList<>();
+
+        private EvaluationResults(SimulationStoreService store, int xpvsid) {
+            this.store = store;
+            this.xpvsid = xpvsid;
+        }
+
         /** Brief human-readable description. */
         @Override
         public String toString() {
@@ -102,6 +137,116 @@ public class OptimisationSupport {
                     + ignored.size() + " scenarios had no results, "
                     + failures.size() + " scenarios failed.";
         }
+
+        private void saveMetricVals() {
+            for (Runnable r : to_run) {
+                r.run();
+            }
+        }
+
+        private void addToSave(int scenid, List<MetricExpression> to_save,
+                               MetricValues mvs) {
+            to_run.add(
+                    () -> store.saveMetricValues(
+                            to_save, mvs, scenid, xpvsid));
+        }
+    }
+
+    /**
+     * Perform database search optimization
+     * @param prjId Project id
+     * @param optId Optimization set id
+     * @param size Number of best results to return
+     * @throws EntityNotFoundException
+     * @throws ParseException
+     * @throws ScriptException
+     */
+    @Transactional(readOnly=true)
+    public SearchOptimizationResults searchOptimization(
+            int prjId, int optId, int size)
+            throws EntityNotFoundException, ParseException, ScriptException {
+        EvaluationResults er = evaluateScenarios(prjId, optId);
+        SearchOptimizationResults sor = new SearchOptimizationResults();
+        sor.setEvaluationResult(er);
+        sor.resultScenarios = new ArrayList<ScenarioWithObjFuncValueDTO>();
+
+        if (!er.feasible.isEmpty()) {
+            //sort evaluation results by value
+            Map<Integer, ObjectiveStatus>
+            sortedMap = sortByValue(er.feasible);
+            //sortedMap.forEach((Integer i, ObjectiveStatus s) -> System.out.println(s.objectiveValues[0]));
+
+            for (Map.Entry<Integer, ObjectiveStatus>
+            ent : sortedMap.entrySet()){
+                Double value = ent.getValue().objectiveValues[0];
+
+                //add to result list, as long as desired size is not reached
+                if (sor.resultScenarios.size() >= size) {
+                    break;
+                }
+                ScenarioWithObjFuncValueDTO
+                scenWV = modelMapper.map(
+                        em.getReference(Scenario.class,
+                                ent.getKey()),
+                        ScenarioWithObjFuncValueDTO.class);
+                scenWV.setValue(value);
+                sor.resultScenarios.add(scenWV);
+            }
+        }
+        return sor;
+    }
+
+    /**
+     * sorts objectiveStatus map by value, starting with the optimal scenario
+     * @param map
+     * @return
+     */
+    private <K,T> Map<K, ObjectiveStatus> sortByValue( Map<K, ObjectiveStatus> map )
+    {
+         Map<K,ObjectiveStatus> result = new LinkedHashMap<>();
+         Stream <Entry<K,ObjectiveStatus>> st = map.entrySet().stream();
+
+         st.sorted(new Comparator<Entry<K,ObjectiveStatus>>(){
+                            @Override
+                            public int compare(Entry<K, ObjectiveStatus> arg0,
+                                            Entry<K, ObjectiveStatus> arg1) {
+                                    return arg0.getValue().compareTo(arg1.getValue());
+                            }
+                    }).forEach(e ->result.put(e.getKey(),e.getValue()));
+
+         return result;
+    }
+
+    /**
+     * Evaluates metric, constraints and objective functions on all scenarios
+     * of a project.  Caller must call
+     * {@link #saveMetricVals(EvaluationResults)} on the result.
+     *
+     * @param prjId Project id
+     * @param optId OptimizationSet id
+     * @return structure containing the objective values of the scenarios that
+     *   are feasible with respect to the constraints, and information on any
+     *   problems encountered.
+     */
+    @Transactional(readOnly=true)
+    public EvaluationResults evaluateScenarios(int prjId, int optId)
+            throws EntityNotFoundException, ParseException, ScriptException {
+
+        Project project = projectRepository.findOne(prjId);
+        OptimizationSet optimizationSet = optimizationSetRepository.findOne(
+                optId);
+
+        if(project == null)
+            throw new EntityNotFoundException("could not find prjId: "+ prjId);
+        if(optimizationSet == null)
+            throw new EntityNotFoundException("could not find optId: "+ optId);
+
+        if(optimizationSet.getProject().getPrjid() != prjId)
+            throw new InvalidParameterException(
+                    "optimization set is not part of the project"
+                    + optimizationSet);
+
+        return evaluateScenarios(project, optimizationSet);
     }
 
     /**
@@ -109,23 +254,23 @@ public class OptimisationSupport {
      * of a project.
      * @param project the project in which to find the scenarios
      * @param optimizationSet specifies the constraints and objective function
-     * @return structure containing the objective values of the scenarios that
-     *   are feasible with respect to the constraints, and information on any
-     *   problems encountered.
      * @throws ParseException
      * @throws ScriptException
      */
-    public EvaluationResults evaluateScenarios(
+    private EvaluationResults evaluateScenarios(
             Project project, OptimizationSet optimizationSet)
             throws ParseException, ScriptException {
+        ExtParamValSet xpvs = optimizationSet.getExtparamvalset();
         OptimisationProblem problem = loadOptimisationProblem(project, optimizationSet);
         syntaxCheckerService.checkOptimizationSet(problem);
         ExternalParameters externals = problem.getExternalParameters();
         ObjectiveExpression objective = problem.objectives.get(0);
 
-        EvaluationResults evaluationResults = new EvaluationResults();
+        EvaluationResults evaluationResults = new EvaluationResults(
+                simulationStoreService, xpvs.getExtparamvalsetid());
         for (Scenario scenario : project.getScenarios()) {
             try {
+                int scenid = scenario.getScenid();
                 SimulationInput input =
                         simulationService.loadSimulationInput(scenario, externals);
                 if (input.isComplete()) {
@@ -134,10 +279,10 @@ public class OptimisationSupport {
                     if (output instanceof SimulationResults) {
                         MetricValues
                             metricValues = simulationService.getMetricValues(
-                                    scenario,
-                                    optimizationSet.getExtparamvalset(),
-                                    problem.metrics,
-                                    (SimulationResults)output);
+                                    scenario, xpvs, problem.metrics,
+                                    (SimulationResults)output,
+                                    (to_save, mvs) -> evaluationResults
+                                            .addToSave(scenid, to_save, mvs));
                         ConstraintStatus constraintValues =
                                 new ConstraintStatus(metricValues, problem.constraints);
                         if (constraintValues.feasible) {
@@ -162,6 +307,18 @@ public class OptimisationSupport {
         log.info("Evaluated scenarios of project " + project.getPrjid() + ": "
                 + evaluationResults);
         return evaluationResults;
+    }
+
+    /**
+     * Save updated metric values.
+     * Callers of {@link #evaluateScenarios(int, int)}
+     * must call this to flush metric value changes into the database.
+     * The reason for doing it like this is to allow evaluateScenarios
+     * to run in a R/O transaction.
+     */
+    @Transactional
+    public void saveMetricVals(EvaluationResults er) {
+        er.saveMetricVals();
     }
 
     /**
