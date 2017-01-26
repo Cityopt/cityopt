@@ -36,7 +36,7 @@ according to type:
 
         "[""2015-10-15T00:00Z"", ""2015-10-15T01:00Z""]"
 
-* Expressions are in the [Python] language.  There is separate
+* Expressions are in the [Python][] language.  There is separate
   documentation about those.
 * For strings there is no more processing after RFC 4180 quoting rules.
 
