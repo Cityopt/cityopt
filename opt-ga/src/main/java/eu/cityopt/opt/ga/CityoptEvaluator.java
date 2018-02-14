@@ -222,8 +222,8 @@ implements Evaluator<CityoptPhenotype>, OptimizerStateListener, Closeable {
 
     @Override
     public void close() throws IOException {
-        if (runner != null) {
-            SimulationRunner r = runner;
+        SimulationRunner r = runner;
+        if (r != null) {
             runner = null;
             cancelJobs();
             r.close();
