@@ -270,7 +270,7 @@ public class ImportTest {
         Instant t0 = Instant.parse("2050-01-01T00:00:00Z");
         EvaluationSetup setup = new EvaluationSetup(evaluator, t0);
         CsvTimeSeriesData tsd = new CsvTimeSeriesData(setup);
-        String name = "/timeSeries.csv";
+        String name = "/timeseries.csv";
         try (InputStream is = getClass().getResourceAsStream(name)) {
             tsd.read(is, name);
         }
