@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
@@ -96,11 +97,15 @@ public class AprosModel implements SimulationModel {
             throws IOException, ConfigurationException {
         Document ucs = null;
         Set<Path> modelFiles = new HashSet<>();
+        Path dirn = dir.normalize();
         try (ZipInputStream zis = new ZipInputStream(inputStream)) {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
                 String name = entry.getName();
-                Path target = dir.resolve(name);
+                Path target = dirn.resolve(name).normalize();
+                if (!target.startsWith(dirn))
+                    throw new AccessDeniedException(
+                            "Invalid path in zip file: " + name);
                 Matcher descr = DESCRIPTION_FILENAME_PATTERN.matcher(name);
                 if (entry.isDirectory()) {
                     Files.createDirectories(target);
