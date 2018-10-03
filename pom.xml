@@ -12,6 +12,7 @@
   	<module>web-client</module>
         <module>opt-runner</module>
         <module>test-resources</module>
+    <module>apros-sim</module>
   </modules>
   <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

@@ -58,6 +58,11 @@
 			<artifactId>slf4j-simple</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+		  <groupId>eu.cityopt</groupId>
+		  <artifactId>apros-sim</artifactId>
+		  <version>${project.version}</version>
+		</dependency>
 	</dependencies>
 	<parent>
 		<groupId>eu.cityopt</groupId>

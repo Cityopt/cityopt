@@ -290,6 +290,11 @@
 	  <groupId>org.apache.logging.log4j</groupId>
 	  <artifactId>log4j-iostreams</artifactId>
 	</dependency>
+	<dependency>
+	  <groupId>eu.cityopt</groupId>
+	  <artifactId>apros-sim</artifactId>
+	  <version>${project.version}</version>
+	</dependency>
   </dependencies>
   
   <build>

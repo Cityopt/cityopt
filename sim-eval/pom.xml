@@ -28,11 +28,6 @@
     	<artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
-    	<groupId>org.simantics</groupId>
-    	<artifactId>simulation.scheduling</artifactId>
-    	<version>0.0.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
     	<groupId>com.google.guava</groupId>
     	<artifactId>guava</artifactId>
     </dependency>

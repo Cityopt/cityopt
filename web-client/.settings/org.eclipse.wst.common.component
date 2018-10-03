@@ -11,6 +11,9 @@
         <dependent-module archiveName="sim-eval-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sim-eval/sim-eval">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="apros-sim-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/apros-sim/apros-sim">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="/CityOPT/target/classes"/>
         <property name="context-root" value="CityOPT"/>
     </wb-module>
