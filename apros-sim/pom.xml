@@ -10,8 +10,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>apros-sim</artifactId>
-  <name>apros-sim</name>
-  <url>http://maven.apache.org</url>
+  <name>Cityopt Apros support</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -19,6 +18,11 @@
     <dependency>
       <groupId>eu.cityopt</groupId>
       <artifactId>sim-eval</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>eu.cityopt</groupId>
+      <artifactId>opt-ga</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -50,19 +54,14 @@
       <groupId>eu.cityopt</groupId>
       <artifactId>opt-ga</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>eu.cityopt</groupId>
-      <artifactId>opt-ga</artifactId>
-      <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-                <dependency>
-                        <groupId>com.google.inject.extensions</groupId>
-                        <artifactId>guice-grapher</artifactId>
-                        <version>4.0-beta5</version>
-                        <scope>test</scope>
-                </dependency>
+  <dependency>
+    <groupId>com.google.inject.extensions</groupId>
+    <artifactId>guice-grapher</artifactId>
+    <version>4.0-beta5</version>
+    <scope>test</scope>
+  </dependency>
   </dependencies>
 </project>

@@ -1,7 +1,6 @@
 package eu.cityopt.opt.io;
 
 import static org.junit.Assert.*;
-import static org.junit.Assume.*;
 
 import java.io.IOException;
 import java.io.InputStream;

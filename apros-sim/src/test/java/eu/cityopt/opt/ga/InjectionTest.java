@@ -18,7 +18,6 @@ import com.google.inject.grapher.graphviz.GraphvizGrapher;
 import com.google.inject.grapher.graphviz.GraphvizModule;
 
 import eu.cityopt.opt.io.CityoptOutputModule;
-import eu.cityopt.opt.io.ImportTest;
 import eu.cityopt.sim.opt.OptimisationProblem;
 import eu.cityopt.opt.io.TestBase;
 
@@ -45,7 +44,7 @@ public class InjectionTest extends TestBase {
             task.init(cfm);
             task.open();
             OptimisationProblem p = task.getInstance(OptimisationProblem.class);
-            ImportTest.checkProblem(p);
+            checkProblem(p);
             assertNotNull(p.model);
         } finally {
             task.close();
