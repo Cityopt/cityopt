@@ -6,9 +6,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -40,10 +44,26 @@ public class TestResources {
     
     /**
      * Return the test data directory.
-     * This is the directory containing the property file.
+     * This is the directory containing the property file.  Note that it
+     * can be inside a jar.
      */
     public Path getDir() {
-        return Paths.get(baseURI).getParent();
+        try {
+            return Paths.get(baseURI).getParent();
+        } catch (FileSystemNotFoundException e) {
+            String[] parts = baseURI.toString().split("!");
+            if (parts.length != 2) {
+                throw e;
+            } else {
+                try {
+                    return FileSystems.newFileSystem(
+                            URI.create(parts[0]), Collections.emptyMap())
+                            .getPath(parts[1]);
+                } catch (IOException e2) {
+                    throw e;
+                }
+            }
+        }
     }
     
     /**
@@ -72,13 +92,11 @@ public class TestResources {
 
     /**
      * Return an InputStream to a resource defined by a property.
-     * The value of the property is resolved as a URL relative
-     * to that of the property file.
+     * The value of the property is resolved with {@link #getPath(String)}.
      */
     public InputStream getStream(String propname)
             throws MalformedURLException, IOException {
-        String prop = properties.getProperty(propname);
-        return prop == null ? null
-                            : baseURI.resolve(prop).toURL().openStream();
+        Path p = getPath(propname);
+        return p == null ? null : Files.newInputStream(p);
     }
 }

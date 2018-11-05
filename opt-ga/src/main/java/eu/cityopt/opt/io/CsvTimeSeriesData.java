@@ -1,8 +1,8 @@
 package eu.cityopt.opt.io;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class CsvTimeSeriesData extends TimeSeriesData {
      * Empty input files are ignored.
      */
     public void read(Path path) throws IOException, ParseException {
-        try (InputStream stream = new FileInputStream(path.toFile())) {
+        try (InputStream stream = Files.newInputStream(path)) {
             read(stream, path.toString());
         }
     }

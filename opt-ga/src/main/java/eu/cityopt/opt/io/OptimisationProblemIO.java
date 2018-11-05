@@ -1,6 +1,5 @@
 package eu.cityopt.opt.io;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -43,7 +42,7 @@ public class OptimisationProblemIO {
     public static OptimisationProblem readProblemCsv(
             Path path, TimeSeriesData timeSeriesData, Namespace ns)
                     throws ParseException, ScriptException, IOException {
-        try (FileInputStream fis = new FileInputStream(path.toFile())) {
+        try (InputStream fis = Files.newInputStream(path)) {
             return readProblemCsv(fis, timeSeriesData, ns);
         }
     }
@@ -63,7 +62,7 @@ public class OptimisationProblemIO {
     public static SimulationStructure readStructureCsv(
             Path path, EvaluationSetup setup, Namespace ns)
                     throws ParseException, ScriptException, IOException {
-        try (FileInputStream fis = new FileInputStream(path.toFile())) {
+        try (InputStream fis = Files.newInputStream(path)) {
             return readStructureCsv(fis, setup, ns);
         }
     }

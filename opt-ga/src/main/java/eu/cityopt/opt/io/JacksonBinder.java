@@ -245,7 +245,7 @@ public class JacksonBinder {
             @Named("problem") ObjectReader reader,
             @Named("problem") Path file)
             throws JsonProcessingException, IOException {
-        JacksonBinder bd = reader.readValue(file.toFile());
+        JacksonBinder bd = reader.readValue(file.toUri().toURL());
         this.items = bd.getItems();
     }
 

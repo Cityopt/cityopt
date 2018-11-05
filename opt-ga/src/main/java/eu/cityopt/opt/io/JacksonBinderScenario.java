@@ -75,7 +75,7 @@ public class JacksonBinderScenario {
             @Named("scenario") ObjectReader reader,
             @Named("scenario") Path file)
             throws JsonProcessingException, IOException {
-        JacksonBinderScenario bd = reader.readValue(file.toFile());
+        JacksonBinderScenario bd = reader.readValue(file.toUri().toURL());
         this.items = bd.getItems();
     }
     
