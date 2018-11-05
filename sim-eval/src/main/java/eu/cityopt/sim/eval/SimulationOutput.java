@@ -11,7 +11,7 @@ import java.time.Instant;
  * 
  * @author Hannu Rummukainen
  */
-public class SimulationOutput {
+public abstract class SimulationOutput {
     private final SimulationInput input;
     /** Human-readable messages from simulator, or null. */
     public final String messages;
