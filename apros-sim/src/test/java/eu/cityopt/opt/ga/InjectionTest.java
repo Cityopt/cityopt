@@ -23,9 +23,9 @@ import eu.cityopt.opt.io.TestBase;
 
 public class InjectionTest extends TestBase {
 
-    private CityoptFileModule getCityoptFileModule() {
+    private AprosFileModule getCityoptFileModule() {
         TestModule tm = new TestModule();
-        CityoptFileModule cfm = new CityoptFileModule();
+        AprosFileModule cfm = new AprosFileModule();
         cfm.setModelFile(tm.mfile.toString());
         cfm.setProblemFile(tm.pfile.toString());
         String sep = System.getProperty("path.separator");
@@ -38,7 +38,7 @@ public class InjectionTest extends TestBase {
 
     @Test
     public void testInjectProblem() throws Exception {
-        CityoptFileModule cfm = getCityoptFileModule();
+        AprosFileModule cfm = getCityoptFileModule();
         Opt4JTask task = new Opt4JTask(false);
         try {
             task.init(cfm);
@@ -57,7 +57,7 @@ public class InjectionTest extends TestBase {
         String dotname = res.properties.getProperty("dot_file");
         assumeFalse("Output file name (dot_file) not set",
                     dotname == null || dotname.isEmpty());
-        CityoptDistributorModule distr = new CityoptDistributorModule();
+        AprosDistributorModule distr = new AprosDistributorModule();
         CityoptOutputModule output = new CityoptOutputModule();
         Injector cf_inj = Guice.createInjector(
                 getCityoptFileModule(), distr, output);
