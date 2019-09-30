@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,7 +31,7 @@ public class TestTimeSeries {
     public static void setUp() throws Exception {
         evaluator = new Evaluator();
     }
-    
+
     @Test
     public void timeSeriesExpressions_step() throws Exception {
         testTimeSeriesExpressions(Type.TIMESERIES_STEP);
@@ -43,7 +43,7 @@ public class TestTimeSeries {
     }
 
     void testTimeSeriesExpressions(Type timeSeriesType) throws Exception {
-        double timeOrigin = 100000; 
+        double timeOrigin = 100000;
         Namespace ns = new Namespace(evaluator,
                 Instant.ofEpochMilli((long)(timeOrigin * 1000)),
                 Arrays.asList(new String[0]));
@@ -51,8 +51,8 @@ public class TestTimeSeries {
         ns.externals.put("a", timeSeriesType);
         ns.externals.put("b", timeSeriesType);
 
-        ZonedDateTime zdt = ZonedDateTime.of(2014, 1, 1,  12, 0, 0,  0, ZoneId.systemDefault());
-        double t0 = zdt.toEpochSecond() - timeOrigin;
+        LocalDateTime dt = LocalDateTime.of(2014, 1, 1,  12, 0, 0,  0);
+        double t0 = dt.toEpochSecond(ZoneOffset.UTC) - timeOrigin;
         double sec = 1;
         double day = 24 * 60 * 60 * sec;
         ExternalParameters ep = new ExternalParameters(ns);
@@ -258,7 +258,7 @@ public class TestTimeSeries {
     /** Generate subsequences of a time series for testing. */
     Collection<TimeSeriesI> generateSubTimeSeries(
             double[] times, double[] values, Type timeSeriesType, int asDegree) {
-        List<TimeSeriesI> list = new ArrayList<TimeSeriesI>(); 
+        List<TimeSeriesI> list = new ArrayList<>();
         for (int i0 = 0; i0 < times.length; ++i0) {
             for (int i1 = i0; i1 < times.length; ++i1) {
                 double[] t = new double[i1 - i0];
@@ -501,7 +501,7 @@ public class TestTimeSeries {
      * t, t-offset and t+offset for each t in times.
      */
     static double[] listNearbyTimes(double[] times, double offset) {
-        SortedSet<Double> set = new TreeSet<Double>();
+        SortedSet<Double> set = new TreeSet<>();
 
         for (double t : times) {
             set.add(t - offset);
