@@ -41,7 +41,7 @@ public class TestResources {
             properties.load(str);
         }
     }
-    
+
     /**
      * Return the test data directory.
      * This is the directory containing the property file.  Note that it
@@ -58,14 +58,14 @@ public class TestResources {
                 try {
                     return FileSystems.newFileSystem(
                             URI.create(parts[0]), Collections.emptyMap())
-                            .getPath(parts[1]);
+                            .getPath(parts[1]).getParent();
                 } catch (IOException e2) {
                     throw e;
                 }
             }
         }
     }
-    
+
     /**
      * Return the value of a property as a Path.
      * The path is resolved with respect to {@link #getDir()}.
@@ -75,12 +75,12 @@ public class TestResources {
         String prop = properties.getProperty(propname);
         return prop == null ? null : getDir().resolve(prop);
     }
-    
+
     /**
      * Return the value of a property as an array of Paths.
      * The system path separator is used for separating the entries,
      * which are resolved with respect to {@link #getDir()}.  Empty
-     * entries are omitted. 
+     * entries are omitted.
      */
     public Path[] getPaths(String propname) {
         String sep = Pattern.quote(System.getProperty("path.separator"));
