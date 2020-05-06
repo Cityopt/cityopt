@@ -37,10 +37,10 @@ public abstract class CityoptFileModule extends ProblemModule {
     @Info("Simulator name and version. If empty read from the model file.")
     @Constant(value="simulator", namespace=ModelProvider.class)
     protected String simulator = "";
-    
+
     @Info("Time origin. If empty read from the zip file.")
     protected String timeOrigin = "2015-01-01T00:00:00Z";
-    
+
     @Info("The optimisation problem definition file")
     @File(".csv")
     protected String problemFile = "";
@@ -48,7 +48,7 @@ public abstract class CityoptFileModule extends ProblemModule {
     @Info("The optimisation problem time series file")
     @File(".csv")
     protected String timeSeriesFile = "";
-    
+
     /**
      * Bind the model file to p.
      */
@@ -79,8 +79,8 @@ public abstract class CityoptFileModule extends ProblemModule {
             bind(Instant.class).annotatedWith(Names.named("timeOrigin"))
                 .toInstance(Instant.parse(timeOrigin));
         }
-        bind(SimulationStorage.class).to(HashSimulationStorage.class)
-                .in(SINGLETON);
+        bind(HashSimulationStorage.class).in(SINGLETON);
+        bind(SimulationStorage.class).to(HashSimulationStorage.class);
         bind(Evaluator.class).in(SINGLETON);
     }
 
