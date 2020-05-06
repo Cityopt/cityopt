@@ -2,30 +2,29 @@ package eu.cityopt.sim.eval;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
  * SimulationStorage implementation using a local hash table.
- * 
+ *
  * @author Hannu Rummukainen
  */
 public class HashSimulationStorage implements SimulationStorage {
-    private ConcurrentMap<SimulationInput, SimulationOutput> inputOutputCache;
-
-    public HashSimulationStorage() {
-        this.inputOutputCache = new ConcurrentHashMap<SimulationInput, SimulationOutput>();
-    }
+    private Map<SimulationInput, Put> inputPutCache
+            = new ConcurrentHashMap<>();
 
     @Override
     public SimulationOutput get(SimulationInput input) {
-        return inputOutputCache.get(input);
+        Put put = inputPutCache.get(input);
+        return put == null ? null : put.output;
     }
 
     @Override
     public void put(Put put) {
         if (put.output != null) {
-            inputOutputCache.put(put.input, put.output);
+            inputPutCache.put(put.input, put);
         }
     }
 
@@ -36,11 +35,16 @@ public class HashSimulationStorage implements SimulationStorage {
 
     @Override
     public Iterator<SimulationOutput> iterator() {
-        return inputOutputCache.values().iterator();
+        return inputPutCache.values().stream().map(p -> p.output).iterator();
     }
 
     @Override
     public void close() throws IOException {
-        inputOutputCache.clear();
+        inputPutCache.clear();
+    }
+
+    public MetricValues getMetrics(SimulationInput input) {
+        Put put = inputPutCache.get(input);
+        return put == null ? null : put.metricValues;
     }
 }
