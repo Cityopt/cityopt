@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.AssertThrows;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -65,50 +64,46 @@ import eu.cityopt.repository.ScenarioRepository;
 public class ObjectiveFunctionServiceDTOTest {
 
 	@Autowired ObjectiveFunctionService objectiveFunctionService;
-	
+
 	@PersistenceContext
 	EntityManager em;
-	
+
 	@Before
 	public void setUp() throws Exception {
 	}
 
-	@Test
+	@Test(expected=EntityNotFoundException.class)
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
 	public void findByName() throws EntityNotFoundException {
-		
+
 		ObjectiveFunctionDTO objectiveFunction = objectiveFunctionService.findByName(1, "ObjectiveFunction 1");
 		assertNotNull(objectiveFunction);
-		
-		new AssertThrows(EntityNotFoundException.class) {
-            public void test() throws EntityNotFoundException {
+
             	objectiveFunctionService.findByName(1, "ObjectiveFunction 2");
-            }
-        }.runTest();	
 	}
-	
+
 	@Test
 	@DatabaseSetup({"classpath:/testData/globalTestData.xml", "classpath:/testData/project1TestData.xml"})
 	public void existsByName() throws EntityNotFoundException {
-		
+
 		assertTrue(objectiveFunctionService.existsByName(1, "ObjectiveFunction 1"));
-		
-		assertFalse(objectiveFunctionService.existsByName(1, "ObjectiveFunction 2"));			
+
+		assertFalse(objectiveFunctionService.existsByName(1, "ObjectiveFunction 2"));
 	}
-	
+
 	@Test
 	@DatabaseSetup({"classpath:/testData/plumbing_ga_result2.xml"})
 	public void findObjectiveFunctionResults()
 	{
 		List<ObjectiveFunctionResultDTO> results = objectiveFunctionService.findResultsByScenarioGenerator(1, 1);
 		ObjectiveFunctionResultDTO objectiveFunctionResultDTO = results.get(0);
-		
+
 		assertEquals(true,objectiveFunctionResultDTO.isScengenresultFeasible());
-		assertEquals(true,objectiveFunctionResultDTO.isScengenresultParetooptimal());		
-		
-		assertEquals(1,results.size());		
+		assertEquals(true,objectiveFunctionResultDTO.isScengenresultParetooptimal());
+
+		assertEquals(1,results.size());
 		assertEquals(103,objectiveFunctionResultDTO.getScengenid());
-		
+
 	}
-	
+
 }
