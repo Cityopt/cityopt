@@ -86,7 +86,9 @@ public class CSVSolutionWriter implements SolutionWriter {
                 = problem.decisionVars.stream().map(v -> dvals.get(v));
         if (metrics != null) {
             MetricValues met = storage.getMetrics(sol.input);
-            row = Stream.concat(row, metrics.stream().map(n -> met.get(n)));
+            row = Stream.concat(row, metrics.stream().map(
+                    met == null ? n -> Double.NaN
+                                : n -> met.get(n)));
         }
         row = Stream.concat(
                 row,
