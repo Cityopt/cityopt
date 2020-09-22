@@ -1,7 +1,15 @@
 Cityopt optimization and simulation tool
 ========================================
 
-Cityopt tool is used for optimizing and simulating energy or other systems. It includes also genetic algorithm optimization and many visualization options.
+Cityopt tool is used for optimizing and simulating energy or other systems.
+It includes also genetic algorithm optimization and many visualization options.
+
+Status
+------
+As of 2020, subprojects sim-eval and opt-ga are somewhat maintained.
+The rest, particularly web-client, is not.  Security patches automatically
+constructed by Github Dependabot are sometimes merged but without even
+attempting to compile.
 
 Get Started
 -----------

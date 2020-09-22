@@ -67,7 +67,7 @@
 	<parent>
 		<groupId>eu.cityopt</groupId>
 		<artifactId>cityopt-planning</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>${revision}</version>
 		<relativePath>..</relativePath>
 	</parent>
 </project>
