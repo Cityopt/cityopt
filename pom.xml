@@ -3,21 +3,20 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.cityopt</groupId>
   <artifactId>cityopt-planning</artifactId>
-  <version>${revision}</version>
+  <version>0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
         <module>opt-ga</module>
   	<module>sim-eval</module>
         <module>apros-sim</module>
   	<module>sim-runner</module>
-  	<module>web-client</module>
+	<module>web-client</module>
         <module>opt-runner</module>
         <module>test-resources</module>
   </modules>
   <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <revision>0.1</revision>
   </properties>
   <build>
         <plugins>
