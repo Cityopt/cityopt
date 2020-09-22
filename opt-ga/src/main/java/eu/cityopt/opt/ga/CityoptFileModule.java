@@ -49,6 +49,9 @@ public abstract class CityoptFileModule extends ProblemModule {
     @File(".csv")
     protected String timeSeriesFile = "";
 
+    @Info("Whether only real decision variables (DoubleGenotype) are used.")
+    protected boolean realOnly = false;
+
     /**
      * Bind the model file to p.
      */
@@ -58,7 +61,11 @@ public abstract class CityoptFileModule extends ProblemModule {
 
     @Override
     public void config() {
-        install(new CityoptModule());
+        {
+            CityoptModule cm = new CityoptModule();
+            cm.realOnly = realOnly;
+            install(cm);
+        }
         install(new JacksonCsvModule());
         bind(SimulationModel.class).toProvider(ModelProvider.class);
         addOptimizerStateListener(ModelCleanup.class);
@@ -114,5 +121,13 @@ public abstract class CityoptFileModule extends ProblemModule {
 
     public void setTimeSeriesFile(String timeSeriesFile) {
         this.timeSeriesFile = timeSeriesFile;
+    }
+
+    public boolean isRealOnly() {
+        return realOnly;
+    }
+
+    public void setRealOnly(boolean realOnly) {
+        this.realOnly = realOnly;
     }
 }

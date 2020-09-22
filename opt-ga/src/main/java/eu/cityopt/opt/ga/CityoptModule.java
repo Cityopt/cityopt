@@ -14,15 +14,26 @@ import eu.cityopt.sim.opt.ScenarioNameFormat;
  * {@link ScenarioNameFormat} may also be added; default is no storage.
  * To execute an optimisation task more bindings are needed, at minimum
  * an optimisation algorithm.
- * 
+ *
  * @author ttekth
  */
 @Ignore
 public class CityoptModule extends ProblemModule {
+    /**
+     * Use DoubleMapGenotype instead of ComponentwiseGenotype.
+     * Allows more algorithms but no integer variables.
+     */
+    public boolean realOnly = false;
+
     @Override
     protected void config() {
         addOptimizerStateListener(CityoptEvaluator.class);
-        bindProblem(ComponentwiseCreator.class, ComponentwiseDecoder.class,
-                    CityoptEvaluator.class);
+        if (realOnly) {
+            bindProblem(RealCreator.class, RealDecoder.class,
+                        CityoptEvaluator.class);
+        } else {
+            bindProblem(ComponentwiseCreator.class, ComponentwiseDecoder.class,
+                        CityoptEvaluator.class);
+        }
     }
 }
