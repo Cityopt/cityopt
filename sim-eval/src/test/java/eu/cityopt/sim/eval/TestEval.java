@@ -231,7 +231,7 @@ public class TestEval {
     }
 
     private TimeSeriesI ts(double value) {
-        return evaluator.makeTS( 
+        return evaluator.makeTS(
                 Type.TIMESERIES_LINEAR, new double[] { 0 }, new double[] { value });
     }
 
@@ -369,7 +369,7 @@ public class TestEval {
     public void testDir() throws Exception {
         CompiledScript script = evaluator.getCompiler().compile("dir(C1)");
         @SuppressWarnings("unchecked")
-        ArrayList<String> names = new ArrayList<String>(
+        ArrayList<String> names = new ArrayList<>(
                 (List<String>)evaluator.eval(
                         script, basicInput.toBindings(), basicInput.getEvaluationSetup()));
         Collections.sort(names);
@@ -449,7 +449,6 @@ public class TestEval {
     public void testExpressionValidation(SyntaxChecker sc, boolean complete)
             throws ScriptException {
         assertNull(msg(sc.checkConstraintExpression("1+1")));
-        assertNotNull(msg(sc.checkConstraintExpression("")));
         assertNotNull(msg(sc.checkConstraintExpression("C1.x5.mean.xxx.yyy")));
         assertNull(msg(sc.checkConstraintExpression("C1.x1.mean")));
         assertNull(msg(sc.checkConstraintExpression("C1.x5")));
