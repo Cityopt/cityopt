@@ -38,6 +38,12 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>[1.24.0,2.0)</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <version>5.1.0</version>
