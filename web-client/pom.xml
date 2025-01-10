@@ -8,7 +8,7 @@
   
 	<properties>		
 		<spring-version>6.1.14</spring-version>
-		<spring-security-version>5.7.13</spring-security-version>
+		<spring-security-version>5.7.14</spring-security-version>
 	</properties>  
   
   
